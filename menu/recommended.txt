@@ -100,6 +100,20 @@
 		{
 			"type" : "divider",
 			"size" : 8,
+		},
+		{
+			"type" : "button",
+			"id" : "wolfhud_recommended_fednet_inventory",
+			"title" : "wolfhud_recommended_fednet_inventory_title",
+			"description" : "wolfhud_recommended_fednet_inventory_desc",
+			"callback" : "callback_recommended_fednet_inventory",
+		},
+		{
+			"type" : "button",
+			"id" : "wolfhud_recommended_bodhi_soundrepair",
+			"title" : "wolfhud_recommended_bodhi_soundrepair_title",
+			"description" : "wolfhud_recommended_bodhi_soundrepair_desc",
+			"callback" : "callback_recommended_bodhi_soundrepair",
 		}
 	]
 }

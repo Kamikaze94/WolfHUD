@@ -206,6 +206,23 @@ if not _G.WolfHUD then
 		end
 	end
 	
+	function WolfHUD:installMod(id, name)
+		local menu_options = {
+			[1] = {
+				text = "Yes",
+				callback = function()
+					LuaModUpdates:OpenUpdateManagerNode()
+					LuaModUpdates.ForceDownloadAndInstallMod(id)
+				end,
+			},
+			[2] = {
+				text = "No",
+				is_cancel_button = true,
+			}
+		}
+		QuickMenu:new( "Install: " .. name, "Are you sure, you want to install this mod?", menu_options, true )
+	end
+	
 	WolfHUD:Reset()
 	WolfHUD:Load()
 end
@@ -522,63 +539,61 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	end
 	
 	MenuCallbackHandler.callback_recommended_bltmods = function(self, item)
-		-- TODO: Short info Box about BLT Mods
+		QuickMenu:new( "BLT Mods", "This a List of BLT Mods I think are very useful.\nTo try them out, just click on the one you want and restart your game.\nTo uninstall, go to your {Payday 2 Directory}/mods and remove the folder, which contains the mod you want to remove.", { text = "OK", is_cancel_button = true }, true )
 	end
 	
 	MenuCallbackHandler.callback_recommended_bagcontour = function(self, item)
-		LuaModUpdates:OpenUpdateManagerNode()
-		LuaModUpdates.ForceDownloadAndInstallMod("BC")
+		WolfHUD:installMod("BC", "Bag Contour")
 	end
 	
 	MenuCallbackHandler.callback_recommended_builddb = function(self, item)
-		LuaModUpdates:OpenUpdateManagerNode()
-		LuaModUpdates.ForceDownloadAndInstallMod("BDB")
+		WolfHUD:installMod("BDB", "Build DB")
 	end
 	
 	MenuCallbackHandler.callback_recommended_enhanced_hitmarkers = function(self, item)
-		LuaModUpdates:OpenUpdateManagerNode()
-		LuaModUpdates.ForceDownloadAndInstallMod("ENH_HMRK")
+		WolfHUD:installMod("ENH_HMRK", "Enhanced Hitmarkers")
 	end
 	
 	MenuCallbackHandler.callback_recommended_inventorychatandplayerstates = function(self, item)
-		LuaModUpdates:OpenUpdateManagerNode()
-		LuaModUpdates.ForceDownloadAndInstallMod("ICAPS")
+		WolfHUD:installMod("ICAPS", "Inventory Chat")
 	end
 	
 	MenuCallbackHandler.callback_recommended_loadingscreeninfo = function(self, item)
-		LuaModUpdates:OpenUpdateManagerNode()
+		WolfHUD:installMod("loadingscreeninfo", "Loading Screen Info")
 		LuaModUpdates.ForceDownloadAndInstallMod("loadingscreeninfo")
 	end
 	
 	MenuCallbackHandler.callback_recommended_lobbyplayerinfo = function(self, item)
-		LuaModUpdates:OpenUpdateManagerNode()
-		LuaModUpdates.ForceDownloadAndInstallMod("LPI")
+		WolfHUD:installMod("LPI", "Lobby Player Info")
 	end
 	
 	MenuCallbackHandler.callback_recommended_pd2stats = function(self, item)
-		LuaModUpdates:OpenUpdateManagerNode()
-		LuaModUpdates.ForceDownloadAndInstallMod("pd2statsp")
+		WolfHUD:installMod("pd2statsp", "Payday 2 Stats Plugin")
 	end
 	
 	MenuCallbackHandler.callback_recommended_pocohud3 = function(self, item)
-		LuaModUpdates:OpenUpdateManagerNode()
-		LuaModUpdates.ForceDownloadAndInstallMod("pocohud3")
+		WolfHUD:installMod("pocohud3", "PocoHUD 3")
 	end
 	
 	MenuCallbackHandler.callback_recommended_sidejobsinlobby = function(self, item)
-		LuaModUpdates:OpenUpdateManagerNode()
-		LuaModUpdates.ForceDownloadAndInstallMod("SDJBL")
+		WolfHUD:installMod("SDJBL", "Sidejobs in Lobby")
 	end
 	
 	MenuCallbackHandler.callback_recommended_splsets = function(self, item)
-		LuaModUpdates:OpenUpdateManagerNode()
-		LuaModUpdates.ForceDownloadAndInstallMod("SPLS")
+		WolfHUD:installMod("SPLS", "Skill, Perk, Loadout Sets")
 	end
 	
 	MenuCallbackHandler.callback_recommended_overridemods = function(self, item)
-		-- TODO: Short info Box about 'mod_override'-Mods
+		QuickMenu:new( "'mod_override' Mods", "This is a List of Mods, using the mod_override folder.\nTherefor they are mostly texture and sound mods, which make the game look nicer in my opinion.\nIf you want to try some out, click on them, and a site to download will be opened in your Steam Overlay.", { text = "OK", is_cancel_button = true }, true )
 	end
-		
+	
+	MenuCallbackHandler.callback_recommended_fednet_inventory = function(self, item)
+		Steam:overlay_activate("url", "http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13916")
+	end
+	
+	MenuCallbackHandler.callback_recommended_bodhi_soundrepair = function(self, item)
+		Steam:overlay_activate("url", "http://bodhimods.com/#downloads")
+	end
 		-- TODO: Add Bodhi, Crime.net/Stealthmeter, Fednet Inventory, PDTH Blood Decals, SentryLaser Upgrade, Smoking_Barrels to recommended mod_overrides.
 		
 	WolfHUD:Load()

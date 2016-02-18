@@ -181,4 +181,8 @@
 	"wolfhud_recommended_splsets_desc" : "Save your Loadout per Skillset. Switching Skillset will automatically switch your Loadout.\n(Click to install)"
 	"wolfhud_recommended_overridemods_title" : "'Mod_Override'",
 	"wolfhud_recommended_overridemods_desc" : "Click for more Informations.",
+	"wolfhud_recommended_fednet_inventory_title" : "Fednet Inventory",
+	"wolfhud_recommended_fednet_inventory_desc" : "Colored Inventory Icons, also appear on CustomHUD Weapon Panel",
+	"wolfhud_recommended_bodhi_soundrepair_title" : "Bodhi's Sound Repair",
+	"wolfhud_recommended_bodhi_soundrepair_desc" : "Really nice and quality Sounds for your Weapons",
 }
