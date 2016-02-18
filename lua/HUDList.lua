@@ -63,19 +63,29 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                 show_special_pickups = WolfHUD.settings.show_special_pickups or true,    --Show number of special equipment/items
                
                 --Buff list
-                show_buffs = WolfHUD.settings.show_buffs or true       --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+                show_buffs = WolfHUD.settings.show_buffs or 1       --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
         }
 		
-		local RightListColor = Color.white
-		local RightListBgColor = Color.black
-		local TimerColor = Color.white
-		local TimerBgColor = Color.black
-		local PagerColor = Color.white
-		local PagerbgColor = Color.black
-		local ECMColor = Color.white
-		local ECMBgColor = Color.black
-		local TapeLoopColor = Color.white
-		local TapeLoopBgColor = Color.black
+		local RightListColor 	= WolfHUD.color_table[(WolfHUD.settings.hud_box_color)] or Color.white
+		local RightListBgColor 	= WolfHUD.color_table[(WolfHUD.settings.hud_box_bg_color)] or Color.black
+		local LeftListColor 	= RightListColor
+		local LeftListBgColor 	= RightListBgColor
+		local TimerColor 		= LeftListColor
+		local TimerBgColor 		= LeftListBgColor
+		local PagerColor 		= LeftListColor
+		local PagerbgColor 		= LeftListBgColor
+		local ECMColor 			= LeftListColor
+		local ECMBgColor 		= LeftListBgColor
+		local TapeLoopColor 	= LeftListColor
+		local TapeLoopBgColor 	= LeftListBgColor
+		
+        local civilian_color 	= WolfHUD.color_table[(WolfHUD.settings.civilian_color)] or Color.white
+        local hostage_color 	= civilian_color
+        local thug_color 		= WolfHUD.color_table[(WolfHUD.settings.thug_color)] or Color.white
+		local enemy_color 		= WolfHUD.color_table[(WolfHUD.settings.enemy_color)] or Color.white
+        local guard_color 		= enemy_color
+        local special_color 	= enemy_color
+        local turret_color 		= enemy_color
        
         function HUDListManager:init()
                 self._lists = {}
@@ -953,20 +963,22 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                         on_buff_set_progress = callback(self, self, "_buff_event", "set_progress"),
                 }
                
-                if HUDListManager.ListOptions.show_buffs then
+                if HUDListManager.ListOptions.show_buffs < 3 then
                         for name, data in pairs(HUDList.BuffItemBase.BUFF_MAP) do
-                                local item = list:register_item(name, data.class or "BuffItemBase", data)
-                                if data.aced then
-                                        item:set_aced(data.aced)
-                                end
-                               
-                                if data.level then
-                                        item:set_level(data.level)
-                                end
-                               
-                                if data.no_fade then
-                                        item:set_fade_time(0)
-                                end
+								if (HUDListManager.ListOptions.show_buffs == 2 and (data.class == "TimedBuffItem" or data.class == "ChargedBuffItem")) or HUDListManager.ListOptions.show_buffs <= 1 then
+									local item = list:register_item(name, data.class or "BuffItemBase", data)
+									if data.aced then
+											item:set_aced(data.aced)
+									end
+								   
+									if data.level then
+											item:set_level(data.level)
+									end
+								   
+									if data.no_fade then
+											item:set_fade_time(0)
+									end
+								end
                         end
                        
                         for _, src in ipairs({ PlayerManager.ACTIVE_BUFFS, PlayerManager.ACTIVE_TEAM_BUFFS }) do
@@ -1647,19 +1659,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                         text:set_color(Color.white)
                 end
                
-               
-                local enemy_color = Color(1, 1, 1)--Color(0.8, 0.9, 0, 0)
-                local guard_color = enemy_color
-                local special_color = enemy_color
-                local turret_color = enemy_color
-                local thug_color = Color(1, 1, 1)--enemy_color--Color(1, 0.6, 0)
-                local civilian_color = Color(1, 1, 1)
-                local hostage_color = civilian_color
-               
                 HUDList.UnitCountItem = HUDList.UnitCountItem or class(HUDList.RightListItem)
                 HUDList.UnitCountItem.ENEMY_ICON_MAP = {
                         all =							{ atlas = {6, 1}, color = enemy_color, manual_add = true },     --Aggregated enemies
-                        cop =							{ atlas = {0, 5}, color = enemy_color, priority = 5 },  --Non-special police
+                        cop =							{ atlas = {0, 5}, color = enemy_color, priority = 5, class = "CopUnitCountItem" },  --Non-special police
                         sniper =						{ atlas = {6, 5}, color = special_color, priority = 6 },
                         tank =							{ atlas = {3, 1}, color = special_color, priority = 6 },
                         taser =							{ atlas = {3, 5}, color = special_color, priority = 6 },
@@ -1722,7 +1725,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                        
                         self:set_count(managers.enemy:unit_count(self._unit_type) or 0)
                 end
-               
+                
+				HUDList.CopUnitCountItem = HUDList.CopUnitCountItem or class(HUDList.UnitCountItem)
+				function HUDList.CopUnitCountItem:set_count(count)
+                        HUDList.CopUnitCountItem.super.set_count(self, count - (managers.enemy:unit_count("cop_hostage") or 0))
+                end
+				
                 HUDList.CivilianUnitCountItem = HUDList.CivilianUnitCountItem or class(HUDList.UnitCountItem)
                 function HUDList.CivilianUnitCountItem:init(parent, name, unit_data)
                         HUDList.CivilianUnitCountItem.super.init(self, parent, name, unit_data)

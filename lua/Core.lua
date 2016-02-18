@@ -5,52 +5,24 @@ if not _G.WolfHUD then
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
 	WolfHUD.menu_name = "WolfHUD_options"
 	
-	WolfHUD.colors = WolfHUD.colors or {
-		Color('FAEBD7'),
-		Color('00FFFF'),
-		Color('7FFFD4'),
-		Color('F0FFFF'),
-		Color('8A2BE2'),
-		Color('D2691E'),
-		Color('FF7F50'),
-		Color('00FFFF'),
-		Color('00008B'),
-		Color('9400D3'),
-		Color('FF1493'),
-		Color('00BFFF'),
-		Color('B22222'),
-		Color('228B22'),
-		Color('FFD700'),
-		Color('ADFF2F'),
-		Color('4B0082'),
-		Color('E6E6FA'),
-		Color('ADD8E6'),
-		Color('F08080'),
-		Color('E0FFFF'),
-		Color('90EE90'),
-		Color('FFB6C1'),
-		Color('FFA07A'),
-		Color('20B2AA'),
-		Color('87CEFA'),
-		Color('FFFFE0'),
-		Color('00FF00'),
-		Color('FF00FF'),
-		Color('0000CD'),
-		Color('9370DB'),
-		Color('3CB371'),
-		Color('7B68EE'),
-		Color('00FA9A'),
-		Color('48D1CC'),
-		Color('C71585'),
-		Color('191970'),
-		Color('000080'),
-		Color('FFA500'),
-		Color('87CEEB'),
-		Color('00FF7F'),
-		Color('008080'),
-		Color('EE82EE'),
-		Color('000000'),
-	}
+	if not WolfHUD.color_table then
+		WolfHUD.color_table = {}
+		WolfHUD.color_table[1]  = Color(1, 1, 1)		--1:  White
+		WolfHUD.color_table[2]  = Color(0.8, 0.8, 0.4)	--2:  Light_Yellow
+		WolfHUD.color_table[3]  = Color(0.8, 0.6, 0.4)	--3:  Light_Orange
+		WolfHUD.color_table[4]  = Color(0.8, 0.4, 0.4)	--4:  Light_Red
+		WolfHUD.color_table[5]  = Color(1, 0.5, 1)		--5:  Light_Purple
+		WolfHUD.color_table[6]  = Color(0.6, 0.8, 0.4)	--6:  Light_Green
+		WolfHUD.color_table[7]  = Color(0, 0, 0.54) 	--7:  Light_Blue
+		WolfHUD.color_table[8]  = Color(0.8, 0.8, 0)	--8:  Yellow
+		WolfHUD.color_table[9]  = Color(0.8, 0.4, 0)	--9:  Orange
+		WolfHUD.color_table[10] = Color(0.8, 0, 0)		--10: Red
+		WolfHUD.color_table[11] = Color(0.5, 0, 0.5)	--11: Purple
+		WolfHUD.color_table[12] = Color(0, 0.8, 0)		--12: Green
+		WolfHUD.color_table[13] = Color(0, 0, 0.8)		--13: Blue
+		WolfHUD.color_table[14] = Color(0, 0, 0)		--14: Black
+		WolfHUD.color_table[15] = Color(0, 0, 0)			--15: Rainbow (only available in laser color_table)
+	end
 	
 	WolfHUD.custom_hud = WolfHUD.custom_hud or {													--CustomHUD
 		["lib/managers/hudmanagerpd2"] = "CustomHUD.lua",
@@ -78,7 +50,6 @@ if not _G.WolfHUD then
 		["lib/units/enemies/cop/copdamage"] = "HUDList.lua",
 		["lib/managers/enemymanager"] = "HUDList.lua",
 		["lib/units/equipment/ammo_bag/ammobagbase"] = "HUDList.lua",
---		["lib/units/equipment/first_aid_kit/firstaidkitbase"] = "HUDList.lua",
 		["lib/units/equipment/doctor_bag/doctorbagbase"] = "HUDList.lua",
 		["lib/units/equipment/bodybags_bag/bodybagsbagbase"] = "HUDList.lua",
 		["lib/units/equipment/grenade_crate/grenadecratebase"] = "HUDList.lua",
@@ -141,71 +112,79 @@ if not _G.WolfHUD then
 		WolfHUD.settings = 
 		{
 		  --General
-			use_customhud = true,
-			use_killcounter = true,
-			use_hudlist = true,
-			use_press2hold = true,
-			use_weaponlasers = true,
+			use_customhud 					= true,
+			use_killcounter 				= true,
+			use_hudlist 					= true,
+			use_press2hold 					= true,
+			use_weaponlasers 				= true,
 		  --CustomHUD
-			PLAYER_PANEL_SCALE = 0.85,
-			TEAMMATE_PANEL_SCALE = 0.75,
-		  --HUDList
-			show_timers = true,     				--Drills, time locks, hacking etc.
-			show_equipment = true,  				--Deployables (ammo, doc bags, body bags)
-			show_sentries = true,   				--Deployable sentries
-				hide_empty_sentries = true, 		--Hide sentries with no ammo if player lacks the skill to refill them
-			show_ecms = true,       				--Active ECMs
-			show_ecm_retrigger = true,      		--Countdown for players own ECM feedback retrigger delay
-			show_minions = true,    				--Converted enemies, type and health
-			show_pagers = true,     				--Show currently active pagers
-			show_tape_loop = true,  				--Show active tape loop duration
-			remove_answered_pager_contour = true,   --Removes the interaction contour on answered pagers
-
-			show_enemies = true,		    		--Currently spawned enemies
-				aggregate_enemies = false,  		--Don't split enemies on type; use a single entry for all
-			show_turrets = true,    				--Show active SWAT turrets
-			show_civilians = true,  				--Currently spawned, untied civs
-			show_hostages = true,   				--Currently tied civilian and dominated cops
-			show_minion_count = true,       		--Current number of jokered enemies
-			show_pager_count = true,				--Show number of triggered pagers (only counts pagers triggered while you were present)
-			show_loot = true,       				--Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
-				aggregate_loot = false, 			--Don't split loot on type; use a single entry for all
-				separate_bagged_loot = true,     	--Show bagged loot as a separate value
-			show_special_pickups = true,    		--Show number of special equipment/items
-
-			show_buffs = true,      				--Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+			PLAYER_PANEL_SCALE 				= 0.85,		--Size of local Player HUD Panel
+			TEAMMATE_PANEL_SCALE 			= 0.75,		--Size of Teammates/AI's HUD Panels
 		  --KillCounter
-			SHOW_SPECIAL_KILLS = true,				--KillCounter shows special kills
-			SHOW_HEADSHOT_KILLS = true,				--KillCounter shows headshot kills
-			SHOW_AI_KILLS = true,					--Show KillCounter for Bots
-		  --Press2Hold
-			LOCK_MODE = 2,					 		--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
-			MIN_TIMER_DURATION = 5, 		 		--Min interaction duration (in seconds) for the toggle behavior to activate
-			EQUIPMENT_PRESS_INTERRUPT = true, 		--Use the equipment key ('G') to toggle off active interactions
-			SHOW_TIME_REMAINING = true,		 		--Show remaining Time in the Interaction-Circle
-			GRADIENT_COLOR = 28,	 				--Color, which the timer reaches on completition
-		  --Scripts
-			skip_blackscreen = true,				--Skip the blackscreen on mission start
-			stat_screen_delay = 5,					--Skip the experience screen after X seconds
-			loot_screen_delay = 3,					--Skip the loot screen after X seconds
-			max_corpses = 100,						--Maximum number of laying around corpses
+			SHOW_SPECIAL_KILLS 				= true,		--KillCounter shows special kills
+			SHOW_HEADSHOT_KILLS 			= true,		--KillCounter shows headshot kills
+			SHOW_AI_KILLS 					= true,		--Show KillCounter for Bots
 		  --Enemy Healthbar
-			show_enemy_healthbar = true,
-			show_civilians_healthbar = false,
-			show_healthbar_pointer = false,
+			show_enemy_healthbar 			= true,		--Show healthbars
+			show_civilian_healthbar 		= false,	--Show Healthbars for Civilians and TeamAI
+			show_healthbar_pointer 			= false,	--Show pointer near the Healthbar, pointing at Healthbar owner
+		  --Scripts
+			skip_blackscreen 				= true,		--Skip the blackscreen on mission start
+			stat_screen_delay 				= 5,		--Skip the experience screen after X seconds
+			loot_screen_delay 				= 3,		--Skip the loot screen after X seconds
+			max_corpses 					= 100,		--Maximum number of laying around corpses
+		  --HUDList
+			show_timers 					= true,     --Drills, time locks, hacking etc.
+			show_equipment 					= true,  	--Deployables (ammo, doc bags, body bags)
+			show_sentries 					= true,   	--Deployable sentries
+				hide_empty_sentries 		= true, 	--Hide sentries with no ammo if player lacks the skill to refill them
+			show_ecms 						= true,		--Active ECMs
+			show_ecm_retrigger 				= true,  	--Countdown for players own ECM feedback retrigger delay
+			show_minions 					= true,  	--Converted enemies, type and health
+			show_pagers 					= true,  	--Show currently active pagers
+			show_tape_loop 					= true,  	--Show active tape loop duration
+			remove_answered_pager_contour 	= true,  	--Removes the interaction contour on answered pagers
+
+			show_enemies 					= true,		--Currently spawned enemies
+				aggregate_enemies 			= false,  	--Don't split enemies on type; use a single entry for all
+			show_turrets 					= true,    	--Show active SWAT turrets
+			show_civilians 					= true,  	--Currently spawned, untied civs
+			show_hostages 					= true,   	--Currently tied civilian and dominated cops
+			show_minion_count 				= true,     --Current number of jokered enemies
+			show_pager_count 				= true,		--Show number of triggered pagers (only counts pagers triggered while you were present)
+			show_loot 						= true,     --Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
+				aggregate_loot 				= false, 	--Don't split loot on type; use a single entry for all
+				separate_bagged_loot 		= true,     --Show bagged loot as a separate value
+			show_special_pickups 			= true,    	--Show number of special equipment/items
+
+			show_buffs 						= true,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+			
+			hud_box_color 					= 1,		--Left and Right List font color
+			hud_box_bg_color 				= 14,		--Left and Right List BG color
+			civilian_color 					= 1, 		--EnemyCounter Civillian and Hostage icon color
+			thug_color 						= 1,		--EnemyCounter Thug and Mobster icon color
+			enemy_color 					= 1,		--EnemyCounter Cop and Specials icon color
+		  --Press2Hold
+			LOCK_MODE 						= 2,		--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
+			MIN_TIMER_DURATION 				= 5, 		--Min interaction duration (in seconds) for the toggle behavior to activate
+			EQUIPMENT_PRESS_INTERRUPT 		= true, 	--Use the equipment key ('G') to toggle off active interactions
+			SHOW_TIME_REMAINING 			= true,		--Show remaining Time in the Interaction-Circle
+			GRADIENT_COLOR 					= 12,	 	--Color, which the timer reaches on completition
 		  --Laser-Colors
-			laser_player = 9,
-			laser_player_alpha = 0.3,
-			laser_teammates = 9,
-			laser_teammates_alpha = 0.15,
-			laser_sniper = 14,
-			laser_sniper_alpha = 0.5,
-			laser_turret_active = 14,
-			laser_turret_alpha = 0.15,
-			laser_turret_reloading = 17,
-			laser_turret_jammed = 29,
-			flashlight_angle = 100,
-			flashlight_range = 20
+		    laser_light 					= 10,		--Multiplier for laser dot
+			laser_glow 						= 5,		--Divider for laser beam
+			laser_player 					= 7,		--Player laser color id
+			laser_player_alpha 				= 0.3,		--Player laser alpha
+			laser_teammates 				= 7,		--Teammates laser color id
+			laser_teammates_alpha 			= 0.15,		--Teammates laser alpha
+			laser_sniper 					= 10,		--Sniper laser color id
+			laser_sniper_alpha 				= 0.5,		--Sniper laser alpha
+			laser_turret_active 			= 10,		--Active turret laser color id
+			laser_turret_reloading 			= 8,		--Reloading turret laser color id
+			laser_turret_jammed 			= 12,		--Jammed turret laser color id
+			laser_turret_alpha 				= 0.15,		--Turret laser alpha
+			flashlight_angle 				= 100,		--Flashlight angle
+			flashlight_range 				= 20		--Flashlight range (in m)
 		}
 	end
 	
@@ -261,8 +240,13 @@ Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", 
 			break
 		end
 	end
-	
 	loc:load_localization_file(WolfHUD.mod_path .. "loc/english.txt", false)
+	
+	if WolfHUD.settings.skip_blackscreen then
+		LocalizationManager:add_localized_strings({
+			["hud_skip_blackscreen"] = ""
+		})
+	end
 end)
 
 Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(menu_manager)
@@ -305,6 +289,18 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		WolfHUD.settings.max_corpses = item:value()
 	end
 	
+	MenuCallbackHandler.callback_show_enemyhealthbar = function(self, item)
+		WolfHUD.settings.show_enemy_healthbar = (item:value() == "on")
+	end
+	
+	MenuCallbackHandler.callback_show_civhealthbar = function(self, item)
+		WolfHUD.settings.show_civilian_healthbar = (item:value() == "on")
+	end
+	
+	MenuCallbackHandler.callback_show_healthbar_pointer = function(self, item)
+		WolfHUD.settings.show_healthbar_pointer = (item:value() == "on")
+	end
+	
 	MenuCallbackHandler.callback_skip_blackscreen = function(self, item)
 		WolfHUD.settings.skip_blackscreen = (item:value() == "on")
 	end
@@ -327,6 +323,26 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_use_weaponlasers = function(self, item)
 		WolfHUD.settings.use_weaponlasers = (item:value() =="on")
+	end
+	
+	MenuCallbackHandler.callback_hudlist_boxcolor = function(self, item)
+		WolfHUD.settings.hud_box_color = item:value()
+	end
+	
+	MenuCallbackHandler.callback_hudlist_boxbgcolor = function(self, item)
+		WolfHUD.settings.hud_box_bg_color = item:value()
+	end
+	
+	MenuCallbackHandler.callback_hudlist_civcolor = function(self, item)
+		WolfHUD.settings.civilian_color = item:value()
+	end
+	
+	MenuCallbackHandler.callback_hudlist_thugcolor = function(self, item)
+		WolfHUD.settings.thug_color = item:value()
+	end
+	
+	MenuCallbackHandler.callback_hudlist_copcolor = function(self, item)
+		WolfHUD.settings.enemy_color = item:value()
 	end
 	
 	MenuCallbackHandler.callback_show_timers = function(self, item)
@@ -390,7 +406,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	end	
 
 	MenuCallbackHandler.callback_show_buffs = function(self, item)
-		WolfHUD.settings.show_buffs = (item:value() =="on")
+		WolfHUD.settings.show_buffs = item:value()
 	end	
 
 	MenuCallbackHandler.callback_show_special_kills = function(self, item)
@@ -447,6 +463,14 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_timer_color = function(self, item)
 		WolfHUD.settings.GRADIENT_COLOR = item:value()
+	end
+	
+	MenuCallbackHandler.callback_laser_light = function(self, item)
+		WolfHUD.settings.laser_light = item:value()
+	end
+	
+	MenuCallbackHandler.callback_laser_glow = function(self, item)
+		WolfHUD.settings.laser_glow = item:value()
 	end
 	
 	MenuCallbackHandler.callback_lasercolor_player = function(self, item)
@@ -560,6 +584,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	WolfHUD:Load()
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.txt", WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudlist.txt", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudlist2.txt", WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/press2hold.txt", WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/lasers.txt", WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/recommended.txt", WolfHUD, WolfHUD.settings)

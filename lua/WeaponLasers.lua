@@ -3,27 +3,27 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 	local update_original = WeaponLaser.update
 	WeaponLaser.DEFINITIONS = {
 		player = {	  					--Player
-			color = WolfHUD.colors[(WolfHUD.settings.laser_player-1)] or Color(0,0.75,1),
+			color = WolfHUD.color_table[(WolfHUD.settings.laser_player)] or Color(0,0.75,1),
 			alpha = WolfHUD.settings.laser_player_alpha or 0.3,
 		},
 		cop_sniper = {  				--Enemy snipers
-			color = WolfHUD.colors[(WolfHUD.settings.laser_sniper-1)] or Color(0.7, 0, 0),
+			color = WolfHUD.color_table[(WolfHUD.settings.laser_sniper)] or Color(0.7, 0, 0),
 			alpha = WolfHUD.settings.laser_sniper_alpha or 0.5,
 		},
 		default = {	 					--Team mates
-			color = WolfHUD.colors[(WolfHUD.settings.laser_teammates-1)] or Color(0,0.75,1),
+			color = WolfHUD.color_table[(WolfHUD.settings.laser_teammates)] or Color(0,0.75,1),
 			alpha = WolfHUD.settings.laser_teammates_alpha or 0.15,
 		},
 		turret_module_active = {		--SWAT turret standard
-			color = WolfHUD.colors[(WolfHUD.settings.laser_turret_active-1)] or Color(1, 0, 0),
+			color = WolfHUD.color_table[(WolfHUD.settings.laser_turret_active)] or Color(1, 0, 0),
 			alpha = WolfHUD.settings.laser_turret_alpha or 0.15,
 		},
 		turret_module_rearming = {	  	--SWAT turret reloading
-			color = WolfHUD.colors[(WolfHUD.settings.laser_turret_reloading-1)] or Color(1, 1, 0),
+			color = WolfHUD.color_table[(WolfHUD.settings.laser_turret_reloading)] or Color(1, 1, 0),
 			alpha = WolfHUD.settings.laser_turret_alpha or 0.15,
 		},
 		turret_module_mad = {   		--SWAT turret jammed
-			color = WolfHUD.colors[(WolfHUD.settings.laser_turret_jammed-1)] or Color(0, 1, 0),
+			color = WolfHUD.color_table[(WolfHUD.settings.laser_turret_jammed)] or Color(0, 1, 0),
 			alpha = WolfHUD.settings.laser_turret_alpha or 0.15,
 		},
 	}
@@ -56,8 +56,8 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 			local alpha = alpha or self._themes[name].brush and self._themes[name].brush.alpha or 0
 	 
 			self._themes[name] = {
-				light = color * 10,
-				glow = color / 5,
+				light = color * (WolfHUD.settings.laser_light or 10),
+				glow = color / (WolfHUD.settings.laser_glow or 5),
 				brush = color:with_alpha(alpha)
 			}
 		end
@@ -66,23 +66,22 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 			update_original(self, unit, t, dt, ...)
 			local theme = self._theme_type
 			local suffix = self._suffix_map[theme]
-			local colors = WolfHUD.colors
-			if WolfHUD.settings["laser_" .. suffix] == (#colors + 1) or false then
+			local colors = WolfHUD.color_table
+			local col = Color.white
+			if WolfHUD.settings["laser_" .. suffix] >= (#colors) or false then
 				local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
-				local color = Color(r, g, b)
-				self:update_theme(theme, color)
-				self:set_color_by_theme(theme)
+				col = Color(r, g, b)
 			else
-				local color = WolfHUD.colors[(WolfHUD.settings["laser_" .. suffix]-1)] or Color.white
-				local alpha = 0
-				if suffix == "turret_active" or suffix == "turret_reloading" or suffix == "turret_jammed" then
-					alpha = WolfHUD.settings["laser_turret_alpha"]
-				else
-					alpha = WolfHUD.settings["laser_" .. suffix .. "_alpha"]
-				end
-				self:update_theme(theme, color, alpha)
-				self:set_color_by_theme(theme)
+				col = WolfHUD.color_table[(WolfHUD.settings["laser_" .. suffix])] or Color.white
 			end
+			local alpha = 1
+			if suffix == "turret_active" or suffix == "turret_reloading" or suffix == "turret_jammed" then
+				alpha = WolfHUD.settings["laser_turret_alpha"]
+			else
+				alpha = WolfHUD.settings["laser_" .. suffix .. "_alpha"]
+			end
+			self:update_theme(theme, col, alpha)
+			self:set_color_by_theme(theme)
 		end
 
 	end

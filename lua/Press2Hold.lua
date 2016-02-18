@@ -86,8 +86,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 
-	HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING or true
-	HUDInteraction.GRADIENT_COLOR = WolfHUD.colors[(WolfHUD.settings.GRADIENT_COLOR-1)] or Color.green
+	HUDInteraction.SHOW_TIME_REMAINING = true
+	HUDInteraction.GRADIENT_COLOR = Color.green
 
 	local show_interaction_bar_original = HUDInteraction.show_interaction_bar
 	local hide_interaction_bar_original = HUDInteraction.hide_interaction_bar
@@ -115,7 +115,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		end
 		
 		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING or not WolfHUD and HUDInteraction.SHOW_TIME_REMAINING
-		HUDInteraction.GRADIENT_COLOR = WolfHUD.colors[(WolfHUD.settings.GRADIENT_COLOR-1)] or HUDInteraction.GRADIENT_COLOR
+		HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] or HUDInteraction.GRADIENT_COLOR
 		
 		if PlayerStandard.LOCK_MODE < 3 and not self._interact_circle_locked then
 			self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {

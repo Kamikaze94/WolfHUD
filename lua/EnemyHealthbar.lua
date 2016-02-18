@@ -103,11 +103,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			layer 		= 1
 		})
 		
+		local show_pointer = WolfHUD.settings.show_healthbar_pointer or false
 		self._unit_health_enemy_location = self._unit_health_panel:text({
 			name 		= "unit_health_enemy_location",
 			text 		= "^",
 			blend_mode 	= "normal",
-			visible 	= false,
+			visible 	= show_pointer,
 			alpha 		= 0.75,
 			halign 		= "center",
 			font 		= "fonts/font_medium_shadow_mf",
@@ -152,12 +153,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			self._unit_health_panel:animate( function( p )
 				self._unit_health_panel:set_visible( true )
 				self._unit_health_panel:set_alpha( 0 )
-				self._unit_health_enemy_location:set_visible( WolfHUD.settings.show_healthbar_pointer or false )
 				self._unit_health_enemy_location:set_alpha( 0 )
 				
 				over( 0.5 , function( o )
 					self._unit_health_panel:set_alpha( math.lerp( 0 , 1 , o ) )
-					self._unit_health_enemy_location:set_alpha( math.lerp( 0 , 1 , o ) )
 				end )
 			end )
 		
@@ -172,11 +171,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 				
 				over( 1.5 , function( o )
 					self._unit_health_panel:set_alpha( math.lerp( 1 , 0 , o ) )
-					self._unit_health_enemy_location:set_alpha( math.lerp( 1 , 0 , o ) )
 				end )
 				
 				self._unit_health_panel:set_visible( false )
-				self._unit_health_enemy_location:set_visible( false )
 			end )
 		
 		end
@@ -255,15 +252,14 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 			local unit = self._fwd_ray.unit
 			if unit:parent() then unit = unit:parent() end
 			
-			if alive( unit ) and unit:character_damage() and not unit:character_damage()._dead and unit:base() and unit:base()._tweak_table 
-				and ((not managers.enemy:is_civilian( unit ) and managers.enemy:is_enemy( unit )) or WolfHUD.settings.show_civilians_health) then 
+			if alive( unit ) and unit:character_damage() and not unit:character_damage()._dead and unit:base() and unit:base()._tweak_table
+				and ((not managers.enemy:is_civilian( unit ) and managers.enemy:is_enemy( unit )) or WolfHUD.settings.show_civilian_healthbar) then
 					--[[if not unit:character_damage()._gui and unit:character_damage()._create_debug_ws then
 						unit:character_damage():_create_debug_ws()
 					end]]
-					self._last_unit = unit
-					managers.hud:set_unit_health_visible( true )
-					managers.hud:set_unit_health( unit:character_damage()._health or 0 , unit:character_damage()._HEALTH_INIT or 0 , unit:base()._tweak_table or "cop" )
-				--end
+				self._last_unit = unit
+				managers.hud:set_unit_health_visible( true )
+				managers.hud:set_unit_health( unit:character_damage()._health or 0 , unit:character_damage()._HEALTH_INIT or 0 , unit:base()._tweak_table or "cop" )
 			else
 				if self._last_unit and alive( self._last_unit ) then
 					managers.hud:set_unit_health( self._last_unit:character_damage()._health or 0 , self._last_unit:character_damage()._HEALTH_INIT or 0 , self._last_unit:base()._tweak_table or "cop" )
