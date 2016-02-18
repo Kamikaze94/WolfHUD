@@ -1,15 +1,18 @@
 # WolfHUD
-
-This was originally a recreated and updated version of GageHUD, since it was really painful to maintain with all the mixxed up files.
+This is a Mod collection of several useful HUD altering mods.  
+I've modified them and added feaatures, I felt were needed or useful.  
+It was originally a recreated and updated version of GageHUD, since it was really painful to maintain with all the mixxed up files.
 
 ###Installation:
-Simply drag and drop the Contents of the downloaded archive into your mods-folder, and you are good to go.
+Simply drag and drop the Contents of the downloaded archive into your mods-folder, and you are good to go.  
 Configurations can be made through the included ingame menu.
 
-__If you encounter any bugs, feel free to post about it on the issues tab! 
-Please try to provide information from your crashlog/dump or anything useful, to understand what happened wrong.  ;)__
+###Bug reports:
+__If you encounter any bugs, feel free to post about it on the issues tab!  
+Please try to provide information from your crashlog/dump or anything useful,  
+to understand what happened wrong.  ;)__
 
-######It contains:
+###Included Mods:
 - __CustomHUD__, made by _Seven_
   - Added downs counter
   - Added player levels behind names
@@ -33,5 +36,5 @@ Please try to provide information from your crashlog/dump or anything useful, to
 
 ###Big credit goes to all of you!
 ####Without your awesome mods, I would have quitted this game a long time ago! 
-######If I forgot to mention you, I'm really sorry. 
-######Please feel free to contact me, so I can credit you, for the awesome stuff you have made :)
+__If I forgot to mention you, I'm really sorry.  
+Please feel free to contact me, so I can credit you, for the awesome stuff you have made :)__
