@@ -107,6 +107,16 @@ if not _G.WolfHUD then
 		["lib/managers/hud/hudteammate"] = "WeaponLasers.lua"
 	}
 	
+	WolfHUD.menu_tweaks = WolfHUD.menu_tweaks or {
+		["lib/managers/menumanager"] = "MenuTweaks.lua",					--Hide DLC Ad
+		["lib/managers/menu/blackmarketgui"] = "MenuTweaks.lua",			--Show Weapon Mods and Names
+		["lib/tweak_data/guitweakdata"] = "MenuTweaks.lua",					--Allow longer Weapon and Skillset Names
+		["core/lib/managers/menu/items/coremenuitemslider"] = "MenuTweaks.lua",	--Show Slider values
+		["lib/managers/missionassetsmanager"] = "MenuTweaks.lua",			--Add 'Buy All'-Asset
+		["lib/managers/menumanagerdialogs"] = "MenuTweaks.lua",				--Autoconfirm some Dialogs
+		
+	}
+	
 	
 	function WolfHUD:Reset()
 		WolfHUD.settings = 
@@ -246,6 +256,9 @@ if RequiredScript then
 	end
 	if WolfHUD.weapon_gadgets[requiredScript] then
 		dofile( WolfHUD.mod_path .. "lua/" .. WolfHUD.weapon_gadgets[requiredScript] )
+	end
+	if WolfHUD.menu_tweaks[requiredScript] then
+		dofile( WolfHUD.mod_path .. "lua/" .. WolfHUD.menu_tweaks[requiredScript] )
 	end
 end
 

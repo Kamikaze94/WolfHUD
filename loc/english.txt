@@ -18,6 +18,8 @@
 	"wolfhud_colors_13" : "Blue",
 	"wolfhud_colors_14" : "Black",
 	"wolfhud_colors_15" : "Rainbow",
+	"menu_buy_all_assets" : "Buy All",
+	"menu_buy_all_assets_desc" : "Buy all the assets that you are permitted to acquire.",
 	"wolfhud_hudlist_options_name" : "HUDList Options",
 	"wolfhud_hudlist_options_help" : "Determine which Information is worth to be displayed.",
 	"wolfhud_options_name_2" : "Advanced Options",
