@@ -1,6 +1,6 @@
 # WolfHUD
 This is a Mod collection of several useful HUD altering mods.  
-I've modified them and added feaatures, I felt were needed or useful.  
+I've modified them and added features, I felt were needed or useful.  
 It was originally a recreated and updated version of GageHUD, since it was really painful to maintain with all the mixxed up files.
 
 ###Installation:
