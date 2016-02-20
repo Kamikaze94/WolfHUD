@@ -377,66 +377,82 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_show_timers = function(self, item)
 		WolfHUD.settings.show_timers = (item:value() =="on")
+		HUDManager:change_list_setting("show_timers", WolfHUD.settings.show_timers)
 	end
 
 	MenuCallbackHandler.callback_show_equipment = function(self, item)
 		WolfHUD.settings.show_equipment = (item:value() =="on")
+		HUDManager:change_list_setting("show_equipment", WolfHUD.settings.show_equipment)
 	end
 
 	MenuCallbackHandler.callback_show_minions = function(self, item)
 		WolfHUD.settings.show_minions = (item:value() =="on")
+		HUDManager:change_list_setting("show_minions", WolfHUD.settings.show_minions)
 	end	
 
 	MenuCallbackHandler.callback_show_pagers = function(self, item)
 		WolfHUD.settings.show_pagers = (item:value() =="on")
+		HUDManager:change_list_setting("show_pagers", WolfHUD.settings.show_pagers)
 	end	
 
 	MenuCallbackHandler.callback_remove_answered_pager_contour = function(self, item)
 		WolfHUD.settings.remove_answered_pager_contour = (item:value() =="on")
+		HUDManager:change_list_setting("remove_answered_pager_contour", WolfHUD.settings.remove_answered_pager_contour)
 	end
 
 	MenuCallbackHandler.callback_show_ecms = function(self, item)
 		WolfHUD.settings.show_ecms = (item:value() =="on")
+		HUDManager:change_list_setting("show_ecms", WolfHUD.settings.show_ecms)
 	end	
 
 	MenuCallbackHandler.callback_show_enemies = function(self, item)
 		WolfHUD.settings.show_enemies = (item:value() =="on")
+		HUDManager:change_list_setting("show_enemies", WolfHUD.settings.show_enemies)
 	end	
 
 	MenuCallbackHandler.callback_aggregate_enemies = function(self, item)
 		WolfHUD.settings.aggregate_enemies = (item:value() =="on")
+		HUDManager:change_list_setting("aggregate_enemies", WolfHUD.settings.aggregate_enemies)
 	end	
 
 	MenuCallbackHandler.callback_show_civilians = function(self, item)
 		WolfHUD.settings.show_civilians = (item:value() =="on")
+		HUDManager:change_list_setting("show_civilians", WolfHUD.settings.show_civilians)
 	end	
 
 	MenuCallbackHandler.callback_show_hostages = function(self, item)
 		WolfHUD.settings.show_hostages = (item:value() =="on")
+		HUDManager:change_list_setting("show_hostages", WolfHUD.settings.show_hostages)
 	end	
 
 	MenuCallbackHandler.callback_show_pager_count = function(self, item)
 		WolfHUD.settings.show_pager_count = (item:value() =="on")
+		HUDManager:change_list_setting("show_pager_count", WolfHUD.settings.show_pager_count)
 	end	
 
 	MenuCallbackHandler.callback_show_loot = function(self, item)
 		WolfHUD.settings.show_loot = (item:value() =="on")
+		HUDManager:change_list_setting("show_loot", WolfHUD.settings.show_loot)
 	end	
 
 	MenuCallbackHandler.callback_aggregate_loot = function(self, item)
 		WolfHUD.settings.aggregate_loot = (item:value() =="on")
+		HUDManager:change_list_setting("aggregate_loot", WolfHUD.settings.aggregate_loot)
 	end	
 
 	MenuCallbackHandler.callback_separate_bagged_loot = function(self, item)
 		WolfHUD.settings.separate_bagged_loot = (item:value() =="on")
+		HUDManager:change_list_setting("separate_bagged_loot", WolfHUD.settings.separate_bagged_loot)
 	end	
 
 	MenuCallbackHandler.callback_show_special_pickups = function(self, item)
 		WolfHUD.settings.show_special_pickups = (item:value() =="on")
+		HUDManager:change_list_setting("show_special_pickups", WolfHUD.settings.show_special_pickups)
 	end	
 
 	MenuCallbackHandler.callback_show_buffs = function(self, item)
 		WolfHUD.settings.show_buffs = item:value()
+		HUDManager:change_list_setting("show_buffs", WolfHUD.settings.show_buffs)
 	end	
 
 	MenuCallbackHandler.callback_show_special_kills = function(self, item)
