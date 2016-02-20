@@ -5,7 +5,7 @@ It was originally a recreated and updated version of GageHUD, since it was reall
 
 ###Installation:
 Simply drag and drop the Contents of the downloaded archive into your mods-folder, and you are good to go.  
-Configurations can be made through the included ingame menu.
+Configurations can be made through the included ingame menu.  
 __(You need the [BLT Hook](http://paydaymods.com/download/) for this mod to work)__  
 
 ###Bug reports:
