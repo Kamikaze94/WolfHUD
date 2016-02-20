@@ -28,6 +28,8 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 		},
 	}
 	
+	WeaponLaser.UPDATE = {}
+	
 	WeaponLaser._suffix_map = {
 	player = "player",
 	default = "teammates",
@@ -72,7 +74,9 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 				local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
 				col = Color(r, g, b)
 			else
+				if not WeaponLaser.UPDATE[theme] then return end
 				col = WolfHUD.color_table[(WolfHUD.settings["laser_" .. suffix])] or Color.white
+				WeaponLaser.UPDATE[theme] = nil
 			end
 			local alpha = 1
 			if suffix == "turret_active" or suffix == "turret_reloading" or suffix == "turret_jammed" then

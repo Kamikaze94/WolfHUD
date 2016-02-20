@@ -7,21 +7,21 @@ if not _G.WolfHUD then
 	
 	if not WolfHUD.color_table then
 		WolfHUD.color_table = {}
-		WolfHUD.color_table[1]  = Color(1, 1, 1)		--1:  White
-		WolfHUD.color_table[2]  = Color(0.8, 0.8, 0.4)	--2:  Light_Yellow
-		WolfHUD.color_table[3]  = Color(0.8, 0.6, 0.4)	--3:  Light_Orange
-		WolfHUD.color_table[4]  = Color(0.8, 0.4, 0.4)	--4:  Light_Red
-		WolfHUD.color_table[5]  = Color(1, 0.5, 1)		--5:  Light_Purple
-		WolfHUD.color_table[6]  = Color(0.6, 0.8, 0.4)	--6:  Light_Green
-		WolfHUD.color_table[7]  = Color(0, 0, 0.54) 	--7:  Light_Blue
-		WolfHUD.color_table[8]  = Color(0.8, 0.8, 0)	--8:  Yellow
-		WolfHUD.color_table[9]  = Color(0.8, 0.4, 0)	--9:  Orange
-		WolfHUD.color_table[10] = Color(0.8, 0, 0)		--10: Red
-		WolfHUD.color_table[11] = Color(0.5, 0, 0.5)	--11: Purple
-		WolfHUD.color_table[12] = Color(0, 0.8, 0)		--12: Green
-		WolfHUD.color_table[13] = Color(0, 0, 0.8)		--13: Blue
-		WolfHUD.color_table[14] = Color(0, 0, 0)		--14: Black
-		WolfHUD.color_table[15] = Color(0, 0, 0)			--15: Rainbow (only available in laser color_table)
+		WolfHUD.color_table[1]  = Color('FFFFFF')		--1:  White
+		WolfHUD.color_table[2]  = Color('F2F250')		--2:  Light_Yellow
+		WolfHUD.color_table[3]  = Color('F2C24E')		--3:  Light_Orange
+		WolfHUD.color_table[4]  = Color('E55858')		--4:  Light_Red
+		WolfHUD.color_table[5]  = Color('CC55CC')		--5:  Light_Purple
+		WolfHUD.color_table[6]  = Color('00FF00')		--6:  Light_Green
+		WolfHUD.color_table[7]  = Color('00FFFF') 		--7:  Light_Blue
+		WolfHUD.color_table[8]  = Color('FFFF00')		--8:  Yellow
+		WolfHUD.color_table[9]  = Color('FFA500')		--9:  Orange
+		WolfHUD.color_table[10] = Color('FF0000')		--10: Red
+		WolfHUD.color_table[11] = Color('800080')		--11: Purple
+		WolfHUD.color_table[12] = Color('008000')		--12: Green
+		WolfHUD.color_table[13] = Color('0000FF')		--13: Blue
+		WolfHUD.color_table[14] = Color('000000')		--14: Black
+		WolfHUD.color_table[15] = Color('000000')		--15: Rainbow (only available in laser colors)
 	end
 	
 	WolfHUD.custom_hud = WolfHUD.custom_hud or {													--CustomHUD
@@ -179,7 +179,7 @@ if not _G.WolfHUD then
 			MIN_TIMER_DURATION 				= 5, 		--Min interaction duration (in seconds) for the toggle behavior to activate
 			EQUIPMENT_PRESS_INTERRUPT 		= true, 	--Use the equipment key ('G') to toggle off active interactions
 			SHOW_TIME_REMAINING 			= true,		--Show remaining Time in the Interaction-Circle
-			GRADIENT_COLOR 					= 12,	 	--Color, which the timer reaches on completition
+			GRADIENT_COLOR 					= 6,	 	--Color, which the timer reaches on completition
 		  --Laser-Colors
 		    laser_light 					= 10,		--Multiplier for laser dot
 			laser_glow 						= 5,		--Divider for laser beam
@@ -361,6 +361,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_hudlist_boxbgcolor = function(self, item)
 		WolfHUD.settings.hud_box_bg_color = item:value()
+		HUDManager:change_list_setting("EquipmentBgColor", WolfHUD.color_table[(WolfHUD.settings.hud_box_bg_color)])
 	end
 	
 	MenuCallbackHandler.callback_hudlist_civcolor = function(self, item)
@@ -521,42 +522,54 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_lasercolor_player = function(self, item)
 		WolfHUD.settings.laser_player = item:value()
+		WeaponLasers.UPDATE.player = true
 	end
 	
 	MenuCallbackHandler.callback_laseralpha_player = function(self, item)
 		WolfHUD.settings.laser_player_alpha = item:value()
+		WeaponLasers.UPDATE.player = true
 	end
 	
 	MenuCallbackHandler.callback_lasercolor_teammates = function(self, item)
 		WolfHUD.settings.laser_teammates = item:value()
+		WeaponLasers.UPDATE.default = true
 	end
 	
 	MenuCallbackHandler.callback_laseralpha_teammates = function(self, item)
 		WolfHUD.settings.laser_teammates_alpha = item:value()
+		WeaponLasers.UPDATE.default = true
 	end
 	
 	MenuCallbackHandler.callback_lasercolor_sniper = function(self, item)
 		WolfHUD.settings.laser_sniper = item:value()
+		WeaponLasers.UPDATE.cop_sniper = true
 	end
 	
 	MenuCallbackHandler.callback_laseralpha_sniper = function(self, item)
 		WolfHUD.settings.laser_sniper_alpha = item:value()
+		WeaponLasers.UPDATE.cop_sniper = true
 	end
 	
 	MenuCallbackHandler.callback_lasercolor_turret_active = function(self, item)
 		WolfHUD.settings.laser_turret_active = item:value()
+		WeaponLasers.UPDATE.turret_module_active = true
 	end
 	
 	MenuCallbackHandler.callback_lasercolor_turret_reloading = function(self, item)
 		WolfHUD.settings.laser_turret_reloading = item:value()
+		WeaponLasers.UPDATE.turret_module_rearming = true
 	end
 	
 	MenuCallbackHandler.callback_lasercolor_turret_jammed = function(self, item)
 		WolfHUD.settings.laser_turret_jammed = item:value()
+		WeaponLasers.UPDATE.turret_module_mad = true
 	end
 	
 	MenuCallbackHandler.callback_laseralpha_turret = function(self, item)
 		WolfHUD.settings.laser_turret_alpha = item:value()
+		WeaponLasers.UPDATE.turret_module_active = true
+		WeaponLasers.UPDATE.turret_module_rearming = true
+		WeaponLasers.UPDATE.turret_module_mad = true
 	end
 	
 	MenuCallbackHandler.callback_flashlight_angle = function(self, item)

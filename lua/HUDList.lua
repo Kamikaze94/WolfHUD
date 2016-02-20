@@ -63,7 +63,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                 show_special_pickups = WolfHUD.settings.show_special_pickups or true,    --Show number of special equipment/items
                
                 --Buff list
-                show_buffs = WolfHUD.settings.show_buffs or 1       --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+                show_buffs = WolfHUD.settings.show_buffs or 1,       --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
         }
 		
 		local RightListColor 	= WolfHUD.color_table[(WolfHUD.settings.hud_box_color)] or Color.white
@@ -72,6 +72,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local LeftListBgColor 	= RightListBgColor
 		local TimerColor 		= LeftListColor
 		local TimerBgColor 		= LeftListBgColor
+		local EquipmentColor 	= LeftListColor
+		local EquipmentBgColor 	= LeftListBgColor
 		local PagerColor 		= LeftListColor
 		local PagerbgColor 		= LeftListBgColor
 		local ECMColor 			= LeftListColor
@@ -85,7 +87,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local enemy_color 		= WolfHUD.color_table[(WolfHUD.settings.enemy_color)] or Color.white
         local guard_color 		= enemy_color
         local special_color 	= enemy_color
-        local turret_color 		= enemy_color
+        local turret_color 		= special_color
        
         function HUDListManager:init()
                 self._lists = {}
@@ -147,14 +149,14 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                 --Timers
                 local timer_list = list:register_item("timers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5 })
                 timer_list:set_static_item(HUDList.LeftListIcon, 1, 4/5, {
-                        { atlas = true, texture_rect = { 3 * 64, 6 * 64, 64, 64 } },
+                        { atlas = true, texture_rect = { 3 * 64, 6 * 64, 64, 64 }, color = TimerColor },
                 })
                
                 --Deployables
                 local equipment_list = list:register_item("equipment", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5 })
                 equipment_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-                        { atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[2] * 64, 64, 64 }, valign = "top", halign = "right" },
-                        { atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[2] * 64, 64, 64 }, valign = "bottom", halign = "left" },
+                        { atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[2] * 64, 64, 64 }, valign = "top", halign = "right", color = EquipmentColor },
+                        { atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[2] * 64, 64, 64 }, valign = "bottom", halign = "left", color = EquipmentColor },
                 })
                
                 --Minions
@@ -166,25 +168,25 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                 --Pagers
                 local pager_list = list:register_item("pagers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5 })
                 pager_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-                        { spec = true, texture_rect = { 1 * 64, 4 * 64, 64, 64 } },
+                        { spec = true, texture_rect = { 1 * 64, 4 * 64, 64, 64 }, color = PagerColor },
                 })
                
                 --ECMs
                 local ecm_list = list:register_item("ecms", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5 })
                 ecm_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-                        { atlas = true, texture_rect = { 1 * 64, 4 * 64, 64, 64 } },
+                        { atlas = true, texture_rect = { 1 * 64, 4 * 64, 64, 64 }, color = ECMColor },
                 })
                
                 --ECM trigger
                 local retrigger_list = list:register_item("ecm_retrigger", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5 })
                 retrigger_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-                        { atlas = true, texture_rect = { 6 * 64, 2 * 64, 64, 64 } },
+                        { atlas = true, texture_rect = { 6 * 64, 2 * 64, 64, 64 }, color = ECMColor },
                 })
                
                 --Tape loop
                 local tape_loop_list = list:register_item("tape_loop", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5 })
                 tape_loop_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-                        { atlas = true, texture_rect = { 4 * 64, 2 * 64, 64, 64 } },
+                        { atlas = true, texture_rect = { 4 * 64, 2 * 64, 64, 64 }, color = TapeLoopColor },
                 })
                
                 self:_set_show_timers()
@@ -1596,7 +1598,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 w = self._panel:w() * (icon.w_ratio or 1),
                                 alpha = icon.alpha or 1,
                                 blend_mode = icon.blend_mode or "normal",
-                                color = icon.color or Color.white,
+                                color = icon.color or RightListColor or Color.white,
                         })
                        
                         self._box = HUDBGBox_create(self._panel, {
@@ -1612,7 +1614,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 vertical = "center",
                                 w = self._box:w(),
                                 h = self._box:h(),
-                                color = Color.white,
+                                color = RightListColor or Color.white,
                                 font = tweak_data.hud_corner.assault_font,
                                 font_size = self._box:h() * 0.6
                         })
@@ -1646,7 +1648,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                 end
                
                 function HUDList.RightListItem:_animate_change(text, duration, incr)
-                        text:set_color(Color.white)
+                        text:set_color(RightListColor or Color.white)
                        
                         local t = duration
                         while t > 0 do
@@ -1656,7 +1658,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 text:set_color(Color(incr and ratio or 1, incr and 1 or ratio, ratio))
                         end
                        
-                        text:set_color(Color.white)
+                        text:set_color(RightListColor or Color.white)
                 end
                
                 HUDList.UnitCountItem = HUDList.UnitCountItem or class(HUDList.RightListItem)
@@ -1824,7 +1826,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 						MU =					{ text = "MU" },
 						CS =					{ text = "CS" },
 						HCL =					{ text = "HCL" },
-						present =				{ text = "Present" },	
+						present =				{ text = "Gift" },	
 						goat = 					{ text = "Goat" }, 
                         --container =   { text = "?" },
                 }
@@ -1846,7 +1848,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                         vertical = "center",
                                         w = self._panel:w(),
                                         h = self._panel:w(),
-                                        color = Color(0.0, 0.5, 0.0),
+                                        color = RightListBgColor or Color(0.0, 0.5, 0.0),
                                         blend_mode = "normal",
                                         font = tweak_data.hud_corner.assault_font,
                                         font_size = self._panel:w() * 0.4,
@@ -1934,7 +1936,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                 end
                
                 HUDList.TimerItem = HUDList.TimerItem or class(HUDList.ItemBase)
-                HUDList.TimerItem.STANDARD_COLOR = Color(1, 1, 1, 1)
+                HUDList.TimerItem.STANDARD_COLOR = TimerColor or Color(1, 1, 1, 1)
                 HUDList.TimerItem.UPGRADE_COLOR = Color(1, 0.0, 0.8, 1.0)
                 HUDList.TimerItem.DISABLED_COLOR = Color(1, 1, 0, 0)
                 HUDList.TimerItem.FLASH_SPEED = 2
@@ -1959,7 +1961,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 vertical = "top",
                                 w = self._panel:w(),
                                 h = self._panel:h() * 0.3,
-                                color = Color.white,
+                                color = TimerColor,
                                 font = tweak_data.hud_corner.assault_font,
                                 font_size = self._panel:h() * 1/3
                         })
@@ -1976,7 +1978,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 vertical = "top",
                                 w = self._box:w(),
                                 h = self._box:h(),
-                                color = Color.white,
+                                color = TimerColor,
                                 font = tweak_data.hud_corner.assault_font,
                                 font_size = self._box:h() * 0.4
                         })
@@ -1987,7 +1989,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 vertical = "bottom",
                                 w = self._box:w(),
                                 h = self._box:h(),
-                                color = Color.white,
+                                color = TimerColor,
                                 font = tweak_data.hud_corner.assault_font,
                                 font_size = self._box:h() * 0.6
                         })
@@ -2127,7 +2129,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                         self._box = HUDBGBox_create(self._panel, {
                                         w = self._panel:w(),
                                         h = self._panel:h(),
-                                }, {})
+                                }, {color = EquipmentColor, bg_color = EquipmentBgColor})
                        
                         self._icon = self._panel:bitmap({
                                 name = "icon",
@@ -2137,7 +2139,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 w = self:panel():w() * 0.8,
                                 blend_mode = "add",
                                 layer = 0,
-                                color = Color.white,
+                                color = EquipmentColor,
                         })
                         self._icon:set_center(self._panel:center())
                         self._icon:set_top(self._panel:top())
@@ -2168,7 +2170,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                
                 function HUDList.EquipmentItem:_set_color()
                         if self._owner then
-                                local color = self._owner > 0 and tweak_data.chat_colors[self._owner]:with_alpha(1) or Color.white
+                                local color = self._owner > 0 and tweak_data.chat_colors[self._owner]:with_alpha(1) or EquipmentColor or Color.white
                                 self._icon:set_color(color)
                         end
                 end
@@ -2385,7 +2387,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 vertical = "bottom",
                                 w = self._box:w(),
                                 h = self._box:h(),
-                                color = Color.white,
+                                color = PagerColor,
                                 font = tweak_data.hud_corner.assault_font,
                                 font_size = self._box:h() * 0.5,
                                 text = "DIST"
@@ -2492,7 +2494,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 vertical = "center",
                                 w = self._box:w(),
                                 h = self._box:h(),
-                                color = Color.white,
+                                color = TapeLoopColor,
                                 font = tweak_data.hud_corner.assault_font,
                                 font_size = self._box:h() * 0.6,
                         })
@@ -2512,7 +2514,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
                                 self._text:set_color(new_color)
 						else
-							self._text:set_color(Color.white)
+							self._text:set_color(TapeLoopColor)
                         end
                 end
                
