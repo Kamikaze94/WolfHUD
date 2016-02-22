@@ -107,6 +107,14 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "wolfhud_show_carhealthbar",
+			"title" : "wolfhud_show_carhealthbar_title",
+			"description" : "wolfhud_show_carhealthbar_desc",
+			"callback" : "callback_show_carhealthbar",
+			"value" : "show_car_healthbar",
+		},
+		{
+			"type" : "toggle",
 			"id" : "wolfhud_show_healthbar_pointer",
 			"title" : "wolfhud_show_healthbar_pointer_title",
 			"description" : "wolfhud_show_healthbar_pointer_desc",

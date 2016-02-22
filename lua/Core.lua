@@ -137,6 +137,7 @@ if not _G.WolfHUD then
 		  --Enemy Healthbar
 			show_enemy_healthbar 			= true,		--Show healthbars
 			show_civilian_healthbar 		= false,	--Show Healthbars for Civilians and TeamAI
+			show_car_healthbar				= true,		--Show Healthbar for vehicles
 			show_healthbar_pointer 			= false,	--Show pointer near the Healthbar, pointing at Healthbar owner
 		  --Scripts
 			skip_blackscreen 				= true,		--Skip the blackscreen on mission start
@@ -325,6 +326,10 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_show_civhealthbar = function(self, item)
 		WolfHUD.settings.show_civilian_healthbar = (item:value() == "on")
+	end
+	
+	MenuCallbackHandler.callback_show_carhealthbar = function(self, item)
+		WolfHUD.settings.show_car_healthbar = (item:value() == "on")
 	end
 	
 	MenuCallbackHandler.callback_show_healthbar_pointer = function(self, item)

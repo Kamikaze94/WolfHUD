@@ -192,7 +192,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		local rn = ( self._health_text_rect[ 3 ] - 2 ) * _r
 
 		self._unit_health_enemy_text:set_text( enemy )
-		self._unit_health_text:set_text( string.format( "%d/%d" , current * 10 , total * 10 ) )
+		self._unit_health_text:set_text( string.format( "%d/%d" , current , total ) )
 		
 		local hx , hy , hw , hh = self._unit_health_text:text_rect()
 		local ex , ey , ew , eh = self._unit_health_enemy_text:text_rect()
@@ -229,7 +229,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 
 	end
 elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
-	Hooks:PostHook( PlayerStandard , "update" , "uHUDPostPlayerStandardUpdate" , function( self , t , dt )
+	Hooks:PostHook( PlayerStandard , "update" , "WolfHUDPostPlayerStandardUpdate" , function( self , t , dt )
 		if self._last_unit then
 		
 			local iAngle = 360
@@ -252,22 +252,23 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 			local unit = self._fwd_ray.unit
 			if unit:parent() then unit = unit:parent() end
 			
-			if alive( unit ) and unit:character_damage() and not unit:character_damage()._dead and unit:base() and unit:base()._tweak_table
-				and ((not managers.enemy:is_civilian( unit ) and managers.enemy:is_enemy( unit )) or WolfHUD.settings.show_civilian_healthbar) then
-					--[[if not unit:character_damage()._gui and unit:character_damage()._create_debug_ws then
-						unit:character_damage():_create_debug_ws()
-					end]]
+			if alive( unit ) and unit:character_damage() and not unit:character_damage()._dead and unit:base() and unit:base()._tweak_table and ((not managers.enemy:is_civilian( unit ) and managers.enemy:is_enemy( unit )) or WolfHUD.settings.show_civilian_healthbar) then
 				self._last_unit = unit
 				managers.hud:set_unit_health_visible( true )
-				managers.hud:set_unit_health( unit:character_damage()._health or 0 , unit:character_damage()._HEALTH_INIT or 0 , unit:base()._tweak_table or "cop" )
+				managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base()._tweak_table or "ENEMY" )
+			elseif alive( unit ) and unit:vehicle() and unit:vehicle_driving() and unit:character_damage() and (WolfHUD.settings.show_car_healthbar or --[[WolfHUD.settings.show_car_healthbar == nil and]] true) then
+				self._last_unit = nil
+				managers.hud:set_unit_health_visible( true )
+				managers.hud:set_unit_health( unit:character_damage()._health or 0 , unit:character_damage()._current_max_health or 0 , string.upper(unit:vehicle_driving()._tweak_data.name) or "VEHICLE" )
 			else
 				if self._last_unit and alive( self._last_unit ) then
-					managers.hud:set_unit_health( self._last_unit:character_damage()._health or 0 , self._last_unit:character_damage()._HEALTH_INIT or 0 , self._last_unit:base()._tweak_table or "cop" )
+					managers.hud:set_unit_health( self._last_unit:character_damage()._health * 10 or 0 , self._last_unit:character_damage()._HEALTH_INIT * 10 or 0 , self._last_unit:base()._tweak_table or "ENEMY" )
 					local angle = self:getUnitRotation(unit)
 					if angle < 0 then angle = angle + 360 end
 					if self._last_unit:character_damage()._dead or (angle < 340 and angle > 20) then managers.hud:set_unit_health_visible( false ) else return end
+				else
+					managers.hud:set_unit_health_visible( false )
 				end
-				
 			end
 			
 		else
