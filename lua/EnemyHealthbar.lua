@@ -48,7 +48,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "old_hoxton_mission" ] 	= "HOXTON/LOCKE"
 	}
 
-	Hooks:PostHook( HUDManager , "_player_hud_layout" , "uHUDPostHUDManagerPlayerInfoHUDLayout" , function( self )
+	Hooks:PostHook( HUDManager , "_player_hud_layout" , "WolfHUDPostHUDManagerPlayerInfoHUDLayout" , function( self )
 
 		local unit_health_main = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel:panel({
 			name 	= "unit_health_main",
@@ -179,7 +179,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		end
 
 	end
-
+	
 	function HUDManager:set_unit_health( current , total , tweak_table )
 
 		if not current or not total then return end
@@ -256,7 +256,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 				self._last_unit = unit
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base()._tweak_table or "ENEMY" )
-			elseif alive( unit ) and unit:vehicle() and unit:vehicle_driving() and unit:character_damage() and (not self._seat or (self._seat and self._seat.driving)) and (WolfHUD.settings.show_car_healthbar or WolfHUD.settings.show_car_healthbar == nil and true) then
+			elseif alive( unit ) and unit:vehicle() and unit:vehicle_driving() and unit:character_damage() and not self._seat and (WolfHUD.settings.show_car_healthbar or WolfHUD.settings.show_car_healthbar == nil and true) then
 				self._last_unit = nil
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health or 0 , unit:character_damage()._current_max_health or 0 , string.upper(unit:vehicle_driving()._tweak_data.name) or "VEHICLE" )

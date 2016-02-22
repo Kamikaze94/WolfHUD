@@ -39,7 +39,7 @@
 		},
 		{
 			"type" : "divider",
-			"size" : 32,
+			"size" : 24,
 		},
 		{
 			"type" : "multiple_choice",
@@ -259,7 +259,7 @@
 		},
 		{
 			"type" : "divider",
-			"size" : 32,
+			"size" : 24,
 		},
 		{
 			"type" : "slider",

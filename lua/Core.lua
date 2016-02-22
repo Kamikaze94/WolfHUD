@@ -86,7 +86,10 @@ if not _G.WolfHUD then
 		["lib/tweak_data/timespeedeffecttweakdata"] = "Scripts.lua",		--No SlowMotion (if Host)
 		["lib/managers/enemymanager"] = "Scripts.lua",						-- Corpse limit
 		["lib/managers/hudmanager"] = "EnemyHealthbar.lua",					--Healthbar for enemies
-		["lib/units/beings/player/states/playerstandard"] = "EnemyHealthbar.lua"
+		["lib/units/beings/player/states/playerstandard"] = "EnemyHealthbar.lua",
+		["lib/managers/hudmanagerpd2"] = "DrivingHUD.lua",
+		["lib/states/ingamedriving"] = "DrivingHUD.lua",
+		["lib/managers/hud/huddriving"] = "DrivingHUD.lua"
 	}
 	
 	WolfHUD.interaction = WolfHUD.interaction or {							--Press2Hold + Numeric Interaction Timer
@@ -121,16 +124,12 @@ if not _G.WolfHUD then
 	function WolfHUD:Reset()
 		WolfHUD.settings = 
 		{
-		  --General
-			use_customhud 					= true,
-			use_killcounter 				= true,
-			use_hudlist 					= true,
-			use_press2hold 					= true,
-			use_weaponlasers 				= true,
 		  --CustomHUD
+			use_customhud 					= true,
 			PLAYER_PANEL_SCALE 				= 0.85,		--Size of local Player HUD Panel
 			TEAMMATE_PANEL_SCALE 			= 0.75,		--Size of Teammates/AI's HUD Panels
 		  --KillCounter
+			use_killcounter 				= true,
 			SHOW_SPECIAL_KILLS 				= true,		--KillCounter shows special kills
 			SHOW_HEADSHOT_KILLS 			= true,		--KillCounter shows headshot kills
 			SHOW_AI_KILLS 					= true,		--Show KillCounter for Bots
@@ -139,6 +138,10 @@ if not _G.WolfHUD then
 			show_civilian_healthbar 		= false,	--Show Healthbars for Civilians and TeamAI
 			show_car_healthbar				= true,		--Show Healthbar for vehicles
 			show_healthbar_pointer 			= false,	--Show pointer near the Healthbar, pointing at Healthbar owner
+		  --Driving HUD
+			use_drivinghud					= true,
+			show_vehicle 					= true,
+			speed_in_mph 					= false,
 		  --Scripts
 			skip_blackscreen 				= true,		--Skip the blackscreen on mission start
 			stat_screen_delay 				= 5,		--Skip the experience screen after X seconds
@@ -170,18 +173,21 @@ if not _G.WolfHUD then
 
 			show_buffs 						= true,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
 			
+			use_hudlist 					= true,
 			hud_box_color 					= 1,		--Left and Right List font color
 			hud_box_bg_color 				= 14,		--Left and Right List BG color
 			civilian_color 					= 1, 		--EnemyCounter Civillian and Hostage icon color
 			thug_color 						= 1,		--EnemyCounter Thug and Mobster icon color
 			enemy_color 					= 1,		--EnemyCounter Cop and Specials icon color
 		  --Press2Hold
+			use_press2hold 					= true,
 			LOCK_MODE 						= 2,		--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
 			MIN_TIMER_DURATION 				= 5, 		--Min interaction duration (in seconds) for the toggle behavior to activate
 			EQUIPMENT_PRESS_INTERRUPT 		= true, 	--Use the equipment key ('G') to toggle off active interactions
 			SHOW_TIME_REMAINING 			= true,		--Show remaining Time in the Interaction-Circle
 			GRADIENT_COLOR 					= 6,	 	--Color, which the timer reaches on completition
 		  --Laser-Colors
+			use_weaponlasers 				= true,
 		    laser_light 					= 10,		--Multiplier for laser dot
 			laser_glow 						= 5,		--Divider for laser beam
 			laser_player 					= 7,		--Player laser color id
@@ -195,7 +201,9 @@ if not _G.WolfHUD then
 			laser_turret_jammed 			= 12,		--Jammed turret laser color id
 			laser_turret_alpha 				= 0.15,		--Turret laser alpha
 			flashlight_angle 				= 100,		--Flashlight angle
-			flashlight_range 				= 20		--Flashlight range (in m)
+			flashlight_range 				= 20,		--Flashlight range (in m)
+			
+			replace_weapon_names 			= true
 		}
 	end
 	
@@ -231,7 +239,7 @@ if not _G.WolfHUD then
 				is_cancel_button = true,
 			}
 		}
-		QuickMenu:new( "Install: " .. name, "Are you sure, you want to install this mod?", menu_options, true )
+		QuickMenu:new( "Install: " .. name, "Are you sure, you want to install " .. name  .. "?", menu_options, true )
 	end
 	
 	WolfHUD:Reset()
@@ -272,6 +280,10 @@ Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", 
 		end
 	end
 	loc:load_localization_file(WolfHUD.mod_path .. "loc/english.txt", false)
+	
+	if WolfHUD.settings.replace_weapon_names then
+		loc:load_localization_file(WolfHUD.mod_path .. "loc/RealWeaponNames.txt")
+	end
 	
 	if WolfHUD.settings.skip_blackscreen then
 		LocalizationManager:add_localized_strings({
