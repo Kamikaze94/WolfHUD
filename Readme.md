@@ -34,7 +34,7 @@ to understand what happened wrong.  ;)__
 - __[EnemyHealthbar](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15127)__, made by _Undeadsewer_ for uHUD
   - Made Healthbar fade out, when Enemy walks behind a wall or Player looks away
 - __BurstFire__
--__[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by ViciousWalrus, modified by me
+- __[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by _ViciousWalrus_, modified by me
   - Added Option to hide vehicle and mask images
   - Added Vehicle Healthbar
 
