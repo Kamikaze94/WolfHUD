@@ -1,30 +1,30 @@
 if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	local main_table = {
 		["Longfellow"] = {
-			["driver"] = { offset_x = 55, offset_y = 55, binding = "left top", seat = true},
-			["passenger_front"] = { offset_x = -55, offset_y = 55, binding = "right top", seat = true},
-			["passenger_back_left"] = { offset_x = 55, offset_y = -50, binding = "left bottom", seat = true},
-			["passenger_back_right"] = { offset_x = -55, offset_y = -50, binding = "right bottom", seat = true},
+			["driver"] = { offset_x = 50, offset_y = 50, binding = "left top", seat = true},
+			["passenger_front"] = { offset_x = -50, offset_y = 50, binding = "right top", seat = true},
+			["passenger_back_left"] = { offset_x = 50, offset_y = -45, binding = "left bottom", seat = true},
+			["passenger_back_right"] = { offset_x = -50, offset_y = -45, binding = "right bottom", seat = true},
 			texture_rect = { 1024, 0, 512, 512},
 			texture = "guis/textures/contact_vlad"
 		},
 		["Falcogini"] = {
-			["driver"] = { offset_x = 55, offset_y = 70, binding = "left top", seat = true},
-			["passenger_front"] = { offset_x = -55, offset_y = 70, binding = "right top", seat = true},
+			["driver"] = { offset_x = 50, offset_y = 70, binding = "left top", seat = true},
+			["passenger_front"] = { offset_x = -50, offset_y = 70, binding = "right top", seat = true},
 			texture_rect = { 0, 0, 512, 512},
 			texture = "guis/textures/contact_vlad"
 		},
 		["Forklift"] = {
-			["driver"] = { offset_x = "center_x", offset_y = 110, binding = "top", seat = true},
-			["passenger_front"] = { offset_x = "center_x", offset_y = 10, binding = "bottom", seat = true},
+			["driver"] = { offset_x = "center_x", offset_y = 105, binding = "top", seat = true},
+			["passenger_front"] = { offset_x = "center_x", offset_y = 5, binding = "bottom", seat = true},
 			texture_rect = { 512, 0, 512, 512},
 			texture = "guis/textures/contact_vlad"
 		},
 		["Truck"] = {
-			["driver"] = { offset_x = 55, offset_y = 30, binding = "left top", seat = true},
-			["passenger_front"] = { offset_x = -50, offset_y = 30, binding = "right top", seat = true},
-			["passenger_back_left"] = { offset_x = 55, offset_y = 0, binding = "left bottom", seat = true},
-			["passenger_back_right"] = { offset_x = -50, offset_y = 0, binding = "right bottom", seat = true},
+			["driver"] = { offset_x = 50, offset_y = 30, binding = "left top", seat = true},
+			["passenger_front"] = { offset_x = -45, offset_y = 30, binding = "right top", seat = true},
+			["passenger_back_left"] = { offset_x = 50, offset_y = 0, binding = "left bottom", seat = true},
+			["passenger_back_right"] = { offset_x = -45, offset_y = 0, binding = "right bottom", seat = true},
 			texture_rect = { 0, 512, 512, 512},
 			texture = "guis/textures/contact_vlad"
 		}
@@ -224,11 +224,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		})
 		self._health_bar:set_left(self.drivingpanel:center_x() + (x_pos + loot_bitmap:w() - 74))
 		self._health_bar:set_y(self.drivingpanel:h() + ((y_pos + -154) + (loot_bitmap:h() / 2)))
-		self._health_bar:set_w(self._health_bar:w()/2 - 14)
+		self._health_bar:set_w(self._health_bar:w()/2 - 16)
 		self._health_bar:set_h(self._health_bar:h() + 15)
 		self._health_shield:set_left(self.drivingpanel:center_x() + (x_pos + loot_bitmap:w() - 75))
 		self._health_shield:set_y(self.drivingpanel:h() + ((y_pos + -155) + (loot_bitmap:h() / 2)))
-		self._health_shield:set_w(self._health_shield:w()/2 - 12)
+		self._health_shield:set_w(self._health_shield:w()/2 - 14)
 		self._health_shield:set_h(self._health_shield:h() + 15)
 		self._health_text:set_left(self.drivingpanel:center_x() + (x_pos + loot_bitmap:w() - 75))
 		self._health_text:set_y(self._health_shield:y())
@@ -277,7 +277,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		self.drivingpanel:child("seats"):set_text(people .. "/" .. people_total)
 		self.drivingpanel:child("loot"):set_text(loot_current .. "/" .. loot_total)
 		local health_perc = health_current / health_total
-		self._health_text:set_text(health_current .. " HP")
+		self._health_text:set_text(math.round(health_current) .. " HP")
 		if health_perc < 0.05 then 
 			self._health_text:set_color(Color.red) 
 		elseif health_perc < 0.15 then 
@@ -355,8 +355,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 						texture = "guis/textures/pd2/blackmarket/icons/masks/alienware",
 						x = 0,
 						y = 0,
-						w = 40,
-						h = 40
+						w = 50,
+						h = 30
 					})
 					local bindings = string.split(data.binding, " ")
 					local set_function = "managers.hud._hud_driving.drivingpanel:child(" .. "'" .. name .. "'" .. ")" .. ":set_" .. string.gsub(data.binding, " ", "") .. "("
@@ -415,12 +415,9 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 			local no_total_seats = self:_number_in_the_vehicle(vehicle_driving, true)
 			local vehicle_name = vehicle_driving._tweak_data.name
 			local seats_table = vehicle_driving._seats
-			--local loot_points_table = vehicle_driving._loot_points
 			local health_current = vehicle_unit:character_damage()._health
 			local health_total = vehicle_unit:character_damage()._current_max_health
-			
 			local loot_current = #vehicle_driving._loot
-			
 			local loot_total = vehicle_driving._tweak_data.max_loot_bags
 			
 			
@@ -441,6 +438,7 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 
 	function IngameDriving:update(t, dt)
 		self:_update_driving_hud()
+		self.orig.update(self, t, dt)
 	end
 
 	function IngameDriving.at_enter(self, old_state, ...)
@@ -452,13 +450,7 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 
 	function IngameDriving:at_exit()
 		managers.hud:stop_driving()
-		local player = managers.player:player_unit()
-		if player then
-			player:base():set_enabled(false)
-		end
-		managers.hud:hide(PlayerBase.PLAYER_HUD)
-		managers.hud:hide(PlayerBase.PLAYER_INFO_HUD)
-		managers.hud:hide(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN)
+		self.orig.at_exit(self)
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDManager:_create_assault_corner()
