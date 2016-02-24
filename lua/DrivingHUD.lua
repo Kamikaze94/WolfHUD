@@ -27,6 +27,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			["passenger_back_right"] = { offset_x = -45, offset_y = 0, binding = "right bottom", seat = true},
 			texture_rect = { 0, 512, 512, 512},
 			texture = "guis/textures/contact_vlad"
+		},
+		["Rib Boat"] = {
+			["driver"] = { offset_x = -134, offset_y = -153, binding = "right bottom", seat = true},
+			["passenger_front"] = { offset_x = 48, offset_y = -122, binding = "left bottom", seat = true},
+			["passenger_back_left"] = { offset_x = 48, offset_y = 29, binding = "left top", seat = true},
+			["passenger_back_right"] = { offset_x = -134, offset_y = 64, binding = "right top", seat = true},
+			texture_rect = { 512, 512, 512, 512},
+			texture = "guis/textures/contact_vlad"
 		}
 	}
 
