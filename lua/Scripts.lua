@@ -1100,12 +1100,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	end
 	
 	function HUDStatsScreen:_update_stats_screen_loot(loot_wrapper_panel)
-		update_stats_screen_day_original(self, loot_wrapper_panel)
+		update_stats_screen_loot_original(self, loot_wrapper_panel)
 		local mandatory_bags_data = managers.loot:get_mandatory_bags_data()
 		local mission_amount = managers.loot:get_secured_mandatory_bags_amount()
 		local bonus_amount = managers.loot:get_secured_bonus_bags_amount()
 		
+		local bag_texture, bag_rect = tweak_data.hud_icons:get_icon_data("bag_icon")
 		local mission_bags_panel = loot_wrapper_panel:child("mission_bags_panel")
+		local bonus_bags_panel = loot_wrapper_panel:child("bonus_bags_panel")
 		mission_bags_panel:clear()
 		bonus_bags_panel:clear()
 		if mandatory_bags_data and mandatory_bags_data.amount then
@@ -1125,7 +1127,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			managers.hud:make_fine_text(bag_text)
 			bag_text:set_left(bag:right())
 			bag_text:set_center_y(math.round(bag:center_y()))
-			if mandatory_bags_data.amount > 0 then
+			if mission_amount > 0 then
 				local bag_gotten = mission_bags_panel:bitmap({
 					name = "bag1",
 					texture = bag_texture,
@@ -1144,21 +1146,23 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 				bag_text_gotten:set_center_y(math.round(bag_gotten:center_y()))
 			end
 		end
-		local bag = bonus_bags_panel:bitmap({
-			name = "bag1",
-			texture = bag_texture,
-			texture_rect = bag_rect,
-			x = 0
-		})
-		local bag_text = bonus_bags_panel:text({
-			name = "bag_amount",
-			text = " x" .. tostring(bonus_amount),
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font
-		})
-		managers.hud:make_fine_text(bag_text)
-		bag_text:set_left(bag:right())
-		bag_text:set_center_y(math.round(bag:center_y()))
+		if bonus_amount > 0 then
+			local bag = bonus_bags_panel:bitmap({
+				name = "bag1",
+				texture = bag_texture,
+				texture_rect = bag_rect,
+				x = 0
+			})
+			local bag_text = bonus_bags_panel:text({
+				name = "bag_amount",
+				text = " x" .. tostring(bonus_amount),
+				font_size = tweak_data.menu.pd2_small_font_size,
+				font = tweak_data.menu.pd2_small_font
+			})
+			managers.hud:make_fine_text(bag_text)
+			bag_text:set_left(bag:right())
+			bag_text:set_center_y(math.round(bag:center_y()))
+		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudsuspicion" then
 	local hudsuspicion_init_original = HUDSuspicion.init
