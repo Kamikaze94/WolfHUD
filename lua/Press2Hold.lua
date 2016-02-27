@@ -52,7 +52,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	end
 	
 	function PlayerStandard:_check_action_throw_grenade(t, input, ...)
-		if input.btn_throw_grenade_press then
+		if input.btn_throw_grenade_press and (WolfHUD.settings.SUPRESS_NADES_STEALTH or not WolfHUD) then
 			if managers.groupai:state():whisper_mode() and (t - (self._last_grenade_t or 0) >= PlayerStandard.NADE_TIMEOUT) then
 				self._last_grenade_t = t
 				return
@@ -85,7 +85,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
-
+	
+	HUDInteraction.SHOW_LOCK_INDICATOR = true
 	HUDInteraction.SHOW_TIME_REMAINING = true
 	HUDInteraction.GRADIENT_COLOR = Color.green
 
@@ -114,10 +115,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			self._interact_circle_locked = nil
 		end
 		
-		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING or not WolfHUD and HUDInteraction.SHOW_TIME_REMAINING
-		HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] or HUDInteraction.GRADIENT_COLOR
-		
-		if PlayerStandard.LOCK_MODE < 3 and not self._interact_circle_locked then
+		if PlayerStandard.LOCK_MODE < 3 and HUDInteraction.SHOW_LOCK_INDICATOR then
 			self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {
 				radius = self._circle_radius,
 				color = Color.red,
@@ -165,6 +163,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			self._interact_time:set_visible(false)
 		end
 		
+		self._hud_panel:child(self._child_name_text):set_text(self._old_text)
 		return hide_interaction_bar_original(self, ...)
 	end
 
@@ -172,6 +171,14 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		if self._interact_circle_locked then
 			self._interact_circle_locked._circle:set_color(status and Color.green or Color.red)
 			self._interact_circle_locked._circle:set_alpha(0.25)
+		end
+		
+		self._old_text = self._hud_panel:child(self._child_name_text):text()
+		if status then
+			local type = managers.controller:get_default_wrapper_type()
+			local interact_key  = managers.controller:get_settings(type):get_connection("interact"):get_input_name_list()[1] or "x"
+			local equipment_key = managers.controller:get_settings(type):get_connection("use_item"):get_input_name_list()[1] or "x"
+			self._hud_panel:child(self._child_name_text):set_text(string.upper(managers.localization:text("wolfhud_int_locked", {BTN = (PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and equipment_key or interact_key)})))
 		end
 	end
 	

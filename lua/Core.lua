@@ -186,6 +186,7 @@ if not _G.WolfHUD then
 			EQUIPMENT_PRESS_INTERRUPT 		= true, 	--Use the equipment key ('G') to toggle off active interactions
 			SHOW_TIME_REMAINING 			= true,		--Show remaining Time in the Interaction-Circle
 			GRADIENT_COLOR 					= 6,	 	--Color, which the timer reaches on completition
+			SUPRESS_NADES_STEALTH			= true,
 		  --Laser-Colors
 			use_weaponlasers 				= true,
 		    laser_light 					= 10,		--Multiplier for laser dot
@@ -511,22 +512,27 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_lock_mode = function(self, item)
 		WolfHUD.settings.LOCK_MODE = item:value()
+		PlayerStandard.LOCK_MODE = WolfHUD.settings.LOCK_MODE
 	end
 	
 	MenuCallbackHandler.callback_min_timer_duration = function(self, item)
 		WolfHUD.settings.MIN_TIMER_DURATION = item:value()
+		PlayerStandard.MIN_TIMER_DURATION = WolfHUD.settings.MIN_TIMER_DURATION
 	end
 	
 	MenuCallbackHandler.callback_equipment_cancel = function(self, item)
 		WolfHUD.settings.EQUIPMENT_PRESS_INTERRUPT = (item:value() == "on")
+		PlayerStandard.EQUIPMENT_PRESS_INTERRUPT = WolfHUD.settings.EQUIPMENT_PRESS_INTERRUPT
 	end
 	
 	MenuCallbackHandler.callback_show_timer = function(self, item)
 		WolfHUD.settings.SHOW_TIME_REMAINING = (item:value() == "on")
+		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING
 	end
 	
 	MenuCallbackHandler.callback_timer_color = function(self, item)
 		WolfHUD.settings.GRADIENT_COLOR = item:value()
+		HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)]
 	end
 	
 	MenuCallbackHandler.callback_laser_light = function(self, item)

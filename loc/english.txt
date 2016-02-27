@@ -133,6 +133,7 @@
 	"wolfhud_press2hold_show_timer_desc" : "Display the remaining time inside the Interaction circle.",
 	"wolfhud_press2hold_timer_color_title" : "Timer Color",
 	"wolfhud_press2hold_timer_color_desc" : "Color for the Timer to reach on completition.",
+	"wolfhud_int_locked" : "Press [$BTN] to interrupt",
 	"wolfhud_laser_light_title" : "Light Multiplier",
 	"wolfhud_laser_light_desc" : "",
 	"wolfhud_laser_glow_title" : "Glow Divider",
