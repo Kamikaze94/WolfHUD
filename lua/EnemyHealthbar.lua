@@ -152,11 +152,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			
 			self._unit_health_panel:animate( function( p )
 				self._unit_health_panel:set_visible( true )
-				self._unit_health_panel:set_alpha( 0 )
-				self._unit_health_enemy_location:set_alpha( 0 )
 				
-				over( 0.5 , function( o )
-					self._unit_health_panel:set_alpha( math.lerp( 0 , 1 , o ) )
+				over( 0.25 , function( o )
+					self._unit_health_panel:set_alpha( math.lerp( self._unit_health_panel:alpha() , 1 , o ) )
 				end )
 			end )
 		
@@ -166,11 +164,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			self._unit_health_panel:stop()
 			
 			self._unit_health_panel:animate( function( p )
-				self._unit_health_panel:set_alpha( 1 )
-				self._unit_health_enemy_location:set_alpha( 1 )
+				if self._unit_health_panel:alpha() >= 0.9 then
+					over( 0.5 , function( o ) end )
+				end
 				
 				over( 1.5 , function( o )
-					self._unit_health_panel:set_alpha( math.lerp( 1 , 0 , o ) )
+					self._unit_health_panel:set_alpha( math.lerp( self._unit_health_panel:alpha() , 0 , o ) )
 				end )
 				
 				self._unit_health_panel:set_visible( false )
@@ -205,7 +204,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		self._unit_health_enemy_text:set_left( self._unit_shield:left() )
 		self._unit_health_enemy_text:set_bottom( self._unit_shield:top() )
 		
-		self._unit_health_text:set_color( current == 0 and Color.red or Color.white )
+		self._unit_health_text:set_color( _r <= 0.1 and Color.red or _r <= 0.25 and Color.yellow or Color.white )
 		
 		self._unit_health:stop()
 		
@@ -250,13 +249,13 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 		if self._fwd_ray and self._fwd_ray.unit then
 		
 			local unit = self._fwd_ray.unit
-			if unit:parent() then unit = unit:parent() end
+			if unit:in_slot( 8 ) and alive(unit:parent()) then unit = unit:parent() end
 			
 			if alive( unit ) and unit:character_damage() and not unit:character_damage()._dead and unit:base() and unit:base()._tweak_table and ((not managers.enemy:is_civilian( unit ) and managers.enemy:is_enemy( unit )) or WolfHUD.settings.show_civilian_healthbar) then
 				self._last_unit = unit
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base()._tweak_table or "ENEMY" )
-			elseif alive( unit ) and unit:vehicle() and unit:vehicle_driving() and unit:character_damage() and not self._seat and (WolfHUD.settings.show_car_healthbar or WolfHUD.settings.show_car_healthbar == nil and true) then
+			elseif alive( unit ) and unit:vehicle() and unit:vehicle_driving() and unit:character_damage() and not self._seat and (WolfHUD.settings.show_car_healthbar or not WolfHUD and true) then
 				self._last_unit = nil
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health or 0 , unit:character_damage()._current_max_health or 0 , string.upper(unit:vehicle_driving()._tweak_data.name) or "VEHICLE" )
