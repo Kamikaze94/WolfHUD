@@ -4,6 +4,7 @@
 	"title" : "wolfhud_lasers_options_name",
 	"description" : "wolfhud_lasers_options_help",
 	"back_callback" : "WolfHUD_Save",
+	"priority" : 10,
 	"items" : [
 		{
 			"type" : "toggle",

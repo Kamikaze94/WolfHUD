@@ -4,6 +4,7 @@
 	"title" : "wolfhud_recommended_name",
 	"description" : "wolfhud_recommended_help",
 	"back_callback" : "",
+	"priority" : 1,
 	"items" : [
 		{
 			"type" : "button",

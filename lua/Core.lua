@@ -701,10 +701,11 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		
 	WolfHUD:Load()
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.txt", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/lasers.txt", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/press2hold.txt", WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudlist.txt", WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudlist2.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/press2hold.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/lasers.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/recommended.txt", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/customhud.txt", WolfHUD, WolfHUD.settings)
+	--MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/recommended.txt", WolfHUD, WolfHUD.settings)
 end)
 

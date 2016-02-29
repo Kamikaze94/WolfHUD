@@ -4,6 +4,7 @@
 	"title" : "wolfhud_press2hold_options_name",
 	"description" : "wolfhud_press2hold_options_help",
 	"back_callback" : "WolfHUD_Save",
+	"priority" : 10,
 	"items" : [
 		{
 			"type" : "toggle",
