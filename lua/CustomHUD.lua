@@ -2318,9 +2318,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudheisttimer" then
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudchat" then
 	
 
-	HUDChat.LINE_HEIGHT = 15
+	HUDChat.LINE_HEIGHT = WolfHUD.settings.LINE_HEIGHT or 15
 	HUDChat.WIDTH = 375
-	HUDChat.MAX_OUTPUT_LINES = 8
+	HUDChat.MAX_OUTPUT_LINES = WolfHUD.settings.MAX_OUTPUT_LINES or 8
 	HUDChat.MAX_INPUT_LINES = 5
 	
 	local enter_key_callback_original = HUDChat.enter_key_callback
