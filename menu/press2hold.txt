@@ -83,6 +83,20 @@
 				
 			],
 			"value" : "GRADIENT_COLOR",
+		},
+		{
+			"type" : "divider",
+			"size" : 16,
+			"priority" : 8,
+		},
+		{
+			"type" : "toggle",
+			"id" : "wolfhud_doubletap_nades_stealth",
+			"title" : "wolfhud_doubletap_nades_stealth_title",
+			"description" : "wolfhud_doubletap_nades_stealth_desc",
+			"callback" : "callback_doubletap_nades_stealth",
+			"value" : "SUPRESS_NADES_STEALTH",
+			"priority" : 9,
 		}
 	]
 }

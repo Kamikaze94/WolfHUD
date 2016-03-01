@@ -38,29 +38,29 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                 buff_list_scale = 1,    --Size scale of buff list
        
                 --Left side list
-                show_timers = WolfHUD.settings.show_timers or true,     --Drills, time locks, hacking etc.
-                show_equipment = WolfHUD.settings.show_equipment or true,  --Deployables (ammo, doc bags, body bags)
-                show_sentries = WolfHUD.settings.show_sentries or true,   --Deployable sentries
-                        hide_empty_sentries = WolfHUD.settings.hide_empty_sentries or true,     --Hide sentries with no ammo if player lacks the skill to refill them
-                show_ecms = WolfHUD.settings.show_ecms or true,       --Active ECMs
-                show_ecm_retrigger = WolfHUD.settings.show_ecm_retrigger or true,      --Countdown for players own ECM feedback retrigger delay
-                show_minions = WolfHUD.settings.show_minions or true,    --Converted enemies, type and health
-                show_pagers = WolfHUD.settings.show_pagers or true,     --Show currently active pagers
-                show_tape_loop = WolfHUD.settings.show_tape_loop or true,  --Show active tape loop duration
-                remove_answered_pager_contour = WolfHUD.settings.remove_answered_pager_contour or true,   --Removes the interaction contour on answered pagers
+                show_timers = WolfHUD.settings.show_timers or not WolfHUD and true,     --Drills, time locks, hacking etc.
+                show_equipment = WolfHUD.settings.show_equipment or not WolfHUD and true,  --Deployables (ammo, doc bags, body bags)
+                show_sentries = WolfHUD.settings.show_sentries or not WolfHUD and true,   --Deployable sentries
+                        hide_empty_sentries = WolfHUD.settings.hide_empty_sentries or not WolfHUD and true,     --Hide sentries with no ammo if player lacks the skill to refill them
+                show_ecms = WolfHUD.settings.show_ecms or not WolfHUD and true,       --Active ECMs
+                show_ecm_retrigger = WolfHUD.settings.show_ecm_retrigger or not WolfHUD and true,      --Countdown for players own ECM feedback retrigger delay
+                show_minions = WolfHUD.settings.show_minions or not WolfHUD and true,    --Converted enemies, type and health
+                show_pagers = WolfHUD.settings.show_pagers or not WolfHUD and true,     --Show currently active pagers
+                show_tape_loop = WolfHUD.settings.show_tape_loop or not WolfHUD and true,  --Show active tape loop duration
+                remove_answered_pager_contour = WolfHUD.settings.remove_answered_pager_contour or not WolfHUD and true,   --Removes the interaction contour on answered pagers
        
                 --Right side list
-                show_enemies = WolfHUD.settings.show_enemies or true,            --Currently spawned enemies
+                show_enemies = WolfHUD.settings.show_enemies or not WolfHUD and true,            --Currently spawned enemies
                         aggregate_enemies = WolfHUD.settings.aggregate_enemies or false,      --Don't split enemies on type; use a single entry for all
-                show_turrets = WolfHUD.settings.show_turrets or true,    --Show active SWAT turrets
-                show_civilians = WolfHUD.settings.show_civilians or true,  --Currently spawned, untied civs
-                show_hostages = WolfHUD.settings.show_hostages or true,   --Currently tied civilian and dominated cops
-                show_minion_count = WolfHUD.settings.show_minion_count or true,       --Current number of jokered enemies
-                show_pager_count = WolfHUD.settings.show_pager_count or true,        --Show number of triggered pagers (only counts pagers triggered while you were present)
-                show_loot = WolfHUD.settings.show_loot or true,       --Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
+                show_turrets = WolfHUD.settings.show_turrets or not WolfHUD and true,    --Show active SWAT turrets
+                show_civilians = WolfHUD.settings.show_civilians or not WolfHUD and true,  --Currently spawned, untied civs
+                show_hostages = WolfHUD.settings.show_hostages or not WolfHUD and true,   --Currently tied civilian and dominated cops
+                show_minion_count = WolfHUD.settings.show_minion_count or not WolfHUD and true,       --Current number of jokered enemies
+                show_pager_count = WolfHUD.settings.show_pager_count or not WolfHUD and true,        --Show number of triggered pagers (only counts pagers triggered while you were present)
+                show_loot = WolfHUD.settings.show_loot or not WolfHUD and true,       --Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
                         aggregate_loot = WolfHUD.settings.aggregate_loot or false, --Don't split loot on type; use a single entry for all
-                        separate_bagged_loot = WolfHUD.settings.separate_bagged_loot or true,     --Show bagged loot as a separate value
-                show_special_pickups = WolfHUD.settings.show_special_pickups or true,    --Show number of special equipment/items
+                        separate_bagged_loot = WolfHUD.settings.separate_bagged_loot or not WolfHUD and true,     --Show bagged loot as a separate value
+                show_special_pickups = WolfHUD.settings.show_special_pickups or not WolfHUD and true,    --Show number of special equipment/items
                
                 --Buff list
                 show_buffs = WolfHUD.settings.show_buffs or 1,       --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default

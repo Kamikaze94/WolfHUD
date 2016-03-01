@@ -50,6 +50,46 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 		init_actual(self, data_node, parameters)
 		self._show_slider_text = true
 	end
+elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then
+	local update_original = IngameWaitingForPlayersState.update
+	function IngameWaitingForPlayersState:update(...)
+		update_original(self, ...)
+		
+		if self._skip_promt_shown and WolfHUD.settings.skip_blackscreen then
+			self:_skip()
+		end
+	end
+elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" then
+	local update_original = StageEndScreenGui.update
+	local SKIP_STAT_SCREEN_DELAY = WolfHUD.settings.stat_screen_delay
+	function StageEndScreenGui:update(t, ...)
+		update_original(self, t, ...)
+		if not self._button_not_clickable and SKIP_STAT_SCREEN_DELAY >= 0 then
+			self._auto_continue_t = self._auto_continue_t or (t + SKIP_STAT_SCREEN_DELAY)
+			if t >= self._auto_continue_t then
+				managers.menu_component:post_event("menu_enter")
+				game_state_machine:current_state()._continue_cb()
+			end
+		end
+	end
+elseif string.lower(RequiredScript) == "lib/managers/menu/lootdropscreengui" then
+	local SKIP_LOOT_SCREEN_DELAY = WolfHUD.settings.loot_screen_delay
+	local update_original = LootDropScreenGui.update
+	function LootDropScreenGui:update(t, ...)
+		update_original(self, t, ...)
+
+		if not self._card_chosen then
+			self:_set_selected_and_sync(math.random(3))
+			self:confirm_pressed()
+		end
+		
+		if not self._button_not_clickable and SKIP_LOOT_SCREEN_DELAY >= 0 then
+			self._auto_continue_t = self._auto_continue_t or (t + SKIP_LOOT_SCREEN_DELAY)
+			if t >= self._auto_continue_t then
+				self:continue_to_lobby()
+			end
+		end
+	end
 elseif RequiredScript == "lib/managers/missionassetsmanager" then
 	function MissionAssetsManager:mission_has_preplanning()
 		return tweak_data.preplanning.locations[Global.game_settings and Global.game_settings.level_id] ~= nil

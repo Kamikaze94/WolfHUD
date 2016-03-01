@@ -228,5 +228,7 @@ elseif string.lower(RequiredScript) == "lib/units/equipment/sentry_gun/sentrygun
 		sync_setup_original(self, upgrade_lvl, peer_id, ...)
 		self._owner_id = self._owner_id or peer_id
 	end
-	
+
+elseif string.lower(RequiredScript) == "lib/managers/enemymanager" then
+	EnemyManager._MAX_NR_CORPSES = WolfHUD.settings.max_corpses or 100
 end

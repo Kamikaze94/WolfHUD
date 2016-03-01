@@ -67,32 +67,29 @@ if not _G.WolfHUD then
 		["lib/managers/hud/hudassaultcorner"] = "HUDList.lua",
 	}
 	
-	WolfHUD.kill_counter = WolfHUD.kill_counter or {												-- KillCounter
+	WolfHUD.kill_counter = WolfHUD.kill_counter or {							-- KillCounter
 		["lib/managers/hudmanagerpd2"] = "KillCounter.lua",
 		["lib/managers/hud/hudteammate"] = "KillCounter.lua",
 		["lib/units/enemies/cop/copdamage"] = "KillCounter.lua",
-		["lib/units/equipment/sentry_gun/sentrygunbase"] = "KillCounter.lua"
+		["lib/units/equipment/sentry_gun/sentrygunbase"] = "KillCounter.lua",
+		["lib/managers/enemymanager"] = "Scripts.lua",							-- Corpse limit
 	}
 	
 	WolfHUD.scripts = WolfHUD.scripts or {
-		["lib/managers/hud/hudstatsscreen"] = "Scripts.lua",				--Stats on TAB-Menu
-		["lib/managers/hud/hudsuspicion"] = "Scripts.lua",					--Numeric Suspicion
-		["lib/managers/hud/hudteammate"] = "Scripts.lua",					--Mags left
-		["lib/states/ingamewaitingforplayers"] = "Scripts.lua",				--Skip Blackscreen
-		["lib/managers/menu/stageendscreengui"] = "Scripts.lua",			--Skip EXP Screen
-		["lib/managers/menu/lootdropscreengui"] = "Scripts.lua",			--Skip Lootscreen
-		["lib/managers/group_ai_states/groupaistatebase"] = "Scripts.lua",	--Pacified Civilian
-		["lib/units/weapons/raycastweaponbase"] = "Scripts.lua",			--No Bullet-Bot-Collisions
-		["lib/tweak_data/timespeedeffecttweakdata"] = "Scripts.lua",		--No SlowMotion (if Host)
-		["lib/managers/enemymanager"] = "Scripts.lua",						-- Corpse limit
-		["lib/managers/hudmanager"] = "EnemyHealthbar.lua",					--Healthbar for enemies
+		["lib/managers/hud/hudstatsscreen"] = "Scripts.lua",						--Stats on TAB-Menu
+		["lib/managers/hud/hudsuspicion"] = "Scripts.lua",							--Numeric Suspicion
+		["lib/managers/hud/hudteammate"] = "Scripts.lua",							--Mags left
+		["lib/managers/group_ai_states/groupaistatebase"] = "Scripts.lua",			--Pacified Civilian
+		["lib/units/weapons/raycastweaponbase"] = "Scripts.lua",					--No Bullet-Bot-Collisions
+		["lib/tweak_data/timespeedeffecttweakdata"] = "Scripts.lua",				--No SlowMotion (if Host)
+		["lib/managers/hudmanager"] = "EnemyHealthbar.lua",							--Healthbar for enemies
 		["lib/units/beings/player/states/playerstandard"] = "EnemyHealthbar.lua",
-		["lib/managers/hudmanagerpd2"] = "DrivingHUD.lua",
+		["lib/managers/hudmanagerpd2"] = "DrivingHUD.lua",							--DrivingHUD
 		["lib/states/ingamedriving"] = "DrivingHUD.lua",
 		["lib/managers/hud/huddriving"] = "DrivingHUD.lua"
 	}
 	
-	WolfHUD.interaction = WolfHUD.interaction or {							--Press2Hold + Numeric Interaction Timer
+	WolfHUD.interaction = WolfHUD.interaction or {							--Press2Hold + Numeric Interaction Timer + Double Tap Stealth Nades
 		["lib/managers/hudmanagerpd2"] = "Press2Hold.lua",
 		["lib/managers/hud/hudinteraction"] = "Press2Hold.lua",
 		["lib/units/beings/player/states/playercivilian"] = "Press2Hold.lua",
@@ -105,7 +102,7 @@ if not _G.WolfHUD then
 		["lib/units/weapons/newraycastweaponbase"] = "WeaponLasers.lua",	--Remember Gadget State
 		["lib/units/beings/player/states/playerstandard"] = "WeaponLasers.lua",
 		["lib/units/weapons/akimboweaponbase"] = "WeaponLasers.lua",
-		["lib/units/weapons/weaponflashlight"] = "WeaponLasers.lua",
+		["lib/units/weapons/weaponflashlight"] = "WeaponLasers.lua",		--Flashlight Extender
 		["lib/managers/hudmanagerpd2"] = "WeaponLasers.lua",
 		["lib/managers/hud/hudteammate"] = "WeaponLasers.lua"
 	}
@@ -117,7 +114,9 @@ if not _G.WolfHUD then
 		["core/lib/managers/menu/items/coremenuitemslider"] = "MenuTweaks.lua",	--Show Slider values
 		["lib/managers/missionassetsmanager"] = "MenuTweaks.lua",			--Add 'Buy All'-Asset
 		["lib/managers/menumanagerdialogs"] = "MenuTweaks.lua",				--Autoconfirm some Dialogs
-		
+		["lib/states/ingamewaitingforplayers"] = "MenuTweaks.lua",			--Skip Blackscreen
+		["lib/managers/menu/stageendscreengui"] = "MenuTweaks.lua",			--Skip EXP Screen
+		["lib/managers/menu/lootdropscreengui"] = "MenuTweaks.lua",			--Skip Lootscreen
 	}
 	
 	
@@ -128,8 +127,8 @@ if not _G.WolfHUD then
 			use_customhud 					= true,
 			PLAYER_PANEL_SCALE 				= 0.85,		--Size of local Player HUD Panel
 			TEAMMATE_PANEL_SCALE 			= 0.75,		--Size of Teammates/AI's HUD Panels
-			LINE_HEIGHT						= 15,		--Chat font Size					#ADD_THIS
-			MAX_OUTPUT_LINES				= 8,		--Chat Output lines					#ADD_THIS
+			LINE_HEIGHT						= 15,		--Chat font Size
+			MAX_OUTPUT_LINES				= 8,		--Chat Output lines
 		  --KillCounter
 			use_killcounter 				= true,
 			SHOW_SPECIAL_KILLS 				= true,		--KillCounter shows special kills
@@ -173,7 +172,7 @@ if not _G.WolfHUD then
 				separate_bagged_loot 		= true,     --Show bagged loot as a separate value
 			show_special_pickups 			= true,    	--Show number of special equipment/items
 
-			show_buffs 						= true,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+			show_buffs 						= 1,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
 			
 			use_hudlist 					= true,
 			hud_box_color 					= 1,		--Left and Right List font color
@@ -571,6 +570,10 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuCallbackHandler.callback_timer_color = function(self, item)
 		WolfHUD.settings.GRADIENT_COLOR = item:value()
 		HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)]
+	end
+	
+	MenuCallbackHandler.callback_doubletap_nades_stealth = function(self, item)
+		WolfHUD.settings.SUPRESS_NADES_STEALTH = (item:value() == "on")
 	end
 	
 	MenuCallbackHandler.callback_laser_light = function(self, item)
