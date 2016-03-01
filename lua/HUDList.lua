@@ -5067,6 +5067,8 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
         ObjectInteractionManager.LOOT_BAG_INTERACTION_ID = {
                 painting_carry_drop = true,     --Painting
                 carry_drop = true,                                      --Generic bag
+				safe_carry_drop = true,
+				goat_carry_drop = true,
         }
        
         ObjectInteractionManager.IGNORE_EDITOR_ID = {

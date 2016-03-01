@@ -90,6 +90,27 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/lootdropscreengui" the
 			end
 		end
 	end
+elseif string.lower(RequiredScript) == "lib/managers/menu/renderers/menunodeskillswitchgui" then
+	local _create_menu_item=MenuNodeSkillSwitchGui._create_menu_item
+	function MenuNodeSkillSwitchGui:_create_menu_item(row_item)
+		_create_menu_item(self, row_item)
+		if row_item.type~="divider" and row_item.name~="back" then
+			local gd=Global.skilltree_manager.skill_switches[row_item.name]
+			row_item.status_gui:set_text( managers.localization:to_upper_text( ("menu_st_spec_%d"):format( managers.skilltree:digest_value(gd.specialization, false, 1) or 1 ) ) )
+			if row_item.skill_points_gui:text()==managers.localization:to_upper_text("menu_st_points_all_spent_skill_switch") then
+				local pts, pt, pp, st, sp=0, 1, 0, 2, 0
+				for i=1, #gd.trees do
+					pts=Application:digest_value(gd.trees[i].points_spent, false)
+					if pts>pp then
+						sp, st, pp, pt=pp, pt, pts, i
+					elseif pts>sp then
+						sp, st=pts, i
+					end
+				end
+				row_item.skill_points_gui:set_text(	managers.localization:to_upper_text( tweak_data.skilltree.trees[pt].name_id	) .." / "..	managers.localization:to_upper_text( tweak_data.skilltree.trees[st].name_id	) )
+			end
+		end
+	end
 elseif RequiredScript == "lib/managers/missionassetsmanager" then
 	function MissionAssetsManager:mission_has_preplanning()
 		return tweak_data.preplanning.locations[Global.game_settings and Global.game_settings.level_id] ~= nil

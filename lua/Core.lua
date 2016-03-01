@@ -117,6 +117,7 @@ if not _G.WolfHUD then
 		["lib/states/ingamewaitingforplayers"] = "MenuTweaks.lua",			--Skip Blackscreen
 		["lib/managers/menu/stageendscreengui"] = "MenuTweaks.lua",			--Skip EXP Screen
 		["lib/managers/menu/lootdropscreengui"] = "MenuTweaks.lua",			--Skip Lootscreen
+		["lib/managers/menu/renderers/menunodeskillswitchgui"] = "MenuTweaks.lua"
 	}
 	
 	
