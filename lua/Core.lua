@@ -242,13 +242,16 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 					WolfHUD:Reset()
 					for __, menu_id in ipairs(WolfHUD.menu_ids) do
 						local menu = MenuHelper:GetMenu(menu_id)
-						for __, item in ipairs(menu._items) do
-							local item_id = item:parameters().name
-							if WolfHUD.settings[item_id] and item.set_value then
+						for __, menu_item in ipairs(menu._items) do
+							local item_id = menu_item:parameters().name
+							if WolfHUD.settings[item_id] ~= nil and menu_item.set_value then
 								local value = WolfHUD.settings[item_id]
-								item:set_value(value == true and "on" or value == false and "off" or tonumber(value))
-								for __, clbk in pairs( item:parameters().callback ) do
-									clbk(item)
+								if menu_item._type == "toggle" then
+									value = (value and "on" or "off")
+								end
+								menu_item:set_value(value)
+								for __, clbk in pairs( menu_item:parameters().callback ) do
+									clbk(menu_item)
 								end
 							end
 						end
@@ -320,16 +323,13 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		WolfHUD.settings.show_healthbar_pointer = (item:value() == "on")
 	end
 	
-	
 	MenuCallbackHandler.callback_show_drivinghud = function(self, item)
 		WolfHUD.settings.use_drivinghud = (item:value() == "on")
 	end
 	
-	
 	MenuCallbackHandler.callback_show_vehicleimage = function(self, item)
 		WolfHUD.settings.show_vehicle = (item:value() == "on")
 	end
-	
 	
 	MenuCallbackHandler.callback_speed_in_mph = function(self, item)
 		WolfHUD.settings.speed_in_mph = (item:value() == "on")
@@ -348,7 +348,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	end
 	
 	MenuCallbackHandler.callback_replace_weapon_names = function(self, item)
-		WolfHUD.settings.loot_screen_delay = (item:value() == "on")
+		WolfHUD.settings.replace_weapon_names = (item:value() == "on")
 	end
 	
 	MenuCallbackHandler.callback_use_hudlist = function(self, item)
