@@ -1,3 +1,4 @@
+if WolfHUD and not WolfHUD.settings.use_customhud then return end
 if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 

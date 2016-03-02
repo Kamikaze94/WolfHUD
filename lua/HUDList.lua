@@ -1,3 +1,4 @@
+if WolfHUD and not WolfHUD.settings.use_hudlist then return end
 if RequiredScript == "lib/managers/hudmanagerpd2" then
  
         local _setup_player_info_hud_pd2_original = HUDManager._setup_player_info_hud_pd2

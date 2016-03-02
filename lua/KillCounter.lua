@@ -1,3 +1,4 @@
+if WolfHUD and not WolfHUD.settings.use_killcounter then return end
 if string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 
 	HUDTeammate.SHOW_SPECIAL_KILLS = WolfHUD.settings.SHOW_SPECIAL_KILLS or true
