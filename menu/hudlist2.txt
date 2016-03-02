@@ -3,7 +3,7 @@
 	"parent_menu_id" : "wolfhud_hudlist_options_menu",
 	"title" : "wolfhud_options_name_2",
 	"description" : "wolfhud_options_2_help",
-	"back_callback" : "WolfHUD_Save",
+	"back_callback" : "",
 	"items" : [
 		{
 			"type" : "toggle",

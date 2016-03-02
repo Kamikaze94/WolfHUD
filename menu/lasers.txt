@@ -3,7 +3,7 @@
 	"parent_menu_id" : "wolfhud_options_menu",
 	"title" : "wolfhud_lasers_options_name",
 	"description" : "wolfhud_lasers_options_help",
-	"back_callback" : "WolfHUD_Save",
+	"back_callback" : "",
 	"priority" : 10,
 	"items" : [
 		{
