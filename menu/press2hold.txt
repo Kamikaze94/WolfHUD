@@ -45,6 +45,14 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "wolfhud_press2hold_show_lockindicator",
+			"title" : "wolfhud_press2hold_show_lockindicator_title",
+			"description" : "wolfhud_press2hold_show_lockindicator_desc",
+			"callback" : "callback_show_lockindicator",
+			"value" : "SHOW_LOCK_INDICATOR",
+		},
+		{
+			"type" : "toggle",
 			"id" : "wolfhud_press2hold_equipment_cancel",
 			"title" : "wolfhud_press2hold_equipment_cancel_title",
 			"description" : "wolfhud_press2hold_equipment_cancel_desc",

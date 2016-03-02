@@ -114,14 +114,24 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/raycastweaponbase" the
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/units/weapons/weaponflashlight" then
-	local angle = WolfHUD.flashlight_angle or 100 --Angle/width of beam, 0-160 (default 60)
-	local range = (WolfHUD.flashlight_range * 100) or 2000 --Range of beam, 0+ (default 1000 -> 10m)
+	WeaponFlashLight.ANGLE = WolfHUD.flashlight_angle or 100 --Angle/width of beam, 0-160 (default 60)
+	WeaponFlashLight.RANGE = (WolfHUD.flashlight_range * 100) or 2000 --Range of beam, 0+ (default 1000 -> 10m)
 
-	local flash_cbk = WeaponFlashLight.init
+	local init_flash_cbk = WeaponFlashLight.init
+	local update_flash_cbk
 	function WeaponFlashLight:init(unit)
-		flash_cbk(self, unit)
-		self._light:set_spot_angle_end(math.clamp(angle, 0, 160))
-		self._light:set_far_range(range)
+		init_flash_cbk(self, unit)
+		self._light:set_spot_angle_end(math.clamp(WeaponFlashLight.ANGLE, 0, 160))
+		self._light:set_far_range(WeaponFlashLight.RANGE)
+	end
+	
+	function WeaponFlashLight:update(unit, t, dt)
+		if WeaponFlashLight._changed then
+			self._light:set_spot_angle_end(math.clamp(WeaponFlashLight.ANGLE, 0, 160))
+			self._light:set_far_range(WeaponFlashLight.RANGE)
+			WeaponFlashLight._changed = nil
+		end
+		update_flash_cbk(self, unit, t, dt)
 	end
 
 elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then 

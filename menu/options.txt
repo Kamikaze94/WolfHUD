@@ -63,6 +63,14 @@
 			"type" : "divider",
 			"size" : 16,
 			"priority" : 2,
+		},
+		{
+			"type" : "button",
+			"id" : "wolfhud_reset_options",
+			"title" : "wolfhud_reset_options_title",
+			"description" : "wolfhud_reset_options_desc",
+			"callback" : "WolfHUD_Reset",
+			"priority" : 1,
 		}
 	]
 }

@@ -86,9 +86,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 	
-	HUDInteraction.SHOW_LOCK_INDICATOR = true
-	HUDInteraction.SHOW_TIME_REMAINING = true
-	HUDInteraction.GRADIENT_COLOR = Color.green
+	HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD.settings.SHOW_LOCK_INDICATOR or not WolfHUD and true
+	HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING or not WolfHUD and true
+	HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] or Color.green
 
 	local show_interaction_bar_original = HUDInteraction.show_interaction_bar
 	local hide_interaction_bar_original = HUDInteraction.hide_interaction_bar

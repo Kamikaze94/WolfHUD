@@ -186,6 +186,7 @@ if not _G.WolfHUD then
 			LOCK_MODE 						= 2,		--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
 			MIN_TIMER_DURATION 				= 5, 		--Min interaction duration (in seconds) for the toggle behavior to activate
 			EQUIPMENT_PRESS_INTERRUPT 		= true, 	--Use the equipment key ('G') to toggle off active interactions
+			SHOW_LOCK_INDICATOR				= true,
 			SHOW_TIME_REMAINING 			= true,		--Show remaining Time in the Interaction-Circle
 			GRADIENT_COLOR 					= 6,	 	--Color, which the timer reaches on completition
 			SUPRESS_NADES_STEALTH			= true,
@@ -303,11 +304,11 @@ end)
 Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(menu_manager)
 	
 	-- Define Callback methods here
-	MenuCallbackHandler.WolfHUD_Save = function(this, item)
+	MenuCallbackHandler.WolfHUD_Save = function(self, item)
 		WolfHUD:Save()
 	end
 	
-	MenuCallbackHandler.WolfHUD_Reset = function(this, item)
+	MenuCallbackHandler.WolfHUD_Reset = function(self, item)
 		WolfHUD:Reset()
 		--TODO: Reset value of all the menu items....
 	end
@@ -417,7 +418,6 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_hudlist_boxbgcolor = function(self, item)
 		WolfHUD.settings.hud_box_bg_color = item:value()
-		if HUDManager then HUDManager:change_list_setting("EquipmentBgColor", WolfHUD.color_table[(WolfHUD.settings.hud_box_bg_color)]) end
 	end
 	
 	MenuCallbackHandler.callback_hudlist_civcolor = function(self, item)
@@ -512,40 +512,34 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		if HUDManager then HUDManager:change_list_setting("show_buffs", WolfHUD.settings.show_buffs) end
 	end	
 
-	MenuCallbackHandler.callback_show_special_kills = function(self, item)
-		WolfHUD.settings.SHOW_SPECIAL_KILLS = (item:value() == "on")
-	end	
-
-	MenuCallbackHandler.callback_show_headshot_kills = function(self, item)
-		WolfHUD.settings.SHOW_HEADSHOT_KILLS = (item:value() == "on")
-	end	
-
-	MenuCallbackHandler.callback_show_ai_kills = function(self, item)
-		WolfHUD.settings.SHOW_AI_KILLS = (item:value() == "on")
-	end	
-
 	MenuCallbackHandler.callback_show_sentries = function(self, item)
 		WolfHUD.settings.show_sentries = (item:value() == "on")
+		if HUDManager then HUDManager:change_list_setting("show_sentries", WolfHUD.settings.show_sentries) end
 	end
 	
 	MenuCallbackHandler.callback_hide_empty_sentries = function(self, item)
 		WolfHUD.settings.hide_empty_sentries = (item:value() == "on")
+		if HUDManager then HUDManager:change_list_setting("hide_empty_sentries", WolfHUD.settings.hide_empty_sentries) end
 	end
 	
 	MenuCallbackHandler.callback_show_turrets = function(self, item)
 		WolfHUD.settings.show_turrets = (item:value() == "on")
+		if HUDManager then HUDManager:change_list_setting("show_turrets", WolfHUD.settings.show_turrets) end
 	end
 	
 	MenuCallbackHandler.callback_show_minion_count = function(self, item)
 		WolfHUD.settings.show_minion_count = (item:value() == "on")
+		if HUDManager then HUDManager:change_list_setting("show_minion_count", WolfHUD.settings.show_minion_count) end
 	end
 	
 	MenuCallbackHandler.callback_show_ecm_retrigger = function(self, item)
 		WolfHUD.settings.show_ecm_retrigger = (item:value() == "on")
+		if HUDManager then HUDManager:change_list_setting("show_ecm_retrigger", WolfHUD.settings.show_ecm_retrigger) end
 	end
 	
 	MenuCallbackHandler.callback_show_tape_loop = function(self, item)
 		WolfHUD.settings.show_tape_loop = (item:value() == "on")
+		if HUDManager then HUDManager:change_list_setting("show_tape_loop", WolfHUD.settings.show_tape_loop) end
 	end
 	
 	MenuCallbackHandler.callback_lock_mode = function(self, item)
@@ -556,6 +550,11 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuCallbackHandler.callback_min_timer_duration = function(self, item)
 		WolfHUD.settings.MIN_TIMER_DURATION = item:value()
 		PlayerStandard.MIN_TIMER_DURATION = WolfHUD.settings.MIN_TIMER_DURATION
+	end
+	
+	MenuCallbackHandler.callback_show_lockindicator = function(self, item)
+		WolfHUD.settings.SHOW_LOCK_INDICATOR = (item:value() == "on")
+		HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD.settings.SHOW_LOCK_INDICATOR
 	end
 	
 	MenuCallbackHandler.callback_equipment_cancel = function(self, item)
@@ -639,70 +638,16 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_flashlight_angle = function(self, item)
 		WolfHUD.settings.flashlight_angle = item:value()
+		WeaponFlashLight.ANGLE = WolfHUD.settings.flashlight_angle
+		WeaponFlashLight._changed = true
 	end
 	
 	MenuCallbackHandler.callback_flashlight_range = function(self, item)
 		WolfHUD.settings.flashlight_range = item:value()
+		WeaponFlashLight.RANGE = (WolfHUD.settings.flashlight_range * 100)
+		WeaponFlashLight._changed = true
 	end
 	
-	MenuCallbackHandler.callback_recommended_bltmods = function(self, item)
-		QuickMenu:new( "BLT Mods", "This a List of BLT Mods I think are very useful.\nTo try them out, just click on the one you want and restart your game.\nTo uninstall, go to your {Payday 2 Directory}/mods and remove the folder, which contains the mod you want to remove.", { text = "OK", is_cancel_button = true }, true )
-	end
-	
-	MenuCallbackHandler.callback_recommended_bagcontour = function(self, item)
-		WolfHUD:installMod("BC", "Bag Contour")
-	end
-	
-	MenuCallbackHandler.callback_recommended_builddb = function(self, item)
-		WolfHUD:installMod("BDB", "Build DB")
-	end
-	
-	MenuCallbackHandler.callback_recommended_enhanced_hitmarkers = function(self, item)
-		WolfHUD:installMod("ENH_HMRK", "Enhanced Hitmarkers")
-	end
-	
-	MenuCallbackHandler.callback_recommended_inventorychatandplayerstates = function(self, item)
-		WolfHUD:installMod("ICAPS", "Inventory Chat")
-	end
-	
-	MenuCallbackHandler.callback_recommended_loadingscreeninfo = function(self, item)
-		WolfHUD:installMod("loadingscreeninfo", "Loading Screen Info")
-		LuaModUpdates.ForceDownloadAndInstallMod("loadingscreeninfo")
-	end
-	
-	MenuCallbackHandler.callback_recommended_lobbyplayerinfo = function(self, item)
-		WolfHUD:installMod("LPI", "Lobby Player Info")
-	end
-	
-	MenuCallbackHandler.callback_recommended_pd2stats = function(self, item)
-		WolfHUD:installMod("pd2statsp", "Payday 2 Stats Plugin")
-	end
-	
-	MenuCallbackHandler.callback_recommended_pocohud3 = function(self, item)
-		WolfHUD:installMod("pocohud3", "PocoHUD 3")
-	end
-	
-	MenuCallbackHandler.callback_recommended_sidejobsinlobby = function(self, item)
-		WolfHUD:installMod("SDJBL", "Sidejobs in Lobby")
-	end
-	
-	MenuCallbackHandler.callback_recommended_splsets = function(self, item)
-		WolfHUD:installMod("SPLS", "Skill, Perk, Loadout Sets")
-	end
-	
-	MenuCallbackHandler.callback_recommended_overridemods = function(self, item)
-		QuickMenu:new( "'mod_override' Mods", "This is a List of Mods, using the mod_override folder.\nTherefor they are mostly texture and sound mods, which make the game look nicer in my opinion.\nIf you want to try some out, click on them, and a site to download will be opened in your Steam Overlay.", { text = "OK", is_cancel_button = true }, true )
-	end
-	
-	MenuCallbackHandler.callback_recommended_fednet_inventory = function(self, item)
-		Steam:overlay_activate("url", "http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13916")
-	end
-	
-	MenuCallbackHandler.callback_recommended_bodhi_soundrepair = function(self, item)
-		Steam:overlay_activate("url", "http://bodhimods.com/#downloads")
-	end
-		-- TODO: Add Crime.net/Stealthmeter, PDTH Blood Decals, SentryLaser Upgrade, Smoking_Barrels to recommended mod_overrides.
-		
 	WolfHUD:Load()
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.txt", WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/lasers.txt", WolfHUD, WolfHUD.settings)
@@ -710,6 +655,5 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudlist.txt", WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudlist2.txt", WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/customhud.txt", WolfHUD, WolfHUD.settings)
-	--MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/recommended.txt", WolfHUD, WolfHUD.settings)
 end)
 
