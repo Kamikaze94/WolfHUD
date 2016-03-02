@@ -3,7 +3,7 @@ if not _G.WolfHUD then
 	WolfHUD.loaded_options = {}
 	WolfHUD.mod_path = ModPath
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
-	WolfHUD.menu_name = "wolfhud_options_menu"
+	WolfHUD.menu_ids = { "wolfhud_options_menu", "wolfhud_customhud_options_menu", "wolfhud_hudlist_options_menu", "wolfhud_hudlist_options_menu_2", "wolfhud_press2hold_options_menu", "wolfhud_lasers_options_menu" }
 	
 	if not WolfHUD.color_table then
 		WolfHUD.color_table = {}
@@ -135,6 +135,7 @@ if not _G.WolfHUD then
 			SHOW_SPECIAL_KILLS 				= true,		--KillCounter shows special kills
 			SHOW_HEADSHOT_KILLS 			= true,		--KillCounter shows headshot kills
 			SHOW_AI_KILLS 					= true,		--Show KillCounter for Bots
+			max_corpses 					= 100,		--Maximum number of laying around corpses
 		  --Enemy Healthbar
 			show_enemy_healthbar 			= true,		--Show healthbars
 			show_civilian_healthbar 		= false,	--Show Healthbars for Civilians and TeamAI
@@ -148,7 +149,6 @@ if not _G.WolfHUD then
 			skip_blackscreen 				= true,		--Skip the blackscreen on mission start
 			stat_screen_delay 				= 5,		--Skip the experience screen after X seconds
 			loot_screen_delay 				= 3,		--Skip the loot screen after X seconds
-			max_corpses 					= 100,		--Maximum number of laying around corpses
 		  --HUDList
 			show_timers 					= true,     --Drills, time locks, hacking etc.
 			show_equipment 					= true,  	--Deployables (ammo, doc bags, body bags)
@@ -231,23 +231,6 @@ if not _G.WolfHUD then
 		end
 	end
 	
-	function WolfHUD:installMod(id, name)
-		local menu_options = {
-			[1] = {
-				text = "Yes",
-				callback = function()
-					LuaModUpdates:OpenUpdateManagerNode()
-					LuaModUpdates.ForceDownloadAndInstallMod(id)
-				end,
-			},
-			[2] = {
-				text = "No",
-				is_cancel_button = true,
-			}
-		}
-		QuickMenu:new( "Install: " .. name, "Are you sure, you want to install " .. name  .. "?", menu_options, true )
-	end
-	
 	WolfHUD:Reset()
 	WolfHUD:Load()
 end
@@ -306,10 +289,35 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	end
 	
 	MenuCallbackHandler.WolfHUD_Reset = function(self, item)
-		WolfHUD.bckp_settings = WolfHUD.settings
-		WolfHUD:Reset()
-		--Reset all (changed) menu items
-		--MenuHelper:ResetItemsToDefaultValue( item, k , v ) 
+		local menu_title = managers.localization:text("wolfhud_reset_options_title")
+		local menu_message = managers.localization:text("wolfhud_reset_options_confirm")
+		local menu_options = {
+			[1] = {
+				text = managers.localization:text("dialog_yes"),
+				callback = function(self, item)
+					WolfHUD:Reset()
+					for __, menu_id in ipairs(WolfHUD.menu_ids) do
+						local menu = MenuHelper:GetMenu(menu_id)
+						for __, item in ipairs(menu._items) do
+							local item_id = item:parameters().name
+							if WolfHUD.settings[item_id] and item.set_value then
+								local value = WolfHUD.settings[item_id]
+								item:set_value(value == true and "on" or value == false and "off" or tonumber(value))
+								for __, clbk in pairs( item:parameters().callback ) do
+									clbk(item)
+								end
+							end
+						end
+					end
+					managers.viewport:resolution_changed()
+				end,
+			},
+			[2] = {
+				text = managers.localization:text("dialog_no"),
+				is_cancel_button = true,
+			},
+		}
+	local menu = QuickMenu:new( menu_title, menu_message, menu_options, true )
 	end
 	
 	MenuCallbackHandler.callback_use_customhud = function(self, item)
@@ -553,22 +561,22 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_show_lockindicator = function(self, item)
 		WolfHUD.settings.SHOW_LOCK_INDICATOR = (item:value() == "on")
-		HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD.settings.SHOW_LOCK_INDICATOR
+		if HUDInteraction then HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD.settings.SHOW_LOCK_INDICATOR end
 	end
 	
 	MenuCallbackHandler.callback_equipment_cancel = function(self, item)
 		WolfHUD.settings.EQUIPMENT_PRESS_INTERRUPT = (item:value() == "on")
-		PlayerStandard.EQUIPMENT_PRESS_INTERRUPT = WolfHUD.settings.EQUIPMENT_PRESS_INTERRUPT
+		if PlayerStandard then PlayerStandard.EQUIPMENT_PRESS_INTERRUPT = WolfHUD.settings.EQUIPMENT_PRESS_INTERRUPT end
 	end
 	
 	MenuCallbackHandler.callback_show_timer = function(self, item)
 		WolfHUD.settings.SHOW_TIME_REMAINING = (item:value() == "on")
-		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING
+		if HUDInteraction then HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING end
 	end
 	
 	MenuCallbackHandler.callback_timer_color = function(self, item)
 		WolfHUD.settings.GRADIENT_COLOR = item:value()
-		HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)]
+		if HUDInteraction then HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] end
 	end
 	
 	MenuCallbackHandler.callback_doubletap_nades_stealth = function(self, item)
@@ -585,54 +593,56 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_lasercolor_player = function(self, item)
 		WolfHUD.settings.laser_player = item:value()
-		WeaponLasers.UPDATE.player = true
+		if WeaponLasers then WeaponLasers.UPDATE.player = true end
 	end
 	
 	MenuCallbackHandler.callback_laseralpha_player = function(self, item)
 		WolfHUD.settings.laser_player_alpha = item:value()
-		WeaponLasers.UPDATE.player = true
+		if WeaponLasers then WeaponLasers.UPDATE.player = true end
 	end
 	
 	MenuCallbackHandler.callback_lasercolor_teammates = function(self, item)
 		WolfHUD.settings.laser_teammates = item:value()
-		WeaponLasers.UPDATE.default = true
+		if WeaponLasers then WeaponLasers.UPDATE.default = true end
 	end
 	
 	MenuCallbackHandler.callback_laseralpha_teammates = function(self, item)
 		WolfHUD.settings.laser_teammates_alpha = item:value()
-		WeaponLasers.UPDATE.default = true
+		if WeaponLasers then WeaponLasers.UPDATE.default = true end
 	end
 	
 	MenuCallbackHandler.callback_lasercolor_sniper = function(self, item)
 		WolfHUD.settings.laser_sniper = item:value()
-		WeaponLasers.UPDATE.cop_sniper = true
+		if WeaponLasers then WeaponLasers.UPDATE.cop_sniper = true end
 	end
 	
 	MenuCallbackHandler.callback_laseralpha_sniper = function(self, item)
 		WolfHUD.settings.laser_sniper_alpha = item:value()
-		WeaponLasers.UPDATE.cop_sniper = true
+		if WeaponLasers then WeaponLasers.UPDATE.cop_sniper = true end
 	end
 	
 	MenuCallbackHandler.callback_lasercolor_turret_active = function(self, item)
 		WolfHUD.settings.laser_turret_active = item:value()
-		WeaponLasers.UPDATE.turret_module_active = true
+		if WeaponLasers then WeaponLasers.UPDATE.turret_module_active = true end
 	end
 	
 	MenuCallbackHandler.callback_lasercolor_turret_reloading = function(self, item)
 		WolfHUD.settings.laser_turret_reloading = item:value()
-		WeaponLasers.UPDATE.turret_module_rearming = true
+		if WeaponLasers then WeaponLasers.UPDATE.turret_module_rearming = true end
 	end
 	
 	MenuCallbackHandler.callback_lasercolor_turret_jammed = function(self, item)
 		WolfHUD.settings.laser_turret_jammed = item:value()
-		WeaponLasers.UPDATE.turret_module_mad = true
+		if WeaponLasers then WeaponLasers.UPDATE.turret_module_mad = true end
 	end
 	
 	MenuCallbackHandler.callback_laseralpha_turret = function(self, item)
 		WolfHUD.settings.laser_turret_alpha = item:value()
-		WeaponLasers.UPDATE.turret_module_active = true
-		WeaponLasers.UPDATE.turret_module_rearming = true
-		WeaponLasers.UPDATE.turret_module_mad = true
+		if WeaponLasers then 
+			WeaponLasers.UPDATE.turret_module_active = true
+			WeaponLasers.UPDATE.turret_module_rearming = true
+			WeaponLasers.UPDATE.turret_module_mad = true
+		end
 	end
 	
 	MenuCallbackHandler.callback_flashlight_angle = function(self, item)
