@@ -8,7 +8,7 @@
 	"items" : [
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_use_press2hold",
+			"id" : "use_press2hold",
 			"title" : "wolfhud_use_press2hold_title",
 			"description" : "wolfhud_use_press2hold_desc",
 			"callback" : "callback_use_press2hold",
@@ -20,7 +20,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_press2hold_lock_mode",
+			"id" : "LOCK_MODE",
 			"title" : "wolfhud_press2hold_lock_mode_title",
 			"description" : "wolfhud_press2hold_lock_mode_desc",
 			"callback" : "callback_lock_mode",
@@ -33,7 +33,7 @@
 		},
 		{
 			"type" : "slider",
-			"id" : "wolfhud_press2hold_min_timer_duration",
+			"id" : "MIN_TIMER_DURATION",
 			"title" : "wolfhud_press2hold_min_timer_duration_title",
 			"description" : "wolfhud_press2hold_min_timer_duration_desc",
 			"callback" : "callback_min_timer_duration",
@@ -45,7 +45,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_press2hold_show_lockindicator",
+			"id" : "SHOW_LOCK_INDICATOR",
 			"title" : "wolfhud_press2hold_show_lockindicator_title",
 			"description" : "wolfhud_press2hold_show_lockindicator_desc",
 			"callback" : "callback_show_lockindicator",
@@ -53,7 +53,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_press2hold_equipment_cancel",
+			"id" : "EQUIPMENT_PRESS_INTERRUPT",
 			"title" : "wolfhud_press2hold_equipment_cancel_title",
 			"description" : "wolfhud_press2hold_equipment_cancel_desc",
 			"callback" : "callback_equipment_cancel",
@@ -61,7 +61,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_press2hold_show_timer",
+			"id" : "SHOW_TIME_REMAINING",
 			"title" : "wolfhud_press2hold_show_timer_title",
 			"description" : "wolfhud_press2hold_show_timer_desc",
 			"callback" : "callback_show_timer",
@@ -69,7 +69,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_press2hold_timer_color",
+			"id" : "GRADIENT_COLOR",
 			"title" : "wolfhud_press2hold_timer_color_title",
 			"description" : "wolfhud_press2hold_timer_color_desc",
 			"callback" : "callback_timer_color",
@@ -99,7 +99,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_doubletap_nades_stealth",
+			"id" : "SUPRESS_NADES_STEALTH",
 			"title" : "wolfhud_doubletap_nades_stealth_title",
 			"description" : "wolfhud_doubletap_nades_stealth_desc",
 			"callback" : "callback_doubletap_nades_stealth",

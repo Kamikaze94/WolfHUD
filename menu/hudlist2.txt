@@ -7,7 +7,7 @@
 	"items" : [
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_timers",
+			"id" : "show_timers",
 			"title" : "wolfhud_hudlist_show_timers_title",
 			"description" : "wolfhud_hudlist_show_timers_desc",
 			"callback" : "callback_show_timers",
@@ -15,7 +15,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_equipment",
+			"id" : "show_equipment",
 			"title" : "wolfhud_hudlist_show_equipment_title",
 			"description" : "wolfhud_hudlist_show_equipment_desc",
 			"callback" : "callback_show_equipment",
@@ -23,7 +23,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_sentries",
+			"id" : "show_sentries",
 			"title" : "wolfhud_hudlist_sentries_title",
 			"description" : "wolfhud_hudlist_sentries_desc",
 			"callback" : "callback_show_sentries",
@@ -31,7 +31,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_hide_empty_sentries",
+			"id" : "hide_empty_sentries",
 			"title" : "wolfhud_hudlist_hide_empty_sentries_title",
 			"description" : "wolfhud_hudlist_hide_empty_sentries_desc",
 			"callback" : "callback_hide_empty_sentries",
@@ -39,7 +39,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_ecms",
+			"id" : "show_ecms",
 			"title" : "wolfhud_hudlist_show_ecms_title",
 			"description" : "wolfhud_hudlist_show_ecms_desc",
 			"callback" : "callback_show_ecms",
@@ -47,7 +47,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_ecm_retrigger",
+			"id" : "show_ecm_retrigger",
 			"title" : "wolfhud_hudlist_show_ecm_retrigger_title",
 			"description" : "wolfhud_hudlist_show_ecm_retrigger_desc",
 			"callback" : "callback_show_ecm_retrigger",
@@ -55,7 +55,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_minions",
+			"id" : "show_minions",
 			"title" : "wolfhud_hudlist_show_minions_title",
 			"description" : "wolfhud_hudlist_show_minions_desc",
 			"callback" : "callback_show_minions",
@@ -63,7 +63,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_pagers",
+			"id" : "show_pagers",
 			"title" : "wolfhud_hudlist_show_pagers_title",
 			"description" : "wolfhud_hudlist_show_pagers_desc",
 			"callback" : "callback_show_pagers",
@@ -71,7 +71,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_tape_loop",
+			"id" : "show_tape_loop",
 			"title" : "wolfhud_hudlist_show_tape_loop_title",
 			"description" : "wolfhud_hudlist_show_tape_loop_desc",
 			"callback" : "callback_show_tape_loop",
@@ -79,7 +79,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_remove_answered_pagers",
+			"id" : "remove_answered_pager_contour",
 			"title" : "wolfhud_hudlist_remove_answered_pagers_title",
 			"description" : "wolfhud_hudlist_remove_answered_pagers_desc",
 			"callback" : "callback_remove_answered_pager_contour",
@@ -91,7 +91,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_enemies",
+			"id" : "show_enemies",
 			"title" : "wolfhud_hudlist_show_enemies_title",
 			"description" : "wolfhud_hudlist_show_enemies_desc",
 			"callback" : "callback_show_enemies",
@@ -99,7 +99,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_aggregate_enemies",
+			"id" : "aggregate_enemies",
 			"title" : "wolfhud_hudlist_aggregate_enemies_title",
 			"description" : "wolfhud_hudlist_aggregate_enemies_desc",
 			"callback" : "callback_aggregate_enemies",
@@ -107,7 +107,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_turrets",
+			"id" : "show_turrets",
 			"title" : "wolfhud_hudlist_show_turrets_title",
 			"description" : "wolfhud_hudlist_show_turrets_desc",
 			"callback" : "callback_show_turrets",
@@ -115,7 +115,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_civilians",
+			"id" : "show_civilians",
 			"title" : "wolfhud_hudlist_show_civilians_title",
 			"description" : "wolfhud_hudlist_show_civilians_desc",
 			"callback" : "callback_show_civilians",
@@ -123,7 +123,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_hostages",
+			"id" : "show_hostages",
 			"title" : "wolfhud_hudlist_show_hostages_title",
 			"description" : "wolfhud_hudlist_show_hostages_desc",
 			"callback" : "callback_show_hostages",
@@ -131,7 +131,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_minion_count",
+			"id" : "show_minion_count",
 			"title" : "wolfhud_hudlist_show_minion_count_title",
 			"description" : "wolfhud_hudlist_show_minion_count_desc",
 			"callback" : "callback_show_minion_count",
@@ -139,7 +139,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_pager_count",
+			"id" : "show_pager_count",
 			"title" : "wolfhud_hudlist_show_pager_count_title",
 			"description" : "wolfhud_hudlist_show_pager_count_desc",
 			"callback" : "callback_show_pager_count",
@@ -147,7 +147,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_loot",
+			"id" : "show_loot",
 			"title" : "wolfhud_hudlist_show_loot_title",
 			"description" : "wolfhud_hudlist_show_loot_desc",
 			"callback" : "callback_show_loot",
@@ -155,7 +155,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_aggregate_loot",
+			"id" : "aggregate_loot",
 			"title" : "wolfhud_hudlist_aggregate_loot_title",
 			"description" : "wolfhud_hudlist_aggregate_loot_desc",
 			"callback" : "callback_aggregate_loot",
@@ -163,7 +163,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_separate_bagged_loot",
+			"id" : "separate_bagged_loot",
 			"title" : "wolfhud_hudlist_separate_bagged_loot_title",
 			"description" : "wolfhud_hudlist_separate_bagged_loot_desc",
 			"callback" : "callback_separate_bagged_loot",
@@ -171,7 +171,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_hudlist_show_special_pickups",
+			"id" : "show_special_pickups",
 			"title" : "wolfhud_hudlist_show_special_pickups_title",
 			"description" : "wolfhud_hudlist_show_special_pickups_desc",
 			"callback" : "callback_show_special_pickups",
@@ -183,7 +183,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_hudlist_show_buffs",
+			"id" : "show_buffs",
 			"title" : "wolfhud_hudlist_show_buffs_title",
 			"description" : "wolfhud_hudlist_show_buffs_desc",
 			"callback" : "callback_show_buffs",

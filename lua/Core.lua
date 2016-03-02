@@ -3,7 +3,7 @@ if not _G.WolfHUD then
 	WolfHUD.loaded_options = {}
 	WolfHUD.mod_path = ModPath
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
-	WolfHUD.menu_name = "WolfHUD_options"
+	WolfHUD.menu_name = "wolfhud_options_menu"
 	
 	if not WolfHUD.color_table then
 		WolfHUD.color_table = {}
@@ -221,8 +221,6 @@ if not _G.WolfHUD then
 			end
 			file:close()
 		end
-		
-		WolfHUD.bckp_settings = WolfHUD.settings
 	end
 
 	function WolfHUD:Save()
@@ -231,7 +229,6 @@ if not _G.WolfHUD then
 			file:write(json.encode(self.settings))
 			file:close()
 		end
-		WolfHUD.bckp_settings = WolfHUD.settings
 	end
 	
 	function WolfHUD:installMod(id, name)
@@ -309,8 +306,10 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	end
 	
 	MenuCallbackHandler.WolfHUD_Reset = function(self, item)
+		WolfHUD.bckp_settings = WolfHUD.settings
 		WolfHUD:Reset()
-		--TODO: Reset value of all the menu items....
+		--Reset all (changed) menu items
+		--MenuHelper:ResetItemsToDefaultValue( item, k , v ) 
 	end
 	
 	MenuCallbackHandler.callback_use_customhud = function(self, item)

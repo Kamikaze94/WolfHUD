@@ -8,7 +8,7 @@
 	"items" : [
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_use_weaponlasers",
+			"id" : "use_weaponlasers",
 			"title" : "wolfhud_use_weaponlasers_title",
 			"description" : "wolfhud_use_weaponlasers_desc",
 			"callback" : "callback_use_weaponlasers",
@@ -16,7 +16,7 @@
 		},
 		{
 			"type" : "slider",
-			"id" : "wolfhud_laser_light",
+			"id" : "laser_light",
 			"title" : "wolfhud_laser_light_title",
 			"description" : "wolfhud_laser_light_desc",
 			"callback" : "callback_laser_light",
@@ -28,7 +28,7 @@
 		},
 		{
 			"type" : "slider",
-			"id" : "wolfhud_laser_glow",
+			"id" : "laser_glow",
 			"title" : "wolfhud_laser_glow_title",
 			"description" : "wolfhud_laser_glow_desc",
 			"callback" : "callback_laser_glow",
@@ -44,7 +44,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_lasercolor_player",
+			"id" : "laser_player",
 			"title" : "wolfhud_lasercolor_player_title",
 			"description" : "wolfhud_lasercolor_player_desc",
 			"callback" : "callback_lasercolor_player",
@@ -70,7 +70,7 @@
 		},
 		{
 			"type" : "slider",
-			"id" : "wolfhud_laseralpha_player",
+			"id" : "laser_player_alpha",
 			"title" : "wolfhud_laseralpha_player_title",
 			"description" : "wolfhud_laseralpha_player_desc",
 			"callback" : "callback_laseralpha_player",
@@ -86,7 +86,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_lasercolor_teammates",
+			"id" : "laser_teammates",
 			"title" : "wolfhud_lasercolor_teammates_title",
 			"description" : "wolfhud_lasercolor_teammates_desc",
 			"callback" : "callback_lasercolor_teammates",
@@ -112,7 +112,7 @@
 		},
 		{
 			"type" : "slider",
-			"id" : "wolfhud_laseralpha_teammates",
+			"id" : "laser_teammates_alpha",
 			"title" : "wolfhud_laseralpha_teammates_title",
 			"description" : "wolfhud_laseralpha_teammates_desc",
 			"callback" : "callback_laseralpha_teammates",
@@ -128,7 +128,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_lasercolor_sniper",
+			"id" : "laser_sniper",
 			"title" : "wolfhud_lasercolor_sniper_title",
 			"description" : "wolfhud_lasercolor_sniper_desc",
 			"callback" : "callback_lasercolor_sniper",
@@ -154,7 +154,7 @@
 		},
 		{
 			"type" : "slider",
-			"id" : "wolfhud_laseralpha_sniper",
+			"id" : "laser_sniper_alpha",
 			"title" : "wolfhud_laseralpha_sniper_title",
 			"description" : "wolfhud_laseralpha_sniper_desc",
 			"callback" : "callback_laseralpha_sniper",
@@ -170,7 +170,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_lasercolor_turret_active",
+			"id" : "laser_turret_active",
 			"title" : "wolfhud_lasercolor_turret_active_title",
 			"description" : "wolfhud_lasercolor_turret_active_desc",
 			"callback" : "callback_lasercolor_turret_active",
@@ -196,7 +196,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_lasercolor_turret_reloading",
+			"id" : "laser_turret_reloading",
 			"title" : "wolfhud_lasercolor_turret_reloading_title",
 			"description" : "wolfhud_lasercolor_player_desc",
 			"callback" : "callback_lasercolor_turret_reloading",
@@ -222,7 +222,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_lasercolor_turret_jammed",
+			"id" : "laser_turret_jammed",
 			"title" : "wolfhud_lasercolor_turret_jammed_title",
 			"description" : "wolfhud_lasercolor_turret_jammed_desc",
 			"callback" : "callback_lasercolor_turret_jammed",
@@ -248,7 +248,7 @@
 		},
 		{
 			"type" : "slider",
-			"id" : "wolfhud_laseralpha_turret",
+			"id" : "laser_turret_alpha",
 			"title" : "wolfhud_laseralpha_turret_title",
 			"description" : "wolfhud_laseralpha_turret_desc",
 			"callback" : "callback_laseralpha_turret",
@@ -264,7 +264,7 @@
 		},
 		{
 			"type" : "slider",
-			"id" : "wolfhud_flashlight_angle",
+			"id" : "flashlight_angle",
 			"title" : "wolfhud_flashlight_angle_title",
 			"description" : "wolfhud_flashlight_angle_desc",
 			"callback" : "callback_flashlight_angle",
@@ -276,7 +276,7 @@
 		},
 		{
 			"type" : "slider",
-			"id" : "wolfhud_flashlight_range",
+			"id" : "flashlight_range",
 			"title" : "wolfhud_flashlight_range_title",
 			"description" : "wolfhud_flashlight_range_desc",
 			"callback" : "callback_flashlight_range",

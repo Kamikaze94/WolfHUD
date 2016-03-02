@@ -8,7 +8,7 @@
 	"items" : [
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_use_hudlist",
+			"id" : "use_hudlist",
 			"title" : "wolfhud_use_hudlist_title",
 			"description" : "wolfhud_use_hudlist_desc",
 			"callback" : "callback_use_hudlist",
@@ -20,7 +20,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_hudlist_box_color",
+			"id" : "hud_box_color",
 			"title" : "wolfhud_hudlist_box_color_title",
 			"description" : "wolfhud_hudlist_box_color_desc",
 			"callback" : "callback_hudlist_boxcolor",
@@ -45,7 +45,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_hudlist_box_bg_color",
+			"id" : "hud_box_bg_color",
 			"title" : "wolfhud_hudlist_box_bg_color_title",
 			"description" : "wolfhud_hudlist_box_bg_color_desc",
 			"callback" : "callback_hudlist_boxbgcolor",
@@ -74,7 +74,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_hudlist_civcolor",
+			"id" : "civilian_color",
 			"title" : "wolfhud_hudlist_civcolor_title",
 			"description" : "wolfhud_hudlist_civcolor_desc",
 			"callback" : "callback_hudlist_civcolor",
@@ -99,7 +99,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_hudlist_thugcolor",
+			"id" : "thug_color",
 			"title" : "wolfhud_hudlist_thugcolor_title",
 			"description" : "wolfhud_hudlist_thugcolor_desc",
 			"callback" : "callback_hudlist_thugcolor",
@@ -124,7 +124,7 @@
 		},
 		{
 			"type" : "multiple_choice",
-			"id" : "wolfhud_hudlist_copcolor",
+			"id" : "enemy_color",
 			"title" : "wolfhud_hudlist_copcolor_title",
 			"description" : "wolfhud_hudlist_copcolor_desc",
 			"callback" : "callback_hudlist_copcolor",

@@ -12,7 +12,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_skip_blackscreen",
+			"id" : "skip_blackscreen",
 			"title" : "wolfhud_skip_blackscreen_title",
 			"description" : "wolfhud_skip_blackscreen_desc",
 			"callback" : "callback_skip_blackscreen",
@@ -21,7 +21,7 @@
 		},
 		{
 			"type" : "slider",
-			"id" : "wolfhud_stat_screen_delay",
+			"id" : "stat_screen_delay",
 			"title" : "wolfhud_stat_screen_delay_title",
 			"description" : "wolfhud_stat_screen_delay_desc",
 			"callback" : "callback_statscreen_delay",
@@ -34,7 +34,7 @@
 		},
 		{
 			"type" : "slider",
-			"id" : "wolfhud_loot_screen_delay",
+			"id" : "loot_screen_delay",
 			"title" : "wolfhud_loot_screen_delay_title",
 			"description" : "wolfhud_loot_screen_delay_desc",
 			"callback" : "callback_lootscreen_delay",
@@ -52,7 +52,7 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "wolfhud_replace_weapon_names",
+			"id" : "replace_weapon_names",
 			"title" : "wolfhud_replace_weapon_names_title",
 			"description" : "wolfhud_replace_weapon_names_desc",
 			"callback" : "callback_replace_weapon_names",
