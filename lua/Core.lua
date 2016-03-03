@@ -195,7 +195,7 @@ if not _G.WolfHUD then
 	function WolfHUD:checkVersion()
 		dohttpreq( "https://raw.githubusercontent.com/Kamikaze94/WolfHUD/master/mod.txt", function(data, id)
 			local new_version = json.decode(data)
-			if tonumber(new_version.version) >= tonumber(WolfHUD.version) then
+			if tonumber(new_version.version) > tonumber(WolfHUD.version) then
 				local menu_title = managers.localization:text("wolfhud_update_title")
 				local menu_message = managers.localization:text("wolfhud_update_confirm")
 				local menu_options = {
@@ -238,6 +238,7 @@ if not _G.WolfHUD then
 				os.execute('rmdir /S /Q "' .. WolfHUD.mod_path .. '"')
 				unzip( file_path , "mods/" )
 				os.execute('rename ".\\mods\\WolfHUD-master" "WolfHUD"')
+				os.remove(file_path)
 			end
 			QuickMenu:new( managers.localization:text("wolfhud_update_title"), managers.localization:text("wolfhud_update_successful"), {[1] = {text = managers.localization:text("dialog_ok"), callback = clbk}}, true )
 		end)
