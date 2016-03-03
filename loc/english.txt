@@ -6,6 +6,8 @@
 	"wolfhud_reset_options_title" : "Reset Settings",
 	"wolfhud_reset_options_desc" : "Reset all Settings to their default value.",
 	"wolfhud_reset_options_confirm" : "Are you sure, you want to reset all Settings to their default value?",
+	"wolfhud_overrides_updated_title" : "WolfHUD Textures",
+	"wolfhud_overrides_updated_text" : "The 'mod_override'-textures of WolfHUD got updated. \nPlease restart your game, so the changes can take effect.",
 	"wolfhud_colors_1"  : "White",
 	"wolfhud_colors_2"  : "Light Yellow",
 	"wolfhud_colors_3"  : "Light Orange",
