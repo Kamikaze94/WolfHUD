@@ -5,10 +5,20 @@ It was originally a recreated and updated version of GageHUD, since it was reall
 Over time I added more and more useful Scripts and currently it becomes kind of an All-in-One solution...  
 Not sure if I want it to become that, but at least I added ingame Options to turn off functions you don't like. ;)  
 
+<p align="center">
+  <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_1.jpg" width="420"/>
+  <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_2.jpg" width="420"/>
+  <i>(Click to view bigger version)</i>
+</p>
+
 ###Installation:
 Simply drag and drop the Contents of the downloaded archive into your mods-folder, and you are good to go.  
 Configurations can be made through the included ingame menu.  
 __(You need the [BLT Hook](http://paydaymods.com/download/) for this mod to work)__  
+
+###Updates:
+The mod will check for updates when you reach the main menu.  
+You will then be prompted to Update automatically, ignore hte update this time, or visit the GitHUB page.  
 
 ###Bug reports:
 __If you encounter any bugs, feel free to post about it on the issues tab!  
