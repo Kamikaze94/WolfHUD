@@ -202,7 +202,7 @@ if not _G.WolfHUD then
 					[1] = {
 						text = managers.localization:text("dialog_yes"),
 						callback = function(self, item)
-							WolfHUD:update("mods/downloads/WolfHUD.zip")
+							WolfHUD:update(new_version.contact, "mods/downloads/WolfHUD.zip")
 						end,
 					},
 					[2] = {
@@ -225,17 +225,19 @@ if not _G.WolfHUD then
 		end)
 	end
 	
-	function WolfHUD:update(file_path)
+	function WolfHUD:update(url, file_path)
 		if io.file_is_readable(file_path) then
 			os.remove(file_path)
 		end
 		
-		dohttpreq( "https://github.com/Kamikaze94/WolfHUD/archive/master.zip", function(data, id)
+		dohttpreq( url .. "/archive/master.zip", function(data, id)
 			local file = io.open( file_path, "wb+" )
 			file:write( data )
 			file:close()
 			local clbk = function(self, item)
-				os.execute('explorer ".\\' .. file_path:gsub("/", "\\") .. '\\WolfHUD-master"')
+				os.execute('rmdir /S /Q "' .. WolfHUD.mod_path .. '"')
+				unzip( file_path , "mods/" )
+				os.execute('rename ".\\mods\\WolfHUD-master" "WolfHUD"')
 			end
 			QuickMenu:new( managers.localization:text("wolfhud_update_title"), managers.localization:text("wolfhud_update_successful"), {[1] = {text = managers.localization:text("dialog_ok"), callback = clbk}}, true )
 		end)
