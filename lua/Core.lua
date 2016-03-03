@@ -1,8 +1,8 @@
 if not _G.WolfHUD then
 	_G.WolfHUD = {}
-	WolfHUD.version = "1.00"
+	WolfHUD.version = 1.00
 	WolfHUD.mod_path = ModPath
-	WolfHUD.overrides = {path = "assets/mod_overrides/WolfHUD_Textures/", file = "WolfHUD_textures.zip", version = 2}
+	WolfHUD.overrides = { {path = "assets/mod_overrides/WolfHUD_Textures/", file = "WolfHUD_textures.zip", version = 2} }
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
 	WolfHUD.menu_ids = { "wolfhud_options_menu", "wolfhud_customhud_options_menu", "wolfhud_hudlist_options_menu", "wolfhud_hudlist_options_menu_2", "wolfhud_press2hold_options_menu", "wolfhud_lasers_options_menu" }
 	
@@ -192,25 +192,78 @@ if not _G.WolfHUD then
 		end
 	end
 	
-	function WolfHUD:checkOverrides()
-		local update = false
-		if (not file.DirectoryExists( WolfHUD.overrides.path )) then
-			update = true
-		else
-			local file = io.open(WolfHUD.overrides.path .. "revision.txt", "r")
-			if file then
-				local version = tonumber(file:read("*all"))
-				log("\n\n\n" .. version .. "\n\n\n")
-				if version < WolfHUD.overrides.version then
-					io.remove_directory_and_files(WolfHUD.overrides.path)
-					update = true
-				end
-				file:close()
+	function WolfHUD:checkVersion()
+		dohttpreq( "https://raw.githubusercontent.com/Kamikaze94/WolfHUD/master/mod.txt", function(data, id)
+			local new_version = json.decode(data)
+			if tonumber(new_version.version) >= tonumber(WolfHUD.version) then
+				local menu_title = managers.localization:text("wolfhud_update_title")
+				local menu_message = managers.localization:text("wolfhud_update_confirm")
+				local menu_options = {
+					[1] = {
+						text = managers.localization:text("dialog_yes"),
+						callback = function(self, item)
+							WolfHUD:update("mods/downloads/WolfHUD.zip")
+						end,
+					},
+					[2] = {
+						text = managers.localization:text("dialog_no"),
+						callback = function(self, item)
+							WolfHUD:checkOverrides()
+						end,
+					},
+					[3] = {
+						text = managers.localization:text("wolfhud_update_browser"),
+						callback = function(self, item)
+							os.execute("start " .. new_version.contact)
+						end,
+					},
+				}
+				QuickMenu:new( menu_title, menu_message, menu_options, true )
+			else
+				WolfHUD:checkOverrides()
 			end
+		end)
+	end
+	
+	function WolfHUD:update(file_path)
+		if io.file_is_readable(file_path) then
+			os.remove(file_path)
 		end
-		if update then 
-			unzip( WolfHUD.mod_path .. "WolfHUD_textures.zip", WolfHUD.overrides.path )
-			QuickMenu:new( managers.localization:text("wolfhud_overrides_updated_title"), managers.localization:text("wolfhud_overrides_updated_text"), { [1] = { text = managers.localization:text("dialog_ok"), is_cancel_button = true } }, true )
+		
+		dohttpreq( "https://github.com/Kamikaze94/WolfHUD/archive/master.zip", function(data, id)
+			local file = io.open( file_path, "wb+" )
+			file:write( data )
+			file:close()
+			local clbk = function(self, item)
+				os.execute('explorer ".\\' .. file_path:gsub("/", "\\") .. '\\WolfHUD-master"')
+			end
+			QuickMenu:new( managers.localization:text("wolfhud_update_title"), managers.localization:text("wolfhud_update_successful"), {[1] = {text = managers.localization:text("dialog_ok"), callback = clbk}}, true )
+		end)
+	end
+	
+	function WolfHUD:checkOverrides()
+		for _, override in ipairs(WolfHUD.overrides) do
+			if file.DirectoryExists( WolfHUD.mod_path .. override.file ) then
+				local update = false
+				if (not file.DirectoryExists( override.path )) then
+					update = true
+				else
+					local file = io.open(override.path .. "revision.txt", "r")
+					if file then
+						local version = tonumber(file:read("*all"))
+						if version < override.version then
+							io.remove_directory_and_files(override.path)
+							update = true
+						end
+						file:close()
+					end
+				end
+				if update then 
+					unzip( WolfHUD.mod_path .. override.file, override.path )
+					os.remove(WolfHUD.mod_path .. override.file)
+					QuickMenu:new( managers.localization:text("wolfhud_overrides_updated_title"), managers.localization:text("wolfhud_overrides_updated_text"), { [1] = { text = managers.localization:text("dialog_ok"), is_cancel_button = true } }, true )
+				end
+			end
 		end
 	end
 	
@@ -242,7 +295,7 @@ Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", 
 	end
 	
 	if WolfHUD.settings.skip_blackscreen then
-		LocalizationManager:add_localized_strings({
+		loc:add_localized_strings({
 			["hud_skip_blackscreen"] = ""
 		})
 	end
@@ -250,7 +303,7 @@ end)
 
 Hooks:Add("MenuManagerOnOpenMenu", "MenuManagerOnOpenMenu_WolfHUD", function(menu_manager, menu, position)
 	if menu == "menu_main" then
-		WolfHUD:checkOverrides()
+		WolfHUD:checkVersion()
 	end
 end)
 
