@@ -30,9 +30,9 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		},
 		["Rib Boat"] = {
 			["driver"] = { offset_x = "center_x", offset_y = -20, binding = "left bottom", seat = true},
-			["passenger_front"] = { offset_x = 55, offset_y = -15, binding = "right top", seat = true},
-			["passenger_back_left"] = { offset_x = 45, offset_y = "center_y", binding = "left top", seat = true},
-			["passenger_back_right"] = { offset_x = -45, offset_y = 110, binding = "right top", seat = true},
+			["passenger_front"] = { offset_x = -55, offset_y = 15, binding = "right top", seat = true},
+			["passenger_back_left"] = { offset_x = 45, offset_y = 80, binding = "left top", seat = true},
+			["passenger_back_right"] = { offset_x = -45, offset_y = 100, binding = "right top", seat = true},
 			texture_rect = { 512, 512, 512, 512},
 			texture = "guis/textures/contact_vlad"
 		}
