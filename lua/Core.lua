@@ -1,6 +1,5 @@
 if not _G.WolfHUD then
 	_G.WolfHUD = {}
-	WolfHUD.version = 1.00
 	WolfHUD.mod_path = ModPath
 	WolfHUD.overrides = { {path = "assets/mod_overrides/WolfHUD_Textures/", file = "WolfHUD_textures.zip", version = 2} }
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
@@ -194,9 +193,18 @@ if not _G.WolfHUD then
 	
 	function WolfHUD:checkVersion()
 		dohttpreq( "https://raw.githubusercontent.com/Kamikaze94/WolfHUD/master/mod.txt", function(data, id)
+			local local_version = "1.0"
 			local new_version = json.decode(data)
-			if tonumber(new_version.version) > tonumber(WolfHUD.version) then
-				log("[WolfHUD] Found new version! Server-Version: " .. new_version.version .. ", Client-Version: " .. WolfHUD.version)
+			
+			for k, v in pairs(LuaModManager.Mods) do
+				local info = v.definition
+				if info["name"] == "WolfHUD" then
+					local_version = info["version"]
+				end
+			end
+			
+			if tonumber(new_version.version) > tonumber(local_version) then
+				log("[WolfHUD] Found new version! Server-Version: " .. new_version.version .. ", Client-Version: " .. local_version)
 				local menu_title = managers.localization:text("wolfhud_update_title")
 				local menu_message = managers.localization:text("wolfhud_update_confirm")
 				local menu_options = {
@@ -221,7 +229,7 @@ if not _G.WolfHUD then
 				}
 				QuickMenu:new( menu_title, menu_message, menu_options, true )
 			else
-				log("[WolfHUD] WolfHUD is already up-to-date! (Version: " .. WolfHUD.version .. ")")
+				log("[WolfHUD] WolfHUD is already up-to-date! (Version: " .. local_version .. ")")
 				WolfHUD:checkOverrides()
 			end
 		end)
@@ -257,7 +265,7 @@ if not _G.WolfHUD then
 				end
 			end
 			if success then
-				local r, error_str = os.rename("/mods/WolfHUD-master", WolfHUD.mod_path)
+				local r, error_str = os.execute('rename "mods\\WolfHUD-master" "WolfHUD"')
 				if not r then
 					log("[WolfHUD] Error while renaming new version: " .. error_str)
 					log("[WolfHUD] Aborting Update...")
@@ -270,6 +278,7 @@ if not _G.WolfHUD then
 					log("[WolfHUD] Error while removing update file: " .. error_str)
 				end
 			end
+			if success then log("[WolfHUD] Update successful!") end
 			QuickMenu:new( managers.localization:text("wolfhud_update_title"), managers.localization:text("wolfhud_update_" .. (success and "successful" or "failed")), {[1] = {text = managers.localization:text("dialog_ok"), is_cancel_button = true}}, true )
 		end)
 	end

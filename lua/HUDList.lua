@@ -1731,7 +1731,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                 
 				HUDList.CopUnitCountItem = HUDList.CopUnitCountItem or class(HUDList.UnitCountItem)
 				function HUDList.CopUnitCountItem:set_count(count)
-                        HUDList.CopUnitCountItem.super.set_count(self, count - (managers.enemy:unit_count("cop_hostage") or 0))
+                        HUDList.CopUnitCountItem.super.set_count(self, count - (managers.groupai:state():police_hostage_count() or 0))
                 end
 				
                 HUDList.CivilianUnitCountItem = HUDList.CivilianUnitCountItem or class(HUDList.UnitCountItem)
@@ -1808,7 +1808,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                         painting =				{ text = "Painting" },
                         coke =					{ text = "Coke" },
                         meth =					{ text = "Meth" },
-                        weapon =				{ text = "Weapon" },
+                        weapon =				{ text = "Gun" },
                         server =				{ text = "Server" },
                         turret =				{ text = "Turret" },
                         shell =					{ text = "Shell" },
@@ -1818,8 +1818,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                         diamond =				{ text = "Diamond" },
                         bomb =					{ text = "Bomb" },
                         evidence =				{ text = "Evidence" },
-                        warhead =				{ text = "Warhead" },
-                        dentist =				{ text = "Unknown" },
+                        warhead =				{ text = "Nuke" },
+                        dentist =				{ text = "?" },
 						pig =					{ text = "Pig" },
 						safe =					{ text = "Safe" },
 						prototype =				{ text = "Prototype" },
@@ -1844,7 +1844,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                         if loot_data.text then
                                 self._name_text = self._panel:text({
                                         name = "text",
-                                        text = string.sub(loot_data.text, 1, 5) or "",
+                                        text = string.sub(loot_data.text, 1, 6) or "",
                                         align = "center",
                                         vertical = "center",
                                         w = self._panel:w(),
@@ -4831,6 +4831,7 @@ if RequiredScript == "lib/managers/enemymanager" then
                 drunk_pilot = true,
                 escort = true,
                 old_hoxton_mission = true,
+				escort_undercover = true,
         }
        
         function EnemyManager:init(...)

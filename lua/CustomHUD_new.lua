@@ -4,7 +4,7 @@
         HUDPlayerPanel = HUDPlayerPanel or class(HUDTeamPanelBase)
         HUDTeammatePanel = HUDTeammatePanel or class(HUDTeamPanelBase)
        
-        HUDTeamPanelBase.DEBUG_SHOW_PANEL_AREA = true
+        HUDTeamPanelBase.DEBUG_SHOW_PANEL_AREA = false
        
 
         HUDPlayerPanel.SCALE = WolfHUD.settings.PLAYER_PANEL_SCALE or 0.85

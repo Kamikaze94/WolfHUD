@@ -163,7 +163,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			self._interact_time:set_visible(false)
 		end
 		
-		self._hud_panel:child(self._child_name_text):set_text(self._old_text)
+		self._hud_panel:child(self._child_name_text):set_text(self._old_text or "Error: Text not found...")
+		--self._old_text = nil
 		return hide_interaction_bar_original(self, ...)
 	end
 
@@ -173,11 +174,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			self._interact_circle_locked._circle:set_alpha(0.25)
 		end
 		
-		self._old_text = self._hud_panel:child(self._child_name_text):text()
 		if status then
+			self._old_text = self._hud_panel:child(self._child_name_text):text()
 			local type = managers.controller:get_default_wrapper_type()
-			local interact_key  = managers.controller:get_settings(type):get_connection("interact"):get_input_name_list()[1] or "x"
-			local equipment_key = managers.controller:get_settings(type):get_connection("use_item"):get_input_name_list()[1] or "x"
+			local interact_key  = managers.controller:get_settings(type):get_connection("interact"):get_input_name_list()[1] or "f"
+			local equipment_key = managers.controller:get_settings(type):get_connection("use_item"):get_input_name_list()[1] or "g"
 			self._hud_panel:child(self._child_name_text):set_text(string.upper(managers.localization:text("wolfhud_int_locked", {BTN = (PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and equipment_key or interact_key)})))
 		end
 	end
