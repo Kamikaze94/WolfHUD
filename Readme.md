@@ -18,7 +18,7 @@ __(You need the [BLT Hook](http://paydaymods.com/download/) for this mod to work
 
 ###Updates:
 The mod will check for updates when you reach the main menu.  
-You will then be prompted to Update automatically, ignore hte update this time, or visit the GitHUB page.  
+You will then be prompted to Update automatically, ignore the update this time, or visit the GitHUB page.  
 
 ###Bug reports:
 __If you encounter any bugs, feel free to post about it on the issues tab!  
@@ -37,6 +37,7 @@ to understand what happened wrong.  ;)__
 - __[Press2Hold](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13489)__, made by _Seven_, modified by _me_
   - Optional center Timer
   - Lock Interaction by pressed time, or total timer
+  - Change Interaction text when locked, to tell you how to interrupt
 - __[WeaponLaserColor](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13508)__, made by _Seven_
 - __[Remember Gadget State](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13507)__, by _Iron Predator_
   - Auto turns first gadget on at startup
@@ -45,7 +46,10 @@ to understand what happened wrong.  ;)__
 - __FlashlightExtender__, made by _Seven_
 - __[EnemyHealthbar](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15127)__, made by _Undeadsewer_ for uHUD
   - Made Healthbar fade out, when Enemy walks behind a wall or Player looks away
-- __BurstFire__
+  - Added optional Civilian Healthbars
+  - Added optional Vehicle Healthbars (Hidden when driving)
+- __BurstFire__, made by _Seven_ (I think, cannot find the thread, where it was posted originally...)
+- __[No Spam](http://steamcommunity.com/app/218620/discussions/15/618457398976607330/)__, mde by ahab, seven, AmEyeBlind & money123451
 - __[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by _ViciousWalrus_, modified by _me_
   - Added Option to hide vehicle and mask images
   - Added Vehicle Healthbar

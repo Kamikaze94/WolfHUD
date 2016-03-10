@@ -46,9 +46,19 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 	core:module("CoreMenuItemSlider")
 	core:import("CoreMenuItem")
 	local init_actual = ItemSlider.init
+	local highlight_row_item_actual = ItemSlider.highlight_row_item
 	function ItemSlider:init(data_node, parameters)
 		init_actual(self, data_node, parameters)
 		self._show_slider_text = true
+	end
+	
+	function ItemSlider:highlight_row_item(node, row_item, mouse_over)
+		highlight_row_item_actual(self, node, row_item, mose_over)
+		row_item.gui_slider_gfx:set_gradient_points({
+		0, _G.tweak_data.screen_colors.button_stage_2:with_alpha(0.6),
+		1, _G.tweak_data.screen_colors.button_stage_2:with_alpha(0.6)
+	})
+		return true
 	end
 elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then
 	local update_original = IngameWaitingForPlayersState.update
@@ -220,6 +230,72 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 			self:check_all_assets()
 		end
 		MissionAssetsManager_sync_load_orig(self, _ARG_1_, ...)
+	end
+elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
+	if not WolfHUD.settings.spam_filter then return end
+	ChatManager._SUB_TABLE = {
+			[utf8.char(57364)] = "<SKULL>",
+			[utf8.char(57363)] = "<GHOST>",
+			[utf8.char(139)] = "<LC>",
+	}
+
+	ChatManager._BLOCK_PATTERNS = {
+	  ".- replenished health by .-%%.+",
+	  --healed up
+	  ".- lost a minion to .+",
+	  --lost a minion text
+	  ".- converted a .+",
+	  --converted cop
+	  ".-A .- has less than 10 seconds left.",
+	  --drill? old ? r379?
+	  ".- was downed",
+	  --downed
+	  ".- Used Pistol messiah, .-",
+	  --pistol messiah
+	  ".+ has been downed .+",
+	  --downed and needs to patch up
+	  ".+ is in custody!",
+	  --jail time
+	  ".-<PocoHud³ r.-> <SKULL>Crew: .+",
+	  --general after heist kills r380+
+	  ".-<.-> .- .-<SKULL>.+",
+	  --kills and the likes for r380+ users
+	  ".-<LC>PocoHud³ r.-  <SKULL>.+",
+	  --end game stats r379 users
+	  ".-<LC>-- PocoHud³ : More info @ steam group .-pocomods.+",
+	  --end game plug
+	  ".-A .- is done",
+	  --drill is done
+	  ".-A .- on a .+ < 10s left",
+	  --drill on a thing is nearly done
+	  ".-A .- < 10s left",
+	  --nearly done drill
+	  ".-An .- < 10s left",
+	  -- nearly done hacking
+	  ".-An .- is done",
+	  --hacking things done
+	  ".-An .- has been captured .+",
+	  --captured a dom 1
+	   ".-a .- has been captured .+",
+	  --captured a dom 2
+	  ".-[NGBTO]:.+"
+	  --NGBTO info blocker Should work since its mass spam.
+	}
+
+	local _receive_message_original = ChatManager._receive_message
+
+	function ChatManager:_receive_message(channel_id, name, message, ...)
+			for key, subst in pairs(ChatManager._SUB_TABLE) do
+					message2 = message:gsub(key, subst)
+			end
+
+			for _, pattern in ipairs(ChatManager._BLOCK_PATTERNS) do
+					if message2:match("^" .. pattern .. "$") then
+							return
+					end
+			end
+
+			return _receive_message_original(self, channel_id, name, message, ...)
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 	local function expect_yes(self, params) params.yes_func() end

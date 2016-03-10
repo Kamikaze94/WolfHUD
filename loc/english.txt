@@ -50,6 +50,8 @@
 	"wolfhud_chat_fontsize_desc" : "Font Size for the ingame Chat-Box.",
 	"wolfhud_chat_outputlines_title" : "Max Output Lines",
 	"wolfhud_chat_outputlines_desc" : "Max Lines to display before scrolling is enabled.",
+	"wolfhud_spam_filter_title" : "Chat Spam Filter",
+	"wolfhud_spam_filter_desc" : "Removes PocoHUD and [NGBTO] spam messages from your chat.",
 	"wolfhud_use_killcounter_title" : "Display Killcounter",
 	"wolfhud_use_killcounter_desc" : "Display a killcounter on your HUD.",
 	"wolfhud_killcounter_show_special_title" : "Count Special enemies",

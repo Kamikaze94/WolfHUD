@@ -25,61 +25,63 @@ if not _G.WolfHUD then
 	end
 	
 	WolfHUD.hook_files = WolfHUD.hook_files or {
+		["lib/managers/menumanager"] = { "MenuTweaks.lua" },
+		["lib/managers/menumanagerdialogs"] = { "MenuTweaks.lua" },
+		["lib/managers/chatmanager"] = { "MenuTweaks.lua" },
+		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua" },
 		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDList.lua", "KillCounter.lua", "DrivingHUD.lua", "Press2Hold.lua", "WeaponLasers.lua" },
+		["lib/managers/hud/huddriving"] = { "DrivingHUD.lua" },
 		["lib/managers/hud/hudteammate"] = { "CustomHUD.lua", "KillCounter.lua", "Scripts.lua", "WeaponLasers.lua" },
 		["lib/managers/hud/hudtemp"] = { "CustomHUD.lua" },
 		["lib/managers/hud/hudassaultcorner"] = { "CustomHUD.lua", "HUDList.lua" },
 		["lib/managers/hud/hudobjectives"] = { "CustomHUD.lua" },
 		["lib/managers/hud/hudheisttimer"] = { "CustomHUD.lua" },
 		["lib/managers/hud/hudchat"] = { "CustomHUD.lua" },
+		["lib/managers/hud/hudstatsscreen"] = { "Scripts.lua" },
+		["lib/managers/hud/hudinteraction"] = { "Press2Hold.lua" },
+		["lib/managers/hud/hudsuspicion"] = { "Scripts.lua" },
+		["lib/managers/enemymanager"] = { "HUDList.lua", "KillCounter.lua" },
+		["lib/managers/group_ai_states/groupaistatebase"] = { "HUDList.lua", "Scripts.lua" },
+		["lib/managers/missionassetsmanager"] = { "MenuTweaks.lua" },
+		["lib/managers/menu/blackmarketgui"] = { "MenuTweaks.lua" },
+		["lib/managers/menu/stageendscreengui"] = { "MenuTweaks.lua" },
+		["lib/managers/menu/lootdropscreengui"] = { "MenuTweaks.lua" },
+		["lib/managers/menu/renderers/menunodeskillswitchgui"] = { "MenuTweaks.lua" },
+		["lib/managers/objectinteractionmanager"] = { "HUDList.lua" },
+		["lib/managers/playermanager"] = { "HUDList.lua" },
 		["lib/managers/trademanager"] = { "CustomHUD.lua" },
-		["lib/units/equipment/doctor_bag/doctorbagbase"] = { "CustomHUD.lua", "HUDList.lua" },
-		["lib/units/beings/player/states/playerbleedout"] = { "CustomHUD.lua" },
-		["lib/units/beings/player/huskplayermovement"] = { "CustomHUD.lua" },
 		["lib/network/handlers/unitnetworkhandler"] = { "CustomHUD.lua", "HUDList.lua" },
 		["lib/units/unitbase"] = { "HUDList.lua" },
 		["lib/units/props/timergui"] = { "HUDList.lua" },
 		["lib/units/props/digitalgui"] = { "HUDList.lua" },
 		["lib/units/props/securitylockgui"] = { "HUDList.lua" },
-		["lib/managers/group_ai_states/groupaistatebase"] = { "HUDList.lua", "Scripts.lua" },
 		["lib/units/enemies/cop/copdamage"] = { "HUDList.lua", "KillCounter.lua" },
-		["lib/managers/enemymanager"] = { "HUDList.lua", "KillCounter.lua" },
 		["lib/units/equipment/ammo_bag/ammobagbase"] = { "HUDList.lua" },
 		["lib/units/equipment/bodybags_bag/bodybagsbagbase"] = { "HUDList.lua" },
-		["lib/units/equipment/grenade_crate/grenadecratebase"] = { "HUDList.lua" },
+		["lib/units/equipment/doctor_bag/doctorbagbase"] = { "CustomHUD.lua", "HUDList.lua" },
 		["lib/units/equipment/ecm_jammer/ecmjammerbase"] = { "HUDList.lua" },
-		["lib/units/props/securitycamera"] = { "HUDList.lua" },
+		["lib/units/equipment/grenade_crate/grenadecratebase"] = { "HUDList.lua" },
 		["lib/units/equipment/sentry_gun/sentrygunbase"] = { "HUDList.lua", "KillCounter.lua" },
-		["lib/units/weapons/sentrygunweapon"] = { "HUDList.lua" },
 		["lib/units/equipment/sentry_gun/sentrygundamage"] = { "HUDList.lua" },
+		["lib/units/weapons/akimboweaponbase"] = { "WeaponLasers.lua" },
+		["lib/units/weapons/sentrygunweapon"] = { "HUDList.lua" },
+		["lib/units/weapons/weaponlaser"] = { "WeaponLasers.lua" },
+		["lib/units/weapons/weaponflashlight"] = { "WeaponLasers.lua" },
+		["lib/units/weapons/raycastweaponbase"] = { "Scripts.lua", "WeaponLasers.lua" },
+		["lib/units/weapons/newraycastweaponbase"] = { "WeaponLasers.lua" },
+		["lib/units/props/missiondoor"] = { "HUDList.lua" },
+		["lib/units/props/securitycamera"] = { "HUDList.lua" },
 		["lib/units/beings/player/playerdamage"] = { "HUDList.lua" },
 		["lib/units/beings/player/playermovement"] = { "HUDList.lua" },
-		["lib/managers/playermanager"] = { "HUDList.lua" },
+		["lib/units/beings/player/huskplayermovement"] = { "CustomHUD.lua" },
+		["lib/units/beings/player/states/playercivilian"] = { "Press2Hold.lua" },
 		["lib/units/beings/player/states/playerstandard"] = { "HUDList.lua", "EnemyHealthbar.lua", "Press2Hold.lua", "WeaponLasers.lua" },
-		["lib/managers/objectinteractionmanager"] = { "HUDList.lua" },
-		["lib/units/props/missiondoor"] = { "HUDList.lua" },
-		["lib/managers/hud/hudstatsscreen"] = { "Scripts.lua" },
-		["lib/managers/hud/hudsuspicion"] = { "Scripts.lua" },
-		["lib/units/weapons/raycastweaponbase"] = { "Scripts.lua", "WeaponLasers.lua" },
-		["lib/tweak_data/timespeedeffecttweakdata"] = { "Scripts.lua" },
-		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua" },
+		["lib/units/beings/player/states/playerbleedout"] = { "CustomHUD.lua" },
 		["lib/states/ingamedriving"] = { "DrivingHUD.lua" },
-		["lib/managers/hud/huddriving"] = { "DrivingHUD.lua" },
-		["lib/managers/hud/hudinteraction"] = { "Press2Hold.lua" },
-		["lib/units/weapons/weaponlaser"] = { "WeaponLasers.lua" },
-		["lib/units/weapons/newraycastweaponbase"] = { "WeaponLasers.lua" },
-		["lib/units/weapons/akimboweaponbase"] = { "WeaponLasers.lua" },
-		["lib/units/weapons/weaponflashlight"] = { "WeaponLasers.lua" },
-		["lib/managers/menumanager"] = { "MenuTweaks.lua" },
-		["lib/managers/menu/blackmarketgui"] = { "MenuTweaks.lua" },
-		["lib/tweak_data/guitweakdata"] = { "MenuTweaks.lua" },	
-		["core/lib/managers/menu/items/coremenuitemslider"] = { "MenuTweaks.lua" },
-		["lib/managers/missionassetsmanager"] = { "MenuTweaks.lua" },
-		["lib/managers/menumanagerdialogs"] = { "MenuTweaks.lua" },
 		["lib/states/ingamewaitingforplayers"] = { "MenuTweaks.lua" },
-		["lib/managers/menu/stageendscreengui"] = { "MenuTweaks.lua" },
-		["lib/managers/menu/lootdropscreengui"] = { "MenuTweaks.lua" },
-		["lib/managers/menu/renderers/menunodeskillswitchgui"] = { "MenuTweaks.lua" }
+		["lib/tweak_data/guitweakdata"] = { "MenuTweaks.lua" },	
+		["lib/tweak_data/timespeedeffecttweakdata"] = { "Scripts.lua" },
+		["core/lib/managers/menu/items/coremenuitemslider"] = { "MenuTweaks.lua" },
 	}
 	
 	
@@ -111,6 +113,7 @@ if not _G.WolfHUD then
 			skip_blackscreen 				= true,		--Skip the blackscreen on mission start
 			stat_screen_delay 				= 5,		--Skip the experience screen after X seconds
 			loot_screen_delay 				= 3,		--Skip the loot screen after X seconds
+			spam_filter						= true,		--Filter PocoHud and NGBTO Chat Spam messages.
 		  --HUDList
 			show_timers 					= true,     --Drills, time locks, hacking etc.
 			show_equipment 					= true,  	--Deployables (ammo, doc bags, body bags)
@@ -472,6 +475,10 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_lootscreen_delay = function(self, item)
 		WolfHUD.settings.loot_screen_delay = item:value()
+	end
+	
+	MenuCallbackHandler.callback_spam_filter = function(self, item)
+		WolfHUD.settings.spam_filter = (item:value() == "on")
 	end
 	
 	MenuCallbackHandler.callback_replace_weapon_names = function(self, item)
