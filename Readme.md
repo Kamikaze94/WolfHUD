@@ -49,7 +49,7 @@ to understand what happened wrong.  ;)__
   - Added optional Civilian Healthbars
   - Added optional Vehicle Healthbars (Hidden when driving)
 - __BurstFire__, made by _Seven_ (I think, cannot find the thread, where it was posted originally...)
-- __[No Spam](http://steamcommunity.com/app/218620/discussions/15/618457398976607330/)__, mde by ahab, seven, AmEyeBlind & money123451
+- __[No Spam](http://steamcommunity.com/app/218620/discussions/15/618457398976607330/)__, made by Ahab, Seven, AmEyeBlind & money123451
 - __[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by _ViciousWalrus_, modified by _me_
   - Added Option to hide vehicle and mask images
   - Added Vehicle Healthbar
