@@ -2898,7 +2898,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudchat" then
 		local new_line_offset = math.round((1 - ((y - scroll_bar_up:h() - 2) / positon_height_area)) * self._total_message_lines)
 		self:_change_line_offset(new_line_offset - self._current_line_offset)
 	end
-
 elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerbleedout" then
 	local player_bleed_out_original = PlayerBleedOut._enter
 	function PlayerBleedOut:_enter(enter_data)

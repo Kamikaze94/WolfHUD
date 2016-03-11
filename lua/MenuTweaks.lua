@@ -53,12 +53,12 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 	end
 	
 	function ItemSlider:highlight_row_item(node, row_item, mouse_over)
-		highlight_row_item_actual(self, node, row_item, mose_over)
+		local val = highlight_row_item_actual(self, node, row_item, mose_over)
 		row_item.gui_slider_gfx:set_gradient_points({
-		0, _G.tweak_data.screen_colors.button_stage_2:with_alpha(0.6),
-		1, _G.tweak_data.screen_colors.button_stage_2:with_alpha(0.6)
-	})
-		return true
+			0, _G.tweak_data.screen_colors.button_stage_2:with_alpha(0.6),
+			1, _G.tweak_data.screen_colors.button_stage_2:with_alpha(0.6)
+		})
+		return val
 	end
 elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then
 	local update_original = IngameWaitingForPlayersState.update
