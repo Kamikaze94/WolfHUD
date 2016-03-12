@@ -623,7 +623,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			if self._id == HUDManager.PLAYER_PANEL then
 				self._health_panel:child("risk_indicator"):set_font_size(19 * HUDTeammate._PLAYER_PANEL_SCALE)
 				downs_text = (3 + managers.player:upgrade_value("player", "additional_lives", 0)) - self._downs
-				color = tonumber(downs_text) < 2 and Color.red or tonumber(downs_text) == 2 and Color.yellow or Color.green
 				has_messiah = managers.player:has_category_upgrade("player", "pistol_revive_from_bleed_out")
 				if has_messiah and managers.player:player_unit() and managers.player:player_unit():character_damage() then
 					messiah_charges = managers.player:player_unit():character_damage()._messiah_charges
@@ -631,10 +630,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 				end
 			elseif self:peer_id() ~= nil then
 				self._health_panel:child("risk_indicator"):set_font_size(15 * HUDTeammate._TEAMMATE_PANEL_SCALE)
-				color = self._downs > 2 and Color.red:with_alpha(alpha) or self._downs == 2 and Color.yellow:with_alpha(alpha) or Color.green:with_alpha(alpha)
 			end
 			alpha = ((self:peer_id() ~= nil or self._id == HUDManager.PLAYER_PANEL) and 1 or 0)
-			color = self._downs > 2 and Color.red:with_alpha(alpha) or self._downs == 2 and Color.yellow:with_alpha(alpha) or Color.green:with_alpha(alpha)
+			color = self._downs > 2 and Color.red or self._downs > 1 and Color.yellow or Color.green
 			self._health_panel:child("risk_indicator"):set_text(tostring(downs_text))
 		end
 		self._health_panel:child("risk_indicator"):set_color(color:with_alpha(alpha))

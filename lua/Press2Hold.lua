@@ -163,9 +163,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			self._interact_time:set_visible(false)
 		end
 		
-		self._hud_panel:child(self._child_name_text):set_text(self._old_text or self._hud_panel:child(self._child_name_text):text() or "Error: Text not found...")
-		--self._old_text = nil
-		return hide_interaction_bar_original(self, ...)
+		local val = hide_interaction_bar_original(self, ...)
+		self._hud_panel:child(self._child_name_text):set_text(self._old_text or self._hud_panel:child(self._child_name_text):text())
+		self._old_text = nil
+		return val
 	end
 
 	function HUDInteraction:set_locked(status)
