@@ -68,9 +68,8 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 			update_original(self, unit, t, dt, ...)
 			local theme = self._theme_type
 			local suffix = self._suffix_map[theme]
-			local colors = WolfHUD.color_table
 			local col = Color.white
-			if WolfHUD.settings["laser_" .. suffix] >= (#colors) or false then
+			if WolfHUD.settings["laser_" .. suffix] >= (#WolfHUD.color_table) or false then
 				local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
 				col = Color(r, g, b)
 			else
@@ -143,7 +142,18 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 	
 	function NewRaycastWeaponBase:on_equip()
 		_NewRaycastWeaponBase_on_equip(self)
-		self:set_gadget_on(self._stored_gadget_on or 1, false)
+		if self._has_laser == nil and (managers.weapon_factory and tweak_data and tweak_data.weapon and tweak_data.weapon.factory) then
+			local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+			for _, id in pairs(gadgets) do
+				if tweak_data.weapon.factory.parts[id].sub_type == "laser" then
+					self._has_laser = true
+					break
+				else
+					self._has_laser = false
+				end
+			end
+		end
+		self:set_gadget_on(self._stored_gadget_on or (self._has_laser and 1 or 0), false)
 	end
 
 	if not _NewRaycastWeaponBase_toggle_gadget then _NewRaycastWeaponBase_toggle_gadget = NewRaycastWeaponBase.toggle_gadget end
