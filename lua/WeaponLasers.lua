@@ -146,7 +146,7 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 			local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
 			for _, id in pairs(gadgets) do
 				local part_data = tweak_data.weapon.factory.parts[id]
-				if part_data and part_data.sub_type == "laser" then
+				if part_data and (part_data.sub_type == "laser" or part_data.type == "grip") then
 					self._has_laser = true
 					break
 				else
