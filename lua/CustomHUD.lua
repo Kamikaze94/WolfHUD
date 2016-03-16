@@ -534,6 +534,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			self:_damage_taken()
 		end
 		radial_health:set_color(Color(1, red, 1, 1))
+		self:set_stored_health() --Update RIP Rotation
 	end
 
 	function HUDTeammate:set_armor(data)
@@ -732,25 +733,28 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		local rip_bg = self._health_panel:child("radial_rip_bg")
 		local radial_health = self._health_panel:child("radial_health")		
 		if alive(rip) then  
-			do			  
-				local red = math.min(stored_health_ratio, 1)  
-				rip:set_visible(red > 0)  
-				rip:stop()
+			do
 				rip:set_rotation((1 - radial_health:color().r) * 360)
 				rip_bg:set_rotation((1 - radial_health:color().r) * 360)
-				if red < rip:color().red then  
-					rip:set_color(Color(1, red, 1, 1))  
-				else  
-					rip:animate(function(o)  
-						local s = rip:color().r  
-						local e = red  
-						over(0.2, function(p)  
-							rip:set_color(Color(1, math.lerp(s, e, p), 1, 1))  
+				if stored_health_ratio then
+					local red = math.min(stored_health_ratio, 1)
+					rip:set_visible(red > 0)  
+					rip:stop()
+					
+					if red < rip:color().red then  
+						rip:set_color(Color(1, red, 1, 1))  
+					else  
+						rip:animate(function(o)  
+							local s = rip:color().r  
+							local e = red  
+							over(0.2, function(p)  
+								rip:set_color(Color(1, math.lerp(s, e, p), 1, 1))  
+								end  
+							)  
 							end  
 						)  
-						end  
-					)  
-				end  
+					end
+				end
 			end  
 		end  
 	end
@@ -2164,7 +2168,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			name = "objectives_panel",
 			h = 100,
 			w = 500,
-			x = 60,
+			x = 80,
 			valign = "top"
 		})
 			
@@ -2303,13 +2307,13 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudheisttimer" then
 			visible = true,
 			name = "heist_timer_panel",
 			h = 40,
-			w = 50,
+			w = 80,
 			valign = "top",
 			layer = 0
 		})
 		self._timer_text = self._heist_timer_panel:text({
 			name = "timer_text",
-			text = "00:00",
+			text = "00:00:00",
 			font_size = 28,
 			font = tweak_data.hud.medium_font_noshadow,
 			color = Color.white,

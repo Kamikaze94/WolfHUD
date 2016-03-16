@@ -142,10 +142,11 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 	
 	function NewRaycastWeaponBase:on_equip()
 		_NewRaycastWeaponBase_on_equip(self)
-		if self._has_laser == nil and (managers.weapon_factory and tweak_data and tweak_data.weapon and tweak_data.weapon.factory) then
+		if self._has_gadget and self._has_laser == nil and (managers.weapon_factory and tweak_data and tweak_data.weapon and tweak_data.weapon.factory) then
 			local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
 			for _, id in pairs(gadgets) do
-				if tweak_data.weapon.factory.parts[id].sub_type == "laser" then
+				local part_data = tweak_data.weapon.factory.parts[id]
+				if part_data and part_data.sub_type == "laser" then
 					self._has_laser = true
 					break
 				else

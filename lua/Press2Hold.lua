@@ -106,6 +106,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			self._interact_time:set_alpha(1)
 			self._interact_time:set_visible(perc < 1)
 		end
+		if self._old_text and self._new_text then
+			self._hud_panel:child(self._child_name_text):set_text(self._new_text)
+		end
 	end
 	
 	
@@ -180,7 +183,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			local type = managers.controller:get_default_wrapper_type()
 			local interact_key  = managers.controller:get_settings(type):get_connection("interact"):get_input_name_list()[1] or "f"
 			local equipment_key = managers.controller:get_settings(type):get_connection("use_item"):get_input_name_list()[1] or "g"
-			self._hud_panel:child(self._child_name_text):set_text(string.upper(managers.localization:text("wolfhud_int_locked", {BTN = (PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and equipment_key or interact_key)})))
+			self._new_text = string.upper(managers.localization:text("wolfhud_int_locked", {BTN = (PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and equipment_key or interact_key)}))
 		end
 	end
 	

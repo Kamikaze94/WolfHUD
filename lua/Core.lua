@@ -288,7 +288,7 @@ if not _G.WolfHUD then
 	
 	function WolfHUD:checkOverrides()
 		for _, override in ipairs(WolfHUD.overrides) do
-			if file.DirectoryExists( WolfHUD.mod_path .. override.file ) then
+			if io.file_is_readable( WolfHUD.mod_path .. override.file ) then
 				local update = false
 				if (not file.DirectoryExists( override.path )) then
 					update = true
@@ -300,6 +300,8 @@ if not _G.WolfHUD then
 						if version < override.version then
 							io.remove_directory_and_files(override.path)
 							update = true
+						else
+							os.remove(WolfHUD.mod_path .. override.file)
 						end
 					end
 				end
