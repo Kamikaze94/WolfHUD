@@ -238,7 +238,18 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 			[utf8.char(57363)] = "<GHOST>",
 			[utf8.char(139)] = "<LC>",
 	}
+--[[
+11:53:59 PM Lua: [1] Kampfhörnchen [Trading Knife]: 32:40϶PocoHud³ r393  Crew: 324
+11:53:59 PM Lua: [1] Kampfhörnchen [Trading Knife]: 32:40϶Someone 23(2 Sp) | DPS:2.2 | KPM:0.7 | Acc:N/A
+11:53:59 PM Lua: [1] Kampfhörnchen [Trading Knife]: 32:40϶Kamikaze94 87(13 Sp) | DPS:12 | KPM:2.7 | Acc:73 2
+11:53:59 PM Lua: [1] Kampfhörnchen [Trading Knife]: 32:40϶Kampfhörnchen [Trading Knife] 98(18 Sp) | DPS:17 | KPM:3.1 | Acc:65 3
+11:53:59 PM Lua: [1] Kampfhörnchen [Trading Knife]: 32:40϶cipo113 13(1 Sp) | DPS:2.9 | KPM:0.86 | Acc:23 1
+11:53:59 PM Lua: [1] Kampfhörnchen [Trading Knife]: 32:40϶hardhans 53(7 Sp) | DPS:190 | KPM:2.1 | Acc:17 2
+11:42:31 PM Lua: [1] Kampfhörnchen [Trading Knife]: 21:13϶an FBI heavy SWAT has been captured around Kamikaze94
+11:43:29 PM Lua: [1] Kampfhörnchen [Trading Knife]: 22:10϶an FBI SWAT has been captured around Kamikaze94
+11:44:39 PM Lua: [1] Kampfhörnchen [Trading Knife]: 23:20϶an FBI SWAT has been captured around cipo113
 
+]]	
 	ChatManager._BLOCK_PATTERNS = {
 	  ".- replenished health by .-%%.+",
 	  --healed up
@@ -262,6 +273,8 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	  --kills and the likes for r380+ users
 	  ".-<LC>PocoHud³ r.-  <SKULL>.+",
 	  --end game stats r379 users
+	  ".- | DPS:.- | KPM:.- | Acc:.-.+",
+	  --per Player stats
 	  ".-<LC>-- PocoHud³ : More info @ steam group .-pocomods.+",
 	  --end game plug
 	  ".-A .- is done",
@@ -276,8 +289,10 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	  --hacking things done
 	  ".-An .- has been captured .+",
 	  --captured a dom 1
-	   ".-a .- has been captured .+",
+	  ".-a .- has been captured .+",
 	  --captured a dom 2
+	  ".-an .- has been captured .+",
+	  --captured a dom 3
 	  ".-[NGBTO]:.+"
 	  --NGBTO info blocker Should work since its mass spam.
 	}

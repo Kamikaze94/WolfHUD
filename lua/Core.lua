@@ -47,7 +47,7 @@ if not _G.WolfHUD then
 		["lib/managers/menu/stageendscreengui"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/lootdropscreengui"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/renderers/menunodeskillswitchgui"] = { "MenuTweaks.lua" },
-		["lib/managers/objectinteractionmanager"] = { "HUDList.lua" },
+		["lib/managers/objectinteractionmanager"] = { "HUDList.lua", "Scripts.lua" },
 		["lib/managers/playermanager"] = { "HUDList.lua" },
 		["lib/managers/trademanager"] = { "CustomHUD.lua" },
 		["lib/network/handlers/unitnetworkhandler"] = { "CustomHUD.lua", "HUDList.lua" },
@@ -330,11 +330,15 @@ if RequiredScript then
 end
 
 Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", function(loc)
-	for _, filename in pairs(file.GetFiles(WolfHUD.mod_path .. "loc/")) do
-		local str = filename:match('^(.*).txt$')
-		if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
-			loc:load_localization_file(WolfHUD.mod_path .. "loc/" .. filename)
-			break
+	if _G.PD2KR then
+		loc:load_localization_file(WolfHUD.mod_path .. "loc/korean.txt")
+	else
+		for _, filename in pairs(file.GetFiles(WolfHUD.mod_path .. "loc/")) do
+			local str = filename:match('^(.*).txt$')
+			if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
+				loc:load_localization_file(WolfHUD.mod_path .. "loc/" .. filename)
+				break
+			end
 		end
 	end
 	loc:load_localization_file(WolfHUD.mod_path .. "loc/english.txt", false)

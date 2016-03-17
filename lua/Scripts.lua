@@ -1027,9 +1027,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		logo:set_left(day_wrapper_panel:w()/2+40)
 		logo:set_top(30)
 		
-		local dd = day_wrapper_panel:child("day_description")
-		day_wrapper_panel:child("day_description"):set_bottom(day_wrapper_panel:child("total_revives_text"):bottom() + 20) -- Compatibility with LPI Stats
-		
 		self:update(day_wrapper_panel)
 	end
 
@@ -1077,10 +1074,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		day_wrapper_panel:child("total_damage_text"):set_text(math.round(TOTAL_DAMAGE))
 		day_wrapper_panel:child("total_revives_text"):set_text(managers.statistics._global.session.revives.player_count .. "/" .. managers.statistics._global.session.revives.npc_count)
 		day_wrapper_panel:child("total_revives_alltime_text"):set_text(managers.statistics._global.revives.player_count .. "/" .. managers.statistics._global.revives.npc_count)
-		
-		
-		--local dd = day_wrapper_panel:child("day_description")
-		--dd:set_top(day_wrapper_panel:child("total_revives_text"):bottom() + 20 - dd:h()) -- Compatibility with LPI Stats
 	end
 
 	function HUDStatsScreen:clean_up(right_panel)
@@ -1164,6 +1157,31 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			bag_text:set_center_y(math.round(bag:center_y()))
 		end
 	end
+	
+	Hooks:PostHook( HUDStatsScreen, "show", "WolfHUD_LPI_Compatability", function(self)
+		if _G.LobbyPlayerInfo and LobbyPlayerInfo.settings.show_skills_in_stats_screen then
+			local right_panel = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel")
+			if not right_panel then return end
+			local day_wrapper_panel = right_panel:child("day_wrapper_panel")
+			if not day_wrapper_panel then return end
+			if day_wrapper_panel:child("lpi_team_text_name1") then
+				local y = day_wrapper_panel:child("total_revives_text"):bottom() + 15
+				for i = 1, 4 do
+					local labels = { "lpi_team_text_name" .. tostring(i), "lpi_team_text_skills" .. tostring(i), "lpi_team_text_perk" .. tostring(i) }
+					for j, lbl in ipairs(labels) do
+						local lpi_panel = day_wrapper_panel:child(lbl)
+						if lpi_panel then
+							lpi_panel:set_y(y)
+						else
+							log("[ERROR] Hook 'WolfHUD_LPI_Compatability' (Scripts.lua:1161), panel not found: " .. lbl )
+						end
+						y = y + 20
+					end
+				end
+				Hooks:RemovePostHook( "WolfHUD_LPI_Compatability" )
+			end
+		end
+	end )
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudsuspicion" then
 	local hudsuspicion_init_original = HUDSuspicion.init
 	local hudsuspicions_animate_eye_original = HUDSuspicion.animate_eye
@@ -1393,5 +1411,19 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata"
 			affect_timer = "player",
 			sync = true
 		}
+	end
+elseif string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
+	ObjectInteractionManager.AUTO_PICKUP_DELAY = 0.3 --Delay in seconds between auto-pickup procs (0 -> as fast as possible)
+	local _update_targeted_original = ObjectInteractionManager._update_targeted
+	function ObjectInteractionManager:_update_targeted(...)
+		_update_targeted_original(self, ...)
+
+		if alive(self._active_unit) then
+			local t = Application:time()
+			if self._active_unit:base() and self._active_unit:base().small_loot and managers.menu:get_controller():get_input_bool("interact") and (t >= (self._next_auto_pickup_t or 0)) then
+				self._next_auto_pickup_t = t + ObjectInteractionManager.AUTO_PICKUP_DELAY
+				self:interact(managers.player:player_unit())
+			end
+		end
 	end
 end
