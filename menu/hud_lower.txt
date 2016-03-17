@@ -1,8 +1,8 @@
 {
-	"menu_id" : "wolfhud_customhud_options_menu",
+	"menu_id" : "wolfhud_lowerhud_options_menu",
 	"parent_menu_id" : "wolfhud_options_menu",
-	"title" : "wolfhud_customhud_options_name",
-	"description" : "wolfhud_customhud_options_help",
+	"title" : "wolfhud_lowerhud_options_name",
+	"description" : "wolfhud_lowerhud_options_help",
 	"back_callback" : "",
 	"priority" : 10,
 	"items" : [
