@@ -3,7 +3,7 @@ if not _G.WolfHUD then
 	WolfHUD.mod_path = ModPath
 	WolfHUD.overrides = { {path = "assets/mod_overrides/WolfHUD_Textures/", file = "WolfHUD_textures.zip", version = 2} }
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
-	WolfHUD.menu_ids = { "wolfhud_options_menu", "wolfhud_customhud_options_menu", "wolfhud_hudlist_options_menu", "wolfhud_hudlist_options_menu_2", "wolfhud_press2hold_options_menu", "wolfhud_lasers_options_menu" }
+	WolfHUD.menu_ids = { "wolfhud_options_menu", "wolfhud_lowerhud_options_menu", "wolfhud_upperhud_options_menu", "wolfhud_upperhud_adv_options_menu", "wolfhud_press2hold_options_menu", "wolfhud_lasers_options_menu" }
 	
 	if not WolfHUD.color_table then
 		WolfHUD.color_table = {}
@@ -29,7 +29,7 @@ if not _G.WolfHUD then
 		["lib/managers/menumanagerdialogs"] = { "MenuTweaks.lua" },
 		["lib/managers/chatmanager"] = { "MenuTweaks.lua" },
 		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua" },
-		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDList.lua", "KillCounter.lua", "DrivingHUD.lua", "Press2Hold.lua", "WeaponLasers.lua" },
+		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDList.lua", "KillCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "Interaction.lua", "WeaponLasers.lua" },
 		["lib/managers/hud/huddriving"] = { "DrivingHUD.lua" },
 		["lib/managers/hud/hudteammate"] = { "CustomHUD.lua", "KillCounter.lua", "Scripts.lua", "WeaponLasers.lua" },
 		["lib/managers/hud/hudtemp"] = { "CustomHUD.lua" },
@@ -38,8 +38,9 @@ if not _G.WolfHUD then
 		["lib/managers/hud/hudheisttimer"] = { "CustomHUD.lua" },
 		["lib/managers/hud/hudchat"] = { "CustomHUD.lua" },
 		["lib/managers/hud/hudstatsscreen"] = { "Scripts.lua" },
-		["lib/managers/hud/hudinteraction"] = { "Press2Hold.lua" },
+		["lib/managers/hud/hudinteraction"] = { "Interaction.lua" },
 		["lib/managers/hud/hudsuspicion"] = { "Scripts.lua" },
+		["lib/managers/hud/hudhitdirection"] = { "DamageIndicator.lua" },
 		["lib/managers/enemymanager"] = { "HUDList.lua", "KillCounter.lua" },
 		["lib/managers/group_ai_states/groupaistatebase"] = { "HUDList.lua", "Scripts.lua" },
 		["lib/managers/missionassetsmanager"] = { "MenuTweaks.lua" },
@@ -47,7 +48,7 @@ if not _G.WolfHUD then
 		["lib/managers/menu/stageendscreengui"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/lootdropscreengui"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/renderers/menunodeskillswitchgui"] = { "MenuTweaks.lua" },
-		["lib/managers/objectinteractionmanager"] = { "HUDList.lua", "Scripts.lua" },
+		["lib/managers/objectinteractionmanager"] = { "HUDList.lua", "Interaction.lua" },
 		["lib/managers/playermanager"] = { "HUDList.lua" },
 		["lib/managers/trademanager"] = { "CustomHUD.lua" },
 		["lib/network/handlers/unitnetworkhandler"] = { "CustomHUD.lua", "HUDList.lua" },
@@ -71,12 +72,13 @@ if not _G.WolfHUD then
 		["lib/units/weapons/newraycastweaponbase"] = { "WeaponLasers.lua" },
 		["lib/units/props/missiondoor"] = { "HUDList.lua" },
 		["lib/units/props/securitycamera"] = { "HUDList.lua" },
-		["lib/units/beings/player/playerdamage"] = { "HUDList.lua" },
+		["lib/units/beings/player/playerdamage"] = { "HUDList.lua", "DamageIndicator.lua" },
 		["lib/units/beings/player/playermovement"] = { "HUDList.lua" },
 		["lib/units/beings/player/huskplayermovement"] = { "CustomHUD.lua" },
-		["lib/units/beings/player/states/playercivilian"] = { "Press2Hold.lua" },
-		["lib/units/beings/player/states/playerstandard"] = { "HUDList.lua", "EnemyHealthbar.lua", "Press2Hold.lua", "WeaponLasers.lua" },
+		["lib/units/beings/player/states/playercivilian"] = { "Interaction.lua" },
+		["lib/units/beings/player/states/playerstandard"] = { "HUDList.lua", "EnemyHealthbar.lua", "Interaction.lua", "WeaponLasers.lua" },
 		["lib/units/beings/player/states/playerbleedout"] = { "CustomHUD.lua" },
+		["lib/units/vehicles/vehicledamage"] = { "DamageIndicator.lua" },
 		["lib/states/ingamedriving"] = { "DrivingHUD.lua" },
 		["lib/states/ingamewaitingforplayers"] = { "MenuTweaks.lua" },
 		["lib/tweak_data/guitweakdata"] = { "MenuTweaks.lua" },	
@@ -105,6 +107,14 @@ if not _G.WolfHUD then
 			show_civilian_healthbar 		= false,	--Show Healthbars for Civilians and TeamAI
 			show_car_healthbar				= true,		--Show Healthbar for vehicles
 			show_healthbar_pointer 			= false,	--Show pointer near the Healthbar, pointing at Healthbar owner
+		  --Dynamic Damage Indicator
+			show_dmg_indicator				= true,
+			dmg_ind_size					= 150,
+			dmg_ind_time					= 3,
+			dmg_shield_color				= 1,
+			dmg_health_color				= 10,
+			dmg_crit_color					= 11,
+			dmg_vehicle_color				= 8,
 		  --Driving HUD
 			use_drivinghud					= true,		--Show DrivingHUD Panel
 			show_vehicle 					= true,		--Show Vehicle and Teammate Mask Images
@@ -155,6 +165,7 @@ if not _G.WolfHUD then
 			SHOW_TIME_REMAINING 			= true,		--Show remaining Time in the Interaction-Circle
 			GRADIENT_COLOR 					= 6,	 	--Color, which the timer reaches on completition
 			SUPRESS_NADES_STEALTH			= true,
+			HOLD2PICK						= true,
 		  --Laser-Colors
 			use_weaponlasers 				= true,
 		    laser_light 					= 10,		--Multiplier for laser dot
@@ -459,6 +470,43 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		WolfHUD.settings.show_healthbar_pointer = (item:value() == "on")
 	end
 	
+	MenuCallbackHandler.callback_show_dmg_indicator = function(self, item)
+		WolfHUD.settings.show_dmg_indicator = (item:value() == "on")
+	end
+	
+	MenuCallbackHandler.callback_dmg_ind_time = function(self, item)
+		WolfHUD.settings.dmg_ind_time = item:value()
+		if HUDHitDirection then HUDHitDirection.seconds = WolfHUD.settings.dmg_ind_time end
+	end
+	
+	MenuCallbackHandler.callback_dmg_ind_size = function(self, item)
+		WolfHUD.settings.dmg_ind_size = item:value()
+		if HUDHitDirection then 
+			HUDHitDirection.sizeStart = WolfHUD.settings.dmg_ind_size 
+			HUDHitDirection.sizeEnd = WolfHUD.settings.dmg_ind_size + 100
+		end
+	end
+	
+	MenuCallbackHandler.callback_dmg_shield_color = function(self, item)
+		WolfHUD.settings.dmg_shield_color = item:value()
+		if HUDHitDirection then HUDHitDirection.shieldColor = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] end
+	end
+	
+	MenuCallbackHandler.callback_dmg_health_color = function(self, item)
+		WolfHUD.settings.dmg_health_color = item:value()
+		if HUDHitDirection then HUDHitDirection.healthColor = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] end
+	end
+	
+	MenuCallbackHandler.callback_dmg_crit_color = function(self, item)
+		WolfHUD.settings.dmg_crit_color = item:value()
+		if HUDHitDirection then HUDHitDirection.critColor = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] end
+	end
+	
+	MenuCallbackHandler.callback_dmg_vehicle_color = function(self, item)
+		WolfHUD.settings.dmg_vehicle_color = item:value()
+		if HUDHitDirection then HUDHitDirection.vehicleColor = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] end
+	end
+	
 	MenuCallbackHandler.callback_show_drivinghud = function(self, item)
 		WolfHUD.settings.use_drivinghud = (item:value() == "on")
 	end
@@ -667,6 +715,10 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		WolfHUD.settings.SUPRESS_NADES_STEALTH = (item:value() == "on")
 	end
 	
+	MenuCallbackHandler.callback_hold_to_pick = function(self, item)
+		WolfHUD.settings.HOLD2PICK = (item:value() == "on")
+	end
+	
 	MenuCallbackHandler.callback_laser_light = function(self, item)
 		WolfHUD.settings.laser_light = item:value()
 	end
@@ -743,10 +795,10 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	WolfHUD:Load()
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/lasers.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/press2hold.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudlist.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudlist2.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/customhud.txt", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets.txt", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.txt", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_lower.txt", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_upper.txt", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_upper_adv.txt", WolfHUD, WolfHUD.settings)
 end)
 

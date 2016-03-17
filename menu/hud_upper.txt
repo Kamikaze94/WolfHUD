@@ -1,8 +1,8 @@
 {
-	"menu_id" : "wolfhud_hudlist_options_menu",
+	"menu_id" : "wolfhud_upperhud_options_menu",
 	"parent_menu_id" : "wolfhud_options_menu",
-	"title" : "wolfhud_hudlist_options_name",
-	"description" : "wolfhud_hudlist_options_help",
+	"title" : "wolfhud_upperhud_options_name",
+	"description" : "wolfhud_upperhud_options_help",
 	"back_callback" : "",
 	"priority" : 10,
 	"items" : [
@@ -13,10 +13,7 @@
 			"description" : "wolfhud_use_hudlist_desc",
 			"callback" : "callback_use_hudlist",
 			"value" : "use_hudlist",
-		},
-		{
-			"type" : "divider",
-			"size" : 16,
+			"priority" : "9",
 		},
 		{
 			"type" : "multiple_choice",
@@ -42,6 +39,7 @@
 				
 			],
 			"value" : "hud_box_color",
+			"priority" : "9",
 		},
 		{
 			"type" : "multiple_choice",
@@ -67,10 +65,12 @@
 				
 			],
 			"value" : "hud_box_bg_color",
+			"priority" : "9",
 		},
 		{
 			"type" : "divider",
 			"size" : 16,
+			"priority" : "9",
 		},
 		{
 			"type" : "multiple_choice",
@@ -96,6 +96,7 @@
 				
 			],
 			"value" : "civilian_color",
+			"priority" : "9",
 		},
 		{
 			"type" : "multiple_choice",
@@ -121,6 +122,7 @@
 				
 			],
 			"value" : "thug_color",
+			"priority" : "9",
 		},
 		{
 			"type" : "multiple_choice",
@@ -146,10 +148,53 @@
 				
 			],
 			"value" : "enemy_color",
+			"priority" : "8",
 		},
 		{
 			"type" : "divider",
 			"size" : 16,
+			"priority" : "7",
+		},
+		{
+			"type" : "divider",
+			"size" : 32,
+			"priority" : "5",
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_enemy_healthbar",
+			"title" : "wolfhud_show_enemyhealthbar_title",
+			"description" : "wolfhud_show_enemyhealthbar_desc",
+			"callback" : "callback_show_enemyhealthbar",
+			"value" : "show_enemy_healthbar",
+			"priority" : "4",
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_civilian_healthbar",
+			"title" : "wolfhud_show_civhealthbar_title",
+			"description" : "wolfhud_show_civhealthbar_desc",
+			"callback" : "callback_show_civhealthbar",
+			"value" : "show_civilian_healthbar",
+			"priority" : "3",
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_car_healthbar",
+			"title" : "wolfhud_show_carhealthbar_title",
+			"description" : "wolfhud_show_carhealthbar_desc",
+			"callback" : "callback_show_carhealthbar",
+			"value" : "show_car_healthbar",
+			"priority" : "2",
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_healthbar_pointer",
+			"title" : "wolfhud_show_healthbar_pointer_title",
+			"description" : "wolfhud_show_healthbar_pointer_desc",
+			"callback" : "callback_show_healthbar_pointer",
+			"value" : "show_healthbar_pointer",
+			"priority" : "1",
 		}
 	]
 }
