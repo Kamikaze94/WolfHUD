@@ -1,4 +1,6 @@
 # WolfHUD
+####Payday 2 HUD
+  
 This is a Mod collection of several useful HUD altering mods.  
 I've modified them and added features, I felt were needed or useful.  
 It was originally a recreated and updated version of GageHUD, since it was really painful to maintain with all the mixxed up files.  
@@ -38,6 +40,7 @@ to understand what happened wrong.  ;)__
   - Optional center Timer
   - Lock Interaction by pressed time, or total timer
   - Change Interaction text when locked, to tell you how to interrupt
+- __[Hold2Pick](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13518)__, made by _=SB= Malo_
 - __[WeaponLaserColor](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13508)__, made by _Seven_
 - __[Remember Gadget State](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13507)__, by _Iron Predator_
   - Auto turns first gadget on at startup
@@ -48,6 +51,7 @@ to understand what happened wrong.  ;)__
   - Made Healthbar fade out, when Enemy walks behind a wall or Player looks away
   - Added optional Civilian Healthbars
   - Added optional Vehicle Healthbars (Hidden when driving)
+- __Dynamic Damage Indicator__, made by _me_
 - __BurstFire__, made by _Seven_ (I think, cannot find the thread, where it was posted originally...)
 - __[No Spam](http://steamcommunity.com/app/218620/discussions/15/618457398976607330/)__, made by Ahab, Seven, AmEyeBlind & money123451
 - __[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by _ViciousWalrus_, modified by _me_
@@ -60,6 +64,8 @@ to understand what happened wrong.  ;)__
   - [Always show Mod Icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13975), made by _Slippai~_
   - [Slider Values](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14800), made by _Snh20_
   - Show Weapon Names, made by _me_
+  - [Skillset Info](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15294), made by _Fooksie_
+  - Increased the maximum chars of custom Weapon/Mask/Skillset names
 
 ###Big credit goes to all of you!
 ####Without your awesome mods, I would have quitted this game a long time ago! 
