@@ -41,7 +41,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 			texture = "guis/textures/pd2/hitdirection",
 			color = color,
 			blend_mode = "add",
-			alpha = 1,
+			alpha = 0,
 			halign = "right"
 		})
 		hitmarker:animate( function( p )

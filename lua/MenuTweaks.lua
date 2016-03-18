@@ -258,10 +258,10 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	  --jail time
 	  ".-<PocoHud³ r.-> <SKULL>Crew: .+",
 	  --general after heist kills r380+
+	  ".-<LC>.-PocoHud³ r.- <SKULL>Crew: .+",
+	  --end game stats r379 users
 	  ".-<.-> .- .-<SKULL>.+",
 	  --kills and the likes for r380+ users
-	  ".-<LC>PocoHud³ r.-  <SKULL>.+",
-	  --end game stats r379 users
 	  ".- | DPS:.- | KPM:.- | Acc:.-.+",
 	  --per Player stats
 	  ".-<LC>-- PocoHud³ : More info @ steam group .-pocomods.+",
