@@ -48,7 +48,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 			over( HUDHitDirection.seconds , function( o )
 				local angle = self:getRotation(pos) or 180
 				local r = HUDHitDirection.sizeStart + (1-math.pow(o,0.5)) * (HUDHitDirection.sizeEnd - HUDHitDirection.sizeStart)
-				hitmarker_icon:set_alpha( math.pow(o,0.5) * HUDHitDirection.opacity / 100 )
+				hitmarker_icon:set_alpha( (-3 * math.pow(o - 0.5 , 2) + 0.7) * HUDHitDirection.opacity / 100 )
 				hitmarker_icon:set_rotation(-(angle+90))
 				hitmarker:set_center(self._hit_direction_panel:w()/2-math.sin(angle)*r + 70, self._hit_direction_panel:h()/2-math.cos(angle)*r - 30)
 			end )
