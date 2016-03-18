@@ -287,15 +287,7 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/akimboweaponbase" then
 	end
 
 elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
-
-	local update_original = PlayerStandard.update
-
-	function PlayerStandard:update(t, ...)
-		update_original(self, t, ...)
-		self:_update_burst_fire(t)
-	end
-
-	function PlayerStandard:_update_burst_fire(t)
+	Hooks:PostHook( PlayerStandard , "update" , "WolfHUD_BurstFire_PostPlayerStandardUpdate" , function( self , t , dt )
 		if alive(self._equipped_unit) then
 			local wbase = self._equipped_unit:base()
 			if wbase:burst_rounds_remaining() then
@@ -306,7 +298,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 				end
 			end
 		end
-	end
+	end)
 	
 	--Override
 	function PlayerStandard:_check_action_weapon_firemode(t, input)

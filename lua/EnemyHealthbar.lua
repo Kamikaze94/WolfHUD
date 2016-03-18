@@ -228,7 +228,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 
 	end
 elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
-	Hooks:PostHook( PlayerStandard , "update" , "WolfHUDPostPlayerStandardUpdate" , function( self , t , dt )
+	Hooks:PostHook( PlayerStandard , "_update_fwd_ray" , "WolfHUDPostPlayerStandardUpdate" , function( self , t , dt )
 		if self._last_unit then
 		
 			local iAngle = 360
