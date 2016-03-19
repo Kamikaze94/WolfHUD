@@ -1,6 +1,5 @@
-if not WolfHUD.settings.show_dmg_indicator then return end
 if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
-	HUDHitDirection.seconds 	 = WolfHUD.settings.dmg_ind_time or 3
+	HUDHitDirection.seconds 	 = WolfHUD.settings.dmg_ind_time or 2
 	HUDHitDirection.opacity 	 = 80
 	HUDHitDirection.sizeStart 	 = WolfHUD.settings.dmg_ind_size or 150
 	HUDHitDirection.sizeEnd 	 = HUDHitDirection.sizeStart + 100
@@ -20,14 +19,15 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	local hudhitdirection_init = HUDHitDirection.init
 	function HUDHitDirection:init(hud)
 		hudhitdirection_init(self, hud)
-		self._hit_direction_panel:child("right"):set_visible(false)
-		self._hit_direction_panel:child("left"):set_visible(false)
-		self._hit_direction_panel:child("up"):set_visible(false)
-		self._hit_direction_panel:child("down"):set_visible(false)
+		local is_visible = not WolfHUD.settings.show_dmg_indicator
+		self._hit_direction_panel:child("right"):set_visible(is_visible)
+		self._hit_direction_panel:child("left"):set_visible(is_visible)
+		self._hit_direction_panel:child("up"):set_visible(is_visible)
+		self._hit_direction_panel:child("down"):set_visible(is_visible)
 	end
 
 	function HUDHitDirection:new_hitmarker(pos, type_hit)
-		if not self._hit_direction_panel then return end
+		if not self._hit_direction_panel or not WolfHUD.settings.show_dmg_indicator then return end
 		local color = (type_hit == self.UNIT_TYPE_HIT_ARMOR and HUDHitDirection.shieldColor or type_hit == self.UNIT_TYPE_HIT_PLAYER and HUDHitDirection.healthColor or type_hit == HUDHitDirection.UNIT_TYPE_HIT_CRIT and HUDHitDirection.critColor or type_hit == self.UNIT_TYPE_HIT_VEHICLE and HUDHitDirection.vehicleColor) or Color.white
 		local hitmarker = self._hit_direction_panel:panel({
 			x = "center",
@@ -36,6 +36,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 			h = HUDHitDirection.sizeEnd
 		})
 		local hitmarker_icon = hitmarker:bitmap({
+			name = "marker",
 			rotation = 270,
 			visible = true,
 			texture = "guis/textures/pd2/hitdirection",
@@ -44,6 +45,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 			alpha = 0,
 			halign = "right"
 		})
+		hitmarker:stop()
 		hitmarker:animate( function( p )
 			over( HUDHitDirection.seconds , function( o )
 				local angle = self:getRotation(pos) or 180
@@ -56,7 +58,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 			self._hit_direction_panel:remove(hitmarker)
 		end )
 	end
-
+	
 	function HUDHitDirection:getRotation( pos )
 		
 		local target_vec = pos - managers.player:player_unit():camera():position()
@@ -64,6 +66,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 		local angle = target_vec:to_polar_with_reference( fwd, math.UP ).spin
 		
 		return angle
+	end
+	
+	function HUDHitDirection:remove_all()
+		local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
+		self:init(hud)
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDManager:new_hitmarker(data, damage_type)
@@ -83,6 +90,14 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			mobPos = managers.player:player_unit():position()
 		end
 		self._hud_hit_direction:new_hitmarker(mobPos, damage_type)
+	end
+	
+	local HUDManager_set_mugshot_custody = HUDManager.set_mugshot_custody
+	function HUDManager:set_mugshot_custody(id)
+		HUDManager_set_mugshot_custody(self, id)
+		if self._hud_hit_direction then
+			self._hud_hit_direction:remove_all()
+		end
 	end
 elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 	local PlayerDamage_damage_bullet = PlayerDamage.damage_bullet
@@ -110,7 +125,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 		local dmg_type = HUDHitDirection.UNIT_TYPE_HIT_PLAYER
 		if self:get_real_armor() > 0 then
 			dmg_type = HUDHitDirection.UNIT_TYPE_HIT_ARMOR
-		elseif (self:get_real_health() / self:_max_health()) <= 0.15 then
+		elseif (self:get_real_health() / self:_max_health()) <= 0.20 then
 			dmg_type = HUDHitDirection.UNIT_TYPE_HIT_CRIT
 		end
 		managers.hud:new_hitmarker(attack_data, dmg_type)
@@ -119,7 +134,8 @@ elseif string.lower(RequiredScript) == "lib/units/vehicles/vehicledamage" then
 	local VehicleDamage_damage_bullet = VehicleDamage.damage_bullet
 	function VehicleDamage:damage_bullet(attack_data)
 		local val = VehicleDamage_damage_bullet(self, attack_data)
-		if val and val ~= "friendly_fire" then
+		local local_player_vehicle = managers.player:get_vehicle()
+		if val and val ~= "friendly_fire" and local_player_vehicle and self._unit == local_player_vehicle.vehicle_unit then
 			managers.hud:new_hitmarker(attack_data, HUDHitDirection.UNIT_TYPE_HIT_VEHICLE)
 		end
 		return val

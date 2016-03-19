@@ -148,6 +148,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		if visible == true and not self._unit_health_visible then
 		
 			self._unit_health_visible = true
+			local show_pointer = WolfHUD.settings.show_healthbar_pointer or false
+			self._unit_health_enemy_location:set_visible(show_pointer)
 			self._unit_health_panel:stop()
 			
 			self._unit_health_panel:animate( function( p )
@@ -174,9 +176,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 				
 				self._unit_health_panel:set_visible( false )
 			end )
-		
 		end
-
 	end
 	
 	function HUDManager:set_unit_health( current , total , tweak_table )
@@ -230,26 +230,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
 	Hooks:PostHook( PlayerStandard , "_update_fwd_ray" , "WolfHUDPostPlayerStandardUpdate" , function( self , t , dt )
 		if self._last_unit then
-		
-			local iAngle = 360
-			local cAngle = 360
-			
-			iAngle = self:getUnitRotation( self._last_unit )
-			
-			if iAngle then
-				
-				cAngle = cAngle + ( iAngle - cAngle )
-				
-				if cAngle == 0 then cAngle = 360 end
-			
-				managers.hud:set_unit_health_rotation( cAngle )
-			end
+			local angle = self:getUnitRotation( self._last_unit )
+			managers.hud:set_unit_health_rotation( 360 - angle )
 		end
 		
 		if self._fwd_ray and self._fwd_ray.unit then
 		
 			local unit = self._fwd_ray.unit
 			if unit:in_slot( 8 ) and alive(unit:parent()) then unit = unit:parent() end
+			if managers.groupai:state():turrets() then
+				for _ , t_unit in pairs( managers.groupai:state():turrets() ) do
+					if alive( t_unit ) and t_unit:movement():team().foes[ managers.player:player_unit():movement():team().id ] and unit == t_unit then
+						unit = t_unit
+					end
+				end
+			end
 			
 			if alive( unit ) and unit:character_damage() and not unit:character_damage()._dead and unit:base() and unit:base()._tweak_table and ((not managers.enemy:is_civilian( unit ) and managers.enemy:is_enemy( unit )) or WolfHUD.settings.show_civilian_healthbar) then
 				self._last_unit = unit
@@ -262,9 +257,9 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 			else
 				if self._last_unit and alive( self._last_unit ) then
 					managers.hud:set_unit_health( self._last_unit:character_damage()._health * 10 or 0 , self._last_unit:character_damage()._HEALTH_INIT * 10 or 0 , self._last_unit:base()._tweak_table or "ENEMY" )
-					local angle = self:getUnitRotation(unit)
+					local angle = self:getUnitRotation(self._last_unit)
 					if angle < 0 then angle = angle + 360 end
-					if self._last_unit:character_damage()._dead or (angle < 340 and angle > 20) then managers.hud:set_unit_health_visible( false ) else return end
+					if self._last_unit:character_damage()._dead or (angle < 350 and angle > 10) then managers.hud:set_unit_health_visible( false ) end
 				else
 					managers.hud:set_unit_health_visible( false )
 				end
@@ -281,11 +276,11 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 		if not unit or not alive( unit ) then return 360 end
 		
 		local unit_position = unit:position()
-		local vector = self._camera_unit:position() - unit_position
+		local vector = unit_position - self._camera_unit:position()
 		local forward = self._camera_unit:rotation():y()
 		local rotation = math.floor( vector:to_polar_with_reference( forward , math.UP ).spin )
 		
-		return -( rotation + 180 )
+		return rotation
 
 	end
 end

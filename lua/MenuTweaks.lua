@@ -242,48 +242,42 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	ChatManager._BLOCK_PATTERNS = {
 	  ".- replenished health by .-%%.+",
 	  --healed up
-	  ".- lost a minion to .+",
-	  --lost a minion text
-	  ".- converted a .+",
-	  --converted cop
-	  ".-A .- has less than 10 seconds left.",
-	  --drill? old ? r379?
 	  ".- was downed",
 	  --downed
-	  ".- Used Pistol messiah, .-",
+	  ".-Used Pistol messiah, .-",
 	  --pistol messiah
 	  ".+ has been downed .+",
 	  --downed and needs to patch up
 	  ".+ is in custody!",
 	  --jail time
-	  ".-<PocoHud³ r.-> <SKULL>Crew: .+",
-	  --general after heist kills r380+
-	  ".-<LC>.-PocoHud³ r.- <SKULL>Crew: .+",
-	  --end game stats r379 users
-	  ".-<.-> .- .-<SKULL>.+",
-	  --kills and the likes for r380+ users
-	  ".- | DPS:.- | KPM:.- | Acc:.-.+",
-	  --per Player stats
-	  ".-<LC>-- PocoHud³ : More info @ steam group .-pocomods.+",
-	  --end game plug
 	  ".-A .- is done",
 	  --drill is done
 	  ".-A .- on a .+ < 10s left",
 	  --drill on a thing is nearly done
-	  ".-A .- < 10s left",
-	  --nearly done drill
-	  ".-An .- < 10s left",
-	  -- nearly done hacking
+	  ".- < 10s left",
+	  --nearly done drill/hacking
 	  ".-An .- is done",
 	  --hacking things done
 	  ".-An .- has been captured .+",
 	  --captured a dom 1
-	  ".-a .- has been captured .+",
-	  --captured a dom 2
 	  ".-an .- has been captured .+",
+	  --captured a dom 2
+	  ".-a .- has been captured .+",
 	  --captured a dom 3
-	  ".-[NGBTO]:.+"
+	  ".- converted a .+",
+	  --converted cop
+	  ".- lost a minion to .+",
+	  --lost a minion text
+	  ".-<PocoHud³ r.- > .+",
+	  --TeamKills Endgame Stat
+	  ".- | DPS:.- | KPM:.- | Acc:.-.+",
+	  --per Player stats
+	  ".-<LC>-- PocoHud³ : More info @ steam group .-pocomods.+",
+	  --end game plug
+	  ".-[NGBTO]:.+",
 	  --NGBTO info blocker Should work since its mass spam.
+	  --"%d-:?%d+:%d+<LC>.+"
+	  --Blocks anything, that starts with the time and then has a pipe
 	}
 
 	local _receive_message_original = ChatManager._receive_message

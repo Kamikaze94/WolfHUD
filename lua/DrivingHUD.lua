@@ -268,7 +268,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		self._active = true
 		self._people = 0
 		self.drivingpanel:set_visible(WolfHUD.settings.use_drivinghud or not WolfHUD and true)
-		if managers.hud then managers.hud:set_unit_health_visible(false) end
 	end
 	function HUDDriving:stop()
 		self._active = false

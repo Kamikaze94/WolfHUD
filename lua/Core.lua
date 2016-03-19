@@ -110,7 +110,7 @@ if not _G.WolfHUD then
 		  --Dynamic Damage Indicator
 			show_dmg_indicator				= true,
 			dmg_ind_size					= 150,
-			dmg_ind_time					= 3,
+			dmg_ind_time					= 2,
 			dmg_shield_color				= 1,
 			dmg_health_color				= 10,
 			dmg_crit_color					= 11,
