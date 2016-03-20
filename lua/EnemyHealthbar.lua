@@ -19,6 +19,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "hector_boss" ] 			= "ARMOURED HECTOR",
 		[ "hector_boss_no_armor" ] 	= "HECTOR",
 		[ "tank" ] 					= "BULLDOZER",
+		[ "tank_hw" ]				= "HEADLESS DOZER",
 		[ "spooc" ] 				= "CLOAKER",
 		[ "shield" ] 				= "SHIELD",
 		[ "phalanx_minion" ] 		= "WINTERS SHIELD",

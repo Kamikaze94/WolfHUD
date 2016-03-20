@@ -395,7 +395,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
-	log("ingame driving")
 	CloneClass(IngameDriving)
 
 	function IngameDriving:_number_in_the_vehicle(vehicle_driving, total)
@@ -451,7 +450,6 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 	function IngameDriving.at_enter(self, old_state, ...)
 		self.orig.at_enter(self, old_state, ...)
 		managers.hud:start_driving()
-		log("start driving")
 	end
 
 
