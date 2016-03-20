@@ -191,7 +191,9 @@ if not _G.WolfHUD then
 		local file = io.open(self.save_path, "r")
 		if file then
 			for k, v in pairs(json.decode(file:read("*all"))) do
-				self.settings[k] = v
+				if type(self.settings[k]) == type(v) then
+					self.settings[k] = v
+				end
 			end
 			file:close()
 		end
