@@ -785,14 +785,18 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_flashlight_angle = function(self, item)
 		WolfHUD.settings.flashlight_angle = item:value()
-		WeaponFlashLight.ANGLE = WolfHUD.settings.flashlight_angle
-		WeaponFlashLight._changed = true
+		if WeaponFlashLight then
+			WeaponFlashLight.ANGLE = WolfHUD.settings.flashlight_angle
+			WeaponFlashLight._changed = true
+		end
 	end
 	
 	MenuCallbackHandler.callback_flashlight_range = function(self, item)
 		WolfHUD.settings.flashlight_range = item:value()
-		WeaponFlashLight.RANGE = (WolfHUD.settings.flashlight_range * 100)
-		WeaponFlashLight._changed = true
+		if WeaponFlashLight then
+			WeaponFlashLight.RANGE = (WolfHUD.settings.flashlight_range * 100)
+			WeaponFlashLight._changed = true
+		end
 	end
 	
 	WolfHUD:Load()
