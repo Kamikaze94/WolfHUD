@@ -46,6 +46,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "sokol" ] 				= "SOKOL",
 		[ "dragon" ] 				= "JIRO",
 		[ "bodhi" ] 				= "BODHI",
+		[ "jimmy" ] 				= "JIMMY",
 		[ "old_hoxton_mission" ] 	= "HOXTON/LOCKE"
 	}
 
