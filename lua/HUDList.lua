@@ -1665,7 +1665,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                 HUDList.UnitCountItem = HUDList.UnitCountItem or class(HUDList.RightListItem)
                 HUDList.UnitCountItem.ENEMY_ICON_MAP = {
                         all =							{ atlas = {6, 1}, color = enemy_color, manual_add = true },     --Aggregated enemies
-                        cop =							{ atlas = {0, 5}, color = enemy_color, priority = 5, class = "CopUnitCountItem" },  --Non-special police
+                        cop =							{ atlas = {0, 5}, color = enemy_color, priority = 5 },  --Non-special police
                         sniper =						{ atlas = {6, 5}, color = special_color, priority = 6 },
                         tank =							{ atlas = {3, 1}, color = special_color, priority = 6 },
                         taser =							{ atlas = {3, 5}, color = special_color, priority = 6 },
@@ -1729,11 +1729,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                         self:set_count(managers.enemy:unit_count(self._unit_type) or 0)
                 end
                 
-				HUDList.CopUnitCountItem = HUDList.CopUnitCountItem or class(HUDList.UnitCountItem)
-				function HUDList.CopUnitCountItem:set_count(count)
-                        HUDList.CopUnitCountItem.super.set_count(self, count - (managers.groupai:state():police_hostage_count() or 0))
-                end
-				
                 HUDList.CivilianUnitCountItem = HUDList.CivilianUnitCountItem or class(HUDList.UnitCountItem)
                 function HUDList.CivilianUnitCountItem:init(parent, name, unit_data)
                         HUDList.CivilianUnitCountItem.super.init(self, parent, name, unit_data)
@@ -1780,12 +1775,14 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                
                 HUDList.SpecialPickupItem = HUDList.SpecialPickupItem or class(HUDList.RightListItem)
                 HUDList.SpecialPickupItem.SPECIAL_PICKUP_ICON_MAP = {
-                        crowbar =                                       { hudpickups = { 0, 64, 32, 32 } },
+						crowbar =                                       { hudpickups = { 0, 64, 32, 32 } },
                         keycard =                                       { hudpickups = { 32, 0, 32, 32 } },
+                        small_loot = 									{ hudpickups = { 32, 224, 32, 32} },
                         courier =                                       { atlas = { 6, 0 } },
                         planks =                                        { hudpickups = { 0, 32, 32, 32 } },
                         meth_ingredients =      						{ waypoints = { 192, 32, 32, 32 } },
-						Blowtorch = 									{ hudpickups = { 96, 192, 32, 32 }}
+						Blowtorch = 									{ hudpickups = { 96, 192, 32, 32 } },
+						thermite = 										{ hudpickups = { 64, 64, 32, 32 } },
                 }
                 function HUDList.SpecialPickupItem:init(parent, name, pickup_data)
                         local pickup_data = pickup_data or HUDList.SpecialPickupItem.SPECIAL_PICKUP_ICON_MAP[name]
@@ -1819,7 +1816,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                         bomb =					{ text = "Bomb" },
                         evidence =				{ text = "Evidence" },
                         warhead =				{ text = "Nuke" },
-                        dentist =				{ text = "?" },
+                        dentist =				{ text = "Pandora" },
 						pig =					{ text = "Pig" },
 						safe =					{ text = "Safe" },
 						prototype =				{ text = "Prototype" },
@@ -1829,7 +1826,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 						HCL =					{ text = "HCL" },
 						present =				{ text = "Gift" },	
 						goat = 					{ text = "Goat" }, 
-                        --container =   { text = "?" },
+                        container =   			{ text = "?" },
                 }
                 function HUDList.LootItem:init(parent, name, loot_data)
                         local loot_data = loot_data or HUDList.LootItem.LOOT_ICON_MAP[name]
@@ -2986,7 +2983,16 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
         end
        
 end
- 
+
+if RequiredScript == "lib/managers/hud/hudassaultcorner" then
+	local HUDAssaultCorner_init = HUDAssaultCorner.init
+	function HUDAssaultCorner:init(...)
+		HUDAssaultCorner_init(self, ...)
+		local hostages_panel = self._hud_panel:child("hostages_panel")
+		hostages_panel:set_alpha(0)
+	end
+end
+
 if RequiredScript == "lib/managers/playermanager" then
  
         PlayerManager._CHECK_BUFF_ACED = {
@@ -4809,6 +4815,7 @@ if RequiredScript == "lib/managers/enemymanager" then
         EnemyManager._UNIT_TYPES = {
                 cop = "cop",    --All non-special police
                 tank = "tank",
+				tank_hw = "tank",
                 spooc = "spooc",
                 taser = "taser",
                 shield = "shield",
@@ -4818,20 +4825,25 @@ if RequiredScript == "lib/managers/enemymanager" then
                 hector_boss_no_armor = "mobster_boss",
                 gangster = "thug",
                 mobster = "thug",
+				biker = "thug",
                 biker_escape = "thug",
                 security = "security",
                 gensec = "security",
                 turret = "turret",      --SWAT turrets
                 civilian = "civilian",  --All civilians
+				civilian_female = "civilian",
+				bank_manager = "civilian",
                 phalanx_vip = "phalanx",
                 phalanx_minion = "phalanx",
         }
- 
+
         EnemyManager._UNIT_TYPE_IGNORE = {
                 drunk_pilot = true,
                 escort = true,
                 old_hoxton_mission = true,
 				escort_undercover = true,
+				boris = true,
+				inside_man = true,
         }
        
         function EnemyManager:init(...)
@@ -5016,8 +5028,8 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
                 gen_pku_warhead_box =   "warhead",
                 --hold_open_bomb_case = "bomb"
                 --crate_loot_crowbar =                  "container",
-                --crate_loot =                                          "container",
-                --crate_loot_close =                            "container",
+                --crate_loot =                          "container",
+                --crate_loot_close =                    "container",
                 --Crates and suitcases etc interaction ID's here -> type "container"
         }
        
@@ -5141,7 +5153,16 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
                 muriatic_acid =						"meth_ingredients",
                 hydrogen_chloride =					"meth_ingredients",
                 caustic_soda =						"meth_ingredients",
-				gen_pku_blow_torch =				"Blowtorch"
+				gen_pku_blow_torch =				"Blowtorch",
+				gen_pku_thermite = 					"thermite",
+				gen_pku_thermite_paste = 			"thermite",
+				gen_pku_thermite_timer = 			"thermite",
+				hold_take_gas_can = 				"thermite",
+				money_wrap_single_bundle = 			"small_loot",
+				cas_chips_pile = 					"small_loot",
+				diamond_pickup = 					"small_loot",
+				diamond_pickup_pal = 				"small_loot",
+				safe_loot_pickup = 					"small_loot",
         }
        
         ObjectInteractionManager.EQUIPMENT_INTERACTION_ID = {
