@@ -8,12 +8,15 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	HUDHitDirection.healthColor  = WolfHUD.color_table[(WolfHUD.settings.dmg_health_color)] or Color.red
 	HUDHitDirection.critColor 	 = WolfHUD.color_table[(WolfHUD.settings.dmg_crit_color)] or Color.purple
 	HUDHitDirection.vehicleColor = WolfHUD.color_table[(WolfHUD.settings.dmg_vehicle_color)] or Color.yellow
+	HUDHitDirection.friendlyColor = Color('FFA500')
 
 ---------   END of Settings!   ------   Don't Edit Below, unless you know what you are doing!!!!   -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	HUDHitDirection._hitmarker_list = {}
 	HUDHitDirection.UNIT_TYPE_HIT_ARMOR = 0
 	HUDHitDirection.UNIT_TYPE_HIT_PLAYER = 1
 	HUDHitDirection.UNIT_TYPE_HIT_CRIT = 2
 	HUDHitDirection.UNIT_TYPE_HIT_VEHICLE = 3
+	HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE = 4
 
 
 	local hudhitdirection_init = HUDHitDirection.init
@@ -28,7 +31,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 
 	function HUDHitDirection:new_hitmarker(pos, type_hit)
 		if not self._hit_direction_panel or not WolfHUD.settings.show_dmg_indicator then return end
-		local color = (type_hit == self.UNIT_TYPE_HIT_ARMOR and HUDHitDirection.shieldColor or type_hit == self.UNIT_TYPE_HIT_PLAYER and HUDHitDirection.healthColor or type_hit == HUDHitDirection.UNIT_TYPE_HIT_CRIT and HUDHitDirection.critColor or type_hit == self.UNIT_TYPE_HIT_VEHICLE and HUDHitDirection.vehicleColor) or Color.white
+		local color = (type_hit == self.UNIT_TYPE_HIT_ARMOR and HUDHitDirection.shieldColor or type_hit == self.UNIT_TYPE_HIT_PLAYER and HUDHitDirection.healthColor or type_hit == HUDHitDirection.UNIT_TYPE_HIT_CRIT and HUDHitDirection.critColor or type_hit == self.UNIT_TYPE_HIT_VEHICLE and HUDHitDirection.vehicleColor or type_hit == HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE and HUDHitDirection.friendlyColor) or Color.white
 		local hitmarker = self._hit_direction_panel:panel({
 			x = "center",
 			y = "center",
@@ -45,6 +48,9 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 			alpha = 0,
 			halign = "right"
 		})
+		table.insert(self._hitmarker_list, hitmarker)
+		local index = #self._hitmarker_list
+		log("Hitmarker Count: " .. index)
 		hitmarker:stop()
 		hitmarker:animate( function( p )
 			over( HUDHitDirection.seconds , function( o )
@@ -56,6 +62,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 			end )
 			hitmarker:set_visible(false)
 			self._hit_direction_panel:remove(hitmarker)
+			table.remove(self._hitmarker_list, index)
 		end )
 	end
 	
@@ -69,8 +76,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	end
 	
 	function HUDHitDirection:remove_all()
-		local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
-		self:init(hud)
+		for i, marker in ipairs(self._hitmarker_list) do
+			marker:stop()
+			marker:set_visible(false)
+			self._hit_direction_panel:remove(marker)
+		end
+		self._hitmarker_list = {}
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDManager:new_hitmarker(data, damage_type)
@@ -95,7 +106,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local HUDManager_set_mugshot_custody = HUDManager.set_mugshot_custody
 	function HUDManager:set_mugshot_custody(id)
 		HUDManager_set_mugshot_custody(self, id)
-		if self._hud_hit_direction then
+		if self._hud_hit_direction and self._teammate_panels[id]._id == HUDManager.PLAYER_PANEL then
 			self._hud_hit_direction:remove_all()
 		end
 	end
@@ -103,6 +114,9 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 	local PlayerDamage_damage_bullet = PlayerDamage.damage_bullet
 	local PlayerDamage_damage_killzone = PlayerDamage.damage_killzone
 	local PlayerDamage_damge_fall = PlayerDamage.damage_fall
+	local PlayerDamage_damage_explosion = PlayerDamage.damage_explosion
+	local PlayerDamage_damage_fire = PlayerDamage.damage_fire
+	
 	function PlayerDamage:damage_bullet(attack_data)
 		PlayerDamage_damage_bullet(self, attack_data)
 		self:showHitmarker(attack_data)
@@ -121,9 +135,22 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 		return val
 	end
 	
-	function PlayerDamage:showHitmarker(attack_data)
-		local dmg_type = HUDHitDirection.UNIT_TYPE_HIT_PLAYER
-		if self:get_real_armor() > 0 then
+	function PlayerDamage:damage_explosion(attack_data)
+		PlayerDamage_damage_explosion(self, attack_data)
+		local distance = mvector3.distance(attack_data.position, self._unit:position())
+		if distance <= attack_data.range then
+			self:showHitmarker(attack_data, HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE)
+		end
+	end
+	
+	function PlayerDamage:damage_fire(attack_data)
+		PlayerDamage_damage_fire(self, attack_data)
+		self:showHitmarker(attack_data, HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE)
+	end
+	
+	function PlayerDamage:showHitmarker(attack_data, damage_type)
+		local dmg_type = damage_type or HUDHitDirection.UNIT_TYPE_HIT_PLAYER
+		if not damage_type and self:get_real_armor() > 0 then
 			dmg_type = HUDHitDirection.UNIT_TYPE_HIT_ARMOR
 		elseif (self:get_real_health() / self:_max_health()) <= 0.20 then
 			dmg_type = HUDHitDirection.UNIT_TYPE_HIT_CRIT
@@ -135,8 +162,8 @@ elseif string.lower(RequiredScript) == "lib/units/vehicles/vehicledamage" then
 	function VehicleDamage:damage_bullet(attack_data)
 		local val = VehicleDamage_damage_bullet(self, attack_data)
 		local local_player_vehicle = managers.player:get_vehicle()
-		if val and val ~= "friendly_fire" and local_player_vehicle and self._unit == local_player_vehicle.vehicle_unit then
-			managers.hud:new_hitmarker(attack_data, HUDHitDirection.UNIT_TYPE_HIT_VEHICLE)
+		if val and local_player_vehicle and self._unit == local_player_vehicle.vehicle_unit then
+			managers.hud:new_hitmarker(attack_data, val ~= "friendly_fire" and HUDHitDirection.UNIT_TYPE_HIT_VEHICLE or HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE)
 		end
 		return val
 	end
