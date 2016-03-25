@@ -35,6 +35,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			["passenger_back_right"] = { offset_x = -45, offset_y = 100, binding = "right top", seat = true},
 			texture_rect = { 512, 512, 512, 512},
 			texture = "guis/textures/contact_vlad"
+		},
+		["Blackhawk"] = {
+			["driver"] = { offset_x = 45, offset_y = 55, binding = "left top", seat = true},
+			["passenger_front"] = { offset_x = -45, offset_y = 55, binding = "right top", seat = true},
+			["passenger_back_left"] = { offset_x = 45, offset_y = -55, binding = "left bottom", seat = true},
+			["passenger_back_right"] = { offset_x = -45, offset_y = -55, binding = "right bottom", seat = true},
+			texture_rect = { 1024, 512, 512, 512},
+			texture = "guis/textures/contact_vlad"
 		}
 	}
 
