@@ -92,7 +92,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local latencies = {}
 			for _, peer in pairs(session:peers()) do
 				if peer:id() ~= session:local_peer():id() then
-					latencies[peer:id()] = 0 --Network:qos(peer:rpc()).ping
+					latencies[peer:id()] = Network:qos(peer:rpc()).ping
 				end
 			end
 			
