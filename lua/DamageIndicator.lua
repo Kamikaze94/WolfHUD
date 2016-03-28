@@ -106,7 +106,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local HUDManager_set_mugshot_custody = HUDManager.set_mugshot_custody
 	function HUDManager:set_mugshot_custody(id)
 		HUDManager_set_mugshot_custody(self, id)
-		if self._hud_hit_direction and self._teammate_panels[id]._id == HUDManager.PLAYER_PANEL then
+		if self._hud_hit_direction then
 			self._hud_hit_direction:remove_all()
 		end
 	end

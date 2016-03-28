@@ -38,7 +38,7 @@ if WolfHUD and not WolfHUD.settings.use_customhud then
 				alpha = 1,
 				w = radial_health_panel:w() * 0.53,
 				h = radial_health_panel:h() * 0.53,
-				layer = 5
+				layer = 0
 			})
 			self._stamina_bar:set_color(Color(1, 1, 0, 0))
 			self._stamina_bar:set_center(radial_health_panel:child("radial_health"):center())
@@ -127,10 +127,23 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDManager:add_weapon(data, ...)
 		local selection_index = data.inventory_index
-		local weapon_id = data.unit:base().name_id
+		local unit_base = data.unit:base()
+		local weapon_id
+		if unit_base._cosmetics_data then
+			local name_id = unit_base._cosmetics_data.name_id
+			for id, data in pairs(tweak_data.blackmarket.weapon_skins) do
+				if data.name_id == name_id then
+					weapon_id = id
+					break
+				end
+			end
+		else
+			weapon_id = unit_base.name_id
+		end
+		local weapon_id = data.unit:base()._cosmetics_data and string.gsub(data.unit:base()._cosmetics_data.name_id, "bm_wskn_", "") or data.unit:base().name_id  -- Dirty way to get skin_id out of its name id...
 		local silencer = data.unit:base():got_silencer()
 		self:set_teammate_weapon_id(HUDManager.PLAYER_PANEL, selection_index, weapon_id, silencer)
-
+		
 		return add_weapon_original(self, data, ...)
 	end
 	
@@ -221,21 +234,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._teammate_panels[panel_id]:set_gear_visible(true)
 		end
 	end
-	
-	function HUDManager:set_absorb_active(...) end 
-	function HUDManager:set_absorb_personal(...) end 
-	function HUDManager:set_absorb_max(...) end 
-	
-	
+
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
-	function HUDTeammate:set_absorb_active(...) end 
-	function HUDTeammate:set_absorb_personal(...) end 
-	function HUDTeammate:set_absorb_max(...) end 
-	function HUDTeammate:_animate_update_absorb(...) end 
-	function HUDTeammate:animate_update_absorb(...) end
-	function HUDTeammate:animate_update_absorb_active(...) end
-	function HUDTeammate:animate_update_absorb_max(...) end
-	function HUDTeammate:set_info_meter(...) end
 
 	HUDTeammate._PLAYER_PANEL_SCALE = WolfHUD.settings.PLAYER_PANEL_SCALE or 0.85
 	HUDTeammate._TEAMMATE_PANEL_SCALE = WolfHUD.settings.TEAMMATE_PANEL_SCALE or 0.75
@@ -528,6 +528,80 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			font_size = self._health_panel:h() * 0.5,
 			font = tweak_data.hud_players.timer_font
 		})
+		
+		local radial_absorb_shield_active = self._health_panel:bitmap({
+			name = "radial_absorb_shield_active",
+			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_shield",
+			texture_rect = {
+				0,
+				0,
+				64,
+				64
+			},
+			render_template = "VertexColorTexturedRadial",
+			blend_mode = "normal",
+			alpha = 1,
+			w = self._health_panel:w(),
+			h = self._health_panel:h(),
+			layer = 2
+		})
+		radial_absorb_shield_active:set_color(Color(1, 0, 0, 0))
+		radial_absorb_shield_active:hide()
+		local radial_absorb_health_active = self._health_panel:bitmap({
+			name = "radial_absorb_health_active",
+			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_health",
+			texture_rect = {
+				0,
+				0,
+				64,
+				64
+			},
+			render_template = "VertexColorTexturedRadial",
+			blend_mode = "normal",
+			alpha = 1,
+			w = self._health_panel:w(),
+			h = self._health_panel:h(),
+			layer = 3
+		})
+		radial_absorb_health_active:set_color(Color(1, 0, 0, 0))
+		radial_absorb_health_active:hide()
+		radial_absorb_health_active:animate(callback(self, self, "animate_update_absorb_active"))
+		local radial_info_meter = self._health_panel:bitmap({
+			name = "radial_info_meter",
+			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_stack_fg",
+			texture_rect = {
+				0,
+				0,
+				64,
+				64
+			},
+			render_template = "VertexColorTexturedRadial",
+			blend_mode = "add",
+			alpha = 1,
+			w = self._health_panel:w(),
+			h = self._health_panel:h(),
+			layer = 3
+		})
+		radial_info_meter:set_color(Color(1, 0, 0, 0))
+		radial_info_meter:hide()
+		local radial_info_meter_bg = self._health_panel:bitmap({
+			name = "radial_info_meter_bg",
+			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_stack_bg",
+			texture_rect = {
+				64,
+				0,
+				-64,
+				64
+			},
+			render_template = "VertexColorTexturedRadial",
+			blend_mode = "normal",
+			alpha = 1,
+			w = self._health_panel:w(),
+			h = self._health_panel:h(),
+			layer = 1
+		})
+		radial_info_meter_bg:set_color(Color(1, 0, 0, 0))
+		radial_info_meter_bg:hide()
 		--[[
 		if self._main_player then
 			self._stamina_bar = self._health_panel:bitmap({
@@ -539,7 +613,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 				color = Color(1, 1, 0, 0),
 				w = self._health_panel:w() * 0.5,
 				h = self._health_panel:h() * 0.5,
-				layer = 5
+				layer = 0
 			})
 			self._stamina_bar:set_center(self._health_panel:w() / 2, self._health_panel:h() / 2)
 			
@@ -578,10 +652,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			layer = 1  
 		})  
 		radial_rip_bg:set_visible(managers.player:has_category_upgrade("player", "armor_health_store_amount"))  
-	end  
-
+	end
 
 	function HUDTeammate:set_health(data)
+		self._health_data = data
 		local radial_health = self._health_panel:child("radial_health")
 		local red = data.current / data.total
 		if red < radial_health:color().red then
@@ -592,6 +666,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammate:set_armor(data)
+		self._armor_data = data
 		local radial_shield = self._health_panel:child("radial_shield")
 		local red = data.current / data.total
 		if red < radial_shield:color().red then
@@ -769,6 +844,81 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		end
 	end  
 	
+	function HUDTeammate:set_info_meter(data) 
+		local radial_info_meter = self._health_panel:child("radial_info_meter")
+		local radial_info_meter_bg = self._health_panel:child("radial_info_meter_bg")
+		local red = math.clamp(data.total / data.max, 0, 1)
+		radial_info_meter_bg:set_color(Color(1, red, 1, 1))
+		radial_info_meter_bg:set_visible(red > 0)
+		radial_info_meter_bg:set_rotation(red * 360)
+		local red = math.clamp(data.current / data.max, 0, 1)
+		radial_info_meter:stop()
+		radial_info_meter:animate(function(o)
+			local s = radial_info_meter:color().r
+			local e = red
+			over(0.2, function(p)
+				local c = math.lerp(s, e, p)
+				radial_info_meter:set_color(Color(1, c, 1, 1))
+				radial_info_meter:set_visible(c > 0)
+			end)
+		end)
+	
+	end
+	
+	function HUDTeammate:_animate_update_absorb(o, radial_absorb_shield_name, radial_absorb_health_name, var_name, blink)
+		while not ( alive(self._health_panel) and self[var_name] and self._armor_data and self._health_data ) do
+			coroutine.yield()
+		end
+		local radial_shield = self._health_panel:child("radial_shield")
+		local radial_health = self._health_panel:child("radial_health")
+		local radial_absorb_shield = self._health_panel:child(radial_absorb_shield_name)
+		local radial_absorb_health = self._health_panel:child(radial_absorb_health_name)
+		local radial_shield_rot = radial_shield:color().r
+		local radial_health_rot = radial_health:color().r
+		radial_absorb_shield:set_rotation((1 - radial_shield_rot) * 360)
+		radial_absorb_health:set_rotation((1 - radial_health_rot) * 360)
+		local current_absorb = 0
+		local current_shield, current_health
+		local step_speed = 1
+		local lerp_speed = 1
+		local dt, update_absorb
+		local t = 0
+		while alive(teammate_panel) do
+			dt = coroutine.yield()
+			if self[var_name] and self._armor_data and self._health_data then
+				update_absorb = false
+				current_shield = self._armor_data.current
+				current_health = self._health_data.current
+				if radial_shield:color().r ~= radial_shield_rot or radial_health:color().r ~= radial_health_rot then
+					radial_shield_rot = radial_shield:color().r
+					radial_health_rot = radial_health:color().r
+					radial_absorb_shield:set_rotation((1 - radial_shield_rot) * 360)
+					radial_absorb_health:set_rotation((1 - radial_health_rot) * 360)
+					update_absorb = true
+				end
+				if current_absorb ~= self[var_name] then
+					current_absorb = math.lerp(current_absorb, self[var_name], lerp_speed * dt)
+					current_absorb = math.step(current_absorb, self[var_name], step_speed * dt)
+					update_absorb = true
+				end
+				if blink then
+					t = (t + dt * 0.5) % 1
+					radial_absorb_shield:set_alpha(math.abs(math.sin(t * 180)) * 0.25 + 0.75)
+					radial_absorb_health:set_alpha(math.abs(math.sin(t * 180)) * 0.25 + 0.75)
+				end
+				if update_absorb and current_absorb > 0 then
+					local shield_ratio = current_shield == 0 and 0 or math.min(current_absorb / current_shield, 1)
+					local health_ratio = current_health == 0 and 0 or math.min((current_absorb - shield_ratio * current_shield) / current_health, 1)
+					local shield = math.clamp(shield_ratio * radial_shield_rot, 0, 1)
+					local health = math.clamp(health_ratio * radial_health_rot, 0, 1)
+					radial_absorb_shield:set_color(Color(1, shield, 1, 1))
+					radial_absorb_health:set_color(Color(1, health, 1, 1))
+					radial_absorb_shield:set_visible(shield > 0)
+					radial_absorb_health:set_visible(health > 0)
+				end
+			end
+		end
+	end	
 	
 	function HUDTeammate:_create_weapons_panel(width, height, scale)
 		local function populate_weapon_panel(panel)
@@ -1010,14 +1160,21 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammate:set_weapon_id(slot, id, silencer)
-		local bundle_folder = tweak_data.weapon[id] and tweak_data.weapon[id].texture_bundle_folder
-		local guis_catalog = "guis/"
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+		local bitmap_texture
+		log(tostring(id))
+		if tweak_data.blackmarket and tweak_data.blackmarket.weapon_skins and tweak_data.blackmarket.weapon_skins[id] then
+			local bundle_folder = tweak_data.blackmarket.weapon_skins[id].texture_bundle_folder
+			bitmap_texture = "guis/dlcs/" .. bundle_folder .. "/weapon_skins/" .. tostring(id)
+		else
+			local bundle_folder = tweak_data.weapon[id] and tweak_data.weapon[id].texture_bundle_folder
+			local guis_catalog = "guis/"
+			if bundle_folder then
+				guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+			end
+			local texture_name = tweak_data.weapon[id] and tweak_data.weapon[id].texture_name or tostring(id)
+			bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/weapons/" .. texture_name
 		end
-		local texture_name = tweak_data.weapon[id] and tweak_data.weapon[id].texture_name or tostring(id)
-		local bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/weapons/" .. texture_name
-
+			
 		local panel = self._weapons_panel:child(slot == 1 and "secondary_weapon_panel" or "primary_weapon_panel")
 		local icon = panel:child("icon")
 		local silencer_icon = panel:child("silencer_icon")
@@ -1718,6 +1875,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			
 			for selection, data in ipairs({ outfit.secondary, outfit.primary }) do
 				local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(data.factory_id)
+				if data.cosmetics and data.cosmetics.id and data.cosmetics.id ~= "nil" then
+					if tweak_data.blackmarket and tweak_data.blackmarket.weapon_skins and tweak_data.blackmarket.weapon_skins[data.cosmetics.id] then
+						weapon_id = data.cosmetics.id
+					end
+				end
 				local silencer = managers.weapon_factory:has_perk("silencer", data.factory_id, data.blueprint)
 				self:set_weapon_id(selection, weapon_id, silencer)
 			end
@@ -2100,9 +2262,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
                
                 local casing_panel = self._hud_panel:child("casing_panel")
                 casing_panel:set_right(self._hud_panel:w() / 2 + 133)
-               
-                local hostages_panel = self._hud_panel:child("hostages_panel")
-                hostages_panel:set_alpha(0)
         end
 
 	function HUDAssaultCorner:sync_start_assault(data)
