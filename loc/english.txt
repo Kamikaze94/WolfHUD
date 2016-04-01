@@ -167,7 +167,7 @@
 	"wolfhud_press2hold_min_timer_duration_desc" : "The Min Timer Duration for the Interaction to lock.",
 	"wolfhud_press2hold_show_lockindicator_title" : "Show Lock Indicator",
 	"wolfhud_press2hold_show_lockindicator_desc" : "Show transparent red/green circle overlay, to indicate wether the interaction is locked or not.",
-	"wolfhud_int_locked" : "Press [$BTN] to interrupt",
+	"wolfhud_int_locked" : "PRESS [$BTN] TO INTERRUPT",
 	"wolfhud_press2hold_equipment_cancel_title" : "Equipment Interrupt",
 	"wolfhud_press2hold_equipment_cancel_desc" : "Interrupt a locked Interaction with your equipment key.\n(Otherwise by pressing your Interaction key again.)",
 	"wolfhud_press2hold_show_timer_title" : "Show Timer",

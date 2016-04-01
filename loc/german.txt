@@ -159,7 +159,7 @@
 	"wolfhud_hudlist_show_buffs_title" : "Zeige Buffs",
 	"wolfhud_hudlist_show_buffs_desc" : "Zeige aktive Buffs unten in der Mitte der HUD.",
 	"wolfhud_hudlist_show_buffs_timed" : "Nur temporaere",
-	"wolfhud_press2hold_lock_mode_title" : "Sperr-Modus
+	"wolfhud_press2hold_lock_mode_title" : "Sperr-Modus",
 	"wolfhud_press2hold_lock_mode_desc" : "Sperren, wenn schon laenger als X sekunden interagiert wird. (Fortschritt)\nSperren, wenn benoetigte Interaktionszeit insgesamt laenger ist als X sekunden. (Gesamt)",
 	"wolfhud_press2hold_lock_mode_a" : "Fortschritt",
 	"wolfhud_press2hold_lock_mode_b" : "Gesamt",
@@ -167,7 +167,7 @@
 	"wolfhud_press2hold_min_timer_duration_desc" : "Die minimale Timerdauer um die Interaktion zu sperren.",
 	"wolfhud_press2hold_show_lockindicator_title" : "Zeige Sperr-Indikator",
 	"wolfhud_press2hold_show_lockindicator_desc" : "Zeige transparenten roten/gruenen Kreis, zur visualisierung, ob die Interaktion gesperrt ist oder nicht.",
-	"wolfhud_int_locked" : "Duecke [$BTN] um abzubrechen",
+	"wolfhud_int_locked" : "DRÜCKE [$BTN] UM ABZUBRECHEN",
 	"wolfhud_press2hold_equipment_cancel_title" : "Equipment Abbrechen",
 	"wolfhud_press2hold_equipment_cancel_desc" : "Breche eine gesperrte Intaktion mit der Equipment Taste ab.\n(Andernfalls durch erneutes druecken der Interaktionstaste.)",
 	"wolfhud_press2hold_show_timer_title" : "Zeige Timer",
