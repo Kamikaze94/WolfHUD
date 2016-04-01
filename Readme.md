@@ -38,7 +38,7 @@ to understand what happened wrong.  ;)__
   - Added Conterfeit Money to Lootcounter
   - Added Hacktimers to Undercover
   - Added Small loot Counter
-  - Added new Weapon loot types
+  - Added new Weapon loot types, EMP and Server
 - __KillCounter__, made by _Seven_
 - __[Press2Hold](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13489)__, made by _Seven_, modified by _me_
   - Optional center Timer

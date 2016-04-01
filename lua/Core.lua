@@ -1,7 +1,7 @@
 if not _G.WolfHUD then
 	_G.WolfHUD = {}
 	WolfHUD.mod_path = ModPath
-	WolfHUD.overrides = { {folder = "WolfHUD_Textures", file = "WolfHUD_Textures.zip", version = 4}, {folder = "Fednet Inventory", file = "Fednet_Inventory.zip", version = 1} }
+	WolfHUD.overrides = { {folder = "WolfHUD_Textures", file = "WolfHUD_Textures.zip", version = 4} }
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
 	WolfHUD.menu_ids = { "wolfhud_options_menu", "wolfhud_lowerhud_options_menu", "wolfhud_upperhud_options_menu", "wolfhud_upperhud_adv_options_menu", "wolfhud_press2hold_options_menu", "wolfhud_lasers_options_menu" }
 	
