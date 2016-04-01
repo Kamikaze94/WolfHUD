@@ -1,7 +1,7 @@
 if not _G.WolfHUD then
 	_G.WolfHUD = {}
 	WolfHUD.mod_path = ModPath
-	WolfHUD.overrides = { {path = "assets/mod_overrides/WolfHUD_Textures/", file = "WolfHUD_Textures.zip", version = 3} }
+	WolfHUD.overrides = { {folder = "WolfHUD_Textures", file = "WolfHUD_Textures.zip", version = 4}, {folder = "Fednet Inventory", file = "Fednet_Inventory.zip", version = 1} }
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
 	WolfHUD.menu_ids = { "wolfhud_options_menu", "wolfhud_lowerhud_options_menu", "wolfhud_upperhud_options_menu", "wolfhud_upperhud_adv_options_menu", "wolfhud_press2hold_options_menu", "wolfhud_lasers_options_menu" }
 	
@@ -191,9 +191,7 @@ if not _G.WolfHUD then
 		local file = io.open(self.save_path, "r")
 		if file then
 			for k, v in pairs(json.decode(file:read("*all"))) do
-				if type(self.settings[k]) == type(v) then
-					self.settings[k] = v
-				end
+				self.settings[k] = v
 			end
 			file:close()
 		end

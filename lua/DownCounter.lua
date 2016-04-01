@@ -14,12 +14,24 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		end
 		self._downs = 0
 		
+		local risk_indicator_bg = self._health_panel:bitmap({
+			name = "risk_indicator_bg",  
+			texture = "guis/textures/pd2/crimenet_marker_glow",  
+			texture_rect = { 0, 0, 64, 64 }, 
+			blend_mode = "normal",  
+			color = Color.black,
+			alpha = 0.6,
+			w = self._health_panel:w(),  
+			h = self._health_panel:h(),  
+			layer = 1
+		})
+		
 		local risk_indicator = self._health_panel:text({
 			name = "risk_indicator",
 			text = "?",
 			color = Color(1, 1, 0, 0),
 			blend_mode = "normal",
-			layer = 1,
+			layer = 2,
 			w = self._health_panel:w(),
 			h = self._health_panel:h(),
 			vertical = "center",
@@ -35,7 +47,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		self:reset_downs()
 	end
 
-	
 	function HUDTeammate:update_downs()
 		if not self._health_panel then return end
 		local color = Color(1, 0, 0.8, 1)
@@ -72,7 +83,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 				self._health_panel:child("risk_indicator"):set_font_size(15 * (HUDTeammate._TEAMMATE_PANEL_SCALE or 0.75))
 			end
 			alpha = ((self:peer_id() ~= nil or self._id == HUDManager.PLAYER_PANEL) and 1 or 0)
-			color = self._downs > 2 and Color.red or self._downs > 1 and Color.yellow or Color.green
+			color = self._downs > 2 and Color('E24E4E') or self._downs > 1 and Color('CEA168') or Color('C2FC97')
 			self._health_panel:child("risk_indicator"):set_text(tostring(downs_text))
 		end
 		self._health_panel:child("risk_indicator"):set_color(color:with_alpha(alpha))

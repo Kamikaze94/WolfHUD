@@ -28,17 +28,16 @@ if WolfHUD and not WolfHUD.settings.use_customhud then
 		
 		function HUDTeammate:_create_stamina_circle()
 			local radial_health_panel = self._panel:child("player"):child("radial_health_panel")
-			
 			self._stamina_bar = radial_health_panel:bitmap({
 				name = "radial_stamina",
-				texture = "guis/textures/pd2/hud_shield",
+				texture = "guis/textures/pd2/hud_radial_rim",
 				texture_rect = { 0, 0, 64, 64 },
 				render_template = "VertexColorTexturedRadial",
 				blend_mode = "add",
 				alpha = 1,
-				w = radial_health_panel:w() * 0.53,
-				h = radial_health_panel:h() * 0.53,
-				layer = 0
+				w = radial_health_panel:w() * 0.37,--53,
+				h = radial_health_panel:h() * 0.37,--53,
+				layer = 2
 			})
 			self._stamina_bar:set_color(Color(1, 1, 0, 0))
 			self._stamina_bar:set_center(radial_health_panel:child("radial_health"):center())
@@ -68,7 +67,6 @@ if WolfHUD and not WolfHUD.settings.use_customhud then
 		function HUDTeammate:set_current_stamina(value)
 			self._stamina_bar:set_color(Color(1, value/self._max_stamina, 0, 0))
 		end
-		
 	end
 	return
 end
@@ -464,11 +462,23 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			texture = "guis/textures/pd2/hud_health",
 			texture_rect = { 64, 0, -64, 64 },
 			render_template = "VertexColorTexturedRadial",
-			blend_mode = "add",
-			color = Color(1, 1, 0, 0),
+			blend_mode = "sub",
+			color = Color(1, 0, 0, 0),
 			w = self._health_panel:w(),
 			h = self._health_panel:h(),
 			layer = 2,
+		})
+		
+		self._health_panel:bitmap({
+			name = "radial_health_fill",
+			color = tweak_data.chat_colors[5],
+			texture = "guis/textures/pd2/hud_health",
+			texture_rect = { 64, 0, -64, 64 },
+			blend_mode = "add",
+			w = self._health_panel:w(),
+			h = self._health_panel:h(),
+			alpha = 1,
+			layer = 1
 		})
 		
 		local radial_shield = self._health_panel:bitmap({
@@ -657,11 +667,12 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 	function HUDTeammate:set_health(data)
 		self._health_data = data
 		local radial_health = self._health_panel:child("radial_health")
-		local red = data.current / data.total
-		if red < radial_health:color().red then
+		local red = 1 - data.current / data.total
+		if red > radial_health:color().red then
 			self:_damage_taken()
 		end
 		radial_health:set_color(Color(1, red, 1, 1))
+		radial_health:set_rotation(360 * red)
 		self:set_stored_health() --Update RIP Rotation
 	end
 
@@ -812,8 +823,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		local radial_health = self._health_panel:child("radial_health")		
 		if alive(rip) then  
 			do
-				rip:set_rotation((1 - radial_health:color().r) * 360)
-				rip_bg:set_rotation((1 - radial_health:color().r) * 360)
+				rip:set_rotation(self._health_panel:child("radial_health"):rotation())--(1 - radial_health:color().r) * 360)
+				rip_bg:set_rotation(self._health_panel:child("radial_health"):rotation())--(1 - radial_health:color().r) * 360)
 				if stored_health_ratio then
 					local red = math.min(stored_health_ratio, 1)
 					rip:set_visible(red > 0)  
@@ -1161,7 +1172,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 
 	function HUDTeammate:set_weapon_id(slot, id, silencer)
 		local bitmap_texture
-		log(tostring(id))
 		if tweak_data.blackmarket and tweak_data.blackmarket.weapon_skins and tweak_data.blackmarket.weapon_skins[id] then
 			local bundle_folder = tweak_data.blackmarket.weapon_skins[id].texture_bundle_folder
 			bitmap_texture = "guis/dlcs/" .. bundle_folder .. "/weapon_skins/" .. tostring(id)
@@ -1670,6 +1680,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammate:set_callsign(id)
+		self._health_panel:child("radial_health_fill"):set_color(tweak_data.chat_colors[id] or Color.white)
 		if not self._main_player then
 			self._name_panel:child("name_sub_panel"):child("name"):set_color((tweak_data.chat_colors[id] or Color.white):with_alpha(1))
 			self._name_panel:child("callsign"):set_color((tweak_data.chat_colors[id] or Color.white):with_alpha(1))
@@ -1861,6 +1872,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		self:set_ai(nil)
 		self:teammate_progress(false)
 		self:remove_carry_info()
+		self:set_info_meter({
+			current = 0,
+			total = 0,
+			max = 1
+		})
 		if self._main_player then
 			self._stamina_panel:child("stamina_bar"):stop()
 		end
@@ -1908,7 +1924,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammate:set_state(state)
-		--log_print("out.log", string.format("HUDTeammate:set_state(%s)\n", tostring(state)))
+		--log(string.format("HUDTeammate:set_state(%s)", tostring(state)))
 	end
 
 	function HUDTeammate:_animate_damage_taken(damage_indicator)

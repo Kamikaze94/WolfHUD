@@ -26,7 +26,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 		if PlayerStandard.LOCK_MODE == 1 then
 			is_locked = self._interact_expire_t and (t - (self._interact_expire_t - self._interact_params.timer) >= PlayerStandard.MIN_TIMER_DURATION) --lock interaction, when interacting longer then given time
 		elseif PlayerStandard.LOCK_MODE == 2 then
-			is_locked = self._interact_params and (self._interact_params.timer > PlayerStandard.MIN_TIMER_DURATION) -- lock interaction, when total timer time is longer then given time
+			is_locked = self._interact_params and (self._interact_params.timer >= PlayerStandard.MIN_TIMER_DURATION) -- lock interaction, when total timer time is longer then given time
 		end
 		
 		if self._interaction_locked ~= is_locked then

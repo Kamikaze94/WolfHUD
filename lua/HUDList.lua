@@ -33,7 +33,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                 --General settings
                 right_list_height_offset = HUDManager.CUSTOM_TEAMMATE_PANEL and 0 or 50,   --Margin from top for the right list
                 right_list_scale = 1,   --Size scale of right list
-                left_list_height_offset = 40,   --Margin from top for the left list
+                left_list_height_offset = HUDManager.CUSTOM_TEAMMATE_PANEL and 40 or 70,   --Margin from top for the left list
                 left_list_scale = 1,    --Size scale of left list
                 buff_list_height_offset = 80,   --Margin from bottom for the buff list
                 buff_list_scale = 1,    --Size scale of buff list
@@ -2251,13 +2251,25 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 texture = "guis/textures/pd2/hud_health",
                                 texture_rect = { 64, 0, -64, 64 },
                                 render_template = "VertexColorTexturedRadial",
-                                blend_mode = "add",
+                                blend_mode = "sub",
                                 layer = 2,
-                                color = Color(1, 1, 0, 0),
+                                color = Color(1, 0, 0, 0),
                                 w = self._panel:w(),
                                 h = self._panel:w(),
                         })
                         self._health_bar:set_bottom(self._panel:bottom())
+						
+						self._panel:bitmap({
+							name = "radial_health_fill",
+							color = tweak_data.chat_colors[1],
+							texture = "guis/textures/pd2/hud_health",
+							texture_rect = { 64, 0, -64, 64 },
+							blend_mode = "add",
+							w = self._panel:w(),
+							h = self._panel:w(),
+							alpha = 1,
+							layer = 1
+						}):set_bottom(self._panel:bottom())
                        
                         self._hit_indicator = self._panel:bitmap({
                                 name = "radial_health",
@@ -2287,7 +2299,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                        
                         self._damage_upgrade_text = self._panel:text({
                                 name = "type",
-                                text = "W",
+                                text = utf8.char(57364),
                                 align = "center",
                                 vertical = "center",
                                 w = self._panel:w(),
@@ -2317,7 +2329,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                 end
                
                 function HUDList.MinionItem:set_health(health, skip_animate)
-                        self._health_bar:set_color(Color(1, health / self._max_health, 1, 1))
+                        local red = 1 - (health/ self._max_health)
+						self._health_bar:set_color(Color(1, red, 1, 1))
+						self._health_bar:set_rotation(360 * red)
                        
                         if not (skip_animate or self._dead) then
                                 self._hit_indicator:stop()
@@ -5023,9 +5037,9 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
        
         ObjectInteractionManager.LOOT_TYPE_FROM_INTERACTION_ID = {
                 --If you add stuff here, make sure you add it to HUDList.LootItem.LOOT_ICON_MAP as well
-                weapon_case =                                   "weapon",
-                samurai_armor =                         "armor",
-                gen_pku_warhead_box =   "warhead",
+                weapon_case = 							"weapon",
+                samurai_armor = 						"armor",
+                gen_pku_warhead_box = 					"warhead",
                 --hold_open_bomb_case = "bomb"
                 --crate_loot_crowbar =                  "container",
                 --crate_loot =                          "container",
@@ -5045,6 +5059,9 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
                 coke_pure =								"coke",
                 meth =									"meth",
                 weapon =								"weapon",
+				weapons = 								"weapon",
+				weapon_scar = 							"weapon",
+				weapon_glock = 							"weapon",
                 circuit =								"server",
                 turret =								"turret",
                 ammo =									"shell",
@@ -5075,7 +5092,7 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
         }
        
         ObjectInteractionManager.LOOT_TYPE_LEVEL_COMPENSATION = {
-                framing_frame_3 =                                               { gold = 16, },
+                framing_frame_3 = { gold = 16, },
         }
        
         ObjectInteractionManager.LOOT_BAG_INTERACTION_ID = {

@@ -31,10 +31,14 @@ to understand what happened wrong.  ;)__
 - __[CustomHUD](http://steamcommunity.com/groups/vocalminority/discussions/1/412447613566923649/)__, made by _Seven_
   - Added downs counter
   - Added player levels behind names
+  - Added Weapon Skin Icon for skinned weapon
 - __[HudPanelList](http://steamcommunity.com/groups/vocalminority/discussions/1/412447613566900342/)__, made by _Seven_, updated by _me_
   - Added Flash to expiring Cam Loop
+  - Added more enmy types, to possibly get more accurate numbers
   - Added Conterfeit Money to Lootcounter
   - Added Hacktimers to Undercover
+  - Added Small loot Counter
+  - Added new Weapon loot types
 - __KillCounter__, made by _Seven_
 - __[Press2Hold](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13489)__, made by _Seven_, modified by _me_
   - Optional center Timer
@@ -43,7 +47,7 @@ to understand what happened wrong.  ;)__
 - __[Hold2Pick](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13518)__, made by _=SB= Malo_
 - __[WeaponLaserColor](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13508)__, made by _Seven_
 - __[Remember Gadget State](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13507)__, by _Iron Predator_
-  - Auto turns first gadget on at startup
+  - Auto turns lasers on, if weapon has an laser gedget
 - __[TabStats](https://steamcommunity.com/app/218620/discussions/15/618463738399320805/)__, made by _[MoCu] Pat_
 - __[Numeric Suspicion](https://github.com/cjur3/GageHud)__, made by _cjur3_ for GageHUD
 - __FlashlightExtender__, made by _Seven_
@@ -52,12 +56,15 @@ to understand what happened wrong.  ;)__
   - Added optional Civilian Healthbars
   - Added optional Vehicle Healthbars (Hidden when driving)
 - __Dynamic Damage Indicator__, made by _me_
+  - Fixxed crashes, when going into custody (hopefully, needs more testing)
 - __BurstFire__, made by _Seven_ (I think, cannot find the thread, where it was posted originally...)
 - __[No Spam](http://steamcommunity.com/app/218620/discussions/15/618457398976607330/)__, made by Ahab, Seven, AmEyeBlind & money123451
+  - A few messages still slip through...
 - __[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by _ViciousWalrus_, modified by _me_
   - Added Option to hide vehicle and mask images
   - Added Vehicle Healthbar
   - Added Boat to DrivingHUD
+  - Added Blackhawk to DrivingHUD
 - __Real Weapon Names__, made by _Thiago Simoes_
 - __[Buy all Assets](http://steamcommunity.com/app/218620/discussions/15/618458030689719683/)__, made by _=TBM= BangL_
 - __Smaller Menu Tweaks__
