@@ -1805,7 +1805,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                         painting =				{ text = "Painting" },
                         coke =					{ text = "Coke" },
                         meth =					{ text = "Meth" },
-                        weapon =				{ text = "Gun" },
+                        weapon =				{ text = "Weapon" },
                         server =				{ text = "Server" },
                         turret =				{ text = "Turret" },
                         shell =					{ text = "Shell" },
@@ -1825,8 +1825,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 						CS =					{ text = "CS" },
 						HCL =					{ text = "HCL" },
 						present =				{ text = "Gift" },	
-						goat = 					{ text = "Goat" }, 
-                        container =   			{ text = "?" },
+						goat = 					{ text = "Goat" },
+                        container =   			{ text = "Crate" },
                 }
                 function HUDList.LootItem:init(parent, name, loot_data)
                         local loot_data = loot_data or HUDList.LootItem.LOOT_ICON_MAP[name]
@@ -5088,7 +5088,12 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
 				nail_caustic_soda =						"CS",
 				nail_hydrogen_chloride =				"HCL",
 				present =								"present",
-				goat = 									"goat"
+				goat = 									"goat",
+				drk_bomb_part = 						"bomb",
+				mad_master_server_value_1 = 			"server",
+				mad_master_server_value_2 = 			"server",
+				mad_master_server_value_3 = 			"server",
+				mad_master_server_value_4 = 			"server"
         }
        
         ObjectInteractionManager.LOOT_TYPE_LEVEL_COMPENSATION = {
@@ -5097,9 +5102,9 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
        
         ObjectInteractionManager.LOOT_BAG_INTERACTION_ID = {
                 painting_carry_drop = true,     --Painting
-                carry_drop = true,                                      --Generic bag
-				safe_carry_drop = true,
-				goat_carry_drop = true,
+                carry_drop = true,              --Generic bag
+				safe_carry_drop = true,			--Safe
+				goat_carry_drop = true,			--Goat
         }
        
         ObjectInteractionManager.IGNORE_EDITOR_ID = {
