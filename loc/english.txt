@@ -1,4 +1,6 @@
 {
+	"menu_jowi" : "Wick",
+	
 	"WolfHUD_options_name" : "WolfHUD Settings",
 	"WolfHUD_options_help" : "Customize WolfHUD with your personal preferences.",
 	"wolfhud_multiselect_all" : "All",
