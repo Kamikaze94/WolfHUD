@@ -1,4 +1,9 @@
 {
+	"menu_jowi" : "Wick",
+	"menu_risk_elite" : "Todeswunsch. Ungeheuer viel ERF und Bargeld.",
+	"menu_difficulty_apocalypse" : "Todeswunsch",
+	"cash_sign" : "\194\128",
+	
 	"WolfHUD_options_name" : "WolfHUD Einstellungen",
 	"WolfHUD_options_help" : "Passe deine WolfHUD Einstellungen deinem Geschmack an.",
 	"wolfhud_multiselect_all" : "Alle",
