@@ -204,6 +204,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		loot_bitmap:set_left(self.drivingpanel:center_x() + (x_pos + loot_bitmap:w()))
 		loot_bitmap:set_y(self.drivingpanel:h() + ((y_pos + -120) + (loot_bitmap:h() / 2)))
 		
+		local vis = WolfHUD.settings.show_car_healthbar or not WolfHUD and true
 		self._health_text = self.drivingpanel:text({
 			name = "health",
 			text = "100000 HP",
@@ -217,6 +218,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			vertical = "bottom",
 			valign = "bottom",
 			layer = 1,
+			visible = vis,
 			wrap = false,
 			word_wrap = false
 		})
@@ -227,7 +229,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			name 			= "health_bar",
 			texture 		= "guis/textures/pd2/healthshield",
 			texture_rect 	= { 2, 18, 232,	11 },
-			blend_mode 		= "normal"
+			blend_mode 		= "normal",
+			visible = vis
 		})
 		self._health_shield = self.drivingpanel:bitmap({
 			align = "center",
@@ -236,7 +239,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			name 			= "unit_shield",
 			texture 		= "guis/textures/pd2/healthshield",
 			texture_rect 	= { 1, 1, 234, 13 },
-			blend_mode 		= "normal"
+			blend_mode 		= "normal",
+			visible = vis
 		})
 		self._health_bar:set_left(self.drivingpanel:center_x() + (x_pos + loot_bitmap:w() - 74))
 		self._health_bar:set_y(self.drivingpanel:h() + ((y_pos + -154) + (loot_bitmap:h() / 2)))
@@ -254,7 +258,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		local car_texture_rect = { 1024, 0, 512, 512}
 		local car_texture = "guis/textures/contact_vlad"
 		
-		local vis = WolfHUD.settings.show_vehicle or WolfHUD.settings.show_vehicle == nil and true
+		local vis = WolfHUD.settings.show_vehicle or not WolfHUD and true
 		local vehicle_bitmap = self.drivingpanel:bitmap({
 			vertical = "bottom",
 			align = "left",
@@ -291,6 +295,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		self.drivingpanel:child("value_gear"):set_text(gear)
 		self.drivingpanel:child("seats"):set_text(people .. "/" .. people_total)
 		self.drivingpanel:child("loot"):set_text(loot_current .. "/" .. loot_total)
+		local health_vis = WolfHUD.settings.show_car_healthbar or not WolfHUD and true
+		if health_vis ~= self._health_text then
+			self._health_bar:set_visible(health_vis)
+			self._health_shield:set_visible(health_vis)
+			self._health_text:set_visible(health_vis)
+		end
 		local health_perc = health_current / health_total
 		self._health_text:set_text(math.round(health_current) .. " HP")
 		if health_perc < 0.05 then 

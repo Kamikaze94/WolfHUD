@@ -240,7 +240,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	}
 	
 	ChatManager._BLOCK_PATTERNS = {
-	  ".- replenished health by .-%%.+",
+--[[	  ".- replenished health by .-%%.+",
 	  --healed up
 	  ".- was downed",
 	  --downed
@@ -250,7 +250,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	  --downed and needs to patch up
 	  ".+ is in custody!",
 	  --jail time
-	  ".-A .- is done",
+	  ".- is done",
 	  --drill is done
 	  ".-A .- on a .+ < 10s left",
 	  --drill on a thing is nearly done
@@ -272,12 +272,12 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	  --TeamKills Endgame Stat
 	  ".- | DPS:.- | KPM:.- | Acc:.-.+",
 	  --per Player stats
-	  ".-<LC>-- PocoHud³ : More info @ steam group .-pocomods.+",
+	  ".-<LC>-- PocoHud³ : More info @ steam group .-pocomods.+",]]
 	  --end game plug
 	  ".-[NGBTO]:.+",
 	  --NGBTO info blocker Should work since its mass spam.
-	  --"%d-:?%d+:%d+<LC>.+"
-	  --Blocks anything, that starts with the time and then has a pipe
+	  "%d-:?%d%d:%d%d<LC>.+"
+	  --Blocks anything, that starts with the time and then has a pipe (Might block other mods, not only Poco...)
 	}
 
 	local _receive_message_original = ChatManager._receive_message
