@@ -42,7 +42,7 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
   - Added Small loot Counter
   - Added new Weapon loot types, EMP and Server
 - __KillCounter__, made by _Seven_
-- __[Press2Hold](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13489)__, made by _Seven_, modified by _me_
+- __[Press2Hold](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13489)__, made by _Seven_, modified by _Iron Predator_ and _me_
   - Optional center Timer
   - Lock Interaction by pressed time, or total timer
   - Change Interaction text when locked, to tell you how to interrupt
@@ -60,6 +60,7 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
 - __Dynamic Damage Indicator__, made by _me_
   - Fixxed crashes, when going into custody (hopefully, needs more testing)
 - __BurstFire__, made by _Seven_ (I think, cannot find the thread, where it was posted originally...)
+- __[Real Ammo](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15108)__, made by FishTaco
 - __[No Spam](http://steamcommunity.com/app/218620/discussions/15/618457398976607330/)__, made by Ahab, Seven, AmEyeBlind & money123451
   - A few messages still slip through...
 - __[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by _ViciousWalrus_, modified by _me_
