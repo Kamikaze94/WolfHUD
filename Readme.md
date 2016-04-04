@@ -34,6 +34,8 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
   - Added downs counter
   - Added player levels behind names
   - Added Weapon Skin Icon for skinned weapon
+  - Added Indicators for Maniac Perk Deck
+  - Changed health bars, colourized by peer chat color (Inspired by MUI)
 - __[HudPanelList](http://steamcommunity.com/groups/vocalminority/discussions/1/412447613566900342/)__, made by _Seven_, updated by _me_
   - Added Flash to expiring Cam Loop
   - Added more enmy types, to possibly get more accurate numbers
@@ -41,11 +43,12 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
   - Added Hacktimers to Undercover
   - Added Small loot Counter
   - Added new Weapon loot types, EMP and Server
-- __KillCounter__, made by _Seven_
+- __[KillCounter](https://bitbucket.org/pjal3urb/pd2-mods/src/4d3b2b6b08cc87ae84f6638a2897acc19acdb689/CustomHUD/Plugins/KillCounter.lua?at=master)__, made by _Seven_
 - __[Press2Hold](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13489)__, made by _Seven_, modified by _Iron Predator_ and _me_
   - Optional center Timer
   - Lock Interaction by pressed time, or total timer
   - Change Interaction text when locked, to tell you how to interrupt
+- __[DoubleTap Granades](https://bitbucket.org/pjal3urb/pd2-mods/src/4d3b2b6b08cc87ae84f6638a2897acc19acdb689/DoubleTapGrenades/DoubletapGrenades.lua?at=master)__, made by Seven 
 - __[Hold2Pick](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13518)__, made by _=SB= Malo_
 - __[WeaponLaserColor](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13508)__, made by _Seven_
 - __[Remember Gadget State](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13507)__, by _Iron Predator_
@@ -58,8 +61,9 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
   - Added optional Civilian Healthbars
   - Added optional Vehicle Healthbars (Hidden when driving)
 - __Dynamic Damage Indicator__, made by _me_
-  - Fixxed crashes, when going into custody (hopefully, needs more testing)
-- __BurstFire__, made by _Seven_ (I think, cannot find the thread, where it was posted originally...)
+  - Animation based on PocoHUDs
+  - Fixxed crashes, when going into custody
+- __[BurstFire](https://bitbucket.org/pjal3urb/pd2-mods/src/4d3b2b6b08cc87ae84f6638a2897acc19acdb689/BurstFire/Obsolete/BurstFire.lua?at=master)__, made by _Seven_ (I think, cannot find the thread, where it was posted originally...)
 - __[Real Ammo](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15108)__, made by FishTaco
 - __[No Spam](http://steamcommunity.com/app/218620/discussions/15/618457398976607330/)__, made by Ahab, Seven, AmEyeBlind & money123451
   - A few messages still slip through...
