@@ -14,9 +14,11 @@ Not sure if I want it to become that, but at least I added ingame Options to tur
 </p>
 
 ###Installation:
-Simply drag and drop the Contents of the downloaded archive into your mods-folder, and you are good to go.  
-Configurations can be made through the included ingame menu.  
-__(You need the [BLT Hook](http://paydaymods.com/download/) for this mod to work)__  
+1. Click on __'Download .ZIP'__-Button at the top of this site.
+2. Open the downloaded archive, using WinRAR or 7zip.
+3. Extract the __'WolfHUD-master'__-folder into your 'Payday 2/mods'-folder.
+4. Rename __'WolfHUD-master'__-folder to __'WolfHUD'__.  
+__(You need the [Better Lua injecTor](http://paydaymods.com/download/) for this mod to work)__  
 
 ###Updates:
 The mod will check for updates when you reach the main menu.  
@@ -24,8 +26,8 @@ You will then be prompted to Update automatically, ignore the update this time, 
 
 ###Bug reports:
 __If you encounter any bugs, feel free to post about it on the issues tab!  
-Please try to provide information from your crashlog/dump or anything useful,  
-to understand what happened wrong.  ;)__
+Please try to provide information from your crashlog and the actions you and your teammates were doing, when you crashed.  ;)__  
+The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
 
 ###Included Mods:
 - __[CustomHUD](http://steamcommunity.com/groups/vocalminority/discussions/1/412447613566923649/)__, made by _Seven_
