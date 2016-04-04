@@ -1,4 +1,5 @@
 {
+	"menu_jowi" : "Wick",
 	"menu_risk_elite" : "Todeswunsch. Ungeheuer viel ERF und Bargeld.",
 	"menu_difficulty_apocalypse" : "Todeswunsch",
 	"cash_sign" : "\194\128",

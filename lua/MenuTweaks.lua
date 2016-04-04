@@ -276,7 +276,8 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	  --end game plug
 	  ".-[NGBTO]:.+",
 	  --NGBTO info blocker Should work since its mass spam.
-	  "%d-:?%d%d:%d%d<LC>.+"
+	  ".-%d%d:%d%d<LC>.+",
+	  ".-%d%d:%d%d:%d%d<LC>.+"
 	  --Blocks anything, that starts with the time and then has a pipe (Might block other mods, not only Poco...)
 	}
 

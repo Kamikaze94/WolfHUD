@@ -877,7 +877,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 	end
 	
 	function HUDTeammate:_animate_update_absorb(o, radial_absorb_shield_name, radial_absorb_health_name, var_name, blink)
-		while not ( alive(self._health_panel) and self[var_name] and self._armor_data and self._health_data ) do
+		while not alive(self._health_panel or not self[var_name] or not self._armor_data or not self._health_data ) do
 			coroutine.yield()
 		end
 		local radial_shield = self._health_panel:child("radial_shield")
@@ -894,7 +894,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		local lerp_speed = 1
 		local dt, update_absorb
 		local t = 0
-		while alive(teammate_panel) do
+		while alive(self._health_panel) do
 			dt = coroutine.yield()
 			if self[var_name] and self._armor_data and self._health_data then
 				update_absorb = false
@@ -904,7 +904,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 					radial_shield_rot = radial_shield:color().r
 					radial_health_rot = radial_health:color().r
 					radial_absorb_shield:set_rotation((1 - radial_shield_rot) * 360)
-					radial_absorb_health:set_rotation((1 - radial_health_rot) * 360)
+					radial_absorb_health:set_rotation(radial_health_rot * 360)
 					update_absorb = true
 				end
 				if current_absorb ~= self[var_name] then
