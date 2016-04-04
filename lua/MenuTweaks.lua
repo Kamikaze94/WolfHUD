@@ -234,9 +234,10 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	if not WolfHUD.settings.spam_filter then return end
 	ChatManager._SUB_TABLE = {
-			[utf8.char(57364)] = "<SKULL>",
-			[utf8.char(57363)] = "<GHOST>",
-			[utf8.char(139)] = "<LC>",
+			[utf8.char(57364)] = "<SKULL>",	--Skull icon
+			[utf8.char(57363)] = "<GHOST>",	--Ghost icon
+			[utf8.char(139)] = "<LC>",		--broken bar
+			["϶"] = "<PB>"					--PocoHuds bar
 	}
 	
 	ChatManager._BLOCK_PATTERNS = {
@@ -249,6 +250,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	  ".+ has been downed .+",
 	  --downed and needs to patch up
 	  ".+ is in custody!",
+	  ".+ befindet sich in Haft!",
 	  --jail time
 	  ".- is done",
 	  --drill is done
@@ -268,7 +270,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	  --converted cop
 	  ".- lost a minion to .+",
 	  --lost a minion text
-	  ".-<PocoHud³ r.- > .+",
+	  ".-<PocoHud³ r.- >.+",
 	  --TeamKills Endgame Stat
 	  ".- | DPS:.- | KPM:.- | Acc:.-.+",
 	  --per Player stats
@@ -276,8 +278,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	  --end game plug
 	  ".-[NGBTO]:.+",
 	  --NGBTO info blocker Should work since its mass spam.
-	  ".-%d%d:%d%d<LC>.+",
-	  ".-%d%d:%d%d:%d%d<LC>.+"
+	  ".-%d%d:%d%d<PB>.+"
 	  --Blocks anything, that starts with the time and then has a pipe (Might block other mods, not only Poco...)
 	}
 
