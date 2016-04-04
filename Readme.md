@@ -14,7 +14,7 @@ Not sure if I want it to become that, but at least I added ingame Options to tur
 </p>
 
 ###Installation:
-1. Klick on __'Download .ZIP'__-Button at the top of this site.
+1. Click on __'Download .ZIP'__-Button at the top of this site.
 2. Open the downloaded archive, using WinRAR or 7zip.
 3. Extract the __'WolfHUD-master'__-folder into your 'Payday 2/mods'-folder.
 4. Rename __'WolfHUD-master'__-folder to __'WolfHUD'__.  
