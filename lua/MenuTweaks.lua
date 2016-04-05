@@ -237,22 +237,22 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 			[utf8.char(57364)] = "<SKULL>",	--Skull icon
 			[utf8.char(57363)] = "<GHOST>",	--Ghost icon
 			[utf8.char(139)] = "<LC>",		--broken bar
-			[utf8.char(155)] = "<RC>"		
-			[utf8.char(1035)] = "<DRC>"		
-			[utf8.char(1014)] = "<DIV>"		--PocoHuds bar
-			[utf8.char(57344)] = "<A>"		--Controller A
-			[utf8.char(57345)] = "<B>"		--Controller B
-			[utf8.char(57346)] = "<X>"		--Controller X
-			[utf8.char(57347)] = "<Y>"		--Controller Y
-			[utf8.char(57348)] = "<BACK>"	--Controller BACK
-			[utf8.char(57349)] = "<START>"	--Controller START
-			[utf8.char(1031)] = "<DOT>"		
-			[utf8.char(1015)] = "<CHAPTER>"	
-			[utf8.char(1012)] = "<BIGDOT>"	
-			[utf8.char(215)] = "<TIMES>"	--Mult
-			[utf8.char(247)] = "<DIVIDED>"	--Divided
-			[utf8.char(1024)] = "<DEG>"		--Degree
-			[utf8.char(1030)] = "<PM>"		--PM Sign
+			[utf8.char(155)] = "<RC>",		
+			[utf8.char(1035)] = "<DRC>",		
+			[utf8.char(1014)] = "<DIV>",	--PocoHuds bar
+			[utf8.char(57344)] = "<A>",		--Controller A
+			[utf8.char(57345)] = "<B>",		--Controller B
+			[utf8.char(57346)] = "<X>",		--Controller X
+			[utf8.char(57347)] = "<Y>",		--Controller Y
+			[utf8.char(57348)] = "<BACK>",	--Controller BACK
+			[utf8.char(57349)] = "<START>",	--Controller START
+			[utf8.char(1031)] = "<DOT>",		
+			[utf8.char(1015)] = "<CHAPTER>",	
+			[utf8.char(1012)] = "<BIGDOT>",	
+			[utf8.char(215)] = "<TIMES>",	--Mult
+			[utf8.char(247)] = "<DIVIDED>",	--Divided
+			[utf8.char(1024)] = "<DEG>",	--Degree
+			[utf8.char(1030)] = "<PM>",		--PM Sign
 			[utf8.char(1033)] = "<NO>"		--Number
 			
 	}
@@ -260,7 +260,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	ChatManager._BLOCK_PATTERNS = {
 	  ".-[NGBTO]:.+",
 	  --NGBTO info blocker Should work since its mass spam.
-	  ".-[%d%d:]+%d%d<DIV>.+"
+	  ".-[%d-%d:]+%d%d<DIV>.+"
 	  --Blocks anything, that starts with the time and then has a divider (Might block other mods, not only Poco...)
 	}
 
