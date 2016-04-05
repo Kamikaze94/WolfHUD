@@ -31,7 +31,7 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
 
 ###Included Mods:
 - __[CustomHUD](http://steamcommunity.com/groups/vocalminority/discussions/1/412447613566923649/)__, made by _Seven_
-  - Added downs counter
+  - Added downs counter (Also works with default HUD)
   - Added player levels behind names
   - Added Weapon Skin Icon for skinned weapon
   - Added Indicators for Maniac Perk Deck
@@ -72,7 +72,7 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
   - Added Vehicle Healthbar
   - Added Boat to DrivingHUD
   - Added Blackhawk to DrivingHUD
-- __Real Weapon Names__, made by _Thiago Simoes_
+- __[Real Weapon Names](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15433)__, made by _(AD) Jaqueto_, updated by _Terminator01_
 - __[Buy all Assets](http://steamcommunity.com/app/218620/discussions/15/618458030689719683/)__, made by _=TBM= BangL_
 - __Smaller Menu Tweaks__
   - [Always show Mod Icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13975), made by _Slippai~_
