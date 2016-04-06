@@ -68,7 +68,7 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
 - __[Real Ammo](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15108)__, made by _FishTaco_
 - __[No Spam](http://steamcommunity.com/app/218620/discussions/15/618457398976607330/)__, made by _Ahab_, _Seven_, _AmEyeBlind_ & _money123451_
   - A few messages still slip through...
-- __[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by _ViciousWalrus_, modified by _me_
+- __[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by _ViciousWalrus_ and _Great Big Bushy Beard_, modified by _me_
   - Added Option to hide vehicle and mask images
   - Added Vehicle Healthbar
   - Added Boat to DrivingHUD
