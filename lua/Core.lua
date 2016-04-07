@@ -1,7 +1,7 @@
 if not _G.WolfHUD then
 	_G.WolfHUD = {}
 	WolfHUD.mod_path = ModPath
-	WolfHUD.overrides = { {path = "assets/mod_overrides/WolfHUD_Textures", file = "WolfHUD_Textures.zip", version = 4}, {path = "assets/mod_overrides/Federal Inventory", file = "Federal_Inventory.zip", version = 1} }
+	WolfHUD.overrides = { {path = "assets/mod_overrides/WolfHUD_Textures/", file = "WolfHUD_Textures.zip", version = 4}, {path = "assets/mod_overrides/Federal Inventory/", file = "Federal_Inventory.zip", version = 1} }
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
 	WolfHUD.menu_ids = { "wolfhud_options_menu", "wolfhud_lowerhud_options_menu", "wolfhud_upperhud_options_menu", "wolfhud_upperhud_adv_options_menu", "wolfhud_press2hold_options_menu", "wolfhud_lasers_options_menu" }
 	
@@ -21,8 +21,8 @@ if not _G.WolfHUD then
 		WolfHUD.color_table[12] = Color('008000')		--12: Green
 		WolfHUD.color_table[13] = Color('0000FF')		--13: Blue
 		WolfHUD.color_table[14] = Color('808080')		--14: Gray
-		WolfHUD.color_table[15] = Color('000000')		--14: Black
-		WolfHUD.color_table[16] = Color('000000')		--15: Rainbow (only available in laser colors)
+		WolfHUD.color_table[15] = Color('000000')		--15: Black
+		WolfHUD.color_table[16] = Color('000000')		--16: Rainbow (only available in laser colors)
 	end
 	
 	WolfHUD.hook_files = WolfHUD.hook_files or {
@@ -316,6 +316,8 @@ if not _G.WolfHUD then
 						else
 							os.remove(WolfHUD.mod_path .. override.file)
 						end
+					else
+						update = true
 					end
 				end
 				if update then 
@@ -416,393 +418,23 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		QuickMenu:new( menu_title, menu_message, menu_options, true )
 	end
 	
-	MenuCallbackHandler.callback_use_customhud = function(self, item)
-		WolfHUD.settings.use_customhud = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_playerpanel_scale = function(self, item)
-		WolfHUD.settings.PLAYER_PANEL_SCALE = item:value()
-	end
-	
-	MenuCallbackHandler.callback_teammatepanel_scale = function(self, item)
-		WolfHUD.settings.TEAMMATE_PANEL_SCALE = item:value()
-	end
-	
-	MenuCallbackHandler.callback_chat_fontsize_scale = function(self, item)
-		WolfHUD.settings.LINE_HEIGHT = item:value()
-	end
-	
-	MenuCallbackHandler.callback_chat_outputlines = function(self, item)
-		WolfHUD.settings.MAX_OUTPUT_LINES = item:value()
-	end
-	
-	MenuCallbackHandler.callback_use_killcounter = function(self, item)
-		WolfHUD.settings.use_killcounter = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_show_special = function(self, item)
-		WolfHUD.settings.SHOW_SPECIAL_KILLS = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_show_head = function(self, item)
-		WolfHUD.settings.SHOW_HEADSHOT_KILLS = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_show_ai = function(self, item)
-		WolfHUD.settings.SHOW_AI_KILLS = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_corpse_limit = function(self, item)
-		WolfHUD.settings.max_corpses = item:value()
-	end
-	
-	MenuCallbackHandler.callback_show_enemyhealthbar = function(self, item)
-		WolfHUD.settings.show_enemy_healthbar = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_show_civhealthbar = function(self, item)
-		WolfHUD.settings.show_civilian_healthbar = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_show_carhealthbar = function(self, item)
-		WolfHUD.settings.show_car_healthbar = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_show_healthbar_pointer = function(self, item)
-		WolfHUD.settings.show_healthbar_pointer = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_show_dmg_indicator = function(self, item)
-		WolfHUD.settings.show_dmg_indicator = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_dmg_ind_time = function(self, item)
-		WolfHUD.settings.dmg_ind_time = item:value()
-		if HUDHitDirection then HUDHitDirection.seconds = WolfHUD.settings.dmg_ind_time end
-	end
-	
-	MenuCallbackHandler.callback_dmg_ind_size = function(self, item)
-		WolfHUD.settings.dmg_ind_size = item:value()
-		if HUDHitDirection then 
-			HUDHitDirection.sizeStart = WolfHUD.settings.dmg_ind_size 
-			HUDHitDirection.sizeEnd = WolfHUD.settings.dmg_ind_size + 100
+	MenuCallbackHandler.clbk_change_setting = function(self, item)
+		local value
+		if item._type == "toggle" then
+			value = (item:value() == "on")
+		else
+			value = item:value()
+		end
+		local name = item:parameters().name
+		if name then
+			WolfHUD.settings[name] = value
 		end
 	end
 	
-	MenuCallbackHandler.callback_dmg_shield_color = function(self, item)
-		WolfHUD.settings.dmg_shield_color = item:value()
-		if HUDHitDirection then HUDHitDirection.shieldColor = WolfHUD.color_table[(WolfHUD.settings.dmg_shield_color)] end
-	end
-	
-	MenuCallbackHandler.callback_dmg_health_color = function(self, item)
-		WolfHUD.settings.dmg_health_color = item:value()
-		if HUDHitDirection then HUDHitDirection.healthColor = WolfHUD.color_table[(WolfHUD.settings.dmg_health_color)] end
-	end
-	
-	MenuCallbackHandler.callback_dmg_crit_color = function(self, item)
-		WolfHUD.settings.dmg_crit_color = item:value()
-		if HUDHitDirection then HUDHitDirection.critColor = WolfHUD.color_table[(WolfHUD.settings.dmg_crit_color)] end
-	end
-	
-	MenuCallbackHandler.callback_dmg_vehicle_color = function(self, item)
-		WolfHUD.settings.dmg_vehicle_color = item:value()
-		if HUDHitDirection then HUDHitDirection.vehicleColor = WolfHUD.color_table[(WolfHUD.settings.dmg_vehicle_color)] end
-	end
-	
-	MenuCallbackHandler.callback_dmg_friendlyfire_color = function(self, item)
-		WolfHUD.settings.dmg_friendlyfire_color = item:value()
-		if HUDHitDirection then HUDHitDirection.friendlyColor = WolfHUD.color_table[(WolfHUD.settings.dmg_friendlyfire_color)] end
-	end
-	
-	MenuCallbackHandler.callback_show_drivinghud = function(self, item)
-		WolfHUD.settings.use_drivinghud = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_show_vehicleimage = function(self, item)
-		WolfHUD.settings.show_vehicle = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_speed_in_mph = function(self, item)
-		WolfHUD.settings.speed_in_mph = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_skip_blackscreen = function(self, item)
-		WolfHUD.settings.skip_blackscreen = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_statscreen_delay = function(self, item)
-		WolfHUD.settings.stat_screen_delay = item:value()
-	end
-	
-	MenuCallbackHandler.callback_lootscreen_delay = function(self, item)
-		WolfHUD.settings.loot_screen_delay = item:value()
-	end
-	
-	MenuCallbackHandler.callback_spam_filter = function(self, item)
-		WolfHUD.settings.spam_filter = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_replace_weapon_names = function(self, item)
-		log(item:parameters().name)
-		WolfHUD.settings.replace_weapon_names = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_use_hudlist = function(self, item)
-		WolfHUD.settings.use_hudlist = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_use_press2hold = function(self, item)
-		WolfHUD.settings.use_press2hold = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_use_weaponlasers = function(self, item)
-		WolfHUD.settings.use_weaponlasers = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_hudlist_boxcolor = function(self, item)
-		WolfHUD.settings.hud_box_color = item:value()
-	end
-	
-	MenuCallbackHandler.callback_hudlist_boxbgcolor = function(self, item)
-		WolfHUD.settings.hud_box_bg_color = item:value()
-	end
-	
-	MenuCallbackHandler.callback_hudlist_civcolor = function(self, item)
-		WolfHUD.settings.civilian_color = item:value()
-	end
-	
-	MenuCallbackHandler.callback_hudlist_thugcolor = function(self, item)
-		WolfHUD.settings.thug_color = item:value()
-	end
-	
-	MenuCallbackHandler.callback_hudlist_copcolor = function(self, item)
-		WolfHUD.settings.enemy_color = item:value()
-	end
-	
-	MenuCallbackHandler.callback_show_timers = function(self, item)
-		WolfHUD.settings.show_timers = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_timers", WolfHUD.settings.show_timers) end
-	end
-
-	MenuCallbackHandler.callback_show_equipment = function(self, item)
-		WolfHUD.settings.show_equipment = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_equipment", WolfHUD.settings.show_equipment) end
-	end
-
-	MenuCallbackHandler.callback_show_minions = function(self, item)
-		WolfHUD.settings.show_minions = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_minions", WolfHUD.settings.show_minions) end
-	end	
-
-	MenuCallbackHandler.callback_show_pagers = function(self, item)
-		WolfHUD.settings.show_pagers = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_pagers", WolfHUD.settings.show_pagers) end
-	end	
-
-	MenuCallbackHandler.callback_remove_answered_pager_contour = function(self, item)
-		WolfHUD.settings.remove_answered_pager_contour = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("remove_answered_pager_contour", WolfHUD.settings.remove_answered_pager_contour) end
-	end
-
-	MenuCallbackHandler.callback_show_ecms = function(self, item)
-		WolfHUD.settings.show_ecms = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_ecms", WolfHUD.settings.show_ecms) end
-	end	
-
-	MenuCallbackHandler.callback_show_enemies = function(self, item)
-		WolfHUD.settings.show_enemies = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_enemies", WolfHUD.settings.show_enemies) end
-	end	
-
-	MenuCallbackHandler.callback_aggregate_enemies = function(self, item)
-		WolfHUD.settings.aggregate_enemies = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("aggregate_enemies", WolfHUD.settings.aggregate_enemies) end
-	end	
-
-	MenuCallbackHandler.callback_show_civilians = function(self, item)
-		WolfHUD.settings.show_civilians = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_civilians", WolfHUD.settings.show_civilians) end
-	end	
-
-	MenuCallbackHandler.callback_show_hostages = function(self, item)
-		WolfHUD.settings.show_hostages = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_hostages", WolfHUD.settings.show_hostages) end
-	end	
-
-	MenuCallbackHandler.callback_show_pager_count = function(self, item)
-		WolfHUD.settings.show_pager_count = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_pager_count", WolfHUD.settings.show_pager_count) end
-	end	
-
-	MenuCallbackHandler.callback_show_loot = function(self, item)
-		WolfHUD.settings.show_loot = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_loot", WolfHUD.settings.show_loot) end
-	end	
-
-	MenuCallbackHandler.callback_aggregate_loot = function(self, item)
-		WolfHUD.settings.aggregate_loot = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("aggregate_loot", WolfHUD.settings.aggregate_loot) end
-	end	
-
-	MenuCallbackHandler.callback_separate_bagged_loot = function(self, item)
-		WolfHUD.settings.separate_bagged_loot = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("separate_bagged_loot", WolfHUD.settings.separate_bagged_loot) end
-	end	
-
-	MenuCallbackHandler.callback_show_special_pickups = function(self, item)
-		WolfHUD.settings.show_special_pickups = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_special_pickups", WolfHUD.settings.show_special_pickups) end
-	end	
-
-	MenuCallbackHandler.callback_show_buffs = function(self, item)
-		WolfHUD.settings.show_buffs = item:value()
-		if HUDManager then HUDManager:change_list_setting("show_buffs", WolfHUD.settings.show_buffs) end
-	end	
-
-	MenuCallbackHandler.callback_show_sentries = function(self, item)
-		WolfHUD.settings.show_sentries = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_sentries", WolfHUD.settings.show_sentries) end
-	end
-	
-	MenuCallbackHandler.callback_hide_empty_sentries = function(self, item)
-		WolfHUD.settings.hide_empty_sentries = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("hide_empty_sentries", WolfHUD.settings.hide_empty_sentries) end
-	end
-	
-	MenuCallbackHandler.callback_show_turrets = function(self, item)
-		WolfHUD.settings.show_turrets = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_turrets", WolfHUD.settings.show_turrets) end
-	end
-	
-	MenuCallbackHandler.callback_show_minion_count = function(self, item)
-		WolfHUD.settings.show_minion_count = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_minion_count", WolfHUD.settings.show_minion_count) end
-	end
-	
-	MenuCallbackHandler.callback_show_ecm_retrigger = function(self, item)
-		WolfHUD.settings.show_ecm_retrigger = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_ecm_retrigger", WolfHUD.settings.show_ecm_retrigger) end
-	end
-	
-	MenuCallbackHandler.callback_show_tape_loop = function(self, item)
-		WolfHUD.settings.show_tape_loop = (item:value() == "on")
-		if HUDManager then HUDManager:change_list_setting("show_tape_loop", WolfHUD.settings.show_tape_loop) end
-	end
-	
-	MenuCallbackHandler.callback_lock_mode = function(self, item)
-		WolfHUD.settings.LOCK_MODE = item:value()
-		PlayerStandard.LOCK_MODE = WolfHUD.settings.LOCK_MODE
-	end
-	
-	MenuCallbackHandler.callback_min_timer_duration = function(self, item)
-		WolfHUD.settings.MIN_TIMER_DURATION = item:value()
-		PlayerStandard.MIN_TIMER_DURATION = WolfHUD.settings.MIN_TIMER_DURATION
-	end
-	
-	MenuCallbackHandler.callback_show_lockindicator = function(self, item)
-		WolfHUD.settings.SHOW_LOCK_INDICATOR = (item:value() == "on")
-		if HUDInteraction then HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD.settings.SHOW_LOCK_INDICATOR end
-	end
-	
-	MenuCallbackHandler.callback_equipment_cancel = function(self, item)
-		WolfHUD.settings.EQUIPMENT_PRESS_INTERRUPT = (item:value() == "on")
-		if PlayerStandard then PlayerStandard.EQUIPMENT_PRESS_INTERRUPT = WolfHUD.settings.EQUIPMENT_PRESS_INTERRUPT end
-	end
-	
-	MenuCallbackHandler.callback_show_timer = function(self, item)
-		WolfHUD.settings.SHOW_TIME_REMAINING = (item:value() == "on")
-		if HUDInteraction then HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING end
-	end
-	
-	MenuCallbackHandler.callback_timer_color = function(self, item)
-		WolfHUD.settings.GRADIENT_COLOR = item:value()
-		if HUDInteraction then HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] end
-	end
-	
-	MenuCallbackHandler.callback_doubletap_nades_stealth = function(self, item)
-		WolfHUD.settings.SUPRESS_NADES_STEALTH = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_hold_to_pick = function(self, item)
-		WolfHUD.settings.HOLD2PICK = (item:value() == "on")
-	end
-	
-	MenuCallbackHandler.callback_laser_light = function(self, item)
-		WolfHUD.settings.laser_light = item:value()
-	end
-	
-	MenuCallbackHandler.callback_laser_glow = function(self, item)
-		WolfHUD.settings.laser_glow = item:value()
-	end
-	
-	MenuCallbackHandler.callback_lasercolor_player = function(self, item)
-		WolfHUD.settings.laser_player = item:value()
-		if WeaponLasers then WeaponLasers.UPDATE.player = true end
-	end
-	
-	MenuCallbackHandler.callback_laseralpha_player = function(self, item)
-		WolfHUD.settings.laser_player_alpha = item:value()
-		if WeaponLasers then WeaponLasers.UPDATE.player = true end
-	end
-	
-	MenuCallbackHandler.callback_lasercolor_teammates = function(self, item)
-		WolfHUD.settings.laser_teammates = item:value()
-		if WeaponLasers then WeaponLasers.UPDATE.default = true end
-	end
-	
-	MenuCallbackHandler.callback_laseralpha_teammates = function(self, item)
-		WolfHUD.settings.laser_teammates_alpha = item:value()
-		if WeaponLasers then WeaponLasers.UPDATE.default = true end
-	end
-	
-	MenuCallbackHandler.callback_lasercolor_sniper = function(self, item)
-		WolfHUD.settings.laser_sniper = item:value()
-		if WeaponLasers then WeaponLasers.UPDATE.cop_sniper = true end
-	end
-	
-	MenuCallbackHandler.callback_laseralpha_sniper = function(self, item)
-		WolfHUD.settings.laser_sniper_alpha = item:value()
-		if WeaponLasers then WeaponLasers.UPDATE.cop_sniper = true end
-	end
-	
-	MenuCallbackHandler.callback_lasercolor_turret_active = function(self, item)
-		WolfHUD.settings.laser_turret_active = item:value()
-		if WeaponLasers then WeaponLasers.UPDATE.turret_module_active = true end
-	end
-	
-	MenuCallbackHandler.callback_lasercolor_turret_reloading = function(self, item)
-		WolfHUD.settings.laser_turret_reloading = item:value()
-		if WeaponLasers then WeaponLasers.UPDATE.turret_module_rearming = true end
-	end
-	
-	MenuCallbackHandler.callback_lasercolor_turret_jammed = function(self, item)
-		WolfHUD.settings.laser_turret_jammed = item:value()
-		if WeaponLasers then WeaponLasers.UPDATE.turret_module_mad = true end
-	end
-	
-	MenuCallbackHandler.callback_laseralpha_turret = function(self, item)
-		WolfHUD.settings.laser_turret_alpha = item:value()
-		if WeaponLasers then 
-			WeaponLasers.UPDATE.turret_module_active = true
-			WeaponLasers.UPDATE.turret_module_rearming = true
-			WeaponLasers.UPDATE.turret_module_mad = true
-		end
-	end
-	
-	MenuCallbackHandler.callback_flashlight_angle = function(self, item)
-		WolfHUD.settings.flashlight_angle = item:value()
-		if WeaponFlashLight then
-			WeaponFlashLight.ANGLE = WolfHUD.settings.flashlight_angle
-			WeaponFlashLight._changed = true
-		end
-	end
-	
-	MenuCallbackHandler.callback_flashlight_range = function(self, item)
-		WolfHUD.settings.flashlight_range = item:value()
-		if WeaponFlashLight then
-			WeaponFlashLight.RANGE = (WolfHUD.settings.flashlight_range * 100)
-			WeaponFlashLight._changed = true
-		end
+	MenuCallbackHandler.clbk_change_hudlist_setting = function(self, item)
+		self:clbk_change_setting(item)
+		local name = item:parameters().name
+		if HUDManager then HUDManager:change_list_setting(tostring(name), WolfHUD.settings[name]) end
 	end
 	
 	WolfHUD:Load()
@@ -813,4 +445,3 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_upper.txt", WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_upper_adv.txt", WolfHUD, WolfHUD.settings)
 end)
-

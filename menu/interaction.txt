@@ -11,7 +11,7 @@
 			"id" : "use_press2hold",
 			"title" : "wolfhud_use_press2hold_title",
 			"description" : "wolfhud_use_press2hold_desc",
-			"callback" : "callback_use_press2hold",
+			"callback" : "clbk_change_setting",
 			"value" : "use_press2hold",
 		},
 		{
@@ -23,7 +23,7 @@
 			"id" : "LOCK_MODE",
 			"title" : "wolfhud_press2hold_lock_mode_title",
 			"description" : "wolfhud_press2hold_lock_mode_desc",
-			"callback" : "callback_lock_mode",
+			"callback" : "clbk_change_setting",
 			"items" : [
 				"wolfhud_press2hold_lock_mode_a",
 				"wolfhud_press2hold_lock_mode_b",
@@ -36,7 +36,7 @@
 			"id" : "MIN_TIMER_DURATION",
 			"title" : "wolfhud_press2hold_min_timer_duration_title",
 			"description" : "wolfhud_press2hold_min_timer_duration_desc",
-			"callback" : "callback_min_timer_duration",
+			"callback" : "clbk_change_setting",
 			"value" : "MIN_TIMER_DURATION",
 			"default_value" : 5,
 			"min" : 0,
@@ -48,7 +48,7 @@
 			"id" : "SHOW_LOCK_INDICATOR",
 			"title" : "wolfhud_press2hold_show_lockindicator_title",
 			"description" : "wolfhud_press2hold_show_lockindicator_desc",
-			"callback" : "callback_show_lockindicator",
+			"callback" : "clbk_change_setting",
 			"value" : "SHOW_LOCK_INDICATOR",
 		},
 		{
@@ -56,7 +56,7 @@
 			"id" : "EQUIPMENT_PRESS_INTERRUPT",
 			"title" : "wolfhud_press2hold_equipment_cancel_title",
 			"description" : "wolfhud_press2hold_equipment_cancel_desc",
-			"callback" : "callback_equipment_cancel",
+			"callback" : "clbk_change_setting",
 			"value" : "EQUIPMENT_PRESS_INTERRUPT",
 		},
 		{
@@ -64,7 +64,7 @@
 			"id" : "SHOW_TIME_REMAINING",
 			"title" : "wolfhud_press2hold_show_timer_title",
 			"description" : "wolfhud_press2hold_show_timer_desc",
-			"callback" : "callback_show_timer",
+			"callback" : "clbk_change_setting",
 			"value" : "SHOW_TIME_REMAINING",
 		},
 		{
@@ -72,7 +72,7 @@
 			"id" : "GRADIENT_COLOR",
 			"title" : "wolfhud_press2hold_timer_color_title",
 			"description" : "wolfhud_press2hold_timer_color_desc",
-			"callback" : "callback_timer_color",
+			"callback" : "clbk_change_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",
@@ -102,7 +102,7 @@
 			"id" : "SUPRESS_NADES_STEALTH",
 			"title" : "wolfhud_doubletap_nades_stealth_title",
 			"description" : "wolfhud_doubletap_nades_stealth_desc",
-			"callback" : "callback_doubletap_nades_stealth",
+			"callback" : "clbk_change_setting",
 			"value" : "SUPRESS_NADES_STEALTH",
 		},
 		{
@@ -110,7 +110,7 @@
 			"id" : "HOLD2PICK",
 			"title" : "wolfhud_hold_to_pick_title",
 			"description" : "wolfhud_hold_to_pick_desc",
-			"callback" : "callback_hold_to_pick",
+			"callback" : "clbk_change_setting",
 			"value" : "HOLD2PICK",
 		}
 	]

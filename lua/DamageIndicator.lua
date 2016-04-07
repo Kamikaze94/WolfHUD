@@ -1,16 +1,4 @@
 if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
-	HUDHitDirection.seconds 	 = WolfHUD.settings.dmg_ind_time or 2
-	HUDHitDirection.opacity 	 = 80
-	HUDHitDirection.sizeStart 	 = WolfHUD.settings.dmg_ind_size or 150
-	HUDHitDirection.sizeEnd 	 = HUDHitDirection.sizeStart + 100
-	
-	HUDHitDirection.shieldColor  = WolfHUD.color_table[(WolfHUD.settings.dmg_shield_color)] or Color.white
-	HUDHitDirection.healthColor  = WolfHUD.color_table[(WolfHUD.settings.dmg_health_color)] or Color.red
-	HUDHitDirection.critColor 	 = WolfHUD.color_table[(WolfHUD.settings.dmg_crit_color)] or Color.purple
-	HUDHitDirection.vehicleColor = WolfHUD.color_table[(WolfHUD.settings.dmg_vehicle_color)] or Color.yellow
-	HUDHitDirection.friendlyColor = WolfHUD.color_table[(WolfHUD.settings.dmg_friendlyfire_color)] or Color('FFA500')
-
----------   END of Settings!   ------   Don't Edit Below, unless you know what you are doing!!!!   -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	HUDHitDirection.UNIT_TYPE_HIT_ARMOR = 0
 	HUDHitDirection.UNIT_TYPE_HIT_PLAYER = 1
 	HUDHitDirection.UNIT_TYPE_HIT_CRIT = 2
@@ -30,6 +18,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 
 	function HUDHitDirection:new_hitmarker(pos, type_hit)
 		if not self._hit_direction_panel or not WolfHUD.settings.show_dmg_indicator then return end
+		HUDHitDirection.shieldColor  = WolfHUD and WolfHUD.color_table[(WolfHUD.settings.dmg_shield_color)] or Color.white
+		HUDHitDirection.healthColor  = WolfHUD and WolfHUD.color_table[(WolfHUD.settings.dmg_health_color)] or Color.red
+		HUDHitDirection.critColor 	 = WolfHUD and WolfHUD.color_table[(WolfHUD.settings.dmg_crit_color)] or Color.purple
+		HUDHitDirection.vehicleColor = WolfHUD and WolfHUD.color_table[(WolfHUD.settings.dmg_vehicle_color)] or Color.yellow
+		HUDHitDirection.friendlyColor = WolfHUD and WolfHUD.color_table[(WolfHUD.settings.dmg_friendlyfire_color)] or Color('FFA500')
 		local color = (type_hit == self.UNIT_TYPE_HIT_ARMOR and HUDHitDirection.shieldColor or type_hit == self.UNIT_TYPE_HIT_PLAYER and HUDHitDirection.healthColor or type_hit == HUDHitDirection.UNIT_TYPE_HIT_CRIT and HUDHitDirection.critColor or type_hit == self.UNIT_TYPE_HIT_VEHICLE and HUDHitDirection.vehicleColor or type_hit == HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE and HUDHitDirection.friendlyColor) or Color.white
 		local hitmarker = self._hit_direction_panel:panel({
 			x = "center",
@@ -54,12 +47,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	function HUDHitDirection:_animate_hitmarker(hitmarker, hitmarker_icon, pos)
 		if self._hit_direction_panel and hitmarker and hitmarker_icon then
 			local t = 0
-			while alive(hitmarker) and t < HUDHitDirection.seconds do
+			local tt = WolfHUD.settings.dmg_ind_time or 2
+			local size = WolfHUD.settings.dmg_ind_size or 150
+			while alive(hitmarker) and t < tt do
 				t = t + coroutine.yield()
-				local o = t / HUDHitDirection.seconds
+				local o = t / tt
 				local angle = self:getRotation(pos) or 180
-				local r = HUDHitDirection.sizeStart + (1-math.pow(o,0.5)) * (HUDHitDirection.sizeEnd - HUDHitDirection.sizeStart)
-				hitmarker_icon:set_alpha((-3 * math.pow(o - 0.5 , 2) + 0.7) * HUDHitDirection.opacity / 100 )
+				local r = size + (1-math.pow(o,0.5)) * (100)
+				hitmarker_icon:set_alpha((-3 * math.pow(o - 0.5 , 2) + 0.7) * 80 / 100 )
 				hitmarker_icon:set_rotation(-(angle+90))
 				hitmarker:set_center(self._hit_direction_panel:w()/2-math.sin(angle)*r + 70, self._hit_direction_panel:h()/2-math.cos(angle)*r - 30)
 			end
