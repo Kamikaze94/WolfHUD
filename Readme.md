@@ -18,7 +18,8 @@ __I got the permission from _Seven_, _ViciousWalrus_, _Undeadsewer_ and _FishTac
 1. Click on __'Download .ZIP'__-Button at the top of this site.
 2. Open the downloaded archive, using WinRAR or 7zip.
 3. Extract the __'WolfHUD-master'__-folder into your 'Payday 2/mods'-folder.
-4. Rename __'WolfHUD-master'__-folder to __'WolfHUD'__.  
+4. Rename __'WolfHUD-master'__-folder to __'WolfHUD'__. 
+5. (Optional) If you don't like the __Federal Inventory icons__, delete the file __'Federal_Inventory.zip'__  
 __(You need the [Better Lua injecTor](http://paydaymods.com/download/) for this mod to work)__  
 
 ###Updates:
@@ -80,6 +81,7 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
   - [Slider Values](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14800), made by _Snh20_
   - Show Weapon Names, made by _me_
   - [Skillset Info](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15294), made by _Fooksie_
+  - Federal Inventory, [weapon icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14240), [melee icons]() and [mask icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13911) made by _Nervatel Hanging Closet Monster_, [throwables, equipment, armor and heister portraits](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13916) made by _Luffy_
   - Increased the maximum chars of custom Weapon/Mask/Skillset names
 
 ###Big credit goes to all of you!
