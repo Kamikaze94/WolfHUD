@@ -237,49 +237,31 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 			[utf8.char(57364)] = "<SKULL>",	--Skull icon
 			[utf8.char(57363)] = "<GHOST>",	--Ghost icon
 			[utf8.char(139)] = "<LC>",		--broken bar
-			["϶"] = "<PB>"					--PocoHuds bar
+			[utf8.char(155)] = "<RC>",		
+			[utf8.char(1035)] = "<DRC>",		
+			[utf8.char(1014)] = "<DIV>",	--PocoHuds bar
+			[utf8.char(57344)] = "<A>",		--Controller A
+			[utf8.char(57345)] = "<B>",		--Controller B
+			[utf8.char(57346)] = "<X>",		--Controller X
+			[utf8.char(57347)] = "<Y>",		--Controller Y
+			[utf8.char(57348)] = "<BACK>",	--Controller BACK
+			[utf8.char(57349)] = "<START>",	--Controller START
+			[utf8.char(1031)] = "<DOT>",		
+			[utf8.char(1015)] = "<CHAPTER>",	
+			[utf8.char(1012)] = "<BIGDOT>",	
+			[utf8.char(215)] = "<TIMES>",	--Mult
+			[utf8.char(247)] = "<DIVIDED>",	--Divided
+			[utf8.char(1024)] = "<DEG>",	--Degree
+			[utf8.char(1030)] = "<PM>",		--PM Sign
+			[utf8.char(1033)] = "<NO>"		--Number
+			
 	}
 	
 	ChatManager._BLOCK_PATTERNS = {
---[[	  ".- replenished health by .-%%.+",
-	  --healed up
-	  ".- was downed",
-	  --downed
-	  ".-Used Pistol messiah, .-",
-	  --pistol messiah
-	  ".+ has been downed .+",
-	  --downed and needs to patch up
-	  ".+ is in custody!",
-	  ".+ befindet sich in Haft!",
-	  --jail time
-	  ".- is done",
-	  --drill is done
-	  ".-A .- on a .+ < 10s left",
-	  --drill on a thing is nearly done
-	  ".- < 10s left",
-	  --nearly done drill/hacking
-	  ".-An .- is done",
-	  --hacking things done
-	  ".-An .- has been captured .+",
-	  --captured a dom 1
-	  ".-an .- has been captured .+",
-	  --captured a dom 2
-	  ".-a .- has been captured .+",
-	  --captured a dom 3
-	  ".- converted a .+",
-	  --converted cop
-	  ".- lost a minion to .+",
-	  --lost a minion text
-	  ".-<PocoHud³ r.- >.+",
-	  --TeamKills Endgame Stat
-	  ".- | DPS:.- | KPM:.- | Acc:.-.+",
-	  --per Player stats
-	  ".-<LC>-- PocoHud³ : More info @ steam group .-pocomods.+",]]
-	  --end game plug
 	  ".-[NGBTO]:.+",
 	  --NGBTO info blocker Should work since its mass spam.
-	  ".-%d%d:%d%d<PB>.+"
-	  --Blocks anything, that starts with the time and then has a pipe (Might block other mods, not only Poco...)
+	  ".-[%d-%d:]+%d%d<DIV>.+"
+	  --Blocks anything, that starts with the time and then has a divider (Might block other mods, not only Poco...)
 	}
 
 	local _receive_message_original = ChatManager._receive_message
