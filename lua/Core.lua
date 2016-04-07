@@ -1,7 +1,7 @@
 if not _G.WolfHUD then
 	_G.WolfHUD = {}
 	WolfHUD.mod_path = ModPath
-	WolfHUD.overrides = { {path = "assets/mod_overrides/WolfHUD_Textures", file = "WolfHUD_Textures.zip", version = 4} }
+	WolfHUD.overrides = { {path = "assets/mod_overrides/WolfHUD_Textures/", file = "WolfHUD_Textures.zip", version = 4} }
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
 	WolfHUD.menu_ids = { "wolfhud_options_menu", "wolfhud_lowerhud_options_menu", "wolfhud_upperhud_options_menu", "wolfhud_upperhud_adv_options_menu", "wolfhud_press2hold_options_menu", "wolfhud_lasers_options_menu" }
 	
@@ -21,8 +21,8 @@ if not _G.WolfHUD then
 		WolfHUD.color_table[12] = Color('008000')		--12: Green
 		WolfHUD.color_table[13] = Color('0000FF')		--13: Blue
 		WolfHUD.color_table[14] = Color('808080')		--14: Gray
-		WolfHUD.color_table[15] = Color('000000')		--14: Black
-		WolfHUD.color_table[16] = Color('000000')		--15: Rainbow (only available in laser colors)
+		WolfHUD.color_table[15] = Color('000000')		--15: Black
+		WolfHUD.color_table[16] = Color('000000')		--16: Rainbow (only available in laser colors)
 	end
 	
 	WolfHUD.hook_files = WolfHUD.hook_files or {

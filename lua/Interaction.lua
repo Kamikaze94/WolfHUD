@@ -92,8 +92,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 	
 	function HUDInteraction:set_interaction_bar_width(current, total)
 		set_interaction_bar_width_original(self, current, total)
-		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING or not WolfHUD and true
-		HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] or Color.green
 		if HUDInteraction.SHOW_TIME_REMAINING then
 			self._interact_time:set_text(string.format("%.1fs", math.max(total - current, 0)))
 			local perc = current/total
@@ -115,6 +113,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		end
 		
 		HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD.settings.SHOW_LOCK_INDICATOR or not WolfHUD and true
+		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING or not WolfHUD and true
+		HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] or Color.green
 		if PlayerStandard.LOCK_MODE < 3 and HUDInteraction.SHOW_LOCK_INDICATOR then
 			self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {
 				radius = self._circle_radius,
