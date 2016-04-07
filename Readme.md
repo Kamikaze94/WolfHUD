@@ -77,14 +77,15 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
 - __[Real Weapon Names](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15433)__, made by _(AD) Jaqueto_, updated by _Terminator01_
 - __[Buy all Assets](http://steamcommunity.com/app/218620/discussions/15/618458030689719683/)__, made by _=TBM= BangL_
 - __Smaller Menu Tweaks__
-  - [Always show Mod Icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13975), made by _Slippai~_
-  - [Slider Values](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14800), made by _Snh20_
-  - Show Weapon Names, made by _me_
-  - [Skillset Info](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15294), made by _Fooksie_
-  - Federal Inventory
+  - __[Always show Mod Icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13975)__, made by _Slippai~_
+  - __[Slider Values](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14800)__, made by _Snh20_
+  - __Show Weapon Names__, made by _me_
+  - __[Skillset Info](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15294)__, made by _Fooksie_
+  - Increased the maximum chars of custom Weapon/Mask/Skillset names
+  - __Federal Inventory__ (Mod Override)
     - [weapon icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14240), [melee icons]() and [mask icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13911) made by _Nervatel Hanging Closet Monster_
     - [throwables, equipment, armor and heister portraits](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13916) made by _Luffy_
-  - Increased the maximum chars of custom Weapon/Mask/Skillset names
+    - Update for Jimmy and new weapons made by _me_
 
 ###Big credit goes to all of you!
 ####Without your awesome mods, I would have quitted this game a long time ago! 
