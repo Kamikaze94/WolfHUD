@@ -1,9 +1,5 @@
 if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
-
-	PlayerStandard.LOCK_MODE = WolfHUD.settings.LOCK_MODE or 2														--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
-	PlayerStandard.MIN_TIMER_DURATION = WolfHUD.settings.MIN_TIMER_DURATION or 5 									--Min interaction duration (in seconds) for the toggle behavior to activate
-	PlayerStandard.EQUIPMENT_PRESS_INTERRUPT = WolfHUD.settings.EQUIPMENT_PRESS_INTERRUPT or not WolfHUD and true 	--Use the equipment key ('G') to toggle off active interactions
-	PlayerStandard.NADE_TIMEOUT = 0.25																				--Timeout for 2 NadeKey pushes, to prevent accidents in stealth
+	PlayerStandard.NADE_TIMEOUT = 0.25																	--Timeout for 2 NadeKey pushes, to prevent accidents in stealth
 
 	local _update_interaction_timers_original = PlayerStandard._update_interaction_timers
 	local _check_action_interact_original = PlayerStandard._check_action_interact
@@ -22,6 +18,8 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	
 	
 	function PlayerStandard:_check_interaction_locked(t) 
+		PlayerStandard.LOCK_MODE = WolfHUD.settings.LOCK_MODE or 2							--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
+		PlayerStandard.MIN_TIMER_DURATION = WolfHUD.settings.MIN_TIMER_DURATION or 5 		--Min interaction duration (in seconds) for the toggle behavior to activate	
 		local is_locked = false
 		if PlayerStandard.LOCK_MODE == 1 then
 			is_locked = self._interact_expire_t and (t - (self._interact_expire_t - self._interact_params.timer) >= PlayerStandard.MIN_TIMER_DURATION) --lock interaction, when interacting longer then given time
@@ -36,6 +34,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	end
 	
 	function PlayerStandard:_check_interact_toggle(t, input)
+		PlayerStandard.EQUIPMENT_PRESS_INTERRUPT = WolfHUD.settings.EQUIPMENT_PRESS_INTERRUPT or not WolfHUD and true 	--Use the equipment key ('G') to toggle off active interactions
 		local interrupt_key_press = input.btn_interact_press
 		if PlayerStandard.EQUIPMENT_PRESS_INTERRUPT then
 			interrupt_key_press = input.btn_use_item_press
@@ -85,11 +84,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
-	
-	HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD.settings.SHOW_LOCK_INDICATOR or not WolfHUD and true
-	HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING or not WolfHUD and true
-	HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] or Color.green
-
 	local show_interaction_bar_original = HUDInteraction.show_interaction_bar
 	local hide_interaction_bar_original = HUDInteraction.hide_interaction_bar
 	local destroy_original				= HUDInteraction.destroy
@@ -98,6 +92,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 	
 	function HUDInteraction:set_interaction_bar_width(current, total)
 		set_interaction_bar_width_original(self, current, total)
+		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING or not WolfHUD and true
+		HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] or Color.green
 		if HUDInteraction.SHOW_TIME_REMAINING then
 			self._interact_time:set_text(string.format("%.1fs", math.max(total - current, 0)))
 			local perc = current/total
@@ -118,6 +114,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			self._interact_circle_locked = nil
 		end
 		
+		HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD.settings.SHOW_LOCK_INDICATOR or not WolfHUD and true
 		if PlayerStandard.LOCK_MODE < 3 and HUDInteraction.SHOW_LOCK_INDICATOR then
 			self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {
 				radius = self._circle_radius,

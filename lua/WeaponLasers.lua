@@ -27,9 +27,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 			alpha = WolfHUD.settings.laser_turret_alpha or 0.15,
 		},
 	}
-	
-	WeaponLaser.UPDATE = {}
-	
+		
 	WeaponLaser._suffix_map = {
 	player = "player",
 	default = "teammates",
@@ -73,9 +71,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 				local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
 				col = Color(r, g, b)
 			else
-				if not WeaponLaser.UPDATE[theme] then return end
 				col = WolfHUD.color_table[(WolfHUD.settings["laser_" .. suffix])] or Color.white
-				WeaponLaser.UPDATE[theme] = nil
 			end
 			local alpha = 1
 			if suffix == "turret_active" or suffix == "turret_reloading" or suffix == "turret_jammed" then
@@ -83,6 +79,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 			else
 				alpha = WolfHUD.settings["laser_" .. suffix .. "_alpha"]
 			end
+			if self._themes[theme].brush == col:with_alpha(alpha) then return end
 			self:update_theme(theme, col, alpha)
 			self:set_color_by_theme(theme)
 		end
@@ -113,23 +110,21 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/raycastweaponbase" the
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/units/weapons/weaponflashlight" then
-	WeaponFlashLight.ANGLE = WolfHUD.settings.flashlight_angle or 100 --Angle/width of beam, 0-160 (default 60)
-	WeaponFlashLight.RANGE = (WolfHUD.settings.flashlight_range * 100) or 2000 --Range of beam, 0+ (default 1000 -> 10m)
-
 	local init_flash_cbk = WeaponFlashLight.init
 	local update_flash_cbk = WeaponFlashLight.update
 	function WeaponFlashLight:init(unit)
 		init_flash_cbk(self, unit)
-		self._light:set_spot_angle_end(math.clamp(WeaponFlashLight.ANGLE, 0, 160))
-		self._light:set_far_range(WeaponFlashLight.RANGE)
+		local angle = WolfHUD.settings.flashlight_angle or 100 --Angle/width of beam, 0-160 (default 60)
+		local range = (WolfHUD.settings.flashlight_range * 100) or 2000 --Range of beam, 0+ (default 1000 -> 10m)
+		self._light:set_spot_angle_end(math.clamp(angle, 0, 160))
+		self._light:set_far_range(range)
 	end
 	
 	function WeaponFlashLight:update(unit, t, dt)
 		update_flash_cbk(self, unit, t, dt)
-		if WeaponFlashLight._changed and not self._is_haunted then
-			self._light:set_spot_angle_end(math.clamp(WeaponFlashLight.ANGLE, 0, 160))
-			self._light:set_far_range(WeaponFlashLight.RANGE)
-			WeaponFlashLight._changed = nil
+		if WolfHUD and not self._is_haunted then
+			self._light:set_spot_angle_end(math.clamp(WolfHUD.settings.flashlight_angle, 0, 160))
+			self._light:set_far_range((WolfHUD.settings.flashlight_range * 100))
 		end
 	end
 
