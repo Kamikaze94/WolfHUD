@@ -35,7 +35,8 @@
 				"wolfhud_colors_11",
 				"wolfhud_colors_12",
 				"wolfhud_colors_13",
-				"wolfhud_colors_14"
+				"wolfhud_colors_14",
+				"wolfhud_colors_15"
 				
 			],
 			"value" : "hud_box_color",
@@ -61,7 +62,8 @@
 				"wolfhud_colors_11",
 				"wolfhud_colors_12",
 				"wolfhud_colors_13",
-				"wolfhud_colors_14"
+				"wolfhud_colors_14",
+				"wolfhud_colors_15"
 				
 			],
 			"value" : "hud_box_bg_color",
@@ -92,7 +94,8 @@
 				"wolfhud_colors_11",
 				"wolfhud_colors_12",
 				"wolfhud_colors_13",
-				"wolfhud_colors_14"
+				"wolfhud_colors_14",
+				"wolfhud_colors_15"
 				
 			],
 			"value" : "civilian_color",
@@ -118,7 +121,8 @@
 				"wolfhud_colors_11",
 				"wolfhud_colors_12",
 				"wolfhud_colors_13",
-				"wolfhud_colors_14"
+				"wolfhud_colors_14",
+				"wolfhud_colors_15"
 				
 			],
 			"value" : "thug_color",
@@ -144,7 +148,8 @@
 				"wolfhud_colors_11",
 				"wolfhud_colors_12",
 				"wolfhud_colors_13",
-				"wolfhud_colors_14"
+				"wolfhud_colors_14",
+				"wolfhud_colors_15"
 				
 			],
 			"value" : "enemy_color",

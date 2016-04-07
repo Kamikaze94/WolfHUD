@@ -20,8 +20,9 @@ if not _G.WolfHUD then
 		WolfHUD.color_table[11] = Color('800080')		--11: Purple
 		WolfHUD.color_table[12] = Color('008000')		--12: Green
 		WolfHUD.color_table[13] = Color('0000FF')		--13: Blue
-		WolfHUD.color_table[14] = Color('000000')		--14: Black
-		WolfHUD.color_table[15] = Color('000000')		--15: Rainbow (only available in laser colors)
+		WolfHUD.color_table[14] = Color('808080')		--14: Gray
+		WolfHUD.color_table[15] = Color('000000')		--14: Black
+		WolfHUD.color_table[16] = Color('000000')		--15: Rainbow (only available in laser colors)
 	end
 	
 	WolfHUD.hook_files = WolfHUD.hook_files or {
@@ -115,6 +116,7 @@ if not _G.WolfHUD then
 			dmg_health_color				= 10,
 			dmg_crit_color					= 11,
 			dmg_vehicle_color				= 8,
+			dmg_friendlyfire_color			= 9,
 		  --Driving HUD
 			use_drivinghud					= true,		--Show DrivingHUD Panel
 			show_vehicle 					= true,		--Show Vehicle and Teammate Mask Images
@@ -489,22 +491,27 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.callback_dmg_shield_color = function(self, item)
 		WolfHUD.settings.dmg_shield_color = item:value()
-		if HUDHitDirection then HUDHitDirection.shieldColor = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] end
+		if HUDHitDirection then HUDHitDirection.shieldColor = WolfHUD.color_table[(WolfHUD.settings.dmg_shield_color)] end
 	end
 	
 	MenuCallbackHandler.callback_dmg_health_color = function(self, item)
 		WolfHUD.settings.dmg_health_color = item:value()
-		if HUDHitDirection then HUDHitDirection.healthColor = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] end
+		if HUDHitDirection then HUDHitDirection.healthColor = WolfHUD.color_table[(WolfHUD.settings.dmg_health_color)] end
 	end
 	
 	MenuCallbackHandler.callback_dmg_crit_color = function(self, item)
 		WolfHUD.settings.dmg_crit_color = item:value()
-		if HUDHitDirection then HUDHitDirection.critColor = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] end
+		if HUDHitDirection then HUDHitDirection.critColor = WolfHUD.color_table[(WolfHUD.settings.dmg_crit_color)] end
 	end
 	
 	MenuCallbackHandler.callback_dmg_vehicle_color = function(self, item)
 		WolfHUD.settings.dmg_vehicle_color = item:value()
-		if HUDHitDirection then HUDHitDirection.vehicleColor = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] end
+		if HUDHitDirection then HUDHitDirection.vehicleColor = WolfHUD.color_table[(WolfHUD.settings.dmg_vehicle_color)] end
+	end
+	
+	MenuCallbackHandler.callback_dmg_friendlyfire_color = function(self, item)
+		WolfHUD.settings.dmg_friendlyfire_color = item:value()
+		if HUDHitDirection then HUDHitDirection.friendlyColor = WolfHUD.color_table[(WolfHUD.settings.dmg_friendlyfire_color)] end
 	end
 	
 	MenuCallbackHandler.callback_show_drivinghud = function(self, item)
@@ -536,6 +543,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	end
 	
 	MenuCallbackHandler.callback_replace_weapon_names = function(self, item)
+		log(item:parameters().name)
 		WolfHUD.settings.replace_weapon_names = (item:value() == "on")
 	end
 	

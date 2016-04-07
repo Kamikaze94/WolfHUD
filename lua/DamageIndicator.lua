@@ -8,7 +8,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	HUDHitDirection.healthColor  = WolfHUD.color_table[(WolfHUD.settings.dmg_health_color)] or Color.red
 	HUDHitDirection.critColor 	 = WolfHUD.color_table[(WolfHUD.settings.dmg_crit_color)] or Color.purple
 	HUDHitDirection.vehicleColor = WolfHUD.color_table[(WolfHUD.settings.dmg_vehicle_color)] or Color.yellow
-	HUDHitDirection.friendlyColor = Color('FFA500')
+	HUDHitDirection.friendlyColor = WolfHUD.color_table[(WolfHUD.settings.dmg_friendlyfire_color)] or Color('FFA500')
 
 ---------   END of Settings!   ------   Don't Edit Below, unless you know what you are doing!!!!   -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	HUDHitDirection.UNIT_TYPE_HIT_ARMOR = 0

@@ -87,7 +87,8 @@
 				"wolfhud_colors_11",
 				"wolfhud_colors_12",
 				"wolfhud_colors_13",
-				"wolfhud_colors_14"
+				"wolfhud_colors_14",
+				"wolfhud_colors_15"
 				
 			],
 			"value" : "GRADIENT_COLOR",

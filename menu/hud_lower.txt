@@ -166,7 +166,8 @@
 				"wolfhud_colors_11",
 				"wolfhud_colors_12",
 				"wolfhud_colors_13",
-				"wolfhud_colors_14"
+				"wolfhud_colors_14",
+				"wolfhud_colors_15"
 				
 			],
 			"value" : "dmg_shield_color",
@@ -191,7 +192,8 @@
 				"wolfhud_colors_11",
 				"wolfhud_colors_12",
 				"wolfhud_colors_13",
-				"wolfhud_colors_14"
+				"wolfhud_colors_14",
+				"wolfhud_colors_15"
 				
 			],
 			"value" : "dmg_health_color",
@@ -216,7 +218,8 @@
 				"wolfhud_colors_11",
 				"wolfhud_colors_12",
 				"wolfhud_colors_13",
-				"wolfhud_colors_14"
+				"wolfhud_colors_14",
+				"wolfhud_colors_15"
 				
 			],
 			"value" : "dmg_crit_color",
@@ -241,10 +244,37 @@
 				"wolfhud_colors_11",
 				"wolfhud_colors_12",
 				"wolfhud_colors_13",
-				"wolfhud_colors_14"
+				"wolfhud_colors_14",
+				"wolfhud_colors_15"
 				
 			],
 			"value" : "dmg_vehicle_color",
+		},
+		{
+			"type" : "multiple_choice",
+			"id" : "dmg_friendlyfire_color",
+			"title" : "wolfhud_dmg_friendlyfire_color_title",
+			"description" : "wolfhud_dmg_friendlyfire_color_desc",
+			"callback" : "callback_dmg_friendlyfire_color",
+			"items" : [
+				"wolfhud_colors_1",
+				"wolfhud_colors_2",
+				"wolfhud_colors_3",
+				"wolfhud_colors_4",
+				"wolfhud_colors_5",
+				"wolfhud_colors_6",
+				"wolfhud_colors_7",
+				"wolfhud_colors_8",
+				"wolfhud_colors_9",
+				"wolfhud_colors_10",
+				"wolfhud_colors_11",
+				"wolfhud_colors_12",
+				"wolfhud_colors_13",
+				"wolfhud_colors_14",
+				"wolfhud_colors_15"
+				
+			],
+			"value" : "dmg_friendlyfire_color",
 		},
 		{
 			"type" : "divider",
