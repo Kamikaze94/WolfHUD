@@ -81,7 +81,9 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
   - [Slider Values](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14800), made by _Snh20_
   - Show Weapon Names, made by _me_
   - [Skillset Info](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15294), made by _Fooksie_
-  - Federal Inventory, [weapon icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14240), [melee icons]() and [mask icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13911) made by _Nervatel Hanging Closet Monster_, [throwables, equipment, armor and heister portraits](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13916) made by _Luffy_
+  - Federal Inventory
+    - [weapon icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14240), [melee icons]() and [mask icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13911) made by _Nervatel Hanging Closet Monster_
+    - [throwables, equipment, armor and heister portraits](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13916) made by _Luffy_
   - Increased the maximum chars of custom Weapon/Mask/Skillset names
 
 ###Big credit goes to all of you!
