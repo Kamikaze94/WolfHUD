@@ -184,7 +184,8 @@ if not _G.WolfHUD then
 			flashlight_angle 				= 100,		--Flashlight angle
 			flashlight_range 				= 20,		--Flashlight range (in m)
 			
-			replace_weapon_names 			= true
+			replace_weapon_names 			= true,
+			use_federal_inventory 			= true
 		}
 	end
 	
@@ -206,8 +207,34 @@ if not _G.WolfHUD then
 		end
 	end
 	
+	function WolfHUD:createOverridesDummies()
+		local updates = {}
+		for k, v in pairs(LuaModManager.Mods) do
+			local info = v.definition
+			if info["name"] == "WolfHUD" then
+				updates = info["updates"]
+			end
+		end
+		for k, v in pairs(updates) do
+			if type(v["revision"]) == "string" and not io.file_is_readable( v["revision"] ) then
+				if v["identifier"] ~= "fed_inv" or WolfHUD.settings.use_federal_inventory then
+					if not file.DirectoryExists("./" .. v["install_dir"] .. v["install_folder"]) then
+						os.execute('mkdir "./' .. v["install_dir"] .. v["install_folder"] .. '"')
+					end
+					local file = io.open(v["revision"], "w+")
+					if file then
+						file:write("0")
+						file:close()
+					end
+				end
+			end
+		end
+	end
+	
 	WolfHUD:Reset()
 	WolfHUD:Load()
+	
+	WolfHUD:createOverridesDummies()
 end
 
 if RequiredScript then
@@ -241,13 +268,6 @@ Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", 
 		loc:add_localized_strings({
 			["hud_skip_blackscreen"] = ""
 		})
-	end
-end)
-
-Hooks:Add("MenuManagerOnOpenMenu", "MenuManagerOnOpenMenu_WolfHUD", function(menu_manager, menu, position)
-	if menu == "menu_main" then
-		log("[WolfHUD] Checking for Updates...")
-		WolfHUD:checkVersion()
 	end
 end)
 
