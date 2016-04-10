@@ -3,7 +3,7 @@ if not _G.WolfHUD then
 	WolfHUD.mod_path = ModPath
 	WolfHUD.overrides = { {path = "assets/mod_overrides/WolfHUD_Textures/", file = "WolfHUD_Textures.zip", version = 4}, {path = "assets/mod_overrides/Federal Inventory/", file = "Federal_Inventory.zip", version = 1} }
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
-	WolfHUD.menu_ids = { "wolfhud_options_menu", "wolfhud_lowerhud_options_menu", "wolfhud_upperhud_options_menu", "wolfhud_upperhud_adv_options_menu", "wolfhud_press2hold_options_menu", "wolfhud_lasers_options_menu" }
+	WolfHUD.menu_ids = { "wolfhud_options_menu", "wolfhud_lowerhud_options_menu", "wolfhud_upperhud_options_menu", "wolfhud_upperhud_adv_options_menu", "wolfhud_dmgindicator_options_menu", "wolfhud_enemyhealthbar_options_menu", "wolfhud_press2hold_options_menu", "wolfhud_lasers_options_menu" }
 	
 	if not WolfHUD.color_table then
 		WolfHUD.color_table = {}
@@ -438,10 +438,12 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	end
 	
 	WolfHUD:Load()
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_lower.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_upper.txt", WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_upper_adv.txt", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.json", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets.json", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.json", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_enemy_healthbar.json", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_indicator.json", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info.json", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_adv.json", WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_teampanels.json", WolfHUD, WolfHUD.settings)
 end)

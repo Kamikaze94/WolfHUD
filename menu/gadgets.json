@@ -1,8 +1,8 @@
 {
 	"menu_id" : "wolfhud_lasers_options_menu",
 	"parent_menu_id" : "wolfhud_options_menu",
-	"title" : "wolfhud_lasers_options_name",
-	"description" : "wolfhud_lasers_options_help",
+	"title" : "wolfhud_gadget_options_name",
+	"description" : "wolfhud_gadget_options_help",
 	"back_callback" : "",
 	"priority" : 10,
 	"items" : [

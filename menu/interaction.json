@@ -1,8 +1,8 @@
 {
 	"menu_id" : "wolfhud_press2hold_options_menu",
 	"parent_menu_id" : "wolfhud_options_menu",
-	"title" : "wolfhud_press2hold_options_name",
-	"description" : "wolfhud_press2hold_options_help",
+	"title" : "wolfhud_interaction_options_name",
+	"description" : "wolfhud_interaction_options_help",
 	"back_callback" : "",
 	"priority" : 10,
 	"items" : [

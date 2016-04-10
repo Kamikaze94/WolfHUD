@@ -1,10 +1,10 @@
 {
 	"menu_id" : "wolfhud_upperhud_adv_options_menu",
 	"parent_menu_id" : "wolfhud_upperhud_options_menu",
-	"title" : "wolfhud_upperhud_adv_options_name",
-	"description" : "wolfhud_upperhud_adv_options_help",
+	"title" : "wolfhud_infopanels_adv_options_name",
+	"description" : "wolfhud_infopanels_adv_options_help",
 	"back_callback" : "",
-	"priority" : "6",
+	"priority" : 6,
 	"items" : [
 		{
 			"type" : "toggle",
