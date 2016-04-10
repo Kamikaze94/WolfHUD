@@ -36,28 +36,28 @@ Please try to provide information from your crashlog and the actions you and you
 The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
 
 ###Included Mods:
-- __[CustomHUD](https://bitbucket.org/pjal3urb/pd2-mods/src/821eb5239d2c/CustomHUD/)__, made by _Seven_
+- __[CustomHUD](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by _Seven_
   - Added downs counter (Also works with default HUD)
   - Added player levels behind names
   - Added Weapon Skin Icon for skinned weapon
   - Added Indicators for Maniac Perk Deck
   - Changed health bars, colourized by peer chat color (Inspired by MUI)
-- __[HudPanelList](https://bitbucket.org/pjal3urb/pd2-mods/src/821eb5239d2c9f4d897fcd17b11afdb4df40652f/HUDList/)__, made by _Seven_, updated by _me_
+- __[HudPanelList](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by _Seven_, updated by _me_
   - Added Flash to expiring Cam Loop
   - Added more enmy types, to possibly get more accurate numbers
   - Added Conterfeit Money to Lootcounter
   - Added Hacktimers to Undercover
   - Added Small loot Counter
   - Added new Weapon loot types, EMP and Server
-- __[KillCounter](https://bitbucket.org/pjal3urb/pd2-mods/src/821eb5239d2c9f4d897fcd17b11afdb4df40652f/CustomHUD/Plugins/)__, made by _Seven_
-- __[ToggleInteract](https://bitbucket.org/pjal3urb/pd2-mods/src/821eb5239d2c9f4d897fcd17b11afdb4df40652f/ToggleInteract/)__, made by _Seven_, modified by _Iron Predator_ and _me_
+- __[KillCounter](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by _Seven_
+- __[ToggleInteract](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by _Seven_, modified by _Iron Predator_ and _me_
   - Optional center Timer
   - Lock Interaction by pressed time, or total timer
   - Change Interaction text when locked, to tell you how to interrupt
-- __[DoubleTap Granades](https://bitbucket.org/pjal3urb/pd2-mods/src/821eb5239d2c9f4d897fcd17b11afdb4df40652f/DoubleTapGrenades/)__, made by Seven 
-- __[AutoPickup](https://bitbucket.org/pjal3urb/pd2-mods/src/821eb5239d2c9f4d897fcd17b11afdb4df40652f/AutoPickup/)__, made by _Seven_
+- __[DoubleTap Granades](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by Seven 
+- __[AutoPickup](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by _Seven_
 - __[WeaponLaserColor](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13508)__, made by _Seven_
-- __[Remember Gadget State](https://bitbucket.org/pjal3urb/pd2-mods/src/821eb5239d2c9f4d897fcd17b11afdb4df40652f/PersistentGadgets/)__, by _Seven_
+- __[Remember Gadget State](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, by _Seven_
   - Auto turns lasers on, if weapon has an laser gadget
 - __[TabStats](https://steamcommunity.com/app/218620/discussions/15/618463738399320805/)__, made by _[MoCu] Pat_
 - __[Numeric Suspicion](https://github.com/cjur3/GageHud)__, made by _cjur3_ for GageHUD
@@ -69,7 +69,7 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
 - __Dynamic Damage Indicator__, made by _me_
   - Animation based on PocoHUDs
   - Fixxed crashes, when going into custody
-- __[BurstFire](https://bitbucket.org/pjal3urb/pd2-mods/src/821eb5239d2c9f4d897fcd17b11afdb4df40652f/BurstFire/)__, made by _Seven_
+- __[BurstFire](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by _Seven_
 - __[Real Ammo](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15108)__, made by _FishTaco_
 - __[No Spam](http://steamcommunity.com/app/218620/discussions/15/618457398976607330/)__, made by _Ahab_, _Seven_, _AmEyeBlind_ & _money123451_
   - A few messages still slip through...
