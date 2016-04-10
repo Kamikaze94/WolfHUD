@@ -76,7 +76,7 @@
 	"wolfhud_show_carhealthbar_desc" : "Zeige Lebensanzeige für fahrbare Fahrzeuge.",
 	"wolfhud_show_healthbar_pointer_title" : "Zeige Pfeil",
 	"wolfhud_show_healthbar_pointer_desc" : "Zeige Pfeil unter der Lebensanzeige, der auf den Gegner zeigt, zu dem die Anzeige gehört.",
-	"wolfhud_show_dmg_indicator_title" : "Dynamischer Shadensindikator",
+	"wolfhud_show_dmg_indicator_title" : "Dynamischer Schadensindikator",
 	"wolfhud_show_dmg_indicator_desc" : "Ändert die 4 standart Indicatoren in viele dynamische, die sich bewegen, in relation zu deiner aktuellen position, und der des Gegners der den Schaden zugefügt hat.",
 	"wolfhud_dmg_ind_time_title" : "Indikator Zeit",
 	"wolfhud_dmg_ind_time_desc" : "Bestimmt die Zeit, die der Indikator angezeigt wird.",
