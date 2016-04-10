@@ -186,7 +186,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		if not current or not total then return end
 		
 		local enemy = CharacterData[ tweak_table ] or tweak_table
-		
+		current = math.max(current, 0)
 		local _r = current / total
 		
 		local r = self._unit_health:width()

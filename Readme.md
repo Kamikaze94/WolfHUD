@@ -6,7 +6,8 @@ I've modified them and added features, I felt were needed or useful.
 It was originally a recreated and updated version of GageHUD, since it was really painful to maintain with all the mixxed up files.  
 Over time I added more and more useful Scripts and currently it becomes kind of an All-in-One solution...  
 Not sure if I want it to become that, but at least I added ingame Options to turn off functions you don't like. ;)  
-__I got the permission from _Seven_, _ViciousWalrus_, _Undeadsewer_ and _FishTaco_ for the use of their scripts.__
+__I got the permission from _Seven_, _ViciousWalrus_, _Undeadsewer_ and _FishTaco_ for the use of their scripts  
+and from _Nervatel Hanging Closet Monster_ for using his icons.__
 
 <p align="center">
   <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_1.jpg" width="420"/>
@@ -20,6 +21,9 @@ __I got the permission from _Seven_, _ViciousWalrus_, _Undeadsewer_ and _FishTac
 3. Extract the __'WolfHUD-master'__-folder into your 'Payday 2/mods'-folder.
 4. Rename __'WolfHUD-master'__-folder to __'WolfHUD'__. 
 5. (Optional) If you don't like the __Federal Inventory icons__, delete the file __'Federal_Inventory.zip'__  
+_(Note: Installing the Federal Inventory icons may keep your game freezed at first startup after installing this mod.  
+Please wait for the prompt window, that tells you to restart the game, once the extraction of the archive is done.)_  
+  
 __(You need the [Better Lua injecTor](http://paydaymods.com/download/) for this mod to work)__  
 
 ###Updates:
@@ -77,12 +81,15 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
 - __[Real Weapon Names](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15433)__, made by _(AD) Jaqueto_, updated by _Terminator01_
 - __[Buy all Assets](http://steamcommunity.com/app/218620/discussions/15/618458030689719683/)__, made by _=TBM= BangL_
 - __Smaller Menu Tweaks__
-  - [Always show Mod Icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13975), made by _Slippai~_
-  - [Slider Values](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14800), made by _Snh20_
-  - Show Weapon Names, made by _me_
-  - [Skillset Info](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15294), made by _Fooksie_
-  - Federal Inventory, [weapon icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14240), [melee icons]() and [mask icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13911) made by _Nervatel Hanging Closet Monster_, [throwables, equipment, armor and heister portraits](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13916) made by _Luffy_
+  - __[Always show Mod Icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13975)__, made by _Slippai~_
+  - __[Slider Values](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14800)__, made by _Snh20_
+  - __Show Weapon Names__, made by _me_
+  - __[Skillset Info](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15294)__, made by _Fooksie_
   - Increased the maximum chars of custom Weapon/Mask/Skillset names
+  - __Federal Inventory__ (Mod Override)
+    - [weapon icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14240), [melee icons]() and [mask icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13911) made by _Nervatel Hanging Closet Monster_
+    - [throwables, equipment, armor and heister portraits](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13916) made by _Luffy_
+    - Update for Jimmy and new weapons made by _me_
 
 ###Big credit goes to all of you!
 ####Without your awesome mods, I would have quitted this game a long time ago! 
