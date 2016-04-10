@@ -87,7 +87,7 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
   - __[Skillset Info](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15294)__, made by _Fooksie_
   - Increased the maximum chars of custom Weapon/Mask/Skillset names
   - __Federal Inventory__ (Mod Override)
-    - [weapon icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14240), [melee icons]() and [mask icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13911) made by _Nervatel Hanging Closet Monster_
+    - [weapon icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14240), [melee icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13910) and [mask icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13911) made by _Nervatel Hanging Closet Monster_
     - [throwables, equipment, armor and heister portraits](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13916) made by _Luffy_
     - Update for Jimmy and new weapons made by _me_
 
