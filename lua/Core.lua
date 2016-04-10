@@ -1,7 +1,6 @@
 if not _G.WolfHUD then
 	_G.WolfHUD = {}
 	WolfHUD.mod_path = ModPath
-	WolfHUD.overrides = { {path = "assets/mod_overrides/WolfHUD_Textures/", file = "WolfHUD_Textures.zip", version = 4}, {path = "assets/mod_overrides/Federal Inventory/", file = "Federal_Inventory.zip", version = 1} }
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
 	WolfHUD.menu_ids = { "wolfhud_options_menu", "wolfhud_lowerhud_options_menu", "wolfhud_upperhud_options_menu", "wolfhud_upperhud_adv_options_menu", "wolfhud_dmgindicator_options_menu", "wolfhud_enemyhealthbar_options_menu", "wolfhud_press2hold_options_menu", "wolfhud_lasers_options_menu" }
 	
@@ -204,130 +203,6 @@ if not _G.WolfHUD then
 		if file then
 			file:write(json.encode(self.settings))
 			file:close()
-		end
-	end
-	
-	function WolfHUD:checkVersion()
-		dohttpreq( "https://raw.githubusercontent.com/Kamikaze94/WolfHUD/master/mod.txt", function(data, id)
-			local local_version = "1.0"
-			local new_version = json.decode(data)
-			
-			for k, v in pairs(LuaModManager.Mods) do
-				local info = v.definition
-				if info["name"] == "WolfHUD" then
-					local_version = info["version"]
-				end
-			end
-			
-			if tonumber(new_version.version) > tonumber(local_version) then
-				log("[WolfHUD] Found new version! Server-Version: " .. new_version.version .. ", Client-Version: " .. local_version)
-				local menu_title = managers.localization:text("wolfhud_update_title")
-				local menu_message = managers.localization:text("wolfhud_update_confirm")
-				local menu_options = {
-					[1] = {
-						text = managers.localization:text("dialog_yes"),
-						callback = function(self, item)
-							WolfHUD:update(new_version.contact, "mods/downloads/WolfHUD.zip")
-						end,
-					},
-					[2] = {
-						text = managers.localization:text("dialog_no"),
-						callback = function(self, item)
-							WolfHUD:checkOverrides()
-						end,
-					},
-					[3] = {
-						text = managers.localization:text("wolfhud_update_browser"),
-						callback = function(self, item)
-							os.execute("start " .. new_version.contact)
-						end,
-					},
-				}
-				QuickMenu:new( menu_title, menu_message, menu_options, true )
-			else
-				log("[WolfHUD] WolfHUD is already up-to-date! (Version: " .. local_version .. ")")
-				WolfHUD:checkOverrides()
-			end
-		end)
-	end
-	
-	function WolfHUD:update(url, file_path)
-		if io.file_is_readable(file_path) then
-			os.remove(file_path)
-		end
-		
-		dohttpreq( url .. "/archive/master.zip", function(data, id)
-			log("[WolfHUD] Beginning automated Update...")
-			local success = true
-			local file = io.open( file_path, "wb+" )
-			if file then
-				file:write( data )
-				file:close()
-			else
-				success = false
-			end
-			if not io.file_is_readable(file_path) then
-				log("[WolfHUD] New version could not be downloaded.")
-				log("[WolfHUD] Aborting Update...")
-				success = false
-			end
-			if success then
-				unzip( file_path , "mods/" )
-				local r, error_str = os.execute('rmdir /S /Q "' .. WolfHUD.mod_path .. '"')
-				if not r then
-					log("[WolfHUD] Error while removing old version: " .. error_str)
-					log("[WolfHUD] Aborting Update...")
-					success = false
-				end
-			end
-			if success then
-				local r, error_str = os.execute('rename "mods\\WolfHUD-master" "WolfHUD"')
-				if not r then
-					log("[WolfHUD] Error while renaming new version: " .. error_str)
-					log("[WolfHUD] Aborting Update...")
-					success = false
-				end
-			end
-			if success then
-				local r, error_str = os.remove(file_path)
-				if not r then
-					log("[WolfHUD] Error while removing update file: " .. error_str)
-				end
-			end
-			if success then log("[WolfHUD] Update successful!") end
-			QuickMenu:new( managers.localization:text("wolfhud_update_title"), managers.localization:text("wolfhud_update_" .. (success and "successful" or "failed")), {[1] = {text = managers.localization:text("dialog_ok"), is_cancel_button = true}}, true )
-		end)
-	end
-	
-	function WolfHUD:checkOverrides()
-		for _, override in ipairs(WolfHUD.overrides) do
-			if io.file_is_readable( WolfHUD.mod_path .. override.file ) then
-				local update = false
-				if (not file.DirectoryExists( override.path )) then
-					update = true
-				else
-					local file = io.open(override.path .. "revision.txt", "r")
-					if file then
-						local version = tonumber(file:read("*all"))
-						file:close()
-						if version < override.version then
-							io.remove_directory_and_files(override.path)
-							update = true
-						else
-							os.remove(WolfHUD.mod_path .. override.file)
-						end
-					else
-						update = true
-					end
-				end
-				if update then 
-					log("[WolfHUD] Updating mod_override, using file: " .. override.file)
-					unzip( WolfHUD.mod_path .. override.file, override.path )
-					os.remove(WolfHUD.mod_path .. override.file)
-					log("[WolfHUD] Update of mod_override successful.")
-					QuickMenu:new( managers.localization:text("wolfhud_overrides_updated_title"), managers.localization:text("wolfhud_overrides_updated_text"), { [1] = { text = managers.localization:text("dialog_ok"), is_cancel_button = true } }, true )
-				end
-			end
 		end
 	end
 	
