@@ -6,8 +6,8 @@ I've modified them and added features, I felt were needed or useful.
 It was originally a recreated and updated version of GageHUD, since it was really painful to maintain with all the mixxed up files.  
 Over time I added more and more useful Scripts and currently it becomes kind of an All-in-One solution...  
 Not sure if I want it to become that, but at least I added ingame Options to turn off functions you don't like. ;)  
-__I got the permission from _Seven_, _ViciousWalrus_, _Undeadsewer_ and _FishTaco_ for the use of their scripts  
-and from _Nervatel Hanging Closet Monster_ for using his icons.__
+__I got the permission from _Seven_, _ViciousWalrus_, _Undeadsewer_, _FishTaco_, _friendIyfire_ and _Terminator01_ for the use of their scripts and from _Nervatel Hanging Closet Monster_ for using his icons.__  
+**Big thanks to [Kampfhörnchen](http://forums.lastbullet.net/member.php?action=profile&uid=19364) for creating a better logo and a banner, ^^**
 
 <p align="center">
   <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_1.jpg" width="420"/>
@@ -25,10 +25,11 @@ _(Note: Installing the Federal Inventory icons may keep your game freezed at fir
 Please wait for the prompt window, that tells you to restart the game, once the extraction of the archive is done.)_  
   
 __(You need the [Better Lua injecTor](http://paydaymods.com/download/) for this mod to work)__  
+__(Keep in mind, that this is a kinda development version. For a more stable release, get your version [here](http://paydaymods.com/mods/298/wolfhud).)__  
 
 ###Updates:
-The mod will check for updates when you reach the main menu.  
-You will then be prompted to Update automatically, ignore the update this time, or visit the GitHUB page.  
+This mod is now providing automatic updates via paydaymods.com's System.  
+This specific kinda BETA version has no update system, and will only show any update, if the release version jumps ahead of your installed one.
 
 ###Bug reports:
 __If you encounter any bugs, feel free to post about it on the issues tab!  
@@ -59,8 +60,8 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
 - __[WeaponLaserColor](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13508)__, made by _Seven_
 - __[Remember Gadget State](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, by _Seven_
   - Auto turns lasers on, if weapon has an laser gadget
-- __[TabStats](https://steamcommunity.com/app/218620/discussions/15/618463738399320805/)__, made by _[MoCu] Pat_
-- __[Numeric Suspicion](https://github.com/cjur3/GageHud)__, made by _cjur3_ for GageHUD
+- __[TabStats](https://steamcommunity.com/app/218620/discussions/15/618463738399320805/)__, made by _friendIyfire_
+- __[Numeric Suspicion](https://github.com/cjur3/GageHud)__, made by _friendIyfire_ for GageHUD
 - __FlashlightExtender__, made by _Seven_
 - __[EnemyHealthbar](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15127)__, made by _Undeadsewer_ for uHUD
   - Made Healthbar fade out, when Enemy walks behind a wall or Player looks away
