@@ -2902,6 +2902,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 layer = 0
                         })
                         self._timer._circle:set_center(self._icon:center())
+						self._timer._bg_circle:set_center(self._icon:center())
                 end
                
                 function HUDList.TimedBuffItem:set_duration(duration)
