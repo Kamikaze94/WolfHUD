@@ -96,6 +96,8 @@ if not _G.WolfHUD then
 			TEAMMATE_PANEL_SCALE 			= 0.75,		--Size of Teammates/AI's HUD Panels
 			LINE_HEIGHT						= 15,		--Chat font Size
 			MAX_OUTPUT_LINES				= 8,		--Chat Output lines
+			show_downcounter 				= true,
+			use_realammo					= true,
 		  --KillCounter
 			use_killcounter 				= true,
 			SHOW_SPECIAL_KILLS 				= true,		--KillCounter shows special kills
@@ -168,6 +170,8 @@ if not _G.WolfHUD then
 			SUPRESS_NADES_STEALTH			= true,
 			HOLD2PICK						= true,
 		  --Laser-Colors
+			laser_remember_state			= true,
+			laser_autoon					= true,
 			use_weaponlasers 				= true,
 		    laser_light 					= 10,		--Multiplier for laser dot
 			laser_glow 						= 5,		--Divider for laser beam
@@ -219,7 +223,7 @@ if not _G.WolfHUD then
 			if type(v["revision"]) == "string" and not io.file_is_readable( v["revision"] ) then
 				if v["identifier"] ~= "fed_inv" or WolfHUD.settings.use_federal_inventory then
 					if not file.DirectoryExists("./" .. v["install_dir"] .. v["install_folder"]) then
-						os.execute('mkdir "./' .. v["install_dir"] .. v["install_folder"] .. '"')
+						os.execute('cmd /c mkdir "./' .. v["install_dir"] .. v["install_folder"] .. '"')
 					end
 					local file = io.open(v["revision"], "w+")
 					if file then

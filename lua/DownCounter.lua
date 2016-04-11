@@ -50,7 +50,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 	function HUDTeammate:update_downs()
 		if not self._health_panel then return end
 		local color = Color(1, 0, 0.8, 1)
-		local alpha = 1
+		local alpha = WolfHUD.settings.show_downcounter and 1 or 0
 		if not self._downs then self._downs = 0 end
 		if managers.groupai:state():whisper_mode() and self._downs == 0 then
 			local risk = 99
@@ -82,7 +82,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			elseif self:peer_id() ~= nil then
 				self._health_panel:child("risk_indicator"):set_font_size(15 * (HUDTeammate._TEAMMATE_PANEL_SCALE or 0.75))
 			end
-			alpha = ((self:peer_id() ~= nil or self._id == HUDManager.PLAYER_PANEL) and 1 or 0)
+			alpha = (WolfHUD.settings.show_downcounter and (self:peer_id() ~= nil or self._id == HUDManager.PLAYER_PANEL) and 1 or 0)
 			color = self._downs > 2 and Color('E24E4E') or self._downs > 1 and Color('CEA168') or Color('C2FC97')
 			self._health_panel:child("risk_indicator"):set_text(tostring(downs_text))
 		end

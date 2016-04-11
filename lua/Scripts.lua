@@ -1318,7 +1318,12 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/raycastweaponbase" the
 		self._bullet_slotmask = self._bullet_slotmask - World:make_slot_mask(16)
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
+	local HUDTeammate_set_ammo_amount_by_type = HUDTeammate.set_ammo_amount_by_type
 	function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, current_left, max)
+		if not WolfHUD.settings.use_realammo then
+			HUDTeammate_set_ammo_amount_by_type(self, type, max_clip, current_clip, current_left, max)
+			return
+		end
 		local weapon_panel
 		if HUDManager.CUSTOM_TEAMMATE_PANEL then	-- For CustomHUD Compatability...
 			weapon_panel = self._panel:child("weapons_panel"):child(type .. "_weapon_panel")

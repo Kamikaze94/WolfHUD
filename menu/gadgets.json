@@ -8,6 +8,26 @@
 	"items" : [
 		{
 			"type" : "toggle",
+			"id" : "laser_remember_state",
+			"title" : "wolfhud_laser_remember_state_title",
+			"description" : "wolfhud_laser_remember_state_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "laser_remember_state",
+		},
+		{
+			"type" : "toggle",
+			"id" : "laser_autoon",
+			"title" : "wolfhud_laser_autoon_title",
+			"description" : "wolfhud_laser_autoon_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "laser_autoon",
+		},
+		{
+			"type" : "divider",
+			"size" : 12,
+		},
+		{
+			"type" : "toggle",
 			"id" : "use_weaponlasers",
 			"title" : "wolfhud_use_weaponlasers_title",
 			"description" : "wolfhud_use_weaponlasers_desc",

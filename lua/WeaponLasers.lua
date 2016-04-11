@@ -137,6 +137,9 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 	
 	function NewRaycastWeaponBase:on_equip()
 		_NewRaycastWeaponBase_on_equip(self)
+		if WolfHUD and not WolfHUD.settings.laser_autoon then 
+			self._has_laser = false 
+		end
 		if self._has_gadget and self._has_laser == nil and (managers.weapon_factory and tweak_data and tweak_data.weapon and tweak_data.weapon.factory) then
 			local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
 			for _, id in pairs(gadgets) do
@@ -155,7 +158,7 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 	if not _NewRaycastWeaponBase_toggle_gadget then _NewRaycastWeaponBase_toggle_gadget = NewRaycastWeaponBase.toggle_gadget end
 	function NewRaycastWeaponBase:toggle_gadget()
 		if _NewRaycastWeaponBase_toggle_gadget(self) then
-			self._stored_gadget_on = self._gadget_on
+			self._stored_gadget_on = (not WolfHUD or WolfHUD.settings.laser_remember_state) and self._gadget_on
 			return true
 		end
 	end

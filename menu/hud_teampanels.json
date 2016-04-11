@@ -39,6 +39,26 @@
 			"step" : 0.01,
 		},
 		{
+			"type" : "toggle",
+			"id" : "use_realammo",
+			"title" : "wolfhud_use_realammo_title",
+			"description" : "wolfhud_use_realammo_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "use_realammo",
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_downcounter",
+			"title" : "wolfhud_show_downcounter_title",
+			"description" : "wolfhud_show_downcounter_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_downcounter",
+		},
+		{
+			"type" : "divider",
+			"size" : 16,
+		},
+		{
 			"type" : "slider",
 			"id" : "LINE_HEIGHT",
 			"title" : "wolfhud_chat_fontsize_title",
