@@ -679,8 +679,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			radial_health:set_rotation(360 * red)
 			if colorize_healthbar == 3 then
 				self._health_panel:child("radial_health_fill"):set_color(red < 0.5 and Color('C2FC97') or red < 0.8 and Color('CEA168') or Color('E24E4E'))
-			else
-				self._health_panel:child("radial_health_fill"):set_color(tweak_data.chat_colors[1])
 			end
 			if red > radial_health:color().red then
 				self:_damage_taken()
