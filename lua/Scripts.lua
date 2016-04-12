@@ -1320,44 +1320,12 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/raycastweaponbase" the
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 	local HUDTeammate_set_ammo_amount_by_type = HUDTeammate.set_ammo_amount_by_type
 	function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, current_left, max)
-		if not WolfHUD.settings.use_realammo then
-			HUDTeammate_set_ammo_amount_by_type(self, type, max_clip, current_clip, current_left, max)
-			return
+		if WolfHUD.settings.use_realammo then
+			local total_left = current_left - current_clip
+			if total_left < 0 then total_left = current_left end
+			current_left = total_left
 		end
-		local weapon_panel
-		if HUDManager.CUSTOM_TEAMMATE_PANEL then	-- For CustomHUD Compatability...
-			weapon_panel = self._panel:child("weapons_panel"):child(type .. "_weapon_panel")
-		else 
-			weapon_panel = self._player_panel:child("weapons_panel"):child(type .. "_weapon_panel")
-		end
-		weapon_panel:set_visible(true)
-		local total_left = current_left - current_clip
-		if total_left < 0 then total_left = current_left end
-		local col
-		local ammo_clip = weapon_panel:child("ammo_clip")
-		local zero = current_clip < 10 and "00" or current_clip < 100 and "0" or ""
-		ammo_clip:set_text(zero .. tostring(current_clip))
-		if current_clip <= math.round(max_clip / 4) and current_clip ~= 0 then
-			col = Color(1, 0.9, 0.9, 0.3)
-		elseif current_clip <= 0 then
-			col = Color(1, 0.9, 0.3, 0.3)
-		else
-			col = Color.white
-		end
-		ammo_clip:set_color(col)
-		ammo_clip:set_range_color(0, string.len(zero), col:with_alpha(0.5))
-		local ammo_total = weapon_panel:child("ammo_total")
-		local zerro = total_left < 10 and "00" or total_left < 100 and "0" or ""
-		if total_left <= math.round(max_clip / 2) and total_left ~= 0 then
-			col = Color(1, 0.9, 0.9, 0.3)
-		elseif total_left <= 0 then
-			col = Color(1, 0.9, 0.3, 0.3)
-		else
-			col = Color.white
-		end
-		ammo_total:set_text(zerro .. tostring(total_left))
-		ammo_total:set_color(col)
-		ammo_total:set_range_color(0, string.len(zerro), col:with_alpha(0.5))
+		HUDTeammate_set_ammo_amount_by_type(self, type, max_clip, current_clip, current_left, max)
 	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata" then
 	function TimeSpeedEffectTweakData:_init_base_effects()

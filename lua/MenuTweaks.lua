@@ -260,8 +260,8 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	ChatManager._BLOCK_PATTERNS = {
 	  ".-[NGBTO]:.+",
 	  --NGBTO info blocker Should work since its mass spam.
-	  ".-[%d-%d:]+%d%d<DIV>.+"
-	  --Blocks anything, that starts with the time and then has a divider (Might block other mods, not only Poco...)
+	  ".-[%d:]+<DIV>.+"
+	  --Blocks anything, that starts with numbers and ':' and then has a divider (Might block other mods, not only Poco...)
 	}
 
 	local _receive_message_original = ChatManager._receive_message
