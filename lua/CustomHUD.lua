@@ -463,13 +463,14 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			texture_rect = { 64, 0, -64, 64 },
 			render_template = "VertexColorTexturedRadial",
 			blend_mode = "add",
-			color = Color(1, 0, 0, 0),
+			color = Color(1, 1, 0, 0),
 			w = self._health_panel:w(),
 			h = self._health_panel:h(),
 			layer = 2,
 		})
 		
 		if WolfHUD and WolfHUD.settings.colorize_healthbars > 1 then
+			radial_health:set_color(Color(1, 0, 0, 0))
 			radial_health:set_blend_mode("sub")
 			
 			self._health_panel:bitmap({

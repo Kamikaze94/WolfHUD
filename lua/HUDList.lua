@@ -2251,15 +2251,17 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                                 texture = "guis/textures/pd2/hud_health",
                                 texture_rect = { 64, 0, -64, 64 },
                                 render_template = "VertexColorTexturedRadial",
-                                blend_mode = "sub",
+                                blend_mode = "add",
                                 layer = 2,
-                                color = Color(1, 0, 0, 0),
+                                color = Color(1, 1, 0, 0),
                                 w = self._panel:w(),
                                 h = self._panel:w(),
                         })
                         self._health_bar:set_bottom(self._panel:bottom())
 						
 						if WolfHUD and WolfHUD.settings.colorize_healthbars > 1 then
+							self._health_bar:set_color(Color(1, 0, 0, 0))
+							self._health_bar:set_blend_mode("sub")
 							self._panel:bitmap({
 								name = "radial_health_fill",
 								color = tweak_data.chat_colors[1],
