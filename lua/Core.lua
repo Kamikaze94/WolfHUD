@@ -96,7 +96,7 @@ if not _G.WolfHUD then
 			TEAMMATE_PANEL_SCALE 			= 0.75,		--Size of Teammates/AI's HUD Panels
 			LINE_HEIGHT						= 15,		--Chat font Size
 			MAX_OUTPUT_LINES				= 8,		--Chat Output lines
-			colorize_healthbars				= 1,		--1 = none, 2 = peer color, 3 = health amount
+			colorize_healthbars				= 2,		--1 = none, 2 = peer color, 3 = health amount
 			show_downcounter 				= true,
 			use_realammo					= true,
 		  --KillCounter
