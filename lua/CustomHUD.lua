@@ -462,24 +462,28 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			texture = "guis/textures/pd2/hud_health",
 			texture_rect = { 64, 0, -64, 64 },
 			render_template = "VertexColorTexturedRadial",
-			blend_mode = "sub",
+			blend_mode = "add",
 			color = Color(1, 0, 0, 0),
 			w = self._health_panel:w(),
 			h = self._health_panel:h(),
 			layer = 2,
 		})
 		
-		self._health_panel:bitmap({
-			name = "radial_health_fill",
-			color = tweak_data.chat_colors[5],
-			texture = "guis/textures/pd2/hud_health",
-			texture_rect = { 64, 0, -64, 64 },
-			blend_mode = "add",
-			w = self._health_panel:w(),
-			h = self._health_panel:h(),
-			alpha = 1,
-			layer = 1
-		})
+		if WolfHUD and WolfHUD.settings.colorize_healthbars > 1 then
+			radial_health:set_blend_mode("sub")
+			
+			self._health_panel:bitmap({
+				name = "radial_health_fill",
+				color = tweak_data.chat_colors[5],
+				texture = "guis/textures/pd2/hud_health",
+				texture_rect = { 64, 0, -64, 64 },
+				blend_mode = "add",
+				w = self._health_panel:w(),
+				h = self._health_panel:h(),
+				alpha = 1,
+				layer = 1
+			})
+		end
 		
 		local radial_shield = self._health_panel:bitmap({
 			name = "radial_shield",
@@ -666,13 +670,26 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 
 	function HUDTeammate:set_health(data)
 		self._health_data = data
+		local colorize_healthbar = WolfHUD and WolfHUD.settings.colorize_healthbars
 		local radial_health = self._health_panel:child("radial_health")
-		local red = 1 - data.current / data.total
-		if red > radial_health:color().red then
-			self:_damage_taken()
+		local red = data.current / data.total
+		if colorize_healthbar > 1 then
+			red = 1 - red
+			radial_health:set_rotation(360 * red)
+			if colorize_healthbar == 3 then
+				self._health_panel:child("radial_health_fill"):set_color(red < 0.5 and Color('C2FC97') or red < 0.8 and Color('CEA168') or Color('E24E4E'))
+			else
+				self._health_panel:child("radial_health_fill"):set_color(tweak_data.chat_colors[1])
+			end
+			if red > radial_health:color().red then
+				self:_damage_taken()
+			end
+		else
+			if red < radial_health:color().red then
+				self:_damage_taken()
+			end
 		end
 		radial_health:set_color(Color(1, red, 1, 1))
-		radial_health:set_rotation(360 * red)
 		self:set_stored_health() --Update RIP Rotation
 	end
 
@@ -823,8 +840,13 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		local radial_health = self._health_panel:child("radial_health")		
 		if alive(rip) then  
 			do
-				rip:set_rotation(self._health_panel:child("radial_health"):rotation())--(1 - radial_health:color().r) * 360)
-				rip_bg:set_rotation(self._health_panel:child("radial_health"):rotation())--(1 - radial_health:color().r) * 360)
+				if WolfHUD and WolfHUD.settings.colorize_healthbars > 1 then
+					rip:set_rotation(self._health_panel:child("radial_health"):rotation())
+					rip_bg:set_rotation(self._health_panel:child("radial_health"):rotation())
+				else
+					rip:set_rotation((1 - radial_health:color().r) * 360)
+					rip_bg:set_rotation((1 - radial_health:color().r) * 360)
+				end
 				if stored_health_ratio then
 					local red = math.min(stored_health_ratio, 1)
 					rip:set_visible(red > 0)  
@@ -1680,7 +1702,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammate:set_callsign(id)
-		self._health_panel:child("radial_health_fill"):set_color(tweak_data.chat_colors[id] or Color.white)
+		local health_bg = self._health_panel:child("radial_health_fill")
+		if health_bg then
+			health_bg:set_color(tweak_data.chat_colors[id] or Color.white)
+		end
 		if not self._main_player then
 			self._name_panel:child("name_sub_panel"):child("name"):set_color((tweak_data.chat_colors[id] or Color.white):with_alpha(1))
 			self._name_panel:child("callsign"):set_color((tweak_data.chat_colors[id] or Color.white):with_alpha(1))

@@ -54,7 +54,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		--self._full_hud_panel:clear()
 		self._markers = {}
 		local x_pos, y_pos
-		if (pdth_hud and pdth_hud.loaded_options.Ingame.MainHud) then
+		if pdth_hud then
 			y_pos = -90
 			x_pos = 500
 		elseif mod_collection then

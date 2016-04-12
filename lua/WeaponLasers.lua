@@ -67,7 +67,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 			local theme = self._theme_type
 			local suffix = self._suffix_map[theme]
 			local col = Color.white
-			if not theme or not suffix then return end
+			if not theme or not suffix then return end	--Unknown Theme, ignore this case
 			if WolfHUD.settings["laser_" .. suffix] >= (#WolfHUD.color_table) then
 				local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
 				col = Color(r, g, b)
@@ -80,7 +80,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 			else
 				alpha = WolfHUD.settings["laser_" .. suffix .. "_alpha"]
 			end
-			if self._themes[theme].brush == col:with_alpha(alpha) then return end
+			if self._themes[theme].brush == col:with_alpha(alpha) then return end	--Same color, no need to update
 			self:update_theme(theme, col, alpha)
 			self:set_color_by_theme(theme)
 		end

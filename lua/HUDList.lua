@@ -2259,17 +2259,19 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                         })
                         self._health_bar:set_bottom(self._panel:bottom())
 						
-						self._panel:bitmap({
-							name = "radial_health_fill",
-							color = tweak_data.chat_colors[1],
-							texture = "guis/textures/pd2/hud_health",
-							texture_rect = { 64, 0, -64, 64 },
-							blend_mode = "add",
-							w = self._panel:w(),
-							h = self._panel:w(),
-							alpha = 1,
-							layer = 1
-						}):set_bottom(self._panel:bottom())
+						if WolfHUD and WolfHUD.settings.colorize_healthbars > 1 then
+							self._panel:bitmap({
+								name = "radial_health_fill",
+								color = tweak_data.chat_colors[1],
+								texture = "guis/textures/pd2/hud_health",
+								texture_rect = { 64, 0, -64, 64 },
+								blend_mode = "add",
+								w = self._panel:w(),
+								h = self._panel:w(),
+								alpha = 1,
+								layer = 1
+							}):set_bottom(self._panel:bottom())
+						end
                        
                         self._hit_indicator = self._panel:bitmap({
                                 name = "radial_health",
@@ -2329,9 +2331,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
                 end
                
                 function HUDList.MinionItem:set_health(health, skip_animate)
-                        local red = 1 - (health/ self._max_health)
+                        local red = health/ self._max_health
+						if WolfHUD and WolfHUD.settings.colorize_healthbars > 1 then
+							red = 1 - red
+							self._health_bar:set_rotation(360 * red)
+						end
 						self._health_bar:set_color(Color(1, red, 1, 1))
-						self._health_bar:set_rotation(360 * red)
                        
                         if not (skip_animate or self._dead) then
                                 self._hit_indicator:stop()

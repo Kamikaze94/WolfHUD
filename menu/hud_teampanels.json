@@ -39,6 +39,19 @@
 			"step" : 0.01,
 		},
 		{
+			"type" : "multiple_choice",
+			"id" : "colorize_healthbars",
+			"title" : "wolfhud_customhud_healthbars_title",
+			"description" : "wolfhud_customhud_healthbars_desc",
+			"callback" : "clbk_change_setting",
+			"items" : [
+				"wolfhud_customhud_healthbars_mode_a",
+				"wolfhud_customhud_healthbars_mode_b",
+				"wolfhud_customhud_healthbars_mode_c"
+			],
+			"value" : "colorize_healthbars",
+		},
+		{
 			"type" : "toggle",
 			"id" : "use_realammo",
 			"title" : "wolfhud_use_realammo_title",
