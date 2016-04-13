@@ -169,7 +169,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		gen_pku_blow_torch =			"blowtorch",
 		gen_pku_thermite = 				"thermite",
 		gen_pku_thermite_paste = 		"thermite",
-		gen_pku_thermite_timer = 		"thermite",
 		hold_take_gas_can = 			"thermite",
 		money_wrap_single_bundle = 		"small_loot",
 		cas_chips_pile = 				"small_loot",
