@@ -156,7 +156,7 @@ if not _G.WolfHUD then
 			
 			use_hudlist 					= true,
 			hud_box_color 					= 1,		--Left and Right List font color
-			hud_box_bg_color 				= 14,		--Left and Right List BG color
+			hud_box_bg_color 				= 15,		--Left and Right List BG color
 			civilian_color 					= 1, 		--EnemyCounter Civillian and Hostage icon color
 			thug_color 						= 1,		--EnemyCounter Thug and Mobster icon color
 			enemy_color 					= 1,		--EnemyCounter Cop and Specials icon color
@@ -190,6 +190,7 @@ if not _G.WolfHUD then
 			flashlight_range 				= 20,		--Flashlight range (in m)
 			
 			replace_weapon_names 			= true,
+			enable_burstmode				= true,
 			use_federal_inventory 			= true
 		}
 	end

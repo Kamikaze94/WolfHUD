@@ -116,6 +116,8 @@
 	"wolfhud_loot_screen_delay_desc" : "Proceeds X seconds after you got your loot drop.\n(Host only)",
 	"wolfhud_replace_weapon_names_title" : "Real Weapon Names",
 	"wolfhud_replace_weapon_names_desc" : "Replace the Weapon Names with their Real-World counterparts.\n(A Map change is needed to apply...)",
+	"wolfhud_enable_burstmode_title" : "Enable Burst mode",
+	"wolfhud_enable_burstmode_desc" : "Enable a burst fire mode for your weapons.",
 	"wolfhud_use_press2hold_title" : "Use Press2Hold",
 	"wolfhud_use_press2hold_desc" : "Press2Hold lets you lock your interaction, so you don't need to press that damn button the whole time. (A Map change is needed to apply...)",
 	"wolfhud_use_hudlist_title" : "Use HUDList",

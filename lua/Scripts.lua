@@ -4,7 +4,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	local init_original = HUDStatsScreen.init
 
 	local TOTAL_DAMAGE = 0
-	local USE_ACTUAL_MASK = true
 	local characters = {
 		female_1 = {
 			texture = "guis/textures/pd2/blackmarket/icons/characters/female_1",
@@ -57,6 +56,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		bodhi = {
 			texture = "guis/dlcs/rip/textures/pd2/blackmarket/icons/characters/bodhi",
 			color = Color(1, 0.67, 0.49, 0.43)
+		},
+		jimmy = {
+			texture = "guis/dlcs/coco/textures/pd2/blackmarket/icons/characters/jimmy",
+			color = Color(1, 0.43, 0.48, 0.55)
 		}
 	}
 

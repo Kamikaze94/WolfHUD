@@ -185,8 +185,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 	end
 	
 	function HUDInteraction:destroy()
-		self._hud_panel:remove(self._interact_time)
-		--self._interact_time = nil
+		if self._interact_time and self._hud_panel then
+			self._hud_panel:remove(self._interact_time)
+			self._interact_time = nil
+		end
 		destroy_original(self)
 	end
 elseif string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then

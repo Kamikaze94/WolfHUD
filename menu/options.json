@@ -68,6 +68,15 @@
 			"priority" : 3,
 		},
 		{
+			"type" : "toggle",
+			"id" : "enable_burstmode",
+			"title" : "wolfhud_enable_burstmode_title",
+			"description" : "wolfhud_enable_burstmode_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "enable_burstmode",
+			"priority" : 3,
+		},
+		{
 			"type" : "divider",
 			"size" : 16,
 			"priority" : 2,
