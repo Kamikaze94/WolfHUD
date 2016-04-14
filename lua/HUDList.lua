@@ -1928,7 +1928,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		params.w = params.w or parent:panel():h() / 2
 		params.h = params.h or parent:panel():h()
 		HUDList.RightListItem.super.init(self, parent, name, params)
-		log("Creating Box:" .. tostring(name))
 		local x, y = unpack(icon.atlas or icon.spec or { 0, 0 })
 		local texture = icon.texture
 			or icon.spec and "guis/textures/pd2/specialization/icons_atlas" 

@@ -236,8 +236,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 			managers.hud:set_unit_health_rotation( 360 - angle )
 		end
 		
-		if self._fwd_ray and self._fwd_ray.unit then
-		
+		if self._fwd_ray and self._fwd_ray.unit and type(self._fwd_ray.unit) == "userdata" then
 			local unit = self._fwd_ray.unit
 			if unit:in_slot( 8 ) and alive(unit:parent()) then unit = unit:parent() end
 			if managers.groupai:state():turrets() then
