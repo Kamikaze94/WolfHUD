@@ -204,7 +204,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		loot_bitmap:set_left(self.drivingpanel:center_x() + (x_pos + loot_bitmap:w()))
 		loot_bitmap:set_y(self.drivingpanel:h() + ((y_pos + -120) + (loot_bitmap:h() / 2)))
 		
-		local vis = WolfHUD.settings.show_car_healthbar or not WolfHUD and true
+		local vis = WolfHUD:getSetting("show_car_healthbar", "boolean")
 		self._health_text = self.drivingpanel:text({
 			name = "health",
 			text = "100000 HP",
@@ -258,7 +258,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		local car_texture_rect = { 1024, 0, 512, 512}
 		local car_texture = "guis/textures/contact_vlad"
 		
-		local vis = WolfHUD.settings.show_vehicle or not WolfHUD and true
+		local vis = WolfHUD:getSetting("show_vehicle", "boolean")
 		local vehicle_bitmap = self.drivingpanel:bitmap({
 			vertical = "bottom",
 			align = "left",
@@ -279,14 +279,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	function HUDDriving:start()
 		self._active = true
 		self._people = 0
-		self.drivingpanel:set_visible(WolfHUD.settings.use_drivinghud or not WolfHUD and true)
+		self.drivingpanel:set_visible(WolfHUD:getSetting("use_drivinghud", "boolean"))
 	end
 	function HUDDriving:stop()
 		self._active = false
 		self.drivingpanel:set_visible(false)
 	end
 	function HUDDriving:set_vehicle_state(speed, rpm, gear, people, people_total, name, seats_table, loot_current, loot_total, health_current, health_total)
-		if WolfHUD.settings.speed_in_mph then 
+		if WolfHUD:getSetting("speed_in_mph", "boolean") then 
 			self.drivingpanel:child("value_speed"):set_text(string.format("%d", speed) .. " mph")
 		else
 			self.drivingpanel:child("value_speed"):set_text(string.format("%d", speed) .. " km/h")
@@ -295,7 +295,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		self.drivingpanel:child("value_gear"):set_text(gear)
 		self.drivingpanel:child("seats"):set_text(people .. "/" .. people_total)
 		self.drivingpanel:child("loot"):set_text(loot_current .. "/" .. loot_total)
-		local health_vis = WolfHUD.settings.show_car_healthbar or not WolfHUD and true
+		local health_vis = WolfHUD:getSetting("show_car_healthbar", "boolean")
 		if health_vis ~= self._health_text then
 			self._health_bar:set_visible(health_vis)
 			self._health_shield:set_visible(health_vis)
@@ -318,7 +318,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			self:update_images()
 		end
 		
-		local vis = WolfHUD.settings.show_vehicle or WolfHUD.settings.show_vehicle == nil and true
 		if self._people ~= people then
 			self._people = people
 			for i, seat in pairs(seats_table) do
@@ -326,7 +325,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 				if alive(seat.occupant) then
 					if self.drivingpanel:child(seat.name) then
 						local icon = self.drivingpanel:child(seat.name)
-						icon:set_visible(vis)
+						icon:set_visible(WolfHUD:getSetting("show_vehicle", "boolean"))
 						
 						--local peer = managers.network:session():peer_by_unit(seat.occupant)
 						local color_id = managers.criminals:character_color_id_by_unit(seat.occupant)
@@ -358,13 +357,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	end
 
 	function HUDDriving:update_images()
-		local vis = WolfHUD.settings.show_vehicle or WolfHUD.settings.show_vehicle == nil and true
 		if main_table[self._name] then
 			local car_table = main_table[self._name]
 			local vehicle_bitmap = self.drivingpanel:child("icon_vehicle")
 			
 			vehicle_bitmap:set_image(car_table.texture, car_table.texture_rect[1], car_table.texture_rect[2], car_table.texture_rect[3], car_table.texture_rect[4])
-			vehicle_bitmap:set_visible(vis)
+			vehicle_bitmap:set_visible(WolfHUD:getSetting("show_vehicle", "boolean"))
 			for _, child in pairs(self.drivingpanel:children()) do
 				if child:layer() == 2 then
 					self.drivingpanel:remove(child)
@@ -452,7 +450,7 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 				speed = -speed
 			end
 			
-			if WolfHUD.settings.speed_in_mph then
+			if WolfHUD:getSetting("speed_in_mph", "boolean") then
 				speed = speed / 1.60934
 			end
 			managers.hud:set_driving_vehicle_state(speed, rpm, gear, no_used_seats, no_total_seats, vehicle_name, seats_table, loot_current, loot_total, health_current, health_total)

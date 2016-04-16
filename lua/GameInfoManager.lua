@@ -1,5 +1,9 @@
-if string.lower(RequiredScript) == "lib/setups/gamesetup" then
+printf = function(...) 
+	WolfHUD:print_log(string.format(...))
+end
 
+if string.lower(RequiredScript) == "lib/setups/gamesetup" then
+	
 	local init_managers_original = GameSetup.init_managers
 
 	function GameSetup:init_managers(managers, ...)

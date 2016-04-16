@@ -1,4 +1,8 @@
-if WolfHUD and not WolfHUD.settings.use_hudlist then return end
+if WolfHUD and not WolfHUD:getSetting("use_hudlist", "boolean") then return end
+printf = function(...) 
+	WolfHUD:print_log(string.format(...))
+end
+
 if RequiredScript == "lib/managers/hudmanagerpd2" then
 
 	local function format_time_string(value)
@@ -55,36 +59,36 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
         buff_list_scale = 1,    --Size scale of buff list
         
         --Left side list
-        show_timers = WolfHUD and WolfHUD.settings.show_timers or not WolfHUD and true,     --Drills, time locks, hacking etc.
-        show_equipment = WolfHUD and WolfHUD.settings.show_equipment or not WolfHUD and true,  --Deployables (ammo, doc bags, body bags)
-        show_sentries = WolfHUD and WolfHUD.settings.show_sentries or not WolfHUD and true,   --Deployable sentries
-            hide_empty_sentries = WolfHUD and WolfHUD.settings.hide_empty_sentries or not WolfHUD and true,     --Hide sentries with no ammo if player lacks the skill to refill them
-        show_ecms = WolfHUD and WolfHUD.settings.show_ecms or not WolfHUD and true,       --Active ECMs
-        show_ecm_retrigger = WolfHUD and WolfHUD.settings.show_ecm_retrigger or not WolfHUD and true,      --Countdown for players own ECM feedback retrigger delay
-        show_minions = WolfHUD and WolfHUD.settings.show_minions or not WolfHUD and true,    --Converted enemies, type and health
-        show_pagers = WolfHUD and WolfHUD.settings.show_pagers or not WolfHUD and true,     --Show currently active pagers
-        show_tape_loop = WolfHUD and WolfHUD.settings.show_tape_loop or not WolfHUD and true,  --Show active tape loop duration
-        remove_answered_pager_contour = WolfHUD and WolfHUD.settings.remove_answered_pager_contour or not WolfHUD and true,   --Removes the interaction contour on answered pagers
+        show_timers 					= WolfHUD:getSetting("show_timers", "boolean"),     				--Drills, time locks, hacking etc.
+        show_equipment 					= WolfHUD:getSetting("show_equipment", "boolean"),  				--Deployables (ammo, doc bags, body bags)
+        show_sentries 					= WolfHUD:getSetting("show_sentries", "boolean"),   				--Deployable sentries
+            hide_empty_sentries 		= WolfHUD:getSetting("hide_empty_sentries", "boolean"),     		--Hide sentries with no ammo if player lacks the skill to refill them
+        show_ecms 						= WolfHUD:getSetting("show_ecms", "boolean"),       				--Active ECMs
+        show_ecm_retrigger 				= WolfHUD:getSetting("show_ecm_retrigger", "boolean"),      		--Countdown for players own ECM feedback retrigger delay
+        show_minions 					= WolfHUD:getSetting("show_minions", "boolean"),    				--Converted enemies, type and health
+        show_pagers 					= WolfHUD:getSetting("show_pagers", "boolean"),     				--Show currently active pagers
+        show_tape_loop 					= WolfHUD:getSetting("show_tape_loop", "boolean"),  				--Show active tape loop duration
+        remove_answered_pager_contour 	= WolfHUD:getSetting("remove_answered_pager_contour", "boolean"), 	--Removes the interaction contour on answered pagers
         
         --Right side list
-        show_enemies = WolfHUD and WolfHUD.settings.show_enemies or not WolfHUD and true,            --Currently spawned enemies
-            aggregate_enemies = WolfHUD and WolfHUD.settings.aggregate_enemies or false,      --Don't split enemies on type; use a single entry for all
-        show_turrets = WolfHUD and WolfHUD.settings.show_turrets or not WolfHUD and true,    --Show active SWAT turrets
-        show_civilians = WolfHUD and WolfHUD.settings.show_civilians or not WolfHUD and true,  --Currently spawned, untied civs
-        show_hostages = WolfHUD and WolfHUD.settings.show_hostages or not WolfHUD and true,   --Currently tied civilian and dominated cops
-        show_minion_count = WolfHUD and WolfHUD.settings.show_minion_count or not WolfHUD and true,       --Current number of jokered enemies
-        show_pager_count = WolfHUD and WolfHUD.settings.show_pager_count or not WolfHUD and true,        --Show number of triggered pagers (only counts pagers triggered while you were present)
-        show_loot = WolfHUD and WolfHUD.settings.show_loot or not WolfHUD and true,       --Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
-            aggregate_loot = WolfHUD and WolfHUD.settings.aggregate_loot or false, --Don't split loot on type; use a single entry for all
-            separate_bagged_loot = WolfHUD and WolfHUD.settings.separate_bagged_loot or not WolfHUD and true,     --Show bagged loot as a separate value
-        show_special_pickups = WolfHUD and WolfHUD.settings.show_special_pickups or not WolfHUD and true,    --Show number of special equipment/items
+        show_enemies 					= WolfHUD:getSetting("show_enemies", "boolean"),            		--Currently spawned enemies
+            aggregate_enemies 			= WolfHUD:getSetting("aggregate_enemies", "boolean"),      			--Don't split enemies on type; use a single entry for all
+        show_turrets 					= WolfHUD:getSetting("show_turrets", "boolean"),    				--Show active SWAT turrets
+        show_civilians 					= WolfHUD:getSetting("show_civilians", "boolean"),  				--Currently spawned, untied civs
+        show_hostages 					= WolfHUD:getSetting("show_hostages", "boolean"),   				--Currently tied civilian and dominated cops
+        show_minion_count 				= WolfHUD:getSetting("show_minion_count", "boolean"),       		--Current number of jokered enemies
+        show_pager_count 				= WolfHUD:getSetting("show_pager_count", "boolean"),        		--Show number of triggered pagers (only counts pagers triggered while you were present)
+        show_loot 						= WolfHUD:getSetting("show_loot", "boolean"),       				--Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
+            aggregate_loot 				= WolfHUD:getSetting("aggregate_loot", "boolean"), 					--Don't split loot on type; use a single entry for all
+            separate_bagged_loot 		= WolfHUD:getSetting("separate_bagged_loot", "boolean"),     		--Show bagged loot as a separate value
+        show_special_pickups 			= WolfHUD:getSetting("show_special_pickups", "boolean"),    		--Show number of special equipment/items
         
         --Buff list
-        show_buffs = WolfHUD and WolfHUD.settings.show_buffs or 1,       --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+        show_buffs 						= WolfHUD:getSetting("show_buffs", "number"),       				--Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
 	}
 	
-	local RightListColor 	= WolfHUD.color_table[(WolfHUD.settings.hud_box_color)] or Color.white
-	local RightListBgColor 	= WolfHUD.color_table[(WolfHUD.settings.hud_box_bg_color)] or Color.black
+	local RightListColor 	= WolfHUD:getSetting("hud_box_color", "color")
+	local RightListBgColor 	= WolfHUD:getSetting("hud_box_bg_color", "color")
 	local LeftListColor 	= RightListColor
 	local LeftListBgColor 	= RightListBgColor
 	local TimerColor 		= LeftListColor
@@ -98,10 +102,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	local TapeLoopColor 	= LeftListColor
 	local TapeLoopBgColor 	= LeftListBgColor
 	
-    local civilian_color 	= WolfHUD.color_table[(WolfHUD.settings.civilian_color)] or Color.white
+    local civilian_color 	= WolfHUD:getSetting("civilian_color", "color")
     local hostage_color 	= civilian_color
-    local thug_color 		= WolfHUD.color_table[(WolfHUD.settings.thug_color)] or Color.white
-	local enemy_color 		= WolfHUD.color_table[(WolfHUD.settings.enemy_color)] or Color.white
+    local thug_color 		= WolfHUD:getSetting("thug_color", "color")
+	local enemy_color 		= WolfHUD:getSetting("enemy_color", "color")
     local guard_color 		= enemy_color
     local special_color 	= enemy_color
     local turret_color 		= special_color
@@ -128,32 +132,32 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		gensec = 					{ type_id = "security",		category = "enemies",	long_name = "GenSec" },
 		gangster = 					{ type_id = "thug",			category = "enemies",	long_name = "Gangster" },
 		mobster = 					{ type_id = "thug",			category = "enemies",	long_name = "Mobster" },
-		biker_escape = 			{ type_id = "thug",			category = "enemies",	long_name = "Gangster" },
+		biker_escape = 				{ type_id = "thug",			category = "enemies",	long_name = "Gangster" },
 		tank = 						{ type_id = "tank",			category = "enemies",	long_name = "Bulldozer" },
-		spooc = 						{ type_id = "spooc",			category = "enemies",	long_name = "Cloaker" },
-		taser = 						{ type_id = "taser",			category = "enemies",	long_name = "Taser" },
+		spooc = 					{ type_id = "spooc",			category = "enemies",	long_name = "Cloaker" },
+		taser = 					{ type_id = "taser",			category = "enemies",	long_name = "Taser" },
 		shield = 					{ type_id = "shield",		category = "enemies",	long_name = "Shield" },
 		sniper = 					{ type_id = "sniper",		category = "enemies",	long_name = "Sniper" },
-		mobster_boss = 			{ type_id = "thug_boss",	category = "enemies",	long_name = "Commissar" },
+		mobster_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "Commissar" },
 		hector_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "Hector" },
-		hector_boss_no_armor = 	{ type_id = "thug_boss",	category = "enemies",	long_name = "Hector" },
+		hector_boss_no_armor = 		{ type_id = "thug_boss",	category = "enemies",	long_name = "Hector" },
 		phalanx_vip = 				{ type_id = "phalanx",		category = "enemies",	long_name = "Cpt. Winter" },
 		phalanx_minion = 			{ type_id = "phalanx",		category = "enemies",	long_name = "Phalanx" },
 		civilian = 					{ type_id = "civ",			category = "civilians",	long_name = "Civilian" },
-		civilian_female = 		{ type_id = "civ",			category = "civilians",	long_name = "Civilian" },
-		bank_manager = 			{ type_id = "civ",			category = "civilians",	long_name = "Bank mngr." },
+		civilian_female = 			{ type_id = "civ",			category = "civilians",	long_name = "Civilian" },
+		bank_manager = 				{ type_id = "civ",			category = "civilians",	long_name = "Bank mngr." },
 		drunk_pilot = 				{ type_id = "unique",		category = "civilians",	long_name = "Pilot" },
 		escort = 					{ type_id = "unique",		category = "civilians",	long_name = "Escort" },
-		old_hoxton_mission = 	{ type_id = "unique",		category = "civilians",	long_name = "Hoxton" },
+		old_hoxton_mission = 		{ type_id = "unique",		category = "civilians",	long_name = "Hoxton" },
 		inside_man = 				{ type_id = "unique",		category = "civilians",	long_name = "Insider" },
-		boris = 						{ type_id = "unique",		category = "civilians",	long_name = "?" },
+		boris = 					{ type_id = "unique",		category = "civilians",	long_name = "?" },
 		escort_undercover = 		{ type_id = "unique",		category = "civilians",	long_name = "Taxman" },
 		
 		--Custom unit definitions
 		turret = 					{ type_id = "turret",		category = "turrets",	long_name = "SWAT Turret" },
 		cop_hostage =				{ type_id = "cop_hostage",	category = "hostages",	--[[force_update = { "cop", "enemies" }]] },
 		civ_hostage =				{ type_id = "civ_hostage",	category = "hostages",	force_update = { "civ" } },
-		minion =						{ type_id = "minion",		category = "minions",		--[[force_update = { "cop", "enemies" }]] },
+		minion =					{ type_id = "minion",		category = "minions",		--[[force_update = { "cop", "enemies" }]] },
 	}
 	
 	HUDListManager.SPECIAL_PICKUP_TYPES = {
@@ -389,6 +393,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local pager_count = self:list("right_side_list"):item("hostage_count_list"):item("PagerCount")
 		if pager_count then
 			pager_count:set_active(pager_count:get_count() > 0 and status)
+		end
+		
+		for _, item in pairs(self:list("left_side_list"):item("pagers"):items()) do
+			item:set_active(status)
 		end
 		
 		for _, item in pairs(self:list("left_side_list"):item("equipment"):items()) do
@@ -2521,7 +2529,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		})
 		self._health_bar:set_bottom(self._panel:bottom())
 		
-		if WolfHUD and WolfHUD.settings.colorize_healthbars > 1 then
+		if WolfHUD:getSetting("colorize_healthbars", "boolean") > 1 then
 			self._health_bar:set_color(Color(1, 0, 0, 0))
 			self._health_bar:set_blend_mode("sub")
 			self._panel:bitmap({
@@ -2610,7 +2618,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.MinionItem:set_health(health, skip_animate)
 		local red = health/ self._max_health
-		if WolfHUD and WolfHUD.settings.colorize_healthbars > 1 then
+		if WolfHUD:getSetting("colorize_healthbars", "boolean") > 1 then
 			red = 1 - red
 			self._health_bar:set_rotation(360 * red)
 		end

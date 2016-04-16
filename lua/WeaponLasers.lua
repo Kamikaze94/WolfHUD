@@ -3,28 +3,28 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 	local update_original = WeaponLaser.update
 	WeaponLaser.DEFINITIONS = {
 		player = {	  					--Player
-			color = WolfHUD.color_table[(WolfHUD.settings.laser_player)] or Color(0,0.75,1),
-			alpha = WolfHUD.settings.laser_player_alpha or 0.3,
+			color = WolfHUD:getSetting("laser_player", "color"),
+			alpha = WolfHUD:getSetting("laser_player_alpha", "number"),
 		},
 		cop_sniper = {  				--Enemy snipers
-			color = WolfHUD.color_table[(WolfHUD.settings.laser_sniper)] or Color(0.7, 0, 0),
-			alpha = WolfHUD.settings.laser_sniper_alpha or 0.5,
+			color = WolfHUD:getSetting("laser_sniper", "color"),
+			alpha = WolfHUD:getSetting("laser_sniper_alpha", "number"),
 		},
 		default = {	 					--Team mates
-			color = WolfHUD.color_table[(WolfHUD.settings.laser_teammates)] or Color(0,0.75,1),
-			alpha = WolfHUD.settings.laser_teammates_alpha or 0.15,
+			color = WolfHUD:getSetting("laser_teammates", "color"),
+			alpha = WolfHUD:getSetting("laser_teammates_alpha", "number"),
 		},
 		turret_module_active = {		--SWAT turret standard
-			color = WolfHUD.color_table[(WolfHUD.settings.laser_turret_active)] or Color(1, 0, 0),
-			alpha = WolfHUD.settings.laser_turret_alpha or 0.15,
+			color = WolfHUD:getSetting("laser_turret_active", "color"),
+			alpha = WolfHUD:getSetting("laser_turret_alpha", "number"),
 		},
 		turret_module_rearming = {	  	--SWAT turret reloading
-			color = WolfHUD.color_table[(WolfHUD.settings.laser_turret_reloading)] or Color(1, 1, 0),
-			alpha = WolfHUD.settings.laser_turret_alpha or 0.15,
+			color = WolfHUD:getSetting("laser_turret_reloading", "color"),
+			alpha = WolfHUD:getSetting("laser_turret_alpha", "number"),
 		},
 		turret_module_mad = {   		--SWAT turret jammed
-			color = WolfHUD.color_table[(WolfHUD.settings.laser_turret_jammed)] or Color(0, 1, 0),
-			alpha = WolfHUD.settings.laser_turret_alpha or 0.15,
+			color = WolfHUD:getSetting("laser_turret_jammed", "color"),
+			alpha = WolfHUD:getSetting("laser_turret_alpha", "number"),
 		},
 	}
 		
@@ -37,7 +37,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 	turret_module_mad = "turret_jammed"
 }
 	
-	if WolfHUD.settings.use_weaponlasers then   
+	if WolfHUD:getSetting("use_weaponlasers", "boolean") then   
 		function WeaponLaser:init(...)
 			init_original(self, ...)
 			self:init_themes()
@@ -56,8 +56,8 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 			local alpha = alpha or self._themes[name].brush and self._themes[name].brush.alpha or 0
 	 
 			self._themes[name] = {
-				light = color * (WolfHUD.settings.laser_light or 10),
-				glow = color / (WolfHUD.settings.laser_glow or 5),
+				light = color * WolfHUD:getSetting("laser_light", "number"),
+				glow = color / WolfHUD:getSetting("laser_glow", "number"),
 				brush = color:with_alpha(alpha)
 			}
 		end
@@ -67,23 +67,25 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 			local theme = self._theme_type
 			local suffix = self._suffix_map[theme]
 			local col = Color.white
-			if not theme or not suffix then return end
-			if not WolfHUD.settings["laser_" .. suffix] or not WolfHUD.color_table then return end
-			if WolfHUD.settings["laser_" .. suffix] >= (#WolfHUD.color_table) then
-				local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
-				col = Color(r, g, b)
+			if suffix then 
+				if WolfHUD:getSetting("laser_" .. suffix, "string") == "rainbow" then
+					local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
+					col = Color(r, g, b)
+				else
+					col = WolfHUD:getSetting("laser_" .. suffix, "color")
+				end
+				local alpha = 1
+				if suffix == "turret_active" or suffix == "turret_reloading" or suffix == "turret_jammed" then
+					alpha = WolfHUD:getSetting("laser_turret_alpha", "number")
+				else
+					alpha = WolfHUD:getSetting("laser_" .. suffix .. "_alpha", "number")
+				end
+				if self._themes[theme].brush == col:with_alpha(alpha) then return end
+				self:update_theme(theme, col, alpha)
+				self:set_color_by_theme(theme)
 			else
-				col = WolfHUD.color_table[(WolfHUD.settings["laser_" .. suffix])] or Color.white
+				log("[WolfHUD] Trying to update unknown laser theme: " .. theme)
 			end
-			local alpha = 1
-			if suffix == "turret_active" or suffix == "turret_reloading" or suffix == "turret_jammed" then
-				alpha = WolfHUD.settings["laser_turret_alpha"]
-			else
-				alpha = WolfHUD.settings["laser_" .. suffix .. "_alpha"]
-			end
-			if self._themes[theme].brush == col:with_alpha(alpha) then return end
-			self:update_theme(theme, col, alpha)
-			self:set_color_by_theme(theme)
 		end
 
 	end
@@ -116,17 +118,17 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/weaponflashlight" then
 	local update_flash_cbk = WeaponFlashLight.update
 	function WeaponFlashLight:init(unit)
 		init_flash_cbk(self, unit)
-		local angle = WolfHUD.settings.flashlight_angle or 100 --Angle/width of beam, 0-160 (default 60)
-		local range = (WolfHUD.settings.flashlight_range * 100) or 2000 --Range of beam, 0+ (default 1000 -> 10m)
+		local angle = WolfHUD:getSetting("flashlight_angle", "number") --Angle/width of beam, 0-160 (default 60)
+		local range = (WolfHUD:getSetting("flashlight_range", "number") * 100) --Range of beam, 0+ (default 1000 -> 10m)
 		self._light:set_spot_angle_end(math.clamp(angle, 0, 160))
 		self._light:set_far_range(range)
 	end
 	
 	function WeaponFlashLight:update(unit, t, dt)
 		update_flash_cbk(self, unit, t, dt)
-		if WolfHUD and not self._is_haunted then
-			self._light:set_spot_angle_end(math.clamp(WolfHUD.settings.flashlight_angle, 0, 160))
-			self._light:set_far_range((WolfHUD.settings.flashlight_range * 100))
+		if not self._is_haunted then
+			self._light:set_spot_angle_end(math.clamp(WolfHUD:getSetting("flashlight_angle", "number"), 0, 160))
+			self._light:set_far_range((WolfHUD:getSetting("flashlight_range", "number") * 100))
 		end
 	end
 
@@ -135,7 +137,7 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 	
 	function NewRaycastWeaponBase:on_equip()
 		_NewRaycastWeaponBase_on_equip(self)
-		if WolfHUD and not WolfHUD.settings.laser_autoon then 
+		if not WolfHUD:getSetting("laser_autoon", "boolean") then 
 			self._has_laser = false 
 		end
 		if self._has_gadget and self._has_laser == nil and (managers.weapon_factory and tweak_data and tweak_data.weapon and tweak_data.weapon.factory) then
@@ -156,7 +158,7 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 	if not _NewRaycastWeaponBase_toggle_gadget then _NewRaycastWeaponBase_toggle_gadget = NewRaycastWeaponBase.toggle_gadget end
 	function NewRaycastWeaponBase:toggle_gadget()
 		if _NewRaycastWeaponBase_toggle_gadget(self) then
-			self._stored_gadget_on = (not WolfHUD or WolfHUD.settings.laser_remember_state) and self._gadget_on
+			self._stored_gadget_on = (WolfHUD:getSetting("laser_remember_state", "boolean")) and self._gadget_on
 			return true
 		end
 	end

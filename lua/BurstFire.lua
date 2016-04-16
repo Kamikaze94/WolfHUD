@@ -1,4 +1,4 @@
-if WolfHUD and not WolfHUD.settings.enable_burstmode then return end
+if WolfHUD:getSetting("enable_burstmode", "boolean") then return end
 if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 	local init_original = NewRaycastWeaponBase.init
 	local _update_stats_values_original = NewRaycastWeaponBase._update_stats_values

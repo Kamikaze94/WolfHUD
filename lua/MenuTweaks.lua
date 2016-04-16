@@ -65,13 +65,13 @@ elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then
 	function IngameWaitingForPlayersState:update(...)
 		update_original(self, ...)
 		
-		if self._skip_promt_shown and WolfHUD.settings.skip_blackscreen then
+		if self._skip_promt_shown and WolfHUD:getSetting("skip_blackscreen", "boolean") then
 			self:_skip()
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" then
 	local update_original = StageEndScreenGui.update
-	local SKIP_STAT_SCREEN_DELAY = WolfHUD.settings.stat_screen_delay
+	local SKIP_STAT_SCREEN_DELAY = WolfHUD:getSetting("stat_screen_delay", "number")
 	function StageEndScreenGui:update(t, ...)
 		update_original(self, t, ...)
 		if not self._button_not_clickable and SKIP_STAT_SCREEN_DELAY >= 0 then
@@ -83,7 +83,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" the
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/lootdropscreengui" then
-	local SKIP_LOOT_SCREEN_DELAY = WolfHUD.settings.loot_screen_delay
+	local SKIP_LOOT_SCREEN_DELAY = WolfHUD:getSetting("loot_screen_delay", "number")
 	local update_original = LootDropScreenGui.update
 	function LootDropScreenGui:update(t, ...)
 		update_original(self, t, ...)
@@ -232,14 +232,14 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 		MissionAssetsManager_sync_load_orig(self, _ARG_1_, ...)
 	end
 elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
-	if not WolfHUD.settings.spam_filter then return end
+	if not WolfHUD:getSetting("spam_filter", "boolean") then return end
 	ChatManager._SUB_TABLE = {
 			[utf8.char(57364)] = "<SKULL>",	--Skull icon
 			[utf8.char(57363)] = "<GHOST>",	--Ghost icon
 			[utf8.char(139)] = "<LC>",		--broken bar
 			[utf8.char(155)] = "<RC>",		
 			[utf8.char(1035)] = "<DRC>",		
-			[utf8.char(1014)] = "<DIV>",	--PocoHuds bar
+			["϶"] = "<DIV>",	--PocoHuds bar
 			[utf8.char(57344)] = "<A>",		--Controller A
 			[utf8.char(57345)] = "<B>",		--Controller B
 			[utf8.char(57346)] = "<X>",		--Controller X
@@ -260,7 +260,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	ChatManager._BLOCK_PATTERNS = {
 	  ".-[NGBTO]:.+",
 	  --NGBTO info blocker Should work since its mass spam.
-	  ".-[%d:]+[%d]+<DIV>.+"
+	  "[%d:]+[%d]+<DIV>.+"
 	  --Blocks anything, that starts with numbers and ':' and then has a divider (Might block other mods, not only Poco...)
 	}
 

@@ -1,5 +1,5 @@
 {
-	"menu_id" : "wolfhud_upperhud_options_menu",
+	"menu_id" : "wolfhud_infopanels_options_menu",
 	"parent_menu_id" : "wolfhud_options_menu",
 	"title" : "wolfhud_infopanels_options_name",
 	"description" : "wolfhud_infopanels_options_help",
@@ -13,14 +13,14 @@
 			"description" : "wolfhud_use_hudlist_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "use_hudlist",
-			"priority" : 9,
+			"priority" : 14,
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "hud_box_color",
 			"title" : "wolfhud_hudlist_box_color_title",
 			"description" : "wolfhud_hudlist_box_color_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_color_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",
@@ -40,14 +40,14 @@
 				
 			],
 			"value" : "hud_box_color",
-			"priority" : 9,
+			"priority" : 13,
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "hud_box_bg_color",
 			"title" : "wolfhud_hudlist_box_bg_color_title",
 			"description" : "wolfhud_hudlist_box_bg_color_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_color_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",
@@ -67,19 +67,19 @@
 				
 			],
 			"value" : "hud_box_bg_color",
-			"priority" : 9,
+			"priority" : 12,
 		},
 		{
 			"type" : "divider",
 			"size" : 16,
-			"priority" : 9,
+			"priority" : 11,
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "civilian_color",
 			"title" : "wolfhud_hudlist_civcolor_title",
 			"description" : "wolfhud_hudlist_civcolor_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_color_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",
@@ -99,14 +99,14 @@
 				
 			],
 			"value" : "civilian_color",
-			"priority" : 9,
+			"priority" : 10,
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "thug_color",
 			"title" : "wolfhud_hudlist_thugcolor_title",
 			"description" : "wolfhud_hudlist_thugcolor_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_color_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",
@@ -133,7 +133,7 @@
 			"id" : "enemy_color",
 			"title" : "wolfhud_hudlist_copcolor_title",
 			"description" : "wolfhud_hudlist_copcolor_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_color_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",

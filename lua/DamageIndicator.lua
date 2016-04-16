@@ -9,7 +9,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	local hudhitdirection_init = HUDHitDirection.init
 	function HUDHitDirection:init(hud)
 		hudhitdirection_init(self, hud)
-		local is_visible = not WolfHUD.settings.show_dmg_indicator
+		local is_visible = not WolfHUD:getSetting("show_dmg_indicator", "boolean")
 		self._hit_direction_panel:child("right"):set_visible(is_visible)
 		self._hit_direction_panel:child("left"):set_visible(is_visible)
 		self._hit_direction_panel:child("up"):set_visible(is_visible)
@@ -17,13 +17,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	end
 
 	function HUDHitDirection:new_hitmarker(pos, type_hit)
-		if not self._hit_direction_panel or not WolfHUD.settings.show_dmg_indicator then return end
-		HUDHitDirection.shieldColor  = WolfHUD and WolfHUD.color_table[(WolfHUD.settings.dmg_shield_color)] or Color.white
-		HUDHitDirection.healthColor  = WolfHUD and WolfHUD.color_table[(WolfHUD.settings.dmg_health_color)] or Color.red
-		HUDHitDirection.critColor 	 = WolfHUD and WolfHUD.color_table[(WolfHUD.settings.dmg_crit_color)] or Color.purple
-		HUDHitDirection.vehicleColor = WolfHUD and WolfHUD.color_table[(WolfHUD.settings.dmg_vehicle_color)] or Color.yellow
-		HUDHitDirection.friendlyColor = WolfHUD and WolfHUD.color_table[(WolfHUD.settings.dmg_friendlyfire_color)] or Color('FFA500')
-		local color = (type_hit == self.UNIT_TYPE_HIT_ARMOR and HUDHitDirection.shieldColor or type_hit == self.UNIT_TYPE_HIT_PLAYER and HUDHitDirection.healthColor or type_hit == HUDHitDirection.UNIT_TYPE_HIT_CRIT and HUDHitDirection.critColor or type_hit == self.UNIT_TYPE_HIT_VEHICLE and HUDHitDirection.vehicleColor or type_hit == HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE and HUDHitDirection.friendlyColor) or Color.white
+		if not self._hit_direction_panel or not WolfHUD:getSetting("show_dmg_indicator", "boolean") then return end
+		local color = type_hit == self.UNIT_TYPE_HIT_ARMOR and WolfHUD:getSetting("dmg_shield_color", "color") or type_hit == self.UNIT_TYPE_HIT_PLAYER and WolfHUD:getSetting("dmg_health_color", "color") or type_hit == HUDHitDirection.UNIT_TYPE_HIT_CRIT and WolfHUD:getSetting("dmg_crit_color", "color") or type_hit == self.UNIT_TYPE_HIT_VEHICLE and WolfHUD:getSetting("dmg_vehicle_color", "color") or type_hit == HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE and WolfHUD:getSetting("dmg_friendlyfire_color", "color")
 		local hitmarker = self._hit_direction_panel:panel({
 			x = "center",
 			y = "center",

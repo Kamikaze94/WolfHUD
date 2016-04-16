@@ -1,9 +1,13 @@
-if WolfHUD and not WolfHUD.settings.use_killcounter then return end
+if string.lower(RequiredScript) == "lib/managers/enemymanager" then
+	EnemyManager._MAX_NR_CORPSES = WolfHUD:getSetting("max_corpses", "number")
+end
+
+if WolfHUD:getSetting("use_killcounter", "boolean") then return end
 if string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 
-	HUDTeammate.SHOW_SPECIAL_KILLS = WolfHUD.settings.SHOW_SPECIAL_KILLS or true
-	HUDTeammate.SHOW_HEADSHOT_KILLS = WolfHUD.settings.SHOW_HEADSHOT_KILLS or true
-	HUDTeammate.SHOW_AI_KILLS = WolfHUD.settings.SHOW_AI_KILLS or true
+	HUDTeammate.SHOW_SPECIAL_KILLS = WolfHUD:getSetting("SHOW_SPECIAL_KILLS", "boolean")
+	HUDTeammate.SHOW_HEADSHOT_KILLS = WolfHUD:getSetting("SHOW_HEADSHOT_KILLS", "boolean")
+	HUDTeammate.SHOW_AI_KILLS = WolfHUD:getSetting("SHOW_AI_KILLS", "boolean")
 	
 	if not HUDTeammate.increment_kill_count and not HUDManager.CUSTOM_TEAMMATE_PANEL then	--Custom HUD compatibility
 		local init_original = HUDTeammate.init
@@ -230,6 +234,4 @@ elseif string.lower(RequiredScript) == "lib/units/equipment/sentry_gun/sentrygun
 		self._owner_id = self._owner_id or peer_id
 	end
 
-elseif string.lower(RequiredScript) == "lib/managers/enemymanager" then
-	EnemyManager._MAX_NR_CORPSES = WolfHUD.settings.max_corpses or 100
 end

@@ -16,7 +16,7 @@
 		},
 		{
 			"type" : "divider",
-			"size" : 16,
+			"size" : 8,
 		},
 		{
 			"type" : "multiple_choice",
@@ -60,6 +60,18 @@
 			"value" : "EQUIPMENT_PRESS_INTERRUPT",
 		},
 		{
+			"type" : "divider",
+			"size" : 24,
+		},
+		{
+			"type" : "toggle",
+			"id" : "SHOW_CIRCLE",
+			"title" : "wolfhud_press2hold_show_circle_title",
+			"description" : "wolfhud_press2hold_show_circle_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "SHOW_CIRCLE",
+		},
+		{
 			"type" : "toggle",
 			"id" : "SHOW_TIME_REMAINING",
 			"title" : "wolfhud_press2hold_show_timer_title",
@@ -72,7 +84,7 @@
 			"id" : "GRADIENT_COLOR",
 			"title" : "wolfhud_press2hold_timer_color_title",
 			"description" : "wolfhud_press2hold_timer_color_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_color_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",
@@ -92,6 +104,14 @@
 				
 			],
 			"value" : "GRADIENT_COLOR",
+		},
+		{
+			"type" : "toggle",
+			"id" : "SHOW_RELOAD",
+			"title" : "wolfhud_press2hold_show_reload_circle_title",
+			"description" : "wolfhud_press2hold_show_reload_circle_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "SHOW_RELOAD",
 		},
 		{
 			"type" : "divider",

@@ -105,12 +105,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			layer 		= 1
 		})
 		
-		local show_pointer = WolfHUD.settings.show_healthbar_pointer or false
 		self._unit_health_enemy_location = self._unit_health_panel:text({
 			name 		= "unit_health_enemy_location",
 			text 		= "^",
 			blend_mode 	= "normal",
-			visible 	= show_pointer,
+			visible 	= WolfHUD:getSetting("show_healthbar_pointer", "boolean"),
 			alpha 		= 0.75,
 			halign 		= "center",
 			font 		= "fonts/font_medium_shadow_mf",
@@ -145,13 +144,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	end )
 
 	function HUDManager:set_unit_health_visible( visible )
-		if not WolfHUD.settings.show_enemy_healthbar then return end
+		if not WolfHUD:getSetting("show_enemy_healthbar", "boolean") then return end
 		
 		if visible == true and not self._unit_health_visible then
 		
 			self._unit_health_visible = true
-			local show_pointer = WolfHUD.settings.show_healthbar_pointer or false
-			self._unit_health_enemy_location:set_visible(show_pointer)
+			self._unit_health_enemy_location:set_visible(WolfHUD:getSetting("show_healthbar_pointer", "boolean"))
 			self._unit_health_panel:stop()
 			
 			self._unit_health_panel:animate( function( p )
@@ -247,11 +245,11 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 				end
 			end
 			
-			if alive( unit ) and unit:character_damage() and not unit:character_damage()._dead and unit:base() and unit:base()._tweak_table and ((not managers.enemy:is_civilian( unit ) and managers.enemy:is_enemy( unit )) or WolfHUD.settings.show_civilian_healthbar) then
+			if alive( unit ) and unit:character_damage() and not unit:character_damage()._dead and unit:base() and unit:base()._tweak_table and ((not managers.enemy:is_civilian( unit ) and managers.enemy:is_enemy( unit )) or WolfHUD:getSetting("show_civilian_healthbar", "boolean")) then
 				self._last_unit = unit
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base()._tweak_table or "ENEMY" )
-			elseif alive( unit ) and unit:vehicle() and unit:vehicle_driving() and unit:character_damage() and not self._seat and (WolfHUD.settings.show_car_healthbar or not WolfHUD and true) then
+			elseif alive( unit ) and unit:vehicle() and unit:vehicle_driving() and unit:character_damage() and not self._seat and WolfHUD:getSetting("show_car_healthbar", "boolean") then
 				self._last_unit = nil
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health or 0 , unit:character_damage()._current_max_health or 0 , string.upper(unit:vehicle_driving()._tweak_data.name) or "VEHICLE" )

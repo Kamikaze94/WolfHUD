@@ -1,6 +1,6 @@
 {
-	"menu_id" : "wolfhud_upperhud_adv_options_menu",
-	"parent_menu_id" : "wolfhud_upperhud_options_menu",
+	"menu_id" : "wolfhud_infopanels_adv_options_menu",
+	"parent_menu_id" : "wolfhud_infopanels_options_menu",
 	"title" : "wolfhud_infopanels_adv_options_name",
 	"description" : "wolfhud_infopanels_adv_options_help",
 	"back_callback" : "",

@@ -67,7 +67,7 @@
 			"id" : "laser_player",
 			"title" : "wolfhud_lasercolor_player_title",
 			"description" : "wolfhud_lasercolor_player_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_color_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",
@@ -110,7 +110,7 @@
 			"id" : "laser_teammates",
 			"title" : "wolfhud_lasercolor_teammates_title",
 			"description" : "wolfhud_lasercolor_teammates_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_color_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",
@@ -153,7 +153,7 @@
 			"id" : "laser_sniper",
 			"title" : "wolfhud_lasercolor_sniper_title",
 			"description" : "wolfhud_lasercolor_sniper_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_color_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",
@@ -196,7 +196,7 @@
 			"id" : "laser_turret_active",
 			"title" : "wolfhud_lasercolor_turret_active_title",
 			"description" : "wolfhud_lasercolor_turret_active_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_color_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",
@@ -223,7 +223,7 @@
 			"id" : "laser_turret_reloading",
 			"title" : "wolfhud_lasercolor_turret_reloading_title",
 			"description" : "wolfhud_lasercolor_player_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_color_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",
@@ -250,7 +250,7 @@
 			"id" : "laser_turret_jammed",
 			"title" : "wolfhud_lasercolor_turret_jammed_title",
 			"description" : "wolfhud_lasercolor_turret_jammed_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_color_setting",
 			"items" : [
 				"wolfhud_colors_1",
 				"wolfhud_colors_2",

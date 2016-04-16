@@ -1,0 +1,33 @@
+{
+	"menu_id" : "wolfhud_drivinghud_options_menu",
+	"parent_menu_id" : "wolfhud_teampanels_options_menu",
+	"title" : "wolfhud_drivinghud_options_name",
+	"description" : "wolfhud_drivinghud_options_help",
+	"back_callback" : "",
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "use_drivinghud",
+			"title" : "wolfhud_show_drivinghud_title",
+			"description" : "wolfhud_show_drivinghud_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "use_drivinghud",
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_vehicle",
+			"title" : "wolfhud_show_vehicleimage_title",
+			"description" : "wolfhud_show_vehicleimage_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_vehicle",
+		},
+		{
+			"type" : "toggle",
+			"id" : "speed_in_mph",
+			"title" : "wolfhud_speed_in_mph_title",
+			"description" : "wolfhud_speed_in_mph_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "speed_in_mph",
+		}
+	]
+}

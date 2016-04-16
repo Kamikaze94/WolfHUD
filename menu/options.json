@@ -52,14 +52,6 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "spam_filter",
-			"title" : "wolfhud_spam_filter_title",
-			"description" : "wolfhud_spam_filter_desc",
-			"callback" : "clbk_change_setting",
-			"value" : "spam_filter",
-		},
-		{
-			"type" : "toggle",
 			"id" : "replace_weapon_names",
 			"title" : "wolfhud_replace_weapon_names_title",
 			"description" : "wolfhud_replace_weapon_names_desc",

@@ -3,6 +3,9 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 
 	local _update_interaction_timers_original = PlayerStandard._update_interaction_timers
 	local _check_action_interact_original = PlayerStandard._check_action_interact
+	local _start_action_reload_original = PlayerStandard._start_action_reload
+	local _update_reload_timers_original = PlayerStandard._update_reload_timers
+	local _interupt_action_reload_original = PlayerStandard._interupt_action_reload
 	local _check_action_throw_grenade_original = PlayerStandard._check_action_throw_grenade
 	
 	function PlayerStandard:_update_interaction_timers(t, ...)
@@ -18,8 +21,8 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	
 	
 	function PlayerStandard:_check_interaction_locked(t) 
-		PlayerStandard.LOCK_MODE = WolfHUD.settings.LOCK_MODE or 2							--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
-		PlayerStandard.MIN_TIMER_DURATION = WolfHUD.settings.MIN_TIMER_DURATION or 5 		--Min interaction duration (in seconds) for the toggle behavior to activate	
+		PlayerStandard.LOCK_MODE = WolfHUD:getSetting("LOCK_MODE", "number")						--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
+		PlayerStandard.MIN_TIMER_DURATION = WolfHUD:getSetting("MIN_TIMER_DURATION", "number")		--Min interaction duration (in seconds) for the toggle behavior to activate	
 		local is_locked = false
 		if PlayerStandard.LOCK_MODE == 1 then
 			is_locked = self._interact_expire_t and (t - (self._interact_expire_t - self._interact_params.timer) >= PlayerStandard.MIN_TIMER_DURATION) --lock interaction, when interacting longer then given time
@@ -34,7 +37,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	end
 	
 	function PlayerStandard:_check_interact_toggle(t, input)
-		PlayerStandard.EQUIPMENT_PRESS_INTERRUPT = WolfHUD.settings.EQUIPMENT_PRESS_INTERRUPT or not WolfHUD and true 	--Use the equipment key ('G') to toggle off active interactions
+		PlayerStandard.EQUIPMENT_PRESS_INTERRUPT = WolfHUD:getSetting("EQUIPMENT_PRESS_INTERRUPT", "boolean") 	--Use the equipment key ('G') to toggle off active interactions
 		local interrupt_key_press = input.btn_interact_press
 		if PlayerStandard.EQUIPMENT_PRESS_INTERRUPT then
 			interrupt_key_press = input.btn_use_item_press
@@ -50,8 +53,40 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 		end
 	end
 	
+	function PlayerStandard:_start_action_reload(t)
+		_start_action_reload_original(self, t)
+		if WolfHUD:getSetting("SHOW_RELOAD", "boolean") then
+			if self._equipped_unit and not self._equipped_unit:base():clip_full() and managers.player:current_state() ~= "bleed_out" then
+				self._state_data._reload = true
+				managers.hud:show_interaction_bar(0, self._state_data.reload_expire_t or 0)
+				self._state_data.reload_offset = t
+			end
+		end
+	end
+
+	function PlayerStandard:_update_reload_timers(t, dt, input)
+		_update_reload_timers_original(self, t, dt, input)
+		if WolfHUD:getSetting("SHOW_RELOAD", "boolean") then
+			if not self._state_data.reload_expire_t and self._state_data._reload then
+				managers.hud:hide_interaction_bar(true)
+				self._state_data._reload = false
+			elseif self._state_data._reload and managers.player:current_state() ~= "bleed_out" then
+				managers.hud:set_interaction_bar_width(	t and t - self._state_data.reload_offset or 0, self._state_data.reload_expire_t and self._state_data.reload_expire_t - self._state_data.reload_offset or 0 )
+			end
+		end
+	end
+
+	function PlayerStandard:_interupt_action_reload(t)
+		local val = _interupt_action_reload_original(self, t)
+		if self._state_data._reload and managers.player:current_state() ~= "bleed_out" and WolfHUD:getSetting("SHOW_RELOAD", "boolean") then
+			managers.hud:hide_interaction_bar(false)
+			self._state_data._reload = false
+		end
+		return val
+	end
+	
 	function PlayerStandard:_check_action_throw_grenade(t, input, ...)
-		if input.btn_throw_grenade_press and (WolfHUD.settings.SUPRESS_NADES_STEALTH or not WolfHUD) then
+		if input.btn_throw_grenade_press and WolfHUD:getSetting("SUPRESS_NADES_STEALTH", "boolean") then
 			if managers.groupai:state():whisper_mode() and (t - (self._last_grenade_t or 0) >= PlayerStandard.NADE_TIMEOUT) then
 				self._last_grenade_t = t
 				return
@@ -112,19 +147,27 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			self._interact_circle_locked = nil
 		end
 		
-		HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD.settings.SHOW_LOCK_INDICATOR or not WolfHUD and true
-		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD.settings.SHOW_TIME_REMAINING or not WolfHUD and true
-		HUDInteraction.GRADIENT_COLOR = WolfHUD.color_table[(WolfHUD.settings.GRADIENT_COLOR)] or Color.green
-		if PlayerStandard.LOCK_MODE < 3 and HUDInteraction.SHOW_LOCK_INDICATOR then
-			self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {
-				radius = self._circle_radius,
-				color = Color.red,
-				blend_mode = "normal",
-				alpha = 0,
-			})
-			self._interact_circle_locked:set_position(self._hud_panel:w() / 2 - self._circle_radius, self._hud_panel:h() / 2 - self._circle_radius)
-			self._interact_circle_locked:set_color(Color.red)
-			self._interact_circle_locked._circle:set_render_template(Idstring("Text"))
+		local val = show_interaction_bar_original(self, current, total)
+		
+		HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD:getSetting("SHOW_LOCK_INDICATOR", "boolean")
+		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD:getSetting("SHOW_TIME_REMAINING", "boolean")
+		HUDInteraction.SHOW_CIRCLE 	= WolfHUD:getSetting("SHOW_CIRCLE", "boolean")
+		HUDInteraction.GRADIENT_COLOR = WolfHUD:getSetting("GRADIENT_COLOR", "color")
+		if HUDInteraction.SHOW_CIRCLE then
+			if PlayerStandard.LOCK_MODE < 3 and HUDInteraction.SHOW_LOCK_INDICATOR then
+				self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {
+					radius = self._circle_radius,
+					color = Color.red,
+					blend_mode = "normal",
+					alpha = 0,
+				})
+				self._interact_circle_locked:set_position(self._hud_panel:w() / 2 - self._circle_radius, self._hud_panel:h() / 2 - self._circle_radius)
+				self._interact_circle_locked:set_color(Color.red)
+				self._interact_circle_locked._circle:set_render_template(Idstring("Text"))
+			end
+		else
+			HUDInteraction.SHOW_LOCK_INDICATOR = false
+			self._interact_circle:set_visible(false)
 		end
 		
 		if HUDInteraction.SHOW_TIME_REMAINING and not self._interact_time then
@@ -148,11 +191,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			end
 		end
 		
-		return show_interaction_bar_original(self, current, total)
+		return val
 	end
 	
 
-	function HUDInteraction:hide_interaction_bar(...)		
+	function HUDInteraction:hide_interaction_bar(complete, ...)		
 		if self._interact_circle_locked then
 			self._interact_circle_locked:remove()
 			self._interact_circle_locked = nil
@@ -163,10 +206,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			self._interact_time:set_visible(false)
 		end
 		
-		local val = hide_interaction_bar_original(self, ...)
-		self._hud_panel:child(self._child_name_text):set_text(self._old_text or self._hud_panel:child(self._child_name_text):text())
+		if not complete and self._old_text then
+			self._hud_panel:child(self._child_name_text):set_text(self._old_text or self._hud_panel:child(self._child_name_text):text())
+		end
 		self._old_text = nil
-		return val
+		return hide_interaction_bar_original(self, complete and HUDInteraction.SHOW_CIRCLE, ...)
 	end
 
 	function HUDInteraction:set_locked(status)
@@ -197,7 +241,7 @@ elseif string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" t
 	function ObjectInteractionManager:_update_targeted(...)
 		_update_targeted_original(self, ...)
 
-		if alive(self._active_unit) and WolfHUD.settings.HOLD2PICK then
+		if alive(self._active_unit) and WolfHUD:getSetting("HOLD2PICK", "boolean") then
 			local t = Application:time()
 			if self._active_unit:base() and self._active_unit:base().small_loot and managers.menu:get_controller():get_input_bool("interact") and (t >= (self._next_auto_pickup_t or 0)) then
 				self._next_auto_pickup_t = t + ObjectInteractionManager.AUTO_PICKUP_DELAY
