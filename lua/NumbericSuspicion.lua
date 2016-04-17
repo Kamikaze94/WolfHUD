@@ -22,7 +22,7 @@ function HUDSuspicion:init(hud, sound_source)
 		align = "center",
 		layer = 2,
 		color = Color.white,
-		font = tweak_data.menu.pd2_large_font,
+		font = tweak_data.menu.default_font,
 		font_size = 28,
 		h = 64
 	})
@@ -48,16 +48,14 @@ function HUDSuspicion:ColorGradient(perc, ...)
 	return math.round(r_ret*100)/100, math.round(g_ret*100)/100, math.round(b_ret*100)/100
 end
  
-function HUDSuspicion:_animate_detection_text(_suspicion_panel, param_2)
+function HUDSuspicion:_animate_detection_text(_suspicion_panel, ...)
 	while self._animating_text do
-		local t = 0
-		while t <= 0.01 do
-			t = t + coroutine.yield()
-			if -1 ~= self._suspicion_value then
-				local r,g,b = self:ColorGradient(math.round(self._suspicion_value*100)/100, 0, 0.71, 1, 0.99, 0.08, 0)
-				_suspicion_panel:child("suspicion_text"):set_color(Color(1, r, g, b))
-				_suspicion_panel:child("suspicion_text"):set_text(math.round(self._suspicion_value*100) .. "%")
-			end
+		if -1 ~= self._suspicion_value then
+			local r,g,b = self:ColorGradient(math.round(self._suspicion_value*100)/100, 0, 0.71, 1, 0.99, 0.08, 0)
+			_suspicion_panel:child("suspicion_text"):set_color(Color(1, r, g, b))
+			_suspicion_panel:child("suspicion_text"):set_text(math.round(self._suspicion_value*100) .. "%")
+		elseif coroutine.yield() > 3 then
+			_suspicion_panel:hide()
 		end
 	end
 end

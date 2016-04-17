@@ -2529,7 +2529,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		})
 		self._health_bar:set_bottom(self._panel:bottom())
 		
-		if WolfHUD:getSetting("colorize_healthbars", "boolean") > 1 then
+		if WolfHUD:getSetting("colorize_healthbars", "number") > 1 then
 			self._health_bar:set_color(Color(1, 0, 0, 0))
 			self._health_bar:set_blend_mode("sub")
 			self._panel:bitmap({
@@ -2618,7 +2618,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.MinionItem:set_health(health, skip_animate)
 		local red = health/ self._max_health
-		if WolfHUD:getSetting("colorize_healthbars", "boolean") > 1 then
+		if WolfHUD:getSetting("colorize_healthbars", "number") > 1 then
 			red = 1 - red
 			self._health_bar:set_rotation(360 * red)
 		end

@@ -239,7 +239,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 			[utf8.char(139)] = "<LC>",		--broken bar
 			[utf8.char(155)] = "<RC>",		
 			[utf8.char(1035)] = "<DRC>",		
-			["϶"] = "<DIV>",	--PocoHuds bar
+			[utf8.char(1014)] = "<DIV>",	--PocoHuds bar
 			[utf8.char(57344)] = "<A>",		--Controller A
 			[utf8.char(57345)] = "<B>",		--Controller B
 			[utf8.char(57346)] = "<X>",		--Controller X
@@ -260,7 +260,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	ChatManager._BLOCK_PATTERNS = {
 	  ".-[NGBTO]:.+",
 	  --NGBTO info blocker Should work since its mass spam.
-	  "[%d:]+[%d]+<DIV>.+"
+	  "[%d:]+[%d]+.+"
 	  --Blocks anything, that starts with numbers and ':' and then has a divider (Might block other mods, not only Poco...)
 	}
 
