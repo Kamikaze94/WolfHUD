@@ -75,7 +75,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			w = tweak_data.hud_stats.loot_size,
 			h = tweak_data.hud_stats.loot_size,
 		})
-		local time_text = right_panel:text({ --Add Clock Icon in front!!!
+		local time_text = right_panel:text({
 			layer = 0,
 			x =  0,
 			y = 0,
@@ -1197,7 +1197,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			local day_wrapper_panel = right_panel:child("day_wrapper_panel")
 			if not day_wrapper_panel then return end
 			if day_wrapper_panel:child("lpi_team_text_name1") then
-				local y = day_wrapper_panel:child("total_revives_text"):bottom() + 15
+				local y = day_wrapper_panel:child("total_revives_text"):bottom() + 10
 				for i = 1, 4 do
 					local labels = { "lpi_team_text_name" .. tostring(i), "lpi_team_text_skills" .. tostring(i), "lpi_team_text_perk" .. tostring(i) }
 					for j, lbl in ipairs(labels) do

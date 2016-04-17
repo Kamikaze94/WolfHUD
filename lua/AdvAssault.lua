@@ -1,174 +1,135 @@
-local init_original = HUDAssaultCorner.init
- 
-function HUDAssaultCorner:init(...)
-    init_original(self, ...)
-               
-    local assault_panel = self._hud_panel:child("assault_panel")
-    assault_panel:set_x(self._hud_panel:w() / 2 - assault_panel:w() / 2)
-    local buffs_panel = self._hud_panel:child("buffs_panel")
-    buffs_panel:set_right(assault_panel:left() - 3)
-               
-    local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
-    point_of_no_return_panel:set_x(self._hud_panel:w() / 2 - point_of_no_return_panel:w() / 2)
-               
-    local casing_panel = self._hud_panel:child("casing_panel")
-    casing_panel:set_x(self._hud_panel:w() / 2 - casing_panel:w() / 2)
-end
-
-function HUDAssaultCorner:show_point_of_no_return_timer()
-	local delay_time = self._assault and 1.2 or 0
-	self:_end_assault()
-	local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
-	point_of_no_return_panel:stop()
-	point_of_no_return_panel:animate(callback(self, self, "_animate_show_noreturn"), delay_time)
-	self._point_of_no_return = true
-end
-
-function HUDAssaultCorner:hide_point_of_no_return_timer()
-	self._noreturn_bg_box:stop()
-	self._hud_panel:child("point_of_no_return_panel"):set_visible(false)
-	self._point_of_no_return = false
-end
-
-function HUDAssaultCorner:set_control_info(...) end
-function HUDAssaultCorner:show_casing(...) end
-function HUDAssaultCorner:hide_casing(...) end
-
-
-local HUDAssaultCorner_start_assault_orig = HUDAssaultCorner._start_assault
-function HUDAssaultCorner:_start_assault(text_list)
-	
-	local texts = {}
-	if managers.job:current_difficulty_stars() > 0 then
-		texts = {
-			"hud_assault_assault",
-			"hud_assault_end_line",
-			Idstring("risk"),
-			"hud_assault_end_line",
-			"wolfhud_assault_phase",
-			Idstring("phase"),
-			"hud_assault_end_line",
-			"wolfhud_assault_spawns_left",
-			Idstring("spawns"),
-			"hud_assault_end_line",
-			"wolfhud_assault_time_left",
-			Idstring("time"),
-			"hud_assault_end_line"
-		}
-	else
-		texts = {
-		"hud_assault_assault",
-			"hud_assault_end_line",
-			"wolfhud_assault_phase",
-			Idstring("phase"),
-			"hud_assault_end_line",
-			"wolfhud_assault_spawns_left",
-			Idstring("spawns"),
-			"hud_assault_end_line",
-			"wolfhud_assault_time_left",
-			Idstring("time"),
-			"hud_assault_end_line"
-		}
-	end
-	HUDAssaultCorner_start_assault_orig(self, text_list)
---[[	if managers.groupai and managers.groupai:state() and not managers.groupai:state():get_hunt_mode() then
-		local box_text_panel = self._bg_box:child("text_panel")
-		box_text_panel:stop()
-		self:_set_text_list(texts)
-		box_text_panel:animate(callback(self, self, "_animate_adv_text"), nil, nil, callback(self, self, "assault_attention_color_function"))
-	else
+if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
+	local init_original = HUDAssaultCorner.init
+	local _start_assault_original = HUDAssaultCorner._start_assault
+	 
+	function HUDAssaultCorner:init(...)
+		init_original(self, ...)
+				   
 		local assault_panel = self._hud_panel:child("assault_panel")
-		local icon_assaultbox = assault_panel:child("icon_assaultbox")
-		local image = "guis/textures/pd2/hud_icon_padlockbox"
-		icon_assaultbox:set_image(image)
-	end]]
-end
-
-function HUDAssaultCorner:_animate_adv_text(text_panel, bg_box, color, color_function)
-	local text_list = bg_box or self._bg_box:script().text_list
-	local text_index = 0
-	local texts = {}
-	local padding = 10
-	local function create_new_text(text_panel, text_list, text_index, texts)
-		if texts[text_index] and texts[text_index].text then
-			text_panel:remove(texts[text_index].text)
-			texts[text_index] = nil
-		end
-		local text_id = text_list[text_index]
-		local assault_data = managers.groupai.state()._task_data.assault
-		local text_string = ""
-		if type(text_id) == "string" then
-			text_string = text_string .. managers.localization:to_upper_text(text_id)
-		elseif text_id == Idstring("risk") then
-			for i = 1, managers.job:current_difficulty_stars() do
-				text_string = text_string .. managers.localization:get_default_macro("BTN_SKULL")
-			end
-		elseif text_id == Idstring("phase") then
-			text_string = text_string .. (assault_data and assault_data.phase or "Unkown")
-		elseif text_id == Idstring("time") then
-			text_string = text_string .. (assault_data and assault_data.phase or "Overtime")
-		elseif text_id == Idstring("spawns") then
-			if assault_data then
-				local force_pool = self:_get_difficulty_dependent_value(tweak_data.group_ai.street.assault.force_pool) * self:_get_balancing_multiplier(tweak_data.group_ai.street.assault.force_pool_balance_mul)
-				local task_spawn_allowance = force_pool - (self._hunt_mode and 0 or assault_data.force_spawned)
-				text_string = text_string .. (task_spawn_allowance or "N/A")
-			else
-				text_string = text_string .. "N/A"
-			end
-		else
-			text_string = text_string .. " " .. text_id .. " "
-		end
-		local mod_color = color_function and color_function() or color or self._assault_color
-		local text = text_panel:text({
-			text = text_string,
-			layer = 1,
-			align = "center",
-			vertical = "center",
-			blend_mode = "add",
-			color = mod_color,
-			font_size = tweak_data.hud_corner.assault_size,
-			font = tweak_data.hud_corner.assault_font,
-			w = 10,
-			h = 10
-		})
-		local _, _, w, h = text:text_rect()
-		text:set_size(w, h)
-		texts[text_index] = {
-			x = text_panel:w() + w * 0.5 + padding * 2,
-			text = text
-		}
+		assault_panel:set_center_x(self._hud_panel:center_x())
+		local buffs_panel = self._hud_panel:child("buffs_panel")
+		buffs_panel:set_x(assault_panel:x() - buffs_panel:w() - 3)
+				   
+		local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
+		point_of_no_return_panel:set_center_x(self._hud_panel:center_x())
+				   
+		local casing_panel = self._hud_panel:child("casing_panel")
+		casing_panel:set_center_x(self._hud_panel:center_x())
 	end
-	while true do
-		local dt = coroutine.yield()
-		local last_text = texts[text_index]
-		if last_text and last_text.text then
-			if last_text.x + last_text.text:w() * 0.5 + padding < text_panel:w() then
-				text_index = text_index % #text_list + 1
-				create_new_text(text_panel, text_list, text_index, texts)
-			end
-		else
-			text_index = text_index % #text_list + 1
-			create_new_text(text_panel, text_list, text_index, texts)
-		end
-		local speed = 90
-		for i, data in pairs(texts) do
-			if data.text then
-				data.x = data.x - dt * speed
-				data.text:set_center_x(data.x)
-				data.text:set_center_y(text_panel:h() * 0.5)
-				if 0 > data.x + data.text:w() * 0.5 then
-					text_panel:remove(data.text)
-					data.text = nil
-				elseif color_function then
-					data.text:set_color(color_function())
+
+	function HUDAssaultCorner:show_point_of_no_return_timer()
+		local delay_time = self._assault and 1.2 or 0
+		self:_end_assault()
+		local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
+		point_of_no_return_panel:stop()
+		point_of_no_return_panel:animate(callback(self, self, "_animate_show_noreturn"), delay_time)
+		self._point_of_no_return = true
+	end
+
+	function HUDAssaultCorner:hide_point_of_no_return_timer()
+		self._noreturn_bg_box:stop()
+		self._hud_panel:child("point_of_no_return_panel"):set_visible(false)
+		self._point_of_no_return = false
+	end
+
+	function HUDAssaultCorner:set_control_info(...) end
+	function HUDAssaultCorner:show_casing(...) end
+	function HUDAssaultCorner:hide_casing(...) end
+	
+	function HUDAssaultCorner:_start_assault(text_list, ...)
+		if Network:is_server() then
+			for i, string_id in ipairs(text_list) do
+				if string_id == "hud_assault_assault" then
+					text_list[i] = "hud_adv_assault"
 				end
 			end
 		end
-		if managers.groupai and managers.groupai:state() and managers.groupai:state():get_hunt_mode() then
-			local assault_panel = self._hud_panel:child("assault_panel")
-			local icon_assaultbox = assault_panel:child("icon_assaultbox")
-			local image = "guis/textures/pd2/hud_icon_padlockbox"
+		return _start_assault_original(self, text_list, ...)
+	end
+	
+	function HUDAssaultCorner:locked_assault(status)
+		if self._assault_locked == status then return end
+		local assault_panel = self._hud_panel:child("assault_panel")
+		local icon_assaultbox = assault_panel and assault_panel:child("icon_assaultbox")
+		local image
+		self._assault_locked = status
+		if status then
+			image = "guis/textures/pd2/hud_icon_padlockbox"
+		else
+			image = "guis/textures/pd2/hud_icon_assaultbox"
+		end
+		if icon_assaultbox and image then
 			icon_assaultbox:set_image(image)
 		end
 	end
+elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
+	function HUDManager:_locked_assault(status)
+		if self._hud_assault_corner then
+			self._hud_assault_corner:locked_assault(status)
+		end
+	end
+elseif string.lower(RequiredScript) == "lib/managers/localizationmanager" then
+	local text_original = LocalizationManager.text
+
+	-- This hack allows us to reroute every call for texts.
+	function LocalizationManager:text(string_id, ...)
+		if string_id == "hud_adv_assault" then
+			-- enhanced assault banner
+			return self:hud_adv_assault()
+		else
+			-- fallback to default
+			return text_original(self, string_id, ...)
+		end
+	end
+
+	function LocalizationManager:hud_adv_assault()
+		if managers.groupai:state():get_hunt_mode() then
+			managers.hud:_locked_assault(true)
+			return self:text("hud_assault_assault")
+		elseif not WolfHUD:getSetting("show_advanced_assault", "boolean") then
+			return self:text("hud_assault_assault")
+		else
+			local phase = "Assault Phase: " .. managers.groupai:state()._task_data.assault.phase
+			local spawns = managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.force_pool) * managers.groupai:state():_get_balancing_multiplier(tweak_data.group_ai.besiege.assault.force_pool_balance_mul)
+			local spawns_left = "Spawns Left: " .. math.round(math.max(spawns - managers.groupai:state()._task_data.assault.force_spawned, 0))
+			local time_left = managers.groupai:state()._task_data.assault.phase_end_t + math.lerp(managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.sustain_duration_min), managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.sustain_duration_max), math.random()) * managers.groupai:state():_get_balancing_multiplier(tweak_data.group_ai.besiege.assault.sustain_duration_balance_mul) + tweak_data.group_ai.besiege.assault.fade_duration * 2
+			if time_left < 0 then
+				time_left = "OVERDUE"
+			else
+				time_left = "Time Left: " .. string.format("%.2f", time_left + 350 - managers.groupai:state()._t)
+			end
+			local sep = "          " .. self:text("hud_assault_end_line") .. "          "
+			local text = phase .. sep .. spawns_left .. sep .. time_left
+			return text
+		end
+	end
+	
+--[[	
+	local text_original = LocalizationManager.text
+	
+	function LocalizationManager:getAdvAssault()
+		log("AdvAssault data requested!")
+		local groupai_state = managers.groupai:state()
+		local assault_data = groupai_state and groupai_state._task_data.assault
+		if not assault_data then
+			log("ERROR: No Assault Data!")
+			return text_original(self, "hud_assault_assault")--"ERROR: No Assault Data!"
+		end
+		log("Assaultdata available!")
+		local phase 		= managers.groupai:state()._task_data.assault.phase
+		local spawns_left 	= (managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.force_pool) * managers.groupai:state():_get_balancing_multiplier(tweak_data.group_ai.besiege.assault.force_pool_balance_mul)) - managers.groupai:state()._task_data.assault.force_spawned
+		local time_left 	= managers.groupai:state()._task_data.assault.phase_end_t + math.lerp(managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.sustain_duration_min), managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.sustain_duration_max), math.random()) * managers.groupai:state():_get_balancing_multiplier(tweak_data.group_ai.besiege.assault.sustain_duration_balance_mul) + tweak_data.group_ai.besiege.assault.fade_duration * 2
+		local text = "Phase: " .. phase .. " /// Spawns left: " .. math.max(spawns_left, 0) .. " /// " .. time_left > 0 and ("Time left: " .. time_left) or "OVERDUE"
+		log("Assaultstring build!")
+		log("AssaultData: " .. text)
+		return text
+	end
+	
+	function LocalizationManager:text(string_id, ...)
+		if string_id == "hud_adv_assault" and WolfHUD:getSetting("show_advanced_assault", "boolean") and not managers.groupai:state():get_hunt_mode() then
+			return self:getAdvAssault()
+		end		
+		return text_original(self, string_id, ...)
+	end]]
 end
+

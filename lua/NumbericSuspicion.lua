@@ -48,28 +48,33 @@ function HUDSuspicion:ColorGradient(perc, ...)
 	return math.round(r_ret*100)/100, math.round(g_ret*100)/100, math.round(b_ret*100)/100
 end
  
-function HUDSuspicion:_animate_detection_text(_suspicion_panel, ...)
+function HUDSuspicion:_animate_detection_text(_suspicion_panel, param_2)
 	while self._animating_text do
-		if -1 ~= self._suspicion_value then
-			local r,g,b = self:ColorGradient(math.round(self._suspicion_value*100)/100, 0, 0.71, 1, 0.99, 0.08, 0)
-			_suspicion_panel:child("suspicion_text"):set_color(Color(1, r, g, b))
-			_suspicion_panel:child("suspicion_text"):set_text(math.round(self._suspicion_value*100) .. "%")
-		elseif coroutine.yield() > 3 then
-			_suspicion_panel:hide()
+		local t = 0
+		while t <= 0.01 do
+			t = t + coroutine.yield()
+			if -1 ~= self._suspicion_value then
+				local r,g,b = self:ColorGradient(math.round(self._suspicion_value*100)/100, 0, 0.71, 1, 0.99, 0.08, 0)
+				_suspicion_panel:child("suspicion_text"):set_color(Color(1, r, g, b))
+				_suspicion_panel:child("suspicion_text"):set_text(math.round(self._suspicion_value*100) .. "%")
+			elseif t + coroutine.yield() > 3 then
+				self:hide()
+			end
 		end
 	end
 end
  
 function HUDSuspicion:animate_eye()
-		hudsuspicions_animate_eye_original(self)
-		self._animating_text = true
-		self._text_animation = self._suspicion_panel:child("suspicion_text_panel"):animate(callback(self, self, "_animate_detection_text"))
+	hudsuspicions_animate_eye_original(self)
+	self._animating_text = true
+	self._text_animation = self._suspicion_panel:child("suspicion_text_panel"):animate(callback(self, self, "_animate_detection_text"))
 end
  
 function HUDSuspicion:hide()
 	hudsuspicion_hide_original(self)
-	if (self._text_animation) then
-		self._animating_text = false
+	self._animating_text = false
+	if self._text_animation then
+		self._suspicion_panel:child("suspicion_text_panel"):stop()
 		self._text_animation = nil
 	end
 end

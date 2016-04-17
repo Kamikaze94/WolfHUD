@@ -3,6 +3,9 @@
 	"menu_risk_elite" : "Todeswunsch. Ungeheuer viel ERF und Bargeld.",
 	"menu_difficulty_apocalypse" : "Todeswunsch",
 	"cash_sign" : "\194\128",
+	"hud_int_hold_grab_the_bag" : "Halte $BTN_INTERACT zum Aufheben von $BAG$VALUE",
+	"hud_int_hold_grab_the_painting" : "Halte $BTN_INTERACT zum Aufheben von $BAG$VALUE",
+	"wolfhud_int_locked" : "DRÜCKE [$BTN] UM ABZUBRECHEN",
 	
 	"WolfHUD_options_name" : "WolfHUD Einstellungen",
 	"WolfHUD_options_help" : "Passe deine WolfHUD Einstellungen deinem Geschmack an.",
@@ -192,7 +195,6 @@
 	"wolfhud_press2hold_min_timer_duration_desc" : "Die minimale Timerdauer um die Interaktion zu sperren.",
 	"wolfhud_press2hold_show_lockindicator_title" : "Zeige Sperr-Indikator",
 	"wolfhud_press2hold_show_lockindicator_desc" : "Zeige transparenten roten/grünen Kreis, zur visualisierung, ob die Interaktion gesperrt ist oder nicht.",
-	"wolfhud_int_locked" : "DRÜCKE [$BTN] UM ABZUBRECHEN",
 	"wolfhud_press2hold_equipment_cancel_title" : "Equipment Abbrechen",
 	"wolfhud_press2hold_equipment_cancel_desc" : "Breche eine gesperrte Intaktion mit der Equipment Taste ab.\n(Andernfalls durch erneutes drücken der Interaktionstaste.)",
 	"wolfhud_press2hold_show_circle_title" : "Zeige Interaktionskreis",

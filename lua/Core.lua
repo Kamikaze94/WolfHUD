@@ -2,7 +2,7 @@ if not _G.WolfHUD then
 	_G.WolfHUD = {}
 	WolfHUD.mod_path = ModPath
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
-	WolfHUD.DEBUG_MODE = true
+	WolfHUD.DEBUG_MODE = false
 	WolfHUD.version = ""
 	WolfHUD.menu_ids = { 
 		"wolfhud_options_menu", 
@@ -44,8 +44,9 @@ if not _G.WolfHUD then
 		["lib/managers/menumanager"] = { "MenuTweaks.lua" },
 		["lib/managers/menumanagerdialogs"] = { "MenuTweaks.lua" },
 		["lib/managers/chatmanager"] = { "MenuTweaks.lua" },
+		["lib/managers/localizationmanager"] = { "AdvAssault.lua" },
 		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua", "TabStats.lua" },
-		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "Interaction.lua", "BurstFire.lua" },
+		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "Interaction.lua", "BurstFire.lua", "AdvAssault.lua" },
 		["lib/managers/playermanager"] = { "HUDList.lua" },
 		["lib/managers/trademanager"] = { "DownCounter.lua" },
 		["lib/managers/hud/huddriving"] = { "DrivingHUD.lua" },
@@ -80,6 +81,7 @@ if not _G.WolfHUD then
 		["lib/units/equipment/grenade_crate/grenadecratebase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/sentry_gun/sentrygunbase"] = { "GameInfoManager.lua", "KillCounter.lua" },
 		["lib/units/equipment/sentry_gun/sentrygundamage"] = { "GameInfoManager.lua" },
+		["lib/units/interactions/interactionext"] = { "Interaction.lua" },
 		["lib/units/weapons/akimboweaponbase"] = { "BurstFire.lua" },
 		["lib/units/weapons/sentrygunweapon"] = { "GameInfoManager.lua" },
 		["lib/units/weapons/weaponlaser"] = { "WeaponLasers.lua" },
@@ -209,6 +211,7 @@ if not _G.WolfHUD then
 			flashlight_angle 				= 100,			--Flashlight angle
 			flashlight_range 				= 20,			--Flashlight range (in m)
 			
+			show_advanced_assault			= true,
 			replace_weapon_names 			= true,
 			enable_burstmode				= true,
 			use_federal_inventory 			= true

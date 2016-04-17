@@ -224,7 +224,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			local type = managers.controller:get_default_wrapper_type()
 			local interact_key  = managers.controller:get_settings(type):get_connection("interact"):get_input_name_list()[1] or "f"
 			local equipment_key = managers.controller:get_settings(type):get_connection("use_item"):get_input_name_list()[1] or "g"
-			self._new_text = string.upper(managers.localization:text("wolfhud_int_locked", {BTN = (PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and equipment_key or interact_key)}))
+			self._new_text = string.upper(managers.localization:text(self._old_text:match(managers.localization:text("hud_int_disable_alarm_pager", {BTN_INTERACT = interact_key})) and "wolfhud_int_pager_locked" or "wolfhud_int_locked", {BTN = (PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and equipment_key or interact_key)}))
 		end
 	end
 	
@@ -235,6 +235,29 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		end
 		destroy_original(self)
 	end
+elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" then
+	local _add_string_macros_original = BaseInteractionExt._add_string_macros
+
+	function BaseInteractionExt:get_unsecured_bonus_bag_value(carry_id)
+		return math.round((managers.money:get_bag_value(carry_id, 1) + math.round(managers.money:get_bag_value(carry_id, 1) * (managers.job:current_job_id() and #tweak_data.narrative.jobs[managers.job:current_job_id()].chain or 1) * managers.money:get_contract_difficulty_multiplier(managers.job:has_active_job() and managers.job:current_difficulty_stars() or 0))) * managers.player:upgrade_value("player", "secured_bags_money_multiplier", 1) / managers.money:get_tweak_value("money_manager", "offshore_rate"))
+	end
+	
+	function BaseInteractionExt:get_real_bag_value(carry_id)
+		if managers.loot:is_bonus_bag(carry_id) then
+			return tweak_data:get_value("money_manager", "bag_values", carry_id) and self:get_unsecured_bonus_bag_value(carry_id) or managers.loot:get_real_value(carry_id, 1)
+		else
+			return 0
+		end
+	end
+	
+	function BaseInteractionExt:_add_string_macros(macros)
+		_add_string_macros_original(self, macros)
+		if self._unit:carry_data() then
+			macros.BAG = managers.localization:text(tweak_data.carry[self._unit:carry_data():carry_id()].name_id)
+			macros.VALUE = not tweak_data.carry[self._unit:carry_data():carry_id()].skip_exit_secure and " (" .. managers.experience:cash_string(self:get_real_bag_value(self._unit:carry_data():carry_id())) .. ")" or ""
+		end
+	end
+
 elseif string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 	ObjectInteractionManager.AUTO_PICKUP_DELAY = 0.3 --Delay in seconds between auto-pickup procs (0 -> as fast as possible)
 	local _update_targeted_original = ObjectInteractionManager._update_targeted
