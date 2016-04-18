@@ -469,8 +469,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			layer = 2,
 		})
 		
-		local colorize_healthbar = WolfHUD:getSetting("colorize_healthbars", "number")
-		if colorize_healthbar > 1 then
+		self._colorize_healthbar = WolfHUD:getSetting("colorize_healthbars", "number")
+		if self._colorize_healthbar > 1 then
 			radial_health:set_color(Color(1, 0, 0, 0))
 			radial_health:set_blend_mode("sub")
 			
@@ -672,13 +672,12 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 
 	function HUDTeammate:set_health(data)
 		self._health_data = data
-		local colorize_healthbar = WolfHUD:getSetting("colorize_healthbars", "number")
 		local radial_health = self._health_panel:child("radial_health")
 		local red = data.current / data.total
-		if colorize_healthbar > 1 then
+		if self._colorize_healthbar > 1 then
 			red = 1 - red
 			radial_health:set_rotation(360 * red)
-			if colorize_healthbar == 3 then
+			if self._colorize_healthbar == 3 then
 				self._health_panel:child("radial_health_fill"):set_color(red < 0.5 and Color('C2FC97') or red < 0.8 and Color('CEA168') or Color('E24E4E'))
 			end
 			if red > radial_health:color().red then
@@ -840,8 +839,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		local radial_health = self._health_panel:child("radial_health")		
 		if alive(rip) then  
 			do
-				local colorize_healthbar = WolfHUD:getSetting("colorize_healthbars", "number")
-				if colorize_healthbar > 1 then
+				if self._colorize_healthbar > 1 then
 					rip:set_rotation(self._health_panel:child("radial_health"):rotation())
 					rip_bg:set_rotation(self._health_panel:child("radial_health"):rotation())
 				else
@@ -1213,6 +1211,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		local silencer_icon = panel:child("silencer_icon")
 		icon:set_visible(true)
 		icon:set_image(bitmap_texture)
+		icon:set_texture_rect(256, 0, -256, 128)
 		silencer_icon:set_visible(silencer)
 		
 		if self._main_player and HUDManager._USE_BURST_MODE and alive(managers.player:player_unit()) then

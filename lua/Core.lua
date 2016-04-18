@@ -27,7 +27,7 @@ if not _G.WolfHUD then
 			{ color = Color('CC55CC'), name = "light_purple" },
 			{ color = Color('00FF00'), name = "light_green" },
 			{ color = Color('00FFFF'), name = "light_blue" },
-			{ color = Color('BABABA'), name = "light_gray" }
+			{ color = Color('BABABA'), name = "light_gray" },
 			{ color = Color('FFFF00'), name = "yellow" },
 			{ color = Color('FFA500'), name = "orange" },
 			{ color = Color('FF0000'), name = "red" },

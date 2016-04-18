@@ -2,7 +2,7 @@ if string.lower(RequiredScript) == "lib/managers/enemymanager" then
 	EnemyManager._MAX_NR_CORPSES = WolfHUD:getSetting("max_corpses", "number")
 end
 
-if WolfHUD:getSetting("use_killcounter", "boolean") then return end
+if not WolfHUD:getSetting("use_killcounter", "boolean") then return end
 if string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 
 	HUDTeammate.SHOW_SPECIAL_KILLS = WolfHUD:getSetting("SHOW_SPECIAL_KILLS", "boolean")
