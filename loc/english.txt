@@ -112,6 +112,8 @@
 	"wolfhud_show_vehicleimage_desc" : "Display a little image of the vehicle and masks of player driving with you.",
 	"wolfhud_speed_in_mph_title" : "Speed in mph",
 	"wolfhud_speed_in_mph_desc" : "Display the speed in mph.\n(Uses km/h otherwise.)",
+	"wolfhud_adv_assault_title" : "Advanced Assault Banner",
+	"wolfhud_adv_assault_desc" : "Show assault phase, time and spawns left during assault.\n(Host Only)",
 	"wolfhud_skip_blackscreen_title" : "Skip Blackscreen",
 	"wolfhud_skip_blackscreen_desc" : "Automatically skips the Blackscreen on Mission start.\n(Host only)",
 	"wolfhud_stat_screen_delay_title" : "Stat Screen delay",

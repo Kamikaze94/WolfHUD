@@ -8,7 +8,16 @@
 		{
 			"type" : "divider",
 			"size" : 16,
-			"priority" : 8,
+			"priority" : 10,
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_advanced_assault",
+			"title" : "wolfhud_adv_assault_title",
+			"description" : "wolfhud_adv_assault_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_advanced_assault",
+			"priority" : 9,
 		},
 		{
 			"type" : "toggle",
@@ -17,7 +26,7 @@
 			"description" : "wolfhud_skip_blackscreen_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "skip_blackscreen",
-			"priority" : 7,
+			"priority" : 8,
 		},
 		{
 			"type" : "slider",

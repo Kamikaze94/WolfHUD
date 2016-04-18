@@ -4,7 +4,7 @@
 	"title" : "wolfhud_infopanels_options_name",
 	"description" : "wolfhud_infopanels_options_help",
 	"back_callback" : "",
-	"priority" : 10,
+	"priority" : 100,
 	"items" : [
 		{
 			"type" : "toggle",

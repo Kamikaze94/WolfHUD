@@ -81,6 +81,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			y = 0,
 			name = "time_text",
 			color = Color.white,
+			alpha = 0.8,
 			font_size = tweak_data.hud_stats.loot_size,
 			font = tweak_data.hud_stats.objectives_font,
 			text = "",
@@ -1146,6 +1147,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			local bag_text = mission_bags_panel:text({
 				name = "bag_amount",
 				text = " x" .. tostring(mandatory_bags_data.amount - mission_amount),
+				alpha = 0.75,
 				font = tweak_data.menu.pd2_small_font,
 				font = tweak_data.menu.pd2_small_font
 			})

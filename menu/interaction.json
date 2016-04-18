@@ -4,7 +4,7 @@
 	"title" : "wolfhud_interaction_options_name",
 	"description" : "wolfhud_interaction_options_help",
 	"back_callback" : "",
-	"priority" : 10,
+	"priority" : 100,
 	"items" : [
 		{
 			"type" : "toggle",
