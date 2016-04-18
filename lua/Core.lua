@@ -73,7 +73,7 @@ if not _G.WolfHUD then
 		["lib/units/props/timergui"] = { "GameInfoManager.lua" },
 		["lib/units/props/digitalgui"] = { "GameInfoManager.lua" },
 		["lib/units/props/securitylockgui"] = { "GameInfoManager.lua" },
-		["lib/units/enemies/cop/copdamage"] = { "GameInfoManager.lua", "KillCounter.lua" },
+		["lib/units/enemies/cop/copdamage"] = { "GameInfoManager.lua", "KillCounter.lua", "TabStats.lua" },
 		["lib/units/equipment/ammo_bag/ammobagbase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/bodybags_bag/bodybagsbagbase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/doctor_bag/doctorbagbase"] = { "DownCounter.lua", "GameInfoManager.lua" },
