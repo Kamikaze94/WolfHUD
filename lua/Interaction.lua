@@ -121,6 +121,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 	local show_interaction_bar_original = HUDInteraction.show_interaction_bar
 	local hide_interaction_bar_original = HUDInteraction.hide_interaction_bar
+	local show_interact_original		= HUDInteraction.show_interact
 	local destroy_original				= HUDInteraction.destroy
 	
 	local set_interaction_bar_width_original = HUDInteraction.set_interaction_bar_width
@@ -134,9 +135,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			self._interact_time:set_color(color)
 			self._interact_time:set_alpha(1)
 			self._interact_time:set_visible(perc < 1)
-		end
-		if self._old_text and self._new_text then
-			self._hud_panel:child(self._child_name_text):set_text(self._new_text)
 		end
 	end
 	
@@ -224,7 +222,14 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			local type = managers.controller:get_default_wrapper_type()
 			local interact_key  = managers.controller:get_settings(type):get_connection("interact"):get_input_name_list()[1] or "f"
 			local equipment_key = managers.controller:get_settings(type):get_connection("use_item"):get_input_name_list()[1] or "g"
-			self._new_text = string.upper(managers.localization:text(self._old_text:match(managers.localization:text("hud_int_disable_alarm_pager", {BTN_INTERACT = interact_key})) and "wolfhud_int_pager_locked" or "wolfhud_int_locked", {BTN = (PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and equipment_key or interact_key)}))
+			local locked_text = string.upper(managers.localization:text(self._old_text:match(managers.localization:text("hud_int_disable_alarm_pager", {BTN_INTERACT = interact_key})) and "wolfhud_int_pager_locked" or "wolfhud_int_locked", {BTN = (PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and equipment_key or interact_key)}))
+			self._hud_panel:child(self._child_name_text):set_text(locked_text)
+		end
+	end
+	
+	function HUDInteraction:show_interact(data)
+		if not self._old_text then
+			return show_interact_original(self, data)
 		end
 	end
 	
@@ -246,15 +251,16 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 		if managers.loot:is_bonus_bag(carry_id) then
 			return tweak_data:get_value("money_manager", "bag_values", carry_id) and self:get_unsecured_bonus_bag_value(carry_id) or managers.loot:get_real_value(carry_id, 1)
 		else
-			return 0
+			return 0 -- Calculate mission bag value here...
 		end
 	end
 	
 	function BaseInteractionExt:_add_string_macros(macros)
 		_add_string_macros_original(self, macros)
 		if self._unit:carry_data() then
+			local bag_value = self:get_real_bag_value(self._unit:carry_data():carry_id())
 			macros.BAG = managers.localization:text(tweak_data.carry[self._unit:carry_data():carry_id()].name_id)
-			macros.VALUE = not tweak_data.carry[self._unit:carry_data():carry_id()].skip_exit_secure and " (" .. managers.experience:cash_string(self:get_real_bag_value(self._unit:carry_data():carry_id())) .. ")" or ""
+			macros.VALUE = not tweak_data.carry[self._unit:carry_data():carry_id()].skip_exit_secure and bag_value > 0 and " (" .. managers.experience:cash_string(bag_value) .. ")" or ""
 		end
 	end
 

@@ -89,4 +89,16 @@ elseif string.lower(RequiredScript) == "lib/managers/experiencemanager" then
 		end
 		return val
 	end
+elseif string.lower(RequiredScript) == "lib/managers/moneymanager" then
+	local total_string_original = MoneyManager.total_string
+	local total_collected_string_original = MoneyManager.total_collected_string
+	
+	function MoneyManager:total_string()
+		local total = math.round(self:total())
+		return managers.experience:cash_string(total)
+	end
+	function MoneyManager:total_collected_string()
+		local total = math.round(self:total_collected())
+		return managers.experience:cash_string(total)
+	end
 end
