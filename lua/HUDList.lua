@@ -30,6 +30,13 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		managers.hudlist = HUDListManager:new()
 	end
 	
+	-- Compatability with mods, that hard overwrite the function...
+	Hooks:PostHook( HUDManager , "_setup_player_info_hud_pd2" , "WolfHUDPostHUDManager_setup_player_info_hud_pd2" , function(...)
+		if not managers.hudlist then
+			managers.hudlist = HUDListManager:new()
+		end
+	end)
+	
 	function HUDManager:update(t, dt, ...)
 		if managers.hudlist then
 			managers.hudlist:update(t, dt)
