@@ -19,23 +19,24 @@ if not _G.WolfHUD then
 	}
 	
 	if not WolfHUD.color_table then
-		WolfHUD.color_table = {
-			{ color = Color('FFFFFF'), name = "white" },		--1:  White
-			{ color = Color('F2F250'), name = "light_yellow" },	--2:  Light_Yellow
-			{ color = Color('F2C24E'), name = "light_orange" },	--3:  Light_Orange
-			{ color = Color('E55858'), name = "light_red" },	--4:  Light_Red
-			{ color = Color('CC55CC'), name = "light_purple" },	--5:  Light_Purple
-			{ color = Color('00FF00'), name = "light_green" },	--6:  Light_Green
-			{ color = Color('00FFFF'), name = "light_blue" },	--7:  Light_Blue
-			{ color = Color('FFFF00'), name = "yellow" },		--8:  Yellow
-			{ color = Color('FFA500'), name = "orange" },		--9:  Orange
-			{ color = Color('FF0000'), name = "red" },			--10: Red
-			{ color = Color('800080'), name = "purple" },		--11: Purple
-			{ color = Color('008000'), name = "green" },		--12: Green
-			{ color = Color('0000FF'), name = "blue" },			--13: Blue
-			{ color = Color('808080'), name = "gray" },			--14: Gray
-			{ color = Color('000000'), name = "black" },		--15: Black
-			{ color = Color('000000'), name = "rainbow" },		--16: Rainbow (only available in laser colors)
+		WolfHUD.color_table = { -- namestring is always 'wolfhud_color_<name>'
+			{ color = Color('FFFFFF'), name = "white" },
+			{ color = Color('F2F250'), name = "light_yellow" },
+			{ color = Color('F2C24E'), name = "light_orange" },
+			{ color = Color('E55858'), name = "light_red" },
+			{ color = Color('CC55CC'), name = "light_purple" },
+			{ color = Color('00FF00'), name = "light_green" },
+			{ color = Color('00FFFF'), name = "light_blue" },
+			{ color = Color('BABABA'), name = "light_gray" }
+			{ color = Color('FFFF00'), name = "yellow" },
+			{ color = Color('FFA500'), name = "orange" },
+			{ color = Color('FF0000'), name = "red" },
+			{ color = Color('800080'), name = "purple" },
+			{ color = Color('008000'), name = "green" },
+			{ color = Color('0000FF'), name = "blue" },
+			{ color = Color('808080'), name = "gray" },
+			{ color = Color('000000'), name = "black" },
+			{ color = Color('000000'), name = "rainbow" },		--(only available in laser colors)
 		}
 	end
 	
@@ -134,7 +135,7 @@ if not _G.WolfHUD then
 			show_dmg_indicator				= true,
 			dmg_ind_size					= 150,
 			dmg_ind_time					= 2,
-			dmg_shield_color				= "white",
+			dmg_shield_color				= "gray",
 			dmg_health_color				= "red",
 			dmg_crit_color					= "purple",
 			dmg_vehicle_color				= "yellow",

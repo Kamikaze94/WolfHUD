@@ -8,7 +8,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		local assault_panel = self._hud_panel:child("assault_panel")
 		assault_panel:set_center_x(self._hud_panel:center_x() - 65)
 		local buffs_panel = self._hud_panel:child("buffs_panel")
-		buffs_panel:set_x(assault_panel:x() - buffs_panel:w() - 3)
+		buffs_panel:set_x(assault_panel:x() - buffs_panel:w() - 5)
 				   
 		local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
 		point_of_no_return_panel:set_center_x(self._hud_panel:center_x() - 65)
