@@ -46,6 +46,7 @@ if not _G.WolfHUD then
 		["lib/managers/menumanagerdialogs"] = { "MenuTweaks.lua" },
 		["lib/managers/chatmanager"] = { "MenuTweaks.lua" },
 		["lib/managers/localizationmanager"] = { "AdvAssault.lua" },
+		["lib/managers/experiencemanager"] = { "Scripts.lua" },
 		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua", "TabStats.lua" },
 		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "Interaction.lua", "BurstFire.lua", "AdvAssault.lua" },
 		["lib/managers/playermanager"] = { "HUDList.lua" },

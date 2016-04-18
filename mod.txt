@@ -10,6 +10,7 @@
 		{ "hook_id" : "lib/managers/menumanagerdialogs", "script_path" : "lua/Core.lua" },
 		{ "hook_id" : "lib/managers/chatmanager", "script_path" : "lua/Core.lua" },
 		{ "hook_id" : "lib/managers/localizationmanager", "script_path" : "lua/Core.lua" },
+		{ "hook_id" : "lib/managers/experiencemanager", "script_path" : "lua/Core.lua" },
 		{ "hook_id" : "lib/managers/hudmanager", "script_path" : "lua/Core.lua" },
 		{ "hook_id" : "lib/managers/hudmanagerpd2", "script_path" : "lua/Core.lua" },
 		{ "hook_id" : "lib/managers/hud/huddriving", "script_path" : "lua/Core.lua" },

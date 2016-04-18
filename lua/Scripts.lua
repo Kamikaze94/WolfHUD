@@ -79,4 +79,14 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata"
 			sync = true
 		}
 	end
+elseif string.lower(RequiredScript) == "lib/managers/experiencemanager" then
+	local cash_string_original = ExperienceManager.cash_string
+	
+	function ExperienceManager:cash_string(cash)
+		local val = cash_string_original(self, cash)
+		if self._cash_sign == "\194\128" then
+			val = val:gsub(self._cash_sign, "") .. self._cash_sign
+		end
+		return val
+	end
 end
