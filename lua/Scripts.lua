@@ -37,7 +37,7 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata"
 			fade_in = 0,
 			sustain = 0,
 			fade_out = 0,
-			timer = 0,
+			timer = "pausable",
 			affect_timer = "player"
 		}
 		self.downed = {
@@ -52,7 +52,7 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata"
 			fade_in = 0,
 			sustain = 0,
 			fade_out = 0,
-			timer = 0,
+			timer = "pausable",
 			affect_timer = "player"
 		}
 	end

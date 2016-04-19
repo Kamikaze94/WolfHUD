@@ -57,7 +57,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 		_start_action_reload_original(self, t)
 		PlayerStandard.SHOW_RELOAD = WolfHUD:getSetting("SHOW_RELOAD", "boolean")
 		if PlayerStandard.SHOW_RELOAD then
-			if self._equipped_unit and not self._equipped_unit:base():clip_full() and managers.player:current_state() ~= "bleed_out" then
+			if self._equipped_unit and not self._equipped_unit:base():clip_full() then
 				self._state_data._reload = true
 				managers.hud:show_interaction_bar(0, self._state_data.reload_expire_t or 0)
 				self._state_data.reload_offset = t
@@ -71,7 +71,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 			if not self._state_data.reload_expire_t and self._state_data._reload then
 				managers.hud:hide_interaction_bar(true)
 				self._state_data._reload = false
-			elseif self._state_data._reload and managers.player:current_state() ~= "bleed_out" then
+			elseif self._state_data._reload then
 				managers.hud:set_interaction_bar_width(	t and t - self._state_data.reload_offset or 0, self._state_data.reload_expire_t and self._state_data.reload_expire_t - self._state_data.reload_offset or 0 )
 			end
 		end
@@ -79,7 +79,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 
 	function PlayerStandard:_interupt_action_reload(t)
 		local val = _interupt_action_reload_original(self, t)
-		if self._state_data._reload --[[and managers.player:current_state() ~= "bleed_out"]] and PlayerStandard.SHOW_RELOAD then
+		if self._state_data._reload and PlayerStandard.SHOW_RELOAD then
 			managers.hud:hide_interaction_bar(false)
 			self._state_data._reload = false
 		end
@@ -96,7 +96,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 		
 		return _check_action_throw_grenade_original(self, t, input, ...)
 	end
-
+	
 elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playercivilian" then
 
 	local _update_interaction_timers_original = PlayerCivilian._update_interaction_timers
