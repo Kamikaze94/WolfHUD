@@ -273,7 +273,7 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 		if hours > 0 then
 			time_format_text = string.format("%d:%02d:%02d", hours, minutes, seconds)
 		else
-			time_format_text = string.format("%d:%02d", minutes, seconds)
+			time_format_text = string.format("%02d:%02d", minutes, seconds)
 		end
 		
 		local time_text = msg_panel:text({

@@ -161,24 +161,26 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	}
 	
 	HUDListManager.SPECIAL_PICKUP_TYPES = {
-		gen_pku_crowbar =				"crowbar",
-		pickup_keycard =				"keycard",
-		pickup_hotel_room_keycard =		"keycard",
-		gage_assignment =				"courier",
-		pickup_boards =					"planks",
-		stash_planks_pickup =			"planks",
-		muriatic_acid =					"meth_ingredients",
-		hydrogen_chloride =				"meth_ingredients",
-		caustic_soda =					"meth_ingredients",
-		gen_pku_blow_torch =			"blowtorch",
-		gen_pku_thermite = 				"thermite",
-		gen_pku_thermite_paste = 		"thermite",
-		hold_take_gas_can = 			"thermite",
-		money_wrap_single_bundle = 		"small_loot",
-		cas_chips_pile = 				"small_loot",
-		diamond_pickup = 				"small_loot",
-		diamond_pickup_pal = 			"small_loot",
-		safe_loot_pickup = 				"small_loot",
+		gen_pku_crowbar =					"crowbar",
+		pickup_keycard =					"keycard",
+		pickup_hotel_room_keycard =			"keycard",
+		gage_assignment =					"courier",
+		pickup_boards =						"planks",
+		stash_planks_pickup =				"planks",
+		muriatic_acid =						"meth_ingredients",
+		hydrogen_chloride =					"meth_ingredients",
+		caustic_soda =						"meth_ingredients",
+		gen_pku_blow_torch =				"blowtorch",
+		gen_pku_thermite = 					"thermite",
+		gen_pku_thermite_paste = 			"thermite",
+		hold_take_gas_can = 				"thermite",
+		money_wrap_single_bundle = 			"small_loot",
+		money_wrap_single_bundle_active = 	"small_loot",
+		money_wrap_single_bundle_dyn = 		"small_loot",
+		cas_chips_pile = 					"small_loot",
+		diamond_pickup = 					"small_loot",
+		diamond_pickup_pal = 				"small_loot",
+		safe_loot_pickup = 					"small_loot",
 	}
 	
 	HUDListManager.LOOT_TYPES = {
@@ -3430,7 +3432,9 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 	function HUDAssaultCorner:init(...)
 		HUDAssaultCorner_init(self, ...)
 		local hostages_panel = self._hud_panel:child("hostages_panel")
-		hostages_panel:set_alpha(0)
+		if alive(hostages_panel) then
+			hostages_panel:set_alpha(0)
+		end
 	end
 end
 

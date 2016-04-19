@@ -15,8 +15,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 		self._hit_direction_panel:child("up"):set_visible(is_visible)
 		self._hit_direction_panel:child("down"):set_visible(is_visible)
 	end
-
+	local counter = 0
 	function HUDHitDirection:new_hitmarker(pos, type_hit)
+		counter = counter + 1
+		log("Hitmarker #"..counter.." created!")
 		if not self._hit_direction_panel or not WolfHUD:getSetting("show_dmg_indicator", "boolean") then return end
 		local color = type_hit == self.UNIT_TYPE_HIT_ARMOR and WolfHUD:getSetting("dmg_shield_color", "color") or type_hit == self.UNIT_TYPE_HIT_PLAYER and WolfHUD:getSetting("dmg_health_color", "color") or type_hit == HUDHitDirection.UNIT_TYPE_HIT_CRIT and WolfHUD:getSetting("dmg_crit_color", "color") or type_hit == self.UNIT_TYPE_HIT_VEHICLE and WolfHUD:getSetting("dmg_vehicle_color", "color") or type_hit == HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE and WolfHUD:getSetting("dmg_friendlyfire_color", "color")
 		local hitmarker = self._hit_direction_panel:panel({
@@ -103,17 +105,21 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 	
 	function PlayerDamage:damage_bullet(attack_data)
 		PlayerDamage_damage_bullet(self, attack_data)
-		self:showHitmarker(attack_data)
+		if self:_chk_can_take_dmg() and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated()) then
+			self:showHitmarker(attack_data, self:is_friendly_fire(attack_data.attacker_unit) and HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE )
+		end
 	end
 
 	function PlayerDamage:damage_killzone(attack_data)
 		PlayerDamage_damage_killzone(self, attack_data)
-		self:showHitmarker(attack_data)
+		if not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated()) then
+			self:showHitmarker(attack_data)
+		end
 	end
 
 	function PlayerDamage:damage_fall(data)
 		local val = PlayerDamage_damge_fall(self, data)
-		 if val then 
+		if val or (self._bleed_out and self._unit:movement():current_state_name() ~= "jerry1") then 
 			self:showHitmarker(data)
 		end
 		return val
@@ -122,14 +128,17 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 	function PlayerDamage:damage_explosion(attack_data)
 		PlayerDamage_damage_explosion(self, attack_data)
 		local distance = mvector3.distance(attack_data.position, self._unit:position())
-		if distance <= attack_data.range then
+		if self:_chk_can_take_dmg() and distance <= attack_data.range and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated() or self._bleed_out) then
 			self:showHitmarker(attack_data, HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE)
 		end
 	end
 	
 	function PlayerDamage:damage_fire(attack_data)
 		PlayerDamage_damage_fire(self, attack_data)
-		self:showHitmarker(attack_data, HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE)
+		local distance = mvector3.distance(attack_data.position, self._unit:position())
+		if self:_chk_can_take_dmg() and distance <= attack_data.range and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated() or self._bleed_out) then
+			self:showHitmarker(attack_data, HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE)
+		end
 	end
 	
 	function PlayerDamage:showHitmarker(attack_data, damage_type)
