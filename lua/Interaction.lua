@@ -223,7 +223,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			local type = managers.controller:get_default_wrapper_type()
 			local interact_key  = managers.controller:get_settings(type):get_connection("interact"):get_input_name_list()[1] or "f"
 			local equipment_key = managers.controller:get_settings(type):get_connection("use_item"):get_input_name_list()[1] or "g"
-			local locked_text = string.upper(managers.localization:text(self._old_text:match(managers.localization:text("hud_int_disable_alarm_pager", {BTN_INTERACT = interact_key})) and "wolfhud_int_pager_locked" or "wolfhud_int_locked", {BTN = (PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and equipment_key or interact_key)}))
+			local locked_text = managers.localization:to_upper_text("wolfhud_int_locked", {BTN = (PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and equipment_key or interact_key)})
 			self._hud_panel:child(self._child_name_text):set_text(locked_text)
 		end
 	end
@@ -243,25 +243,47 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 	end
 elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" then
 	local _add_string_macros_original = BaseInteractionExt._add_string_macros
-
-	function BaseInteractionExt:get_unsecured_bonus_bag_value(carry_id)
-		return math.round((managers.money:get_bag_value(carry_id, 1) + math.round(managers.money:get_bag_value(carry_id, 1) * (managers.job:current_job_id() and #tweak_data.narrative.jobs[managers.job:current_job_id()].chain or 1) * managers.money:get_contract_difficulty_multiplier(managers.job:has_active_job() and managers.job:current_difficulty_stars() or 0))) * managers.player:upgrade_value("player", "secured_bags_money_multiplier", 1) / managers.money:get_tweak_value("money_manager", "offshore_rate"))
+	
+	function BaseInteractionExt:would_be_bonus_bag(carry_id)
+		if managers.loot:get_mandatory_bags_data().carry_id ~= "none" and carry_id and carry_id ~= managers.loot:get_mandatory_bags_data().carry_id then
+			return true
+		end
+		local mandatory_bags_amount = managers.loot:get_mandatory_bags_data().amount or 0
+		for _, data in ipairs(managers.loot._global.secured) do
+			if not tweak_data.carry.small_loot[data.carry_id] and not tweak_data.carry[data.carry_id].is_vehicle == not is_vehicle then
+				if mandatory_bags_amount > 1 and (managers.loot:get_mandatory_bags_data().carry_id == "none" or managers.loot._global.mandatory_bags.carry_id == data.carry_id) then
+					mandatory_bags_amount = mandatory_bags_amount - 1
+				elseif mandatory_bags_amount <= 1 then
+					return true
+				end
+			end
+		end
+		return false
 	end
 	
-	function BaseInteractionExt:get_real_bag_value(carry_id)
-		if managers.loot:is_bonus_bag(carry_id) then
-			return tweak_data:get_value("money_manager", "bag_values", carry_id) and self:get_unsecured_bonus_bag_value(carry_id) or managers.loot:get_real_value(carry_id, 1)
+	function BaseInteractionExt:get_unsecured_bag_value(carry_id)
+		local carry_value = managers.money:get_bag_value(carry_id, 1)
+		local bag_value = 0
+		local bag_risk = 0
+		local bag_skill_bonus = managers.player:upgrade_value("player", "secured_bags_money_multiplier", 1)
+		if self:would_be_bonus_bag(carry_id) then
+			local job_id = managers.job:current_job_id()
+			local stars = managers.job:has_active_job() and managers.job:current_difficulty_stars() or 0
+			local money_multiplier = managers.money:get_contract_difficulty_multiplier(stars)
+			local total_stages = job_id and #tweak_data.narrative:job_chain(job_id) or 1
+			bag_value = carry_value
+			bag_risk = math.round(bag_value * money_multiplier)
 		else
-			return 0 -- Calculate mission bag value here...
+			bag_value = carry_value
 		end
+		return math.round((bag_value + bag_risk) * bag_skill_bonus / managers.money:get_tweak_value("money_manager", "offshore_rate"))
 	end
 	
 	function BaseInteractionExt:_add_string_macros(macros)
 		_add_string_macros_original(self, macros)
 		if self._unit:carry_data() then
-			local bag_value = self:get_real_bag_value(self._unit:carry_data():carry_id())
 			macros.BAG = managers.localization:text(tweak_data.carry[self._unit:carry_data():carry_id()].name_id)
-			macros.VALUE = not tweak_data.carry[self._unit:carry_data():carry_id()].skip_exit_secure and bag_value > 0 and " (" .. managers.experience:cash_string(bag_value) .. ")" or ""
+			macros.VALUE = not tweak_data.carry[self._unit:carry_data():carry_id()].skip_exit_secure and " (" .. managers.experience:cash_string(self:get_unsecured_bag_value(self._unit:carry_data():carry_id(), 1)) .. ")" or ""
 		end
 	end
 

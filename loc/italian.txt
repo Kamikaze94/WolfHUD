@@ -2,5 +2,7 @@
 	"menu_jowi" : "Wick",
 	"hud_int_hold_grab_the_bag" : "Hold $BTN_INTERACT to grab the $BAG$VALUE",
 	"hud_int_hold_grab_the_painting" : "Hold $BTN_INTERACT to grab the $BAG$VALUE",
+	"hud_int_hold_take_safe" : "Hold $BTN_INTERACT to grab the $BAG$VALUE",
+	"hud_int_hold_grab_goat" : "Hold $BTN_INTERACT to grab the $BAG$VALUE",
 	"cash_sign" : "\194\128",
 }
