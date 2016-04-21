@@ -1,6 +1,7 @@
 local hudsuspicion_init_original = HUDSuspicion.init
 local hudsuspicions_animate_eye_original = HUDSuspicion.animate_eye
 local hudsuspicion_hide_original = HUDSuspicion.hide
+local feed_value_original = HUDSuspicion.feed_value
  
 function HUDSuspicion:init(hud, sound_source)
 	hudsuspicion_init_original(self, hud, sound_source)
@@ -58,8 +59,10 @@ function HUDSuspicion:_animate_detection_text(_suspicion_panel)
 				local r,g,b = self:ColorGradient(math.round(self._suspicion_value*100)/100, 0, 0.71, 1, 0.99, 0.08, 0)
 				_suspicion_panel:child("suspicion_text"):set_color(Color(1, r, g, b))
 				_suspicion_panel:child("suspicion_text"):set_text(math.round(self._suspicion_value*100) .. "%")
-				self._last_suspicion_value = self._suspicion_value
 			end
+		end
+		if self._last_value_feed + 5 < TimerManager:game():time() then 
+			self:hide()
 		end
 	end
 end
@@ -74,6 +77,16 @@ function HUDSuspicion:hide()
 	hudsuspicion_hide_original(self)
 	self._animating_text = false
 	if self._text_animation then
+		self._text_animation:stop()
 		self._text_animation = nil
+	end
+end
+
+function HUDSuspicion:feed_value(value)
+	feed_value_original(self, value)
+	if self._suspicion_value ~= math.min(value, 1) then
+		local timer = TimerManager:game():time()
+		WolfHUD:print_log("Last Suspicion Update: " .. timer) --DEBUG
+		self._last_value_feed = timer
 	end
 end

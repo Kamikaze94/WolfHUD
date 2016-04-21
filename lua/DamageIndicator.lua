@@ -18,7 +18,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	local counter = 0
 	function HUDHitDirection:new_hitmarker(pos, type_hit)
 		counter = counter + 1
-		log("Hitmarker #"..counter.." created!")
+		WolfHUD:print_log("Hitmarker #"..counter.." created!")
 		if not self._hit_direction_panel or not WolfHUD:getSetting("show_dmg_indicator", "boolean") then return end
 		local color = type_hit == self.UNIT_TYPE_HIT_ARMOR and WolfHUD:getSetting("dmg_shield_color", "color") or type_hit == self.UNIT_TYPE_HIT_PLAYER and WolfHUD:getSetting("dmg_health_color", "color") or type_hit == HUDHitDirection.UNIT_TYPE_HIT_CRIT and WolfHUD:getSetting("dmg_crit_color", "color") or type_hit == self.UNIT_TYPE_HIT_VEHICLE and WolfHUD:getSetting("dmg_vehicle_color", "color") or type_hit == HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE and WolfHUD:getSetting("dmg_friendlyfire_color", "color")
 		local hitmarker = self._hit_direction_panel:panel({
@@ -44,14 +44,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	function HUDHitDirection:_animate_hitmarker(hitmarker, hitmarker_icon, pos)
 		if self._hit_direction_panel and hitmarker and hitmarker_icon then
 			local t = 0
-			local tt = WolfHUD.settings.dmg_ind_time or 2
-			local size = WolfHUD.settings.dmg_ind_size or 150
+			local tt = WolfHUD:getSetting("dmg_ind_time", "number")
+			local size = WolfHUD:getSetting("dmg_ind_size", "number")
 			while alive(hitmarker) and t < tt do
 				t = t + coroutine.yield()
 				local o = t / tt
 				local angle = self:getRotation(pos) or 180
 				local r = size + (1-math.pow(o,0.5)) * (100)
-				hitmarker_icon:set_alpha((-3 * math.pow(o - 0.5 , 2) + 0.7) * 80 / 100 )
+				hitmarker_icon:set_alpha((-3 * math.pow(o - 0.5 , 2) + 0.7) * 0.8 )
 				hitmarker_icon:set_rotation(-(angle+90))
 				hitmarker:set_center(self._hit_direction_panel:w()/2-math.sin(angle)*r + 70, self._hit_direction_panel:h()/2-math.cos(angle)*r - 30)
 			end
