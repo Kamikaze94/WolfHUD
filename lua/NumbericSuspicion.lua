@@ -61,7 +61,7 @@ function HUDSuspicion:_animate_detection_text(_suspicion_panel)
 				_suspicion_panel:child("suspicion_text"):set_text(math.round(self._suspicion_value*100) .. "%")
 			end
 		end
-		if self._last_value_feed + 5 < TimerManager:game():time() then 
+		if not self._discovered and self._last_value_feed + 2.5 < TimerManager:game():time() then
 			self:hide()
 		end
 	end
@@ -74,18 +74,19 @@ function HUDSuspicion:animate_eye()
 end
  
 function HUDSuspicion:hide()
-	hudsuspicion_hide_original(self)
+	if self._suspicion_panel then
+		self._suspicion_panel:set_visible(false)
+	end
 	self._animating_text = false
+	hudsuspicion_hide_original(self)
 	if self._text_animation then
 		self._text_animation = nil
 	end
 end
 
 function HUDSuspicion:feed_value(value)
-	feed_value_original(self, value)
 	if self._suspicion_value ~= math.min(value, 1) then
-		local timer = TimerManager:game():time()
-		WolfHUD:print_log("Last Suspicion Update: " .. timer) --DEBUG
-		self._last_value_feed = timer
+		self._last_value_feed = TimerManager:game():time()
 	end
+	feed_value_original(self, value)
 end
