@@ -61,7 +61,7 @@ function HUDSuspicion:_animate_detection_text(_suspicion_panel)
 				_suspicion_panel:child("suspicion_text"):set_text(math.round(self._suspicion_value*100) .. "%")
 			end
 		end
-		if not self._discovered and self._last_value_feed + 2.5 < TimerManager:game():time() then
+		if not self._discovered and self._suspicion_value > 0 and self._last_value_feed + 2.5 < TimerManager:game():time() then
 			self:hide()
 		end
 	end
