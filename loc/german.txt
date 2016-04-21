@@ -190,6 +190,8 @@
 	"wolfhud_dmg_ind_time_desc" : "Bestimmt die Zeit, die der Indikator angezeigt wird.",
 	"wolfhud_dmg_ind_size_title" : "Indikator Größe",
 	"wolfhud_dmg_ind_size_desc" : "Bestimmt die Größe des Kreises, auf dem sich der Indikator bewegt.",
+	"wolfhud_dmg_indicator_max_count_title" : "Max Indikator Anzahl",
+	"wolfhud_dmg_indicator_max_count_desc" : "Lege die maximale Anzahl an Indikatoren auf deinem Bildschirm fest.",
 	"wolfhud_dmg_shield_color_title" : "Rüstungsfarbe",
 	"wolfhud_dmg_shield_color_desc" : "Farbe des Indikators, wenn du nur Rüstung verlierst.",
 	"wolfhud_dmg_health_color_title" : "Lebensfarbe",

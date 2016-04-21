@@ -77,7 +77,6 @@ function HUDSuspicion:hide()
 	hudsuspicion_hide_original(self)
 	self._animating_text = false
 	if self._text_animation then
-		self._text_animation:stop()
 		self._text_animation = nil
 	end
 end

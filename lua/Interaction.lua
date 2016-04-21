@@ -56,7 +56,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	function PlayerStandard:_start_action_reload(t)
 		_start_action_reload_original(self, t)
 		PlayerStandard.SHOW_RELOAD = WolfHUD:getSetting("SHOW_RELOAD", "boolean")
-		if PlayerStandard.SHOW_RELOAD then
+		if PlayerStandard.SHOW_RELOAD and managers.player:current_state() ~= "bleed_out" then
 			if self._equipped_unit and not self._equipped_unit:base():clip_full() then
 				self._state_data._reload = true
 				managers.hud:show_interaction_bar(0, self._state_data.reload_expire_t or 0)
@@ -68,7 +68,9 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	function PlayerStandard:_update_reload_timers(t, dt, input)
 		_update_reload_timers_original(self, t, dt, input)
 		if PlayerStandard.SHOW_RELOAD then
-			if not self._state_data.reload_expire_t and self._state_data._reload then
+			if self._state_data._reload and managers.player:current_state() == "bleed_out" then
+				managers.hud:hide_interaction_bar(false)
+			elseif not self._state_data.reload_expire_t and self._state_data._reload then
 				managers.hud:hide_interaction_bar(true)
 				self._state_data._reload = false
 			elseif self._state_data._reload then

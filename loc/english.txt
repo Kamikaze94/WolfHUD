@@ -187,6 +187,8 @@
 	"wolfhud_dmg_ind_time_desc" : "Determines the time, the indicator will be shown.",
 	"wolfhud_dmg_ind_size_title" : "Indicator Size",
 	"wolfhud_dmg_ind_size_desc" : "Determines the size of the circle, the Indicators are placed around.",
+	"wolfhud_dmg_indicator_max_count_title" : "Max Indicator Count",
+	"wolfhud_dmg_indicator_max_count_desc" : "Specify the max amount of damage indicators on your screen.",
 	"wolfhud_dmg_shield_color_title" : "Armor Color",
 	"wolfhud_dmg_shield_color_desc" : "Color of the indicator, when you only loose armor.",
 	"wolfhud_dmg_health_color_title" : "Health Color",

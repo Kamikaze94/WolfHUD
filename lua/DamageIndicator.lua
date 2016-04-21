@@ -15,11 +15,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 		self._hit_direction_panel:child("up"):set_visible(is_visible)
 		self._hit_direction_panel:child("down"):set_visible(is_visible)
 	end
-	local counter = 0
-	function HUDHitDirection:new_hitmarker(pos, type_hit)
-		counter = counter + 1
-		WolfHUD:print_log("Hitmarker #"..counter.." created!")
-		if not self._hit_direction_panel or not WolfHUD:getSetting("show_dmg_indicator", "boolean") then return end
+	HUDHitDirection.indicator_count = 0
+	function HUDHitDirection:new_hitmarker(pos, type_hit, unit)
+		if not self._hit_direction_panel or not WolfHUD:getSetting("show_dmg_indicator", "boolean") or self.indicator_count > ( WolfHUD:getSetting("dmg_indicator_max_count", "number") * 3 ) then return end
+		self.indicator_count = self.indicator_count + 1
+		local unit_alive = unit and alive(unit) and not unit:character_damage()._dead or not unit
 		local color = type_hit == self.UNIT_TYPE_HIT_ARMOR and WolfHUD:getSetting("dmg_shield_color", "color") or type_hit == self.UNIT_TYPE_HIT_PLAYER and WolfHUD:getSetting("dmg_health_color", "color") or type_hit == HUDHitDirection.UNIT_TYPE_HIT_CRIT and WolfHUD:getSetting("dmg_crit_color", "color") or type_hit == self.UNIT_TYPE_HIT_VEHICLE and WolfHUD:getSetting("dmg_vehicle_color", "color") or type_hit == HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE and WolfHUD:getSetting("dmg_friendlyfire_color", "color")
 		local hitmarker = self._hit_direction_panel:panel({
 			x = "center",
@@ -30,7 +30,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 		local hitmarker_icon = hitmarker:bitmap({
 			name = "marker",
 			rotation = 270,
-			visible = true,
+			visible = unit_alive,
 			texture = "guis/textures/pd2/hitdirection",
 			color = color,
 			blend_mode = "add",
@@ -38,10 +38,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 			halign = "right"
 		})
 		hitmarker:stop()
-		hitmarker:animate( callback(self, self, "_animate_hitmarker"), hitmarker_icon, pos )
+		hitmarker:animate( callback(self, self, "_animate_hitmarker"), hitmarker_icon, pos, unit )
 	end
 	
-	function HUDHitDirection:_animate_hitmarker(hitmarker, hitmarker_icon, pos)
+	function HUDHitDirection:_animate_hitmarker(hitmarker, hitmarker_icon, pos, unit)
 		if self._hit_direction_panel and hitmarker and hitmarker_icon then
 			local t = 0
 			local tt = WolfHUD:getSetting("dmg_ind_time", "number")
@@ -51,12 +51,16 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 				local o = t / tt
 				local angle = self:getRotation(pos) or 180
 				local r = size + (1-math.pow(o,0.5)) * (100)
-				hitmarker_icon:set_alpha((-3 * math.pow(o - 0.5 , 2) + 0.7) * 0.8 )
+				hitmarker_icon:set_alpha((-3 * math.pow(o - 0.5 , 2) + 0.7) * 0.6 )
 				hitmarker_icon:set_rotation(-(angle+90))
 				hitmarker:set_center(self._hit_direction_panel:w()/2-math.sin(angle)*r + 70, self._hit_direction_panel:h()/2-math.cos(angle)*r - 30)
+				if unit and (not alive(unit) or unit:character_damage()._dead) then
+					break
+				end
 			end
 			hitmarker:set_visible(false)
 			self._hit_direction_panel:remove(hitmarker)
+			self.indicator_count = self.indicator_count - 1
 		end
 	end
 	
@@ -94,7 +98,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if not mobPos then
 			mobPos = managers.player:player_unit():position()
 		end
-		self._hud_hit_direction:new_hitmarker(mobPos, damage_type)
+		self._hud_hit_direction:new_hitmarker(mobPos, damage_type, data.attacker_unit)
 	end
 elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 	local PlayerDamage_damage_bullet = PlayerDamage.damage_bullet
@@ -103,9 +107,10 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 	local PlayerDamage_damage_explosion = PlayerDamage.damage_explosion
 	local PlayerDamage_damage_fire = PlayerDamage.damage_fire
 	
+	--Triggers 3x when hit once, like all the damage functions here...
 	function PlayerDamage:damage_bullet(attack_data)
 		PlayerDamage_damage_bullet(self, attack_data)
-		if self:_chk_can_take_dmg() and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated()) then
+		if self:_chk_dmg_too_soon(attack_data.damage) and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated()) then
 			self:showHitmarker(attack_data, self:is_friendly_fire(attack_data.attacker_unit) and HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE )
 		end
 	end

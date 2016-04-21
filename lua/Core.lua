@@ -137,6 +137,7 @@ if not _G.WolfHUD then
 			show_dmg_indicator				= true,
 			dmg_ind_size					= 150,
 			dmg_ind_time					= 2,
+			dmg_indicator_max_count			= 10,
 			dmg_shield_color				= "gray",
 			dmg_health_color				= "red",
 			dmg_crit_color					= "purple",

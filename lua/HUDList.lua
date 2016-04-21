@@ -2079,8 +2079,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDList.UsedPagersItem:set_count(num)
 		HUDList.UsedPagersItem.super.set_count(self, num)
 		
-		if self._count >= 5 then
-			self._text:set_color(Color.red)
+		if self._count >= 4 then
+			self._text:set_color(Color(1, 0.2, 0))
 		end
 	end
 	
