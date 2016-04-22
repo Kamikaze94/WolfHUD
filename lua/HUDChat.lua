@@ -351,7 +351,7 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 	end
 	
 	function HUDChat:_animate_fade_output()
-		local wait_t = WolfHUD.getSetting("CHAT_WAIT_TIME", "number")
+		local wait_t = WolfHUD:getSetting("CHAT_WAIT_TIME", "number")
 		local fade_t = 1
 		if wait_t <= 0 then return end
 		local t = 0

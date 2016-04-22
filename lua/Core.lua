@@ -360,6 +360,9 @@ Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", 
 	end
 	
 	local loot_int_table = {
+		["debug_interact_money_wrap_take_money"] = "",
+		["debug_interact_money_printed_take_money"] = "",
+		["debug_interact_gold_pile_take_money"] = "",
 		["hud_int_hold_take_painting"] = "", 
 		["hud_int_hold_take_server"] = "", 
 		["hud_int_hold_steal_meth"] = "", 
