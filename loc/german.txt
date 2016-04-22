@@ -39,7 +39,7 @@
 	"WolfHUD_options_help" : "Passe deine WolfHUD Einstellungen deinem Geschmack an.",
 	
 	"wolfhud_adv_assault_title" : "Erweitertes Angiffs Banner",
-	"wolfhud_adv_assault_desc" : "Zeige die Phase des Angriffs, sowie die verbleibende Zeit und Spawns.\n(Host Only)",
+	"wolfhud_adv_assault_desc" : "Zeige die Phase des Angriffs, sowie die verbleibende Zeit und Spawns.\n(Nur Host)",
 	"wolfhud_skip_blackscreen_title" : "Übersprige schwarzen Bildschirm",
 	"wolfhud_skip_blackscreen_desc" : "Überspringt den schwarzen Bildschirm beim Missionsstart.\n(Nur Host)",
 	"wolfhud_stat_screen_delay_title" : "Statistik Bildschirm Verzögerung",

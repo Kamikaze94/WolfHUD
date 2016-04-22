@@ -358,6 +358,33 @@ Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", 
 			["hud_skip_blackscreen"] = ""
 		})
 	end
+	
+	local loot_int_table = {
+		["hud_int_hold_take_painting"] = "", 
+		["hud_int_hold_take_server"] = "", 
+		["hud_int_hold_steal_meth"] = "", 
+		["hud_int_hold_take_reaktor"] = "", 
+		["hud_int_hold_take_cocaine"] = "", 
+		["hud_int_hold_take_artifact"] = "", 
+		["hud_int_hold_take_jewelry"] = "", 
+		["hud_int_hold_take_meth"] = "", 
+		["hud_int_hold_pack_shells"] = "", 
+		["hud_int_hold_bag_sa_armor"] = "", 
+		["hud_int_hold_take_pure_cocaine"] = "", 
+		["hud_int_hold_take_sandwich"] = "", 
+		["hud_int_hold_take_evidence"] = "", 
+		["hud_int_hold_take_warhead"] = "", 
+		["hud_int_hold_take_safe"] = "", 
+		["hud_int_hold_take_pig"] = "", 
+		["hud_int_hold_take_prototype"] = "", 
+		["hud_int_hold_take_counterfeit_money"] = "", 
+		["hud_int_hold_bag_present"] = "", 
+		["hud_int_hold_grab_goat"] = ""
+	}
+	for string_id, __ in pairs(loot_int_table) do
+		loot_int_table[string_id] = loc:text(string_id, {BTN_INTERACT = "$BTN_INTERACT"}) .. "$VALUE"
+	end
+	loc:add_localized_strings(loot_int_table)
 end)
 
 Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(menu_manager)
@@ -448,3 +475,27 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_killcounter.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", WolfHUD, settings)
 end)
+--[[
+Hooks:Add("MenuManagerPostInitialize", "MenuManagerPostInitialize_WolfHUD", function(menu_manager)
+	for __, menu_id in ipairs(WolfHUD.menu_ids) do
+		local menu = MenuHelper:GetMenu(menu_id)
+		for __, menu_item in ipairs(menu._items) do
+			if menu_item._type == "multiple_choice" and #menu_item._options <= 0 then
+				menu_item:clear_options()
+				for id, data in ipairs(WolfHUD.color_table) do
+					menu_item:add_option(CoreMenuItemOption.ItemOption:new({
+						_meta = "option",
+						text_id = "wolfhud_color_" .. (data.name or "unknown"),
+						value = data.name,
+						localize = true
+					}))
+				end
+				local item_id = menu_item:parameters().name
+				local value = WolfHUD:getSetting(tostring(item_id), "string")
+				menu_item:set_value(value)
+			end
+		end
+	end
+	managers.viewport:resolution_changed()
+end)
+]]
