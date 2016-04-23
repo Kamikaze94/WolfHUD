@@ -223,9 +223,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		if status then
 			self._old_text = self._hud_panel:child(self._child_name_text):text()
 			local type = managers.controller:get_default_wrapper_type()
-			local interact_key  = managers.controller:get_settings(type):get_connection("interact"):get_input_name_list()[1] or "f"
-			local equipment_key = managers.controller:get_settings(type):get_connection("use_item"):get_input_name_list()[1] or "g"
-			local locked_text = managers.localization:to_upper_text("wolfhud_int_locked", {BTN = (PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and equipment_key or interact_key)})
+			local locked_text = managers.localization:to_upper_text("wolfhud_int_locked", {BTN_CANCEL = (PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and managers.localization:btn_macro("use_item", true) or managers.localization:btn_macro("interact", true))})
 			self._hud_panel:child(self._child_name_text):set_text(locked_text)
 		end
 	end
@@ -284,6 +282,7 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 	function BaseInteractionExt:_add_string_macros(macros)
 		_add_string_macros_original(self, macros)
 		if self._unit:carry_data() then
+			macros.BTN_INTERACT = macros.BTN_INTERACT or managers.localization:get_default_macro("BTN_INTERACT") --Ascii ID for RB
 			macros.BAG = managers.localization:text(tweak_data.carry[self._unit:carry_data():carry_id()].name_id)
 			macros.VALUE = not tweak_data.carry[self._unit:carry_data():carry_id()].skip_exit_secure and " (" .. managers.experience:cash_string(self:get_unsecured_bag_value(self._unit:carry_data():carry_id(), 1)) .. ")" or ""
 		end

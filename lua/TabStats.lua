@@ -1199,15 +1199,19 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			local day_wrapper_panel = right_panel:child("day_wrapper_panel")
 			if not day_wrapper_panel then return end
 			if day_wrapper_panel:child("lpi_team_text_name1") then
-				local y = day_wrapper_panel:child("total_revives_text"):bottom() + 10
+				local w = day_wrapper_panel:child("total_revives_text"):w() + 5
 				for i = 1, 4 do
+					local x = day_wrapper_panel:child("total_revives_text"):x() + math.mod(i+1, 2) * w
+					local y = day_wrapper_panel:child("total_revives_text"):bottom() + 15 + math.floor(i/3) * 70
 					local labels = { "lpi_team_text_name" .. tostring(i), "lpi_team_text_skills" .. tostring(i), "lpi_team_text_perk" .. tostring(i) }
 					for j, lbl in ipairs(labels) do
 						local lpi_panel = day_wrapper_panel:child(lbl)
 						if lpi_panel then
+							lpi_panel:set_x(x)
 							lpi_panel:set_y(y)
+							lpi_panel:set_w(w)
 						else
-							WolfHUD:print_log("Hook 'WolfHUD_LPI_Compatability' (TabStats.lua:1161), panel not found: " .. lbl )
+							WolfHUD:print_log("Hook 'WolfHUD_LPI_Compatability' (TabStats.lua), panel not found: " .. lbl )
 						end
 						y = y + 20
 					end
