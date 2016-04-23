@@ -3,12 +3,9 @@
 	"menu_risk_elite" : "Todeswunsch. Ungeheuer viel ERF und Bargeld.",
 	"menu_difficulty_apocalypse" : "Todeswunsch",
 	"cash_sign" : "\194\128",
-	"hud_int_hold_grab_the_bag" : "Halte $BTN_INTERACT zum Aufheben von $BAG$VALUE",
-	"hud_int_hold_grab_the_painting" : "Halte $BTN_INTERACT zum Aufheben von $BAG$VALUE",
-	"hud_int_hold_take_safe" : "Halte $BTN_INTERACT zum Aufheben von $BAG$VALUE",
-	"hud_int_hold_grab_goat" : "Halte $BTN_INTERACT zum Aufheben von $BAG$VALUE",
+	"hud_int_hold_grab_the_bag" : "Halte $BTN_INTERACT um $BAG zu nehmen",
 	
-	"wolfhud_int_locked" : "DRÜCKE [$BTN] UM ABZUBRECHEN",
+	"wolfhud_int_locked" : "DRÜCKE $BTN_CANCEL UM ABZUBRECHEN",
 	"menu_buy_all_assets" : "Kaufe Alles",
 	"menu_buy_all_assets_desc" : "Kaufe alle Vorteile, die du erwerben kannst.",
 	
