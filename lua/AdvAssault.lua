@@ -1,20 +1,21 @@
 if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	local init_original = HUDAssaultCorner.init
 	local _start_assault_original = HUDAssaultCorner._start_assault
+	local sync_set_assault_mode_original = HUDAssaultCorner.sync_set_assault_mode
 	 
 	function HUDAssaultCorner:init(...)
 		init_original(self, ...)
-				   
+		
 		local assault_panel = self._hud_panel:child("assault_panel")
-		assault_panel:set_center_x(self._hud_panel:center_x() - 65)
+		assault_panel:set_right(self._hud_panel:w() / 2 + 133)
 		local buffs_panel = self._hud_panel:child("buffs_panel")
-		buffs_panel:set_x(assault_panel:x() - buffs_panel:w() - 5)
-				   
+		buffs_panel:set_x(assault_panel:left() + self._bg_box:left() - 3 - 200)
+		
 		local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
-		point_of_no_return_panel:set_center_x(self._hud_panel:center_x() - 65)
-				   
+		point_of_no_return_panel:set_right(self._hud_panel:w() / 2 + 133)
+		
 		local casing_panel = self._hud_panel:child("casing_panel")
-		casing_panel:set_center_x(self._hud_panel:center_x() - 65)
+		casing_panel:set_right(self._hud_panel:w() / 2 + 133)
 	end
 
 	function HUDAssaultCorner:show_point_of_no_return_timer()
@@ -45,6 +46,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 			end
 		end
 		return _start_assault_original(self, text_list, ...)
+	end
+	
+	function HUDAssaultCorner:sync_set_assault_mode(mode)
+		log(mode)
+		sync_set_assault_mode_original(self, mode)
 	end
 	
 	function HUDAssaultCorner:locked_assault(status)

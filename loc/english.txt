@@ -113,6 +113,12 @@
 	
 	"wolfhud_use_hudlist_title" : "Use HUDList",
 	"wolfhud_use_hudlist_desc" : "HUDList can display many useful things, incl. Drill timers, enemy or loot count, assets on the map, etc. (A Map change is needed to apply...)",
+	"wolfhud_hudlist_scale_right_title" : "Right List Scale",
+	"wolfhud_hudlist_scale_right_desc" : "Scaling factor of the right list items.",
+	"wolfhud_hudlist_scale_left_title" : "Left List Scale",
+	"wolfhud_hudlist_scale_left_desc" : "Scaling factor of the left list items.",
+	"wolfhud_hudlist_scale_buff_title" : "Buff List Scale",
+	"wolfhud_hudlist_scale_buff_desc" : "Scaling factor of the buff list items.",
 	"wolfhud_hudlist_box_color_title" : "Box Font Color",
 	"wolfhud_hudlist_box_color_desc" : "Front color for Left- and Right List Boxes.\n(Currently a Map change is needed to apply...)",
 	"wolfhud_hudlist_box_bg_color_title" : "Box Background Color",
@@ -121,7 +127,7 @@
 	"wolfhud_hudlist_civcolor_desc" : "Color for Civilians and Hostages in EnemyCounter.\n(Currently a Map change is needed to apply...)",
 	"wolfhud_hudlist_thugcolor_title" : "Thug Color",
 	"wolfhud_hudlist_thugcolor_desc" : "Color for Thugs and Mobsters in EnemyCounter.\n(Currently a Map change is needed to apply...)",
-	"wolfhud_hudlist_copcolor_title" : "enemy Color",
+	"wolfhud_hudlist_copcolor_title" : "Enemy Color",
 	"wolfhud_hudlist_copcolor_desc" : "Color for Cops, Specials and Turrets in EnemyCounter.\n(Currently a Map change is needed to apply...)",
 	
 	

@@ -1164,7 +1164,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 				local bag_text_gotten = mission_bags_panel:text({
 					name = "bag_amount",
 					text = " x" .. tostring(mission_amount),
-					font = tweak_data.menu.pd2_small_font,
 					font = tweak_data.menu.pd2_small_font
 				})
 				managers.hud:make_fine_text(bag_text_gotten)
@@ -1183,7 +1182,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			local bag_text = bonus_bags_panel:text({
 				name = "bag_amount",
 				text = " x" .. tostring(bonus_amount),
-				font = tweak_data.menu.pd2_small_font,
 				font = tweak_data.menu.pd2_small_font
 			})
 			managers.hud:make_fine_text(bag_text)
@@ -1199,17 +1197,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			local day_wrapper_panel = right_panel:child("day_wrapper_panel")
 			if not day_wrapper_panel then return end
 			if day_wrapper_panel:child("lpi_team_text_name1") then
-				local w = day_wrapper_panel:child("total_revives_text"):w() + 5
+				local y = day_wrapper_panel:child("total_revives_text"):bottom() + 10
 				for i = 1, 4 do
-					local x = day_wrapper_panel:child("total_revives_text"):x() + math.mod(i+1, 2) * w
-					local y = day_wrapper_panel:child("total_revives_text"):bottom() + 15 + math.floor(i/3) * 70
 					local labels = { "lpi_team_text_name" .. tostring(i), "lpi_team_text_skills" .. tostring(i), "lpi_team_text_perk" .. tostring(i) }
 					for j, lbl in ipairs(labels) do
 						local lpi_panel = day_wrapper_panel:child(lbl)
 						if lpi_panel then
-							lpi_panel:set_x(x)
 							lpi_panel:set_y(y)
-							lpi_panel:set_w(w)
 						else
 							WolfHUD:print_log("Hook 'WolfHUD_LPI_Compatability' (TabStats.lua), panel not found: " .. lbl )
 						end

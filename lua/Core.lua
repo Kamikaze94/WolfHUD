@@ -179,6 +179,9 @@ if not _G.WolfHUD then
 			show_buffs 						= 1,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
 			
 			use_hudlist 					= true,
+			hudlist_right_scale				= 1,
+			hudlist_left_scale				= 1,
+			hudlist_buff_scale				= 1,
 			hud_box_color 					= "white",		--Left and Right List font color
 			hud_box_bg_color 				= "black",		--Left and Right List BG color
 			civilian_color 					= "white", 		--EnemyCounter Civillian and Hostage icon color
@@ -217,8 +220,7 @@ if not _G.WolfHUD then
 			
 			show_advanced_assault			= true,
 			replace_weapon_names 			= true,
-			enable_burstmode				= true,
-			use_federal_inventory 			= true
+			enable_burstmode				= true
 		}
 	end
 	

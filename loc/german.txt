@@ -116,6 +116,12 @@
 	
 	"wolfhud_use_hudlist_title" : "Benutze HUDList",
 	"wolfhud_use_hudlist_desc" : "HUDList kann viele nützliche Dinge anzeigen, wie zum Beispiel Bohrerzeiten, Gegner oder Loot Zähler, Equipment auf der Karte, etc. (Wird erst beim Mapwechsel aktiv...)",
+	"wolfhud_hudlist_scale_right_title" : "Skalierung Liste rechts",
+	"wolfhud_hudlist_scale_right_desc" : "Skalierungsfaktor für Boxen der rechten Liste.",
+	"wolfhud_hudlist_scale_left_title" : "Skalierung Liste links",
+	"wolfhud_hudlist_scale_left_desc" : "Skalierungsfaktor für Boxen der linken Liste.",
+	"wolfhud_hudlist_scale_buff_title" : "Skalierung Buff Liste",
+	"wolfhud_hudlist_scale_buff_desc" : "Skalierungsfaktor für Boxen der Buff Liste.",
 	"wolfhud_hudlist_box_color_title" : "Box Vordergrund Farbe",
 	"wolfhud_hudlist_box_color_desc" : "Vordergrund und Schriftfarbe der Info Boxen.\n(Wird erst beim Mapwechsel aktiv...)",
 	"wolfhud_hudlist_box_bg_color_title" : "Box Hintergrund Farbe",
