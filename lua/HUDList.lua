@@ -171,6 +171,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		hydrogen_chloride =					"meth_ingredients",
 		caustic_soda =						"meth_ingredients",
 		gen_pku_blow_torch =				"blowtorch",
+		drk_pku_blow_torch = 				"blowtorch",
 		gen_pku_thermite = 					"thermite",
 		gen_pku_thermite_paste = 			"thermite",
 		hold_take_gas_can = 				"thermite",
@@ -180,6 +181,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		cas_chips_pile = 					"small_loot",
 		diamond_pickup = 					"small_loot",
 		diamond_pickup_pal = 				"small_loot",
+		ring_band = 						"small_loot",
 		safe_loot_pickup = 					"small_loot",
 	}
 	
@@ -225,6 +227,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		weapon_glock =				"weapon",
 		weapon_scar =				"weapon",
 	}
+	
+	if Global.game_settings.level_id == "mad" then --Don't show Bodybags as loot on other missions...
+		HUDListManager.LOOT_TYPES.person = "body"
+	end
 	
 	function HUDListManager:init()
 		self._lists = {}
@@ -2130,6 +2136,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		turret =		{ text = "Turret" },
 		warhead =		{ text = "Warhead" },
 		weapon =		{ text = "Weapon" },
+		body = 			{ text = "Body" },
 	}
 	function HUDList.LootItem:init(parent, name, loot_data)
 		local loot_data = loot_data or HUDList.LootItem.MAP[name]

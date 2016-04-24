@@ -260,24 +260,23 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	ChatManager._BLOCK_PATTERNS = {
 	  ".-[NGBTO]:.+",
 	  --NGBTO info blocker Should work since its mass spam.
-	  "[%d:]+[%d]+.+"
+	  "(%d%d:)+%d%d.+"
 	  --Blocks anything, that starts with numbers and ':' and then has a divider (Might block other mods, not only Poco...)
 	}
 
 	local _receive_message_original = ChatManager._receive_message
 
 	function ChatManager:_receive_message(channel_id, name, message, ...)
-			for key, subst in pairs(ChatManager._SUB_TABLE) do
-					message2 = message:gsub(key, subst)
+		local message2 = message
+		for key, subst in pairs(ChatManager._SUB_TABLE) do
+				message2 = message:gsub(key, subst)
+		end
+		for _, pattern in ipairs(ChatManager._BLOCK_PATTERNS) do
+			if message2:match("^" .. pattern .. "$") then
+				return
 			end
-
-			for _, pattern in ipairs(ChatManager._BLOCK_PATTERNS) do
-					if message2:match("^" .. pattern .. "$") then
-							return
-					end
-			end
-
-			return _receive_message_original(self, channel_id, name, message, ...)
+		end
+		return _receive_message_original(self, channel_id, name, message, ...)
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 	local function expect_yes(self, params) params.yes_func() end

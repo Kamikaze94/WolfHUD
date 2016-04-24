@@ -143,10 +143,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 
 	end )
 
-	function HUDManager:set_unit_health_visible( visible )
-		if not WolfHUD:getSetting("show_enemy_healthbar", "boolean") then return end
-		
-		if visible == true and not self._unit_health_visible then
+	function HUDManager:set_unit_health_visible( visible )		
+		if visible == true and not self._unit_health_visible and WolfHUD:getSetting("show_enemy_healthbar", "boolean") then
 		
 			self._unit_health_visible = true
 			self._unit_health_enemy_location:set_visible(WolfHUD:getSetting("show_healthbar_pointer", "boolean"))
