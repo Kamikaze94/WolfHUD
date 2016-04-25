@@ -3,7 +3,7 @@ if not _G.WolfHUD then
 	WolfHUD.mod_path = ModPath
 	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
 	WolfHUD.DEBUG_MODE = false
-	WolfHUD.version = ""
+	WolfHUD.version = "1.0"
 	WolfHUD.menu_ids = { 
 		"wolfhud_options_menu", 
 		"wolfhud_teampanels_options_menu", 
@@ -337,6 +337,12 @@ if RequiredScript then
 	end
 end
 
+Hooks:PostHook( MenuNodeMainGui , "_setup_item_rows" , "MenuNodeMainGuiPostSetupItemRows_WolfHUD" , function( self )
+	if alive(self._version_string) then
+		self._version_string:set_text("Payday 2 v" .. Application:version() .. " | WolfHUD v" .. WolfHUD.version)
+	end
+end)
+
 Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", function(loc)
 	if _G.PD2KR then
 		loc:load_localization_file(WolfHUD.mod_path .. "loc/korean.txt")
@@ -482,6 +488,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_killcounter.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", WolfHUD, settings)
 end)
+
 --[[
 Hooks:Add("MenuManagerPostInitialize", "MenuManagerPostInitialize_WolfHUD", function(menu_manager)
 	for __, menu_id in ipairs(WolfHUD.menu_ids) do
