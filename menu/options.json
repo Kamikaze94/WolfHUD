@@ -1,8 +1,8 @@
 {
 	"menu_id" : "wolfhud_options_menu",
 	"parent_menu_id" : "lua_mod_options_menu",
-	"title" : "WolfHUD_options_name",
-	"description" : "WolfHUD_options_help",
+	"title" : "wolfhud_options_name",
+	"description" : "wolfhud_options_help",
 	"back_callback" : "WolfHUD_Save",
 	"items" : [
 		{

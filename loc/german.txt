@@ -32,8 +32,8 @@
 	"wolfhud_colors_rainbow" : "Regenbogen",
 	
 	
-	"WolfHUD_options_name" : "WolfHUD Einstellungen",
-	"WolfHUD_options_help" : "Passe deine WolfHUD Einstellungen deinem Geschmack an.",
+	"wolfhud_options_name" : "WolfHUD Einstellungen",
+	"wolfhud_options_help" : "Passe deine WolfHUD Einstellungen deinem Geschmack an.",
 	
 	"wolfhud_adv_assault_title" : "Erweitertes Angiffs Banner",
 	"wolfhud_adv_assault_desc" : "Zeige die Phase des Angriffs, sowie die verbleibende Zeit und Spawns.\n(Nur Host)",

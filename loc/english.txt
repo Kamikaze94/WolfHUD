@@ -29,8 +29,8 @@
 	"wolfhud_colors_rainbow" : "Rainbow",
 	
 	
-	"WolfHUD_options_name" : "WolfHUD Settings",
-	"WolfHUD_options_help" : "Customize WolfHUD with your personal preferences.",
+	"wolfhud_options_name" : "WolfHUD Settings",
+	"wolfhud_options_help" : "Customize WolfHUD with your personal preferences.",
 	
 	"wolfhud_adv_assault_title" : "Advanced Assault Banner",
 	"wolfhud_adv_assault_desc" : "Show assault phase, time and spawns left during assault.\n(Host Only)",

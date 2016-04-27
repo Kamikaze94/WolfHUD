@@ -1190,30 +1190,66 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		end
 	end
 		
-	Hooks:PostHook( HUDStatsScreen, "show", "WolfHUD_LPI_Compatability", function(self)
+	Hooks:PostHook( HUDStatsScreen, "init", "WolfHUD_LPI_Compatability", function(self)
 		if _G.LobbyPlayerInfo and LobbyPlayerInfo.settings.show_skills_in_stats_screen then
 			local right_panel = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel")
-			if not right_panel then return end
-			local day_wrapper_panel = right_panel:child("day_wrapper_panel")
-			if not day_wrapper_panel then return end
-			if day_wrapper_panel:child("lpi_team_text_name1") then
-				local y = day_wrapper_panel:child("total_revives_text"):bottom() + 10
-				for i = 1, 4 do
-					local labels = { "lpi_team_text_name" .. tostring(i), "lpi_team_text_skills" .. tostring(i), "lpi_team_text_perk" .. tostring(i) }
-					for j, lbl in ipairs(labels) do
-						local lpi_panel = day_wrapper_panel:child(lbl)
-						if lpi_panel then
-							lpi_panel:set_y(y)
-						else
-							WolfHUD:print_log("Hook 'WolfHUD_LPI_Compatability' (TabStats.lua), panel not found: " .. lbl )
-						end
-						y = y + 20
-					end
-				end
-				Hooks:RemovePostHook( "WolfHUD_LPI_Compatability" )
+			local dwp = right_panel and right_panel:child("day_wrapper_panel")
+			if not dwp then
+				return
+			end
+			
+			local y = math.round(dwp:child("total_revives_text"):bottom() + 10)
+			for i = 1, 4 do
+				local txt_name = "lpi_team_text_name" .. tostring(i)
+				local name_text = dwp:child(txt_name) or dwp:text({
+					name = txt_name,
+					text = "",
+					align = "left",
+					vertical = "top",
+					blend_mode = "add",
+					font_size = tweak_data.menu.pd2_small_font_size,
+					font = tweak_data.menu.pd2_small_font,
+					color = tweak_data.chat_colors[i],
+					w = right_panel:w(),
+					x = 0,
+					y = y
+				})
+				
+				txt_name = "lpi_team_text_skills" .. tostring(i)
+				local skill_text = dwp:child(txt_name) or dwp:text({
+					name = txt_name,
+					text = "",
+					align = "left",
+					vertical = "top",
+					blend_mode = "add",
+					font_size = tweak_data.menu.pd2_small_font_size - 4,
+					font = tweak_data.menu.pd2_small_font,
+					color = tweak_data.screen_colors.text,
+					w = right_panel:w(),
+					x = 10,
+					y = y + 20
+				})
+
+				txt_name = "lpi_team_text_perk" .. tostring(i)
+				local perk_text = dwp:child(txt_name) or dwp:text({
+					name = txt_name,
+					text = "",
+					align = "left",
+					vertical = "top",
+					blend_mode = "add",
+					font_size = tweak_data.menu.pd2_small_font_size - 4,
+					font = tweak_data.menu.pd2_small_font,
+					color = tweak_data.screen_colors.text,
+					w = right_panel:w(),
+					x = 10,
+					y = y + 38
+				})
+				y = math.round(name_text:top() + 60)
 			end
 		end
+		--Hooks:RemovePostHook( "WolfHUD_LPI_Compatability" )
 	end )
+	
 elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 	local _on_damage_received_original = CopDamage._on_damage_received
 
