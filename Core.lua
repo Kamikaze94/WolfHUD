@@ -392,7 +392,8 @@ Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", 
 		["hud_int_hold_take_prototype"] = "", 
 		["hud_int_hold_take_counterfeit_money"] = "", 
 		["hud_int_hold_bag_present"] = "", 
-		["hud_int_hold_grab_goat"] = ""
+		["hud_int_hold_grab_goat"] = "",
+		["hud_action_disassemble_cro_loot"] = ""
 	}
 	for string_id, __ in pairs(loot_int_table) do
 		loot_int_table[string_id] = loc:text(string_id, {BTN_INTERACT = "$BTN_INTERACT"}) .. "$VALUE"

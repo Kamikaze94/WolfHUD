@@ -1,6 +1,7 @@
 if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
 	PlayerStandard.NADE_TIMEOUT = 0.25																	--Timeout for 2 NadeKey pushes, to prevent accidents in stealth
 
+	local enter_original = PlayerStandard.enter
 	local _update_interaction_timers_original = PlayerStandard._update_interaction_timers
 	local _check_action_interact_original = PlayerStandard._check_action_interact
 	local _start_action_reload_original = PlayerStandard._start_action_reload
@@ -53,10 +54,25 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 		end
 	end
 	
+	local hide_reload_state = {
+		["bleed_out"] = true,
+		["fatal"] = true,
+		["incapacitated"] = true,
+		["arrested"] = true,
+		["jerry1"] = true
+	}
+	function PlayerStandard:enter(state_data, enter_data)
+		enter_original(self, state_data, enter_data)
+		if self._state_data._reload and hide_reload_state[managers.player:current_state()] then
+			managers.hud:hide_interaction_bar(false)
+			self._state_data._reload = false
+		end
+	end
+	
 	function PlayerStandard:_start_action_reload(t)
 		_start_action_reload_original(self, t)
 		PlayerStandard.SHOW_RELOAD = WolfHUD:getSetting("SHOW_RELOAD", "boolean")
-		if PlayerStandard.SHOW_RELOAD and managers.player:current_state() ~= "bleed_out" then
+		if PlayerStandard.SHOW_RELOAD and not hide_reload_state[managers.player:current_state()] then
 			if self._equipped_unit and not self._equipped_unit:base():clip_full() then
 				self._state_data._reload = true
 				managers.hud:show_interaction_bar(0, self._state_data.reload_expire_t or 0)
@@ -68,8 +84,9 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	function PlayerStandard:_update_reload_timers(t, dt, input)
 		_update_reload_timers_original(self, t, dt, input)
 		if PlayerStandard.SHOW_RELOAD then
-			if self._state_data._reload and managers.player:current_state() == "bleed_out" then
+			if self._state_data._reload and hide_reload_state[managers.player:current_state()] then
 				managers.hud:hide_interaction_bar(false)
+				self._state_data._reload = false
 			elseif not self._state_data.reload_expire_t and self._state_data._reload then
 				managers.hud:hide_interaction_bar(true)
 				self._state_data._reload = false
