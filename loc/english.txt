@@ -28,6 +28,19 @@
 	"wolfhud_colors_black" : "Black",
 	"wolfhud_colors_rainbow" : "Rainbow",
 	
+	"wolfhud_tabstats_total_damage" : "Total Damage:",
+	"wolfhud_tabstats_tanks_killed" : "Bulldozers killed:",
+	"wolfhud_tabstats_cloakers_killed" : "Cloakers killed:",
+	"wolfhud_tabstats_shields_killed" : "Shields killed:",
+	"wolfhud_tabstats_snipers_killed" : "Snipers killed:",
+	"wolfhud_tabstats_tasers_killed" : "Tasers killed:",
+	"wolfhud_tabstats_gensec_killed" : "GENSEC killed:",
+	"wolfhud_tabstats_melee_kills" : "Melee Kills:",
+	"wolfhud_tabstats_explosion_kills" : "Explosion Kills:",
+	"wolfhud_tabstats_nonspecial_kills" : "Non Special Kills:",
+	"wolfhud_tabstats_total_revives" : "Total Revives (P/AI):",
+	"wolfhud_tabstats_alltime_stat" : "All Time:",
+	
 	
 	"wolfhud_options_name" : "WolfHUD Settings",
 	"wolfhud_options_help" : "Customize WolfHUD with your personal preferences.",

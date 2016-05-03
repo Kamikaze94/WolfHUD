@@ -31,6 +31,19 @@
 	"wolfhud_colors_black" : "Schwarz",
 	"wolfhud_colors_rainbow" : "Regenbogen",
 	
+	"wolfhud_tabstats_total_damage" : "Schaden gesamt:",
+	"wolfhud_tabstats_tanks_killed" : "Bulldozer getötet:",
+	"wolfhud_tabstats_cloakers_killed" : "Cloaker getötet:",
+	"wolfhud_tabstats_shields_killed" : "Schilde getötet:",
+	"wolfhud_tabstats_snipers_killed" : "Sniper getötet:",
+	"wolfhud_tabstats_tasers_killed" : "Taser getötet:",
+	"wolfhud_tabstats_gensec_killed" : "GENSEC getötet:",
+	"wolfhud_tabstats_melee_kills" : "Nahkampf Kills:",
+	"wolfhud_tabstats_explosion_kills" : "Explosions Kills:",
+	"wolfhud_tabstats_nonspecial_kills" : "Normale Kills:",
+	"wolfhud_tabstats_total_revives" : "Wiederbelebung (P/AI):",
+	"wolfhud_tabstats_alltime_stat" : "Insgesamt:",
+	
 	
 	"wolfhud_options_name" : "WolfHUD Einstellungen",
 	"wolfhud_options_help" : "Passe deine WolfHUD Einstellungen deinem Geschmack an.",

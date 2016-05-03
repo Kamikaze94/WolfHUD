@@ -98,6 +98,22 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		if managers.job:is_current_job_professional() then
 			day_wrapper_panel:child("day_title"):set_color(Color.red)
 		end
+		local blank1 = day_wrapper_panel:text({
+			layer = 0,
+			x =  0,
+			y = 0,
+			name = "blank1",
+			color = Color.white,
+			font_size = 18,
+			font = tweak_data.menu.pd2_small_font,
+			text = "",
+			align = "right",
+			vertical = "top",
+			w = 2*(day_wrapper_panel:w()/3),
+			h = 18
+		})
+		blank1:set_y(math.round(day_wrapper_panel:child("day_title"):bottom()))
+		
 		local paygrade_text = day_wrapper_panel:text({
 			layer = 0,
 			x =  0,
@@ -109,7 +125,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			text = "0",
 			align = "right",
 			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
+			w = 2*(day_wrapper_panel:w()/3),
 			h = 18
 		})
 		
@@ -121,10 +137,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color.white,
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "DIFFICULTY:",
+			text = managers.localization:to_upper_text("menu_lobby_difficulty_title"),
 			align = "left",
 			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
+			w = 2*(day_wrapper_panel:w()/3),
 			h = 18
 		})
 		local job_stars = managers.job:current_job_stars()
@@ -133,39 +149,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		local difficulty = tweak_data.difficulties[difficulty_stars + 2] or 1
 		local difficulty_string_id = tweak_data.difficulty_name_ids[difficulty]
 		paygrade_text:set_text(managers.localization:to_upper_text(difficulty_string_id))
-		paygrade_text:set_y(math.round(day_wrapper_panel:child("day_title"):bottom()))
+		paygrade_text:set_y(math.round(blank1:bottom()))
 		paygrade_title:set_top(paygrade_text:top())
-		local day_payout_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "day_payout_text",
-			color = Color.white,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "0",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local day_payout_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "day_payout_title",
-			color = Color.white,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "PAYOUT:",
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		day_payout_text:set_text(managers.experience:cash_string(0))
-		day_payout_text:set_y(math.round(paygrade_text:bottom()))
-		day_payout_title:set_top(day_payout_text:top())
 		local offshore_payout_text = day_wrapper_panel:text({
 			layer = 0,
 			x =  0,
@@ -177,7 +162,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			text = "0",
 			align = "right",
 			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
+			w = 2*(day_wrapper_panel:w()/3),
 			h = 18
 		})
 		local offshore_payout_title = day_wrapper_panel:text({
@@ -188,13 +173,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color.white,
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "OFFSHORE PAYOUT:",
+			text = managers.localization:to_upper_text("hud_offshore_account") .. ":",
 			align = "left",
 			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
+			w = 2*(day_wrapper_panel:w()/3),
 			h = 18
 		})
-		offshore_payout_text:set_y(math.round(day_payout_text:bottom()))
+		offshore_payout_text:set_y(math.round(paygrade_text:bottom()))
 		offshore_payout_title:set_top(offshore_payout_text:top())
 		local cleaner_costs_text = day_wrapper_panel:text({
 			layer = 0,
@@ -207,7 +192,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			text = "0",
 			align = "right",
 			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
+			w = 2*(day_wrapper_panel:w()/3),
 			h = 18
 		})	
 		local cleaner_costs_title = day_wrapper_panel:text({
@@ -218,10 +203,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color.white,
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "CLEANER COSTS:",
+			text = managers.localization:to_upper_text("victory_civilians_killed_penalty"),
 			align = "left",
 			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
+			w = 2*(day_wrapper_panel:w()/3),
 			h = 18
 		})
 		cleaner_costs_text:set_y(math.round(offshore_payout_text:bottom()))
@@ -237,7 +222,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			text = "0",
 			align = "right",
 			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
+			w = 2*(day_wrapper_panel:w()/3),
 			h = 18
 		})
 		local spending_cash_title = day_wrapper_panel:text({
@@ -248,20 +233,20 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color.white,
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "SPENDING CASH:",
+			text = managers.localization:to_upper_text("hud_instant_cash") .. ":",
 			align = "left",
 			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-				h = 18
+			w = 2*(day_wrapper_panel:w()/3),
+			h = 18
 		})
 		spending_cash_text:set_y(math.round(cleaner_costs_text:bottom()))
 		spending_cash_title:set_top(spending_cash_text:top())
 
-		local blank = day_wrapper_panel:text({
+		local blank2 = day_wrapper_panel:text({
 			layer = 0,
 			x =  0,
 			y = 0,
-			name = "blank",
+			name = "blank2",
 			color = Color.white,
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
@@ -271,7 +256,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			w = day_wrapper_panel:w()/2-5,
 			h = 18
 		})
-		blank:set_y(math.round(spending_cash_text:bottom()))
+		blank2:set_y(math.round(spending_cash_text:bottom()))
 		local accuracy_text = day_wrapper_panel:text({
 			layer = 0,
 			x =  0,
@@ -294,13 +279,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color.white,
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "ACCURACY:",
+			text = managers.localization:to_upper_text("victory_hit_accuracy"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
 			h = 18
 		})
-		accuracy_text:set_y(math.round(blank:bottom()))
+		accuracy_text:set_y(math.round(blank2:bottom()))
 		accuracy_title:set_top(accuracy_text:top())
 		local total_damage_text = day_wrapper_panel:text({
 			layer = 0,
@@ -324,7 +309,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0.69, 0.19, 0.38),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "TOTAL DAMAGE:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_total_damage"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -354,7 +339,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color.red,
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "BULLDOZERS KILLED:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_tanks_killed"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -382,7 +367,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color.red,
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "ALL TIME:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -417,7 +402,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color.green,
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "CLOAKERS KILLED:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_cloakers_killed"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -445,7 +430,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color.green,
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "ALL TIME:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -480,7 +465,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color.yellow,
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "SHIELDS KILLED:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_shields_killed"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -508,7 +493,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color.yellow,
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "ALL TIME:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -543,7 +528,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0.67, 0.84, 0.90),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "SNIPERS KILLED:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_snipers_killed"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -571,7 +556,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0.67, 0.84, 0.90),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "ALL TIME:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -606,7 +591,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0, 0.55, 0.55),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "TASERS KILLED:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_tasers_killed"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -634,7 +619,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0, 0.55, 0.55),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "ALL TIME:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -669,7 +654,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0.75, 1, 0.24),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "GENSEC KILLED:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_gensec_killed"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -697,7 +682,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0.75, 1, 0.24),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "ALL TIME:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -732,7 +717,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0.54, 0.02, 0.02),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "MELEE KILLS:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_melee_kills"),
 			align = "left",
 			vertical = "top",
 			
@@ -761,7 +746,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0.54, 0.02, 0.02),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "ALL TIME:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
 			align = "left",
 			vertical = "top",		
 			w = day_wrapper_panel:w()/2-5,
@@ -796,7 +781,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 1, 0.5, 0),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "EXPLOSION KILLS:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_explosion_kills"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -824,7 +809,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 1, 0.5, 0),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "ALL TIME:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -859,7 +844,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0.78, 0.15, 0.21),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "NON SPECIAL KILLS:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_nonspecial_kills"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -887,7 +872,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0.78, 0.15, 0.21),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "ALL TIME KILLS:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -922,7 +907,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0.5, 0.5, 0.5),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "TOTAL DOWNS:",
+			text = managers.localization:to_upper_text("victory_total_downed"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -950,7 +935,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0.5, 0.5, 0.5),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "ALL TIME DOWNS:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -985,7 +970,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 1, 0, 0.4),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "TOTAL REVIVES (P/AI):",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_total_revives"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -1013,7 +998,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 1, 0, 0.4),
 			font_size = 18,
 			font = tweak_data.menu.pd2_small_font,
-			text = "ALL TIME REVIVES:",
+			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
 			align = "left",
 			vertical = "top",
 			w = day_wrapper_panel:w()/2-5,
@@ -1041,7 +1026,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			blend_mode = "add",
 			color = mask_color
 		})
-		logo:set_left(day_wrapper_panel:w()/2+40)
+		logo:set_left(2.1*(day_wrapper_panel:w()/3))
 		logo:set_top(day_wrapper_panel:child("paygrade_title"):top() + 20)
 		
 		self:update(day_wrapper_panel)
