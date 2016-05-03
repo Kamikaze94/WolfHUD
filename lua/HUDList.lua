@@ -2113,30 +2113,30 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDList.LootItem = HUDList.LootItem or class(HUDList.RightListItem)
 	HUDList.LootItem.MAP = {
 		aggregate =		{ text = "" },	--Aggregated loot
-		armor =			{ text = "Armor" },
-		artifact =		{ text = "Artifact" },
-		bomb =			{ text = "Bomb" },
-		coke =			{ text = "Coke" },
-		dentist =		{ text = "Unknown" },
-		diamond =		{ text = "Diamond" },
-		evidence =		{ text = "Evidence" },
-		goat =			{ text = "Goat" },
-		gold =			{ text = "Gold" },
-		jewelry =		{ text = "Jewelry" },
-		meth =			{ text = "Meth" },
-		money =			{ text = "Money" },
-		painting =		{ text = "Painting" },
-		pig =			{ text = "Pig" },
-		present =		{ text = "Present" },
-		prototype =		{ text = "Prototype" },
-		safe =			{ text = "Safe" },
-		server =		{ text = "Server" },
-		shell =			{ text = "Shell" },
-		toast =			{ text = "Toast" },
-		turret =		{ text = "Turret" },
-		warhead =		{ text = "Warhead" },
-		weapon =		{ text = "Weapon" },
-		body = 			{ text = "Body" },
+		armor =			{ text = "hud_carry_samurai" },
+		artifact =		{ text = "hud_carry_artifact" },
+		bomb =			{ text = "hud_carry_cro_loot" },
+		coke =			{ text = "hud_carry_coke" },
+		dentist =		{ text = "hud_carry_???" },
+		diamond =		{ text = "hud_carry_hope_diamond" },
+		evidence =		{ text = "hud_carry_evidence_bag" },
+		goat =			{ text = "hud_carry_goat" },
+		gold =			{ text = "hud_carry_gold" },
+		jewelry =		{ text = "hud_carry_diamonds" },
+		meth =			{ text = "hud_carry_meth" },
+		money =			{ text = "hud_carry_money" },
+		painting =		{ text = "hud_carry_painting" },
+		pig =			{ text = "hud_carry_pig" },
+		present =		{ text = "hud_carry_present" },
+		prototype =		{ text = "hud_carry_prototype" },
+		safe =			{ text = "hud_carry_safe" },
+		server =		{ text = "hud_carry_master_server" },
+		shell =			{ text = "hud_carry_grenades" },
+		toast =			{ text = "hud_carry_sandwich" },
+		turret =		{ text = "hud_carry_turret" },
+		warhead =		{ text = "hud_carry_warhead" },
+		weapon =		{ text = "hud_carry_weapon" },
+		body = 			{ text = "hud_carry_person" },
 	}
 	function HUDList.LootItem:init(parent, name, loot_data)
 		local loot_data = loot_data or HUDList.LootItem.MAP[name]
@@ -2146,9 +2146,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._icon:set_top(self._panel:top())
 
 		if loot_data.text then
+			local txt = managers.localization:text(loot_data.text)
 			self._name_text = self._panel:text({
 				name = "text",
-				text = string.sub(loot_data.text, 1, 6) or "",
+				text = txt or loot_data.text or "",
 				align = "center",
 				vertical = "center",
 				w = self._panel:w(),
@@ -2156,7 +2157,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				color = RightListBgColor or Color(0.0, 0.5, 0.0),
 				blend_mode = "normal",
 				font = tweak_data.hud_corner.assault_font,
-				font_size = self._panel:w() * 0.4,
+				font_size = self._panel:w() * 2.4 / string.len(txt),
 				layer = 10
 			})
 			self._name_text:set_center(self._icon:center())
