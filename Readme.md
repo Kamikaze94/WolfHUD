@@ -45,16 +45,17 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
   - Changed health bars, colourized by peer chat color (Inspired by MUI)
 - __[HudPanelList](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by _Seven_, updated by _me_
   - Added Flash to expiring Cam Loop
-  - Added more enmy types, to possibly get more accurate numbers
-  - Added Conterfeit Money to Lootcounter
+  - Added Conterfeit Money, new Weapon types, EMP, Bodies and Server to Lootcounter
   - Added Hacktimers to Undercover
   - Added Small loot Counter
-  - Added new Weapon loot types, EMP and Server
+  - localized loot and device names
 - __[KillCounter](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by _Seven_
 - __[ToggleInteract](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by _Seven_, modified by _Iron Predator_ and _me_
   - Optional center Timer
   - Lock Interaction by pressed time, or total timer
   - Change Interaction text when locked, to tell you how to interrupt
+  - Added optional reload timer
+  - Added loot type for bagged loot and loot value
 - __[DoubleTap Granades](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by Seven 
 - __[AutoPickup](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by _Seven_
 - __[WeaponLaserColor](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13508)__, made by _Seven_
@@ -62,18 +63,24 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
   - Auto turns lasers on, if weapon has an laser gadget
 - __[TabStats](https://steamcommunity.com/app/218620/discussions/15/618463738399320805/)__, made by _friendIyfire_
 - __[Numeric Suspicion](https://github.com/cjur3/GageHud)__, made by _friendIyfire_ for GageHUD
+  - Fixed stucked detection bug
 - __FlashlightExtender__, made by _Seven_
 - __[EnemyHealthbar](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15127)__, made by _Undeadsewer_ for uHUD
   - Made Healthbar fade out, when Enemy walks behind a wall or Player looks away
   - Added optional Civilian Healthbars
   - Added optional Vehicle Healthbars (Hidden when driving)
+- __AdvAssault__, made by _me_
+  - Usage of LocalizationManager inspired by HoxHUD P4
+  - Makes a locked assault more clear, so don't waste time, on waiting to trade someone
 - __Dynamic Damage Indicator__, made by _me_
   - Animation based on PocoHUDs
-  - Fixxed crashes, when going into custody
 - __[BurstFire](https://bitbucket.org/pjal3urb/pd2-mods/src/)__, made by _Seven_
-- __[Real Ammo](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15108)__, made by _FishTaco_
+  - Disabled for Akimbo SMGs, cause it's buggy for them
+- __[Real Ammo](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15108)__, made by _FishTaco_, modified by _me_
+  - Changed the hard overwrite to a more compatabile solution
 - __[No Spam](http://steamcommunity.com/app/218620/discussions/15/618457398976607330/)__, made by _Ahab_, _Seven_, _AmEyeBlind_ & _money123451_
   - A few messages still slip through...
+  - Partitialy disabled to prevent deleting player messages.
 - __[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by _ViciousWalrus_ and _Great Big Bushy Beard_, modified by _me_
   - Added Option to hide vehicle and mask images
   - Added Vehicle Healthbar
