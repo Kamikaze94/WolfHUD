@@ -2233,12 +2233,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDList.TimerItem.DISABLED_COLOR = Color(1, 1, 0, 0)
 	HUDList.TimerItem.FLASH_SPEED = 2
 	HUDList.TimerItem.DEVICE_TYPES = {
-		digital = "Timer", 
-		drill = "Drill",
-		hack = "Hack",
-		saw = "Saw",
-		timer = "Timer", 
-		securitylock = "Hack",
+		digital = "wolfhud_hudlist_device_timer", 
+		drill = "wolfhud_hudlist_device_drill",
+		hack = "wolfhud_hudlist_device_hack",
+		saw = "wolfhud_hudlist_device_saw",
+		timer = "wolfhud_hudlist_device_timer", 
+		securitylock = "wolfhud_hudlist_device_hack",
 	}
 	function HUDList.TimerItem:init(parent, name, timer_data)
 		HUDList.ItemBase.init(self, parent, name, { align = "left", w = parent:panel():h() * 4/5, h = parent:panel():h() })
@@ -2250,16 +2250,17 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._powered = timer_data.powered
 		self._upgradable = timer_data.upgradable
 		
+		local txt = managers.localization:text(self.DEVICE_TYPES[self._device_type]) or "Timer"
 		self._type_text = self._panel:text({
 			name = "type_text",
-			text = self.DEVICE_TYPES[self._device_type] or "Timer",
+			text = txt,
 			align = "center",
 			vertical = "top",
 			w = self._panel:w(),
 			h = self._panel:h() * 0.3,
             color = TimerColor or Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._panel:h() * 1/3
+			font_size = self._panel:h() * 0.3
 		})
 		
 		self._box = HUDBGBox_create(self._panel, {

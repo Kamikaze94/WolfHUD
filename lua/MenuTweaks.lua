@@ -154,8 +154,8 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 		end
 
 		self._tweak_data.buy_all_assets = clone(self._tweak_data.gage_assignment)
-		self._tweak_data.buy_all_assets.name_id = "menu_buy_all_assets"
-		self._tweak_data.buy_all_assets.unlock_desc_id = "menu_buy_all_assets_desc"
+		self._tweak_data.buy_all_assets.name_id = "wolfhud_buy_all_assets"
+		self._tweak_data.buy_all_assets.unlock_desc_id = "wolfhud_buy_all_assets_desc"
 		self._tweak_data.buy_all_assets.visible_if_locked = true
 		self._tweak_data.buy_all_assets.no_mystery = true
 		self:update_buy_all_assets_asset_cost()
