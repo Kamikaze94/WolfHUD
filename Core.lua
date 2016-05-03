@@ -528,27 +528,21 @@ Hooks:PostHook( MenuManager, "show_person_joining", function( self, id, nick )
 		--log(json.encode(peer:blackmarket_outfit() or {}))
 	end
 end)
---[[
-Hooks:PostHook( HUDManager, "update_name_label_by_peer", function( self, peer )
-	for _, data in pairs(self._hud.name_labels) do
-		if data.peer_id == peer:id() then
-			local name = data.character_name
---			if peer:level() then
---				local experience = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "-" or "") .. peer:level()
---				name = name .. " (" .. experience .. ")"
---			end
-			data.text:set_text(name)
-			self:align_teammate_name_label(data.panel, data.interact)
-			break
-		end
+
+local update_name_label_by_peer_orig = HUDManager.update_name_label_by_peer
+function HUDManager:update_name_label_by_peer(peer)
+	update_name_label_by_peer_orig(self, peer)
+	local data = self:_name_label_by_peer_id(peer:id())
+	if data and data.character_name then
+		data.text:set_text(data.character_name)
+		self:align_teammate_name_label(data.panel, data.interact)
 	end
-end)
-]]
+end
+
 Hooks:PostHook( KickPlayer, "modify_node", function( self, node, up )
 	local new_node = deep_clone( node )
 	if managers.network:session() then
 		for __,peer in pairs( managers.network:session():peers() ) do
-			local rank = peer:rank()
 			local params = {
 				name			= peer:name(),
 				text_id			= ( peer:name() .. " (" .. (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "-" or "") .. peer:level() .. ")" ),

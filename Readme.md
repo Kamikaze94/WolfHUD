@@ -1,5 +1,5 @@
 # WolfHUD
-####Payday 2 HUD
+####Development Version
   
 This is a Mod collection of several useful HUD altering mods.  
 I've modified them and added features, I felt were needed or useful.  
