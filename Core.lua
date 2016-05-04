@@ -528,14 +528,15 @@ Hooks:PostHook( MenuManager, "show_person_joining", function( self, id, nick )
 		--log(json.encode(peer:blackmarket_outfit() or {}))
 	end
 end)
-
-local update_name_label_by_peer_orig = HUDManager.update_name_label_by_peer
-function HUDManager:update_name_label_by_peer(peer)
-	update_name_label_by_peer_orig(self, peer)
-	local data = self:_name_label_by_peer_id(peer:id())
-	if data and data.character_name then
-		data.text:set_text(data.character_name)
-		self:align_teammate_name_label(data.panel, data.interact)
+if HUDManager then
+	local update_name_label_by_peer_orig = HUDManager.update_name_label_by_peer
+	function HUDManager:update_name_label_by_peer(peer)
+		update_name_label_by_peer_orig(self, peer)
+		local data = self:_name_label_by_peer_id(peer:id())
+		if data and data.character_name then
+			data.text:set_text(data.character_name)
+			self:align_teammate_name_label(data.panel, data.interact)
+		end
 	end
 end
 

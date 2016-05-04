@@ -97,7 +97,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			blend_mode 	= "normal",
 			alpha 		= 1,
 			halign 		= "left",
-			font 		= "fonts/font_medium_shadow_mf",
+			font 		= "fonts/font_medium_mf",
 			font_size 	= 22,
 			color 		= Color.white,
 			align 		= "center",
