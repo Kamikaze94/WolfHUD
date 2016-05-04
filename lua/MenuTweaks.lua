@@ -1,5 +1,26 @@
 if string.lower(RequiredScript) == "lib/managers/menumanager" then
 	function MenuCallbackHandler:is_dlc_latest_locked(check_dlc) return false end
+
+	Hooks:PostHook( KickPlayer, "modify_node", "WoldHUD_KickPlayerPostModify", function( self, node, up )
+		local new_node = deep_clone( node )
+		if managers.network:session() then
+			for __,peer in pairs( managers.network:session():peers() ) do
+				local params = {
+					name			= peer:name(),
+					text_id			= ( peer:name() .. " (" .. (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "-" or "") .. peer:level() .. ")" ),
+					callback		= 'kick_player',
+					to_upper		= false,
+					localize		= 'false',
+					rpc				= peer:rpc(),
+					peer			= peer,
+				}
+				local new_item = node:create_item( nil, params )
+				new_node:add_item( new_item )
+			end
+		end
+		managers.menu:add_back_button( new_node )
+		return new_node
+	end)
 elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then 
 	-- Show Mod Icons of all Mods in Inventory Boxxes
 	local orig_blackmarket_gui_slot_item_select = BlackMarketGuiSlotItem.select
@@ -284,4 +305,17 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 	MenuManager.show_confirm_blackmarket_buy_mask_slot = expect_yes
 	MenuManager.show_confirm_blackmarket_buy_weapon_slot = expect_yes
 	MenuManager.show_confirm_mission_asset_buy = expect_yes
+
+	Hooks:PostHook( MenuManager, "show_person_joining", "WoldHUD_MenuManagerPostShowPersonJoining", function( self, id, nick )
+		local peer = managers.network:session():peer(id)
+		local dialog = managers.system_menu:get_dialog('user_dropin' .. id)
+		if peer and dialog then
+			local name = nick
+			if peer:rank() > 0 then
+				managers.hud:post_event('infamous_player_join_stinger')
+			end
+			name = name .. " (" .. (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "-" or "") .. peer:level() .. ")"
+			dialog:set_title( managers.localization:text( 'dialog_dropin_title', { USER = name } ))
+		end
+	end)
 end

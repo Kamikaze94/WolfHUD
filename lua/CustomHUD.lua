@@ -232,7 +232,17 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._teammate_panels[panel_id]:set_gear_visible(true)
 		end
 	end
-
+	
+	-- EXPERIMENTAL TEST  -  Remove Player level from over head labels
+	local update_name_label_by_peer_orig = HUDManager.update_name_label_by_peer
+	function HUDManager:update_name_label_by_peer(peer)
+		update_name_label_by_peer_orig(self, peer)
+		local data = self:_name_label_by_peer_id(peer:id())
+		if data and data.character_name then
+			data.text:set_text(data.character_name)
+			self:align_teammate_name_label(data.panel, data.interact)
+		end
+	end
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 
 	HUDTeammate._PLAYER_PANEL_SCALE = WolfHUD:getSetting("PLAYER_PANEL_SCALE", "number")
