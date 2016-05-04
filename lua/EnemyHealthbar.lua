@@ -1,53 +1,52 @@
 if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	local CharacterData = {
-		[ "security" ] 				= "SECURITY GUARD",
-		[ "gensec" ] 				= "GENSEC UNIT",
-		[ "cop" ] 					= "POLICE OFFICER",
-		[ "inside_man" ] 			= "INSIDE MAN",
-		[ "fbi" ] 					= "FBI UNIT",
-		[ "swat" ] 					= "SWAT UNIT",
-		[ "heavy_swat" ] 			= "HEAVY SWAT",
-		[ "fbi_swat" ] 				= "FBI SWAT",
-		[ "fbi_heavy_swat" ] 		= "FBI HEAVY SWAT",
-		[ "city_swat" ] 			= "CITY SWAT/MURKYWATER",
-		[ "sniper" ] 				= "SNIPER",
-		[ "gangster" ] 				= "GANGSTER",
-		[ "biker" ] 				= "BIKER",
-		[ "biker_escape" ] 			= "BIKER",
-		[ "mobster" ] 				= "RUSSIAN MOBSTER",
-		[ "mobster_boss" ] 			= "THE COMMISSAR",
-		[ "hector_boss" ] 			= "ARMOURED HECTOR",
-		[ "hector_boss_no_armor" ] 	= "HECTOR",
-		[ "tank" ] 					= "BULLDOZER",
-		[ "tank_hw" ]				= "HEADLESS DOZER",
-		[ "spooc" ] 				= "CLOAKER",
-		[ "shield" ] 				= "SHIELD",
-		[ "phalanx_minion" ] 		= "WINTERS SHIELD",
-		[ "phalanx_vip" ] 			= "CAPTAIN WINTERS",
-		[ "taser" ] 				= "TASER",
-		[ "civilian" ] 				= "CIVILIAN",
-		[ "civilian_female" ] 		= "CIVILIAN",
-		[ "bank_manager" ] 			= "BANK MANAGER",
-		[ "escort_undercover" ] 	= "TAXMAN",
-		[ "drunk_pilot" ] 			= "DRUNK PILOT",
-		[ "escort" ] 				= "ESCORT",
-		[ "boris" ]					= "BORIS",
-		[ "russian" ] 				= "DALLAS",
-		[ "german" ] 				= "WOLF",
-		[ "spanish" ] 				= "CHAINS",
-		[ "american" ] 				= "HOUSTON",
-		[ "jowi" ] 					= "WICK",
-		[ "old_hoxton" ] 			= "HOXTON",
-		[ "clover" ] 				= "CLOVER",
-		[ "female_1" ] 				= "CLOVER",
-		[ "dragan" ] 				= "DRAGAN",
-		[ "jacket" ] 				= "JACKET",
-		[ "bonnie" ] 				= "BONNIE",
-		[ "sokol" ] 				= "SOKOL",
-		[ "dragon" ] 				= "JIRO",
-		[ "bodhi" ] 				= "BODHI",
-		[ "jimmy" ] 				= "JIMMY",
-		[ "old_hoxton_mission" ] 	= "HOXTON/LOCKE"
+		[ "civilian" ] 				= "wolfhud_enemy_civilian",
+		[ "civilian_female" ] 		= "wolfhud_enemy_civilian",
+		[ "gangster" ] 				= "wolfhud_enemy_gangster",
+		[ "biker" ] 				= "wolfhud_enemy_biker",
+		[ "biker_escape" ] 			= "wolfhud_enemy_biker",
+		[ "mobster" ] 				= "wolfhud_enemy_mobster",
+		[ "security" ] 				= "wolfhud_enemy_security",
+		[ "gensec" ] 				= "wolfhud_enemy_gensec",
+		[ "cop" ] 					= "wolfhud_enemy_cop",
+		[ "fbi" ] 					= "wolfhud_enemy_fbi",
+		[ "swat" ] 					= "wolfhud_enemy_swat",
+		[ "heavy_swat" ] 			= "wolfhud_enemy_heavy_swat",
+		[ "fbi_swat" ] 				= "wolfhud_enemy_swat",
+		[ "fbi_heavy_swat" ] 		= "wolfhud_enemy_heavy_swat",
+		[ "city_swat" ] 			= "wolfhud_enemy_city_swat",
+		[ "shield" ] 				= "wolfhud_enemy_shield",
+		[ "spooc" ] 				= "wolfhud_enemy_spook",
+		[ "taser" ] 				= "wolfhud_enemy_taser",
+		[ "sniper" ] 				= "wolfhud_enemy_sniper",
+		[ "tank" ] 					= "wolfhud_enemy_tank",
+		[ "tank_hw" ]				= "wolfhud_enemy_tank_hw",
+		[ "phalanx_minion" ] 		= "wolfhud_enemy_phalanx_minion",
+		[ "phalanx_vip" ] 			= "wolfhud_enemy_phalanx_vip",
+		[ "mobster_boss" ] 			= "wolfhud_enemy_mobster_boss",
+		[ "bank_manager" ] 			= "wolfhud_enemy_bank_manager",
+		[ "inside_man" ] 			= "wolfhud_enemy_inside_man",
+		[ "escort_undercover" ] 	= "wolfhud_enemy_escort_undercover",
+		[ "drunk_pilot" ] 			= "wolfhud_enemy_drunk_pilot",
+		[ "escort" ] 				= "wolfhud_enemy_escort",
+		[ "boris" ]					= "wolfhud_enemy_boris",
+		[ "old_hoxton_mission" ] 	= "HOXTON/LOCKE",
+		[ "hector_boss" ] 			= "wolfhud_enemy_hector_boss",
+		[ "hector_boss_no_armor" ] 	= "wolfhud_enemy_hector_boss_no_armor",
+		[ "russian" ] 				= "menu_russian",
+		[ "german" ] 				= "menu_german",
+		[ "spanish" ] 				= "menu_spanish",
+		[ "american" ] 				= "menu_american",
+		[ "jowi" ] 					= "menu_jowi",
+		[ "old_hoxton" ] 			= "menu_old_hoxton",
+		[ "female_1" ] 				= "menu_female_1",
+		[ "dragan" ] 				= "menu_dragan",
+		[ "jacket" ] 				= "menu_jacket",
+		[ "bonnie" ] 				= "menu_bonnie",
+		[ "sokol" ] 				= "menu_sokol",
+		[ "dragon" ] 				= "menu_dragon",
+		[ "bodhi" ] 				= "menu_bodhi",
+		[ "jimmy" ] 				= "menu_jimmy"
 	}
 
 	Hooks:PostHook( HUDManager , "_player_hud_layout" , "WolfHUDPostHUDManagerPlayerInfoHUDLayout" , function( self )
@@ -181,7 +180,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 
 		if not current or not total then return end
 		
-		local enemy = CharacterData[ tweak_table ] or tweak_table
+		local enemy = CharacterData[ tweak_table ]
+		if enemy then
+			enemy = managers.localization:to_upper_text(enemy)
+		else
+			enemy = tweak_table
+		end
+		
 		current = math.max(current, 0)
 		local _r = current / total
 		
