@@ -149,6 +149,8 @@
 	
 	"wolfhud_use_killcounter_title" : "Display Killcounter",
 	"wolfhud_use_killcounter_desc" : "Display a killcounter on your HUD.",
+	"wolfhud_killcounter_color_title" : "Killcounter Color",
+	"wolfhud_killcounter_color_desc" : "Select the color of the killcounters.",
 	"wolfhud_killcounter_show_special_title" : "Count Special enemies",
 	"wolfhud_killcounter_show_special_desc" : "Display specials seperately.",
 	"wolfhud_killcounter_show_head_title" : "Count Headshots",
@@ -309,7 +311,7 @@
 	"wolfhud_press2hold_show_lockindicator_desc" : "Show transparent red/green circle overlay, to indicate wether the interaction is locked or not.",
 	"wolfhud_press2hold_equipment_cancel_title" : "Equipment Interrupt",
 	"wolfhud_press2hold_equipment_cancel_desc" : "Interrupt a locked Interaction with your equipment key.\n(Otherwise by pressing your Interaction key again.)",
-	"wolfhud_press2hold_interrupt_hint_title" : "Show Interrupt Text",
+	"wolfhud_press2hold_interrupt_hint_title" : "Show Interrupt Hint",
 	"wolfhud_press2hold_interrupt_hint_desc" : "Show a text to remind you, which button will interrupt your Interaction.",
 	"wolfhud_press2hold_show_timer_title" : "Show remaining time",
 	"wolfhud_press2hold_show_timer_desc" : "Display the remaining time inside the Interaction circle.",

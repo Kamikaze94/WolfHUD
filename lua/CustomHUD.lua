@@ -1587,7 +1587,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			texture_rect = { 0, 0, 12, 16 },
 			alpha = 1,
 			visible = HUDManager._USE_KILL_COUNTER,
-			blend_mode = "add",
+			blend_mode = "normal",
 			color = Color.yellow
 		})
 		
@@ -1623,7 +1623,16 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			text = text .. " (" .. tostring(self._headshot_kills) .. ")"
 		end
 		
+		local color = Color.yellow
+		if WolfHUD:getSetting("killcounter_color", "string") == "rainbow" then
+			color = WolfHUD.color_table[(self._kill_count % (#WolfHUD.color_table - 1)) + 1].color
+		else
+			color = WolfHUD:getSetting("killcounter_color", "color")
+		end
 		local field = self._kills_panel:child("text")
+		local icon = self._kills_panel:child("icon")
+		icon:set_color(color)
+		field:set_color(color)
 		field:set_text(text)
 	end
 

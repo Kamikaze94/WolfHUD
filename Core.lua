@@ -124,6 +124,7 @@ if not _G.WolfHUD then
 			MAX_OUTPUT_LINES				= 8,		--Chat Output lines
 		  --KillCounter
 			use_killcounter 				= true,
+			killcounter_color				= "yellow",
 			SHOW_SPECIAL_KILLS 				= true,		--KillCounter shows special kills
 			SHOW_HEADSHOT_KILLS 			= true,		--KillCounter shows headshot kills
 			SHOW_AI_KILLS 					= true,		--Show KillCounter for Bots

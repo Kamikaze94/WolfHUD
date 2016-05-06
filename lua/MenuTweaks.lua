@@ -274,7 +274,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	ChatManager._BLOCK_PATTERNS = {
 	  ".-[NGBTO]:.+",
 	  --NGBTO info blocker Should work since its mass spam.
-	  "(%d%d:)+%d%d.+"
+	  "[%d:]+%d:%d%d.+"
 	  --Blocks anything, that starts with numbers and ':' and then has a divider (Might block other mods, not only Poco...)
 	}
 
@@ -298,17 +298,51 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 	MenuManager.show_confirm_blackmarket_buy_mask_slot = expect_yes
 	MenuManager.show_confirm_blackmarket_buy_weapon_slot = expect_yes
 	MenuManager.show_confirm_mission_asset_buy = expect_yes
-
-	Hooks:PostHook( MenuManager, "show_person_joining", "WoldHUD_MenuManagerPostShowPersonJoining", function( self, id, nick )
+	MenuManager.show_confirm_pay_casino_fee = expect_yes
+	
+	local show_person_joining_original = MenuManager.show_person_joining
+	local update_person_joining_original = MenuManager.update_person_joining
+	local close_person_joining_original = MenuManager.close_person_joining
+	function MenuManager:show_person_joining( id, nick )
+		self["peer_join_" .. id] = os.clock()
+		local result = show_person_joining_original(self, id, nick)
 		local peer = managers.network:session():peer(id)
-		local dialog = managers.system_menu:get_dialog('user_dropin' .. id)
-		if peer and dialog then
+		if peer then
 			local name = nick
 			if peer:rank() > 0 then
-				managers.hud:post_event('infamous_player_join_stinger')
+				managers.hud:post_event("infamous_player_join_stinger")
 			end
-			name = name .. " (" .. (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "-" or "") .. peer:level() .. ")"
-			dialog:set_title( managers.localization:text( 'dialog_dropin_title', { USER = name } ))
+			local dialog = managers.system_menu:get_dialog("user_dropin" .. id)
+			if dialog then
+				name = name .. " (" .. (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "-" or "") .. peer:level() .. ")"
+				dialog:set_title( managers.localization:text( "dialog_dropin_title", { USER = name } ))
+				log("Person joining: Level added to dialog!")
+			else
+				log("Person joining: Dialog not found!")
+			end
+		else
+			log("Person joining: Peer not found!")
 		end
-	end)
+		return result
+	end
+	
+	function MenuManager:update_person_joining( id, progress_percentage )
+		self["peer_join_" .. id] = self["peer_join_" .. id] or os.clock()
+		local t = os.clock() - self["peer_join_" .. id]
+		local result = update_person_joining_original(self, id, progress_percentage)
+		local time_left = (t / progress_percentage) * (100 - progress_percentage)
+		local dialog = managers.system_menu:get_dialog("user_dropin" .. id)
+		if dialog then
+			dialog:set_text(dialog:text() .. "\nTime remaining: " .. string.format("%0.2fs", time_left))
+			log("update Dialog: Time updated!")
+		else
+			log("update Dialog: Dialog not found!")
+		end
+	end
+	
+	function MenuManager:close_person_joining(id)
+		self["peer_join_" .. id] = nil
+		log("close Dialog: join timestamp resetted!")
+		close_person_joining_original(self, id)
+	end
 end

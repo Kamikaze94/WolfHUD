@@ -152,6 +152,8 @@
 	
 	"wolfhud_use_killcounter_title" : "Zeige Killzähler",
 	"wolfhud_use_killcounter_desc" : "Zeige einen Killzähler in deinem HUD.",
+	"wolfhud_killcounter_color_title" : "Killzähler Farbe",
+	"wolfhud_killcounter_color_desc" : "Wähle die Farbe der Killzähler.",
 	"wolfhud_killcounter_show_special_title" : "Zähle Spezialgegner",
 	"wolfhud_killcounter_show_special_desc" : "Zeige Spezialgegner Separat an.",
 	"wolfhud_killcounter_show_head_title" : "Zähle Headshots",

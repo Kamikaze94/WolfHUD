@@ -41,7 +41,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 				h = self._kills_panel:h(),
 				texture_rect = { 0, 0, 12, 16 },
 				alpha = 1,
-				blend_mode = "add",
+				blend_mode = "normal",
 				layer = 0,
 				color = Color.yellow
 			})
@@ -81,6 +81,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			self._kills_text:set_text(kill_string)
 			local _, _, w, _ = self._kills_text:text_rect()
 			self._kill_icon:set_right(self._kills_panel:w() - w - self._kill_icon:w() * 0.15)
+			
+			if WolfHUD:getSetting("killcounter_color", "string") == "rainbow" then
+				color = WolfHUD.color_table[(self._kill_count % (#WolfHUD.color_table - 1)) + 1].color
+			else
+				color = WolfHUD:getSetting("killcounter_color", "color")
+			end
+			self._kill_icon:set_color(color)
+			self._kills_text:set_color(color)
 		end
 
 		function HUDTeammate:reset_kill_count()
@@ -112,6 +120,9 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 				local name_label = self._panel:child("name")
 				self._kills_panel:set_bottom((self._id == HUDManager.PLAYER_PANEL) and name_label:bottom() or name_label:top())
 			end
+			local color = WolfHUD:getSetting("killcounter_color", "color")
+			self._kill_icon:set_color(color)
+			self._kills_text:set_color(color)
 		end
 	end
 	

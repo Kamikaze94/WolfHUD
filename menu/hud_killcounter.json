@@ -14,6 +14,37 @@
 			"value" : "use_killcounter",
 		},
 		{
+			"type" : "multiple_choice",
+			"id" : "killcounter_color",
+			"title" : "wolfhud_killcounter_color_title",
+			"description" : "wolfhud_killcounter_color_desc",
+			"callback" : "clbk_change_color_setting",
+			"items" : [
+				"wolfhud_colors_white",
+				"wolfhud_colors_light_yellow",
+				"wolfhud_colors_light_orange",
+				"wolfhud_colors_light_red",
+				"wolfhud_colors_light_purple",
+				"wolfhud_colors_light_green",
+				"wolfhud_colors_light_blue",
+				"wolfhud_colors_light_gray",
+				"wolfhud_colors_yellow",
+				"wolfhud_colors_orange",
+				"wolfhud_colors_red",
+				"wolfhud_colors_purple",
+				"wolfhud_colors_green",
+				"wolfhud_colors_blue",
+				"wolfhud_colors_gray",
+				"wolfhud_colors_black",
+				"wolfhud_colors_rainbow"
+			],
+			"value" : "killcounter_color",
+		},
+		{
+			"type" : "divider",
+			"size" : 8,
+		},
+		{
 			"type" : "toggle",
 			"id" : "SHOW_SPECIAL_KILLS",
 			"title" : "wolfhud_killcounter_show_special_title",
@@ -39,7 +70,7 @@
 		},
 		{
 			"type" : "divider",
-			"size" : 8,
+			"size" : 16,
 		},
 		{
 			"type" : "slider",
