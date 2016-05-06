@@ -60,6 +60,14 @@
 			"value" : "EQUIPMENT_PRESS_INTERRUPT",
 		},
 		{
+			"type" : "toggle",
+			"id" : "SHOW_INTERRUPT_HINT",
+			"title" : "wolfhud_press2hold_interrupt_hint_title",
+			"description" : "wolfhud_press2hold_interrupt_hint_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "SHOW_INTERRUPT_HINT",
+		},
+		{
 			"type" : "divider",
 			"size" : 24,
 		},

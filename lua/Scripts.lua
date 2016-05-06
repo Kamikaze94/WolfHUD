@@ -16,8 +16,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 	function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, current_left, max)
 		if WolfHUD:getSetting("use_realammo", "boolean") then
 			local total_left = current_left - current_clip
-			if total_left < 0 then total_left = current_left end
-			current_left = total_left
+			if total_left >= 0 then 
+				current_left = total_left
+			end
 		end
 		HUDTeammate_set_ammo_amount_by_type(self, type, max_clip, current_clip, current_left, max)
 	end

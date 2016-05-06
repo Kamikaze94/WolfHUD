@@ -28,7 +28,21 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 
 		return populate_mods_original(self, data, ...)
 	end
-
+--[[
+	local populate_buy_mask_original = BlackMarketGui.populate_buy_mask
+	function BlackMarketGui:populate_buy_mask(data, ...)
+		local new_create_data = clone(data.on_create_data)
+		for index, mask in ipairs(data.on_create_data) do
+			if not managers.dlc:is_dlc_unlocked(mask.global_value) then
+				log("Removing mask: " .. mask.mask_id .. "(DLC: " .. mask.global_value .. ")")
+				table.remove(new_create_data, index)
+				table.remove(data, index)
+			end
+		end
+		data.on_create_data = new_create_data
+		return populate_buy_mask_original(self, data, ...)
+	end
+]]
 	-- Show all Weapon Names in Inventory Boxxes
 	local orig_blackmarket_gui_slot_item_init = BlackMarketGuiSlotItem.init
 	function BlackMarketGuiSlotItem:init(main_panel, data, x, y, w, h)

@@ -8,7 +8,25 @@
 		{
 			"type" : "divider",
 			"size" : 16,
-			"priority" : 10,
+			"priority" : 13,
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_susp_eye",
+			"title" : "wolfhud_susp_eye_title",
+			"description" : "wolfhud_susp_eye_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_susp_eye",
+			"priority" : 12,
+		},
+		{
+			"type" : "toggle",
+			"id" : "numberic_suspicion",
+			"title" : "wolfhud_susp_numberic_title",
+			"description" : "wolfhud_susp_numberic_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "numberic_suspicion",
+			"priority" : 11,
 		},
 		{
 			"type" : "toggle",
@@ -17,6 +35,11 @@
 			"description" : "wolfhud_adv_assault_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "show_advanced_assault",
+			"priority" : 10,
+		},
+		{
+			"type" : "divider",
+			"size" : 16,
 			"priority" : 9,
 		},
 		{

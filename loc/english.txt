@@ -66,6 +66,7 @@
 	
 	"wolfhud_multiselect_all" : "All",
 	"wolfhud_multiselect_none" : "None",
+	"wolfhud_multiselect_disabled" : "Disabled",
 	
 	"wolfhud_colors_white"  : "White",
 	"wolfhud_colors_light_yellow"  : "Light Yellow",
@@ -89,6 +90,10 @@
 	"wolfhud_options_name" : "WolfHUD Settings",
 	"wolfhud_options_help" : "Customize WolfHUD with your personal preferences.",
 	
+	"wolfhud_susp_eye_title" : "Display Suspicion Eye",
+	"wolfhud_susp_eye_desc" : "Display the default suspicion elements.",
+	"wolfhud_susp_numberic_title" : "Show numberic Suspicion",
+	"wolfhud_susp_numberic_desc" : "Show numberic suspicion value.",
 	"wolfhud_adv_assault_title" : "Advanced Assault Banner",
 	"wolfhud_adv_assault_desc" : "Show assault phase, time and spawns left during assault.\n(Host Only)",
 	"wolfhud_skip_blackscreen_title" : "Skip Blackscreen",
@@ -238,6 +243,21 @@
 	"wolfhud_hudlist_show_buffs_timed" : "Timed Only",
 	
 	
+	"wolfhud_tabstats_options_name" : "TabStats Options",
+	"wolfhud_tabstats_options_help" : "Configure the look of your Tabscreen.",
+	
+	"wolfhud_tabstats_clock_mode_title" : "Clock Mode",
+	"wolfhud_tabstats_clock_mode_desc" : "Which mode should the clock use?",
+	"wolfhud_tabstats_clock_mode_a" : "12-h",
+	"wolfhud_tabstats_clock_mode_b" : "24-h",
+	"wolfhud_use_tabstats_title" : "Use TabStats",
+	"wolfhud_use_tabstats_desc" : "Show your Statistics on Tab Screen instead, of the Mission briefing.\n(A Map change is needed to apply...)",
+	"wolfhud_tabstats_actual_mask_title" : "Use actual mask",
+	"wolfhud_tabstats_actual_mask_desc" : "Use your Actual mask instead of your played character picture.\n(A Map change is needed to apply...)",
+	"wolfhud_tabstats_numberic_loot_title" : "Numberic Loot Counter",
+	"wolfhud_tabstats_numberic_loot_desc" : "Disable the bag counting minigame and display the number right away.",
+	
+	
 	"wolfhud_dmgindicator_options_name" : "Damage Indicator",
 	"wolfhud_dmgindicator_options_help" : "Set the fade time, size and colors or your damage indicators.",
 	
@@ -289,6 +309,8 @@
 	"wolfhud_press2hold_show_lockindicator_desc" : "Show transparent red/green circle overlay, to indicate wether the interaction is locked or not.",
 	"wolfhud_press2hold_equipment_cancel_title" : "Equipment Interrupt",
 	"wolfhud_press2hold_equipment_cancel_desc" : "Interrupt a locked Interaction with your equipment key.\n(Otherwise by pressing your Interaction key again.)",
+	"wolfhud_press2hold_interrupt_hint_title" : "Show Interrupt Text",
+	"wolfhud_press2hold_interrupt_hint_desc" : "Show a text to remind you, which button will interrupt your Interaction.",
 	"wolfhud_press2hold_show_timer_title" : "Show remaining time",
 	"wolfhud_press2hold_show_timer_desc" : "Display the remaining time inside the Interaction circle.",
 	"wolfhud_press2hold_show_circle_title" : "Show Interaction Circle",

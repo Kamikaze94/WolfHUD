@@ -50,14 +50,14 @@ function HUDSuspicion:ColorGradient(perc, ...)
 end
  
 function HUDSuspicion:_animate_detection_text(_suspicion_panel)
-	self._last_suspicion_value = 0
 	while self._animating_text do
 		local t = 0
 		while t <= 0.01 do
 			t = t + coroutine.yield()
 			if -1 ~= self._suspicion_value then
 				local r,g,b = self:ColorGradient(math.round(self._suspicion_value*100)/100, 0, 0.71, 1, 0.99, 0.08, 0)
-				_suspicion_panel:child("suspicion_text"):set_color(Color(1, r, g, b))
+				local alpha = WolfHUD:getSetting("numberic_suspicion", "boolean") and 1 or 0
+				_suspicion_panel:child("suspicion_text"):set_color(Color(alpha, r, g, b))
 				_suspicion_panel:child("suspicion_text"):set_text(math.round(self._suspicion_value*100) .. "%")
 			end
 		end
@@ -69,6 +69,12 @@ end
  
 function HUDSuspicion:animate_eye()
 	hudsuspicions_animate_eye_original(self)
+	local visibile = WolfHUD:getSetting("show_susp_eye", "boolean")
+	self._suspicion_panel:child("suspicion_left"):set_visible(visibile)
+	self._suspicion_panel:child("suspicion_right"):set_visible(visibile)
+	self._misc_panel:child("hud_stealthmeter_bg"):set_visible(visibile)
+	self._misc_panel:child("hud_stealth_eye"):set_visible(visibile)
+	self._misc_panel:child("hud_stealth_exclam"):set_visible(visibile)
 	self._animating_text = true
 	self._text_animation = self._suspicion_panel:child("suspicion_text_panel"):animate(callback(self, self, "_animate_detection_text"))
 end

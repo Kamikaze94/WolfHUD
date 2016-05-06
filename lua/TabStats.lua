@@ -65,7 +65,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		init_original(self)
 		local right_panel = self._full_hud_panel:child("right_panel")
 		local day_wrapper_panel = right_panel:child("day_wrapper_panel")
-		self:clean_up(right_panel)
 		local time_icon = right_panel:bitmap({
 			name = "time_icon",
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
@@ -84,20 +83,25 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			alpha = 0.8,
 			font_size = tweak_data.hud_stats.loot_size,
 			font = tweak_data.hud_stats.objectives_font,
-			text = "",
+			text = "00:00:00",
 			align = "right",
 			vertical = "top",
-			w = right_panel:w()/5,
+			w = right_panel:w()/4,
 			h = tweak_data.hud_stats.loot_size
 		})
 		time_text:set_y(math.round(right_panel:child("days_title"):y()))
 		time_text:set_right(right_panel:w() - 20)
 		time_icon:set_y(time_text:y())
-		time_icon:set_left(time_text:left())
+		time_icon:set_right(time_text:left())
 		
 		if managers.job:is_current_job_professional() then
 			day_wrapper_panel:child("day_title"):set_color(Color.red)
 		end
+		
+		self._use_tab_stats = WolfHUD:getSetting("use_tabstats", "boolean")
+		if not self._use_tab_stats then return end
+		
+		self:clean_up(right_panel)
 		local blank1 = day_wrapper_panel:text({
 			layer = 0,
 			x =  0,
@@ -1018,6 +1022,20 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			mask_icon = characters[managers.criminals:local_character_name()].texture
 			mask_color = characters[managers.criminals:local_character_name()].color
 		end
+		if WolfHUD:getSetting("use_actual_mask", "boolean") then
+			local player = managers.player:player_unit()
+			local char_data = player and managers.criminals:character_data_by_unit(player)
+			local mask_id = char_data and char_data.mask_id
+			if mask_id then
+				local guis_catalog = "guis/"
+				local bundle_folder = tweak_data.blackmarket.masks[mask_id] and tweak_data.blackmarket.masks[mask_id].texture_bundle_folder
+				if bundle_folder then
+					guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+				end
+				mask_icon = tweak_data.blackmarket.masks[mask_id].custom_texture or guis_catalog .. "textures/pd2/blackmarket/icons/masks/" .. mask_id
+			end
+		end
+		
 		local logo = right_panel:bitmap({
 			name = "ghost_icon",
 			texture = mask_icon,
@@ -1043,7 +1061,19 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	function HUDStatsScreen:update_time()
 		local right_panel = self._full_hud_panel:child("right_panel")
 		if right_panel then
-			right_panel:child("time_text"):set_text(os.date("%X"))
+			local text = ""
+			local x = 0
+			mode = WolfHUD:getSetting("clock_mode", "number")
+			if mode >= 3 then
+				text = os.date("%X")
+				x = right_panel:child("time_icon"):w()
+			elseif mode == 2 then
+				text = os.date("%I:%M:%S %p")
+			end
+			right_panel:child("time_text"):set_text(text)
+			right_panel:child("time_icon"):set_center_x(right_panel:child("time_text"):left() + x)
+			right_panel:child("time_text"):set_visible(mode > 1)
+			right_panel:child("time_icon"):set_visible(mode > 1)
 		end
 	end
 
@@ -1105,13 +1135,76 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 
 	function HUDStatsScreen:_update_stats_screen_day(right_panel)
 		update_stats_screen_day_original(self, right_panel)
-		self:clean_up(right_panel)
-		right_panel:child("time_text"):set_text(os.date("%X"))
+		
+		if not self._use_tab_stats then return end
+		
+		self:clean_up(right_panel)		
 		self:update(right_panel:child("day_wrapper_panel"))
 	end
+		
+	Hooks:PostHook( HUDStatsScreen, "init", "WolfHUD_LPI_Compatability", function(self)
+		if _G.LobbyPlayerInfo and LobbyPlayerInfo.settings.show_skills_in_stats_screen and self._use_tab_stats then
+			local right_panel = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel")
+			local dwp = right_panel and right_panel:child("day_wrapper_panel")
+			if not dwp then
+				return
+			end
+			
+			local y = math.round(dwp:child("total_revives_text"):bottom() + 10)
+			for i = 1, 4 do
+				local txt_name = "lpi_team_text_name" .. tostring(i)
+				local name_text = dwp:child(txt_name) or dwp:text({
+					name = txt_name,
+					text = "",
+					align = "left",
+					vertical = "top",
+					blend_mode = "add",
+					font_size = tweak_data.menu.pd2_small_font_size,
+					font = tweak_data.menu.pd2_small_font,
+					color = tweak_data.chat_colors[i],
+					w = right_panel:w(),
+					x = 0,
+					y = y
+				})
+				
+				txt_name = "lpi_team_text_skills" .. tostring(i)
+				local skill_text = dwp:child(txt_name) or dwp:text({
+					name = txt_name,
+					text = "",
+					align = "left",
+					vertical = "top",
+					blend_mode = "add",
+					font_size = tweak_data.menu.pd2_small_font_size - 4,
+					font = tweak_data.menu.pd2_small_font,
+					color = tweak_data.screen_colors.text,
+					w = right_panel:w(),
+					x = 10,
+					y = y + 20
+				})
 
+				txt_name = "lpi_team_text_perk" .. tostring(i)
+				local perk_text = dwp:child(txt_name) or dwp:text({
+					name = txt_name,
+					text = "",
+					align = "left",
+					vertical = "top",
+					blend_mode = "add",
+					font_size = tweak_data.menu.pd2_small_font_size - 4,
+					font = tweak_data.menu.pd2_small_font,
+					color = tweak_data.screen_colors.text,
+					w = right_panel:w(),
+					x = 10,
+					y = y + 38
+				})
+				y = math.round(name_text:top() + 60)
+			end
+		end
+		--Hooks:RemovePostHook( "WolfHUD_LPI_Compatability" )
+	end )
+	
 	function HUDStatsScreen:_update_stats_screen_loot(loot_wrapper_panel)
 		update_stats_screen_loot_original(self, loot_wrapper_panel)
+		if not WolfHUD:getSetting("numberic_loot", "boolean") then return end
 		local mandatory_bags_data = managers.loot:get_mandatory_bags_data()
 		local mission_amount = managers.loot:get_secured_mandatory_bags_amount()
 		local bonus_amount = managers.loot:get_secured_bonus_bags_amount()
@@ -1174,67 +1267,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			bag_text:set_center_y(math.round(bag:center_y()))
 		end
 	end
-		
-	Hooks:PostHook( HUDStatsScreen, "init", "WolfHUD_LPI_Compatability", function(self)
-		if _G.LobbyPlayerInfo and LobbyPlayerInfo.settings.show_skills_in_stats_screen then
-			local right_panel = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel")
-			local dwp = right_panel and right_panel:child("day_wrapper_panel")
-			if not dwp then
-				return
-			end
-			
-			local y = math.round(dwp:child("total_revives_text"):bottom() + 10)
-			for i = 1, 4 do
-				local txt_name = "lpi_team_text_name" .. tostring(i)
-				local name_text = dwp:child(txt_name) or dwp:text({
-					name = txt_name,
-					text = "",
-					align = "left",
-					vertical = "top",
-					blend_mode = "add",
-					font_size = tweak_data.menu.pd2_small_font_size,
-					font = tweak_data.menu.pd2_small_font,
-					color = tweak_data.chat_colors[i],
-					w = right_panel:w(),
-					x = 0,
-					y = y
-				})
-				
-				txt_name = "lpi_team_text_skills" .. tostring(i)
-				local skill_text = dwp:child(txt_name) or dwp:text({
-					name = txt_name,
-					text = "",
-					align = "left",
-					vertical = "top",
-					blend_mode = "add",
-					font_size = tweak_data.menu.pd2_small_font_size - 4,
-					font = tweak_data.menu.pd2_small_font,
-					color = tweak_data.screen_colors.text,
-					w = right_panel:w(),
-					x = 10,
-					y = y + 20
-				})
-
-				txt_name = "lpi_team_text_perk" .. tostring(i)
-				local perk_text = dwp:child(txt_name) or dwp:text({
-					name = txt_name,
-					text = "",
-					align = "left",
-					vertical = "top",
-					blend_mode = "add",
-					font_size = tweak_data.menu.pd2_small_font_size - 4,
-					font = tweak_data.menu.pd2_small_font,
-					color = tweak_data.screen_colors.text,
-					w = right_panel:w(),
-					x = 10,
-					y = y + 38
-				})
-				y = math.round(name_text:top() + 60)
-			end
-		end
-		--Hooks:RemovePostHook( "WolfHUD_LPI_Compatability" )
-	end )
-	
 elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 	local _on_damage_received_original = CopDamage._on_damage_received
 

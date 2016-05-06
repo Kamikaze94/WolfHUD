@@ -239,8 +239,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		
 		if status then
 			self._old_text = self._hud_panel:child(self._child_name_text):text()
-			local btn_cancel = PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and (managers.localization:btn_macro("use_item", true) or managers.localization:get_default_macro("BTN_USE_ITEM")) or (managers.localization:btn_macro("interact", true) or managers.localization:get_default_macro("BTN_INTERACT"))
-			local locked_text = managers.localization:to_upper_text("wolfhud_int_locked", {BTN_CANCEL = btn_cancel})
+			local locked_text = ""
+			if WolfHUD:getSetting("SHOW_INTERRUPT_HINT", "boolean") then
+				local btn_cancel = PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and (managers.localization:btn_macro("use_item", true) or managers.localization:get_default_macro("BTN_USE_ITEM")) or (managers.localization:btn_macro("interact", true) or managers.localization:get_default_macro("BTN_INTERACT"))
+				locked_text = managers.localization:to_upper_text("wolfhud_int_locked", {BTN_CANCEL = btn_cancel})
+			end
 			self._hud_panel:child(self._child_name_text):set_text(locked_text)
 		end
 	end

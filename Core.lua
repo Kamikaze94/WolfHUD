@@ -143,10 +143,18 @@ if not _G.WolfHUD then
 			dmg_crit_color					= "purple",
 			dmg_vehicle_color				= "yellow",
 			dmg_friendlyfire_color			= "orange",
+		  --Suspicion
+			numberic_suspicion				= true,
+			show_susp_eye					= true,
 		  --Driving HUD
 			use_drivinghud					= true,		--Show DrivingHUD Panel
 			show_vehicle 					= true,		--Show Vehicle and Teammate Mask Images
 			speed_in_mph 					= false,	--Display Speed in mph
+		  --TabStats
+			use_tabstats					= false,
+			clock_mode						= 3,		-- 1 = disabled, 2 = 12h, 3 = 24h
+			use_actual_mask					= true,
+			numberic_loot					= true,
 		  --Scripts
 			skip_blackscreen 				= true,		--Skip the blackscreen on mission start
 			stat_screen_delay 				= 5,		--Skip the experience screen after X seconds
@@ -194,6 +202,7 @@ if not _G.WolfHUD then
 			EQUIPMENT_PRESS_INTERRUPT 		= true, 		--Use the equipment key ('G') to toggle off active interactions
 			SHOW_LOCK_INDICATOR				= true,
 			SHOW_CIRCLE						= true,
+			SHOW_INTERRUPT_HINT				= false,
 			SHOW_TIME_REMAINING 			= true,			--Show remaining Time in the Interaction-Circle
 			GRADIENT_COLOR 					= "light_green",--Color, which the timer reaches on completition
 			SHOW_RELOAD						= true,
@@ -484,6 +493,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_enemy_healthbar.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_indicator.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_tabstats.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_adv.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_teampanels.json", WolfHUD, settings)

@@ -1,0 +1,55 @@
+{
+	"menu_id" : "wolfhud_tabstats_options_menu",
+	"parent_menu_id" : "wolfhud_options_menu",
+	"title" : "wolfhud_tabstats_options_name",
+	"description" : "wolfhud_tabstats_options_help",
+	"back_callback" : "",
+	"priority" : 100,
+	"items" : [
+		{
+			"type" : "multiple_choice",
+			"id" : "clock_mode",
+			"title" : "wolfhud_tabstats_clock_mode_title",
+			"description" : "wolfhud_tabstats_clock_mode_desc",
+			"callback" : "clbk_change_setting",
+			"items" : [
+				"wolfhud_multiselect_disabled",
+				"wolfhud_tabstats_clock_mode_a",
+				"wolfhud_tabstats_clock_mode_b"
+			],
+			"value" : "clock_mode",
+		},
+		{
+			"type" : "divider",
+			"size" : 16,
+		},
+		{
+			"type" : "toggle",
+			"id" : "use_tabstats",
+			"title" : "wolfhud_use_tabstats_title",
+			"description" : "wolfhud_use_tabstats_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "use_tabstats",
+		},
+		{
+			"type" : "toggle",
+			"id" : "use_actual_mask",
+			"title" : "wolfhud_tabstats_actual_mask_title",
+			"description" : "wolfhud_tabstats_actual_mask_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "use_actual_mask",
+		},
+		{
+			"type" : "divider",
+			"size" : 16,
+		},
+		{
+			"type" : "toggle",
+			"id" : "numberic_loot",
+			"title" : "wolfhud_tabstats_numberic_loot_title",
+			"description" : "wolfhud_tabstats_numberic_loot_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "numberic_loot",
+		}
+	]
+}
