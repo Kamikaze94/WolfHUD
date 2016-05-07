@@ -12,6 +12,7 @@ if not _G.WolfHUD then
 		"wolfhud_drivinghud_options_menu", 
 		"wolfhud_infopanels_options_menu", 
 		"wolfhud_infopanels_adv_options_menu", 
+		"wolfhud_tabstats_options_menu",
 		"wolfhud_dmgindicator_options_menu", 
 		"wolfhud_enemyhealthbar_options_menu", 
 		"wolfhud_press2hold_options_menu", 
@@ -152,7 +153,7 @@ if not _G.WolfHUD then
 			show_vehicle 					= true,		--Show Vehicle and Teammate Mask Images
 			speed_in_mph 					= false,	--Display Speed in mph
 		  --TabStats
-			use_tabstats					= false,
+			use_tabstats					= true,
 			clock_mode						= 3,		-- 1 = disabled, 2 = 12h, 3 = 24h
 			use_actual_mask					= true,
 			numberic_loot					= true,
@@ -203,7 +204,7 @@ if not _G.WolfHUD then
 			EQUIPMENT_PRESS_INTERRUPT 		= true, 		--Use the equipment key ('G') to toggle off active interactions
 			SHOW_LOCK_INDICATOR				= true,
 			SHOW_CIRCLE						= true,
-			SHOW_INTERRUPT_HINT				= false,
+			SHOW_INTERRUPT_HINT				= true,
 			SHOW_TIME_REMAINING 			= true,			--Show remaining Time in the Interaction-Circle
 			GRADIENT_COLOR 					= "light_green",--Color, which the timer reaches on completition
 			SHOW_RELOAD						= true,
@@ -309,7 +310,7 @@ if not _G.WolfHUD then
 				return value
 			end
 		else
-			self:print_log("Requested setting doesn't exists!  (id='" .. id .. "', type='" .. val_type .. "') ")
+			self:print_log("Requested setting doesn't exists!  (id='" .. id .. "', type='" .. tostring(val_type) .. "') ")
 			if val_type == "number" then -- Try to prevent crash by giving default value
 				return 1
 			elseif val_type == "boolean" then 
@@ -434,6 +435,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 							local item_id = menu_item:parameters().name
 							local value = WolfHUD:getSetting(tostring(item_id))
 							if value ~= nil and menu_item.set_value then
+								value = WolfHUD:getColorID(value) or value
 								if menu_item._type == "toggle" then
 									value = (value and "on" or "off")
 								end
