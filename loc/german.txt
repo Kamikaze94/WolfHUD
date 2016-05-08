@@ -302,8 +302,6 @@
 	"wolfhud_interaction_options_name" : "Interaktions Optionen",
 	"wolfhud_interaction_options_help" : "Ändere das Interaktionsverhalten des Spiels.",
 	
-	"wolfhud_use_press2hold_title" : "Benutze Press2Hold",
-	"wolfhud_use_press2hold_desc" : "Press2Hold kann diene Interaktion sperren, sodass du die Taste nicht die ganze Zeit gedrückt halten musst. (Wird erst beim Mapwechsel aktiv...)",
 	"wolfhud_press2hold_lock_mode_title" : "Sperr-Modus",
 	"wolfhud_press2hold_lock_mode_desc" : "Sperren, wenn schon länger als X sekunden interagiert wird. (Fortschritt)\nSperren, wenn benötigte Interaktionszeit insgesamt länger ist als X sekunden. (Gesamt)",
 	"wolfhud_press2hold_lock_mode_a" : "Fortschritt",
@@ -320,6 +318,8 @@
 	"wolfhud_press2hold_show_circle_desc" : "Zeige den kreisförmigen Interaktionsbalken.",
 	"wolfhud_press2hold_show_reload_circle_title" : "Zeige Nachladetimer",
 	"wolfhud_press2hold_show_reload_circle_desc" : "Zeige Nachladen als Interaktion.",
+	"wolfhud_press2hold_show_melee_circle_title" : "Zeige Nahkampf Timer",
+	"wolfhud_press2hold_show_melee_circle_desc" : "Zeige Nahkapf Aufladung als Interaktion.",
 	"wolfhud_press2hold_show_timer_title" : "Zeige Timer",
 	"wolfhud_press2hold_show_timer_desc" : "Zeigt die verbleibende Zeit innerhalb des Interaktionskreises.",
 	"wolfhud_press2hold_timer_color_title" : "Timer Farbgradient",
