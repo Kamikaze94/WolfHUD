@@ -333,7 +333,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 		local time_left = (t / progress_percentage) * (100 - progress_percentage)
 		local dialog = managers.system_menu:get_dialog("user_dropin" .. id)
 		if dialog then
-			dialog:set_text(dialog:text() .. "\nTime remaining: " .. string.format("%0.2fs", time_left))
+			dialog:set_text(dialog:text() .. "\n" .. managers.localization:text( "wolfhud_advassault_time_title") .. " " .. string.format("%0.2fs", time_left))
 			log("update Dialog: Time updated!")
 		else
 			log("update Dialog: Dialog not found!")

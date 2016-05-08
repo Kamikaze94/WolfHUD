@@ -37,7 +37,7 @@ if not _G.WolfHUD then
 			{ color = Color('0000FF'), name = "blue" },
 			{ color = Color('808080'), name = "gray" },
 			{ color = Color('000000'), name = "black" },
-			{ color = Color('000000'), name = "rainbow" },		--(only available in laser colors)
+			{ color = Color('000000'), name = "rainbow" },		--(only available in laser + killcounter colors)
 		}
 	end
 	

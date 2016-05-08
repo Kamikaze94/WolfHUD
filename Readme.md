@@ -98,6 +98,11 @@ The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
     - [weapon icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14240), [melee icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13910) and [mask icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13911) made by _Nervatel Hanging Closet Monster_
     - [throwables, equipment, armor and heister portraits](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13916) made by _Luffy_
     - Update for Jimmy and new weapons made by _me_
+	
+###Localizations:
+- __English__, made by _me_
+- __German__, made by _me_
+- __Russian__, made by _chrom[K]a_
 
 ###Big credit goes to all of you!
 ####Without your awesome mods, I would have quitted this game a long time ago! 
