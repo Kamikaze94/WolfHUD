@@ -7,6 +7,9 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	local _start_action_reload_original = PlayerStandard._start_action_reload
 	local _update_reload_timers_original = PlayerStandard._update_reload_timers
 	local _interupt_action_reload_original = PlayerStandard._interupt_action_reload
+	local _start_action_melee_original = PlayerStandard._start_action_melee
+	local _update_melee_timers_original = PlayerStandard._update_melee_timers
+	local _do_melee_damage_original = PlayerStandard._do_melee_damage
 	local _check_action_throw_grenade_original = PlayerStandard._check_action_throw_grenade
 	
 	function PlayerStandard:_update_interaction_timers(t, ...)
@@ -25,10 +28,10 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 		PlayerStandard.LOCK_MODE = WolfHUD:getSetting("LOCK_MODE", "number")						--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
 		PlayerStandard.MIN_TIMER_DURATION = WolfHUD:getSetting("MIN_TIMER_DURATION", "number")		--Min interaction duration (in seconds) for the toggle behavior to activate	
 		local is_locked = false
-		if PlayerStandard.LOCK_MODE == 1 then
-			is_locked = self._interact_expire_t and (t - (self._interact_expire_t - self._interact_params.timer) >= PlayerStandard.MIN_TIMER_DURATION) --lock interaction, when interacting longer then given time
-		elseif PlayerStandard.LOCK_MODE == 2 then
+		if PlayerStandard.LOCK_MODE >= 3 then
 			is_locked = self._interact_params and (self._interact_params.timer >= PlayerStandard.MIN_TIMER_DURATION) -- lock interaction, when total timer time is longer then given time
+		elseif PlayerStandard.LOCK_MODE >= 2 then
+			is_locked = self._interact_expire_t and (t - (self._interact_expire_t - self._interact_params.timer) >= PlayerStandard.MIN_TIMER_DURATION) --lock interaction, when interacting longer then given time
 		end
 		
 		if self._interaction_locked ~= is_locked then
@@ -54,55 +57,89 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 		end
 	end
 	
-	local hide_reload_state = {
+	local hide_int_state = {
 		["bleed_out"] = true,
 		["fatal"] = true,
 		["incapacitated"] = true,
 		["arrested"] = true,
 		["jerry1"] = true
 	}
-	function PlayerStandard:enter(state_data, enter_data)
-		enter_original(self, state_data, enter_data)
-		if self._state_data._reload and hide_reload_state[managers.player:current_state()] then
+	function PlayerStandard:enter(...)
+		enter_original(self, ...)
+		if hide_int_state[managers.player:current_state()] and (self._state_data.show_reload or self._state_data.show_melee) then
 			managers.hud:hide_interaction_bar(false)
-			self._state_data._reload = false
+			self._state_data.show_reload = false
+			self._state_data.show_melee = false
 		end
 	end
 	
-	function PlayerStandard:_start_action_reload(t)
-		_start_action_reload_original(self, t)
+	function PlayerStandard:_start_action_reload(t, ...)
+		_start_action_reload_original(self, t, ...)
 		PlayerStandard.SHOW_RELOAD = WolfHUD:getSetting("SHOW_RELOAD", "boolean")
-		if PlayerStandard.SHOW_RELOAD and not hide_reload_state[managers.player:current_state()] then
+		if PlayerStandard.SHOW_RELOAD and not hide_int_state[managers.player:current_state()] then
 			if self._equipped_unit and not self._equipped_unit:base():clip_full() then
-				self._state_data._reload = true
+				self._state_data.show_reload = true
 				managers.hud:show_interaction_bar(0, self._state_data.reload_expire_t or 0)
 				self._state_data.reload_offset = t
 			end
 		end
 	end
 
-	function PlayerStandard:_update_reload_timers(t, dt, input)
-		_update_reload_timers_original(self, t, dt, input)
+	function PlayerStandard:_update_reload_timers(t, ...)
+		_update_reload_timers_original(self, t, ...)
 		if PlayerStandard.SHOW_RELOAD then
-			if self._state_data._reload and hide_reload_state[managers.player:current_state()] then
+			if self._state_data.show_reload and hide_int_state[managers.player:current_state()] then
 				managers.hud:hide_interaction_bar(false)
-				self._state_data._reload = false
-			elseif not self._state_data.reload_expire_t and self._state_data._reload then
+				self._state_data.show_reload = false
+			elseif not self._state_data.reload_expire_t and self._state_data.show_reload then
 				managers.hud:hide_interaction_bar(true)
-				self._state_data._reload = false
-			elseif self._state_data._reload then
+				self._state_data.show_reload = false
+			elseif self._state_data.show_reload then
 				managers.hud:set_interaction_bar_width(	t and t - self._state_data.reload_offset or 0, self._state_data.reload_expire_t and self._state_data.reload_expire_t - self._state_data.reload_offset or 0 )
 			end
 		end
 	end
 
-	function PlayerStandard:_interupt_action_reload(t)
-		local val = _interupt_action_reload_original(self, t)
-		if self._state_data._reload and PlayerStandard.SHOW_RELOAD then
+	function PlayerStandard:_interupt_action_reload(...)
+		local val = _interupt_action_reload_original(self, ...)
+		if self._state_data.show_reload and PlayerStandard.SHOW_RELOAD then
 			managers.hud:hide_interaction_bar(false)
-			self._state_data._reload = false
+			self._state_data.show_reload = false
 		end
 		return val
+	end
+	
+	function PlayerStandard:_start_action_melee(...)
+		local val = _start_action_melee_original(self, ...)
+		PlayerStandard.SHOW_MELEE = WolfHUD:getSetting("SHOW_MELEE", "boolean")
+		if PlayerStandard.SHOW_MELEE and self._state_data.meleeing and not hide_int_state[managers.player:current_state()] then
+			self._state_data.show_melee = true
+			managers.hud:show_interaction_bar(0, 1)
+		end
+		return val
+	end
+	
+	function PlayerStandard:_update_melee_timers(t, ...)
+		local val = _update_melee_timers_original(self, t, ...)
+		if PlayerStandard.SHOW_MELEE and self._state_data.meleeing and self._state_data.show_melee then
+			local melee_lerp = self:_get_melee_charge_lerp_value(t)
+			if hide_int_state[managers.player:current_state()] then
+				managers.hud:hide_interaction_bar(false)
+				self._state_data.show_melee = false
+			elseif melee_lerp < 1 then
+				managers.hud:set_interaction_bar_width(melee_lerp, 1)
+			elseif self._state_data.show_melee then
+				managers.hud:hide_interaction_bar(true)
+				self._state_data.show_melee = false
+			end
+		end
+		return val
+	end
+	
+	function PlayerStandard:_do_melee_damage(...)
+		managers.hud:hide_interaction_bar(false)
+		self._state_data.show_melee = false
+		return _do_melee_damage_original(self, ...)
 	end
 	
 	function PlayerStandard:_check_action_throw_grenade(t, input, ...)
@@ -172,7 +209,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		HUDInteraction.SHOW_CIRCLE 	= WolfHUD:getSetting("SHOW_CIRCLE", "boolean")
 		HUDInteraction.GRADIENT_COLOR = WolfHUD:getSetting("GRADIENT_COLOR", "color")
 		if HUDInteraction.SHOW_CIRCLE then
-			if PlayerStandard.LOCK_MODE < 3 and HUDInteraction.SHOW_LOCK_INDICATOR then
+			if PlayerStandard.LOCK_MODE > 1 and HUDInteraction.SHOW_LOCK_INDICATOR then
 				self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {
 					radius = self._circle_radius,
 					color = Color.red,

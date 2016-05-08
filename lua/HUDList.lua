@@ -2983,6 +2983,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			flash_speed = 0.2,
 			no_fade = true
 		},
+		reload_time = {
+			atlas = { 0, 9 },
+			priority = 3,
+			type = "buff",
+			class = "ChargedBuffItem",
+		},
 		berserker = {
 			atlas = { 2, 2 },
 			priority = 2,
@@ -3103,6 +3109,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		--hostage_situation = true,
 		swan_song = true,
 		damage_to_hot_debuff = true,
+		melee_charge = WolfHUD:getSetting("SHOW_MELEE", "boolean"),
+		reload_time = WolfHUD:getSetting("SHOW_RELOAD", "boolean"),
 	}
 	
 	HUDList.BuffItemBase.COMPOSITE_ITEMS = {
@@ -3927,7 +3935,10 @@ if RequiredScript == "lib/units/beings/player/playermovement" then
 end
 
 if RequiredScript == "lib/units/beings/player/states/playerstandard" then
-
+	
+	local _start_action_reload_original = PlayerStandard._start_action_reload
+	local _update_reload_timers_original = PlayerStandard._update_reload_timers
+	local _interupt_action_reload_original = PlayerStandard._interupt_action_reload
 	local _start_action_charging_weapon_original = PlayerStandard._start_action_charging_weapon
 	local _end_action_charging_weapon_original = PlayerStandard._end_action_charging_weapon
 	local _update_charging_weapon_timers_original = PlayerStandard._update_charging_weapon_timers
@@ -3977,6 +3988,24 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 		end
 	end
 
+	function PlayerStandard:_start_action_reload(t, ...)
+		local result = _start_action_reload_original(self, t, ...)
+		managers.player:activate_timed_buff("reload_time", self._state_data.reload_expire_t - t)
+		return result
+	end
+	
+	function PlayerStandard:_update_reload_timers(...)
+		if not self._state_data.reload_expire_t then
+			managers.player:deactivate_buff("reload_time")
+		end
+		return _update_reload_timers_original(self, ...)
+	end
+	
+	function PlayerStandard:_interupt_action_reload(...)
+		managers.player:deactivate_buff("reload_time")
+		return _interupt_action_reload_original(self, ...)
+	end
+	
 	function PlayerStandard:_start_action_charging_weapon(...)
 		managers.player:activate_buff("bow_charge")
 		managers.player:set_buff_attribute("bow_charge", "progress", 0)

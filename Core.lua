@@ -198,8 +198,7 @@ if not _G.WolfHUD then
 			thug_color 						= "white",		--EnemyCounter Thug and Mobster icon color
 			enemy_color 					= "white",			--EnemyCounter Cop and Specials icon color
 		  --Press2Hold
-			use_press2hold 					= true,
-			LOCK_MODE 						= 2,			--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
+			LOCK_MODE 						= 3,			--Disabled (1, Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time (2), or current interaction time(3)
 			MIN_TIMER_DURATION 				= 5, 			--Min interaction duration (in seconds) for the toggle behavior to activate
 			EQUIPMENT_PRESS_INTERRUPT 		= true, 		--Use the equipment key ('G') to toggle off active interactions
 			SHOW_LOCK_INDICATOR				= true,
@@ -208,6 +207,7 @@ if not _G.WolfHUD then
 			SHOW_TIME_REMAINING 			= true,			--Show remaining Time in the Interaction-Circle
 			GRADIENT_COLOR 					= "light_green",--Color, which the timer reaches on completition
 			SHOW_RELOAD						= true,
+			SHOW_MELEE						= false,
 			SUPRESS_NADES_STEALTH			= true,
 			HOLD2PICK						= true,
 		  --Laser-Colors

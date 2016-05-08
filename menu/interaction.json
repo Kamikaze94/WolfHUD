@@ -7,27 +7,15 @@
 	"priority" : 100,
 	"items" : [
 		{
-			"type" : "toggle",
-			"id" : "use_press2hold",
-			"title" : "wolfhud_use_press2hold_title",
-			"description" : "wolfhud_use_press2hold_desc",
-			"callback" : "clbk_change_setting",
-			"value" : "use_press2hold",
-		},
-		{
-			"type" : "divider",
-			"size" : 8,
-		},
-		{
 			"type" : "multiple_choice",
 			"id" : "LOCK_MODE",
 			"title" : "wolfhud_press2hold_lock_mode_title",
 			"description" : "wolfhud_press2hold_lock_mode_desc",
 			"callback" : "clbk_change_setting",
 			"items" : [
+				"wolfhud_multiselect_disabled",
 				"wolfhud_press2hold_lock_mode_a",
-				"wolfhud_press2hold_lock_mode_b",
-				"wolfhud_press2hold_lock_mode_c"
+				"wolfhud_press2hold_lock_mode_b"
 			],
 			"value" : "LOCK_MODE",
 		},
@@ -120,6 +108,14 @@
 			"description" : "wolfhud_press2hold_show_reload_circle_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "SHOW_RELOAD",
+		},
+		{
+			"type" : "toggle",
+			"id" : "SHOW_MELEE",
+			"title" : "wolfhud_press2hold_show_melee_circle_title",
+			"description" : "wolfhud_press2hold_show_melee_circle_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "SHOW_MELEE",
 		},
 		{
 			"type" : "divider",
