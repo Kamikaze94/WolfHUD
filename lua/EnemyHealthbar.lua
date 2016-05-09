@@ -30,7 +30,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "drunk_pilot" ] 			= "wolfhud_enemy_drunk_pilot",
 		[ "escort" ] 				= "wolfhud_enemy_escort",
 		[ "boris" ]					= "wolfhud_enemy_boris",
-		[ "old_hoxton_mission" ] 	= "HOXTON/LOCKE",
+		[ "old_hoxton_mission" ] 	= "wolfhud_enemy_old_hoxton_mission",
 		[ "hector_boss" ] 			= "wolfhud_enemy_hector_boss",
 		[ "hector_boss_no_armor" ] 	= "wolfhud_enemy_hector_boss_no_armor",
 		[ "russian" ] 				= "menu_russian",

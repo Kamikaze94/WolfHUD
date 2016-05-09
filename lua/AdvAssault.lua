@@ -45,12 +45,9 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 				end
 			end
 		end
-		return _start_assault_original(self, text_list, ...)
-	end
-	
-	function HUDAssaultCorner:sync_set_assault_mode(mode)
-		log(mode)
-		sync_set_assault_mode_original(self, mode)
+		local val = _start_assault_original(self, text_list, ...)
+		self:_locked_assault(false)
+		return val
 	end
 	
 	function HUDAssaultCorner:locked_assault(status)
