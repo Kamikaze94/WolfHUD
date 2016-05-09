@@ -2968,10 +2968,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			priority = 3,
 			type = "buff",
 			class = "ChargedBuffItem",
-			texture = "guis/dlcs/west/textures/pd2/blackmarket/icons/weapons/plainsrider", 
-			icon_rotation = 90, 
-			icon_w_ratio = 0.5, 
-			icon_scale = 2,
+			texture = "guis/textures/contact_vlad", 
+			rect = {1984, 0, 64, 64},
 			flash_speed = 0.2,
 			no_fade = true
 		},
