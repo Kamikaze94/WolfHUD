@@ -305,25 +305,14 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 	local close_person_joining_original = MenuManager.close_person_joining
 	function MenuManager:show_person_joining( id, nick )
 		self["peer_join_" .. id] = os.clock()
-		local result = show_person_joining_original(self, id, nick)
 		local peer = managers.network:session():peer(id)
 		if peer then
-			local name = nick
 			if peer:rank() > 0 then
 				managers.hud:post_event("infamous_player_join_stinger")
 			end
-			local dialog = managers.system_menu:get_dialog("user_dropin" .. id)
-			if dialog then
-				name = name .. " (" .. (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "-" or "") .. peer:level() .. ")"
-				dialog:set_title( managers.localization:text( "dialog_dropin_title", { USER = name } ))
-				log("Person joining: Level added to dialog!")
-			else
-				log("Person joining: Dialog not found!")
-			end
-		else
-			log("Person joining: Peer not found!")
+			nick = "(" .. (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "-" or "") .. peer:level() .. ") " .. nick
 		end
-		return result
+		return show_person_joining_original(self, id, nick)
 	end
 	
 	function MenuManager:update_person_joining( id, progress_percentage )
@@ -332,17 +321,13 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 		local result = update_person_joining_original(self, id, progress_percentage)
 		local time_left = (t / progress_percentage) * (100 - progress_percentage)
 		local dialog = managers.system_menu:get_dialog("user_dropin" .. id)
-		if dialog then
-			dialog:set_text(dialog:text() .. "\n" .. managers.localization:text( "wolfhud_advassault_time_title") .. " " .. string.format("%0.2fs", time_left))
-			log("update Dialog: Time updated!")
-		else
-			log("update Dialog: Dialog not found!")
+		if dialog and time_left then
+			dialog:set_text(managers.localization:text("dialog_wait") .. string.format(" %d%% (%0.2fs)", progress_percentage, time_left))
 		end
 	end
 	
 	function MenuManager:close_person_joining(id)
 		self["peer_join_" .. id] = nil
-		log("close Dialog: join timestamp resetted!")
 		close_person_joining_original(self, id)
 	end
 end
