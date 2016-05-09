@@ -186,7 +186,7 @@ if not _G.WolfHUD then
 				separate_bagged_loot 		= true,     --Show bagged loot as a separate value
 			show_special_pickups 			= true,    	--Show number of special equipment/items
 
-			show_buffs 						= 1,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+			show_buffs 						= 1,     	--Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
 			
 			use_hudlist 					= true,
 			hudlist_right_scale				= 1,
@@ -196,7 +196,7 @@ if not _G.WolfHUD then
 			hud_box_bg_color 				= "black",		--Left and Right List BG color
 			civilian_color 					= "white", 		--EnemyCounter Civillian and Hostage icon color
 			thug_color 						= "white",		--EnemyCounter Thug and Mobster icon color
-			enemy_color 					= "white",			--EnemyCounter Cop and Specials icon color
+			enemy_color 					= "white",		--EnemyCounter Cop and Specials icon color
 		  --Press2Hold
 			LOCK_MODE 						= 3,			--Disabled (1, Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time (2), or current interaction time(3)
 			MIN_TIMER_DURATION 				= 5, 			--Min interaction duration (in seconds) for the toggle behavior to activate
@@ -503,6 +503,13 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_chat.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_killcounter.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", WolfHUD, settings)
+	
+	for id, data in pairs(tweak_data.carry) do
+		if data.name_id then
+			local string_id, text = data.name_id, managers.localization:text(data.name_id)
+			log(string_id .. " = " .. text)
+		end
+	end
 end)
 
 --[[
@@ -526,6 +533,5 @@ Hooks:Add("MenuManagerPostInitialize", "MenuManagerPostInitialize_WolfHUD", func
 			end
 		end
 	end
-	managers.viewport:resolution_changed()
 end)
 ]]

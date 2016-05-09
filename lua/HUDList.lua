@@ -2112,14 +2112,14 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	HUDList.LootItem = HUDList.LootItem or class(HUDList.RightListItem)
 	HUDList.LootItem.MAP = {
-		aggregate =		{ text = "" },	--Aggregated loot
-		armor =			{ text = "hud_carry_samurai" },
+		aggregate =		{ text = "", no_localize = true },	--Aggregated loot
+		armor =			{ text = "wolfhud_hudlist_loot_armor" }, 		-- Too long
 		artifact =		{ text = "hud_carry_artifact" },
-		bomb =			{ text = "hud_carry_cro_loot" },
+		bomb =			{ text = "wolfhud_hudlist_loot_bomb" },		-- Too long
 		coke =			{ text = "hud_carry_coke" },
-		dentist =		{ text = "hud_carry_???" },
-		diamond =		{ text = "hud_carry_hope_diamond" },
-		evidence =		{ text = "hud_carry_evidence_bag" },
+		dentist =		{ text = "???", no_localize = true },
+		diamond =		{ text = "wolfhud_hudlist_loot_diamond" },	-- Too long
+		evidence =		{ text = "wolfhud_hudlist_loot_evidence" },	-- Too long
 		goat =			{ text = "hud_carry_goat" },
 		gold =			{ text = "hud_carry_gold" },
 		jewelry =		{ text = "hud_carry_diamonds" },
@@ -2130,9 +2130,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		present =		{ text = "hud_carry_present" },
 		prototype =		{ text = "hud_carry_prototype" },
 		safe =			{ text = "hud_carry_safe" },
-		server =		{ text = "hud_carry_master_server" },
-		shell =			{ text = "hud_carry_grenades" },
-		toast =			{ text = "hud_carry_sandwich" },
+		server =		{ text = "hud_carry_circuit" },
+		shell =			{ text = "hud_carry_ammo" },
+		toast =			{ text = "wolfhud_hudlist_loot_toast" },		-- Too long	
 		turret =		{ text = "hud_carry_turret" },
 		warhead =		{ text = "hud_carry_warhead" },
 		weapon =		{ text = "hud_carry_weapon" },
@@ -2146,10 +2146,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._icon:set_top(self._panel:top())
 
 		if loot_data.text then
-			local txt = managers.localization:text(loot_data.text)
+			local txt = loot_data.no_localize and loot_data.text or managers.localization:text(loot_data.text)
+			
 			self._name_text = self._panel:text({
 				name = "text",
-				text = txt or loot_data.text or "",
+				text = txt:sub(1, 8) or "",
 				align = "center",
 				vertical = "center",
 				w = self._panel:w(),
@@ -2157,7 +2158,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				color = RightListBgColor or Color(0.0, 0.5, 0.0),
 				blend_mode = "normal",
 				font = tweak_data.hud_corner.assault_font,
-				font_size = self._panel:w() * 2.4 / string.len(txt),
+				font_size = self._panel:w() * 2.4 / math.min(txt:len(), 8),
 				layer = 10
 			})
 			self._name_text:set_center(self._icon:center())

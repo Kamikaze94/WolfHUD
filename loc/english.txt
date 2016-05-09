@@ -19,6 +19,11 @@
 	"wolfhud_hudlist_device_drill" : "Drill",
 	"wolfhud_hudlist_device_hack" : "Hack",
 	"wolfhud_hudlist_device_saw" : "Saw",
+	"wolfhud_hudlist_loot_armor" : "Armor",
+	"wolfhud_hudlist_loot_bomb" : "Bomb",
+	"wolfhud_hudlist_loot_diamond" : "Diamond",
+	"wolfhud_hudlist_loot_evidence" : "Evidence",
+	"wolfhud_hudlist_loot_toast" : "Toast",
 	
 	"wolfhud_tabstats_total_damage" : "Total Damage:",
 	"wolfhud_tabstats_tanks_killed" : "Bulldozers killed:",
