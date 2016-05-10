@@ -5,8 +5,6 @@ end
 if not WolfHUD:getSetting("use_killcounter", "boolean") then return end
 if string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 
-	HUDTeammate.SHOW_SPECIAL_KILLS = WolfHUD:getSetting("SHOW_SPECIAL_KILLS", "boolean")
-	HUDTeammate.SHOW_HEADSHOT_KILLS = WolfHUD:getSetting("SHOW_HEADSHOT_KILLS", "boolean")
 	HUDTeammate.SHOW_AI_KILLS = WolfHUD:getSetting("SHOW_AI_KILLS", "boolean")
 	
 	if not HUDTeammate.increment_kill_count and not HUDManager.CUSTOM_TEAMMATE_PANEL then	--Custom HUD compatibility
@@ -72,10 +70,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 
 		function HUDTeammate:_update_kill_count_text()
 			local kill_string = tostring(self._kill_count)
-			if self.SHOW_SPECIAL_KILLS then
+			if WolfHUD:getSetting("SHOW_SPECIAL_KILLS", "boolean") then
 				kill_string = kill_string .. "/" .. tostring(self._kill_count_special)
 			end
-			if HUDTeammate.SHOW_HEADSHOT_KILLS then
+			if WolfHUD:getSetting("SHOW_HEADSHOT_KILLS", "boolean") then
 				kill_string = kill_string .. " (" .. tostring(self._headshot_kills) .. ")"
 			end
 			self._kills_text:set_text(kill_string)

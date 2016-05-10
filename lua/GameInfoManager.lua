@@ -321,7 +321,7 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 	
 	function GameInfoManager:get_unit_count(id)
 		if id then
-			return self._unit_count[id]
+			return self._unit_count[id] or 0
 		else
 			return self._unit_count
 		end
@@ -1156,26 +1156,20 @@ end
 
 if string.lower(RequiredScript) == "lib/managers/enemymanager" then
 	
-	local register_enemy_original = EnemyManager.register_enemy
-	local on_enemy_died_original = EnemyManager.on_enemy_died
-	local on_enemy_destroyed_original = EnemyManager.on_enemy_destroyed
-	local register_civilian_original = EnemyManager.register_civilian
-	local on_civilian_died_original = EnemyManager.on_civilian_died
-	local on_civilian_destroyed_original = EnemyManager.on_civilian_destroyed
+	local on_enemy_registered_original = EnemyManager.on_enemy_registered
+	local on_enemy_unregistered_original = EnemyManager.on_enemy_unregistered
+ 	local register_civilian_original = EnemyManager.register_civilian
+ 	local on_civilian_died_original = EnemyManager.on_civilian_died
+ 	local on_civilian_destroyed_original = EnemyManager.on_civilian_destroyed
 	
-	function EnemyManager:register_enemy(unit, ...)
+	function EnemyManager:on_enemy_registered(unit, ...)
 		managers.gameinfo:event("unit", "add", tostring(unit:key()), unit, unit:base()._tweak_table)
-		return register_enemy_original(self, unit, ...)
+		return on_enemy_registered_original(self, unit, ...)
 	end
 	
-	function EnemyManager:on_enemy_died(unit, ...)
+	function EnemyManager:on_enemy_unregistered(unit, ...)
 		managers.gameinfo:event("unit", "remove", tostring(unit:key()))
-		return on_enemy_died_original(self, unit, ...)
-	end
-	
-	function EnemyManager:on_enemy_destroyed(unit, ...)
-		managers.gameinfo:event("unit", "remove", tostring(unit:key()))
-		return on_enemy_destroyed_original(self, unit, ...)
+		return on_enemy_unregistered_original(self, unit, ...)
 	end
 	
 	function EnemyManager:register_civilian(unit, ...)

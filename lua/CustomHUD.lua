@@ -1616,10 +1616,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 
 	function HUDTeammate:_update_kill_count_text()
 		local text = tostring(self._kill_count)
-		if HUDTeammate.SHOW_SPECIAL_KILLS then
+		if WolfHUD:getSetting("SHOW_SPECIAL_KILLS", "boolean") then
 			text = text .. "/" .. tostring(self._kill_count_special)
 		end
-		if HUDTeammate.SHOW_HEADSHOT_KILLS then
+		if WolfHUD:getSetting("SHOW_HEADSHOT_KILLS", "boolean") then
 			text = text .. " (" .. tostring(self._headshot_kills) .. ")"
 		end
 		

@@ -134,8 +134,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		mobster = 					{ type_id = "thug",			category = "enemies",	long_name = "Mobster" },
 		biker_escape = 				{ type_id = "thug",			category = "enemies",	long_name = "Gangster" },
 		tank = 						{ type_id = "tank",			category = "enemies",	long_name = "Bulldozer" },
-		spooc = 					{ type_id = "spooc",			category = "enemies",	long_name = "Cloaker" },
-		taser = 					{ type_id = "taser",			category = "enemies",	long_name = "Taser" },
+		spooc = 					{ type_id = "spooc",		category = "enemies",	long_name = "Cloaker" },
+		taser = 					{ type_id = "taser",		category = "enemies",	long_name = "Taser" },
 		shield = 					{ type_id = "shield",		category = "enemies",	long_name = "Shield" },
 		sniper = 					{ type_id = "sniper",		category = "enemies",	long_name = "Sniper" },
 		mobster_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "Commissar" },
@@ -146,12 +146,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		civilian = 					{ type_id = "civ",			category = "civilians",	long_name = "Civilian" },
 		civilian_female = 			{ type_id = "civ",			category = "civilians",	long_name = "Civilian" },
 		bank_manager = 				{ type_id = "civ",			category = "civilians",	long_name = "Bank mngr." },
-		drunk_pilot = 				{ type_id = "unique",		category = "civilians",	long_name = "Pilot" },
-		escort = 					{ type_id = "unique",		category = "civilians",	long_name = "Escort" },
-		old_hoxton_mission = 		{ type_id = "unique",		category = "civilians",	long_name = "Hoxton" },
-		inside_man = 				{ type_id = "unique",		category = "civilians",	long_name = "Insider" },
-		boris = 					{ type_id = "unique",		category = "civilians",	long_name = "?" },
-		escort_undercover = 		{ type_id = "unique",		category = "civilians",	long_name = "Taxman" },
+		--drunk_pilot = 			{ type_id = "unique",		category = "civilians",	long_name = "Pilot" },
+		--escort = 					{ type_id = "unique",		category = "civilians",	long_name = "Escort" },
+		--old_hoxton_mission = 		{ type_id = "unique",		category = "civilians",	long_name = "Hoxton" },
+		--inside_man = 				{ type_id = "unique",		category = "civilians",	long_name = "Insider" },
+		--boris = 					{ type_id = "unique",		category = "civilians",	long_name = "?" },
+		--escort_undercover = 		{ type_id = "unique",		category = "civilians",	long_name = "Taxman" },
 		
 		--Custom unit definitions
 		turret = 					{ type_id = "turret",		category = "turrets",	long_name = "SWAT Turret" },
@@ -444,7 +444,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
-	function HUDListManager:_unit_count_event(event, unit_type, difference)
+	function HUDListManager:_unit_count_event(event, unit_type, value)
 		if HUDListManager.UNIT_TYPES[unit_type] then
 			local list = self:list("right_side_list"):item("unit_count_list")
 			local type_id = HUDListManager.UNIT_TYPES[unit_type].type_id
@@ -452,7 +452,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			
 			local item = list:item(type_id) or list:item(category)
 			if item then
-				item:change_count(difference)
+				if event == "change" then
+					item:change_count(value)
+				elseif event == "set" then
+					item:set_count(value)
+				end
 			end
 			
 			for _, id in pairs(HUDListManager.UNIT_TYPES[unit_type].force_update or {}) do
@@ -896,15 +900,24 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		local category = "enemies"
 		local items = {}
+		local count = {}
 		
+		for id, data in pairs(HUDListManager.UNIT_TYPES) do
+			if data.category == category then
+				items[data.type_id] = category
+				count[data.type_id] = (count[data.type_id] or 0) + managers.gameinfo:get_unit_count(id)
+ 			end
+ 		end
+
 		if HUDListManager.ListOptions.aggregate_enemies then
-			items.enemies = category
-		else
-			for id, data in pairs(HUDListManager.UNIT_TYPES) do
-				if data.category == category then
-					items[data.type_id] = category
-				end
+			local total_count = 0
+			
+			for category, num in pairs(count) do
+				total_count = total_count + num
 			end
+
+			items = { enemies = category }
+			count = { enemies = total_count }
 		end
 		
 		
@@ -914,7 +927,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			
 			for id, category in pairs(items) do
 				local data = HUDList.UnitCountItem.MAP[id]
-				list:register_item(id, data.class or HUDList.UnitCountItem, id, category)
+				local item = list:register_item(id, data.class or HUDList.UnitCountItem, id, category)
+				item:set_count(count[id])
 			end
 			
 			for _, event in pairs(events) do

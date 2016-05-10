@@ -45,9 +45,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 				end
 			end
 		end
-		local val = _start_assault_original(self, text_list, ...)
-		self:_locked_assault(false)
-		return val
+		return _start_assault_original(self, text_list, ...)
 	end
 	
 	function HUDAssaultCorner:locked_assault(status)
@@ -85,21 +83,24 @@ elseif string.lower(RequiredScript) == "lib/managers/localizationmanager" then
 		if managers.groupai:state():get_hunt_mode() then
 			managers.hud:_locked_assault(true)
 			return self:text("wolfhud_locked_assault")
-		elseif not WolfHUD:getSetting("show_advanced_assault", "boolean") then
-			return self:text("hud_assault_assault")
 		else
-			local phase = self:text("wolfhud_advassault_phase_title") .. "  " .. self:text("wolfhud_advassault_phase_" .. managers.groupai:state()._task_data.assault.phase)
-			local spawns = managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.force_pool) * managers.groupai:state():_get_balancing_multiplier(tweak_data.group_ai.besiege.assault.force_pool_balance_mul)
-			local spawns_left = self:text("wolfhud_advassault_spawns_title") .. "  " .. math.round(math.max(spawns - managers.groupai:state()._task_data.assault.force_spawned, 0))
-			local time_left = managers.groupai:state()._task_data.assault.phase_end_t + math.lerp(managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.sustain_duration_min), managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.sustain_duration_max), math.random()) * managers.groupai:state():_get_balancing_multiplier(tweak_data.group_ai.besiege.assault.sustain_duration_balance_mul) + tweak_data.group_ai.besiege.assault.fade_duration * 2
-			if time_left < 0 then
-				time_left = self:text("wolfhud_advassault_time_overdue")
+			managers.hud:_locked_assault(false)
+			if not WolfHUD:getSetting("show_advanced_assault", "boolean") then
+				return self:text("hud_assault_assault")
 			else
-				time_left = self:text("wolfhud_advassault_time_title") .. "  " .. string.format("%.2f", time_left + 350 - managers.groupai:state()._t)
+				local phase = self:text("wolfhud_advassault_phase_title") .. "  " .. self:text("wolfhud_advassault_phase_" .. managers.groupai:state()._task_data.assault.phase)
+				local spawns = managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.force_pool) * managers.groupai:state():_get_balancing_multiplier(tweak_data.group_ai.besiege.assault.force_pool_balance_mul)
+				local spawns_left = self:text("wolfhud_advassault_spawns_title") .. "  " .. math.round(math.max(spawns - managers.groupai:state()._task_data.assault.force_spawned, 0))
+				local time_left = managers.groupai:state()._task_data.assault.phase_end_t + math.lerp(managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.sustain_duration_min), managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.sustain_duration_max), math.random()) * managers.groupai:state():_get_balancing_multiplier(tweak_data.group_ai.besiege.assault.sustain_duration_balance_mul) + tweak_data.group_ai.besiege.assault.fade_duration * 2
+				if time_left < 0 then
+					time_left = self:text("wolfhud_advassault_time_overdue")
+				else
+					time_left = self:text("wolfhud_advassault_time_title") .. "  " .. string.format("%.2f", time_left + 350 - managers.groupai:state()._t)
+				end
+				local sep = "          " .. self:text("hud_assault_end_line") .. "          "
+				local text = phase .. sep .. spawns_left .. sep .. time_left
+				return text
 			end
-			local sep = "          " .. self:text("hud_assault_end_line") .. "          "
-			local text = phase .. sep .. spawns_left .. sep .. time_left
-			return text
 		end
 	end
 end
