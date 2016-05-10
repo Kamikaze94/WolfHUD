@@ -1,9 +1,9 @@
 {
 	"name" : "WolfHUD",
-	"description" : "This is a Mod Collection of HUD altering scripts. \nIt uses CustomHUD, HUDPanelList, KillCounter, Press2Hold and WeaponLaserColor, made by Seven \n as well as TabStats by [MoCu] Pat, NumericSuspicion by cjuur3, FlashlightExtender by Seven, Enemy Healthbar by Undeadsewer, and many more.\nFor a full list of included mods, go to the GitHUD repository, linked as contact.\nSome changes were made to these scripts by me.",
+	"description" : "This is a Mod Collection of HUD altering scripts. \nIt uses CustomHUD, HUDPanelList, KillCounter, Press2Hold and WeaponLaserColor, made by Seven \n as well as TabStats, NumericSuspicion by friendlyfire, FlashlightExtender by Seven, Enemy Healthbar by Undeadsewer, and many more.\nFor a full list of included mods, go to the GitHUB repository, linked as contact.\nSome scripts are created or modified by me.",
 	"author" : "Kamikaze94",
 	"contact" : "https://github.com/Kamikaze94/WolfHUD",
-	"version" : "1.40",
+	"version" : "1.50",
 	"priority" : 1,
 	"hooks" : [
 		{ "hook_id" : "lib/setups/gamesetup", "script_path" : "Core.lua" },
@@ -37,7 +37,6 @@
 		{ "hook_id" : "lib/managers/playermanager", "script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/trademanager", "script_path" : "Core.lua" },
 		{ "hook_id" : "lib/network/handlers/unitnetworkhandler", "script_path" : "Core.lua" },
-		{ "hook_id" : "lib/units/unitbase", "script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/props/timergui", "script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/props/digitalgui", "script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/props/securitylockgui", "script_path" : "Core.lua" },
@@ -56,7 +55,6 @@
 		{ "hook_id" : "lib/units/weapons/weaponflashlight", "script_path" : "Core.lua" },
         { "hook_id" : "lib/units/weapons/raycastweaponbase", "script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/weapons/newraycastweaponbase" "script_path" : "Core.lua"},
-		{ "hook_id" : "lib/units/props/missiondoor", "script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/props/securitycamera", "script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/beings/player/playerdamage", "script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/beings/player/playermovement", "script_path" : "Core.lua" },
@@ -70,11 +68,10 @@
 		{ "hook_id" : "lib/tweak_data/guitweakdata", "script_path" : "Core.lua" },
 		{ "hook_id" : "lib/tweak_data/timespeedeffecttweakdata", "script_path" : "Core.lua"},
 		{ "hook_id" : "core/lib/managers/menu/items/coremenuitemslider", "script_path" : "Core.lua" }
-		
 	],
 	"updates" : [
 		{
-			"revision" : 9,
+			"revision" : 10,
 			"identifier" : "wolfhud",
 		},
 		{

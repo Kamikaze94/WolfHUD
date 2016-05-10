@@ -73,7 +73,6 @@ if not _G.WolfHUD then
 		["lib/managers/menu/renderers/menunodeskillswitchgui"] = { "MenuTweaks.lua" },
 		["lib/managers/objectinteractionmanager"] = { "GameInfoManager.lua", "HUDList.lua", "Interaction.lua" },
 		["lib/network/handlers/unitnetworkhandler"] = { "DownCounter.lua", "GameInfoManager.lua" },
---		["lib/units/unitbase"] = { "HUDList.lua" },
 		["lib/units/props/timergui"] = { "GameInfoManager.lua" },
 		["lib/units/props/digitalgui"] = { "GameInfoManager.lua" },
 		["lib/units/props/securitylockgui"] = { "GameInfoManager.lua" },
@@ -92,7 +91,6 @@ if not _G.WolfHUD then
 		["lib/units/weapons/weaponflashlight"] = { "WeaponLasers.lua" },
 		["lib/units/weapons/raycastweaponbase"] = { "Scripts.lua", "WeaponLasers.lua" },
 		["lib/units/weapons/newraycastweaponbase"] = { "WeaponLasers.lua", "BurstFire.lua" },
---		["lib/units/props/missiondoor"] = { "HUDList.lua" },
 		["lib/units/props/securitycamera"] = { "GameInfoManager.lua" },
 		["lib/units/beings/player/playerdamage"] = { "HUDList.lua", "DamageIndicator.lua" },
 		["lib/units/beings/player/playermovement"] = { "HUDList.lua" },
@@ -282,7 +280,11 @@ if not _G.WolfHUD then
 				if v["identifier"] ~= "fed_inv" or WolfHUD.settings.use_federal_inventory then
 					self:print_log("Creating Dummy for: " .. v["display_name"])
 					if not file.DirectoryExists("./" .. v["install_dir"] .. v["install_folder"]) then
-						os.execute('cmd /c mkdir "./' .. v["install_dir"] .. v["install_folder"] .. '"')
+						if SystemInfo:platform() == Idstring("WIN32") then  --Windows
+							os.execute('cmd /c mkdir "./' .. v["install_dir"] .. v["install_folder"] .. '"')
+						else --Linux
+							self:print_log("mod_override folder '" .. v["install_folder"] .. "' is missing!")
+						end
 					end
 					local file = io.open(v["revision"], "w+")
 					if file then
@@ -296,16 +298,11 @@ if not _G.WolfHUD then
 	
 	function WolfHUD:getSetting(id, val_type)
 		local value = self.settings[id]
-		if value ~= nil and (not val_type or val_type == "color" and type(value) == "string" or type(value) == val_type) then
+		if value ~= nil and (not val_type or type(value) == val_type or val_type == "color" and type(value) == "string") then
 			local value = self.settings[id]
 			if val_type == "color" then
-				--return self.color_table[value].color
-				for __, data in ipairs(self.color_table) do
-					if data.name == value then
-						return data.color
-					end
-				end
-				return Color.white
+				local id = self:getColorID(value) or 1
+				return self.color_table[id].color
 			else
 				return value
 			end
