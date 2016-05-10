@@ -19,11 +19,12 @@
 	"wolfhud_hudlist_device_drill" : "Дрель",
 	"wolfhud_hudlist_device_hack" : "Взлом",
 	"wolfhud_hudlist_device_saw" : "Распил",
-	"wolfhud_hudlist_loot_armor" : "Armor",
-	"wolfhud_hudlist_loot_bomb" : "Bomb",
-	"wolfhud_hudlist_loot_diamond" : "Diamond",
-	"wolfhud_hudlist_loot_evidence" : "Evidence",
-	"wolfhud_hudlist_loot_toast" : "Toast",
+	"wolfhud_hudlist_loot_armor" : "Броня",
+	"wolfhud_hudlist_loot_bomb" : "Бомба",
+	"wolfhud_hudlist_loot_diamond" : "Алмаз",
+	"wolfhud_hudlist_loot_evidence" : "Данные",
+	"wolfhud_hudlist_loot_toast" : "Тост",
+
 	
 	"wolfhud_tabstats_total_damage" : "Общий Урон:",
 	"wolfhud_tabstats_tanks_killed" : "Убито бульдозеров:",
