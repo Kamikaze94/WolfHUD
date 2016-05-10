@@ -2987,6 +2987,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			priority = 3,
 			type = "buff",
 			class = "ChargedBuffItem",
+			flash_color = Color.green
 		},
 		berserker = {
 			atlas = { 2, 2 },
@@ -3989,15 +3990,20 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 
 	function PlayerStandard:_start_action_reload(t, ...)
 		local result = _start_action_reload_original(self, t, ...)
-		managers.player:activate_timed_buff("reload_time", self._state_data.reload_expire_t - t)
+		managers.player:activate_buff("reload_time")
+		managers.player:set_buff_attribute("reload_time", "progress", 0)
+		self._state_data.reload_offset = t
 		return result
 	end
 	
-	function PlayerStandard:_update_reload_timers(...)
+	function PlayerStandard:_update_reload_timers(t, ...)
 		if not self._state_data.reload_expire_t then
 			managers.player:deactivate_buff("reload_time")
+		else
+			local progress = (t - self._state_data.reload_offset or 0) / (self._state_data.reload_expire_t - self._state_data.reload_offset or 0)
+			managers.player:set_buff_attribute("reload_time", "progress", progress)
 		end
-		return _update_reload_timers_original(self, ...)
+		return _update_reload_timers_original(self, t, ...)
 	end
 	
 	function PlayerStandard:_interupt_action_reload(...)
