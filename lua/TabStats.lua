@@ -59,6 +59,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		jimmy = {
 			texture = "guis/dlcs/coco/textures/pd2/blackmarket/icons/characters/jimmy",
 			color = Color(1, 0.43, 0.48, 0.55)
+		},
+		sydney = {
+			texture = "guis/dlcs/opera/textures/pd2/blackmarket/icons/characters/sydney",
+			color = Color(1, 0.80, 0.25, 0.35)
 		}
 	}
 	function HUDStatsScreen:init()

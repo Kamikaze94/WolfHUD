@@ -1249,8 +1249,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		local out_of_ammo = current_left <= 0
 		local full_ammo = (current_left >= max)
 		local color_total = out_of_ammo and Color(1, 0.9, 0.3, 0.3)
-		color_total = color_total or low_ammo and Color(1, 0.9, 0.9, 0.3)
 		color_total = color_total or full_ammo and Color('C2FC97'):with_alpha(1)
+		color_total = color_total or low_ammo and Color(1, 0.9, 0.9, 0.3)
 		color_total = color_total or Color.white
 		local color_clip = out_of_ammo_clip and Color(1, 0.9, 0.3, 0.3)
 		color_clip = color_clip or low_ammo_clip and Color(1, 0.9, 0.9, 0.3)

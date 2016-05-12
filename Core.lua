@@ -283,7 +283,7 @@ if not _G.WolfHUD then
 						if SystemInfo:platform() == Idstring("WIN32") then  --Windows
 							os.execute('cmd /c mkdir "./' .. v["install_dir"] .. v["install_folder"] .. '"')
 						else --Linux
-							self:print_log("mod_override folder '" .. v["install_folder"] .. "' is missing!")
+							log("mod_override folder '" .. v["install_folder"] .. "' is missing!")
 						end
 					end
 					local file = io.open(v["revision"], "w+")
@@ -500,13 +500,6 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_chat.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_killcounter.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", WolfHUD, settings)
-	
-	for id, data in pairs(tweak_data.carry) do
-		if data.name_id then
-			local string_id, text = data.name_id, managers.localization:text(data.name_id)
-			log(string_id .. " = " .. text)
-		end
-	end
 end)
 
 --[[
