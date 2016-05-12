@@ -391,8 +391,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		
 		local w_h_width = self._health_panel:w() + self._weapons_panel:w()
 		self:_create_equipment_panel(w_h_width * 0.375, label_height, 1)
-		self:_create_carry_panel(w_h_width * 0.45, label_height, 1)
-		self:_create_kills_panel(w_h_width * 0.3, label_height, 1)
+		self:_create_carry_panel(w_h_width * 0.4, label_height, 1) --0.45
+		self:_create_kills_panel(w_h_width * 0.35, label_height, 1)--0.3
 		
 		self:_create_name_panel(w_h_width * 0.625, label_height, 1)
 		self:_create_latency_panel(w_h_width * 0.25, label_height, 1)
@@ -918,7 +918,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		local radial_shield_rot = radial_shield:color().r
 		local radial_health_rot = radial_health:color().r
 		radial_absorb_shield:set_rotation((1 - radial_shield_rot) * 360)
-		radial_absorb_health:set_rotation((1 - radial_health_rot) * 360)
+		if self._colorize_healthbar > 1 then
+			radial_absorb_health:set_rotation(radial_health_rot * 360)
+		else
+			radial_absorb_health:set_rotation((1 - radial_health_rot) * 360)
+		end
 		local current_absorb = 0
 		local current_shield, current_health
 		local step_speed = 1
@@ -935,7 +939,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 					radial_shield_rot = radial_shield:color().r
 					radial_health_rot = radial_health:color().r
 					radial_absorb_shield:set_rotation((1 - radial_shield_rot) * 360)
-					radial_absorb_health:set_rotation(radial_health_rot * 360)
+					if self._colorize_healthbar > 1 then
+						radial_absorb_health:set_rotation(radial_health_rot * 360)
+					else
+						radial_absorb_health:set_rotation((1 - radial_health_rot) * 360)
+					end
 					update_absorb = true
 				end
 				if current_absorb ~= self[var_name] then
@@ -1239,7 +1247,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		local low_ammo_clip = current_clip <= math.round(max_clip / 4)
 		local out_of_ammo_clip = current_clip <= 0
 		local out_of_ammo = current_left <= 0
-		local full_ammo = (current_left >= max - (WolfHUD:getSetting("use_realammo", "boolean") and current_clip or 0))
+		local full_ammo = (current_left >= max)
 		local color_total = out_of_ammo and Color(1, 0.9, 0.3, 0.3)
 		color_total = color_total or low_ammo and Color(1, 0.9, 0.9, 0.3)
 		color_total = color_total or full_ammo and Color('C2FC97'):with_alpha(1)

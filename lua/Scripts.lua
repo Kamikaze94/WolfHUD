@@ -15,9 +15,14 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 	local HUDTeammate_set_ammo_amount_by_type = HUDTeammate.set_ammo_amount_by_type
 	function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, current_left, max)
 		if WolfHUD:getSetting("use_realammo", "boolean") then
+--[[		local weapon = managers.blackmarket["equipped_" .. type](managers.blackmarket)
+			if tweak_data.weapon[weapon.weapon_id].category == "saw" then
+				current_left = (current_left) * max_clip + current_clip
+			end]]
 			local total_left = current_left - current_clip
 			if total_left >= 0 then 
 				current_left = total_left
+				max = max - current_clip
 			end
 		end
 		HUDTeammate_set_ammo_amount_by_type(self, type, max_clip, current_clip, current_left, max)

@@ -240,10 +240,16 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 		if self._fwd_ray and self._fwd_ray.unit and type(self._fwd_ray.unit) == "userdata" then
 			local unit = self._fwd_ray.unit
 			if unit:in_slot( 8 ) and alive(unit:parent()) then unit = unit:parent() end
-			if managers.groupai:state():turrets() then
+			if managers.groupai:state():turrets() then	--in_slot(25, 26)
 				for _ , t_unit in pairs( managers.groupai:state():turrets() ) do
 					if alive( t_unit ) and t_unit:movement():team().foes[ managers.player:player_unit():movement():team().id ] and unit == t_unit then
 						unit = t_unit
+						log("Turret found")
+--[[					for id, data in pairs(t_unit) do
+							if type(data) ~= "function" and type(data) ~= "table" then
+								log(tostring(id) .. " = " .. tostring(data))
+							end
+						end]]
 					end
 				end
 			end
