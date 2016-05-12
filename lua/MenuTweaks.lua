@@ -52,7 +52,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	
 	local BlackMarketGuiTabItem_init_original = BlackMarketGuiTabItem.init
 	BlackMarketGuiTabItem.init = function(self, main_panel, data, ...)
-		if WolfHUD.inventory_names and WolfHUD.inventory_names[data.category] then
+		if WolfHUD.inventory_names and WolfHUD.inventory_names[data.category] and type(data.on_create_data[1]) == "number" then
 			local id = math.floor((data.on_create_data[1] / #data.on_create_data) + 1)
 			data.name_localized = WolfHUD.inventory_names[data.category][id] or nil
 		end

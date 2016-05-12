@@ -9,7 +9,7 @@
 		"Page 7",
 		"Page 8",
 		"Page 9",
-		"Page 0"
+		"Page 10"
 	],
 	"secondaries" : [
 		"Page 1",
@@ -21,7 +21,7 @@
 		"Page 7",
 		"Page 8",
 		"Page 9",
-		"Page 0"
+		"Page 10"
 	],
 	"masks" : [
 		"Page 1",
@@ -33,7 +33,7 @@
 		"Page 7",
 		"Page 8",
 		"Page 9",
-		"Page 0"
+		"Page 10"
 	],
 	"melee_weapons" : [
 		"Page 1",
@@ -45,6 +45,6 @@
 		"Page 7",
 		"Page 8",
 		"Page 9",
-		"Page 0"
+		"Page 10"
 	],
 }
