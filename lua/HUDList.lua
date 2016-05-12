@@ -3875,8 +3875,10 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 	
 	function PlayerDamage:_damage_screen(...)
 		_damage_screen_original(self, ...)
-		local delay = self._regenerate_timer + (self._supperssion_data.decay_start_t and (self._supperssion_data.decay_start_t - managers.player:player_timer():time()) or 0)
-		managers.player:activate_timed_buff("armor_regen_debuff", delay)
+		if self._regenerate_timer then
+			local delay = self._regenerate_timer + (self._supperssion_data.decay_start_t and (self._supperssion_data.decay_start_t - managers.player:player_timer():time()) or 0)
+			managers.player:activate_timed_buff("armor_regen_debuff", delay)
+		end
 	end
 	
 	function PlayerDamage:build_suppression(amount, ...)
@@ -3888,7 +3890,7 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 			end
 
 			if self._supperssion_data.value == tweak_data.player.suppression.max_value then
-				if self:get_real_armor() < self:_total_armor() then
+				if self:get_real_armor() < self:_total_armor() and self._regenerate_timer then
 					managers.player:refresh_timed_buff("armor_regen_debuff")
 				end
 			end

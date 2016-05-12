@@ -49,6 +49,15 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 		data.custom_name_text = data.custom_name_text or not data.mid_text and data.name_localized
 		orig_blackmarket_gui_slot_item_init(self, main_panel, data, x, y, w, h)
 	end
+	
+	local BlackMarketGuiTabItem_init_original = BlackMarketGuiTabItem.init
+	BlackMarketGuiTabItem.init = function(self, main_panel, data, ...)
+		if WolfHUD.inventory_names and WolfHUD.inventory_names[data.category] then
+			local id = math.floor((data.on_create_data[1] / #data.on_create_data) + 1)
+			data.name_localized = WolfHUD.inventory_names[data.category][id] or nil
+		end
+		BlackMarketGuiTabItem_init_original(self, main_panel, data, ...)
+	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/guitweakdata" then
 	local GuiTweakData_init_orig = GuiTweakData.init
 	function GuiTweakData:init()

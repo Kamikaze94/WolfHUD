@@ -1,7 +1,9 @@
 if not _G.WolfHUD then
 	_G.WolfHUD = {}
 	WolfHUD.mod_path = ModPath
-	WolfHUD.save_path = SavePath .. "WolfHUD.txt"
+	WolfHUD.save_path = SavePath
+	WolfHUD.settings_path = WolfHUD.save_path .. "WolfHUD.txt"
+	WolfHUD.inv_names_file = "WolfHUD_InventoryNames.txt"
 	WolfHUD.DEBUG_MODE = false
 	WolfHUD.version = "1.0"
 	WolfHUD.menu_ids = { 
@@ -18,6 +20,7 @@ if not _G.WolfHUD then
 		"wolfhud_press2hold_options_menu", 
 		"wolfhud_lasers_options_menu" 
 	}
+	WolfHUD.settings = {}
 	
 	if not WolfHUD.color_table then
 		WolfHUD.color_table = { -- namestring is always 'wolfhud_color_<name>'
@@ -39,6 +42,27 @@ if not _G.WolfHUD then
 			{ color = Color('000000'), name = "black" },
 			{ color = Color('000000'), name = "rainbow" },		--(only available in laser + killcounter colors)
 		}
+	end
+	if not WolfHUD.inventory_names then		
+		
+		if io.file_is_readable(WolfHUD.mod_path .. WolfHUD.inv_names_file) then
+			if not io.file_is_readable(WolfHUD.save_path ..WolfHUD.inv_names_file) then
+				local source = io.open(WolfHUD.mod_path .. WolfHUD.inv_names_file, "r")
+				local dest = io.open(WolfHUD.save_path ..WolfHUD.inv_names_file, "w+")
+				if source and dest then
+					dest:write(source:read("*all"))
+					source:close()
+					dest:close()
+				end
+			end
+			os.remove(WolfHUD.mod_path .. WolfHUD.inv_names_file)
+		end
+		
+		local file = io.open(WolfHUD.save_path .. WolfHUD.inv_names_file, "r")
+		if file then
+			WolfHUD.inventory_names = json.decode(file:read("*all"))
+			file:close()
+		end
 	end
 	
 	WolfHUD.hook_files = WolfHUD.hook_files or {
@@ -241,7 +265,7 @@ if not _G.WolfHUD then
 	
 	function WolfHUD:Load()
 		local corrupt = false
-		local file = io.open(self.save_path, "r")
+		local file = io.open(self.settings_path, "r")
 		if file then
 			for k, v in pairs(json.decode(file:read("*all"))) do
 				if type(v) == type(self.settings[k]) then
@@ -259,7 +283,7 @@ if not _G.WolfHUD then
 	end
 
 	function WolfHUD:Save()
-		local file = io.open(self.save_path, "w+")
+		local file = io.open(self.settings_path, "w+")
 		if file then
 			file:write(json.encode(self.settings))
 			file:close()
