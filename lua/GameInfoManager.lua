@@ -286,6 +286,7 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 		self._minions = {}
 		self._turrets = {}
 		self._pagers = {}
+		self._cams = {}
 		self._loot = {}
 		self._special_equipment = {}
 		self._ecms = {}
@@ -340,6 +341,14 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			return self._pagers[key]
 		else
 			return self._pagers
+		end
+	end
+	
+	function GameInfoManager:get_cams(key)
+		if key then
+			return self._cams[key]
+		else
+			return self._cams
 		end
 	end
 	
@@ -540,6 +549,27 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			if self._pagers[key] and not self._pagers[key].answered then
 				self._pagers[key].answered = true
 				self:_listener_callback("pager", "answered", key, self._pagers[key])
+			end
+		end
+	end
+	
+	function GameInfoManager:_camera_event(event, key, unit)
+		if event == "add" then
+			if not self._cams[key] then
+				self._cams[key] = { unit = unit, active = true, destroyed = false }
+				self:_listener_callback("camera", "add", key, self._cams[key])
+			else
+				self._cams[key].active = true
+			end
+		elseif event == "remove" then
+			if self._cams[key] and self._cams[key].active then
+				self._cams[key].active = false
+				self:_listener_callback("camera", "remove", key, self._cams[key])
+			end
+		elseif event == "destroy" then
+			if self._cams[key] and not self._cams[key].destroyed then
+				self._cams[key].destroyed = true
+				self:_listener_callback("camera", "destroy", key, self._cams[key])
 			end
 		end
 	end
@@ -1693,6 +1723,8 @@ if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 
 	local _start_tape_loop_original = SecurityCamera._start_tape_loop
 	local _deactivate_tape_loop_original = SecurityCamera._deactivate_tape_loop
+	local set_update_enabled_original = SecurityCamera.set_update_enabled
+	local destroy_original = SecurityCamera.destroy
 	
 	function SecurityCamera:_start_tape_loop(tape_loop_t, ...)
 		managers.gameinfo:event("tape_loop", "start", tostring(self._unit:key()), self._unit, tape_loop_t + 6)
@@ -1704,6 +1736,19 @@ if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 		return _deactivate_tape_loop_original(self, ...)
 	end
 	
+	function SecurityCamera:set_update_enabled(state)
+		if state then
+			managers.gameinfo:event("camera", "add", tostring(self._unit:key()), self._unit)
+		else
+			managers.gameinfo:event("camera", "remove", tostring(self._unit:key()))
+		end
+		return set_update_enabled_original(self, state)
+	end
+	
+	function SecurityCamera:destroy(unit)
+		managers.gameinfo:event("camera", "destroy", tostring(self._unit:key()))
+		return destroy_original(self, unit)
+	end
 end
 
 if string.lower(RequiredScript) == "lib/units/equipment/sentry_gun/sentrygunbase" then

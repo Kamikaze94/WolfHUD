@@ -360,6 +360,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self:_set_show_hostages()
 		self:_set_show_minion_count()
 		self:_set_show_pager_count()
+		self:_set_show_cam_count()
 		self:_set_show_loot()
 		self:_set_show_special_pickups()
 	end
@@ -401,6 +402,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local pager_count = self:list("right_side_list"):item("hostage_count_list"):item("PagerCount")
 		if pager_count then
 			pager_count:set_active(pager_count:get_count() > 0 and status)
+		end
+		
+		local cam_count = self:list("right_side_list"):item("hostage_count_list"):item("PagerCount")
+		if cam_count then
+			cam_count:set_active(cam_count:get_count() > 0 and status)
 		end
 		
 		for _, item in pairs(self:list("left_side_list"):item("pagers"):items()) do
@@ -506,6 +512,15 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		if item then
 			item:change_count(1)
 		end
+	end
+	
+	function HUDListManager:_cam_count_event(event, key, data)
+		local item = self:list("right_side_list"):item("hostage_count_list"):item("CamCount")
+		if event == "add" then
+			item:change_count(1)
+		elseif event == "remove" then
+			item:change_count(-1)
+		end	
 	end
 	
 	function HUDListManager:_special_pickup_event(event, key, data)
@@ -1138,6 +1153,24 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		else
 			list:unregister_item("PagerCount", true)
+		end
+	end
+	
+	function HUDListManager:_set_show_cam_count()
+		local list = self:list("right_side_list"):item("hostage_count_list")
+		local listener_id = "HUDListManager_cam_count_listener"
+		local events = { "add", "remove" }
+		
+		if HUDListManager.ListOptions.show_pager_count then
+			local clbk = callback(self, self, "_cam_count_event")
+			
+			list:register_item("CamCount", HUDList.CamCountItem)
+			
+			for _, event in pairs(events) do
+				managers.gameinfo:register_listener(listener_id, "camera", event, clbk)
+			end
+		else
+			list:unregister_item("CamCount", true)
 		end
 	end
 	
@@ -2105,6 +2138,17 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.UsedPagersItem:get_count()
+		return self._count or 0
+	end
+	
+	HUDList.CamCountItem = HUDList.CamCountItem or class(HUDList.RightListItem)
+	function HUDList.CamCountItem:init(parent, name)
+		HUDList.CamCountItem.super.init(self, parent, name, { atlas = {4, 2} })
+		local cam_count = table.size(managers.gameinfo:get_cams() or {})
+		self:set_count(cam_count)
+	end
+	
+	function HUDList.CamCountItem:get_count()
 		return self._count or 0
 	end
 

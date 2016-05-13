@@ -28,35 +28,31 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 
 		return populate_mods_original(self, data, ...)
 	end
---[[
-	local populate_buy_mask_original = BlackMarketGui.populate_buy_mask
-	function BlackMarketGui:populate_buy_mask(data, ...)
-		local new_create_data = clone(data.on_create_data)
-		for index, mask in ipairs(data.on_create_data) do
-			if not managers.dlc:is_dlc_unlocked(mask.global_value) then
-				log("Removing mask: " .. mask.mask_id .. "(DLC: " .. mask.global_value .. ")")
-				table.remove(new_create_data, index)
-				table.remove(data, index)
-			end
-		end
-		data.on_create_data = new_create_data
-		return populate_buy_mask_original(self, data, ...)
-	end
-]]
+
 	-- Show all Weapon Names in Inventory Boxxes
 	local orig_blackmarket_gui_slot_item_init = BlackMarketGuiSlotItem.init
-	function BlackMarketGuiSlotItem:init(main_panel, data, x, y, w, h)
-		data.custom_name_text = data.custom_name_text or not data.mid_text and data.name_localized
-		orig_blackmarket_gui_slot_item_init(self, main_panel, data, x, y, w, h)
+	function BlackMarketGuiSlotItem:init(main_panel, data, ...)
+		data.custom_name_text = data.custom_name_text or (not data.mid_text or data.mid_text == "") and data.name_localized
+--[[	if (data.category == "primaries" or data.category == "secondaries") and data.mini_icons then
+			local silent = false
+			for id, w_data in pairs(data.mini_icons) do	--Needs to handle Bows (excl. Explosive Bolt) and silent motor saw
+				if w_data.texture == "guis/textures/pd2/blackmarket/inv_mod_silencer" then
+					silent = true
+				end
+			end
+			data.custom_name_text = tostring(data.custom_name_text) .. " " .. (silent and utf8.char(57363) or "")
+		end]]
+		return orig_blackmarket_gui_slot_item_init(self, main_panel, data, ...)
 	end
 	
+	--Replace Tab Names with custom ones...
 	local BlackMarketGuiTabItem_init_original = BlackMarketGuiTabItem.init
-	BlackMarketGuiTabItem.init = function(self, main_panel, data, ...)
+	function BlackMarketGuiTabItem:init(main_panel, data, ...)
 		if WolfHUD.inventory_names and WolfHUD.inventory_names[data.category] and type(data.on_create_data[1]) == "number" then
 			local id = math.floor((data.on_create_data[1] / #data.on_create_data) + 1)
 			data.name_localized = WolfHUD.inventory_names[data.category][id] or nil
 		end
-		BlackMarketGuiTabItem_init_original(self, main_panel, data, ...)
+		return BlackMarketGuiTabItem_init_original(self, main_panel, data, ...)
 	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/guitweakdata" then
 	local GuiTweakData_init_orig = GuiTweakData.init
