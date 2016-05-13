@@ -561,13 +561,20 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			else
 				self._cams[key].active = true
 			end
-		elseif event == "remove" then
-			if self._cams[key] and self._cams[key].active then
+		elseif event == "enable" then
+			if self._cams[key] and not self._cams[key].active and not self._cams[key].destroyed then
+				self._cams[key].active = true
+				self:_listener_callback("camera", "enable", key, self._cams[key])
+			end
+		
+		elseif event == "disable" then
+			if self._cams[key] and self._cams[key].active and not self._cams[key].destroyed then
 				self._cams[key].active = false
-				self:_listener_callback("camera", "remove", key, self._cams[key])
+				self:_listener_callback("camera", "disable", key, self._cams[key])
 			end
 		elseif event == "destroy" then
 			if self._cams[key] and not self._cams[key].destroyed then
+				self._cams[key].active = false
 				self._cams[key].destroyed = true
 				self:_listener_callback("camera", "destroy", key, self._cams[key])
 			end
@@ -1723,6 +1730,7 @@ if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 
 	local _start_tape_loop_original = SecurityCamera._start_tape_loop
 	local _deactivate_tape_loop_original = SecurityCamera._deactivate_tape_loop
+	local init_original = SecurityCamera.init
 	local set_update_enabled_original = SecurityCamera.set_update_enabled
 	local destroy_original = SecurityCamera.destroy
 	
@@ -1736,11 +1744,16 @@ if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 		return _deactivate_tape_loop_original(self, ...)
 	end
 	
+	function SecurityCamera:init(unit)
+		managers.gameinfo:event("camera", "add", tostring(unit:key()), unit)
+		return init_original(self, unit)
+	end
+	
 	function SecurityCamera:set_update_enabled(state)
 		if state then
-			managers.gameinfo:event("camera", "add", tostring(self._unit:key()), self._unit)
+			managers.gameinfo:event("camera", "enable", tostring(self._unit:key()))
 		else
-			managers.gameinfo:event("camera", "remove", tostring(self._unit:key()))
+			managers.gameinfo:event("camera", "disable", tostring(self._unit:key()))
 		end
 		return set_update_enabled_original(self, state)
 	end

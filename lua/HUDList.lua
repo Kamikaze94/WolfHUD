@@ -516,9 +516,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	function HUDListManager:_cam_count_event(event, key, data)
 		local item = self:list("right_side_list"):item("hostage_count_list"):item("CamCount")
-		if event == "add" then
+		if event == "add" or event == "enable" then
 			item:change_count(1)
-		elseif event == "remove" then
+		elseif event == "disable" or event == "destroy" then
 			item:change_count(-1)
 		end	
 	end
@@ -1159,7 +1159,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_set_show_cam_count()
 		local list = self:list("right_side_list"):item("hostage_count_list")
 		local listener_id = "HUDListManager_cam_count_listener"
-		local events = { "add", "remove" }
+		local events = { "add", "enable", "disable", "destroy" }
 		
 		if HUDListManager.ListOptions.show_pager_count then
 			local clbk = callback(self, self, "_cam_count_event")
@@ -2060,7 +2060,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	HUDList.UnitCountItem = HUDList.UnitCountItem or class(HUDList.RightListItem)
 	HUDList.UnitCountItem.MAP = {
-		enemies =		{ atlas = {0, 5},  color = enemy_color, --[[subtract = { "cop_hostage", "minions" }]] },	--Aggregated enemies
+		enemies =		{ atlas = {6, 1},  color = enemy_color, --[[subtract = { "cop_hostage", "minions" }]] },	--Aggregated enemies
 		cop =			{ atlas = {0, 5},  color = enemy_color, priority = 5, --[[subtract = { "cop_hostage", "minions" }]] },	--Non-special police
 		security =		{ spec = {1, 4},   color = guard_color, priority = 4 },
 		thug =			{ atlas = {4, 12}, color = thug_color, priority = 4 },
@@ -2144,8 +2144,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDList.CamCountItem = HUDList.CamCountItem or class(HUDList.RightListItem)
 	function HUDList.CamCountItem:init(parent, name)
 		HUDList.CamCountItem.super.init(self, parent, name, { atlas = {4, 2} })
-		local cam_count = table.size(managers.gameinfo:get_cams() or {})
-		self:set_count(cam_count)
 	end
 	
 	function HUDList.CamCountItem:get_count()
