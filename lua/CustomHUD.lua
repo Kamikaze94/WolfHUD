@@ -80,6 +80,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local set_max_stamina_original = HUDManager.set_max_stamina
 	local add_weapon_original = HUDManager.add_weapon
 	local setup_endscreen_hud_original = HUDManager.setup_endscreen_hud
+	local update_name_label_by_peer_orig = HUDManager.update_name_label_by_peer
 
 	function HUDManager:update(t, dt, ...)
 		self._next_latency_update = self._next_latency_update or 0
@@ -148,6 +149,25 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDManager:setup_endscreen_hud(...)
 		self._hud_chat_ingame:disconnect_mouse()
 		return setup_endscreen_hud_original(self, ...)
+	end
+	
+	function HUDManager:update_name_label_by_peer(peer)
+		update_name_label_by_peer_orig(self, peer)
+		local data = self:_name_label_by_peer_id(peer:id())
+		if data and data.character_name then
+			data.text:set_text(data.character_name)
+			self:align_teammate_name_label(data.panel, data.interact)
+			--Fix for short player names...
+			local text = data.panel:child("text")
+			local cheater = data.panel:child("cheater")
+			if cheater and text then
+				local _, _, tw, _ = text:text_rect()
+				local _, _, cw, _ = cheater:text_rect()
+				local w = math.max(tw, cw)
+				text:set_w(w)
+				cheater:set_w(w)
+			end
+		end
 	end
 	
 	function HUDManager:_create_teammates_panel(hud)
@@ -230,17 +250,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDManager:show_player_gear(panel_id)
 		if self._teammate_panels[panel_id] then
 			self._teammate_panels[panel_id]:set_gear_visible(true)
-		end
-	end
-	
-	-- EXPERIMENTAL TEST  -  Remove Player level from over head labels
-	local update_name_label_by_peer_orig = HUDManager.update_name_label_by_peer
-	function HUDManager:update_name_label_by_peer(peer)
-		update_name_label_by_peer_orig(self, peer)
-		local data = self:_name_label_by_peer_id(peer:id())
-		if data and data.character_name then
-			data.text:set_text(data.character_name)
-			self:align_teammate_name_label(data.panel, data.interact)
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then

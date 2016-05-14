@@ -1731,6 +1731,7 @@ if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 	local _start_tape_loop_original = SecurityCamera._start_tape_loop
 	local _deactivate_tape_loop_original = SecurityCamera._deactivate_tape_loop
 	local init_original = SecurityCamera.init
+	local on_unit_set_enabled_original = SecurityCamera.on_unit_set_enabled
 	local set_update_enabled_original = SecurityCamera.set_update_enabled
 	local destroy_original = SecurityCamera.destroy
 	
@@ -1741,12 +1742,21 @@ if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 
 	function SecurityCamera:_deactivate_tape_loop(...)
 		managers.gameinfo:event("tape_loop", "stop", tostring(self._unit:key()))
+		managers.gameinfo:event("camera", "disable", tostring(self._unit:key()))
 		return _deactivate_tape_loop_original(self, ...)
 	end
 	
 	function SecurityCamera:init(unit)
 		managers.gameinfo:event("camera", "add", tostring(unit:key()), unit)
 		return init_original(self, unit)
+	end
+	
+	function SecurityCamera:on_unit_set_enabled(enabled)
+		if enabled then
+			managers.gameinfo:event("camera", "enable", tostring(self._unit:key()))
+		else
+			managers.gameinfo:event("camera", "disable", tostring(self._unit:key()))
+		end
 	end
 	
 	function SecurityCamera:set_update_enabled(state)

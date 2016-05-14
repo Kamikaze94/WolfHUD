@@ -404,7 +404,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			pager_count:set_active(pager_count:get_count() > 0 and status)
 		end
 		
-		local cam_count = self:list("right_side_list"):item("hostage_count_list"):item("PagerCount")
+		local cam_count = self:list("right_side_list"):item("hostage_count_list"):item("CamCount")
 		if cam_count then
 			cam_count:set_active(cam_count:get_count() > 0 and status)
 		end
