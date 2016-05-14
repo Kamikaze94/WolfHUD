@@ -51,9 +51,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDListManager = HUDListManager or class()
 	HUDListManager.ListOptions = {
 		--General settings
-        right_list_height_offset = HUDManager.CUSTOM_TEAMMATE_PANEL and 0 or 50,   --Margin from top for the right list
+        right_list_height_offset = HUDManager.CUSTOM_TEAMMATE_PANELS and 0 or 50,   --Margin from top for the right list
         right_list_scale = WolfHUD:getSetting("hudlist_right_scale", "number"),   --Size scale of right list
-        left_list_height_offset = HUDManager.CUSTOM_TEAMMATE_PANEL and 40 or 70,   --Margin from top for the left list
+        left_list_height_offset = HUDManager.CUSTOM_TEAMMATE_PANELS and 40 or 70,   --Margin from top for the left list
         left_list_scale = WolfHUD:getSetting("hudlist_left_scale", "number"),    --Size scale of left list
         buff_list_height_offset = 80,   --Margin from bottom for the buff list
         buff_list_scale = WolfHUD:getSetting("hudlist_buff_scale", "number"),    --Size scale of buff list

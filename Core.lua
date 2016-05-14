@@ -76,7 +76,7 @@ if not _G.WolfHUD then
 		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua", "TabStats.lua" },
 		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "Interaction.lua", "BurstFire.lua", "AdvAssault.lua" },
 		["lib/managers/playermanager"] = { "HUDList.lua" },
-		["lib/managers/trademanager"] = { "DownCounter.lua" },
+--		["lib/managers/trademanager"] = { "DownCounter.lua" },
 		["lib/managers/hud/huddriving"] = { "DrivingHUD.lua" },
 		["lib/managers/hud/hudteammate"] = { "CustomHUD.lua", "KillCounter.lua", "DownCounter.lua", "Scripts.lua", "BurstFire.lua" },
 		["lib/managers/hud/hudtemp"] = { "CustomHUD.lua" },
