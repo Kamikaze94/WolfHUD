@@ -162,4 +162,28 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 			return true
 		end
 	end
+elseif RequiredScript == "lib/units/weapons/shotgun/newshotgunbase" then
+
+	local on_equip_original = NewShotgunBase.on_equip
+	
+	function NewShotgunBase:on_equip(...)
+		if not WolfHUD:getSetting("laser_autoon", "boolean") then 
+			self._has_laser = false 
+		end
+		if self._has_gadget and self._has_laser == nil and (managers.weapon_factory and tweak_data and tweak_data.weapon and tweak_data.weapon.factory) then
+			local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+			for _, id in pairs(gadgets) do
+				local part_data = tweak_data.weapon.factory.parts[id]
+				if part_data and (part_data.sub_type == "laser" or part_data.type == "grip") then
+					self._has_laser = true
+					break
+				else
+					self._has_laser = false
+				end
+			end
+		end
+		self:set_gadget_on(self._stored_gadget_on or (self._has_laser and 1 or 0), false)
+		return on_equip_original(self, ...)
+	end
+
 end
