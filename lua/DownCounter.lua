@@ -62,7 +62,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._teammate_panels[i]:reset_downs()
 	end
 	
-elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
+elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HUDManager.CUSTOM_TEAMMATE_PANELS then
 	
 	Hooks:PostHook( HUDTeammate, "init", "WolfHUD_DownCounter_HUDTeammate_init", function(self, i, teammates_panel, is_player, ...)
 		if not HUDManager.CUSTOM_TEAMMATE_PANELS then	-- For CustomHUD Compatability...
@@ -99,9 +99,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		end
 	end)
 	
-	function HUDTeammate:set_downs(i)
+	HUDTeammate.set_downs = HUDTeammate.set_downs or function(self, i)
 		if not self._health_panel then return end
-		self,_downs = self._downs or self._max_downs or 3
+		self._downs = self._downs or self._max_downs or 3
 		if not i or self._downs ~= i then
 			self._downs = i or self._downs
 			local color = Color.white
@@ -126,11 +126,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		end
 	end
 	
-	function HUDTeammate:decrement_downs()
+	HUDTeammate.decrement_downs = HUDTeammate.decrement_downs or function(self)
 		self:set_downs(self._downs - 1)
 	end
 	
-	function HUDTeammate:reset_downs()
+	HUDTeammate.reset_downs = HUDTeammate.reset_downs or function(self)
 		self:set_downs(self._max_downs)
 	end
 end

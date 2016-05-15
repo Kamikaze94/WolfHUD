@@ -1,4 +1,4 @@
-printf = printf or function(...) end
+printf = printf or function(...) log(string.format(...)) end
 
 if not WolfHUD:getSetting("use_customhud", "boolean") then
 	if RequiredScript == "lib/managers/hudmanagerpd2" then
@@ -215,7 +215,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._build = PlayerInfoComponent.Build:new(self._panel, self, name_size, self._settings.BUILD and self._settings.BUILD.DURATION)	--TODO: setting
 		self._player_status = PlayerInfoComponent.PlayerStatusRadial:new(self._panel, self, size, is_player)
 		self._weapons = PlayerInfoComponent.AllWeapons:new(self._panel, self, size, HUDTeammateCustom.SETTINGS.MAX_WEAPONS, self._settings.WEAPON)
-		self._equipment = PlayerInfoComponent.Equipment:new(self._panel, self, size * 0.6, size, false)
+		self._equipment = PlayerInfoComponent.Equipment:new(self._panel, self, size * 0.75, size, false)
 		self._special_equipment = PlayerInfoComponent.SpecialEquipment:new(self._panel, self, size)
 		self._carry = PlayerInfoComponent.Carry:new(self._panel, self, is_player and (20 * self._settings.SCALE) or size, is_player)
 		self._interaction = PlayerInfoComponent.Interaction:new(self._panel, self, size, self._settings.INTERACTION and self._settings.INTERACTION.MIN_DURATION or 0)
@@ -575,6 +575,17 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function HUDTeammateCustom:set_deployable_equipment_amount(index, data)
 		if data.amount then
 			self:call_listeners("deployable_amount", data.amount)
+		end
+	end
+	
+	function HUDTeammateCustom:set_deployable_equipment_from_string(data)
+		self:call_listeners("deployable", data.icon)
+		self:set_deployable_equipment_amount_from_string(1, data)
+	end
+	
+	function HUDTeammateCustom:set_deployable_equipment_amount_from_string(index, data)
+		if data.amount then
+			self:call_listeners("deployable_amount_string", data)
 		end
 	end
 	
@@ -2178,6 +2189,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 				color = Color.white,
 				w = panel:h(),
 				h = panel:h(),
+				layer = 1,
 			})
 			
 			local amount = panel:text({
@@ -2189,7 +2201,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 				align = "right",
 				vertical = "center",
 				w = panel:w(),
-				h = panel:h()
+				h = panel:h(),
+				layer = 2,
 			})
 		end
 		
@@ -2201,10 +2214,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._owner:register_listener("Equipment", { "cable_tie_amount" }, callback(self, self, "set_cable_tie_amount"), false)
 		self._owner:register_listener("Equipment", { "deployable" }, callback(self, self, "set_deployable"), false)
 		self._owner:register_listener("Equipment", { "deployable_amount" }, callback(self, self, "set_deployable_amount"), false)
+		self._owner:register_listener("Equipment", { "deployable_amount_string" }, callback(self, self, "set_deployable_amount_string"), false)
 	end
 	
 	function PlayerInfoComponent.Equipment:destroy()
-		self._owner:unregister_listener("Equipment", { "deployable_amount", "deployable", "cable_tie_amount", "cable_tie", "throwable_amount", "throwable" })
+		self._owner:unregister_listener("Equipment", { "deployable_amount", "deployable_amount_string", "deployable", "cable_tie_amount", "cable_tie", "throwable_amount", "throwable" })
 		
 		PlayerInfoComponent.Equipment.super.destroy(self)
 	end
@@ -2277,6 +2291,30 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		text:set_text(string.format("%02.0f", amount))
 		text:set_range_color(0, amount < 10 and 1 or 0, Color.white:with_alpha(0.5))
 		panel:set_visible(amount > 0)
+		self:arrange()
+	end
+	
+	function PlayerInfoComponent.Equipment:set_deployable_amount_string(data)
+		local panel = self._panel:child("deployables")
+		local text = panel:child("amount")
+		local max_amount = 0
+		local text_str = ""
+		local color_range = {}
+		for i = 1, #data.amount do
+			if data.amount[i] > 0 then
+				if data.amount[i] < 10 then
+					local l = text_str:len()
+					table.insert(color_range, {l, l+1})
+				end
+				max_amount = math.max(data.amount[i], max_amount)
+				text_str = text_str .. string.format("%02.0f", data.amount[i]) .. (data.amount[i+1] and "|" or "")
+			end
+		end
+		text:set_text(text_str)
+		for _, range in ipairs(color_range) do
+			text:set_range_color(range[1], range[2], Color.white:with_alpha(0.5))
+		end
+		panel:set_visible(max_amount > 0)
 		self:arrange()
 	end
 
