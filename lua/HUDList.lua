@@ -1032,7 +1032,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
-		if HUDListManager.ListOptions.show_civilians then
+		if HUDListManager.ListOptions.show_hostages then
 			self._unit_count_listeners = self._unit_count_listeners + 1
 			local clbk = callback(self, self, "_unit_count_event")
 			

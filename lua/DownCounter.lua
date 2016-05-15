@@ -36,7 +36,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local set_mugshot_custody_original = HUDManager.set_mugshot_custody
 	
 	function HUDManager:set_player_health(data, ...)
-		self:set_teammate_downs(HUDManager.PLAYER_PANEL, data.revives - 1)
+		if data.revives then
+			self:set_teammate_downs(HUDManager.PLAYER_PANEL, data.revives - 1)
+		end
 		return set_player_health_original(self, data, ...)
 	end
 	

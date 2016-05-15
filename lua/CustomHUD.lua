@@ -842,7 +842,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		local guis_catalog = string.format("guis/%s", bundle_folder and string.format("dlcs/%s/", tostring(bundle_folder)) or "")
 		local texture_name = tweak_entry[type][id] and tweak_entry[type][id].texture_name or tostring(id)
 		local texture = string.format("%s%s%s", guis_catalog, texture_path[type], texture_name)
-		log(texture)
 		
 		if type == "weapon_skin" then
 			id = tweak_entry[type][id] and tweak_entry[type][id].weapon_id
@@ -907,7 +906,22 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean") or false,
 		})
 		
+		self._detection_counter = self._panel:text({
+			name = "downs",
+			text = utf8.char(57363) .. "33",
+			color = Color.red,
+			align = "center",
+			vertical = "center",
+			h = size * 0.25,
+			w = size * 0.25,
+			font_size = size * 0.2,
+			font = "fonts/font_small_mf",
+			layer = self._radial:layer() + 2,
+			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean") or false,
+		})
+		
 		self._downs_counter:set_center(size / 2, size / 2)
+		self._detection_counter:set_center(size / 2, size / 2)
 		
 		self._stored_health = 0
 		self._stored_health_max = 0
@@ -921,10 +935,16 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._teammate_panel:register_listener("HealthRadial", { "set_downs" }, callback(self, self, "set_downs"), false)
 		self._teammate_panel:register_listener("HealthRadial", { "decrement_downs" }, callback(self, self, "decrement_downs"), false)
 		self._teammate_panel:register_listener("HealthRadial", { "reset_downs" }, callback(self, self, "reset_downs"), false)
+		if managers.gameinfo then
+			managers.gameinfo:register_listener("CustomHUD_HealthRadial_whisper_mode_listener", "whisper_mode", "change", callback(self, self, "_whisper_mode_change"))
+		end
 	end
 	
 	function PlayerInfoComponent.HealthRadial:destroy()
 		self._teammate_panel:unregister_listener("HealthRadial", { "health", "stored_health", "stored_health_max", "set_downs", "decrement_downs", "reset_downs" })
+		if managers.gameinfo then
+			managers.gameinfo:unregister_listener("CustomHUD_HealthRadial_whisper_mode_listener", "whisper_mode", "change")
+		end
 		
 		PlayerInfoComponent.HealthRadial.super.destroy(self)
 	end
@@ -947,7 +967,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.HealthRadial:set_downs(amount)
-		if self._downs ~= amount then
+		if amount and self._downs ~= amount then
 			self._downs = amount
 			local downs_text = tostring(amount)
 			if self._has_messiah and managers.player:player_unit() and managers.player:player_unit():character_damage() then
@@ -955,19 +975,27 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 				downs_text = downs_text .. "/" .. (messiah_charges or "?")
 			end
 			self._downs_counter:set_text(tostring(downs_text))
-			self._downs_counter:set_visible(not managers.groupai:state():whisper_mode() or self._downs < self._max_downs)
 			self._downs_counter:set_color(self._downs > 2 and Color('C2FC97') or self._downs > 1 and Color('CEA168') or Color('E24E4E'))
 		end
+		self._downs_counter:set_visible(not managers.groupai:state():whisper_mode() or self._downs < self._max_downs)
+		self._detection_counter:set_visible(not self._downs_counter:visible())
 	end
 	
 	function PlayerInfoComponent.HealthRadial:decrement_downs()
-		self:set_downs(self._downs - 1)
+		if not self._is_player and self._downs <= 0 then
+			self._max_downs  = math.min(self._max_downs + 1, 4)
+		end
+		self:set_downs(math.max(self._downs - 1, 0))
 	end
 	
 	function PlayerInfoComponent.HealthRadial:reset_downs()
 		self:set_downs(self._max_downs)
 	end
 	
+	function PlayerInfoComponent.HealthRadial:_whisper_mode_change(event, key, status)
+		self._downs_counter:set_visible(not status or self._downs < self._max_downs)
+		self._detection_counter:set_visible(not self._downs_counter:visible())
+	end
 
 	PlayerInfoComponent.ArmorRadial = PlayerInfoComponent.ArmorRadial or class(PlayerInfoComponent.Base)
 
