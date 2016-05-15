@@ -86,8 +86,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			SCALE = 1,			--Scale of all elements of the panel
 			OPACITY = 0.85,	--Transparency/alpha of panel (1 is solid, 0 is invisible)
 			
-			--NAME = true,	--Show name
-			--RANK = true,	--Show infamy/level
+			NAME = true,	--Show name
+			RANK = true,	--Show infamy/level
 			--CHARACTER = true,	--Show character name
 			--LATENCY = true,	--Show latency (not used by player panel)
 			STATUS = true,	--Show health/armor/condition etc.
@@ -152,16 +152,16 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			STATUS = true,
 			EQUIPMENT = true,
 			SPECIAL_EQUIPMENT = true,
-			CALLSIGN = true,
+			--CALLSIGN = true,
 			CARRY = true,
 			BUILD = {
 				--HIDE = true,
-				DURATION = 30,
+				DURATION = 15,
 			},
 			WEAPON = {
 				ICON = {
 					--HIDE = true,
-					SELECTED_ONLY = true,
+					--SELECTED_ONLY = true,
 					--UNSELECTED_ONLY = true,
 				},
 				AMMO = {
@@ -1847,7 +1847,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		active_mode:set_center(self._fire_mode_panel:center())
 		
 		self:arrange()
-		self._bg_panel = HUDBGBox_create(self._panel, { -- Move upwards and fix positioning
+		self._bg_panel = HUDBGBox_create(self._panel, { -- TODO: Move upwards and fix positioning (+ size for combined ammo)
 			w = self._panel:w(),
 			h = self._panel:h(),
 		}, {})
@@ -2206,7 +2206,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		local green = 0.7 * math.clamp((ratio - 0.25) / 0.25, 0, 1) + 0.3
 		local blue = 0.7 * math.clamp(ratio/0.25, 0, 1) + 0.3
-		local color = Color(1, 1, blue, green)
+		local color = ratio >= 1 and Color('C2FC97') or Color(1, 1, blue, green)
 		component:set_text(string.format("%03.0f", current))
 		component:set_color(color)
 		
@@ -2357,24 +2357,24 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function PlayerInfoComponent.Equipment:set_deployable_amount_string(data)
 		local panel = self._panel:child("deployables")
 		local text = panel:child("amount")
-		local max_amount = 0
 		local text_str = ""
 		local color_range = {}
 		for i = 1, #data.amount do
-			if data.amount[i] > 0 then
-				if data.amount[i] < 10 then
+			local amount = data.amount[i]
+			if amount > 0 then
+				if amount < 10 then
 					local l = text_str:len()
 					table.insert(color_range, {l, l+1})
 				end
-				max_amount = math.max(data.amount[i], max_amount)
-				text_str = text_str .. string.format("%02.0f", data.amount[i]) .. (data.amount[i+1] and "|" or "")
+				local has_next = data.amount[i+1] and data.amount[i+1] > 0
+				text_str = text_str .. string.format("%02.0f", amount) .. (has_next and "|" or "")
 			end
 		end
 		text:set_text(text_str)
 		for _, range in ipairs(color_range) do
 			text:set_range_color(range[1], range[2], Color.white:with_alpha(0.5))
 		end
-		panel:set_visible(max_amount > 0)
+		panel:set_visible(text_str:len() > 0)
 		self:arrange()
 	end
 

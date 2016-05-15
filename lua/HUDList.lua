@@ -501,7 +501,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		if HUDListManager.BUFFS[id] then
 			for _, item_id in ipairs(HUDListManager.BUFFS[id]) do
 				local item_data = HUDList.BuffItemBase.MAP[item_id]
-				
 				if item_data and not item_data.ignore then
 					local item = 
 						buff_list:item(item_id) or 
@@ -771,22 +770,26 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local items = self:_get_buff_items(id)
 		
 		for _, item in ipairs(items) do
-			if event == "activate" then
-				item:activate(id)
-			elseif event == "deactivate" then
+			if HUDListManager.ListOptions.show_buffs ~= 2 or HUDList.BuffItemBase.MAP[id].class == "TimedBuffItem" then
+				if event == "activate" then
+					item:activate(id)
+				elseif event == "deactivate" then
+					item:deactivate(id)
+				elseif event == "set_duration" then
+					item:set_duration(id, data)
+				elseif event == "set_stack_count" then
+					item:set_stack_count(id, data)
+				elseif event == "add_timed_stack" then
+					item:add_stack(id, data)
+				elseif event == "remove_timed_stack" then
+					item:remove_stack(id, data)
+				elseif event == "set_value" then
+					item:set_value(id, data)
+				elseif event == "set_progress" then
+					item:set_progress(id, data)
+				end
+			else
 				item:deactivate(id)
-			elseif event == "set_duration" then
-				item:set_duration(id, data)
-			elseif event == "set_stack_count" then
-				item:set_stack_count(id, data)
-			elseif event == "add_timed_stack" then
-				item:add_stack(id, data)
-			elseif event == "remove_timed_stack" then
-				item:remove_stack(id, data)
-			elseif event == "set_value" then
-				item:set_value(id, data)
-			elseif event == "set_progress" then
-				item:set_progress(id, data)
 			end
 		end
 	end
@@ -1420,24 +1423,22 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		if HUDListManager.ListOptions.show_buffs < 3 then
 			local active_buffs = managers.gameinfo:get_buffs()
 			for id, data in pairs(active_buffs) do
-				if HUDListManager.ListOptions.show_buffs ~= 2 or data.class == "TimedBuffItem" then
-					self:_buff_event("activate", id)
+				self:_buff_event("activate", id)
 					
-					if data.stacks then
-						self:_buff_event("add_timed_stack", id, data)
-					end
+				if data.stacks then
+					self:_buff_event("add_timed_stack", id, data)
+				end
 					
-					if data.t and data.expire_t then
-						self:_buff_event("set_duration", id, data)
-					end
+				if data.t and data.expire_t then
+					self:_buff_event("set_duration", id, data)
+				end
 					
-					if data.stack_count then
-						self:_buff_event("set_stack_count", id, data)
-					end
+				if data.stack_count then
+					self:_buff_event("set_stack_count", id, data)
+				end
 					
-					if data.value then
-						self:_buff_event("set_value", id, data)
-					end
+				if data.value then
+					self:_buff_event("set_value", id, data)
 				end
 			end
 		
@@ -1453,7 +1454,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				end
 			end
 			
-			--TODO: Clear list
+			for _, item in pairs(self:list("buff_list"):items()) do
+				item:set_active(false)
+			end
 		end
 	end
 	
@@ -3342,6 +3345,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.BuffItemBase:deactivate(id)
 		HUDList.BuffItemBase.super.deactivate(self)
+		self:_set_progress(0)
 	end
 	
 	function HUDList.BuffItemBase:set_progress(id, data)

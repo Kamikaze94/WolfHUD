@@ -178,7 +178,6 @@ elseif RequiredScript == "lib/units/equipment/sentry_gun/sentrygunbase" then
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 
 	HUDManager.KILL_COUNTER_PLUGIN = true
-	HUDManager.SHOW_BOT_KILLS = true
 
 	HUDManager.increment_teammate_kill_count = HUDManager.increment_teammate_kill_count or function (self, i, is_special, headshot)
 		self._teammate_panels[i]:increment_kill_count(is_special, headshot)
@@ -193,10 +192,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
-
-	HUDTeammate.SHOW_AI_KILLS = WolfHUD:getSetting("SHOW_AI_KILLS", "boolean")
 	
-	if not HUDTeammate.increment_kill_count and not HUDManager.CUSTOM_TEAMMATE_PANELS then	--Custom HUD compatibility
+	if not HUDManager.CUSTOM_TEAMMATE_PANELS then	--Custom HUD compatibility
 		local init_original = HUDTeammate.init
 		local set_name_original = HUDTeammate.set_name
 		local set_state_original = HUDTeammate.set_state
@@ -297,7 +294,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		function HUDTeammate:set_state(...)
 			set_state_original(self, ...)
 		
-			if not HUDTeammate.SHOW_AI_KILLS then
+			if not WolfHUD:getSetting("SHOW_AI_KILLS", "boolean") then
 				self._kills_panel:set_visible(not self._ai and true or false)
 			end
 			
