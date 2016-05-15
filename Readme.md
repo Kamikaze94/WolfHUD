@@ -1,4 +1,4 @@
-# WolfHUD
+# WolfHUD BETA
 ####Development Version
   
 This is a Mod collection of several useful HUD altering mods.  
@@ -8,7 +8,14 @@ Over time I added more and more useful Scripts and currently it becomes kind of 
 Not sure if I want it to become that, but at least I added ingame Options to turn off functions you don't like. ;)  
 __I got the permission from _Seven_, _ViciousWalrus_, _Undeadsewer_, _FishTaco_, _friendIyfire_ and _Terminator01_ for the use of their scripts and from _Nervatel Hanging Closet Monster_ for using his icons.__  
 **Big thanks to [Kampfhörnchen](http://forums.lastbullet.net/member.php?action=profile&uid=19364) for creating a better logo and a banner, ^^**
-
+  
+<br><br>
+###NOTE:
+*This version is intended to work with the current __BETA__, as a try to get a smooth transition, once it gets released.  
+However, I needed to mess with quite some code, to switch to the new CustomHUD version, so don't cry, when you crash at a certain point. Consider yourself warned.  
+Some features from the main version are also missing here. No deal-breaking ones, but it'll take some time to rework and implement them again.*
+  
+<br><br>
 <p align="center">
   <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_1.jpg" width="420"/>
   <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_2.jpg" width="420"/>
