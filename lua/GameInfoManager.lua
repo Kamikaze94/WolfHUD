@@ -235,8 +235,10 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			arm_und = {	--Transport: Underpass (8x money)
 				[101237] = true, [101238] = true, [101239] = true, [103835] = true, [103836] = true, [103837] = true, [103838] = true, [101240] = true,
 			},
-			ukrainian_job = {	--Ukrainian Job (1x money)
+			ukrainian_job = {	--Ukrainian Job (3x money)
 				[101514] = true,
+				[102052] = true,
+				[102402] = true,
 			},
 			firestarter_2 = {	--Firestarter day 2 (1x keycard)
 				[107208] = true,
@@ -246,6 +248,10 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			},
 			roberts = {	--GO Bank (1x keycard)
 				[106104] = true,
+			},
+			jewelry_store = {	--Jewelry Store (2x money)
+				[102052] = true,
+				[102402] = true,
 			},
 		},
 	}
@@ -1590,7 +1596,7 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 	
 	function ObjectInteractionManager:init(...)
 		init_original(self, ...)
-		self._queued_units_NEW = {}
+		self._queued_units = {}
 	end
 	
 	function ObjectInteractionManager:update(t, ...)
@@ -1599,18 +1605,12 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 	end
 	
 	function ObjectInteractionManager:add_unit(unit, ...)
-		self._queued_units_NEW[tostring(unit:key())] = unit
+		self:add_unit_clbk(unit)
 		return add_unit_original(self, unit, ...)
 	end
 	
 	function ObjectInteractionManager:remove_unit(unit, ...)
-		local key = tostring(unit:key())
-		
-		if self._queued_units_NEW[key] then
-			self._queued_units_NEW[key] = nil
-		else
-			managers.gameinfo:event("interactive_unit", "remove", key, unit)
-		end
+		self:remove_unit_clbk(unit)
 	
 		return remove_unit_original(self, unit, ...)
 	end
@@ -1631,15 +1631,28 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 		return interupt_action_interact_original(self, ...)
 	end
 	
+	function ObjectInteractionManager:add_unit_clbk(unit)
+		self._queued_units[tostring(unit:key())] = unit
+	end
+	
+	function ObjectInteractionManager:remove_unit_clbk(unit)
+		local key = tostring(unit:key())
+		
+		if self._queued_units[key] then
+			self._queued_units[key] = nil
+		else
+			managers.gameinfo:event("interactive_unit", "remove", key, unit)
+		end
+	end
 
 	function ObjectInteractionManager:_process_queued_units(t)
-		for key, unit in pairs(self._queued_units_NEW) do
+		for key, unit in pairs(self._queued_units) do
 			if alive(unit) then
 				managers.gameinfo:event("interactive_unit", "add", key, unit)
 			end
 		end
 	
-		self._queued_units_NEW = {}
+		self._queued_units = {}
 	end
 	
 end

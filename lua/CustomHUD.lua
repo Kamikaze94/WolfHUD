@@ -907,8 +907,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		})
 		
 		self._detection_counter = self._panel:text({
-			name = "downs",
-			text = utf8.char(57363) .. "33",
+			name = "detection",
+			text = utf8.char(57363),
 			color = Color.red,
 			align = "center",
 			vertical = "center",
@@ -918,6 +918,18 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			font = "fonts/font_small_mf",
 			layer = self._radial:layer() + 2,
 			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean") or false,
+		})
+		
+		self._panel:bitmap({
+			name = "center_bg",  
+			texture = "guis/textures/pd2/crimenet_marker_glow",  
+			texture_rect = { 0, 0, 64, 64 }, 
+			blend_mode = "normal",  
+			color = Color.black,
+			alpha = 0.6,
+			w = size,  
+			h = size,  
+			layer = 1
 		})
 		
 		self._downs_counter:set_center(size / 2, size / 2)
@@ -936,14 +948,16 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._teammate_panel:register_listener("HealthRadial", { "decrement_downs" }, callback(self, self, "decrement_downs"), false)
 		self._teammate_panel:register_listener("HealthRadial", { "reset_downs" }, callback(self, self, "reset_downs"), false)
 		if managers.gameinfo then
-			managers.gameinfo:register_listener("CustomHUD_HealthRadial_whisper_mode_listener", "whisper_mode", "change", callback(self, self, "_whisper_mode_change"))
+			local panel_id = self._teammate_panel._id
+			managers.gameinfo:register_listener("HealthRadial_whisper_mode_listener" .. tostring(panel_id), "whisper_mode", "change", callback(self, self, "_whisper_mode_change"))
 		end
 	end
 	
 	function PlayerInfoComponent.HealthRadial:destroy()
 		self._teammate_panel:unregister_listener("HealthRadial", { "health", "stored_health", "stored_health_max", "set_downs", "decrement_downs", "reset_downs" })
 		if managers.gameinfo then
-			managers.gameinfo:unregister_listener("CustomHUD_HealthRadial_whisper_mode_listener", "whisper_mode", "change")
+			local panel_id = self._teammate_panel._id
+			managers.gameinfo:unregister_listener("HealthRadial_whisper_mode_listener" .. tostring(panel_id), "whisper_mode", "change")
 		end
 		
 		PlayerInfoComponent.HealthRadial.super.destroy(self)
@@ -954,6 +968,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._radial:set_color(Color(ratio, 1, 1))
 		self._stored_radial:set_rotation(-ratio * 360)
 		self:set_stored_health_max(1-ratio)
+		self:set_detection()
 	end
 
 	function PlayerInfoComponent.HealthRadial:set_stored_health(amount)
@@ -990,6 +1005,23 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.HealthRadial:reset_downs()
 		self:set_downs(self._max_downs)
+	end
+	
+	function PlayerInfoComponent.HealthRadial:set_detection(risk)
+		if risk or not self._risk then
+			if risk then
+				self._risk = risk
+			elseif self._is_player then
+				self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_local(75)))
+			else
+				self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_peer(managers.network:session():peer(self._teammate_panel:peer_id()), 75)))
+			end
+			if self._risk then
+				local color = self._risk < 50 and Color(1, 0, 0.8, 1) or Color(1, 1, 0.2, 0)
+				self._detection_counter:set_text(utf8.char(57363) .. tostring(self._risk))
+				self._detection_counter:set_color(color)
+			end
+		end
 	end
 	
 	function PlayerInfoComponent.HealthRadial:_whisper_mode_change(event, key, status)
