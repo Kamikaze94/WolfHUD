@@ -175,9 +175,34 @@ elseif RequiredScript == "lib/units/equipment/sentry_gun/sentrygunbase" then
 		self._owner_id = self._owner_id or peer_id
 	end
 	
+elseif RequiredScript == "lib/managers/statisticsmanager" then
+
+	local shot_fired_original = StatisticsManager.shot_fired
+	
+	function StatisticsManager:shot_fired(data, ...)
+		shot_fired_original(self, data, ...)
+		
+		--[[
+			This does not work well for HE rounds. It would be almost correct if you halved number of shots, 
+			but would not take into account shots that goes into the void or compensate for direct hits
+		]]
+		
+		local name_id = data.name_id or data.weapon_unit:base():get_name_id()
+		local slot = tweak_data.weapon[name_id].use_data.selection_index
+		local weapon_data = self._global.session.shots_by_weapon[name_id]
+		local weapon_accuracy = 0
+		if weapon_data.total > 0 then
+			weapon_accuracy = math.floor(100 * weapon_data.hits / weapon_data.total)
+		end
+		
+		managers.hud:set_teammate_accuracy(HUDManager.PLAYER_PANEL, self:session_hit_accuracy())
+		managers.hud:set_teammate_weapon_accuracy(HUDManager.PLAYER_PANEL, slot, weapon_accuracy)
+	end
+
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 
 	HUDManager.KILL_COUNTER_PLUGIN = true
+	HUDManager.ACCURACY_PLUGIN = true
 
 	HUDManager.increment_teammate_kill_count = HUDManager.increment_teammate_kill_count or function (self, i, is_special, headshot)
 		self._teammate_panels[i]:increment_kill_count(is_special, headshot)
@@ -189,6 +214,14 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	HUDManager.increment_teammate_kill_count_detailed = HUDManager.increment_teammate_kill_count_detailed or function(self, i, unit, weapon_type, weapon_slot)
 		--TODO: Add call for default HUD  |  No need for that, really...
+	end
+	
+	HUDManager.set_teammate_accuracy = HUDManager.set_teammate_accuracy or function(self, i, value)
+		self._teammate_panels[i]:set_accuracy(value)
+	end
+	
+	HUDManager.set_teammate_weapon_accuracy = HUDManager.set_teammate_weapon_accuracy or function(self, i, slot, value)
+		--TODO
 	end
 
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
@@ -202,6 +235,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			init_original(self, ...)
 			if not HUDManager.CUSTOM_TEAMMATE_PANELS then
 				self:_init_killcount()
+				self:init_accuracy()
 			end
 		end
 		
@@ -245,6 +279,47 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			self._kills_text:set_right(self._kills_panel:w())
 			
 			self:reset_kill_count()
+		end
+		
+		function HUDTeammate:init_accuracy()
+			if not (self._id == HUDManager.PLAYER_PANEL) then return end
+			self._accuracy_panel = self._panel:panel({
+				name = "accuracy_panel",
+				visible = true,
+				w = 100,
+				h = 20,
+				x = 0,
+				halign = "right"
+			})
+			
+			local player_panel = self._panel:child("player")
+			local name_label = self._panel:child("name")
+			self._accuracy_panel:set_rightbottom(player_panel:right(), self._kills_panel and self._kills_panel:top() or name_label:bottom())
+			
+			self._accuracy_icon = self._accuracy_panel:bitmap({
+				texture = "guis/textures/pd2/pd2_waypoints",
+				w = self._accuracy_panel:h() * 0.75,
+				h = self._accuracy_panel:h(),
+				texture_rect = { 96, 0, 32, 32 },
+				alpha = 1,
+				blend_mode = "normal",
+				layer = 0,
+				color = Color.white
+			})
+			
+			self._accuracy_text = self._accuracy_panel:text({
+				name = "accuracy_text",
+				text = "0%",
+				layer = 1,
+				color = Color.white,
+				w = self._accuracy_panel:w(),
+				h = self._accuracy_panel:h(),
+				vertical = "center",
+				align = "right",
+				font_size = self._accuracy_panel:h(),
+				font = tweak_data.hud_players.name_font
+			})
+			self:set_accuracy(0)
 		end
 
 		function HUDTeammate:increment_kill_count(is_special, headshot)
@@ -304,6 +379,12 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 				local name_label = self._panel:child("name")
 				self._kills_panel:set_bottom((self._id == HUDManager.PLAYER_PANEL) and name_label:bottom() or name_label:top())
 			end
+		end
+		
+		function HUDTeammate:set_accuracy(value)
+			self._accuracy_text:set_text(tostring(value) .. "%")
+			local _, _, w, _ = self._accuracy_text:text_rect()
+			self._accuracy_icon:set_right(self._accuracy_panel:w() - w - self._accuracy_icon:w() * 0.15)
 		end
 	end
 end

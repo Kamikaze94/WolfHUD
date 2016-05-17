@@ -142,7 +142,15 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/renderers/menunodeskil
 	end
 elseif RequiredScript == "lib/managers/missionassetsmanager" then
 	function MissionAssetsManager:mission_has_preplanning()
-		return tweak_data.preplanning.locations[Global.game_settings and Global.game_settings.level_id] ~= nil
+		if not self._has_locked_asset then
+			for _, asset in ipairs(self._global.assets) do
+				if self:asset_is_buyable(asset) then
+					self._has_locked_asset = true
+					break
+				end
+			end
+		end
+		return tweak_data.preplanning.locations[Global.game_settings and Global.game_settings.level_id] ~= nil and not self._has_locked_asset
 	end
 
 	function MissionAssetsManager:asset_is_buyable(asset)
@@ -159,10 +167,12 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 	end
 
 	function MissionAssetsManager.update_buy_all_assets_asset_cost(self)
-		self._tweak_data.buy_all_assets.money_lock = 0
-		for _, asset in ipairs(self._global.assets) do
-			if self:asset_is_buyable(asset) then
-				self._tweak_data.buy_all_assets.money_lock = self._tweak_data.buy_all_assets.money_lock + (self._tweak_data[asset.id].money_lock or 0)
+		if not self:mission_has_preplanning() and self._tweak_data.buy_all_assets then
+			self._tweak_data.buy_all_assets.money_lock = 0
+			for _, asset in ipairs(self._global.assets) do
+				if self:asset_is_buyable(asset) then
+					self._tweak_data.buy_all_assets.money_lock = self._tweak_data.buy_all_assets.money_lock + (self._tweak_data[asset.id].money_lock or 0)
+				end
 			end
 		end
 	end
@@ -208,8 +218,10 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 	local MissionAssetsManager_sync_unlock_asset_orig = MissionAssetsManager.sync_unlock_asset
 	function MissionAssetsManager.sync_unlock_asset(self, ...)
 		MissionAssetsManager_sync_unlock_asset_orig(self, ...)
-		self:update_buy_all_assets_asset_cost()
-		self:check_all_assets()
+		if not self:mission_has_preplanning() then
+			self:update_buy_all_assets_asset_cost()
+			self:check_all_assets()
+		end
 	end
 
 	if not MissionAssetsManager_unlock_asset_orig then MissionAssetsManager_unlock_asset_orig = MissionAssetsManager.unlock_asset end

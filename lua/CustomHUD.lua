@@ -110,7 +110,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 					--UNSELECTED_ONLY = true,
 				},
 				NAME = {
-					HIDE = true,
+					--HIDE = true,
 					--SELECTED_ONLY = true,
 					--UNSELECTED_ONLY = true, 
 				},
@@ -845,6 +845,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		if type == "weapon_skin" then
 			id = tweak_entry[type][id] and tweak_entry[type][id].weapon_id
+			type = "weapon"
 		end
 		local name_id = tweak_entry[type][id] and tweak_entry[type][id].name_id or tostring(id)
 		local name_text = managers.localization:text(name_id)
@@ -1746,6 +1747,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			h = height,
 		})
 		
+		self._bg_panel = HUDBGBox_create(self._panel, { 
+			w = w,
+			h = h,
+		}, {})
+		
 		local weapon_icon = self._icon_panel:bitmap({
 			name = "icon",
 			h = "grow",
@@ -1847,10 +1853,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		active_mode:set_center(self._fire_mode_panel:center())
 		
 		self:arrange()
-		self._bg_panel = HUDBGBox_create(self._panel, { -- TODO: Move upwards and fix positioning (+ size for combined ammo)
-			w = self._panel:w(),
-			h = self._panel:h(),
-		}, {})
 	end
 	
 	function PlayerInfoComponent.Weapon:add_statistics_panel()
@@ -1998,6 +2000,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		local changed_enabled = self:set_enabled("panel_size", visible)
 		local changed_size = self:set_size(w, h)
+		if self._bg_panel then
+			self._bg_panel:set_w(w)
+			self._bg_panel:set_h(h)
+		end
 		
 		return changed_enabled or changed_size
 	end

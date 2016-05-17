@@ -101,30 +101,60 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 		end
 	end)
 	
+	local set_health_original = HUDTeammate.set_health
+	function HUDTeammate:set_health(...)
+		set_health_original(self, ...)
+		-- Hacky workaround to get a whisper mode listener...
+		local whisper_mode = managers.groupai:state():whisper_mode()
+		if (not self._risk and whisper_mode) or (not self._prev_loud and not whisper_mode) or (self._prev_loud and whisper_mode) then
+			self:set_downs()
+		end
+		self._prev_loud = not whisper_mode
+	end
+	
 	HUDTeammate.set_downs = HUDTeammate.set_downs or function(self, i)
 		if not self._health_panel then return end
-		self._downs = self._downs or self._max_downs or 3
+		self._downs = self._downs or self._max_downs
 		if not i or self._downs ~= i then
 			self._downs = i or self._downs
-			local color = Color.white
 			local alpha = WolfHUD:getSetting("show_downcounter", "boolean") and 1 or 0
-			if not managers.groupai:state():whisper_mode() or self._downs < self._max_downs then
+			if managers.groupai:state():whisper_mode() and self._downs == self._max_downs then
+				if not self._risk then
+					self._risk = 99
+					if self._id == HUDManager.PLAYER_PANEL then
+						self._health_panel:child("risk_indicator"):set_font_size(15)
+						self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_local(75)))
+					elseif self:peer_id() ~= nil then
+						self._health_panel:child("risk_indicator"):set_font_size(12)
+						self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_peer(managers.network:session():peer(self:peer_id()), 75)))
+					end
+					self._health_panel:child("risk_indicator"):set_text(utf8.char(57363))
+					if self._risk < 99 then
+						local r = (self._risk-3)/72
+						local g = 0.8-0.6*((self._risk-3)/72)
+						local b = 1-(self._risk-3)/72
+						color = Color(1, r, g, b)
+						self._health_panel:child("risk_indicator"):set_text(utf8.char(57363) .. tostring(self._risk))
+					end
+					self._health_panel:child("risk_indicator"):set_color(color:with_alpha(alpha))
+				end
+			else
 				local downs_text = self._downs
 				if self._id == HUDManager.PLAYER_PANEL then
-					self._health_panel:child("risk_indicator"):set_font_size(19 * (HUDTeammate._PLAYER_PANEL_SCALE or 1))
-					local has_messiah = managers.player:has_category_upgrade("player", "pistol_revive_from_bleed_out")
+					self._health_panel:child("risk_indicator"):set_font_size(15)
+					has_messiah = managers.player:has_category_upgrade("player", "pistol_revive_from_bleed_out")
 					if has_messiah and managers.player:player_unit() and managers.player:player_unit():character_damage() then
 						messiah_charges = managers.player:player_unit():character_damage()._messiah_charges
 						downs_text = downs_text .. "/" .. (messiah_charges or "?")
 					end
 				elseif self:peer_id() ~= nil then
-					self._health_panel:child("risk_indicator"):set_font_size(15 * (HUDTeammate._TEAMMATE_PANEL_SCALE or 0.75))
+					self._health_panel:child("risk_indicator"):set_font_size(12)
 				end
 				alpha = (WolfHUD:getSetting("show_downcounter", "boolean") and (self:peer_id() ~= nil or self._id == HUDManager.PLAYER_PANEL) and 1 or 0)
 				color = self._downs > 2 and Color('C2FC97') or self._downs > 1 and Color('CEA168') or Color('E24E4E')
 				self._health_panel:child("risk_indicator"):set_text(tostring(downs_text))
+				self._health_panel:child("risk_indicator"):set_color(color:with_alpha(alpha))
 			end
-			self._health_panel:child("risk_indicator"):set_color(color:with_alpha(alpha))
 		end
 	end
 	

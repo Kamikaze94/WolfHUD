@@ -132,6 +132,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		gensec = 					{ type_id = "security",		category = "enemies",	long_name = "GenSec" },
 		gangster = 					{ type_id = "thug",			category = "enemies",	long_name = "Gangster" },
 		mobster = 					{ type_id = "thug",			category = "enemies",	long_name = "Mobster" },
+		biker = 					{ type_id = "thug",			category = "enemies",	long_name = "Biker" },
 		biker_escape = 				{ type_id = "thug",			category = "enemies",	long_name = "Gangster" },
 		tank = 						{ type_id = "tank",			category = "enemies",	long_name = "Bulldozer" },
 		spooc = 					{ type_id = "spooc",		category = "enemies",	long_name = "Cloaker" },
@@ -304,6 +305,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		endurance = { "endurance" },
 		
 		uppers = { "uppers" },
+		
+		--Debuffs that are merged into the buff itself
+		composite_debuffs = {
+			armor_break_invulnerable_debuff = "armor_break_invulnerable",
+			grinder_debuff = "grinder",
+		},
 	}
 	
 	function HUDListManager:init()
@@ -442,7 +449,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_setup_buff_list()
 		local hud_panel = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel
 		local scale = HUDListManager.ListOptions.buff_list_scale or 1
-		local list_height = 60 * scale
+		local list_height = 65 * scale
 		local list_width = hud_panel:w()
 		local x = 0
 		local y
@@ -771,25 +778,21 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		for _, item in ipairs(items) do
 			if HUDListManager.ListOptions.show_buffs ~= 2 or HUDList.BuffItemBase.MAP[id].class == "TimedBuffItem" then
-				if event == "activate" then
-					item:activate(id)
-				elseif event == "deactivate" then
-					item:deactivate(id)
-				elseif event == "set_duration" then
-					item:set_duration(id, data)
-				elseif event == "set_stack_count" then
-					item:set_stack_count(id, data)
-				elseif event == "add_timed_stack" then
-					item:add_stack(id, data)
-				elseif event == "remove_timed_stack" then
-					item:remove_stack(id, data)
-				elseif event == "set_value" then
-					item:set_value(id, data)
-				elseif event == "set_progress" then
-					item:set_progress(id, data)
+				if item[event] then
+					item[event](item, id, data)
+				else
+					printf("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s\n", event, id)
 				end
 			else
 				item:deactivate(id)
+			end
+		end
+		
+		if HUDListManager.BUFFS.composite_debuffs[id] then
+			if event == "activate" or event == "deactivate" or event == "set_duration" then
+				local debuff_parent_id = HUDListManager.BUFFS.composite_debuffs[id]
+				self:_buff_event(event .. "_debuff", debuff_parent_id, data)
+
 			end
 		end
 	end
@@ -3148,6 +3151,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			spec = {6, 1},
 			class = "TimedBuffItem",
 			color = Color.red,
+			ignore = true,	--Composite debuff
 		},
 		bullseye_debuff = {
 			atlas = tweak_data.skilltree.skills.prison_wife.icon_xy,
@@ -3158,6 +3162,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			spec = {4, 6},
 			class = "TimedBuffItem",
 			color = Color.red,
+			ignore = true,	--Composite debuff
 		},
 		inspire_debuff = {
 			atlas = tweak_data.skilltree.skills.inspire.icon_xy,
@@ -3241,16 +3246,19 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			texture = string.format("%stextures/pd2/%s", texture, icon.atlas and "skilltree/icons_atlas" or "specialization/icons_atlas")
 		end
 		
+		self._default_icon_color = icon.color or Color.white
+		local progress_bar_width = self._panel:w() * 0.05
+		local icon_size = self._panel:w() - progress_bar_width * 4
 		self._icon = self._panel:bitmap({
 				name = "icon",
 				texture = texture,
 				texture_rect = texture_rect,
 				valign = "center",
 				align = "center",
-				h = self:panel():h() * 0.6 * (icon.icon_scale or 1) * (icon.icon_h_ratio or 1),
-				w = self:panel():h() * 0.6 * (icon.icon_scale or 1) * (icon.icon_w_ratio or 1),
+				h = icon_size,
+				w = icon_size,
 				blend_mode = icon.blend_mode or "normal",
-				color = icon.color or Color.white,
+				color = self._default_icon_color,
 				rotation = icon.icon_rotation or 0,
 		})
 		self._icon:set_center(self:panel():center())
@@ -3271,11 +3279,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			align = "center",
 			vertical = "top",
 			w = self._panel:w(),
-			h = self._panel:h() * 0.2,
+			h = (self._panel:h() - icon_size) / 2,
 			layer = 10,
 			color = Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._panel:h() * 0.2,
+			font_size = 0.95 * (self._panel:h() - icon_size) / 2,
 			blend_mode = "normal",
 		})
 		
@@ -3284,21 +3292,42 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			align = "center",
 			vertical = "bottom",
 			w = self._panel:w(),
-			h = self._panel:h() * 0.2,
+			h = (self._panel:h() - icon_size) / 2,
 			layer = 10,
 			color = Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._panel:h() * 0.2,
+			font_size = 0.95 * (self._panel:h() - icon_size) / 2,
 			blend_mode = "normal",
 		})
 		self._value:set_bottom(self._panel:h())
 		
-		self._progress_bar = PanelFrame:new(self._panel, { invert_progress = icon.invert_timers, bar_w = 1.5, w = self._icon:w(), h = self._icon:h() })
+		self._progress_bar_debuff = PanelFrame:new(self._panel, { 
+			invert_progress = icon.invert_timers, 
+			bar_w = progress_bar_width, 
+			w = self._panel:w(), 
+			h = self._panel:w(), 
+			color = Color.red,
+		})
+		self._progress_bar_debuff:panel():set_center(self._icon:center())
+		self._progress_bar_debuff:panel():set_visible(false)
+		self._progress_bar_debuff:set_ratio(icon.invert_timers and 1 or 0)
+		
+		self._progress_bar = PanelFrame:new(self._panel, { 
+			invert_progress = icon.invert_timers, 
+			bar_w = progress_bar_width, 
+			w = self._panel:w() - (progress_bar_width+1), 
+			h = self._panel:w() - (progress_bar_width+1),
+		})
 		self._progress_bar:panel():set_center(self._icon:center())
 		self._progress_bar:panel():set_visible(false)
 		self._progress_bar:set_ratio(icon.invert_timers and 1 or 0)
 		
-		self._progress_bar_inner = PanelFrame:new(self._panel, { invert_progress = icon.invert_timers, bar_w = 1.5, w = self._icon:w() * 0.9, h = self._icon:h() * 0.9 })
+		self._progress_bar_inner = PanelFrame:new(self._panel, { 
+			invert_progress = icon.invert_timers, 
+			bar_w = progress_bar_width, 
+			w = self._panel:w() - (progress_bar_width+1) * 2, 
+			h = self._panel:w() - (progress_bar_width+1) * 2,
+		})
 		self._progress_bar_inner:panel():set_center(self._icon:center())
 		self._progress_bar_inner:panel():set_visible(false)
 		self._progress_bar_inner:set_ratio(icon.invert_timers and 1 or 0)
@@ -3340,14 +3369,41 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.BuffItemBase:activate(id)
+		self._buff_active = true
+		self:_set_progress(0)
+		self:_set_progress_inner(0)
 		HUDList.BuffItemBase.super.activate(self)
 	end
 	
 	function HUDList.BuffItemBase:deactivate(id)
-		HUDList.BuffItemBase.super.deactivate(self)
+		self._buff_active = false
 		self:_set_progress(0)
+		self:_set_progress_inner(0)
+		if not self._debuff_active then
+			HUDList.BuffItemBase.super.deactivate(self)
+		end
 	end
 	
+	function HUDList.BuffItemBase:activate_debuff(id)
+		self._debuff_active = true
+		self._progress_bar_debuff:panel():set_visible(true)
+		self._icon:set_color(Color.red)
+		HUDList.BuffItemBase.super.activate(self)
+	end
+	
+	function HUDList.BuffItemBase:deactivate_debuff(id)
+		self._debuff_active = false
+		self._progress_bar_debuff:panel():set_visible(false)
+		self._icon:set_color(self._default_icon_color)
+		if not self._buff_active then
+			HUDList.BuffItemBase.super.deactivate(self)
+		end
+	end
+	
+	function HUDList.BuffItemBase:set_duration(id, data)
+		self._start_t = data.t
+		self._expire_t = data.expire_t
+	end
 	function HUDList.BuffItemBase:set_progress(id, data)
 		self:_set_progress(data.progress)
 	end
@@ -3360,6 +3416,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self:_set_text(tostring(data.value))
 	end
 	
+	function HUDList.BuffItemBase:_update_debuff(t, dt)
+		self:_set_progress_debuff((t - self._debuff_start_t) / (self._debuff_expire_t - self._debuff_start_t))
+	end
 	function HUDList.BuffItemBase:_set_progress(r)
 		self._progress_bar:set_ratio(1-r)
 	end
@@ -3368,6 +3427,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._progress_bar_inner:set_ratio(1-r)
 	end
 	
+	function HUDList.BuffItemBase:_set_progress_debuff(r)
+		self._progress_bar_debuff:set_ratio(r)
+	end
 	function HUDList.BuffItemBase:_set_stack_count(count)
 		self._stack_bg:set_visible(count and true or false)
 		self._stack_text:set_visible(count and true or false)
@@ -3392,14 +3454,19 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.TimedBuffItem:update(t, dt)
-		if self._expire_t then
+		--HUDList.TimedBuffItem.super.update(self, t, dt)
+		if self._debuff_active and self._debuff_expire_t then
+			self:_update_debuff(t, dt)
+		end
+		
+		if self._buff_active and self._expire_t then
 			self:_set_progress((t - self._start_t) / (self._expire_t - self._start_t))
 		end
 	end
 	
-	function HUDList.TimedBuffItem:set_duration(id, data)
-		self._start_t = data.t
-		self._expire_t = data.expire_t
+	function HUDList.BuffItemBase:set_duration_debuff(id, data)
+		self._debuff_start_t = data.t
+		self._debuff_expire_t = data.expire_t
 	end
 	
 	
@@ -3410,6 +3477,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.TimedStacksBuffItem:update(t, dt)
+		--HUDList.TimedStacksBuffItem.super.update(self, t, dt)
+		if self._debuff_active and self._debuff_expire_t then
+			self:_update_debuff(t, dt)
+		end
+		
 		if #self._stacks > 0 then
 			local stack = self._stacks[#self._stacks]
 			self:_set_progress((stack.expire_t - t) / (stack.expire_t - stack.t))
@@ -3494,7 +3566,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
-	function HUDList.CompositeBuff:update(t, dt)		
+	function HUDList.CompositeBuff:update(t, dt)
+		--HUDList.CompositeBuff.super.update(self, t, dt)		
 		if self._min_expire_buff then
 			self:_set_progress_inner((t - self._member_buffs[self._min_expire_buff].start_t) / (self._member_buffs[self._min_expire_buff].expire_t - self._member_buffs[self._min_expire_buff].start_t))
 		end	
@@ -3758,7 +3831,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
-	
+--[[	
 	if false then
 	HUDList.BuffItemBase.ICON_COLORS = {
 		buff = {
@@ -4015,7 +4088,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	end
-	
+	]]
 end
 
 if RequiredScript == "lib/managers/hud/hudassaultcorner" then
