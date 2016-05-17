@@ -1,6 +1,6 @@
 {
 	"menu_id" : "wolfhud_drivinghud_options_menu",
-	"parent_menu_id" : "wolfhud_teampanels_options_menu",
+	"parent_menu_id" : "wolfhud_panels_options_menu",
 	"title" : "wolfhud_drivinghud_options_name",
 	"description" : "wolfhud_drivinghud_options_help",
 	"back_callback" : "",

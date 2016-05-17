@@ -114,8 +114,8 @@
 	"wolfhud_reset_options_confirm" : "Вы уверены, что хотите сбросить все настройки по умолчанию?",
 	
 	
-	"wolfhud_teampanels_options_name" : "Панели игрока и напарников",
-	"wolfhud_teampanels_options_help" : "Настройки для CustomHUD и DrivingHUD.",
+	"wolfhud_panels_options_name" : "Панели игрока и напарников",
+	"wolfhud_panels_options_help" : "Настройки для CustomHUD и DrivingHUD.",
 	
 	"wolfhud_use_customhud_title" : "Использовать CustomHUD",
 	"wolfhud_use_customhud_desc" : "Заменяет стандартный HUD на расширенный CustomHUD, созданный Se7en.\n(Необходимо сменить карту для принятия изменений...)",

@@ -117,8 +117,8 @@
 	"wolfhud_reset_options_confirm" : "Bist du sicher, das du alle Einstellungen zurücksetzten willst?",
 	
 	
-	"wolfhud_teampanels_options_name" : "Spieler & Teamkammeraden Panels",
-	"wolfhud_teampanels_options_help" : "Optionen für Spieler Panels.",
+	"wolfhud_panels_options_name" : "Spieler & Teamkammeraden Panels",
+	"wolfhud_panels_options_help" : "Optionen für Spieler Panels.",
 	
 	"wolfhud_use_customhud_title" : "Nutze CustomHUD",
 	"wolfhud_use_customhud_desc" : "Ersetzt die Standart HUD mit der erweiterten CustomHUD, erstellt von Se7en.\n(Wird erst beim Mapwechsel aktiv...)",

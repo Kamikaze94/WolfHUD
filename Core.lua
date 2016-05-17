@@ -8,6 +8,8 @@ if not _G.WolfHUD then
 	WolfHUD.version = "1.0"
 	WolfHUD.menu_ids = { 
 		"wolfhud_options_menu", 
+		"wolfhud_panels_options_menu",
+		"wolfhud_playerpanel_options_menu",
 		"wolfhud_teampanels_options_menu", 
 		"wolfhud_chat_options_menu", 
 		"wolfhud_killcounter_options_menu", 
@@ -140,8 +142,41 @@ if not _G.WolfHUD then
 		{
 		  --CustomHUD
 			use_customhud 					= true,
-			PLAYER_PANEL_SCALE 				= 0.85,		--Size of local Player HUD Panel
-			TEAMMATE_PANEL_SCALE 			= 0.75,		--Size of Teammates/AI's HUD Panels
+			PLAYER_PANEL_SCALE 				= 1,		--Size of local Player HUD Panel
+			PLAYER_PANEL_OPPACITY			= 0.85,
+			PLAYER_PANEL_NAME				= false,
+			PLAYER_PANEL_RANK				= false,
+			PLAYER_PANEL_CHARACTER			= false,
+--			PLAYER_PANEL_LATENCY			= false,
+			PLAYER_PANEL_STATUS				= true,
+			PLAYER_PANEL_EQUIPMENT			= true,
+			PLAYER_PANEL_SPECIAL_EQUIPMENT	= true,
+			PLAYER_PANEL_CALLSIGN			= false,
+			PLAYER_PANEL_CARRY				= true,
+--			PLAYER_PANEL_BUILD				= 0,
+			PLAYER_PANEL_WEAPON_ICON		= 4,
+			PLAYER_PANEL_WEAPON_NAME		= 1,
+			PLAYER_PANEL_WEAPON_AMMO		= 4,
+			PLAYER_PANEL_WEAPON_FIREMODE	= 2,
+--			PLAYER_PANEL_INTERACTION		= 0,
+			TEAMMATE_PANEL_SCALE 			= 0.8,		--Size of Teammates/AI's HUD Panels
+			TEAM_PANEL_OPPACITY				= 0.85,
+			TEAM_PANEL_NAME					= true,
+			TEAM_PANEL_RANK					= true,
+			TEAM_PANEL_CHARACTER			= false,
+			TEAM_PANEL_LATENCY				= true,
+			TEAM_PANEL_STATUS				= true,
+			TEAM_PANEL_EQUIPMENT			= true,
+			TEAM_PANEL_SPECIAL_EQUIPMENT	= true,
+			TEAM_PANEL_CALLSIGN				= false,
+			TEAM_PANEL_CARRY				= true,
+			TEAM_PANEL_BUILD				= 15,
+			TEAM_PANEL_WEAPON_ICON			= 4,
+			TEAM_PANEL_WEAPON_NAME			= 1,
+			TEAM_PANEL_WEAPON_AMMO			= 4,
+			TEAM_PANEL_WEAPON_FIREMODE		= 1,
+			TEAM_PANEL_SHOW_INTERACTION		= true,
+			TEAM_PANEL_INTERACTION			= 1,
 			colorize_healthbars				= 2,		--Colorize mode: 1 = none, 2 = by peer id, 3 = by health amount
 			show_downcounter 				= true,	
 			use_realammo					= true,
@@ -524,7 +559,9 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_tabstats.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_adv.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_panels.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_teampanels.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_playerpanel.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_chat.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_killcounter.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", WolfHUD, settings)
