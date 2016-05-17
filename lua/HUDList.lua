@@ -2984,10 +2984,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		melee_charge = {
 			atlas = { 4, 10 },
 			class = "TimedBuffItem",
+			ignore = WolfHUD:getSetting("SHOW_MELEE", "boolean")
 		},
 		reload_time = {
 			atlas = { 0, 9 },
 			class = "TimedBuffItem",
+			ignore = WolfHUD:getSetting("SHOW_RELOAD", "boolean")
 		},
 		
 		ammo_efficiency = {
@@ -3189,22 +3191,22 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		armorer = {
 			spec = {6, 0},
 			class = "TeamBuffItem",
-			color = Color.green,
+			color = Color(0.8, 0.2, 1, 0.2),
 		},
 		bulletproof = {
 			atlas = tweak_data.skilltree.skills.iron_man.icon_xy,
 			class = "TeamBuffItem",
-			color = Color.green,
+			color = Color(0.8, 0.2, 1, 0.2),
 		},
 		crew_chief = {
 			spec = {2, 0},
 			class = "TeamBuffItem",
-			color = Color.green,
+			color = Color(0.8, 0.2, 1, 0.2),
 		},
 		endurance = {
 			atlas = tweak_data.skilltree.skills.triathlete.icon_xy,
 			class = "TeamBuffItem",
-			color = Color.green,
+			color = Color(0.8, 0.2, 1, 0.2),
 		},
 		
 

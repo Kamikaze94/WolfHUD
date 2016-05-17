@@ -872,7 +872,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function PlayerInfoComponent.HealthRadial:init(panel, owner, teammate_panel, size, is_player)
 		PlayerInfoComponent.HealthRadial.super.init(self, panel, owner, "health", size, size)
 		
-		self._is_player = is_player
 		self._teammate_panel = teammate_panel
 		
 		self._bg = self._panel:bitmap({
@@ -1012,7 +1011,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.HealthRadial:decrement_downs()
-		if not self._is_player and self._downs <= 0 then
+		if not self._teammate_panel._is_player and self._downs <= 0 then
 			self._max_downs  = math.min(self._max_downs + 1, 4)
 		end
 		self:set_downs(math.max(self._downs - 1, 0))
@@ -1026,9 +1025,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if risk or not self._risk then
 			if risk then
 				self._risk = risk
-			elseif self._is_player then
+			elseif self._teammate_panel._is_player then
 				self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_local(75)))
-			else
+			elseif self._teammate_panel:peer_id() then
 				self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_peer(managers.network:session():peer(self._teammate_panel:peer_id()), 75)))
 			end
 			if self._risk then
@@ -1422,11 +1421,22 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			color = Color.white,
 			h = size * 0.75,
 			w = size * 0.75,
+			layer = 10,
 		})
 		self._icon:set_center(self._panel:w() / 2, self._panel:h() / 2)
 		
 		self._owner:register_listener("Callsign", { "callsign" }, callback(self, self, "set_id"), false)
 		self._owner:register_listener("Callsign", { "voice_com" }, callback(self, self, "set_voice_com_active"), false)
+	end
+	
+	function PlayerInfoComponent.Callsign:set_enabled(reason, status)
+		PlayerInfoComponent.Callsign.super.set_enabled(self, reason, status)
+		if not self._panel:visible() then
+			self._panel:set_visible(true)
+			self._panel:set_alpha(0)
+			self._disabled = true
+			return true
+		end
 	end
 	
 	function PlayerInfoComponent.Callsign:destroy()
@@ -1449,6 +1459,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	function PlayerInfoComponent.Callsign:_animate_voice_com(icon)
 		self._animating_voice_com = true
+		self._panel:set_alpha(1)
 		local x = self._panel:w() / 2
 		local y = self._panel:h() / 2
 		icon:set_image("guis/textures/pd2/jukebox_playing", 0, 0, 16, 16 )
@@ -1469,6 +1480,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		icon:set_image("guis/textures/pd2/hud_tabs", 84, 34, 19, 19)
 		icon:set_center(x, y)
 		icon:set_size(self:w(), self:h())
+		self._panel:set_alpha(self._disabled and 0 or 1)
 		self._animating_voice_com = false
 	end
 
