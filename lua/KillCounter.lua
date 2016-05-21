@@ -2,8 +2,6 @@ if string.lower(RequiredScript) == "lib/managers/enemymanager" then
 	EnemyManager._MAX_NR_CORPSES = WolfHUD:getSetting("max_corpses", "number")
 end
 
-if not WolfHUD:getSetting("use_killcounter", "boolean") then return end
-
 if RequiredScript == "lib/units/enemies/cop/copdamage" then
 
 --This needs fixing for DoT kills (then again, so does the games own kill counter) as client somehow and a lot of testing
@@ -294,7 +292,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			
 			local player_panel = self._panel:child("player")
 			local name_label = self._panel:child("name")
-			self._accuracy_panel:set_rightbottom(player_panel:right(), self._kills_panel and self._kills_panel:top() or name_label:bottom())
+			self._accuracy_panel:set_rightbottom(player_panel:right(), self._kills_panel and self._kills_panel:visible() and self._kills_panel:top() or name_label:bottom())
 			
 			self._accuracy_icon = self._accuracy_panel:bitmap({
 				texture = "guis/textures/pd2/pd2_waypoints",
@@ -341,6 +339,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			local _, _, w, _ = self._kills_text:text_rect()
 			self._kill_icon:set_right(self._kills_panel:w() - w - self._kill_icon:w() * 0.15)
 			
+			local vis = WolfHUD:getSetting("use_killcounter", "boolean")
+			self._kills_panel:set_visible(vis)
+			
 			if WolfHUD:getSetting("killcounter_color", "string") == "rainbow" then
 				color = WolfHUD.color_table[(self._kill_count % (#WolfHUD.color_table - 1)) + 1].color
 			else
@@ -385,6 +386,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			self._accuracy_text:set_text(tostring(value) .. "%")
 			local _, _, w, _ = self._accuracy_text:text_rect()
 			self._accuracy_icon:set_right(self._accuracy_panel:w() - w - self._accuracy_icon:w() * 0.15)
+			
+			local vis = WolfHUD:getSetting("SHOW_ACCURACY", "boolean")
+			self._accuracy_panel:set_visible(vis)
 		end
 	end
 end

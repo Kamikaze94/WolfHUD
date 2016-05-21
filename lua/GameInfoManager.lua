@@ -1,24 +1,27 @@
+--TODO: Add standard armor regeneration player action
+
 printf = function(...) 
 	WolfHUD:print_log(string.format(...))
 end
 
-if string.lower(RequiredScript) == "lib/setups/gamesetup" then
+if RequiredScript == "lib/setups/gamesetup" then
 	
 	local init_managers_original = GameSetup.init_managers
 	local update_original = GameSetup.update
-
+	
 	function GameSetup:init_managers(managers, ...)
 		managers.gameinfo = managers.gameinfo or GameInfoManager:new()
-		init_managers_original(self, managers, ...)
+		return init_managers_original(self, managers, ...)
 	end
-
+	
 	function GameSetup:update(t, dt, ...)
 		managers.gameinfo:update(t, dt)
 		return update_original(self, t, dt, ...)
 	end
 	
+	
 	GameInfoManager = GameInfoManager or class()
-
+	
 	GameInfoManager._TIMER_CALLBACKS = {
 		default = {
 			--Digital specific functions
@@ -126,18 +129,18 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			--[135247] = { },	--Lab rats cloaker safe 4
 		}
 	}
-
+	
 	GameInfoManager._INTERACTIONS = {
 		INTERACTION_TO_CALLBACK = {
 			corpse_alarm_pager =				"_pager_event",
 			gen_pku_crowbar =					"_special_equipment_interaction_handler",
 			pickup_keycard =					"_special_equipment_interaction_handler",
-			pickup_hotel_room_keycard =			"_special_equipment_interaction_handler",
+			pickup_hotel_room_keycard =	"_special_equipment_interaction_handler",
 			gage_assignment =					"_special_equipment_interaction_handler",
-			pickup_boards =						"_special_equipment_interaction_handler",
-			stash_planks_pickup =				"_special_equipment_interaction_handler",
-			muriatic_acid =						"_special_equipment_interaction_handler",
-			hydrogen_chloride =					"_special_equipment_interaction_handler",
+			pickup_boards =					"_special_equipment_interaction_handler",
+			stash_planks_pickup =			"_special_equipment_interaction_handler",
+			muriatic_acid =					"_special_equipment_interaction_handler",
+			hydrogen_chloride =				"_special_equipment_interaction_handler",
 			caustic_soda =						"_special_equipment_interaction_handler",
 			gen_pku_blow_torch =				"_special_equipment_interaction_handler",
 			drk_pku_blow_torch = 				"_special_equipment_interaction_handler",
@@ -156,12 +159,13 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			ammo_bag =							"_deployable_interaction_handler",
 			doctor_bag =						"_deployable_interaction_handler",
 			bodybags_bag =						"_deployable_interaction_handler",
-			grenade_crate =						"_deployable_interaction_handler",
+			grenade_crate =					"_deployable_interaction_handler",
 		},
 		INTERACTION_TO_CARRY = {
-			weapon_case =			"weapon",
+			weapon_case =				"weapon",
 			samurai_armor =			"samurai_suit",
 			gen_pku_warhead_box =	"warhead",
+			corpse_dispose =			"person",
 		},
 		BAGGED_IDS = {
 			painting_carry_drop = true,
@@ -286,7 +290,8 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			[151611] = "ggc_armory_ammo",
 			[151612] = "ggc_armory_ammo",
 		},
-	}	
+	}
+	
 	GameInfoManager._BUFFS = {
 		on_activate = {
 			armor_break_invulnerable_debuff = function(id, data)
@@ -298,6 +303,13 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			overkill = function(id, data)
 				if managers.player:has_category_upgrade("player", "overkill_all_weapons") then
 					managers.gameinfo:event("timed_buff", "activate", "overkill_aced", data)
+				end
+			end,
+		},
+		on_set_value = {
+			overkill = function(id, data)
+				if managers.player:has_category_upgrade("player", "overkill_all_weapons") then
+					managers.gameinfo:event("buff", "set_value", "overkill_aced", { value = data.value })
 				end
 			end,
 		},
@@ -323,6 +335,7 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			loose_ammo_restore_health = "medical_supplies_debuff",
 			loose_ammo_give_team = "ammo_give_out_debuff",
 			armor_break_invulnerable = "armor_break_invulnerable_debuff",
+			single_shot_fast_reload = "aggressive_reload",
 		},
 		--Team upgrades
 		damage_dampener = {
@@ -375,6 +388,7 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 		self._deployables = {}
 		self._sentries = {}
 		self._buffs = {}
+		self._player_actions = {}
 		
 		self._auto_expire_timers = {
 			on_expire = {},
@@ -382,11 +396,13 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 		}
 		self._timed_buff_expire_clbk = callback(self, self, "_on_timed_buff_expired")
 		self._timed_stack_expire_clbk = callback(self, self, "_on_timed_stack_expired")
+		self._player_actions_expire_clbk = callback(self, self, "_on_player_action_expired")
 	end
 	
 	function GameInfoManager:update(t, dt)
 		self:_update_player_timer_expiration(t, dt)
 	end
+	
 	function GameInfoManager:event(source, ...)
 		local target = "_" .. source .. "_event"
 		
@@ -396,7 +412,7 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			printf("Error: No event handler for %s\n", target)
 		end
 	end
-
+	
 	function GameInfoManager:get_timers(key)
 		if key then
 			return self._timers[key]
@@ -444,7 +460,6 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			return self._cams
 		end
 	end
-	
 	function GameInfoManager:get_special_equipment(key)
 		if key then
 			return self._special_equipment[key]
@@ -492,6 +507,15 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			return self._buffs
 		end
 	end
+	
+	function GameInfoManager:get_player_actions(id)
+		if id then
+			return self._player_actions[id]
+		else
+			return self._player_actions
+		end
+	end
+	
 	function GameInfoManager:_timer_event(event, key, ...)
 		if event == "create" then
 			if not self._timers[key] then	
@@ -517,7 +541,7 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			end
 		end
 	end
-
+	
 	function GameInfoManager:_unit_event(event, key, unit, unit_type)
 		if event == "add" then
 			if not self._units[key] then
@@ -627,6 +651,7 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			local carry_id = unit:carry_data() and unit:carry_data():carry_id() or lookup.INTERACTION_TO_CARRY[interact_id] or (self._loot[key] and self._loot[key].carry_id)
 			
 			if carry_id then
+				--printf("%s - %s: %d\n", event, carry_id, editor_id)
 				self:_loot_interaction_handler(event, key, unit, interact_id, carry_id)
 			else
 				self:_listener_callback("interactable_unit", event, key, unit, interact_id, carry_id)
@@ -767,6 +792,7 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			end
 		end
 	end
+	
 	function GameInfoManager:_bag_deployable_event(event, key, ...)
 		if event == "create" then
 			if not self._deployables[key] then
@@ -881,7 +907,7 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			end
 		end
 	end
-
+	
 	function GameInfoManager:_tape_loop_event(event, key, ...)
 		if event == "start" then
 			local unit, duration = ...
@@ -938,6 +964,9 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 		
 		if id then
 			self:_timed_buff_event(event, id, data)
+			if data.value ~= 0 then
+				self:_buff_event("set_value", id, { value = data.value })
+			end
 		else
 			printf("Unknown temporary buff event: %s %s %s\n", event, data.category, data.upgrade)
 		end
@@ -999,6 +1028,7 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			elseif event == "set_progress" then
 				self._buffs[id].progress = data.progress
 			elseif event == "set_value" then
+				self._buffs[id].show_value = data.show_value
 				self._buffs[id].value = data.value
 			end
 		else
@@ -1020,13 +1050,21 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 		
 		if id then
 			if event == "activate" then
-				self:_buff_event("activate", id)
-				self._buffs[id].peers = self._buffs[id].peers or {}
-				self._buffs[id].level = level
+				local was_active = self._buffs[id]
+				
+				if not was_active then
+					self:_buff_event("activate", id)
+					self._buffs[id].peers = {}
+					self._buffs[id].level = level
+				end
 				
 				if not self._buffs[id].peers[data.peer] then
 					self._buffs[id].peers[data.peer] = true
 					self:_buff_event("change_stack_count", id, { difference = 1 })
+				end
+				
+				if not was_active and data.value ~= 0 then
+					self:_buff_event("set_value", id, { value = data.value })
 				end
 			elseif event == "deactivate" then
 				if self._buffs[id] and self._buffs[id].peers[data.peer] then
@@ -1043,12 +1081,43 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 		end
 	end
 	
+	function GameInfoManager:_player_action_event(event, id, data)
+		--printf("GameInfoManager:_player_action_event(%s %s)\n", event, id)
+	
+		if event == "activate" then
+			if not self._player_actions[id] then
+				self._player_actions[id] = {}
+				self:_listener_callback("player_action", "activate", id, self._player_actions[id])
+			end
+			
+			if data and (data.duration or data.expire_t) then
+				self:_player_action_event("set_duration", id, data)
+				self:_add_player_timer_expiration(id, id, self._player_actions[id].expire_t, self._player_actions_expire_clbk)
+			end
+		elseif self._player_actions[id] then
+			if event == "deactivate" then
+				self:_remove_player_timer_expiration(id)
+				self._player_actions[id] = nil
+			elseif event == "set_duration" then
+				local t = data.t or Application:time()
+				local expire_t = data.expire_t or data.duration and (data.duration + t) or t
+				self._player_actions[id].t = t
+				self._player_actions[id].expire_t = expire_t
+			elseif event == "set_data" then
+				self._player_actions[id].data = data
+			end
+			
+			self:_listener_callback("player_action", event, id, self._player_actions[id])
+		end
+	end
+	
+	
 	function GameInfoManager:register_listener(listener_id, source_type, event, clbk)
 		self._listeners[source_type] = self._listeners[source_type] or {}
 		self._listeners[source_type][event] = self._listeners[source_type][event] or {}
 		self._listeners[source_type][event][listener_id] = clbk
 	end
-
+	
 	function GameInfoManager:unregister_listener(listener_id, source_type, event)
 		if self._listeners[source_type] then
 			if self._listeners[source_type][event] then
@@ -1056,7 +1125,7 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			end
 		end
 	end
-
+	
 	function GameInfoManager:_listener_callback(source, event, key, ...)
 		for listener_id, clbk in pairs(self._listeners[source] and self._listeners[source][event] or {}) do
 			clbk(event, key, ...)
@@ -1122,10 +1191,15 @@ if string.lower(RequiredScript) == "lib/setups/gamesetup" then
 			end
 		end
 	end
+	
+	function GameInfoManager:_on_player_action_expired(t, key, id)
+		self:_player_action_event("deactivate", id)
+	end
+	
 end
 
-if string.lower(RequiredScript) == "lib/units/props/digitalgui" then
-
+if RequiredScript == "lib/units/props/digitalgui" then
+	
 	local init_original = DigitalGui.init
 	local update_original = DigitalGui.update
 	local timer_set_original = DigitalGui.timer_set
@@ -1216,8 +1290,8 @@ if string.lower(RequiredScript) == "lib/units/props/digitalgui" then
 	
 end
 
-if string.lower(RequiredScript) == "lib/units/props/timergui" then
-
+if RequiredScript == "lib/units/props/timergui" then
+	
 	local init_original = TimerGui.init
 	local set_background_icons_original = TimerGui.set_background_icons
 	local set_visible_original = TimerGui.set_visible
@@ -1265,7 +1339,7 @@ if string.lower(RequiredScript) == "lib/units/props/timergui" then
 		update_original(self, unit, t, dt, ...)
 		managers.gameinfo:event("timer", "update", self._info_key, t, self._time_left)
 	end
-
+	
 	function TimerGui:_start(...)
 		managers.gameinfo:event("timer", "set_active", self._info_key, true)
 		return _start_original(self, ...)
@@ -1293,8 +1367,8 @@ if string.lower(RequiredScript) == "lib/units/props/timergui" then
 	
 end
 
-if string.lower(RequiredScript) == "lib/units/props/securitylockgui" then
-
+if RequiredScript == "lib/units/props/securitylockgui" then
+	
 	local init_original = SecurityLockGui.init
 	local update_original = SecurityLockGui.update
 	local _start_original = SecurityLockGui._start
@@ -1302,52 +1376,52 @@ if string.lower(RequiredScript) == "lib/units/props/securitylockgui" then
 	local _set_jammed_original = SecurityLockGui._set_jammed
 	local _set_powered = SecurityLockGui._set_powered
 	local destroy_original = SecurityLockGui.destroy
-
+	
 	function SecurityLockGui:init(unit, ...)
 		self._info_key = tostring(unit:key())
 		managers.gameinfo:event("timer", "create", self._info_key, unit, self, "securitylock")
 		init_original(self, unit, ...)
 	end
-
+	
 	function SecurityLockGui:update(unit, t, ...)
 		update_original(self, unit, t, ...)
 		managers.gameinfo:event("timer", "update", self._info_key, t, self._current_timer)
 	end
-
+	
 	function SecurityLockGui:_start(...)
 		managers.gameinfo:event("timer", "set_active", self._info_key, true)
 		return _start_original(self, ...)
 	end
-
+	
 	function SecurityLockGui:_set_done(...)
 		managers.gameinfo:event("timer", "set_active", self._info_key, false)
 		return _set_done_original(self, ...)
 	end
-
+	
 	function SecurityLockGui:_set_jammed(jammed, ...)
 		managers.gameinfo:event("timer", "set_jammed", self._info_key, jammed and true or false)
 		return _set_jammed_original(self, jammed, ...)
 	end
-
+	
 	function SecurityLockGui:_set_powered(powered, ...)
 		managers.gameinfo:event("timer", "set_powered", self._info_key, powered and true or false)
 		return _set_powered(self, powered, ...)
 	end
-
+	
 	function SecurityLockGui:destroy(...)
 		managers.gameinfo:event("timer", "destroy", self._info_key)
 		return destroy_original(self, ...)
 	end
-
+	
 end
 
-if string.lower(RequiredScript) == "lib/managers/enemymanager" then
+if RequiredScript == "lib/managers/enemymanager" then
 	
 	local on_enemy_registered_original = EnemyManager.on_enemy_registered
 	local on_enemy_unregistered_original = EnemyManager.on_enemy_unregistered
- 	local register_civilian_original = EnemyManager.register_civilian
- 	local on_civilian_died_original = EnemyManager.on_civilian_died
- 	local on_civilian_destroyed_original = EnemyManager.on_civilian_destroyed
+	local register_civilian_original = EnemyManager.register_civilian
+	local on_civilian_died_original = EnemyManager.on_civilian_died
+	local on_civilian_destroyed_original = EnemyManager.on_civilian_destroyed
 	
 	function EnemyManager:on_enemy_registered(unit, ...)
 		managers.gameinfo:event("unit", "add", tostring(unit:key()), unit, unit:base()._tweak_table)
@@ -1376,8 +1450,8 @@ if string.lower(RequiredScript) == "lib/managers/enemymanager" then
 	
 end
 
-if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebase" then
-
+if RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
+	
 	local register_turret_original = GroupAIStateBase.register_turret
 	local unregister_turret_original = GroupAIStateBase.unregister_turret
 	local update_original = GroupAIStateBase.update
@@ -1391,7 +1465,7 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 		managers.gameinfo:event("turret", "add", tostring(unit:key()), unit)
 		return register_turret_original(self, unit, ...)
 	end
-
+	
 	function GroupAIStateBase:unregister_turret(unit, ...)
 		managers.gameinfo:event("turret", "remove", tostring(unit:key()), unit)
 		return unregister_turret_original(self, unit, ...)
@@ -1484,8 +1558,8 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 	
 end
 
-if string.lower(RequiredScript) == "lib/network/handlers/unitnetworkhandler" then
-
+if RequiredScript == "lib/network/handlers/unitnetworkhandler" then
+	
 	local mark_minion_original = UnitNetworkHandler.mark_minion
 	local hostage_trade_original = UnitNetworkHandler.hostage_trade
 	local unit_traded_original = UnitNetworkHandler.unit_traded
@@ -1509,7 +1583,7 @@ if string.lower(RequiredScript) == "lib/network/handlers/unitnetworkhandler" the
 			managers.gameinfo:event("minion", "add", tostring(unit:key()), unit, owner_id, health_mult, damage_mult)
 		end
 	end
-
+	
 	function UnitNetworkHandler:hostage_trade(unit, ...)
 		if self._verify_gamestate(self._gamestate_filter.any_ingame) and self._verify_character(unit) then
 			managers.gameinfo:event("minion", "remove", tostring(unit:key()))
@@ -1563,7 +1637,7 @@ if string.lower(RequiredScript) == "lib/network/handlers/unitnetworkhandler" the
 	
 end
 
-if string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
+if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	
 	local _on_damage_received_original = CopDamage._on_damage_received
 	local chk_killshot_original = CopDamage.chk_killshot
@@ -1582,11 +1656,11 @@ if string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 		
 		return chk_killshot_original(self, attacker_unit, ...)
 	end
-
+	
 end
 
-if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
-
+if RequiredScript == "lib/managers/objectinteractionmanager" then
+	
 	local init_original = ObjectInteractionManager.init
 	local update_original = ObjectInteractionManager.update
 	local add_unit_original = ObjectInteractionManager.add_unit
@@ -1611,7 +1685,6 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 	
 	function ObjectInteractionManager:remove_unit(unit, ...)
 		self:remove_unit_clbk(unit)
-	
 		return remove_unit_original(self, unit, ...)
 	end
 	
@@ -1631,6 +1704,7 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 		return interupt_action_interact_original(self, ...)
 	end
 	
+	
 	function ObjectInteractionManager:add_unit_clbk(unit)
 		self._queued_units[tostring(unit:key())] = unit
 	end
@@ -1644,7 +1718,7 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 			managers.gameinfo:event("interactive_unit", "remove", key, unit)
 		end
 	end
-
+	
 	function ObjectInteractionManager:_process_queued_units(t)
 		for key, unit in pairs(self._queued_units) do
 			if alive(unit) then
@@ -1657,8 +1731,26 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 	
 end
 
-if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
+if RequiredScript == "lib/units/interactions/interactionext" then
+	
+	local set_tweak_data_original = BaseInteractionExt.set_tweak_data
+	
+	function BaseInteractionExt:set_tweak_data(...)
+		if self:active() then
+			managers.interaction:remove_unit_clbk(self._unit)
+		end
+		
+		set_tweak_data_original(self, ...)
+		
+		if self:active() then
+			managers.interaction:add_unit_clbk(self._unit)
+		end
+	end
+	
+end
 
+if RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
+	
 	local init_original = ECMJammerBase.init
 	local set_active_original = ECMJammerBase.set_active
 	local _set_feedback_active_original = ECMJammerBase._set_feedback_active
@@ -1730,8 +1822,8 @@ if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase
 	
 end
 
-if string.lower(RequiredScript) == "lib/units/equipment/doctor_bag/doctorbagbase" then
-
+if RequiredScript == "lib/units/equipment/doctor_bag/doctorbagbase" then
+	
 	local spawn_original = DoctorBagBase.spawn
 	local init_original = DoctorBagBase.init
 	local sync_setup_original = DoctorBagBase.sync_setup
@@ -1770,8 +1862,8 @@ if string.lower(RequiredScript) == "lib/units/equipment/doctor_bag/doctorbagbase
 	
 end
 
-if string.lower(RequiredScript) == "lib/units/equipment/ammo_bag/ammobagbase" then
-
+if RequiredScript == "lib/units/equipment/ammo_bag/ammobagbase" then
+	
 	local spawn_original = AmmoBagBase.spawn
 	local init_original = AmmoBagBase.init
 	local sync_setup_original = AmmoBagBase.sync_setup
@@ -1810,8 +1902,8 @@ if string.lower(RequiredScript) == "lib/units/equipment/ammo_bag/ammobagbase" th
 	
 end
 
-if string.lower(RequiredScript) == "lib/units/equipment/bodybags_bag/bodybagsbagbase" then
-
+if RequiredScript == "lib/units/equipment/bodybags_bag/bodybagsbagbase" then
+	
 	local spawn_original = BodyBagsBagBase.spawn
 	local init_original = BodyBagsBagBase.init
 	local sync_setup_original = BodyBagsBagBase.sync_setup
@@ -1850,8 +1942,8 @@ if string.lower(RequiredScript) == "lib/units/equipment/bodybags_bag/bodybagsbag
 	
 end
 
-if string.lower(RequiredScript) == "lib/units/equipment/grenade_crate/grenadecratebase" then
-
+if RequiredScript == "lib/units/equipment/grenade_crate/grenadecratebase" then
+	
 	local init_original = GrenadeCrateBase.init
 	local _set_visual_stage_original = GrenadeCrateBase._set_visual_stage
 	local destroy_original = GrenadeCrateBase.destroy
@@ -1883,8 +1975,8 @@ if string.lower(RequiredScript) == "lib/units/equipment/grenade_crate/grenadecra
 	
 end
 
-if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
-
+if RequiredScript == "lib/units/props/securitycamera" then
+	
 	local _start_tape_loop_original = SecurityCamera._start_tape_loop
 	local _deactivate_tape_loop_original = SecurityCamera._deactivate_tape_loop
 	local init_original = SecurityCamera.init
@@ -1896,7 +1988,7 @@ if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 		managers.gameinfo:event("tape_loop", "start", tostring(self._unit:key()), self._unit, tape_loop_t + 6)
 		return _start_tape_loop_original(self, tape_loop_t, ...)
 	end
-
+	
 	function SecurityCamera:_deactivate_tape_loop(...)
 		managers.gameinfo:event("tape_loop", "stop", tostring(self._unit:key()))
 		managers.gameinfo:event("camera", "disable", tostring(self._unit:key()))
@@ -1908,6 +2000,7 @@ if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 		return init_original(self, unit)
 	end
 	
+
 	function SecurityCamera:on_unit_set_enabled(enabled)
 		if enabled then
 			managers.gameinfo:event("camera", "enable", tostring(self._unit:key()))
@@ -1931,13 +2024,14 @@ if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 	end
 end
 
-if string.lower(RequiredScript) == "lib/units/equipment/sentry_gun/sentrygunbase" then
-
+if RequiredScript == "lib/units/equipment/sentry_gun/sentrygunbase" then
+	
 	local spawn_original = SentryGunBase.spawn
 	local init_original = SentryGunBase.init
 	local sync_setup_original = SentryGunBase.sync_setup
 	local activate_as_module_original = SentryGunBase.activate_as_module
 	local destroy_original = SentryGunBase.destroy
+	local load_original = SentryGunBase.load
 	
 	function SentryGunBase.spawn(owner, pos, rot, peer_id, ...)
 		local unit = spawn_original(owner, pos, rot, peer_id, ...)
@@ -1973,16 +2067,17 @@ if string.lower(RequiredScript) == "lib/units/equipment/sentry_gun/sentrygunbase
 			managers.gameinfo:event("sentry", "destroy", tostring(self._unit:key()))
 		end
 	end
+	
 end
 
-if string.lower(RequiredScript) == "lib/units/equipment/sentry_gun/sentrygundamage" then
-
+if RequiredScript == "lib/units/equipment/sentry_gun/sentrygundamage" then
+	
 	local init_original = SentryGunDamage.init
 	local set_health_original = SentryGunDamage.set_health
 	local _apply_damage_original = SentryGunDamage._apply_damage
 	local die_original = SentryGunDamage.die
 	local load_original = SentryGunDamage.load
-
+	
 	function SentryGunDamage:init(...)
 		init_original(self, ...)
 		managers.gameinfo:event("sentry", "set_active", tostring(self._unit:key()), true)
@@ -2004,7 +2099,7 @@ if string.lower(RequiredScript) == "lib/units/equipment/sentry_gun/sentrygundama
 		managers.gameinfo:event("sentry", "set_active", tostring(self._unit:key()), false)
 		return die_original(self, ...)
 	end
-
+	
 	function SentryGunDamage:load(...)
 		load_original(self, ...)
 		managers.gameinfo:event("sentry", "set_health_ratio", tostring(self._unit:key()), self:health_ratio())
@@ -2012,15 +2107,16 @@ if string.lower(RequiredScript) == "lib/units/equipment/sentry_gun/sentrygundama
 	
 end
 
-if string.lower(RequiredScript) == "lib/units/weapons/sentrygunweapon" then
-
+if RequiredScript == "lib/units/weapons/sentrygunweapon" then
+	
 	local init_original = SentryGunWeapon.init
 	local change_ammo_original = SentryGunWeapon.change_ammo
 	local sync_ammo_original = SentryGunWeapon.sync_ammo
 	local load_original = SentryGunWeapon.load
-
+	
 	function SentryGunWeapon:init(...)
 		init_original(self, ...)
+		self._player_manager = managers.player		--TEMP
 		managers.gameinfo:event("sentry", "set_ammo_ratio", tostring(self._unit:key()), self:ammo_ratio())
 	end
 	
@@ -2040,7 +2136,6 @@ if string.lower(RequiredScript) == "lib/units/weapons/sentrygunweapon" then
 	end
 	
 end
-
 
 if RequiredScript == "lib/managers/playermanager" then
 
@@ -2063,22 +2158,25 @@ if RequiredScript == "lib/managers/playermanager" then
 	function PlayerManager:spawned_player(id, ...)
 		spawned_player_original(self, id, ...)
 		
-		if id == 1 and not PLAYER_HAS_SPAWNED then
-			PLAYER_HAS_SPAWNED = true
-	
-			for category, data in pairs(self._global.team_upgrades) do
-				for upgrade, value in pairs(data) do
-					managers.gameinfo:event("team_buff", "activate", { peer = 0, category = category, upgrade = upgrade })
+		if id == 1 then
+			if not PLAYER_HAS_SPAWNED then
+				PLAYER_HAS_SPAWNED = true
+		
+				for category, data in pairs(self._global.team_upgrades) do
+					for upgrade, value in pairs(data) do
+						local value = self:team_upgrade_value(category, upgrade, 0)
+						managers.gameinfo:event("team_buff", "activate", { peer = 0, category = category, upgrade = upgrade, value = value })
+					end
 				end
 			end
 		
-			if self:has_category_upgrade("player", "pistol_revive_from_bleed_out") and managers.gameinfo then
+			if self:has_category_upgrade("player", "messiah_revive_from_bleed_out") and managers.gameinfo then
 				local function check_messiah_charges()
 					managers.enemy:add_delayed_clbk("messiah_buff", callback(self, self, "_update_messiah_buff"), 0)
 				end
 				
 				self._message_system:register(Message.RevivePlayer, "messiah_buff_listener", check_messiah_charges)
-				if self:has_category_upgrade("player", "recharge_pistol_messiah") then
+				if self:has_category_upgrade("player", "recharge_messiah") then
 					self._message_system:register(Message.OnDoctorBagUsed, "messiah_buff_listener", check_messiah_charges)
 				end
 				
@@ -2111,9 +2209,10 @@ if RequiredScript == "lib/managers/playermanager" then
 			if upgrade_level > 0 then
 				level = upgrade_level
 			end
+			local value = self:temporary_upgrade_value(category, upgrade, 0)
 			
 			if expire_t > t then
-				managers.gameinfo:event("temporary_buff", "activate", { t = t, expire_t = expire_t, category = category, upgrade = upgrade, level = level })
+				managers.gameinfo:event("temporary_buff", "activate", { t = t, expire_t = expire_t, category = category, upgrade = upgrade, level = level, value = value })
 			end
 		end
 	end
@@ -2124,8 +2223,9 @@ if RequiredScript == "lib/managers/playermanager" then
 		if self._temporary_upgrades[category] and self._temporary_upgrades[category][upgrade] then
 			local t = Application:time()
 			local expire_t = self._temporary_upgrades[category][upgrade].expire_time
+			local value = self:temporary_upgrade_value(category, upgrade, 0)
 			if expire_t > t then
-				managers.gameinfo:event("temporary_buff", "activate", { t = t, expire_t = expire_t, category = category, upgrade = upgrade, level = level })
+				managers.gameinfo:event("temporary_buff", "activate", { t = t, expire_t = expire_t, category = category, upgrade = upgrade, level = level, value = value })
 			end
 		end
 	end
@@ -2165,8 +2265,12 @@ if RequiredScript == "lib/managers/playermanager" then
 		
 		if self:has_team_category_upgrade("health", "hostage_multiplier") or self:has_team_category_upgrade("stamina", "hostage_multiplier") or self:has_team_category_upgrade("damage_dampener", "hostage_multiplier") then
 			if stack_count > 0 then
+				local value = self:team_upgrade_value("damage_dampener", "hostage_multiplier", 0)
 				managers.gameinfo:event("buff", "activate", "hostage_situation")
 				managers.gameinfo:event("buff", "set_stack_count", "hostage_situation", { stack_count = stack_count })
+				if value ~= 0 then
+					managers.gameinfo:event("buff", "set_value", "hostage_situation", { value = value })
+				end
 			else
 				managers.gameinfo:event("buff", "deactivate", "hostage_situation")
 			end
@@ -2190,6 +2294,7 @@ if RequiredScript == "lib/managers/playermanager" then
 		if old_mult ~= self._melee_dmg_mul then
 			managers.gameinfo:event("buff", "change_stack_count", "bloodthirst_basic", { difference = 1 })
 		end
+		managers.gameinfo:event("buff", "set_value", "bloodthirst_basic", { value = self._melee_dmg_mul })
 	end
 	
 	function PlayerManager:mul_to_accuracy_multiplier(...)
@@ -2211,22 +2316,27 @@ if RequiredScript == "lib/managers/playermanager" then
 	end
 	
 	function PlayerManager:aquire_team_upgrade(upgrade, ...)
+		aquire_team_upgrade_original(self, upgrade, ...)
+		
 		if managers.gameinfo then
-			managers.gameinfo:event("team_buff", "activate", { peer = 0, category = upgrade.category, upgrade = upgrade.upgrade })
+			local value = self:team_upgrade_value(upgrade.category, upgrade.upgrade, 0)
+			managers.gameinfo:event("team_buff", "activate", { peer = 0, category = upgrade.category, upgrade = upgrade.upgrade, value = value })
 		end
-		return aquire_team_upgrade_original(self, upgrade, ...)
 	end
 	
 	function PlayerManager:unaquire_team_upgrade(upgrade, ...)
+		unaquire_team_upgrade_original(self, upgrade, ...)
+		
 		if managers.gameinfo then
-			managers.gameinfo:event("team_buff", "deactivate", { peer = 0, category = upgrade.category, upgrade = upgrade.upgrade })
+			managers.gameinfo:event("team_buff", "deactivate", { peer = 0, category = upgrade.category, upgrade = upgrade.upgrade, value = value })
 		end
-		return unaquire_team_upgrade_original(self, upgrade, ...)
 	end
 	
 	function PlayerManager:add_synced_team_upgrade(peer_id, category, upgrade, ...)
-		managers.gameinfo:event("team_buff", "activate", { peer = 0, category = category, upgrade = upgrade })
-		return add_synced_team_upgrade_original(self, peer_id, category, upgrade, ...)
+		add_synced_team_upgrade_original(self, peer_id, category, upgrade, ...)
+		
+		local value = self:team_upgrade_value(category, upgrade, 0)
+		managers.gameinfo:event("team_buff", "activate", { peer = peer_id, category = category, upgrade = upgrade, value = value })
 	end
 	
 	function PlayerManager:peer_dropped_out(peer, ...)
@@ -2249,33 +2359,6 @@ if RequiredScript == "lib/managers/playermanager" then
 		else
 			managers.gameinfo:event("buff", "deactivate", "messiah")
 		end
-	end
-	
-	
-	local ae_init_original = HeadShotAmmoReturn.init
-	local ae_update_original = HeadShotAmmoReturn.update
-	local ae_on_headshot_original = HeadShotAmmoReturn.on_headshot
-	
-	function HeadShotAmmoReturn:init( ...)
-		ae_init_original(self, ...)
-		managers.gameinfo:event("buff", "activate", "ammo_efficiency")
-		managers.gameinfo:event("buff", "set_duration", "ammo_efficiency", { duration = self._min_time })
-		managers.gameinfo:event("buff", "set_stack_count", "ammo_efficiency", { stack_count = self._target_headshots - self._headshots })
-	end
-	
-	function HeadShotAmmoReturn:update(...)
-		local result = { ae_update_original(self, ...) }
-		
-		if result[1] ~= 0 then
-			managers.gameinfo:event("buff", "deactivate", "ammo_efficiency")
-		end
-		
-		return unpack(result)
-	end
-	
-	function HeadShotAmmoReturn:on_headshot(...)
-		ae_on_headshot_original(self, ...)
-		managers.gameinfo:event("buff", "set_stack_count", "ammo_efficiency", { stack_count = self._target_headshots - self._headshots })
 	end
 	
 end
@@ -2319,19 +2402,18 @@ end
 if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 	
 	local _do_action_intimidate_original = PlayerStandard._do_action_intimidate
+	local _start_action_melee_original = PlayerStandard._start_action_melee
+	local _interupt_action_melee_original = PlayerStandard._interupt_action_melee
+	local _do_melee_damage_original = PlayerStandard._do_melee_damage
+	local _check_action_primary_attack_original = PlayerStandard._check_action_primary_attack
+	local _start_action_interact_original = PlayerStandard._start_action_interact
+	local _interupt_action_interact_original = PlayerStandard._interupt_action_interact
 	local _start_action_reload_original = PlayerStandard._start_action_reload
 	local _update_reload_timers_original = PlayerStandard._update_reload_timers
 	local _interupt_action_reload_original = PlayerStandard._interupt_action_reload
 	local _start_action_charging_weapon_original = PlayerStandard._start_action_charging_weapon
 	local _end_action_charging_weapon_original = PlayerStandard._end_action_charging_weapon
 	local _update_charging_weapon_timers_original = PlayerStandard._update_charging_weapon_timers
-	local _start_action_melee_original = PlayerStandard._start_action_melee
-	local _update_melee_timers_original = PlayerStandard._update_melee_timers
-	local _do_melee_damage_original = PlayerStandard._do_melee_damage
-	local _check_action_primary_attack_original = PlayerStandard._check_action_primary_attack
-	local _start_action_interact_original = PlayerStandard._start_action_interact
-	local _interupt_action_interact_original = PlayerStandard._interupt_action_interact
-	local _end_action_interact_original = PlayerStandard._end_action_interact
 	
 	function PlayerStandard:_do_action_intimidate(t, interact_type, ...)
 		if interact_type == "cmd_gogo" or interact_type == "cmd_get_up" then
@@ -2341,67 +2423,34 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 		return _do_action_intimidate_original(self, t, interact_type, ...)
 	end
 	
-	function PlayerStandard:_start_action_reload(t, ...)
-		local result = _start_action_reload_original(self, t, ...)
-		managers.gameinfo:event("buff", "activate", "reload_time")
-		managers.gameinfo:event("buff", "set_duration", "reload_time", { duration = self._state_data.reload_expire_t - t })
-		return result
+	function PlayerStandard:_start_action_melee(t, input, instant, ...)
+		if not instant then
+			local duration = tweak_data.blackmarket.melee_weapons[managers.blackmarket:equipped_melee_weapon()].stats.charge_time
+			managers.gameinfo:event("player_action", "activate", "melee_charge", { t = t, duration = duration })
+		end
+		
+		return _start_action_melee_original(self, t, input, instant, ...)
 	end
 	
-	function PlayerStandard:_update_reload_timers(t, ...)
-		if not self._state_data.reload_expire_t then
-			managers.gameinfo:event("buff", "deactivate", "reload_time")
+	function PlayerStandard:_interupt_action_melee(...)
+		if self._state_data.melee_start_t then
+			managers.gameinfo:event("player_action", "deactivate", "melee_charge")
 		end
-		return _update_reload_timers_original(self, t, ...)
-	end
-	
-	function PlayerStandard:_interupt_action_reload(...)
-		managers.gameinfo:event("buff", "deactivate", "reload_time")
-		return _interupt_action_reload_original(self, ...)
-	end
-	
-	function PlayerStandard:_start_action_charging_weapon(...)
-		managers.gameinfo:event("buff", "activate", "bow_charge")
-		managers.gameinfo:event("buff", "set_progress", "bow_charge", { progress = 0 })
-		return _start_action_charging_weapon_original(self, ...)
-	end
-
-	function PlayerStandard:_end_action_charging_weapon(...)
-		managers.gameinfo:event("buff", "deactivate", "bow_charge")
-		return _end_action_charging_weapon_original(self, ...)
-	end
-
-	function PlayerStandard:_update_charging_weapon_timers(...)
-		if self._state_data.charging_weapon then
-			local weapon = self._equipped_unit:base()
-			if not weapon:charge_fail() then
-				managers.gameinfo:event("buff", "set_progress", "bow_charge", { progress = weapon:charge_multiplier() })
-			end
-		end
-		return _update_charging_weapon_timers_original(self, ...)
-	end
-
-	function PlayerStandard:_start_action_melee(...)
-		managers.gameinfo:event("buff", "activate", "melee_charge")
-		managers.gameinfo:event("buff", "set_progress", "melee_charge", { progress = 0 })
-		return _start_action_melee_original(self, ...)
-	end
-
-	function PlayerStandard:_update_melee_timers(t, ...)
-		if self._state_data.meleeing and self._state_data.melee_start_t and self._state_data.melee_start_t + 0.3 < t then
-			managers.gameinfo:event("buff", "activate", "melee_charge")
-			managers.gameinfo:event("buff", "set_progress", "melee_charge", { progress = self:_get_melee_charge_lerp_value(t) })
-		end
-		return _update_melee_timers_original(self, t, ...)
+		
+		return _interupt_action_melee_original(self, ...)
 	end
 	
 	function PlayerStandard:_do_melee_damage(t, ...)
-		managers.gameinfo:event("buff", "deactivate", "melee_charge")
+		if self._state_data.melee_start_t then
+			managers.gameinfo:event("player_action", "deactivate", "melee_charge")
+		end
 		
 		local result = _do_melee_damage_original(self, t, ...)
+		
 		if self._state_data.stacking_dmg_mul then
 			self:_check_damage_stack_skill(t, "melee")
 		end
+		
 		return result
 	end
 	
@@ -2414,25 +2463,68 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 		return result
 	end
 	
-	function PlayerStandard:_start_action_interact(...)
+	function PlayerStandard:_start_action_interact(t, input, timer, interact_object, ...)
 		if managers.player:has_category_upgrade("player", "interacting_damage_multiplier") then
+			local value = managers.player:upgrade_value("player", "interacting_damage_multiplier", 0)
 			managers.gameinfo:event("buff", "activate", "die_hard")
+			managers.gameinfo:event("buff", "set_value", "die_hard", { value = value })
 		end
-		return _start_action_interact_original(self, ...)
+		
+		managers.gameinfo:event("player_action", "activate", "interact", { t = t, duration = timer })
+		managers.gameinfo:event("player_action", "set_data", "interact", { interact_id = interact_object:interaction().tweak_data })
+		
+		return _start_action_interact_original(self, t, input, timer, interact_object, ...)
 	end
 	
-	function PlayerStandard:_interupt_action_interact(...)
-		if managers.player:has_category_upgrade("player", "interacting_damage_multiplier") then
-			managers.gameinfo:event("buff", "deactivate", "die_hard")
+	function PlayerStandard:_interupt_action_interact(t, input, complete, ...)
+		if self._interact_expire_t then
+			if managers.player:has_category_upgrade("player", "interacting_damage_multiplier") then
+				managers.gameinfo:event("buff", "deactivate", "die_hard")
+			end
+			
+			managers.gameinfo:event("player_action", "set_data", "interact", { completed = complete and true or false })
+			managers.gameinfo:event("player_action", "deactivate", "interact")
 		end
-		return _interupt_action_interact_original(self, ...)
+		
+		return _interupt_action_interact_original(self, t, input, complete, ...)
 	end
 	
-	function PlayerStandard:_end_action_interact(...)
-		if managers.player:has_category_upgrade("player", "interacting_damage_multiplier") then
-			managers.gameinfo:event("buff", "deactivate", "die_hard")
+	function PlayerStandard:_start_action_reload(t, ...)
+		_start_action_reload_original(self, t, ...)
+		
+		if self._state_data.reload_expire_t then
+			managers.gameinfo:event("player_action", "activate", "reload", { t = t, expire_t = self._state_data.reload_expire_t })
 		end
-		return _end_action_interact_original(self, ...)
+	end
+	
+	function PlayerStandard:_update_reload_timers(...)
+		local reloading = self._state_data.reload_expire_t
+	
+		_update_reload_timers_original(self, ...)
+		
+		if reloading and not self._state_data.reload_expire_t then
+			managers.gameinfo:event("player_action", "deactivate", "reload")
+		end
+	end
+	
+	function PlayerStandard:_interupt_action_reload(...)
+		if self._state_data.reload_expire_t then
+			managers.gameinfo:event("player_action", "deactivate", "reload")
+		end
+		return _interupt_action_reload_original(self, ...)
+	end
+	
+	function PlayerStandard:_start_action_charging_weapon(t, ...)
+		managers.gameinfo:event("player_action", "activate", "weapon_charge")
+		managers.gameinfo:event("player_action", "set_duration", "weapon_charge", { t = t, duration = self._equipped_unit:base():charge_max_t() })
+		return _start_action_charging_weapon_original(self, t, ...)
+	end
+
+	function PlayerStandard:_end_action_charging_weapon(...)
+		if self._state_data.charging_weapon then
+			managers.gameinfo:event("player_action", "deactivate", "weapon_charge")
+		end
+		return _end_action_charging_weapon_original(self, ...)
 	end
 	
 	--OVERRIDE
@@ -2503,8 +2595,10 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 				PREV_DMG_STACK[category] = { stack[1], stack[2] }
 				
 				if stack[2] > 0 then
+					local value = managers.player:upgrade_value(category, "stacking_hit_damage_multiplier", 0)
 					managers.gameinfo:event("timed_buff", "activate", buff_id, { t = t, expire_t = stack[1] })
 					managers.gameinfo:event("buff", "set_stack_count", buff_id, { stack_count = stack[2] })
+					managers.gameinfo:event("buff", "set_value", buff_id, { value = 1 + stack[2] * value })
 				else
 					managers.gameinfo:event("buff", "deactivate", buff_id)
 				end
@@ -2524,6 +2618,8 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 	local _regenerate_armor_original = PlayerDamage._regenerate_armor
 	local _update_armor_grinding_original = PlayerDamage._update_armor_grinding
 	local _on_damage_armor_grinding_original = PlayerDamage._on_damage_armor_grinding
+	local change_regenerate_speed_original = PlayerDamage.change_regenerate_speed
+	local build_suppression_original = PlayerDamage.build_suppression
 	local set_armor_original = PlayerDamage.set_armor
 	
 	function PlayerDamage:init(...)
@@ -2539,6 +2635,8 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 			
 			CopDamage.register_listener("anarchist_debuff_listener", {"on_damage"}, on_damage)
 		end
+		
+		self._listener_holder:add("custom_on_damage", { "on_damage" }, callback(self, self, "_custom_on_damage_clbk"))
 	end
 	
 	function PlayerDamage:add_damage_to_hot(...)
@@ -2575,7 +2673,7 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 					local bonus_ratio = managers.player:get_damage_health_ratio(health_ratio, data.category)
 					if bonus_ratio > 0 then
 						managers.gameinfo:event("buff", "activate", data.buff_id)
-						managers.gameinfo:event("buff", "set_value", data.buff_id, { value = bonus_ratio })
+						managers.gameinfo:event("buff", "set_value", data.buff_id, { value = bonus_ratio, show_value = true })
 					else
 						managers.gameinfo:event("buff", "deactivate", data.buff_id)
 					end
@@ -2584,11 +2682,11 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 			
 			if managers.player:has_category_upgrade("player", "passive_damage_reduction") then
 				local threshold = managers.player:upgrade_value("player", "passive_damage_reduction")
+				local value = managers.player:team_upgrade_value("damage_dampener", "team_damage_reduction")
 				if health_ratio < threshold then
-					managers.gameinfo:event("buff", "activate", "crew_chief_1_extra")
-				else
-					managers.gameinfo:event("buff", "deactivate", "crew_chief_1_extra")
+					value = 2 * value - 1
 				end
+				managers.gameinfo:event("buff", "set_value", "crew_chief_1", { value = value })
 			end
 		end
 	end
@@ -2622,41 +2720,78 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 			end
 		end
 		
-		if managers.player:has_category_upgrade("player", "armor_grinding") then
-			managers.gameinfo:event("buff", "deactivate", "anarchist_armor_tick")
-		end
-		
 		return _regenerate_armor_original(self, ...)
 	end
 	
+	local ARMOR_GRIND_ACTIVE = false
 	function PlayerDamage:_update_armor_grinding(t, ...)
 		_update_armor_grinding_original(self, t, ...)
 		
-		if self._armor_grinding.elapsed == 0 and self._armor_grind_buff_active then
-			managers.gameinfo:event("buff", "set_duration", "anarchist_armor_tick", { t = t, duration = self._armor_grinding.target_tick })
+		if self._armor_grinding.elapsed == 0 and ARMOR_GRIND_ACTIVE then
+			managers.gameinfo:event("player_action", "set_duration", "anarchist_armor_regeneration", { t = t, duration = self._armor_grinding.target_tick })
 		end
 	end
 	
 	function PlayerDamage:_on_damage_armor_grinding(...)
-		if not self._armor_grind_buff_active then
-			local duration = self._armor_grinding.target_tick - self._armor_grinding.elapsed
-			managers.gameinfo:event("buff", "activate", "anarchist_armor_tick")
-			managers.gameinfo:event("buff", "set_duration", "anarchist_armor_tick", { expire_t = self._armor_grinding.target_tick })
-			self._armor_grind_buff_active = true
+		if not ARMOR_GRIND_ACTIVE then
+			local t = Application:time() - (self._armor_grinding.elapsed or 0)
+			managers.gameinfo:event("player_action", "activate", "anarchist_armor_regeneration")
+			managers.gameinfo:event("player_action", "set_duration", "anarchist_armor_regeneration", { t = t, duration = self._armor_grinding.target_tick })
+			ARMOR_GRIND_ACTIVE = true
 		end
 		return _on_damage_armor_grinding_original(self, ...)
+	end
+	
+	function PlayerDamage:change_regenerate_speed(...)
+		change_regenerate_speed_original(self, ...)
+		self:_check_armor_regen_timer()
+	end
+	
+	local LAST_ARMOR_REGEN_BUFF_RESET = 0
+	function PlayerDamage:build_suppression(...)
+		build_suppression_original(self, ...)
+		LAST_ARMOR_REGEN_BUFF_RESET = Application:time()
+		self:_check_armor_regen_timer()
 	end
 	
 	function PlayerDamage:set_armor(armor, ...)
 		set_armor_original(self, armor, ...)
 		
 		if armor >= self:_total_armor() then
-			managers.gameinfo:event("buff", "deactivate", "anarchist_armor_tick")
-			self._armor_grind_buff_active = false
-			
-			--TODO: Disable armor regen debuff
+			ARMOR_GRIND_ACTIVE = false
+			managers.gameinfo:event("player_action", "deactivate", "anarchist_armor_regeneration")
+			managers.gameinfo:event("player_action", "deactivate", "standard_armor_regeneration")
 		end
 	end
+	
+	
+	function PlayerDamage:_custom_on_damage_clbk()
+		if not self:is_downed() then
+			LAST_ARMOR_REGEN_BUFF_RESET = Application:time()
+			self:_check_armor_regen_timer()
+		end
+	end
+	
+	local LAST_CHECK_T = 0
+	function PlayerDamage:_check_armor_regen_timer()
+		if self._regenerate_timer then
+			local t = Application:time()
+			local duration = self._regenerate_timer / (self._regenerate_speed or 1)
+			
+			if self._supperssion_data.decay_start_t and self._supperssion_data.decay_start_t > t then
+				duration = duration + (self._supperssion_data.decay_start_t - t)
+			end
+			
+			if duration > 0 and t > LAST_CHECK_T then
+				local start_t = LAST_ARMOR_REGEN_BUFF_RESET
+				local expire_t = t + duration
+				LAST_CHECK_T = t
+				managers.gameinfo:event("player_action", "activate", "standard_armor_regeneration")
+				managers.gameinfo:event("player_action", "set_duration", "standard_armor_regeneration", { t = start_t, expire_t = expire_t })
+			end
+		end
+	end
+	
 	
 end
 
@@ -2666,6 +2801,7 @@ if RequiredScript == "lib/player_actions/skills/playeractionbloodthirstbase" the
 	
 	function PlayerAction.BloodthirstBase.Function(...)
 		managers.gameinfo:event("buff", "activate", "bloodthirst_basic")
+		managers.gameinfo:event("buff", "set_value", "bloodthirst_basic", { value = 1 })
 		bloodthirstbase_original(...)
 		managers.gameinfo:event("buff", "deactivate", "bloodthirst_basic")
 	end
@@ -2676,10 +2812,10 @@ if RequiredScript == "lib/player_actions/skills/playeractionexperthandling" then
 	
 	local experthandling_original = PlayerAction.ExpertHandling.Function
 	
-	function PlayerAction.ExpertHandling.Function(t, dt, player_manager, accuracy_bonus, max_stacks, max_time, ...)
+	function PlayerAction.ExpertHandling.Function(player_manager, accuracy_bonus, max_stacks, max_time, ...)
 		managers.gameinfo:event("buff", "activate", "desperado")
-		managers.gameinfo:event("buff", "set_duration", "desperado", { duration = max_time })
-		experthandling_original(t, dt, player_manager, accuracy_bonus, max_stacks, max_time, ...)
+		managers.gameinfo:event("buff", "set_duration", "desperado", { expire_t = max_time })
+		experthandling_original(player_manager, accuracy_bonus, max_stacks, max_time, ...)
 		managers.gameinfo:event("buff", "deactivate", "desperado")
 	end
 	
@@ -2689,7 +2825,7 @@ if RequiredScript == "lib/player_actions/skills/playeractionshockandawe" then
 	
 	local shockandawe_original = PlayerAction.ShockAndAwe.Function
 	
-	function PlayerAction.ShockAndAwe.Function(t, dt, player_manager, target_enemies, max_reload_increase, min_reload_increase, penalty, min_bullets, ...)
+	function PlayerAction.ShockAndAwe.Function(player_manager, target_enemies, max_reload_increase, min_reload_increase, penalty, min_bullets, ...)
 		local kill_count = 1
 		local active = false
 	
@@ -2709,7 +2845,7 @@ if RequiredScript == "lib/player_actions/skills/playeractionshockandawe" then
 					end
 					
 					managers.gameinfo:event("buff", "activate", "shock_and_awe")
-					managers.gameinfo:event("buff", "set_value", "shock_and_awe", { value = string.format("%.0f%%", (1-reload_increase) * 100) })
+					managers.gameinfo:event("buff", "set_value", "shock_and_awe", { value = string.format("%.0f%%", (1-reload_increase) * 100), show_value = true })
 					--managers.gameinfo:event("buff", "set_stack_count", "shock_and_awe" { stack_count = nil })
 				else
 					--managers.gameinfo:event("buff", "set_stack_count", "shock_and_awe" { stack_count = target_enemies - kill_count })
@@ -2720,7 +2856,7 @@ if RequiredScript == "lib/player_actions/skills/playeractionshockandawe" then
 		--managers.gameinfo:event("buff", "activate", "shock_and_awe")
 		--managers.gameinfo:event("buff", "set_stack_count", "shock_and_awe" { stack_count = target_enemies - kill_count })
 		managers.player:register_message(Message.OnEnemyKilled, "shock_and_awe_buff_listener", on_enemy_killed)
-		shockandawe_original(t, dt, player_manager, target_enemies, max_reload_increase, min_reload_increase, penalty, min_bullets, ...)
+		shockandawe_original(player_manager, target_enemies, max_reload_increase, min_reload_increase, penalty, min_bullets, ...)
 		managers.gameinfo:event("buff", "deactivate", "shock_and_awe")
 		managers.player:unregister_message(Message.OnEnemyKilled, "shock_and_awe_buff_listener")
 	end
@@ -2739,96 +2875,77 @@ if RequiredScript == "lib/player_actions/skills/playeractiondireneed" then
 	
 end
 
-
-
-
-
---[[
-if RequiredScript == "lib/units/beings/player/playerdamage" then
-
-	local _damage_screen_original = PlayerDamage._damage_screen
-	local build_suppression_original = PlayerDamage.build_suppression
-	local set_armor_original = PlayerDamage.set_armor
+if RequiredScript == "lib/player_actions/skills/playeractionunseenstrike" then
 	
-
-	function PlayerDamage:_damage_screen(...)
-		_damage_screen_original(self, ...)
-		local delay = self._regenerate_timer + (self._supperssion_data.decay_start_t and (self._supperssion_data.decay_start_t - managers.player:player_timer():time()) or 0)
-		managers.player:activate_timed_buff("armor_regen_debuff", delay)
+	local unseenstrike_original = PlayerAction.UnseenStrike.Function
+	local unseenstrike_start_original = PlayerAction.UnseenStrikeStart.Function
+	
+	function PlayerAction.UnseenStrike.Function(player_manager, min_time, ...)
+		local function on_damage_taken()
+			managers.gameinfo:event("buff", "set_duration", "unseen_strike_debuff", { duration = min_time })
+		end
+		
+		managers.player:register_message(Message.OnPlayerDamage, "unseen_strike_debuff_listener", on_damage_taken)
+		managers.gameinfo:event("buff", "activate", "unseen_strike_debuff")
+		managers.gameinfo:event("buff", "deactivate", "unseen_strike")
+		on_damage_taken()
+		unseenstrike_original(player_manager, min_time, ...)
+		managers.player:unregister_message(Message.OnPlayerDamage, "unseen_strike_debuff_listener")
+		--Defer debuff deactivation to after the buff has been activated to prevent list reordering
 	end
 	
-	function PlayerDamage:build_suppression(amount, ...)
-		if not self:_chk_suppression_too_soon(amount) then
-			build_suppression_original(self, amount, ...)
-			
-			if self._supperssion_data.value > 0 then
-				managers.player:activate_timed_buff("suppression_debuff", tweak_data.player.suppression.decay_start_delay + self._supperssion_data.value)
-			end
+	function PlayerAction.UnseenStrikeStart.Function(player_manager, max_duration, ...)
+		local start_t = Application:time()
+		
+		local function on_damage_taken()
+			local stop_t = Application:time()
+			local diff = stop_t - start_t
+			local offset = diff - math.floor(diff/max_duration) * max_duration	--Has error margin, grows every reset
+			managers.gameinfo:event("buff", "set_duration", "unseen_strike", { t = stop_t - offset, duration = max_duration })
+		end
+		
+		managers.player:register_message(Message.OnPlayerDamage, "unseen_strike_buff_listener", on_damage_taken)
+		managers.gameinfo:event("buff", "activate", "unseen_strike")
+		managers.gameinfo:event("buff", "deactivate", "unseen_strike_debuff")
+		unseenstrike_start_original(player_manager, max_duration, ...)
+		managers.player:unregister_message(Message.OnPlayerDamage, "unseen_strike_buff_listener")
+		--Defer buff deactivation to after the debuff has been activated to prevent list reordering
+	end
+	
+end
 
-			if self._supperssion_data.value == tweak_data.player.suppression.max_value then
-				if self:get_real_armor() < self:_total_armor() then
-					managers.player:refresh_timed_buff("armor_regen_debuff")
+if RequiredScript == "lib/player_actions/skills/playeractionammoefficiency" then
+
+	local ammo_efficieny_original = PlayerAction.AmmoEfficiency.Function
+	
+	function PlayerAction.AmmoEfficiency.Function(player_manager, target_headshots, bullet_refund, target_time, ...)
+		local weapon_unit = player_manager:equipped_weapon_unit()
+		local invalid_weapon = alive(weapon_unit) and (weapon_unit:base():fire_mode() ~= "single" or not weapon_unit:base():is_category("smg", "assault_rifle", "snp"))
+		local headshots = 1
+		
+		if not invalid_weapon then
+			local function on_headshot()
+				headshots = headshots + 1
+				if headshots < target_headshots then
+					managers.gameinfo:event("buff", "set_stack_count", "ammo_efficiency", { stack_count = target_headshots - headshots })
 				end
 			end
+			
+			player_manager:register_message(Message.OnHeadShot, "ammo_efficiency_buff_listener", on_headshot)
+			managers.gameinfo:event("buff", "activate", "ammo_efficiency")
+			managers.gameinfo:event("buff", "set_duration", "ammo_efficiency", { expire_t = target_time })
+			managers.gameinfo:event("buff", "set_stack_count", "ammo_efficiency", { stack_count = target_headshots - headshots })
 		end
-	end
-	
-	function PlayerDamage:set_armor(armor, ...)
-		set_armor_original(self, armor, ...)
 		
-		if armor >= self:_total_armor() then
-			managers.player:deactivate_buff("armor_regen_debuff")
+		ammo_efficieny_original(player_manager, target_headshots, bullet_refund, target_time, ...)
+		
+		if not invalid_weapon then
+			player_manager:unregister_message(Message.OnHeadShot, "ammo_efficiency_buff_listener")
+			managers.gameinfo:event("buff", "deactivate", "ammo_efficiency")
 		end
 	end
 	
 end
-
-if RequiredScript == "lib/units/beings/player/states/playerstandard" then
-
-	local _start_action_charging_weapon_original = PlayerStandard._start_action_charging_weapon
-	local _end_action_charging_weapon_original = PlayerStandard._end_action_charging_weapon
-	local _update_charging_weapon_timers_original = PlayerStandard._update_charging_weapon_timers
-	local _start_action_melee_original = PlayerStandard._start_action_melee
-	local _update_melee_timers_original = PlayerStandard._update_melee_timers
-
-	function PlayerStandard:_start_action_charging_weapon(...)
-		managers.player:activate_buff("bow_charge")
-		managers.player:set_buff_attribute("bow_charge", "progress", 0)
-		return _start_action_charging_weapon_original(self, ...)
-	end
-
-	function PlayerStandard:_end_action_charging_weapon(...)
-		managers.player:deactivate_buff("bow_charge")
-		return _end_action_charging_weapon_original(self, ...)
-	end
-
-	function PlayerStandard:_update_charging_weapon_timers(...)
-		if self._state_data.charging_weapon then
-			local weapon = self._equipped_unit:base()
-			if not weapon:charge_fail() then
-				managers.player:set_buff_attribute("bow_charge", "progress", weapon:charge_multiplier())
-			end
-		end
-		return _update_charging_weapon_timers_original(self, ...)
-	end
-
-	function PlayerStandard:_start_action_melee(...)
-		managers.player:set_buff_attribute("melee_charge", "progress", 0)
-		return _start_action_melee_original(self, ...)
-	end
-
-	function PlayerStandard:_update_melee_timers(t, ...)
-		if self._state_data.meleeing and self._state_data.melee_start_t and self._state_data.melee_start_t + 0.3 < t then
-			managers.player:activate_buff("melee_charge")
-			managers.player:set_buff_attribute("melee_charge", "progress", self:_get_melee_charge_lerp_value(t))
-		end
-		return _update_melee_timers_original(self, t, ...)
-	end
-	
-end
-]]
-
-
 
 
 

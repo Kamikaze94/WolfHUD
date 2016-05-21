@@ -72,6 +72,19 @@
 			"type" : "divider",
 			"size" : 16,
 		},
+		
+		{
+			"type" : "toggle",
+			"id" : "SHOW_ACCURACY",
+			"title" : "wolfhud_killcounter_show_accuracy_title",
+			"description" : "wolfhud_killcounter_show_accuracy_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "SHOW_ACCURACY",
+		},
+		{
+			"type" : "divider",
+			"size" : 16,
+		},
 		{
 			"type" : "slider",
 			"id" : "max_corpses",

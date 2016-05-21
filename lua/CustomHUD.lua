@@ -23,7 +23,7 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 		function HUDTeammate:init(i, ...)
 			init_original(self, i, ...)
 			
-			if i == HUDManager.PLAYER_PANEL and not HUDManager.CUSTOM_TEAMMATE_PANEL then
+			if i == HUDManager.PLAYER_PANEL and not HUDManager.CUSTOM_TEAMMATE_PANELS then
 				self:_create_stamina_circle()
 			end
 		end
@@ -83,18 +83,18 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		MAX_WEAPONS = 2,	--Number of carried guns (...just don't...)
 		
 		PLAYER = {
-			SCALE = WolfHUD:getSetting("PLAYER_PANEL_SCALE", "number"),			--Scale of all elements of the panel
-			OPACITY = WolfHUD:getSetting("PLAYER_PANEL_OPPACITY", "number"),	--Transparency/alpha of panel (1 is solid, 0 is invisible)
+			SCALE = WolfHUD:getSetting("PLAYER_SCALE", "number"),			--Scale of all elements of the panel
+			OPACITY = WolfHUD:getSetting("PLAYER_OPACITY", "number"),	--Transparency/alpha of panel (1 is solid, 0 is invisible)
 			
-			NAME = WolfHUD:getSetting("PLAYER_PANEL_NAME", "boolean"),	--Show name
-			RANK = WolfHUD:getSetting("PLAYER_PANEL_RANK", "boolean"),	--Show infamy/level
-			CHARACTER = WolfHUD:getSetting("PLAYER_PANEL_CHARACTER", "boolean"),	--Show character name
+			NAME = WolfHUD:getSetting("PLAYER_NAME", "boolean"),	--Show name
+			RANK = WolfHUD:getSetting("PLAYER_RANK", "boolean"),	--Show infamy/level
+			CHARACTER = WolfHUD:getSetting("PLAYER_CHARACTER", "boolean"),	--Show character name
 			LATENCY = false,	--Show latency (not used by player panel)
-			STATUS = WolfHUD:getSetting("PLAYER_PANEL_STATUS", "boolean"),	--Show health/armor/condition etc.
-			EQUIPMENT = WolfHUD:getSetting("PLAYER_PANEL_EQUIPMENT", "boolean"),	--Show throwables, cable ties and deployables
-			SPECIAL_EQUIPMENT = WolfHUD:getSetting("PLAYER_PANEL_SPECIAL_EQUIPMENT", "boolean"),	--Show special equipment/tools (keycards etc.)
-			CALLSIGN = WolfHUD:getSetting("PLAYER_PANEL_CALLSIGN", "boolean"),	--Show the callsign and voice chat icon
-			CARRY = WolfHUD:getSetting("PLAYER_PANEL_CARRY", "boolean"),	--Show currently carried bag
+			STATUS = WolfHUD:getSetting("PLAYER_STATUS", "boolean"),	--Show health/armor/condition etc.
+			EQUIPMENT = WolfHUD:getSetting("PLAYER_EQUIPMENT", "boolean"),	--Show throwables, cable ties and deployables
+			SPECIAL_EQUIPMENT = WolfHUD:getSetting("PLAYER_SPECIALEQUIPMENT", "boolean"),	--Show special equipment/tools (keycards etc.)
+			CALLSIGN = WolfHUD:getSetting("PLAYER_CALLSIGN", "boolean"),	--Show the callsign and voice chat icon
+			CARRY = WolfHUD:getSetting("PLAYER_CARRY", "boolean"),	--Show currently carried bag
 			BUILD = {	--Show perk deck and number of skills acquired in each tree (not used by player)
 				--Pick max one
 				HIDE = true,	--Don't show build at all
@@ -105,88 +105,30 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 				--HIDE option hides the element. SELECTED_ONLY shows only if the weapon is currently selected, UNSELECTED_ONLY the reverse
 				--Pick max *one* setting for each element or results are undefined
 				ICON = {
-					HIDE = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_ICON", "number") == 1),
-					SELECTED_ONLY = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_ICON", "number") == 2),
-					UNSELECTED_ONLY = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_ICON", "number") == 3),
+					HIDE = (WolfHUD:getSetting("PLAYER_WEAPON_ICON", "number") == 1),
+					SELECTED_ONLY = (WolfHUD:getSetting("PLAYER_WEAPON_ICON", "number") == 2),
+					UNSELECTED_ONLY = (WolfHUD:getSetting("PLAYER_WEAPON_ICON", "number") == 3),
 				},
 				NAME = {
-					HIDE = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_NAME", "number") == 1),
-					SELECTED_ONLY = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_NAME", "number") == 2),
-					UNSELECTED_ONLY = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_NAME", "number") == 3),
+					HIDE = (WolfHUD:getSetting("PLAYER_WEAPON_NAME", "number") == 1),
+					SELECTED_ONLY = (WolfHUD:getSetting("PLAYER_WEAPON_NAME", "number") == 2),
+					UNSELECTED_ONLY = (WolfHUD:getSetting("PLAYER_WEAPON_NAME", "number") == 3),
 				},
 				AMMO = {
-					HIDE = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_AMMO", "number") == 1),
-					SELECTED_ONLY = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_AMMO", "number") == 2),
-					UNSELECTED_ONLY = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_AMMO", "number") == 3),
-					TOTAL_AMMO_ONLY = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_AMMO", "number") == 5),	--Shows only total ammo for all weapons
+					HIDE = (WolfHUD:getSetting("PLAYER_WEAPON_AMMO", "number") == 1),
+					SELECTED_ONLY = (WolfHUD:getSetting("PLAYER_WEAPON_AMMO", "number") == 2),
+					UNSELECTED_ONLY = (WolfHUD:getSetting("PLAYER_WEAPON_AMMO", "number") == 3),
+					TOTAL_AMMO_ONLY = (WolfHUD:getSetting("PLAYER_WEAPON_AMMO", "number") == 5),	--Shows only total ammo for all weapons
 				},
-				FIRE_MODE = {
-					HIDE = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_FIREMODE", "number") == 1),
-					SELECTED_ONLY = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_FIREMODE", "number") == 2),
-					UNSELECTED_ONLY = (WolfHUD:getSetting("PLAYER_PANEL_WEAPON_FIREMODE", "number") == 3),
+				FIREMODE = {
+					HIDE = (WolfHUD:getSetting("PLAYER_WEAPON_FIREMODE", "number") == 1),
+					SELECTED_ONLY = (WolfHUD:getSetting("PLAYER_WEAPON_FIREMODE", "number") == 2),
+					UNSELECTED_ONLY = (WolfHUD:getSetting("PLAYER_WEAPON_FIREMODE", "number") == 3),
 				},
 			},
 			INTERACTION = {	--(Interaction display only used by teammates, included for reference)
 				HIDE = true,	--Hides the interaction activity/time/progress
-				MIN_DURATION = 1,	--Shows the interaction display only if interaction duration in seconds exceeds this threshold
-			},
-			KILL_COUNTER = {
-				--Requires external plugin to be loaded, else will be disabled no matter what
-				--HIDE = true,	--Hides the kill counter
-				SHOW_BOT_KILLS = true,	--Show the kill counter for criminal bots
-				SHOW_SPECIAL_KILLS = true,	--Separate counter for specials
-				SHOW_HEADSHOT_KILLS = true,	--Separate counter, of how many kills were due to headshots
-			},
-			ACCURACY = true,	--Show accuracy information
-		},
-		
-		TEAMMATE = {
-			SCALE = WolfHUD:getSetting("TEAM_PANEL_SCALE", "number"),			--Scale of all elements of the panel
-			OPACITY = WolfHUD:getSetting("TEAM_PANEL_OPPACITY", "number"),	--Transparency/alpha of panel (1 is solid, 0 is invisible)
-			
-			NAME = WolfHUD:getSetting("TEAM_PANEL_NAME", "boolean"),	--Show name
-			RANK = WolfHUD:getSetting("TEAM_PANEL_RANK", "boolean"),	--Show infamy/level
-			CHARACTER = WolfHUD:getSetting("TEAM_PANEL_CHARACTER", "boolean"),	--Show character name
-			LATENCY = WolfHUD:getSetting("TEAM_PANEL_LATENCY", "boolean"),	--Show latency (not used by player panel)
-			STATUS = WolfHUD:getSetting("TEAM_PANEL_STATUS", "boolean"),	--Show health/armor/condition etc.
-			EQUIPMENT = WolfHUD:getSetting("TEAM_PANEL_EQUIPMENT", "boolean"),	--Show throwables, cable ties and deployables
-			SPECIAL_EQUIPMENT = WolfHUD:getSetting("TEAM_PANEL_SPECIAL_EQUIPMENT", "boolean"),	--Show special equipment/tools (keycards etc.)
-			CALLSIGN = WolfHUD:getSetting("TEAM_PANEL_CALLSIGN", "boolean"),	--Show the callsign and voice chat icon
-			CARRY = WolfHUD:getSetting("TEAM_PANEL_CARRY", "boolean"),	--Show currently carried bag
-			BUILD = {	--Show perk deck and number of skills acquired in each tree (not used by player)
-				--Pick max one
-				HIDE = (WolfHUD:getSetting("TEAM_PANEL_BUILD", "number") == 0),	--Don't show build at all
-				DURATION = WolfHUD:getSetting("TEAM_PANEL_BUILD", "number"),	--Time in seconds to show the build from when player joins. Information is hidden when duration has expired, or never removed if value is nil/undefined
-			},
-			WEAPON = {
-				--Show/hide various elements of the weapons panels.
-				--HIDE option hides the element. SELECTED_ONLY shows only if the weapon is currently selected, UNSELECTED_ONLY the reverse
-				--Pick max *one* setting for each element or results are undefined
-				ICON = {
-					HIDE = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_ICON", "number") == 1),
-					SELECTED_ONLY = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_ICON", "number") == 2),
-					UNSELECTED_ONLY = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_ICON", "number") == 3),
-				},
-				NAME = {
-					HIDE = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_NAME", "number") == 1),
-					SELECTED_ONLY = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_NAME", "number") == 2),
-					UNSELECTED_ONLY = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_NAME", "number") == 3),
-				},
-				AMMO = {
-					HIDE = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_AMMO", "number") == 1),
-					SELECTED_ONLY = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_AMMO", "number") == 2),
-					UNSELECTED_ONLY = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_AMMO", "number") == 3),
-					TOTAL_AMMO_ONLY = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_AMMO", "number") == 5),	--Shows only total ammo for all weapons
-				},
-				FIRE_MODE = {
-					HIDE = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_FIREMODE", "number") == 1),
-					SELECTED_ONLY = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_FIREMODE", "number") == 2),
-					UNSELECTED_ONLY = (WolfHUD:getSetting("TEAM_PANEL_WEAPON_FIREMODE", "number") == 3),
-				},
-			},
-			INTERACTION = {	--(Interaction display only used by teammates, included for reference)
-				HIDE = not WolfHUD:getSetting("TEAM_PANEL_SHOW_INTERACTION", "boolean"),	--Hides the interaction activity/time/progress
-				MIN_DURATION = WolfHUD:getSetting("TEAM_PANEL_INTERACTION", "number"),	--Shows the interaction display only if interaction duration in seconds exceeds this threshold
+				MINDURATION = 1,	--Shows the interaction display only if interaction duration in seconds exceeds this threshold
 			},
 			KILL_COUNTER = {
 				--Requires external plugin to be loaded, else will be disabled no matter what
@@ -195,7 +137,65 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 				SHOW_SPECIAL_KILLS = WolfHUD:getSetting("SHOW_SPECIAL_KILLS", "boolean"),	--Separate counter for specials
 				SHOW_HEADSHOT_KILLS = WolfHUD:getSetting("SHOW_HEADSHOT_KILLS", "boolean"),	--Separate counter, of how many kills were due to headshots
 			},
-			ACCURACY = not WolfHUD:getSetting("use_killcounter", "boolean"),	--Show accuracy information
+			ACCURACY = WolfHUD:getSetting("SHOW_ACCURACY", "boolean"),	--Show accuracy information
+		},
+		
+		TEAMMATE = {
+			SCALE = WolfHUD:getSetting("TEAM_SCALE", "number"),			--Scale of all elements of the panel
+			OPACITY = WolfHUD:getSetting("TEAM_OPACITY", "number"),	--Transparency/alpha of panel (1 is solid, 0 is invisible)
+			
+			NAME = WolfHUD:getSetting("TEAM_NAME", "boolean"),	--Show name
+			RANK = WolfHUD:getSetting("TEAM_RANK", "boolean"),	--Show infamy/level
+			CHARACTER = WolfHUD:getSetting("TEAM_CHARACTER", "boolean"),	--Show character name
+			LATENCY = WolfHUD:getSetting("TEAM_LATENCY", "boolean"),	--Show latency (not used by player panel)
+			STATUS = WolfHUD:getSetting("TEAM_STATUS", "boolean"),	--Show health/armor/condition etc.
+			EQUIPMENT = WolfHUD:getSetting("TEAM_EQUIPMENT", "boolean"),	--Show throwables, cable ties and deployables
+			SPECIALEQUIPMENT = WolfHUD:getSetting("TEAM_SPECIALEQUIPMENT", "boolean"),	--Show special equipment/tools (keycards etc.)
+			CALLSIGN = WolfHUD:getSetting("TEAM_CALLSIGN", "boolean"),	--Show the callsign and voice chat icon
+			CARRY = WolfHUD:getSetting("TEAM_CARRY", "boolean"),	--Show currently carried bag
+			BUILD = {	--Show perk deck and number of skills acquired in each tree (not used by player)
+				--Pick max one
+				HIDE = (WolfHUD:getSetting("TEAM_BUILD", "number") == 0),	--Don't show build at all
+				DURATION = WolfHUD:getSetting("TEAM_BUILD", "number"),	--Time in seconds to show the build from when player joins. Information is hidden when duration has expired, or never removed if value is nil/undefined
+			},
+			WEAPON = {
+				--Show/hide various elements of the weapons panels.
+				--HIDE option hides the element. SELECTED_ONLY shows only if the weapon is currently selected, UNSELECTED_ONLY the reverse
+				--Pick max *one* setting for each element or results are undefined
+				ICON = {
+					HIDE = (WolfHUD:getSetting("TEAM_WEAPON_ICON", "number") == 1),
+					SELECTED_ONLY = (WolfHUD:getSetting("TEAM_WEAPON_ICON", "number") == 2),
+					UNSELECTED_ONLY = (WolfHUD:getSetting("TEAM_WEAPON_ICON", "number") == 3),
+				},
+				NAME = {
+					HIDE = (WolfHUD:getSetting("TEAM_WEAPON_NAME", "number") == 1),
+					SELECTED_ONLY = (WolfHUD:getSetting("TEAM_WEAPON_NAME", "number") == 2),
+					UNSELECTED_ONLY = (WolfHUD:getSetting("TEAM_WEAPON_NAME", "number") == 3),
+				},
+				AMMO = {
+					HIDE = (WolfHUD:getSetting("TEAM_WEAPON_AMMO", "number") == 1),
+					SELECTED_ONLY = (WolfHUD:getSetting("TEAM_WEAPON_AMMO", "number") == 2),
+					UNSELECTED_ONLY = (WolfHUD:getSetting("TEAM_WEAPON_AMMO", "number") == 3),
+					TOTAL_AMMO_ONLY = (WolfHUD:getSetting("TEAM_WEAPON_AMMO", "number") == 5),	--Shows only total ammo for all weapons
+				},
+				FIREMODE = {
+					HIDE = (WolfHUD:getSetting("TEAM_WEAPON_FIREMODE", "number") == 1),
+					SELECTED_ONLY = (WolfHUD:getSetting("TEAM_WEAPON_FIREMODE", "number") == 2),
+					UNSELECTED_ONLY = (WolfHUD:getSetting("TEAM_WEAPON_FIREMODE", "number") == 3),
+				},
+			},
+			INTERACTION = {	--(Interaction display only used by teammates, included for reference)
+				HIDE = not WolfHUD:getSetting("TEAM_INTERACTION_HIDE", "boolean"),	--Hides the interaction activity/time/progress
+				MINDURATION = WolfHUD:getSetting("TEAM_INTERACTION_MINDURATION", "number"),	--Shows the interaction display only if interaction duration in seconds exceeds this threshold
+			},
+			KILL_COUNTER = {
+				--Requires external plugin to be loaded, else will be disabled no matter what
+				HIDE = not WolfHUD:getSetting("use_killcounter", "boolean"),	--Hides the kill counter
+				SHOW_BOT_KILLS = WolfHUD:getSetting("SHOW_AI_KILLS", "boolean"),	--Show the kill counter for criminal bots
+				SHOW_SPECIAL_KILLS = WolfHUD:getSetting("SHOW_SPECIAL_KILLS", "boolean"),	--Separate counter for specials
+				SHOW_HEADSHOT_KILLS = WolfHUD:getSetting("SHOW_HEADSHOT_KILLS", "boolean"),	--Separate counter, of how many kills were due to headshots
+			},
+			ACCURACY = WolfHUD:getSetting("SHOW_ACCURACY", "boolean"),	--Show accuracy information
 		},
 	}
 	function HUDTeammateCustom:init(id, panel, is_player, alignment)
@@ -280,6 +280,52 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._panel:set_alpha(self._settings.OPACITY)
 		self._panel:hide()
 		self:_update_layout(true)
+	end
+	
+	function HUDTeammateCustom:change_setting(setting, value)
+		local val = value
+		if setting[1] == "WEAPON" then
+			val = {
+				HIDE = (value == 1),
+				SELECTED_ONLY = (value == 2),
+				UNSELECTED_ONLY = (value == 3),
+				TOTAL_AMMO_ONLY = (value == 5),
+			}
+		elseif setting[1] == "BUILD" then
+			if val == 0 then
+				table.insert(setting, "HIDE")
+				val = true
+			else
+				self:change_setting({"BUILD", "HIDE"}, false)
+				table.insert(setting, "DURATION")
+			end
+		elseif setting[1] == "INTERACTION" and setting[2] == "HIDE" then
+			val = not val
+		end
+		
+		if #setting > 1 then
+			self._settings[setting[1]][setting[2]] = val
+		else
+			self._settings[setting[1]] = val
+		end
+		
+		self._name:set_enabled("setting", self._settings.NAME)
+		self._rank:set_enabled("setting", self._settings.RANK)
+		self._character:set_enabled("setting", self._settings.CHARACTER)
+		self._latency:set_enabled("setting", self._settings.LATENCY)
+		self._callsign:set_enabled("setting", self._settings.CALLSIGN)
+		self._build:set_enabled("setting", not (self._settings.BUILD and self._settings.BUILD.HIDE))
+		self._player_status:set_enabled("setting", self._settings.STATUS)
+		self._equipment:set_enabled("setting", self._settings.EQUIPMENT)
+		self._special_equipment:set_enabled("setting", self._settings.SPECIAL_EQUIPMENT)
+		self._carry:set_enabled("setting", self._settings.CARRY)
+		self._interaction:set_enabled("setting", not (self._settings.INTERACTION and self._settings.INTERACTION.HIDE))
+		self._accuracy:set_enabled("setting", HUDManager.ACCURACY_PLUGIN and self._settings.ACCURACY)
+		self._kills:set_enabled("setting", HUDManager.KILL_COUNTER_PLUGIN and not self._settings.KILL_COUNTER.HIDE)	
+		self._weapons:apply_settings()
+		
+		self._panel:set_alpha(self._settings.OPACITY)
+		self:arrange()
 	end
 
 	function HUDTeammateCustom:update(t, dt)
@@ -1436,6 +1482,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			self._panel:set_alpha(0)
 			self._disabled = true
 			return true
+		else
+			self._panel:set_alpha(1)
+			self._disabled = false
 		end
 	end
 	
@@ -2003,6 +2052,37 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	--TODO: Update statisticspanel width
 		self:arrange()
 	end
+	
+	function PlayerInfoComponent.Weapon:apply_settings()
+		self._individual_ammo_enabled = not self._settings.AMMO.TOTAL_AMMO_ONLY
+		local items = {
+			ICON = { item = self._icon_panel, prerequisite = true },
+			AMMO = { item = self._ammo_panel, prerequisite = self._individual_ammo_enabled },
+			FIREMODE = { item = self._fire_mode_panel, prerequisite = self._fire_mode_count > 1 },
+			NAME = { item = self._icon_panel:child("label"), prerequisite = true }
+		}
+		
+		for component, settings in pairs(self._settings) do
+			local item = items[component].item
+			local prereq = items[component].prerequisite
+			local visible = prereq
+			
+			if prereq then
+				if settings.HIDE then
+					visible = false
+				elseif settings.SELECTED_ONLY then
+					visible = self._selected
+				elseif settings.UNSELECTED_ONLY then 
+					visible = not self._selected
+				end
+			end
+			
+			if item:visible() ~= visible then
+				item:set_visible(visible)
+			end
+		end
+		return self:arrange()
+	end
 
 	function PlayerInfoComponent.Weapon:arrange()
 		local MARGIN = self._panel:h() * 0.05
@@ -2072,12 +2152,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function PlayerInfoComponent.Weapon:set_selected(status)
+		self._selected = status
 		self:set_alpha(status and 1 or 0.5)
 		
 		local items = {
 			ICON = { item = self._icon_panel, prerequisite = true },
 			AMMO = { item = self._ammo_panel, prerequisite = self._individual_ammo_enabled },
-			FIRE_MODE = { item = self._fire_mode_panel, prerequisite = self._fire_mode_count > 1 },
+			FIREMODE = { item = self._fire_mode_panel, prerequisite = self._fire_mode_count > 1 },
 			NAME = { item = self._icon_panel:child("label"), prerequisite = true }
 		}
 		
@@ -2183,6 +2264,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 		
 		PlayerInfoComponent.AllWeapons.super.destroy(self)
+	end
+	
+	function PlayerInfoComponent.AllWeapons:apply_settings()
+		for i = 1, self._weapon_count, 1 do
+			local weapon = self._weapons[i]
+			weapon:apply_settings()
+		end
+		self._aggregate_ammo_panel:set_visible(self._settings.AMMO.TOTAL_AMMO_ONLY)
+		self:arrange()
 	end
 	
 	function PlayerInfoComponent.AllWeapons:arrange()
@@ -3208,6 +3298,14 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		self:arrange_teammate_panels()
 	end
+	
+	function HUDManager:change_hud_setting(type, setting, value)
+		for i, panel in ipairs(self._teammate_panels) do
+			if panel._is_player and type == "PLAYER" or not panel._is_player and type == "TEAM" then
+				panel:change_setting(setting, value)
+			end
+		end
+	end
 
 	function HUDManager:update(...)
 		for i, panel in ipairs(self._teammate_panels) do
@@ -3229,13 +3327,13 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		self:set_teammate_weapon(HUDManager.PLAYER_PANEL, data.inventory_index, name_id, wbase:got_silencer())
 		
-		--TODO: Fix. Does not recognize locked modes
+		--TODO: Fix. Does not recognize locked modes // Fixed ;)
 		local active_mode = wbase:fire_mode()
 		local fire_modes = {}
 		if wbase:fire_mode() == "single" or (wbase:can_toggle_firemode() and not wbase._locked_fire_mode) then
 			table.insert(fire_modes, { "single", "S" })
 		end
-		if wbase.can_use_burst_mode and wbase:can_use_burst_mode() then
+		if wbase.can_use_burst_mode and wbase:can_use_burst_mode()and not wbase._locked_fire_mode then
 			active_mode = wbase:in_burst_mode() and "burst" or active_mode
 			table.insert(fire_modes, { "burst", "B" })
 		end

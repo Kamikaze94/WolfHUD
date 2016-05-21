@@ -2,9 +2,8 @@ if WolfHUD and not WolfHUD:getSetting("use_hudlist", "boolean") then return end
 printf = function(...) 
 	WolfHUD:print_log(string.format(...))
 end
-
-if RequiredScript == "lib/managers/hudmanagerpd2" then
-
+if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
+	
 	local function format_time_string(value)
 		local frmt_string
 	
@@ -20,10 +19,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		return frmt_string
 	end
-
+	
 	local _setup_player_info_hud_pd2_original = HUDManager._setup_player_info_hud_pd2
 	local update_original = HUDManager.update
-
+	
 	function HUDManager:_setup_player_info_hud_pd2(...)
 		_setup_player_info_hud_pd2_original(self, ...)
 		
@@ -46,8 +45,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			return true
 		end
 	end
-
-
+	
+	
 	HUDListManager = HUDListManager or class()
 	HUDListManager.ListOptions = {
 		--General settings
@@ -133,10 +132,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		gangster = 					{ type_id = "thug",			category = "enemies",	long_name = "Gangster" },
 		mobster = 					{ type_id = "thug",			category = "enemies",	long_name = "Mobster" },
 		biker = 					{ type_id = "thug",			category = "enemies",	long_name = "Biker" },
-		biker_escape = 				{ type_id = "thug",			category = "enemies",	long_name = "Gangster" },
+		biker_escape = 				{ type_id = "thug",			category = "enemies",	long_name = "Biker" },
 		tank = 						{ type_id = "tank",			category = "enemies",	long_name = "Bulldozer" },
-		spooc = 					{ type_id = "spooc",		category = "enemies",	long_name = "Cloaker" },
-		taser = 					{ type_id = "taser",		category = "enemies",	long_name = "Taser" },
+		spooc = 					{ type_id = "spooc",			category = "enemies",	long_name = "Cloaker" },
+		taser = 					{ type_id = "taser",			category = "enemies",	long_name = "Taser" },
 		shield = 					{ type_id = "shield",		category = "enemies",	long_name = "Shield" },
 		sniper = 					{ type_id = "sniper",		category = "enemies",	long_name = "Sniper" },
 		mobster_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "Commissar" },
@@ -151,7 +150,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		--escort = 					{ type_id = "unique",		category = "civilians",	long_name = "Escort" },
 		--old_hoxton_mission = 		{ type_id = "unique",		category = "civilians",	long_name = "Hoxton" },
 		--inside_man = 				{ type_id = "unique",		category = "civilians",	long_name = "Insider" },
-		--boris = 					{ type_id = "unique",		category = "civilians",	long_name = "?" },
+		--boris = 					{ type_id = "unique",		category = "civilians",	long_name = "Boris" },
 		--escort_undercover = 		{ type_id = "unique",		category = "civilians",	long_name = "Taxman" },
 		
 		--Custom unit definitions
@@ -164,12 +163,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDListManager.SPECIAL_PICKUP_TYPES = {
 		gen_pku_crowbar =					"crowbar",
 		pickup_keycard =					"keycard",
-		pickup_hotel_room_keycard =			"keycard",
+		pickup_hotel_room_keycard =	"keycard",
 		gage_assignment =					"courier",
-		pickup_boards =						"planks",
-		stash_planks_pickup =				"planks",
-		muriatic_acid =						"meth_ingredients",
-		hydrogen_chloride =					"meth_ingredients",
+		pickup_boards =					"planks",
+		stash_planks_pickup =			"planks",
+		muriatic_acid =					"meth_ingredients",
+		hydrogen_chloride =				"meth_ingredients",
 		caustic_soda =						"meth_ingredients",
 		gen_pku_blow_torch =				"blowtorch",
 		drk_pku_blow_torch = 				"blowtorch",
@@ -192,12 +191,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		circuit =					"server",
 		coke =						"coke",
 		coke_pure =					"coke",
-		counterfeit_money =			"money",
+		counterfeit_money =		"money",
 		cro_loot1 =					"bomb",
 		cro_loot2 =					"bomb",
 		diamonds =					"jewelry",
 		din_pig =					"pig",
-		drk_bomb_part =				"bomb",
+		drk_bomb_part =			"bomb",
 		evidence_bag =				"evidence",
 		goat = 						"goat",
 		gold =						"gold",
@@ -208,46 +207,49 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		mad_master_server_value_3 =	"server",
 		mad_master_server_value_4 =	"server",
 		master_server = 			"server",
-		masterpiece_painting =		"painting",
+		masterpiece_painting =	"painting",
 		meth =						"meth",
 		meth_half =					"meth",
 		money =						"money",
 		mus_artifact =				"artifact",
 		mus_artifact_paint =		"painting",
 		painting =					"painting",
+		person =						"body",
 		present = 					"present",
 		prototype = 				"prototype",
 		safe_ovk =					"safe",
 		safe_wpn =					"safe",
 		samurai_suit =				"armor",
 		sandwich =					"toast",
-		turret =					"turret",
+		special_person =			"body",
+		turret =						"turret",
 		unknown =					"dentist",
 		warhead =					"warhead",
-		weapon =					"weapon",
+		weapon =						"weapon",
 		weapon_glock =				"weapon",
 		weapon_scar =				"weapon",
 	}
 	
 	HUDListManager.LOOT_TYPES_CONDITIONS = {
-		body = function(id)
-			return (managers.job:current_level_id() == "mad")--[[ or (managers.groupai and managers.groupai:state():whisper_mode())]]
+		body = function(id, data)
+			if managers.job:current_level_id() == "mad" then
+				return data.bagged or data.unit:editor_id() ~= -1
+			end
+			
+			--TODO: Bodies need to be omitted from aggregation, okayish for PB heist but bad for generic stealth maps
+			--return managers.groupai and managers.groupai:state():whisper_mode()
 		end,
 	}
 	
 	HUDListManager.BUFFS = {
-		--Buff list items affected by specific buffs
-		bow_charge = { "bow_charge" },
-		melee_charge = { "melee_charge" },
-		reload_time = { "reload_time" },
-		
+		--Buff list items affected by specific buffs/debuffs
+		aggressive_reload = { "aggressive_reload" },
 		ammo_efficiency = { "ammo_efficiency" },
 		ammo_give_out_debuff = { "ammo_give_out_debuff" },
 		anarchist_armor_recovery_debuff = { "anarchist_armor_recovery_debuff" },
-		anarchist_armor_tick = { "anarchist_armor_tick" },
 		armor_break_invulnerable = { "armor_break_invulnerable" },
 		armor_break_invulnerable_debuff = { "armor_break_invulnerable_debuff" },
-		berserker = { "berserker", "melee_damage_increase" },
+		berserker = { "berserker", "damage_increase", "melee_damage_increase" },
 		berserker_aced = { "berserker", "damage_increase" },
 		bloodthirst_basic = { "bloodthirst_basic", "melee_damage_increase" },
 		bloodthirst_aced = { "bloodthirst_aced" },
@@ -263,6 +265,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		dire_need = { "dire_need" },
 		grinder = { "grinder" },
 		grinder_debuff = { "grinder_debuff" },
+		hostage_situation = { "hostage_situation", "damage_reduction" },
+		hostage_taker = { "hostage_taker" },
+		inspire = { "inspire" },
+		inspire_debuff = { "inspire_debuff" },
 		life_drain_debuff = { "life_drain_debuff" },
 		medical_supplies_debuff = { "medical_supplies_debuff" },
 		melee_stack_damage = { "melee_stack_damage", "melee_damage_increase" },
@@ -273,6 +279,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		overkill_aced = { "overkill", "damage_increase" },
 		pain_killer = { "painkiller", "damage_reduction" },
 		pain_killer_aced = { "painkiller", "damage_reduction" },
+		partner_in_crime = { "partner_in_crime" },
+		partner_in_crime_aced = { "partner_in_crime" },
 		pistol_stack_damage = { "trigger_happy", "damage_increase" },
 		quick_fix = { "quick_fix", "damage_reduction" },
 		running_from_death_basic = { "running_from_death" },
@@ -285,31 +293,34 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		underdog = { "underdog", "damage_increase" },
 		underdog_aced = { "underdog", "damage_reduction" },
 		up_you_go = { "up_you_go", "damage_reduction" },
+		unseen_strike = { "unseen_strike" },
+		unseen_strike_debuff = { "unseen_strike_debuff" },
 		yakuza_recovery = { "yakuza" },
 		yakuza_speed = { "yakuza" },
 		
-		hostage_situation = { "hostage_situation", "damage_reduction" },
-		hostage_taker = { "hostage_taker" },
-		inspire = { "inspire" },
-		inspire_debuff = { "inspire_debuff" },
-		partner_in_crime = { "partner_in_crime" },
-		partner_in_crime_aced = { "partner_in_crime" },
-		
 		armorer_9 = { "armorer" },
 		bulletproof = { "bulletproof" },
-		crew_chief_1 = { "crew_chief", "damage_reduction" },
+		crew_chief_1 = { "crew_chief", "damage_reduction" },	--Bonus for <50% health changed separately through set_value
 		crew_chief_3 = { "crew_chief" },
 		crew_chief_5 = { "crew_chief" },
 		crew_chief_9 = { "crew_chief" },	--Damage reduction from hostages covered by hostage_situation
-		crew_chief_1_extra = { "damage_reduction" },	--Covered by CC1 buff, only defined to update damage reduction
 		endurance = { "endurance" },
 		
 		uppers = { "uppers" },
+		
+		--Player action type buffs, possibly do something special with these to separate from skill-related buffs
+		anarchist_armor_regeneration = { "anarchist_armor_regeneration" },
+		standard_armor_regeneration = { "standard_armor_regeneration" },
+		weapon_charge = { "weapon_charge" },
+		melee_charge = { "melee_charge" },
+		reload = {"reload" }, 
+		--interact = { "interact"},
 		
 		--Debuffs that are merged into the buff itself
 		composite_debuffs = {
 			armor_break_invulnerable_debuff = "armor_break_invulnerable",
 			grinder_debuff = "grinder",
+			unseen_strike_debuff = "unseen_strike",
 		},
 	}
 	
@@ -441,7 +452,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self:_set_show_hostages()
 		self:_set_show_minion_count()
 		self:_set_show_pager_count()
-		self:_set_show_cam_count()
+--		self:_set_show_cam_count()
 		self:_set_show_loot()
 		self:_set_show_special_pickups()
 	end
@@ -499,6 +510,13 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				item:set_active(item:current_amount() > 0 and status)
 			end
 		end
+		
+		--[[
+		local body_loot_item = self:list("right_side_list"):item("loot_list"):item("body")
+		if body_loot_item then
+			body_loot_item:set_count(0, 0)
+		end
+		]]
 	end
 	
 	function HUDListManager:_get_buff_items(id)
@@ -508,6 +526,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		if HUDListManager.BUFFS[id] then
 			for _, item_id in ipairs(HUDListManager.BUFFS[id]) do
 				local item_data = HUDList.BuffItemBase.MAP[item_id]
+				
 				if item_data and not item_data.ignore then
 					local item = 
 						buff_list:item(item_id) or 
@@ -557,18 +576,19 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			local category = HUDListManager.UNIT_TYPES[unit_type].category
 			
 			local item = list:item(type_id) or list:item(category)
+			
 			if item then
 				if event == "change" then
 					item:change_count(value)
 				elseif event == "set" then
 					item:set_count(value)
 				end
-			end
 			
-			for _, id in pairs(HUDListManager.UNIT_TYPES[unit_type].force_update or {}) do
-				local item = list:item(id)
-				if item then
-					item:change_count(0)
+				for _, id in pairs(HUDListManager.UNIT_TYPES[unit_type].force_update or {}) do
+					local item = list:item(id)
+					if item then
+						item:change_count(0)
+					end
 				end
 			end
 		end
@@ -641,9 +661,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		if loot_type then
 			local condition_clbk = HUDListManager.LOOT_TYPES_CONDITIONS[loot_type]
-			if condition_clbk and not condition_clbk(loot_type) then
+			if condition_clbk and not condition_clbk(loot_type, data) then
 				return
 			end
+		
 			local item = self:list("right_side_list"):item("loot_list"):item(loot_type)
 			local aggregate_item = self:list("right_side_list"):item("loot_list"):item("aggregate")
 			local bagged_diff = data.bagged and data.count or 0
@@ -696,8 +717,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDListManager:_bag_equipment_event(event, key, data)
-		--printf("HUDListManager:_bag_equipment_event(%s, %s)\n", event, key)
-	
+		printf("HUDListManager:_bag_equipment_event(%s, %s)\n", event, key)
 		if data.aggregate_key then return end
 	
 		local equipment_list = self:list("left_side_list"):item("equipment")
@@ -777,14 +797,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local items = self:_get_buff_items(id)
 		
 		for _, item in ipairs(items) do
-			if HUDListManager.ListOptions.show_buffs ~= 2 or HUDList.BuffItemBase.MAP[id].class == "TimedBuffItem" then
-				if item[event] then
-					item[event](item, id, data)
-				else
-					printf("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s\n", event, id)
-				end
+			if item[event] then
+				item[event](item, id, data)
 			else
-				item:deactivate(id)
+				printf("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s\n", event, id)
 			end
 		end
 		
@@ -792,11 +808,17 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			if event == "activate" or event == "deactivate" or event == "set_duration" then
 				local debuff_parent_id = HUDListManager.BUFFS.composite_debuffs[id]
 				self:_buff_event(event .. "_debuff", debuff_parent_id, data)
-
 			end
 		end
 	end
-
+	
+	function HUDListManager:_player_action_event(event, id, data)
+		if HUDListManager.BUFFS[id] then
+			self:_buff_event(event, id, data)
+		end
+	end
+	
+	
 	--Left list config
 	function HUDListManager:_set_show_timers()
 		local listener_id = "HUDListManager_timer_listener"
@@ -982,7 +1004,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
-
+	
 	function HUDListManager:_set_show_tape_loop()
 		local list = self:list("left_side_list"):item("tape_loop")
 		local listener_id = "HUDListManager_tape_loop_listener"
@@ -1034,7 +1056,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
-
+	
 	--Right list config
 	function HUDListManager:_set_show_enemies()
 		local list = self:list("right_side_list"):item("unit_count_list")
@@ -1049,20 +1071,19 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			if data.category == category then
 				items[data.type_id] = category
 				count[data.type_id] = (count[data.type_id] or 0) + managers.gameinfo:get_unit_count(id)
- 			end
- 		end
-
+			end
+		end
+		
 		if HUDListManager.ListOptions.aggregate_enemies then
 			local total_count = 0
 			
 			for category, num in pairs(count) do
 				total_count = total_count + num
 			end
-
+			
 			items = { enemies = category }
 			count = { enemies = total_count }
 		end
-		
 		
 		if HUDListManager.ListOptions.show_enemies then
 			self._unit_count_listeners = self._unit_count_listeners + 1
@@ -1282,6 +1303,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		else
 			list:unregister_item("PagerCount", true)
 		end
+		
+		self:_set_show_cam_count()
 	end
 	
 	function HUDListManager:_set_show_cam_count()
@@ -1404,9 +1427,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self:_set_show_loot()
 	end
 	
-	
 	--Buff list
-		
 	function HUDListManager:_set_show_buffs()
 		local listener_id = "HUDListManager_buff_listener"
 		local sources = { 
@@ -1418,8 +1439,13 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				"add_timed_stack", 
 				"remove_timed_stack",
 				"set_value",
-				"set_progress",
-				clbk = callback(self, self, "_buff_event")
+				clbk = callback(self, self, "_buff_event"),
+			},
+			player_action = {
+				"activate", 
+				"deactivate", 
+				"set_duration",
+				clbk = callback(self, self, "_player_action_event"),
 			},
 		}
 		
@@ -1427,21 +1453,34 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			local active_buffs = managers.gameinfo:get_buffs()
 			for id, data in pairs(active_buffs) do
 				self:_buff_event("activate", id)
-					
+				
 				if data.stacks then
 					self:_buff_event("add_timed_stack", id, data)
 				end
-					
+				
 				if data.t and data.expire_t then
 					self:_buff_event("set_duration", id, data)
 				end
-					
+				
 				if data.stack_count then
 					self:_buff_event("set_stack_count", id, data)
 				end
-					
+				
 				if data.value then
 					self:_buff_event("set_value", id, data)
+				end
+			end
+			
+			local active_buffs = managers.gameinfo:get_buffs()
+			for id, data in pairs(active_buffs) do
+				self:_player_action_event("activate", id, data)
+				
+				if data.t and data.expire_t then
+					self:_player_action_event("set_duration", id, data)
+				end
+				
+				if data.data then
+					self:_player_action_event("set_data", id, data)
 				end
 			end
 		
@@ -1458,11 +1497,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 			
 			for _, item in pairs(self:list("buff_list"):items()) do
-				item:set_active(false)
+				item:delete()
 			end
 		end
 	end
-	
 	
 	
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1490,7 +1528,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			layer = 10
 		})
 	end
-
+	
 	function HUDList.ItemBase:post_init(...) end
 	function HUDList.ItemBase:destroy() end
 	function HUDList.ItemBase:name() return self._name end
@@ -1501,7 +1539,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDList.ItemBase:priority() return self._priority end
 	function HUDList.ItemBase:fade_time() return self._fade_time end
 	function HUDList.ItemBase:hidden() return self._force_hide end
-
+	
 	function HUDList.ItemBase:_set_item_visible(status)
 		self._panel:set_visible(status and not self._force_hide)
 	end
@@ -1525,7 +1563,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDList.ItemBase:set_move_speed(speed)
 		self._move_speed = speed
 	end
-
+	
 	function HUDList.ItemBase:set_active(status)
 		if status then
 			self:activate()
@@ -1533,18 +1571,18 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			self:deactivate()
 		end
 	end
-
+	
 	function HUDList.ItemBase:activate()
 		self._active = true
 		self._scheduled_for_deletion = nil
 		self:_show()
 	end
-
+	
 	function HUDList.ItemBase:deactivate()
 		self._active = false
 		self:_hide()
 	end
-
+	
 	function HUDList.ItemBase:delete(instant)
 		self._scheduled_for_deletion = true
 		self._active = false
@@ -1564,7 +1602,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
-
+	
 	function HUDList.ItemBase:_show(instant)
 		if alive(self._panel) then
 			--self._panel:set_visible(true)
@@ -1575,7 +1613,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
-
+	
 	function HUDList.ItemBase:_hide(instant)
 		if alive(self._panel) then
 			self:_fade(0, instant)
@@ -1593,7 +1631,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		--end
 		self:_animate_item()
 	end
-
+	
 	function HUDList.ItemBase:move(x, y, instant)
 		if alive(self._panel) then
 			self._panel:stop()
@@ -1704,7 +1742,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		return color
 	end
-
+	
 	function HUDList.ItemBase:_create_icons(data)
 		local icons_added = {}
 	
@@ -1750,7 +1788,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+	
 	HUDList.ListBase = HUDList.ListBase or class(HUDList.ItemBase) --DO NOT INSTANTIATE THIS CLASS
 	function HUDList.ListBase:init(parent, name, params)
 		params.fade_time = params.fade_time or 0
@@ -1766,11 +1804,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._items = {}
 		self._shown_items = {}
 	end
-
+	
 	function HUDList.ListBase:item(name)
 		return self._items[name]
 	end
-
+	
 	function HUDList.ListBase:items()
 		return self._items
 	end
@@ -1778,7 +1816,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDList.ListBase:num_items()
 		return table.size(self._items)
 	end
-
+	
 	function HUDList.ListBase:active_items()
 		local count  = 0
 		for name, item in pairs(self._items) do
@@ -1788,11 +1826,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 		return count
 	end
-
+	
 	function HUDList.ListBase:shown_items()
 		return #self._shown_items
 	end
-
+	
 	function HUDList.ListBase:update(t, dt)
 		local delete_items = {}
 		for name, item in pairs(self._items) do
@@ -1801,7 +1839,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
-
+	
 	function HUDList.ListBase:register_item(name, class, ...)
 		if not self._items[name] then
 			class = type(class) == "string" and _G.HUDList[class] or class
@@ -1823,13 +1861,13 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		return self._items[name]
 	end
-
+	
 	function HUDList.ListBase:unregister_item(name, instant)
 		if self._items[name] then
 			self._items[name]:delete(instant)
 		end
 	end
-
+	
 	function HUDList.ListBase:set_static_item(class, ...)
 		self:delete_static_item()
 		
@@ -1846,14 +1884,14 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		return self._static_item
 	end
-
+	
 	function HUDList.ListBase:delete_static_item()
 		if self._static_item then
 			self._static_item:delete(true)
 			self._static_item = nil
 		end
 	end
-
+	
 	function HUDList.ListBase:set_item_visible(item, visible)
 		local index
 		for i, shown_item in ipairs(self._shown_items) do
@@ -1907,9 +1945,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDList.ListBase:_remove_item(item)
 		self._items[item:name()] = nil
 	end
-
+	
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+	
 	HUDList.HorizontalList = HUDList.HorizontalList or class(HUDList.ListBase)
 	function HUDList.HorizontalList:init(parent, name, params)
 		params.align = params.align == "top" and "top" or params.align == "bottom" and "bottom" or "center"
@@ -1918,7 +1956,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._right_to_left = params.right_to_left and not self._left_to_right
 		self._centered = params.centered and not (self._right_to_left or self._left_to_right)
 	end
-
+	
 	function HUDList.HorizontalList:_set_default_item_position(item)
 		local offset = self._panel:h() - item:panel():h()
 		local y = item:align() == "top" and 0 or item:align() == "bottom" and offset or offset / 2
@@ -1983,9 +2021,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
-
+	
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+	
 	HUDList.VerticalList = HUDList.VerticalList or class(HUDList.ListBase)
 	function HUDList.VerticalList:init(parent, name, params)
 		params.align = params.align == "left" and "left" or params.align == "right" and "right" or "center"
@@ -1994,13 +2032,13 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._bottom_to_top = params.bottom_to_top and not self._top_to_bottom
 		self._centered = params.centered and not (self._bottom_to_top or self._top_to_bottom)
 	end
-
+	
 	function HUDList.VerticalList:_set_default_item_position(item)
 		local offset = self._panel:w() - item:panel():w()
 		local x = item:align() == "left" and 0 or item:align() == "right" and offset or offset / 2
 		item:panel():set_left(x)
 	end
-
+	
 	function HUDList.VerticalList:setup_static_item()
 		local item = self._static_item
 		local offset = self._panel:w() - item:panel():w()
@@ -2072,6 +2110,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		params.w = params.w or parent:panel():h() / 2
 		params.h = params.h or parent:panel():h()
 		HUDList.RightListItem.super.init(self, parent, name, params)
+	
 		local x, y = unpack((icon.atlas or icon.spec) or { 0, 0 })
 		local texture = icon.texture
 			or icon.spec and "guis/textures/pd2/specialization/icons_atlas" 
@@ -2096,7 +2135,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._box = HUDBGBox_create(self._panel, {
 				w = self._panel:w(),
 				h = self._panel:w(),
-			}, {color = RightListColor, bg_color =  RightListBgColor})
+			}, {})
 		self._box:set_bottom(self._panel:bottom())
 		
 		self._text = self._box:text({
@@ -2139,26 +2178,27 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self:set_active(self._count > 0)
 	end
 	
+	
 	HUDList.UnitCountItem = HUDList.UnitCountItem or class(HUDList.RightListItem)
 	HUDList.UnitCountItem.MAP = {
-		enemies =		{ atlas = {6, 1},  color = enemy_color, --[[subtract = { "cop_hostage", "minions" }]] },	--Aggregated enemies
-		cop =			{ atlas = {0, 5},  color = enemy_color, priority = 5, --[[subtract = { "cop_hostage", "minions" }]] },	--Non-special police
-		security =		{ spec = {1, 4},   color = guard_color, priority = 4 },
-		thug =			{ atlas = {4, 12}, color = thug_color, priority = 4 },
-		tank =			{ atlas = {3, 1},  color = special_color, priority = 6 },
-		spooc =			{ atlas = {1, 3},  color = special_color, priority = 6 },
-		taser =			{ atlas = {3, 5},  color = special_color, priority = 6 },
+		enemies =		{ atlas = {6, 1}, 	color = enemy_color, --[[subtract = { "cop_hostage", "minions" }]] },	--Aggregated enemies
+		cop =			{ atlas = {0, 5}, 	color = enemy_color, 	priority = 5, --[[subtract = { "cop_hostage", "minions" }]] },	--Non-special police
+		security =		{ spec = {1, 4}, 	color = guard_color, 	priority = 4 },
+		thug =			{ atlas = {4, 12}, 	color = thug_color, 	priority = 4 },
+		tank =			{ atlas = {3, 1}, 	color = special_color, 	priority = 6 },
+		spooc =			{ atlas = {1, 3}, 	color = special_color, 	priority = 6 },
+		taser =			{ atlas = {3, 5}, 	color = special_color, 	priority = 6 },
 		shield =		{ texture = "guis/textures/pd2/hud_buff_shield", color = special_color, priority = 6 },
-		sniper =		{ atlas = {6, 5},  color = special_color, priority = 6 },
-		thug_boss =		{ atlas = {1, 1},  color = thug_color, priority = 4 },
+		sniper =		{ atlas = {6, 5}, 	color = special_color, 	priority = 6 },
+		thug_boss =		{ atlas = {1, 1}, 	color = thug_color, 	priority = 4 },
 		phalanx =		{ texture = "guis/textures/pd2/hud_buff_shield", color = special_color, priority = 7 },
 		
-		turret =		{ atlas = {7, 5},  color = turret_color, priority = 4 },
-		unique =		{ atlas = {3, 8},  color = civilian_color, priority = 3, },
-		cop_hostage =	{ atlas = {2, 8},  color = hostage_color, priority = 2 },
-		civ_hostage =	{ atlas = {4, 7},  color = hostage_color, priority = 1 },
-		minion =		{ atlas = {6, 8},  color = hostage_color, priority = 0 },
-		civ =			{ atlas = {6, 7},  color = civilian_color, priority = 3, subtract = { "civ_hostage" } },
+		turret =		{ atlas = {7, 5}, 	color = turret_color, 	priority = 4 },
+		unique =		{ atlas = {3, 8}, 	color = civilian_color, priority = 3, },
+		cop_hostage =	{ atlas = {2, 8}, 	color = hostage_color, 	priority = 2 },
+		civ_hostage =	{ atlas = {4, 7}, 	color = hostage_color, 	priority = 1 },
+		minion =		{ atlas = {6, 8}, 	color = hostage_color, 	priority = 0 },
+		civ =			{ atlas = {6, 7}, 	color = civilian_color, priority = 3, subtract = { "civ_hostage" } },
 	}
 	function HUDList.UnitCountItem:init(parent, name, unit_type, unit_category, subtract_type, unit_data)
 		local unit_data = unit_data or HUDList.UnitCountItem.MAP[unit_type]
@@ -2202,7 +2242,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
-
+	
 	HUDList.UsedPagersItem = HUDList.UsedPagersItem or class(HUDList.RightListItem)
 	function HUDList.UsedPagersItem:init(parent, name)
 		HUDList.UsedPagersItem.super.init(self, parent, name, { spec = {1, 4} })
@@ -2225,6 +2265,14 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDList.CamCountItem = HUDList.CamCountItem or class(HUDList.RightListItem)
 	function HUDList.CamCountItem:init(parent, name)
 		HUDList.CamCountItem.super.init(self, parent, name, { atlas = {4, 2} })
+		local cams = managers.gameinfo:get_cams() or {}
+		local cam_count = 0
+		for uid, data in pairs(cams) do
+			if data.active then
+				cam_count = cam_count + 1
+			end
+		end
+		self:set_count(cam_count)
 	end
 	
 	function HUDList.CamCountItem:get_count()
@@ -2250,13 +2298,14 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDList.LootItem = HUDList.LootItem or class(HUDList.RightListItem)
 	HUDList.LootItem.MAP = {
 		aggregate =		{ text = "", no_localize = true },	--Aggregated loot
-		armor =			{ text = "wolfhud_hudlist_loot_armor" }, 		-- Too long
+		armor =			{ text = "wolfhud_hudlist_loot_armor" }, 
 		artifact =		{ text = "hud_carry_artifact" },
-		bomb =			{ text = "wolfhud_hudlist_loot_bomb" },		-- Too long
+		bomb =			{ text = "wolfhud_hudlist_loot_bomb" },	
+
 		coke =			{ text = "hud_carry_coke" },
 		dentist =		{ text = "???", no_localize = true },
-		diamond =		{ text = "wolfhud_hudlist_loot_diamond" },	-- Too long
-		evidence =		{ text = "wolfhud_hudlist_loot_evidence" },	-- Too long
+		diamond =		{ text = "wolfhud_hudlist_loot_diamond" },
+		evidence =		{ text = "wolfhud_hudlist_loot_evidence" },
 		goat =			{ text = "hud_carry_goat" },
 		gold =			{ text = "hud_carry_gold" },
 		jewelry =		{ text = "hud_carry_diamonds" },
@@ -2269,7 +2318,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		safe =			{ text = "hud_carry_safe" },
 		server =		{ text = "hud_carry_circuit" },
 		shell =			{ text = "hud_carry_ammo" },
-		toast =			{ text = "wolfhud_hudlist_loot_toast" },		-- Too long	
+		toast =			{ text = "wolfhud_hudlist_loot_toast" },
 		turret =		{ text = "hud_carry_turret" },
 		warhead =		{ text = "hud_carry_warhead" },
 		weapon =		{ text = "hud_carry_weapon" },
@@ -2325,7 +2374,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+	
 	--Left list items
 	
 	HUDList.LeftListIcon = HUDList.LeftListIcon or class(HUDList.ItemBase)
@@ -2678,22 +2727,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		})
 		self._health_bar:set_bottom(self._panel:bottom())
 		
-		if WolfHUD:getSetting("colorize_healthbars", "number") > 1 then
-			self._health_bar:set_color(Color(1, 0, 0, 0))
-			self._health_bar:set_blend_mode("sub")
-			self._panel:bitmap({
-				name = "radial_health_fill",
-				color = tweak_data.chat_colors[1],
-				texture = "guis/textures/pd2/hud_health",
-				texture_rect = { 64, 0, -64, 64 },
-				blend_mode = "add",
-				w = self._panel:w(),
-				h = self._panel:w(),
-				alpha = 1,
-				layer = 1
-			}):set_bottom(self._panel:bottom())
-		end
-		
 		self._hit_indicator = self._panel:bitmap({
 			name = "radial_health",
 			texture = "guis/textures/pd2/hud_radial_rim",
@@ -2766,17 +2799,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.MinionItem:set_health(health, skip_animate)
-		local red = health/ self._max_health
-		if WolfHUD:getSetting("colorize_healthbars", "number") > 1 then
-			red = 1 - red
-			self._health_bar:set_rotation(360 * red)
+		self._health_bar:set_color(Color(1, health / self._max_health, 1, 1))
+		
+		if not (skip_animate or self._dead) then
+			self._hit_indicator:stop()
+			self._hit_indicator:animate(callback(self, self, "_animate_damage"))
 		end
-		self._health_bar:set_color(Color(1, red, 1, 1))
-                   
-        if not (skip_animate or self._dead) then
-            self._hit_indicator:stop()
-            self._hit_indicator:animate(callback(self, self, "_animate_damage"))
-        end
 	end
 	
 	function HUDList.MinionItem:set_owner(peer_id)
@@ -2920,7 +2948,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	
 	HUDList.TapeLoopItem = HUDList.TapeLoopItem or class(HUDList.ItemBase)
-	HUDList.TapeLoopItem = HUDList.TapeLoopItem or class(HUDList.ItemBase)
     HUDList.TapeLoopItem.STANDARD_COLOR = Color(1, 1, 1, 1)
     HUDList.TapeLoopItem.DISABLED_COLOR = Color(1, 1, 0, 0)
     HUDList.TapeLoopItem.FLASH_SPEED = 0.8
@@ -2969,265 +2996,335 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
         end
 	end
 	
-	
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	--Buff list
 	
+	local STANDARD_COLOR = Color('FFFFFF')
+	local DEBUFF_COLOR = Color('990000')
+	local TEAM_BUFF_COLOR = Color('33CC33') --Color.green
+	
 	HUDList.BuffItemBase = HUDList.BuffItemBase or class(HUDList.ItemBase)
 	HUDList.BuffItemBase.MAP = {
-		bow_charge = {
+		--Buffs
+		aggressive_reload = {
+			atlas = tweak_data.skilltree.skills.speedy_reload.icon_xy,
 			class = "TimedBuffItem",
-			texture = "guis/textures/contact_vlad",
-			texture_rect = {1984, 0, 64, 64},
+			color = STANDARD_COLOR,
 		},
-		melee_charge = {
-			atlas = { 4, 10 },
-			class = "TimedBuffItem",
-			ignore = WolfHUD:getSetting("SHOW_MELEE", "boolean")
-		},
-		reload_time = {
-			atlas = { 0, 9 },
-			class = "TimedBuffItem",
-			ignore = WolfHUD:getSetting("SHOW_RELOAD", "boolean")
-		},
-		
 		ammo_efficiency = {
 			atlas = tweak_data.skilltree.skills.single_shot_ammo_return.icon_xy,
 			class = "TimedBuffItem",
-		},
-		anarchist_armor_tick = {
-			spec = {0, 0},
-			texture_bundle_folder = "opera",
-			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 		},
 		armor_break_invulnerable = {
 			spec = {6, 1},
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 		},
 		berserker = {
 			atlas = tweak_data.skilltree.skills.wolverine.icon_xy,
 			class = "BerserkerBuffItem",
+			color = STANDARD_COLOR,
 		},
 		bloodthirst_aced = {
+			--TODO: Need something to differentiate from basic
 			atlas = tweak_data.skilltree.skills.bloodthirst.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
+			ignore = true,
 		},
 		bloodthirst_basic = {
 			--TODO: Need something to differentiate from aced
 			atlas = tweak_data.skilltree.skills.bloodthirst.icon_xy,
 			class = "BuffItemBase",
+			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		bullet_storm = {
 			atlas = tweak_data.skilltree.skills.ammo_reservoir.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 		},
 		chameleon = {
 			atlas = tweak_data.skilltree.skills.chameleon.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 		},
 		close_contact = {
 			spec = {5, 4},
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		combat_medic = {
 			atlas = tweak_data.skilltree.skills.combat_medic.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 		},
 		desperado = {
 			atlas = tweak_data.skilltree.skills.expert_handling.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 		},
 		die_hard = {
 			atlas = tweak_data.skilltree.skills.show_of_force.icon_xy,
 			class = "BuffItemBase",
+			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		dire_need = {
 			atlas = tweak_data.skilltree.skills.dire_need.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 		},
 		grinder = {
 			spec = {4, 6},
-			class = "TimedStacksBuffItem"
+			class = "TimedStacksBuffItem",
+			color = STANDARD_COLOR,
 		},
 		hostage_situation = {
 			spec = {0, 1},
 			class = "BuffItemBase",
+			color = STANDARD_COLOR,
 		},
 		hostage_taker = {
 			atlas = tweak_data.skilltree.skills.black_marketeer.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 			invert_timers = true,
 			--ignore = true,
 		},
 		melee_stack_damage = {
 			spec = {5, 4},
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		inspire = {
 			atlas = tweak_data.skilltree.skills.inspire.icon_xy,
-			class = "TimedBuffItem"
+			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 		},
 		messiah = {
-			atlas = tweak_data.skilltree.skills.pistol_messiah.icon_xy,
-			class = "BuffItemBase"
+			atlas = tweak_data.skilltree.skills.messiah.icon_xy,
+			class = "BuffItemBase",
+			color = STANDARD_COLOR,
 		},
 		overdog = {
 			spec = {6, 4},
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		overkill = {
 			atlas = tweak_data.skilltree.skills.overkill.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
+			ignore = true,
 		},
 		painkiller = {
 			atlas = tweak_data.skilltree.skills.fast_learner.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		partner_in_crime = {
 			atlas = tweak_data.skilltree.skills.control_freak.icon_xy,
 			class = "BuffItemBase",
-			--ignore = true,
+			color = STANDARD_COLOR,
+			ignore = true,
 		},
 		running_from_death = {
 			atlas = tweak_data.skilltree.skills.running_from_death.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 		},
 		quick_fix = {
 			atlas = tweak_data.skilltree.skills.tea_time.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		shock_and_awe = {
 			atlas = tweak_data.skilltree.skills.shock_and_awe.icon_xy,
 			class = "BuffItemBase",
+			color = STANDARD_COLOR,
 		},
 		swan_song = {
 			atlas = tweak_data.skilltree.skills.perseverance.icon_xy,
 			class = "TimedBuffItem",
-			--ignore = true,
+			color = STANDARD_COLOR,
+			ignore = true,
 		},
 		tooth_and_claw = {
 			spec = {0, 3},
-			class = "TimedBuffItem"
+			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 		},
 		trigger_happy = {
 			atlas = tweak_data.skilltree.skills.trigger_happy.icon_xy,
-			class = "TimedBuffItem"
-			--ignore = true,
+			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
+			ignore = true,
 		},
 		underdog = {
 			atlas = tweak_data.skilltree.skills.underdog.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 			ignore = true,
+		},
+		unseen_strike = {
+			atlas = tweak_data.skilltree.skills.unseen_strike.icon_xy,
+			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 		},
 		up_you_go = {
 			atlas = tweak_data.skilltree.skills.up_you_go.icon_xy,
 			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		yakuza = {
 			spec = {6, 6},
 			class = "BerserkerBuffItem",
+			color = STANDARD_COLOR,
 		},
 		
-		
+		--Debuffs
 		anarchist_armor_recovery_debuff = {
 			spec = {0, 1},
 			texture_bundle_folder = "opera",
 			class = "TimedBuffItem",
-			color = Color.red,
+			color = DEBUFF_COLOR,
 		},
 		ammo_give_out_debuff = {
 			spec = {5, 5},
 			class = "TimedBuffItem",
-			color = Color.red,
+			color = DEBUFF_COLOR,
 		},
 		armor_break_invulnerable_debuff = {
 			spec = {6, 1},
 			class = "TimedBuffItem",
-			color = Color.red,
+			color = DEBUFF_COLOR,
 			ignore = true,	--Composite debuff
 		},
 		bullseye_debuff = {
 			atlas = tweak_data.skilltree.skills.prison_wife.icon_xy,
 			class = "TimedBuffItem",
-			color = Color.red,
+			color = DEBUFF_COLOR,
 		},
 		grinder_debuff = {
 			spec = {4, 6},
 			class = "TimedBuffItem",
-			color = Color.red,
+			color = DEBUFF_COLOR,
 			ignore = true,	--Composite debuff
 		},
 		inspire_debuff = {
 			atlas = tweak_data.skilltree.skills.inspire.icon_xy,
 			class = "TimedBuffItem",
-			color = Color.red,
+			color = DEBUFF_COLOR,
 		},
 		life_drain_debuff = {
 			spec = {7, 4},
 			class = "TimedBuffItem",
-			color = Color.red,
+			color = DEBUFF_COLOR,
 		},
 		medical_supplies_debuff = {
 			spec = {4, 5},
 			class = "TimedBuffItem",
-			color = Color.red,
+			color = DEBUFF_COLOR,
+		},
+		unseen_strike_debuff = {
+			atlas = tweak_data.skilltree.skills.unseen_strike.icon_xy,
+			class = "TimedBuffItem",
+			color = DEBUFF_COLOR,
+			ignore = true,	--Composite debuff
 		},
 		sociopath_debuff = {
 			spec = {3, 5},
 			class = "TimedBuffItem",
-			color = Color.red,
+			color = DEBUFF_COLOR,
 		},
 		
-		
+		--Team buffs
 		armorer = {
 			spec = {6, 0},
 			class = "TeamBuffItem",
-			color = Color(0.8, 0.2, 1, 0.2),
+			color = TEAM_BUFF_COLOR,
 		},
 		bulletproof = {
 			atlas = tweak_data.skilltree.skills.iron_man.icon_xy,
 			class = "TeamBuffItem",
-			color = Color(0.8, 0.2, 1, 0.2),
+			color = TEAM_BUFF_COLOR,
 		},
 		crew_chief = {
 			spec = {2, 0},
 			class = "TeamBuffItem",
-			color = Color(0.8, 0.2, 1, 0.2),
+			color = TEAM_BUFF_COLOR,
 		},
 		endurance = {
 			atlas = tweak_data.skilltree.skills.triathlete.icon_xy,
 			class = "TeamBuffItem",
-			color = Color(0.8, 0.2, 1, 0.2),
+			color = TEAM_BUFF_COLOR,
 		},
 		
-
+		--Custom/composite buffs
 		uppers = {
 			atlas = tweak_data.skilltree.skills.tea_cookies.icon_xy,
 			class = "BuffItemBase",
+			color = STANDARD_COLOR,
 		},
 		damage_increase = {
 			atlas = { 4, 10 },	--PLACEHOLDER
 			class = "DamageIncreaseBuff",
 			color = Color(1, 1, 0),
+			title = "+Dmg",
 		},
 		damage_reduction = {
 			atlas = { 6, 4 },	--PLACEHOLDER
 			class = "DamageReductionBuff",
 			color = Color(0, 1, 1),
+			title = "-Dmg",
 		},
 		melee_damage_increase = {
 			atlas = { 4, 10 },	--PLACEHOLDER
 			class = "MeleeDamageIncreaseBuff",
 			color = Color(1, 0, 1),
+			title = "+M.Dmg",
+		},
+		
+		--Player actions
+		anarchist_armor_regeneration = {
+			spec = {0, 0},
+			texture_bundle_folder = "opera",
+			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
+			invert_timers = true,
+		},
+		standard_armor_regeneration = {
+			spec = {6, 0},
+			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
+			invert_timers = true,
+		},
+		weapon_charge = {
+			class = "TimedBuffItem",
+			texture = "guis/textures/contact_vlad",
+			texture_rect = {1984, 0, 64, 64},
+			color = STANDARD_COLOR,
+		},
+		melee_charge = {
+			atlas = { 4, 10 },
+			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
+			ignore = WolfHUD:getSetting("SHOW_MELEE", "boolean")
+		},
+		reload = {
+			atlas = { 0, 9 },
+			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
+			ignore = WolfHUD:getSetting("SHOW_RELOAD", "boolean")
 		},
 	}
 	
@@ -3251,6 +3348,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._default_icon_color = icon.color or Color.white
 		local progress_bar_width = self._panel:w() * 0.05
 		local icon_size = self._panel:w() - progress_bar_width * 4
+		
 		self._icon = self._panel:bitmap({
 				name = "icon",
 				texture = texture,
@@ -3278,6 +3376,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		self._title = self._panel:text({
 			name = "title",
+			text = icon.title or "",
 			align = "center",
 			vertical = "top",
 			w = self._panel:w(),
@@ -3304,7 +3403,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._value:set_bottom(self._panel:h())
 		
 		self._progress_bar_debuff = PanelFrame:new(self._panel, { 
-			invert_progress = icon.invert_timers, 
+			--invert_progress = icon.invert_timers, 
 			bar_w = progress_bar_width, 
 			w = self._panel:w(), 
 			h = self._panel:w(), 
@@ -3312,27 +3411,29 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		})
 		self._progress_bar_debuff:panel():set_center(self._icon:center())
 		self._progress_bar_debuff:panel():set_visible(false)
-		self._progress_bar_debuff:set_ratio(icon.invert_timers and 1 or 0)
+		self._progress_bar_debuff:set_ratio(1)
 		
 		self._progress_bar = PanelFrame:new(self._panel, { 
 			invert_progress = icon.invert_timers, 
 			bar_w = progress_bar_width, 
 			w = self._panel:w() - (progress_bar_width+1), 
 			h = self._panel:w() - (progress_bar_width+1),
+			color = icon.progress_color or self._default_icon_color,
 		})
 		self._progress_bar:panel():set_center(self._icon:center())
 		self._progress_bar:panel():set_visible(false)
-		self._progress_bar:set_ratio(icon.invert_timers and 1 or 0)
+		self._progress_bar:set_ratio(1)
 		
 		self._progress_bar_inner = PanelFrame:new(self._panel, { 
 			invert_progress = icon.invert_timers, 
 			bar_w = progress_bar_width, 
 			w = self._panel:w() - (progress_bar_width+1) * 2, 
 			h = self._panel:w() - (progress_bar_width+1) * 2,
+			color = icon.progress_color or self._default_icon_color,
 		})
 		self._progress_bar_inner:panel():set_center(self._icon:center())
 		self._progress_bar_inner:panel():set_visible(false)
-		self._progress_bar_inner:set_ratio(icon.invert_timers and 1 or 0)
+		self._progress_bar_inner:set_ratio(1)
 		
 		self._stack_bg = self._panel:bitmap({
 			w = self._icon:w() * 0.4,
@@ -3379,22 +3480,27 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.BuffItemBase:deactivate(id)
 		self._buff_active = false
+		self._expire_t = nil
+		self._start_t = nil
 		self:_set_progress(0)
 		self:_set_progress_inner(0)
 		if not self._debuff_active then
 			HUDList.BuffItemBase.super.deactivate(self)
+		else
+			self._icon:set_color(Color.red)
 		end
 	end
 	
 	function HUDList.BuffItemBase:activate_debuff(id)
 		self._debuff_active = true
-		self._progress_bar_debuff:panel():set_visible(true)
 		self._icon:set_color(Color.red)
 		HUDList.BuffItemBase.super.activate(self)
 	end
 	
 	function HUDList.BuffItemBase:deactivate_debuff(id)
 		self._debuff_active = false
+		self._debuff_expire_t = nil
+		self._debuff_start_t = nil
 		self._progress_bar_debuff:panel():set_visible(false)
 		self._icon:set_color(self._default_icon_color)
 		if not self._buff_active then
@@ -3405,7 +3511,20 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDList.BuffItemBase:set_duration(id, data)
 		self._start_t = data.t
 		self._expire_t = data.expire_t
+		self._progress_bar:panel():set_visible(true)
 	end
+	
+	function HUDList.BuffItemBase:set_duration_debuff(id, data)
+		self._debuff_start_t = data.t
+		self._debuff_expire_t = data.expire_t
+		
+		self._progress_bar_debuff:panel():set_visible(true)
+		
+		if self._buff_active and self._expire_t and self._expire_t < self._debuff_expire_t then
+			self._icon:set_color(self._default_icon_color)
+		end
+	end
+	
 	function HUDList.BuffItemBase:set_progress(id, data)
 		self:_set_progress(data.progress)
 	end
@@ -3415,12 +3534,21 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.BuffItemBase:set_value(id, data)
-		self:_set_text(tostring(data.value))
+		if data.show_value then
+			self:_set_text(tostring(data.value))
+		end
 	end
 	
 	function HUDList.BuffItemBase:_update_debuff(t, dt)
 		self:_set_progress_debuff((t - self._debuff_start_t) / (self._debuff_expire_t - self._debuff_start_t))
+		
+		if t > self._debuff_expire_t then
+			self._debuff_start_t = nil
+			self._debuff_expire_t = nil
+			self._progress_bar_debuff:panel():set_visible(false)
+		end
 	end
+	
 	function HUDList.BuffItemBase:_set_progress(r)
 		self._progress_bar:set_ratio(1-r)
 	end
@@ -3432,6 +3560,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDList.BuffItemBase:_set_progress_debuff(r)
 		self._progress_bar_debuff:set_ratio(r)
 	end
+	
 	function HUDList.BuffItemBase:_set_stack_count(count)
 		self._stack_bg:set_visible(count and true or false)
 		self._stack_text:set_visible(count and true or false)
@@ -3445,14 +3574,15 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	HUDList.BerserkerBuffItem = HUDList.BerserkerBuffItem or class(HUDList.BuffItemBase)
 	function HUDList.BerserkerBuffItem:set_value(id, data)
-		self:_set_text(string.format("%.0f%%", data.value * 100))
+		if data.show_value then
+			self:_set_text(string.format("%.0f%%", data.value * 100))
+		end
 	end
 	
 	
 	HUDList.TimedBuffItem = HUDList.TimedBuffItem or class(HUDList.BuffItemBase)
 	function HUDList.TimedBuffItem:init(...)
 		HUDList.TimedBuffItem.super.init(self, ...)
-		self._progress_bar:panel():set_visible(true)
 	end
 	
 	function HUDList.TimedBuffItem:update(t, dt)
@@ -3463,12 +3593,13 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		if self._buff_active and self._expire_t then
 			self:_set_progress((t - self._start_t) / (self._expire_t - self._start_t))
+			
+			if t > self._expire_t then
+				self._start_t = nil
+				self._expire_t = nil
+				self._progress_bar:panel():set_visible(false)
+			end
 		end
-	end
-	
-	function HUDList.BuffItemBase:set_duration_debuff(id, data)
-		self._debuff_start_t = data.t
-		self._debuff_expire_t = data.expire_t
 	end
 	
 	
@@ -3499,11 +3630,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
-	function HUDList.TimedStacksBuffItem:add_stack(id, data)
+	function HUDList.TimedStacksBuffItem:add_timed_stack(id, data)
 		self:_update_stacks(data.stacks)
 	end
 	
-	function HUDList.TimedStacksBuffItem:remove_stack(id, data)
+	function HUDList.TimedStacksBuffItem:remove_timed_stack(id, data)
 		self:_update_stacks(data.stacks)
 	end
 	
@@ -3553,7 +3684,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		if not self._member_buffs[id] then
 			self._member_buffs[id] = {}
-			self:_check_buffs()
+			--self:_check_buffs()
 		end
 	end
 	
@@ -3569,7 +3700,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.CompositeBuff:update(t, dt)
-		--HUDList.CompositeBuff.super.update(self, t, dt)		
+		--HUDList.CompositeBuff.super.update(self, t, dt)
+		
 		if self._min_expire_buff then
 			self:_set_progress_inner((t - self._member_buffs[self._min_expire_buff].start_t) / (self._member_buffs[self._min_expire_buff].expire_t - self._member_buffs[self._min_expire_buff].start_t))
 		end	
@@ -3583,19 +3715,20 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		if self._member_buffs[id] then
 			self._member_buffs[id].start_t = data.t
 			self._member_buffs[id].expire_t = data.expire_t
-			self:_check_buffs()
+			--self:_check_buffs()
 		end
 	end
 	
 	function HUDList.CompositeBuff:set_stack_count(id, data)
 		if self._member_buffs[id] and self._member_buffs[id].stack_count ~= data.stack_count then
 			self._member_buffs[id].stack_count = data.stack_count
-			self:_check_buffs()
+			--self:_check_buffs()
 		end
 	end
 	
 	function HUDList.CompositeBuff:set_value(id, data)
 		if self._member_buffs[id] and self._member_buffs[id].value ~= data.value then
+			printf("HUDList.CompositeBuff:set_value(%s, %s)\n", id, tostring(data.value))
 			self._member_buffs[id].value = data.value
 			self:_check_buffs()
 		end
@@ -3635,45 +3768,91 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDList.DamageIncreaseBuff = HUDList.DamageIncreaseBuff or class(HUDList.CompositeBuff)
 	function HUDList.DamageIncreaseBuff:init(...)
 		HUDList.DamageIncreaseBuff.super.init(self, ...)
-		self._title:set_text("+Dmg")
-	end
-	
-	function HUDList.DamageIncreaseBuff:_on_weapon_equipped(unit)
-		self._weapon_unit = unit:inventory():equipped_unit()
-		self._weapon_id = self._weapon_unit:base():get_name_id()
 		
-		self:_update_value()
-	end
-	
-	function HUDList.DamageIncreaseBuff:_update_value()
-		local player_unit = managers.player:player_unit()
-		if alive(player_unit) and player_unit ~= self._player_unit then
-			self._player_unit = player_unit
-			self._player_unit:inventory():add_listener("DamageIncreaseBuff", { "equip" }, callback(self, self, "_on_weapon_equipped"))
-			self:_on_weapon_equipped(self._player_unit)
-		end
+		self._buff_weapon_requirements = {
+			pistol_stack_damage = {
+				pistol = true,
+			},
+			overkill = {
+				shotgun = true,
+				saw = true,
+			},
+			berserker = {
+				saw = true,
+			},
+		}
 		
-
-		--TODO: Calculate damage bonus for current weapon
-		
-	
-		self:_set_text("n/a")
-	end
-	
-	HUDList.MeleeDamageIncreaseBuff = HUDList.MeleeDamageIncreaseBuff or class(HUDList.CompositeBuff)
-	function HUDList.MeleeDamageIncreaseBuff:init(...)
-		HUDList.DamageIncreaseBuff.super.init(self, ...)
-		self._title:set_text("+Dmg")
+		self._buff_weapon_exclusions = {
+			overkill_aced = {
+				shotgun = true,
+				saw = true,
+			},
+			berserker_aced = {
+				saw = true,
+			},
+		}
 		
 		self._buff_effects = {
 			berserker = function(active_buffs)
 				return 1 + (active_buffs.berserker.value or 0) * managers.player:upgrade_value("player", "melee_damage_health_ratio_multiplier", 0)
 			end,
-			melee_stack_damage = function(active_buffs)
-				return 1 + (active_buffs.melee_stack_damage.stack_count or 0) * managers.player:upgrade_value("melee", "stacking_hit_damage_multiplier", 0)
+			berserker_aced = function(active_buffs)
+				return 1 + (active_buffs.berserker_aced.value or 0) * managers.player:upgrade_value("player", "damage_health_ratio_multiplier", 0)
 			end,
-			bloodthirst_basic = function(active_buffs)
-				return 1 + (active_buffs.bloodthirst_basic.stack_count or 0) * managers.player:upgrade_value("player", "melee_damage_stacking").melee_multiplier
+		}
+	end
+	
+	function HUDList.DamageIncreaseBuff:update(t, dt)
+		HUDList.DamageIncreaseBuff.super.update(self, t, dt)
+		
+		if not alive(self._player_unit) and alive(managers.player:player_unit()) then
+			self._player_unit = managers.player:player_unit()
+			self._player_unit:inventory():add_listener("DamageIncreaseBuff", { "equip" }, callback(self, self, "_on_weapon_equipped"))
+			self:_on_weapon_equipped(self._player_unit)
+		end
+	end
+	
+	function HUDList.DamageIncreaseBuff:_on_weapon_equipped(unit)
+		self._weapon_unit = unit:inventory():equipped_unit()
+		self._weapon_id = self._weapon_unit:base():get_name_id()
+		self._weapon_tweak = self._weapon_unit:base():weapon_tweak_data()
+		
+		self:_update_value()
+	end
+	
+	function HUDList.DamageIncreaseBuff:_update_value()
+		local text = ""
+	
+		if alive(self._weapon_unit) then
+			if self._weapon_tweak.ignore_damage_upgrades then
+				text = "(0%)"
+			else
+				local weapon_category = self._weapon_tweak.category
+				local value = 1
+				
+				for id, data in pairs(self._member_buffs) do
+					if not self._buff_weapon_requirements[id] or self._buff_weapon_requirements[id][weapon_category] then
+						if not (self._buff_weapon_exclusions[id] and self._buff_weapon_exclusions[id][weapon_category]) then
+							local clbk = self._buff_effects[id]
+							value = value * (clbk and clbk(self._member_buffs) or (data.value or 1))
+						end
+					end
+				end
+				
+				text = string.format("+%.0f%%", (value-1)*100)
+			end
+		end
+		
+		self:_set_text(text)
+	end
+	
+	HUDList.MeleeDamageIncreaseBuff = HUDList.MeleeDamageIncreaseBuff or class(HUDList.CompositeBuff)
+	function HUDList.MeleeDamageIncreaseBuff:init(...)
+		HUDList.MeleeDamageIncreaseBuff.super.init(self, ...)
+		
+		self._buff_effects = {
+			berserker = function(value)
+				return 1 + (value or 0) * managers.player:upgrade_value("player", "melee_damage_health_ratio_multiplier", 0)
 			end,
 		}
 	end
@@ -3682,9 +3861,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local value = 1
 		
 		for id, data in pairs(self._member_buffs) do
-			local effect = self._buff_effects[id]
-			local multiplier = type(effect) == "function" and effect(self._member_buffs) or effect
-			value = value * multiplier
+			local clbk = self._buff_effects[id]
+			value = value * (clbk and clbk(data.value) or (data.value or 1))
 		end
 		
 		self:_set_text(string.format("+%.0f%%", (value-1)*100))
@@ -3693,41 +3871,15 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDList.DamageReductionBuff = HUDList.DamageReductionBuff or class(HUDList.CompositeBuff)
 	function HUDList.DamageReductionBuff:init(...)
 		HUDList.DamageReductionBuff.super.init(self, ...)
-		self._title:set_text("-Dmg")
-		
-		local tweak = tweak_data.upgrades.values
-		
-		self._buff_effects = {
-			close_contact_1 = tweak.temporary.dmg_dampener_close_contact[1][1],
-			close_contact_2 = tweak.temporary.dmg_dampener_close_contact[2][1],
-			close_contact_3 = tweak.temporary.dmg_dampener_close_contact[3][1],
-			die_hard = tweak.player.interacting_damage_multiplier[1],
-			hostage_situation = tweak.team.damage_dampener.hostage_multiplier[1],
-			overdog = tweak.temporary.dmg_dampener_outnumbered_strong[1][1],
-			pain_killer = tweak.temporary.passive_revive_damage_reduction[1][1],
-			pain_killer_aced = tweak.temporary.passive_revive_damage_reduction[2][1],
-			quick_fix = tweak.temporary.first_aid_damage_reduction[1][1],
-			underdog_aced = tweak.temporary.dmg_dampener_outnumbered[1][1],
-			up_you_go = tweak.temporary.revived_damage_resist[1][1],
-			
-			crew_chief_1_extra = 1,	--Ignore this as it'll be covered by the base crew chief conditionally...
-			crew_chief_1 = function(active_buffs)
-				local value = 1 - tweak_data.upgrades.values.team.damage_dampener.team_damage_reduction[1]
-				if active_buffs.crew_chief_1_extra then
-					value = value * 2
-				end
-				return 1 - value
-			end,
-		}
+		self._buff_effects = {}
 	end
 	
 	function HUDList.DamageReductionBuff:_update_value()
 		local value = 1
 		
 		for id, data in pairs(self._member_buffs) do
-			local effect = self._buff_effects[id]
-			local multiplier = type(effect) == "function" and effect(self._member_buffs) or effect
-			value = value * multiplier
+			local clbk = self._buff_effects[id]
+			value = value * (clbk and clbk(self._member_buffs) or (data.value or 1))
 		end
 		
 		self:_set_text(string.format("-%.0f%%", (1-value)*100))
@@ -3832,268 +3984,30 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			self._left:set_h(self._panel:h() * (1-stage_progress))
 		end
 	end
-	
---[[	
-	if false then
-	HUDList.BuffItemBase.ICON_COLORS = {
-		buff = {
-			icon = Color.white,
-			flash = Color.red,
-			bg = Color(0.75, 1, 1, 1),
-			aced_icon = Color.white,
-			--level_icon = Color(0.4, 0, 1, 0),
-		},
-		team = {
-			icon = Color.white,
-			flash = Color.red,
-			bg = Color(0.5, 0.2, 1, 0.2),
-			aced_icon = Color.white,
-			--level_icon = Color(0.4, 0, 1, 0),
-		},
-		debuff = {
-			icon = Color.white,
-			flash = Color.red,
-			bg = Color(1, 0, 0),
-			aced_icon = Color.white,
-			--level_icon = Color(0.4, 0, 1, 0),
-		},
-	}
-	
-	HUDList.BuffItemBase.BUFF_MAP = {
-		bow_charge = {
-			priority = 3,
-			type = "buff",
-			class = "ChargedBuffItem",
-			texture = "guis/textures/contact_vlad",
-			rect = {1984, 0, 64, 64},
-			flash_speed = 0.2,
-			no_fade = true
-		},
-		melee_charge = {
-			atlas = { 4, 10 },
-			priority = 3,
-			type = "buff",
-			class = "ChargedBuffItem",
-			flash_speed = 0.2,
-			no_fade = true
-		},
-		reload_time = {
-			atlas = { 0, 9 },
-			priority = 3,
-			type = "buff",
-			class = "ChargedBuffItem",
-			flash_color = Color.green
-		},
-		armor_regen_debuff = {
-			spec = {6, 0},
-			priority = 5,
-			type = "debuff",
-			class = "TimedBuffItem",
-			no_fade = true,
-		},
-		suppression_debuff = {
-			atlas = { 7, 0 },
-			priority = 5,
-			type = "debuff",
-			class = "SuppressionBuffItem",
-			flash_speed = 0.25,
-			no_fade = true,
-		},
-		
-		
-		leadership = {
-			atlas = { 7, 7 },
-			priority = 1,
-			type = "team"
-		},
-	}
-	
-	function HUDList.BuffItemBase:init(parent, name, icon, w, h)
-		HUDList.BuffItemBase.super.init(self, parent, name, { priority = icon.priority, align = "bottom", w = w or parent:panel():h(), h = h or parent:panel():h() })
-		
-		local x, y = unpack(icon.atlas or icon.spec or { 0, 0 })
-		local texture = icon.atlas and "guis/textures/pd2/skilltree/icons_atlas" or icon.spec and "guis/textures/pd2/specialization/icons_atlas" or icon.texture
-		local texture_rect = (icon.atlas or icon.spec) and { x * 64, y * 64, 64, 64 } or icon.rect
-		
-		self._icon = self._panel:bitmap({
-				name = "icon",
-				texture = texture,
-				texture_rect = texture_rect,
-				valign = "center",
-				align = "center",
-				h = self:panel():w() * 0.7 * (icon.icon_scale or 1) * (icon.icon_h_ratio or 1),
-				w = self:panel():w() * 0.7 * (icon.icon_scale or 1) * (icon.icon_w_ratio or 1),
-				blend_mode = "normal",
-				layer = 0,
-				color = icon.icon_color or HUDList.BuffItemBase.ICON_COLORS[icon.type].icon or Color.white,
-				rotation = icon.icon_rotation or 0,
-		})
-		self._icon:set_center(self:panel():center())
-		
-		self._flash_icon = self._panel:bitmap({
-				name = "flash_icon",
-				texture = texture,
-				texture_rect = texture_rect,
-				valign = "center",
-				align = "center",
-				layer = 0,
-				h = self._icon:h(),
-				w = self._icon:w(),
-				blend_mode = "normal",
-				color = icon.flash_color or HUDList.BuffItemBase.ICON_COLORS[icon.type].flash or Color.blue,
-				alpha = 0,
-				rotation = icon.icon_rotation or 0,
-		})
-		self._flash_icon:set_center(self._icon:center())
-		
-		self._bg = self._panel:bitmap({
-			name = "bg",
-			texture = "guis/textures/pd2/skilltree/ace",
-			texture_rect = { 37, 28, 54, 70 },
-			valign = "center",
-			align = "center",
-			layer = 0,
-			h = self._icon:h(),
-			w = 0.8 * self._icon:w(),
-			blend_mode = "normal",
-			layer = -1,
-			color = icon.bg_color or HUDList.BuffItemBase.ICON_COLORS[icon.type].bg or Color.white,
-		})
-		self._bg:set_center(self._icon:center())
-		
-		self._ace_icon = self._panel:bitmap({
-			name = "ace_icon",
-			texture = "guis/textures/pd2/infamous_symbol",
-			texture_rect = { 2, 5, 12, 16 },
-			w = 1.15 * 12 * self:panel():w()/45,
-			h = 1.15 * 16 * self:panel():w()/45,
-			blend_mode = "normal",
-			valign = "center",
-			align = "center",
-			layer = 2,
-			color = icon.aced_icon_color or HUDList.BuffItemBase.ICON_COLORS[icon.type].aced_icon or Color.white,
-			visible = false,
-		})
-		
-		self._level_bg = self._panel:bitmap({
-			texture = "guis/textures/pd2/infamous_symbol",
-			texture_rect = { 2, 5, 12, 16 },
-			w = 1.15 * 12 * self:panel():w()/45,
-			h = 1.15 * 16 * self:panel():w()/45,
-			blend_mode = "normal",
-			valign = "center",
-			align = "center",
-			layer = 2,
-			color = icon.level_icon_color or HUDList.BuffItemBase.ICON_COLORS[icon.type].level_icon or Color.white,
-			visible = false,
-		})
-		self._level_text = self._panel:text({
-			name = "level_text",
-			text = "",
-			valign = "center",
-			align = "center",
-			vertical = "center",
-			w = self._level_bg:w(),
-			h = self._level_bg:h(),
-			layer = 3,
-			color = Color.black,
-			blend_mode = "normal",
-			font = tweak_data.hud.small_font,
-			font_size = self._level_bg:h() * 0.75,
-			visible = false,
-		})
-		self._level_text:set_top(self._level_bg:top())
-		self._level_text:set_left(self._level_bg:left())
-		
-
-		
-		self._flash_speed = icon.flash_speed
-	end
-	
-	function HUDList.BuffItemBase:deactivate(...)
-		HUDList.BuffItemBase.super.deactivate(self, ...)
-		self:set_aced(false, true)
-		self:set_level(0, true)
-	end
-	
-	function HUDList.BuffItemBase:set_aced(status, override)
-		if override then
-			self._is_aced = status
-		else
-			self._is_aced = self._is_aced or status
-		end
-		self._ace_icon:set_visible(self._is_aced)
-	end
-	
-	function HUDList.BuffItemBase:set_level(new_level, override)
-		self._current_level = override and new_level or math.max(self._current_level or 0, new_level)
-		self._level_text:set_text(tostring(self._current_level))
-		self._level_bg:set_visible(self._current_level > 1)
-		self._level_text:set_visible(self._current_level > 1)
-	end
-	
-	function HUDList.BuffItemBase:set_stack_count(new_count, show_zero)
-		if not show_zero and new_count <= 0 then
-			self._stack_text:set_visible(false)
-			self._stack_bg:set_visible(false)
-			self._stack_text:set_text("")
-		else
-			self._stack_text:set_visible(true)
-			self._stack_bg:set_visible(true)
-			self._stack_text:set_text(tostring(new_count))
-		end
-	end
-	
-	function HUDList.BuffItemBase:set_flash(continuous)
-		self:stop_flash()
-		self._flash_icon:animate(callback(self, self, "_animate_flash"), self._flash_speed or 0.5, continuous)
-	end
-	
-	function HUDList.BuffItemBase:stop_flash()
-		self._flash_icon:stop()
-		self._flash_icon:set_alpha(0)
-		self._icon:set_alpha(1)
-	end
-	
-	function HUDList.BuffItemBase:_animate_flash(icon, duration, continuous)
-		repeat
-			local t = duration
-			while t > 0 do
-				local dt = coroutine.yield()
-				t = math.max(t - dt, 0)
-				local value = math.sin(t/duration * 180)
-				self._flash_icon:set_alpha(value)
-				self._icon:set_alpha(1-value)
-			end
-		until not continuous
-
-		self._flash_icon:set_alpha(0)
-		self._icon:set_alpha(1)
-	end
-	
-	
-	HUDList.ChargedBuffItem = HUDList.ChargedBuffItem or class(HUDList.TimedBuffItem)			
-	function HUDList.ChargedBuffItem:init(...)
-		HUDList.ChargedBuffItem.super.init(self, ...)
-		self._bg:set_visible(false)
-	end
-	
-	function HUDList.ChargedBuffItem:set_progress(ratio)
-		HUDList.ChargedBuffItem.super.set_progress(self, ratio)
-		if ratio >= 1 and not self._flashing then
-			self._flashing = true
-			self:set_flash(true)
-		elseif ratio == 0 and self._flashing then
-			self._flashing = nil
-			self:stop_flash()
-		end
-	end
-	
-	end
-	]]
 end
 
-if RequiredScript == "lib/managers/hud/hudassaultcorner" then
+if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
+	local init_original = ObjectInteractionManager.init
+
+	function ObjectInteractionManager:init(...)
+		init_original(self, ...)
+		if managers.gameinfo and WolfHUD:getSetting("remove_answered_pager_contour", "boolean") then
+			managers.gameinfo:register_listener("pager_contour_remover", "pager", "answered", callback(nil, _G, "pager_answered_clbk"))
+		end
+	end
+
+	function pager_answered_clbk(event, key, data)
+		managers.enemy:add_delayed_clbk("contour_remove_" .. key, callback(nil, _G, "remove_answered_pager_contour_clbk", data.unit), Application:time() + 0.01)
+	end
+
+	function remove_answered_pager_contour_clbk(unit)
+		if alive(unit) then
+			unit:contour():remove(tweak_data.interaction.corpse_alarm_pager.contour_preset)
+		end
+	end
+end
+
+if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	local HUDAssaultCorner_init = HUDAssaultCorner.init
 	function HUDAssaultCorner:init(...)
 		HUDAssaultCorner_init(self, ...)

@@ -97,7 +97,7 @@ if not _G.WolfHUD then
 		["lib/managers/menu/stageendscreengui"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/lootdropscreengui"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/renderers/menunodeskillswitchgui"] = { "MenuTweaks.lua" },
-		["lib/managers/objectinteractionmanager"] = { "GameInfoManager.lua", "Interaction.lua" },
+		["lib/managers/objectinteractionmanager"] = { "GameInfoManager.lua", "HUDList.lua", "Interaction.lua" },
 		["lib/network/handlers/unitnetworkhandler"] = { "DownCounter.lua", "GameInfoManager.lua" },
 		["lib/units/props/timergui"] = { "GameInfoManager.lua" },
 		["lib/units/props/digitalgui"] = { "GameInfoManager.lua" },
@@ -110,7 +110,7 @@ if not _G.WolfHUD then
 		["lib/units/equipment/grenade_crate/grenadecratebase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/sentry_gun/sentrygunbase"] = { "GameInfoManager.lua", "KillCounter.lua" },
 		["lib/units/equipment/sentry_gun/sentrygundamage"] = { "GameInfoManager.lua" },
-		["lib/units/interactions/interactionext"] = { "Interaction.lua" },
+		["lib/units/interactions/interactionext"] = { "GameInfoManager.lua", "Interaction.lua" },
 		["lib/units/weapons/akimboweaponbase"] = { "BurstFire.lua" },
 		["lib/units/weapons/sentrygunweapon"] = { "GameInfoManager.lua" },
 		["lib/units/weapons/weaponlaser"] = { "WeaponLasers.lua" },
@@ -130,6 +130,7 @@ if not _G.WolfHUD then
 		["lib/player_actions/skills/playeractionexperthandling"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractionshockandawe"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractiondireneed"] = { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractionunseenstrike"] = { "GameInfoManager.lua" },
 		["lib/states/ingamedriving"] = { "DrivingHUD.lua" },
 		["lib/states/ingamewaitingforplayers"] = { "MenuTweaks.lua" },
 		["lib/tweak_data/guitweakdata"] = { "MenuTweaks.lua" },	
@@ -143,42 +144,38 @@ if not _G.WolfHUD then
 		{
 		  --CustomHUD
 			use_customhud 					= true,
-			PLAYER_PANEL_SCALE 				= 1,		--Size of local Player HUD Panel
-			PLAYER_PANEL_OPPACITY			= 0.85,
-			PLAYER_PANEL_NAME				= false,
-			PLAYER_PANEL_RANK				= false,
-			PLAYER_PANEL_CHARACTER			= false,
---			PLAYER_PANEL_LATENCY			= false,
-			PLAYER_PANEL_STATUS				= true,
-			PLAYER_PANEL_EQUIPMENT			= true,
-			PLAYER_PANEL_SPECIAL_EQUIPMENT	= true,
-			PLAYER_PANEL_CALLSIGN			= false,
-			PLAYER_PANEL_CARRY				= true,
---			PLAYER_PANEL_BUILD				= 0,
-			PLAYER_PANEL_WEAPON_ICON		= 4,
-			PLAYER_PANEL_WEAPON_NAME		= 1,
-			PLAYER_PANEL_WEAPON_AMMO		= 4,
-			PLAYER_PANEL_WEAPON_FIREMODE	= 2,
---			PLAYER_PANEL_INTERACTION		= 0,
-			TEAMMATE_PANEL_SCALE 			= 0.8,		--Size of Teammates/AI's HUD Panels
-			TEAM_PANEL_OPPACITY				= 0.85,
-			TEAM_PANEL_NAME					= true,
-			TEAM_PANEL_RANK					= true,
-			TEAM_PANEL_CHARACTER			= false,
-			TEAM_PANEL_LATENCY				= true,
-			TEAM_PANEL_STATUS				= true,
-			TEAM_PANEL_EQUIPMENT			= true,
-			TEAM_PANEL_SPECIAL_EQUIPMENT	= true,
-			TEAM_PANEL_CALLSIGN				= false,
-			TEAM_PANEL_CARRY				= true,
-			TEAM_PANEL_BUILD				= 15,
-			TEAM_PANEL_WEAPON_ICON			= 4,
-			TEAM_PANEL_WEAPON_NAME			= 1,
-			TEAM_PANEL_WEAPON_AMMO			= 4,
-			TEAM_PANEL_WEAPON_FIREMODE		= 1,
-			TEAM_PANEL_SHOW_INTERACTION		= true,
-			TEAM_PANEL_INTERACTION			= 1,
-			colorize_healthbars				= 2,		--Colorize mode: 1 = none, 2 = by peer id, 3 = by health amount
+			PLAYER_SCALE 					= 1,		--Size of local Player HUD Panel
+			PLAYER_OPACITY					= 0.85,
+			PLAYER_NAME						= false,
+			PLAYER_RANK						= false,
+			PLAYER_CHARACTER				= false,
+			PLAYER_STATUS					= true,
+			PLAYER_EQUIPMENT				= true,
+			PLAYER_SPECIALEQUIPMENT			= true,
+			PLAYER_CALLSIGN					= false,
+			PLAYER_CARRY					= true,
+			PLAYER_WEAPON_ICON				= 4,
+			PLAYER_WEAPON_NAME				= 1,
+			PLAYER_WEAPON_AMMO				= 4,
+			PLAYER_WEAPON_FIREMODE			= 2,
+			TEAM_SCALE 						= 0.8,		--Size of Teammates/AI's HUD Panels
+			TEAM_OPACITY					= 0.85,
+			TEAM_NAME						= true,
+			TEAM_RANK						= true,
+			TEAM_CHARACTER					= false,
+			TEAM_LATENCY					= true,
+			TEAM_STATUS						= true,
+			TEAM_EQUIPMENT					= true,
+			TEAM_SPECIALEQUIPMENT			= true,
+			TEAM_CALLSIGN					= false,
+			TEAM_CARRY						= true,
+			TEAM_BUILD						= 15,
+			TEAM_WEAPON_ICON				= 4,
+			TEAM_WEAPON_NAME				= 1,
+			TEAM_WEAPON_AMMO				= 4,
+			TEAM_WEAPON_FIREMODE			= 1,
+			TEAM_INTERACTION_HIDE			= true,		-- Show Interaction
+			TEAM_INTERACTION_MINDURATION	= 1,		--Hide Interaction if shorter than X sec.
 			show_downcounter 				= true,	
 			use_realammo					= true,
 		  --HUDChat
@@ -191,6 +188,7 @@ if not _G.WolfHUD then
 			SHOW_SPECIAL_KILLS 				= true,		--KillCounter shows special kills
 			SHOW_HEADSHOT_KILLS 			= true,		--KillCounter shows headshot kills
 			SHOW_AI_KILLS 					= true,		--Show KillCounter for Bots
+			SHOW_ACCURACY					= true,
 			max_corpses 					= 100,		--Maximum number of laying around corpses
 		  --Enemy Healthbar
 			show_enemy_healthbar 			= true,		--Show healthbars
@@ -347,7 +345,7 @@ if not _G.WolfHUD then
 						if SystemInfo:platform() == Idstring("WIN32") then  --Windows
 							os.execute('cmd /c mkdir "./' .. v["install_dir"] .. v["install_folder"] .. '"')
 						else --Linux
-							log("mod_override folder '" .. v["install_folder"] .. "' is missing!")
+							log("[WolfHUD] mod_override folder '" .. v["install_folder"] .. "' is missing!")
 						end
 					end
 					local file = io.open(v["revision"], "w+")
@@ -542,7 +540,20 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuCallbackHandler.clbk_change_hudlist_setting = function(self, item)
 		self:clbk_change_setting(item)
 		local name = item:parameters().name
-		if HUDManager then HUDManager:change_list_setting(tostring(name), WolfHUD:getSetting(name)) end
+		if managers.hud and HUDListManager then managers.hud:change_list_setting(tostring(name), WolfHUD:getSetting(name)) end
+	end
+	
+	MenuCallbackHandler.clbk_change_customhud_setting = function(self, item)
+		self:clbk_change_setting(item)
+		if managers.hud and HUDManager.CUSTOM_TEAMMATE_PANELS then 
+			local name = item:parameters().name
+			local setting = {}
+			for word in string.gmatch(name, "[%a%d]+") do
+				table.insert(setting, word)
+			end
+			local type = table.remove(setting, 1)
+			managers.hud:change_hud_setting(type, setting, WolfHUD:getSetting(name)) 
+		end
 	end
 	
 	WolfHUD:Load()
@@ -573,14 +584,14 @@ Hooks:Add("MenuManagerPostInitialize", "MenuManagerPostInitialize_WolfHUD", func
 	for __, menu_id in ipairs(WolfHUD.menu_ids) do
 		local menu = MenuHelper:GetMenu(menu_id)
 		for __, menu_item in ipairs(menu._items) do
-			if menu_item._type == "multiple_choice" and #menu_item._options <= 0 then
+			if menu_item._type == "multiple_choice" and #menu_item._options <= 1 then
 				menu_item:clear_options()
 				for id, data in ipairs(WolfHUD.color_table) do
 					menu_item:add_option(CoreMenuItemOption.ItemOption:new({
 						_meta = "option",
-						text_id = "wolfhud_color_" .. (data.name or "unknown"),
+						text_id = data.name and "wolfhud_color_" .. data.name or "Undefined"),
 						value = data.name,
-						localize = true
+						localize = data.name and true or false
 					}))
 				end
 				local item_id = menu_item:parameters().name
