@@ -297,7 +297,25 @@ if not _G.WolfHUD then
 	
 	function WolfHUD:print_log(text)
 		if self.DEBUG_MODE then
-			log("[WolfHUD] " .. text)
+			local function log_table(userdata)
+				local text = ""
+				for id, data in pairs(userdata) do
+					if type(data) == "table" then
+						text = text .. id .. " = {\n" .. log_table(data) .. "}"
+					elseif type(data) ~= "function" then
+						text = text .. id .. " = " .. tostring(data) .. "\n"
+					else
+						text = text .. "function " .. id .. "(...)\n"
+					end
+				end
+				return text
+			end
+			if type(text) == "table" or type(text) == "userdata" then
+				text = "\n" .. log_table(text)
+			elseif type(text) == "function" then
+				text = "Error, cannot log function... " 
+			end
+			log("[WolfHUD] " .. tostring(text))
 		end
 	end
 	
@@ -314,9 +332,12 @@ if not _G.WolfHUD then
 				end
 			end
 			file:close()
+		else
+			self:print_log("Error while loading, settings file could not be opened (" .. self.settings_path .. ")")
 		end
 		if corrupt then 
 			self:Save()
+			self:print_log("Invalid settings stored in savefile, resaving...")
 		end
 	end
 
@@ -325,6 +346,8 @@ if not _G.WolfHUD then
 		if file then
 			file:write(json.encode(self.settings))
 			file:close()
+		else
+			self:print_log("Error while saving, settings file could not be opened (" .. self.settings_path .. ")")
 		end
 	end
 	
@@ -531,6 +554,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.clbk_change_color_setting = function(self, item)
 		local value = item:value()
+		log(tostring(value))
 		local name = item:parameters().name
 		if name and type(value) == "number" then
 			WolfHUD.settings[name] = WolfHUD.color_table[value].name
@@ -578,27 +602,3 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_killcounter.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", WolfHUD, settings)
 end)
-
---[[
-Hooks:Add("MenuManagerPostInitialize", "MenuManagerPostInitialize_WolfHUD", function(menu_manager)
-	for __, menu_id in ipairs(WolfHUD.menu_ids) do
-		local menu = MenuHelper:GetMenu(menu_id)
-		for __, menu_item in ipairs(menu._items) do
-			if menu_item._type == "multiple_choice" and #menu_item._options <= 1 then
-				menu_item:clear_options()
-				for id, data in ipairs(WolfHUD.color_table) do
-					menu_item:add_option(CoreMenuItemOption.ItemOption:new({
-						_meta = "option",
-						text_id = data.name and "wolfhud_color_" .. data.name or "Undefined"),
-						value = data.name,
-						localize = data.name and true or false
-					}))
-				end
-				local item_id = menu_item:parameters().name
-				local value = WolfHUD:getSetting(tostring(item_id), "string")
-				menu_item:set_value(value)
-			end
-		end
-	end
-end)
-]]
