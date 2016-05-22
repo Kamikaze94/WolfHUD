@@ -717,7 +717,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDListManager:_bag_equipment_event(event, key, data)
-		printf("HUDListManager:_bag_equipment_event(%s, %s)\n", event, key)
+		printf("HUDListManager:_bag_equipment_event(%s, %s)", event, key)
 		if data.aggregate_key then return end
 	
 		local equipment_list = self:list("left_side_list"):item("equipment")
@@ -793,14 +793,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDListManager:_buff_event(event, id, data)
-		printf("(%.3f) HUDListManager:_buff_event(%s, %s)\n", Application:time(), tostring(event), tostring(id))
+		printf("(%.3f) HUDListManager:_buff_event(%s, %s)", Application:time(), tostring(event), tostring(id))
 		local items = self:_get_buff_items(id)
 		
 		for _, item in ipairs(items) do
 			if item[event] then
 				item[event](item, id, data)
 			else
-				printf("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s\n", event, id)
+				printf("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s", Application:time(), event, id)
 			end
 		end
 		
@@ -3583,6 +3583,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDList.TimedBuffItem = HUDList.TimedBuffItem or class(HUDList.BuffItemBase)
 	function HUDList.TimedBuffItem:init(...)
 		HUDList.TimedBuffItem.super.init(self, ...)
+		if self._value then
+			self._value:set_y(self._value:y() + 2)
+		end
 	end
 	
 	function HUDList.TimedBuffItem:update(t, dt)
@@ -3593,12 +3596,22 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		
 		if self._buff_active and self._expire_t then
 			self:_set_progress((t - self._start_t) / (self._expire_t - self._start_t))
+			if not self._custom_value then
+				self:_set_text(string.format("%0.1fs", math.max(self._expire_t - t, 0)))
+			end
 			
 			if t > self._expire_t then
 				self._start_t = nil
 				self._expire_t = nil
 				self._progress_bar:panel():set_visible(false)
 			end
+		end
+	end
+	
+	function HUDList.TimedBuffItem:set_value(id, data)
+		if data.show_value then
+			self._custom_value = true
+			self:_set_text(tostring(data.value))
 		end
 	end
 	
@@ -3728,7 +3741,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.CompositeBuff:set_value(id, data)
 		if self._member_buffs[id] and self._member_buffs[id].value ~= data.value then
-			printf("HUDList.CompositeBuff:set_value(%s, %s)\n", id, tostring(data.value))
+			printf("HUDList.CompositeBuff:set_value(%s, %s)", id, tostring(data.value))
 			self._member_buffs[id].value = data.value
 			self:_check_buffs()
 		end

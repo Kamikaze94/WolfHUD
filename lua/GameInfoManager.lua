@@ -409,7 +409,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 		if self[target] then
 			self[target](self, ...)
 		else
-			printf("Error: No event handler for %s\n", target)
+			printf("Error: No event handler for %s", target)
 		end
 	end
 	
@@ -651,7 +651,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 			local carry_id = unit:carry_data() and unit:carry_data():carry_id() or lookup.INTERACTION_TO_CARRY[interact_id] or (self._loot[key] and self._loot[key].carry_id)
 			
 			if carry_id then
-				printf("%s - %s: %d\n", event, carry_id, editor_id)
+				printf("%s - %s: %d", event, carry_id, editor_id)
 				self:_loot_interaction_handler(event, key, unit, interact_id, carry_id)
 			else
 				self:_listener_callback("interactable_unit", event, key, unit, interact_id, carry_id)
@@ -813,7 +813,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 				
 				self._deployables[aggregate_key][attr] = total
 				self:_listener_callback("bag_deployable", "set_" .. attr, aggregate_key, self._deployables[aggregate_key])
-				printf("UPDATE AGGREGATE %s: %s\n", tostring(attr), tostring(total))
+				printf("UPDATE AGGREGATE %s: %s", tostring(attr), tostring(total))
 			end
 			
 			local aggregate_key = GameInfoManager._EQUIPMENT.AGGREAGATE_ITEMS[self._deployables[key].unit:editor_id()]
@@ -918,7 +918,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 	end
 	
 	function GameInfoManager:_sentry_event(event, key, ...)
-		printf("GameInfoManager:_sentry_event(%s, %s)\n", event, key)
+		printf("GameInfoManager:_sentry_event(%s, %s)", event, key)
 		
 		if event == "create" then
 			if not self._sentries[key] then
@@ -968,7 +968,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 				self:_buff_event("set_value", id, { value = data.value })
 			end
 		else
-			printf("Unknown temporary buff event: %s %s %s\n", event, data.category, data.upgrade)
+			printf("Unknown temporary buff event: %s, %s, %s", event, data.category, data.upgrade)
 		end
 	end
 	
@@ -984,7 +984,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 	end
 	
 	function GameInfoManager:_timed_stack_buff_event(event, id, data)
-		printf("GameInfoManager:_timed_stack_buff_event(%s, %s, %s)\n", tostring(event), tostring(id), tostring(data))
+		printf("GameInfoManager:_timed_stack_buff_event(%s, %s, %s)", tostring(event), tostring(id), tostring(data))
 	
 		if event == "add_stack" then
 			if not self._buffs[id] then
@@ -1004,7 +1004,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 	end
 	
 	function GameInfoManager:_buff_event(event, id, data)
-		printf("GameInfoManager:_buff_event(%s %s)\n", event, id)
+		printf("GameInfoManager:_buff_event(%s, %s)", event, id)
 		
 		if event == "activate" then
 			if not self._buffs[id] then
@@ -1077,12 +1077,12 @@ if RequiredScript == "lib/setups/gamesetup" then
 				end
 			end
 		else
-			printf("Unknown team buff event: %s %s %s\n", event, data.category, data.upgrade)
+			printf("Unknown team buff event: %s, %s, %s", event, data.category, data.upgrade)
 		end
 	end
 	
 	function GameInfoManager:_player_action_event(event, id, data)
-		printf("GameInfoManager:_player_action_event(%s %s)\n", event, id)
+		printf("GameInfoManager:_player_action_event(%s, %s)", event, id)
 	
 		if event == "activate" then
 			if not self._player_actions[id] then
@@ -2328,7 +2328,7 @@ if RequiredScript == "lib/managers/playermanager" then
 		unaquire_team_upgrade_original(self, upgrade, ...)
 		
 		if managers.gameinfo then
-			managers.gameinfo:event("team_buff", "deactivate", { peer = 0, category = upgrade.category, upgrade = upgrade.upgrade, value = value })
+			managers.gameinfo:event("team_buff", "deactivate", { peer = 0, category = upgrade.category, upgrade = upgrade.upgrade })
 		end
 	end
 	
