@@ -3654,7 +3654,9 @@ if RequiredScript == "lib/managers/hud/hudtemp" then
 
 	function HUDTemp:init(...)
 		init_original(self, ...)
-		self._temp_panel:set_alpha(0)
+		if not self.carry_weight_string then
+			self._temp_panel:set_alpha(0)
+		end
 	end
 	
 end
