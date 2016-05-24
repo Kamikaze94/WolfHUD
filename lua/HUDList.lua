@@ -314,7 +314,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		weapon_charge = { "weapon_charge" },
 		melee_charge = { "melee_charge" },
 		reload = {"reload" }, 
-		--interact = { "interact"},
+		interact = { "interact"},
 		
 		--Debuffs that are merged into the buff itself
 		composite_debuffs = {
@@ -3148,7 +3148,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		},
 		shock_and_awe = {
 			atlas = tweak_data.skilltree.skills.shock_and_awe.icon_xy,
-			class = "BuffItemBase",
+			class = "ShockAndAweBuffItem",
 			color = STANDARD_COLOR,
 		},
 		swan_song = {
@@ -3325,6 +3325,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 			ignore = WolfHUD:getSetting("SHOW_RELOAD", "boolean")
+		},
+		interact = {
+			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
+			class = "TimedBuffItem",
+			color = STANDARD_COLOR,
+			ignore = true
 		},
 	}
 	
@@ -3576,6 +3582,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.BerserkerBuffItem:set_value(id, data)
 		if data.show_value then
 			self:_set_text(string.format("%.0f%%", data.value * 100))
+		end
+	end
+	
+	
+	HUDList.ShockAndAweBuffItem = HUDList.ShockAndAweBuffItem or class(HUDList.BuffItemBase)
+	function HUDList.ShockAndAweBuffItem:set_value(id, data)
+		if data.show_value then
+			self:_set_text(string.format("+%.0f%%", (data.value-1) * 100))
 		end
 	end
 	

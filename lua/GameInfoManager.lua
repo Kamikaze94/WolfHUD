@@ -2835,20 +2835,22 @@ if RequiredScript == "lib/player_actions/skills/playeractionshockandawe" then
 				
 				if kill_count >= target_enemies then
 					active = true
-					local ammo = weapon_unit:base():get_ammo_remaining_in_clip()
-					local reload_increase = max_reload_increase
-					if ammo > min_bullets then
-						local num_bullets = ammo - min_bullets
-						for i = 1, num_bullets do
-							reload_increase = math.max(min_reload_increase, reload_increase * penalty)
-						end
-					end
+					local min_threshold = min_bullets + player_manager:upgrade_value("player", "automatic_mag_increase", 0)
+					local max_threshold = math.floor(min_threshold + math.log(min_reload_increase/max_reload_increase) / math.log(penalty))
+					local data = { 
+						max_bonus = max_reload_increase, 
+						min_bonus = min_reload_increase, 
+						penalty = penalty,
+						min_threshold = min_threshold,
+						max_threshold = max_threshold,
+					}
+ 					
+					RaycastWeaponBase.SHOCK_AND_AWE_ACTIVE = data
 					
+					local ammo = weapon_unit:base():get_ammo_remaining_in_clip()
+					local bonus = math.clamp(data.max_bonus * math.pow(data.penalty, ammo - data.min_threshold), data.min_bonus, data.max_bonus)
 					managers.gameinfo:event("buff", "activate", "shock_and_awe")
-					managers.gameinfo:event("buff", "set_value", "shock_and_awe", { value = string.format("%.0f%%", (1-reload_increase) * 100), show_value = true })
-					--managers.gameinfo:event("buff", "set_stack_count", "shock_and_awe" { stack_count = nil })
-				else
-					--managers.gameinfo:event("buff", "set_stack_count", "shock_and_awe" { stack_count = target_enemies - kill_count })
+					managers.gameinfo:event("buff", "set_value", "shock_and_awe", { value = bonus, show_value = true })
 				end
 			end
 		end
@@ -2947,9 +2949,26 @@ if RequiredScript == "lib/player_actions/skills/playeractionammoefficiency" then
 	
 end
 
+if RequiredScript == "lib/units/weapons/raycastweaponbase" then
+	
+	local set_ammo_remaining_in_clip_original = RaycastWeaponBase.set_ammo_remaining_in_clip
+	
+	function RaycastWeaponBase:set_ammo_remaining_in_clip(ammo, ...)
+		if RaycastWeaponBase.SHOCK_AND_AWE_ACTIVE and not (self.is_npc and self:is_npc()) then
+			local data = RaycastWeaponBase.SHOCK_AND_AWE_ACTIVE
+			if ammo <= data.max_threshold and ammo >= data.min_threshold then
+				local bonus = math.clamp(data.max_bonus * math.pow(data.penalty, ammo - data.min_threshold), data.min_bonus, data.max_bonus)
+				managers.gameinfo:event("buff", "set_value", "shock_and_awe", { value = bonus, show_value = true })
+			end
+		end
+		
+		return set_ammo_remaining_in_clip_original(self, ammo, ...)
+ 	end
+	
+ end
 
 
-
+ 
 --[[
 if RequiredScript == "lib/managers/objectinteractionmanager" then
 	
