@@ -8,7 +8,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/huskplayermovement" 
 	function HuskPlayerMovement:_start_bleedout(...)
 		local crim_data = managers.criminals:character_data_by_unit(self._unit)
 		if crim_data and crim_data.panel_id then
-			managers.hud:decrement_teammate_downs(crim_data.panel_id)
+			managers.hud:increment_teammate_downs(crim_data.panel_id)
 		end
 	
 		return _start_bleedout_original(self, ...)
@@ -37,7 +37,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDManager:set_player_health(data, ...)
 		if data.revives then
-			self:set_teammate_downs(HUDManager.PLAYER_PANEL, data.revives - 1)
+			self:set_player_revives(HUDManager.PLAYER_PANEL, data.revives - 1)
 		end
 		return set_player_health_original(self, data, ...)
 	end
@@ -52,12 +52,12 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		return set_mugshot_custody_original(self, id, ...)
 	end
 	
-	HUDManager.set_teammate_downs = HUDManager.set_teammate_downs or function(self, i, value)
+	HUDManager.set_player_revives = HUDManager.set_player_revives or function(self, i, value)
 		self._teammate_panels[i]:set_downs(value)
 	end
 	
-	HUDManager.decrement_teammate_downs = HUDManager.decrement_teammate_downs or function(self, i)
-		self._teammate_panels[i]:decrement_downs()
+	HUDManager.increment_teammate_downs = HUDManager.increment_teammate_downs or function(self, i)
+		self._teammate_panels[i]:increment_downs()
 	end
 	
 	HUDManager.reset_teammate_downs = HUDManager.reset_teammate_downs or function(self, i)
@@ -79,7 +79,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 				alpha = 0.6,
 				w = self._health_panel:w(),  
 				h = self._health_panel:h(),  
-				layer = 1
+				layer = 1,
 			})
 			
 			local risk_indicator = self._health_panel:text({
@@ -97,7 +97,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 			})
 			
 			self._max_downs = tweak_data.player.damage.LIVES_INIT - 1 + (is_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
-			self._downs = self._max_downs
+			self._downs = 0
 		end
 	end)
 	
@@ -114,9 +114,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 	
 	HUDTeammate.set_downs = HUDTeammate.set_downs or function(self, i)
 		if not self._health_panel then return end
-		self._downs = self._downs or self._max_downs
 		if not i or self._downs ~= i then
 			self._downs = i or self._downs
+			self._health_panel:child("risk_indicator_bg"):set_visible(WolfHUD:getSetting("show_downcounter", "boolean"))
 			local alpha = WolfHUD:getSetting("show_downcounter", "boolean") and 1 or 0
 			if managers.groupai:state():whisper_mode() and self._downs == self._max_downs then
 				if not self._risk then
@@ -140,29 +140,26 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 				end
 			else
 				local downs_text = self._downs
+				local color = Color.white
 				if self._id == HUDManager.PLAYER_PANEL then
 					self._health_panel:child("risk_indicator"):set_font_size(15)
-					has_messiah = managers.player:has_category_upgrade("player", "pistol_revive_from_bleed_out")
-					if has_messiah and managers.player:player_unit() and managers.player:player_unit():character_damage() then
-						messiah_charges = managers.player:player_unit():character_damage()._messiah_charges
-						downs_text = downs_text .. "/" .. (messiah_charges or "?")
-					end
+					color = self._downs > 2 and Color('C2FC97') or self._downs > 1 and Color('CEA168') or Color('E24E4E')
 				elseif self:peer_id() ~= nil then
 					self._health_panel:child("risk_indicator"):set_font_size(12)
+					color = self._downs > 2 and Color('E24E4E') or self._downs > 1 and Color('CEA168') or Color('C2FC97')
 				end
 				alpha = (WolfHUD:getSetting("show_downcounter", "boolean") and (self:peer_id() ~= nil or self._id == HUDManager.PLAYER_PANEL) and 1 or 0)
-				color = self._downs > 2 and Color('C2FC97') or self._downs > 1 and Color('CEA168') or Color('E24E4E')
 				self._health_panel:child("risk_indicator"):set_text(tostring(downs_text))
 				self._health_panel:child("risk_indicator"):set_color(color:with_alpha(alpha))
 			end
 		end
 	end
 	
-	HUDTeammate.decrement_downs = HUDTeammate.decrement_downs or function(self)
-		self:set_downs(self._downs - 1)
+	HUDTeammate.increment_downs = HUDTeammate.increment_downs or function(self)
+		self:set_downs(self._downs + 1)
 	end
 	
 	HUDTeammate.reset_downs = HUDTeammate.reset_downs or function(self)
-		self:set_downs(self._max_downs)
+		self:set_downs(0)
 	end
 end

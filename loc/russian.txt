@@ -193,11 +193,11 @@
 	"wolfhud_hudlist_box_bg_color_title" : "Цвет фона блоков",
 	"wolfhud_hudlist_box_bg_color_desc" : "Цвет фона левого и правого блоков.\n(Необходимо сменить карту для принятия изменений...)",
 	"wolfhud_hudlist_civcolor_title" : "Цвет гражданских",
-	"wolfhud_hudlist_civcolor_desc" : "Цвет для гражданских и заложников в EnemyCounter.\n(Необходимо сменить карту для принятия изменений...)",
+	"wolfhud_hudlist_civcolor_desc" : "Цвет для гражданских и заложников в EnemyCounter.",
 	"wolfhud_hudlist_thugcolor_title" : "Цвет бандитов",
-	"wolfhud_hudlist_thugcolor_desc" : "Цвет для головорезов и бандитов в EnemyCounter.\n(Необходимо сменить карту для принятия изменений...)",
+	"wolfhud_hudlist_thugcolor_desc" : "Цвет для головорезов и бандитов в EnemyCounter.",
 	"wolfhud_hudlist_copcolor_title" : "Цвет врагов",
-	"wolfhud_hudlist_copcolor_desc" : "Цвет для копов, особых врагов и турелей в EnemyCounter.\n(Необходимо сменить карту для принятия изменений...)",
+	"wolfhud_hudlist_copcolor_desc" : "Цвет для копов, особых врагов и турелей в EnemyCounter.",
 	
 	
 	"wolfhud_infopanels_adv_options_name" : "Расширенные настройки HUD List",

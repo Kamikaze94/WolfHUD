@@ -2116,7 +2116,6 @@ if RequiredScript == "lib/units/weapons/sentrygunweapon" then
 	
 	function SentryGunWeapon:init(...)
 		init_original(self, ...)
-		self._player_manager = managers.player		--TEMP
 		managers.gameinfo:event("sentry", "set_ammo_ratio", tostring(self._unit:key()), self:ammo_ratio())
 	end
 	
@@ -2153,6 +2152,7 @@ if RequiredScript == "lib/managers/playermanager" then
 	local unaquire_team_upgrade_original = PlayerManager.unaquire_team_upgrade
 	local add_synced_team_upgrade_original = PlayerManager.add_synced_team_upgrade
 	local peer_dropped_out_original = PlayerManager.peer_dropped_out
+	local on_headshot_dealt_original = PlayerManager.on_headshot_dealt
 	
 	local PLAYER_HAS_SPAWNED = false
 	function PlayerManager:spawned_player(id, ...)
@@ -2351,6 +2351,15 @@ if RequiredScript == "lib/managers/playermanager" then
 		return peer_dropped_out_original(self, peer, ...)
 	end
 	
+	function PlayerManager:on_headshot_dealt(...)
+		local t = Application:time()
+		if (self._on_headshot_dealt_t or 0) >= t and self:has_category_upgrade("player", "headshot_regen_armor_bonus") then
+			managers.gameinfo:event("timed_buff", "activate", "bullseye_debuff", { t = t, duration = tweak_data.upgrades.on_headshot_dealt_cooldown or 0 })
+		end
+		
+		return on_headshot_dealt_original(self, ...)
+	end
+	
 	
 	function PlayerManager:_update_messiah_buff()
 		if self._messiah_charges > 0 then
@@ -2384,7 +2393,7 @@ if RequiredScript == "lib/units/beings/player/playermovement" then
 	local FAK_RECHECK_INTERVAL = 0.25
 	function PlayerMovement:_update_uppers_buff(t)
 		if t > FAK_RECHECK_T and alive(self._unit) then
-			if FirstAidKitBase.GetFirstAidKit(self._unit:position()) then
+			if FirstAidKitBase.GetFirstAidKit and FirstAidKitBase.GetFirstAidKit(self._unit:position()) then --TEMP: Classic Compatability
 				if not FAK_IN_RANGE then
 					FAK_IN_RANGE = true
 					managers.gameinfo:event("buff", "activate", "uppers")
@@ -2408,6 +2417,8 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 	local _check_action_primary_attack_original = PlayerStandard._check_action_primary_attack
 	local _start_action_interact_original = PlayerStandard._start_action_interact
 	local _interupt_action_interact_original = PlayerStandard._interupt_action_interact
+	local _start_action_use_item_original = PlayerStandard._start_action_use_item
+	local _interupt_action_use_item_original = PlayerStandard._interupt_action_use_item
 	local _start_action_reload_original = PlayerStandard._start_action_reload
 	local _update_reload_timers_original = PlayerStandard._update_reload_timers
 	local _interupt_action_reload_original = PlayerStandard._interupt_action_reload
@@ -2487,6 +2498,24 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 		end
 		
 		return _interupt_action_interact_original(self, t, input, complete, ...)
+	end
+	
+	function PlayerStandard._start_action_use_item(self, t, ...)
+		local equipment_id = managers.player:selected_equipment_id()
+		local timer = managers.player:selected_equipment_deploy_timer()
+		managers.gameinfo:event("player_action", "activate", "place_equipment", { t = t, duration = timer })
+		managers.gameinfo:event("player_action", "set_data", "place_equipment", { interact_id = equipment_id })
+		
+		return _start_action_use_item_original(self, t, ...)
+	end
+	
+	function PlayerStandard._interupt_action_use_item(self, t, input, complete, ...)
+		if self._use_item_expire_t then
+			managers.gameinfo:event("player_action", "set_data", "place_equipment", { completed = complete and true or false })
+			managers.gameinfo:event("player_action", "deactivate", "place_equipment")
+		end
+		
+		return _interupt_action_use_item_original(self, t, input, complete, ...)
 	end
 	
 	function PlayerStandard:_start_action_reload(t, ...)

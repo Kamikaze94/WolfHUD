@@ -183,17 +183,11 @@
 			"size" : 16,
 		},
 		{
-			"type" : "multiple_choice",
+			"type" : "toggle",
 			"id" : "show_buffs",
 			"title" : "wolfhud_hudlist_show_buffs_title",
 			"description" : "wolfhud_hudlist_show_buffs_desc",
 			"callback" : "clbk_change_hudlist_setting",
-			"items" : [
-				"wolfhud_multiselect_all",
-				"wolfhud_hudlist_show_buffs_timed",
-				"wolfhud_multiselect_none"
-				
-			],
 			"value" : "show_buffs",
 		}
 	]

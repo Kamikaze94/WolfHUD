@@ -95,7 +95,7 @@ end
 			end
 			
 			if alive(killer) then
-				local is_special = managers.groupai:state():is_enemy_special(self._unit)
+				local is_special = managers.groupai:state():is_enemy_special(self._unit) or (self._unit:base()._tweak_table == "sniper")
 				local i_body = data.col_ray and data.col_ray.body and self._unit:get_body_index(data.col_ray.body:name())
 				local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
 				local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false

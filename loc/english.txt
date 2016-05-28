@@ -240,11 +240,13 @@
 	"wolfhud_hudlist_box_bg_color_title" : "Box Background Color",
 	"wolfhud_hudlist_box_bg_color_desc" : "Background color for Left- and Right List Boxes.\n(Currently a Map change is needed to apply...)",
 	"wolfhud_hudlist_civcolor_title" : "Civilian Color",
-	"wolfhud_hudlist_civcolor_desc" : "Color for Civilians and Hostages in EnemyCounter.\n(Currently a Map change is needed to apply...)",
+	"wolfhud_hudlist_civcolor_desc" : "Color for Civilians and Hostages in EnemyCounter.",
 	"wolfhud_hudlist_thugcolor_title" : "Thug Color",
-	"wolfhud_hudlist_thugcolor_desc" : "Color for Thugs and Mobsters in EnemyCounter.\n(Currently a Map change is needed to apply...)",
+	"wolfhud_hudlist_thugcolor_desc" : "Color for Thugs and Mobsters in EnemyCounter.",
 	"wolfhud_hudlist_copcolor_title" : "Enemy Color",
-	"wolfhud_hudlist_copcolor_desc" : "Color for Cops, Specials and Turrets in EnemyCounter.\n(Currently a Map change is needed to apply...)",
+	"wolfhud_hudlist_copcolor_desc" : "Color for Cops, SWATs and Heavy SWATs in EnemyCounter.",
+	"wolfhud_hudlist_specialcolor_title" : "Special Color",
+	"wolfhud_hudlist_specialcolor_desc" : "Color for Specials and Turrets in EnemyCounter.",
 	
 	
 	"wolfhud_infopanels_adv_options_name" : "Advanced HUD List Options",
@@ -294,7 +296,6 @@
 	"wolfhud_hudlist_show_special_pickups_desc" : "Show amount of chemicals, keycards and other stuff on the map.",
 	"wolfhud_hudlist_show_buffs_title" : "Show Buffs",
 	"wolfhud_hudlist_show_buffs_desc" : "Display active Buffs in the bottom center of your screen.",
-	"wolfhud_hudlist_show_buffs_timed" : "Timed Only",
 	
 	
 	"wolfhud_tabstats_options_name" : "TabStats Options",

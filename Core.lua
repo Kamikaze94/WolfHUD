@@ -115,7 +115,7 @@ if not _G.WolfHUD then
 		["lib/units/weapons/sentrygunweapon"] = { "GameInfoManager.lua" },
 		["lib/units/weapons/weaponlaser"] = { "WeaponLasers.lua" },
 		["lib/units/weapons/weaponflashlight"] = { "WeaponLasers.lua" },
-		["lib/units/weapons/raycastweaponbase"] = { "Scripts.lua" },
+		["lib/units/weapons/raycastweaponbase"] = { "GameInfoManager.lua", "Scripts.lua" },
 		["lib/units/weapons/newraycastweaponbase"] = { "WeaponLasers.lua", "BurstFire.lua" },
 		["lib/units/weapons/shotgun/newshotgunbase"] = { "WeaponLasers.lua" },
 		["lib/units/props/securitycamera"] = { "GameInfoManager.lua" },
@@ -246,17 +246,18 @@ if not _G.WolfHUD then
 				separate_bagged_loot 		= true,     --Show bagged loot as a separate value
 			show_special_pickups 			= true,    	--Show number of special equipment/items
 
-			show_buffs 						= 1,     	--Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+			show_buffs 						= true,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
 			
 			use_hudlist 					= true,
-			hudlist_right_scale				= 1,
-			hudlist_left_scale				= 1,
-			hudlist_buff_scale				= 1,
-			hud_box_color 					= "white",		--Left and Right List font color
-			hud_box_bg_color 				= "black",		--Left and Right List BG color
+			right_list_scale				= 1,
+			left_list_scale					= 1,
+			buff_list_scale					= 1,
+			list_color	 					= "white",		--Left and Right List font color
+			list_color_bg	 				= "black",		--Left and Right List BG color
 			civilian_color 					= "white", 		--EnemyCounter Civillian and Hostage icon color
 			thug_color 						= "white",		--EnemyCounter Thug and Mobster icon color
 			enemy_color 					= "white",		--EnemyCounter Cop and Specials icon color
+			special_color 					= "white",
 		  --Press2Hold
 			LOCK_MODE 						= 3,			--Disabled (1, Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time (2), or current interaction time(3)
 			MIN_TIMER_DURATION 				= 5, 			--Min interaction duration (in seconds) for the toggle behavior to activate
@@ -301,17 +302,19 @@ if not _G.WolfHUD then
 				local text = ""
 				for id, data in pairs(userdata) do
 					if type(data) == "table" then
-						text = text .. id .. " = {\n" .. log_table(data) .. "}"
+						log( id .. " = {")
+						log_table(data)
+						log("}")
 					elseif type(data) ~= "function" then
-						text = text .. id .. " = " .. tostring(data) .. "\n"
+						log( id .. " = " .. tostring(data) .. "")
 					else
-						text = text .. "function " .. id .. "(...)\n"
+						log( "function " .. id .. "(...)")
 					end
 				end
-				return text
 			end
 			if type(text) == "table" or type(text) == "userdata" then
-				text = "\n" .. log_table(text)
+				log_table(text)
+				return
 			elseif type(text) == "function" then
 				text = "Error, cannot log function... " 
 			end
@@ -554,7 +557,6 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	
 	MenuCallbackHandler.clbk_change_color_setting = function(self, item)
 		local value = item:value()
-		log(tostring(value))
 		local name = item:parameters().name
 		if name and type(value) == "number" then
 			WolfHUD.settings[name] = WolfHUD.color_table[value].name
@@ -567,9 +569,15 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		if managers.hud and HUDListManager then managers.hud:change_list_setting(tostring(name), WolfHUD:getSetting(name)) end
 	end
 	
+	MenuCallbackHandler.clbk_change_hudlist_color_setting = function(self, item)
+		self:clbk_change_color_setting(item)
+		local name = item:parameters().name
+		if managers.hud and HUDListManager then managers.hud:change_list_setting(tostring(name), WolfHUD:getSetting(name, "color")) end
+	end
+	
 	MenuCallbackHandler.clbk_change_customhud_setting = function(self, item)
 		self:clbk_change_setting(item)
-		if managers.hud and HUDManager.CUSTOM_TEAMMATE_PANELS then 
+		if managers.hud and HUDManager.CUSTOM_TEAMMATE_PANELS and managers.hud.change_hud_setting then 
 			local name = item:parameters().name
 			local setting = {}
 			for word in string.gmatch(name, "[%a%d]+") do
