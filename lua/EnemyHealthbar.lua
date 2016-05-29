@@ -25,6 +25,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "phalanx_vip" ] 				= "wolfhud_enemy_phalanx_vip",
 		[ "swat_van_turret_module" ] 	= "wolfhud_enemy_swat_van",
 		[ "ceiling_turret_module" ] 	= "wolfhud_enemy_ceiling_turret",
+		[ "sentry_gun" ]				= "wolfhud_enemy_sentry_gun",
 		[ "mobster_boss" ] 				= "wolfhud_enemy_mobster_boss",
 		[ "bank_manager" ] 				= "wolfhud_enemy_bank_manager",
 		[ "inside_man" ] 				= "wolfhud_enemy_inside_man",
@@ -55,6 +56,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	Hooks:PostHook( HUDManager , "_player_hud_layout" , "WolfHUDPostHUDManagerPlayerInfoHUDLayout" , function( self )
 		self._health_text_rect = { 2 , 18 , 232 , 11 } --Green Bar
 		self._shield_text_rect = { 2 , 34 , 232 , 11 } --Blue Bar
+		self._bar_text_rect = self._health_text_rect
+		self._shield = false
 		
 		local unit_health_main = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel:panel({
 			name 	= "unit_health_main",
@@ -67,19 +70,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			visible = false
 		})
 		
-		self._unit_health = self._unit_health_panel:bitmap({
+		self._unit_bar = self._unit_health_panel:bitmap({
 			name 			= "unit_health",
 			texture 		= "guis/textures/pd2/healthshield",
 			texture_rect 	= { 2, 18, 232,	11 },
 			blend_mode 		= "normal"
-		})
-		
-		self._unit_shield = self._unit_health_panel:bitmap({
-			name 			= "unit_health",
-			texture 		= "guis/textures/pd2/healthshield",
-			texture_rect 	= { 2, 34, 232, 11 },
-			blend_mode 		= "normal",
-			visible = false
 		})
 				
 		self._unit_bar_bg = self._unit_health_panel:bitmap({
@@ -137,11 +132,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		self._unit_health_enemy_text:set_size( ew , eh )
 		self._unit_health_enemy_location:set_size( lw , lh )
 		
-		self._unit_health:set_w( self._unit_health:w() - 2 )
-		self._unit_shield:set_w( self._unit_shield:w() - 2 )
+		self._unit_bar:set_w( self._unit_bar:w() - 2 )
 		
-		self._unit_health:set_center( self._unit_health_panel:center_x() , self._unit_health_panel:center_y() - 190 )
-		self._unit_shield:set_center( self._unit_health_panel:center_x() , self._unit_health_panel:center_y() - 190 )
+		self._unit_bar:set_center( self._unit_health_panel:center_x() , self._unit_health_panel:center_y() - 190 )
 		self._unit_bar_bg:set_center( self._unit_health_panel:center_x() , self._unit_health_panel:center_y() - 190 )
 		
 		self._unit_health_text:set_right( self._unit_bar_bg:right() )
@@ -155,13 +148,17 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 
 	end )
 
-	function HUDManager:set_unit_health_visible( visible )		
+	function HUDManager:set_unit_health_visible( visible, shield )		
 		if visible == true and not self._unit_health_visible and WolfHUD:getSetting("show_enemy_healthbar", "boolean") then
 		
 			self._unit_health_visible = true
 			self._unit_health_enemy_location:set_visible(WolfHUD:getSetting("show_healthbar_pointer", "boolean"))
 			self._unit_health_panel:stop()
-			
+			if self._shield ~= shield then
+				self._shield = shield or false
+				self._bar_text_rect = self._shield and self._shield_text_rect or self._health_text_rect
+				self._unit_bar:set_texture_rect(self._bar_text_rect)
+			end
 			self._unit_health_panel:animate( function( p )
 				self._unit_health_panel:set_visible( true )
 				
@@ -203,7 +200,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		current = math.max(current, 0)
 		local _r = current / total
 		
-		local r = self._unit_health:width()
+		local r = self._unit_bar:width()
 		local rn = ( self._unit_bar_bg:w() - 4 ) * _r
 
 		self._unit_health_enemy_text:set_text( enemy )
@@ -222,19 +219,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		
 		self._unit_health_text:set_color( _r <= 0.1 and Color.red or _r <= 0.25 and Color.yellow or Color.white )
 		
-		self._unit_health:stop()
+		self._unit_bar:stop()
+		
+		self._bar_text_rect = self._shield and self._shield_text_rect or self._health_text_rect
 		
 		if rn < r then
-			self._unit_health:animate( function( p )
+			self._unit_bar:animate( function( p )
 				over( 0.2 , function( o )
-					self._unit_health:set_w( math.lerp( r , rn , o ) )
-					self._unit_health:set_texture_rect( self._health_text_rect[ 1 ] , self._health_text_rect[ 2 ] , math.lerp( r , rn , o ) , self._health_text_rect[ 4 ] )
+					self._unit_bar:set_w( math.lerp( r , rn , o ) )
+					self._unit_bar:set_texture_rect( self._bar_text_rect[ 1 ] , self._bar_text_rect[2] , math.lerp( r , rn , o ) , self._bar_text_rect[ 4 ] )
 				end )
 			end )
 		end
 		
-		self._unit_health:set_w( _r * ( self._health_text_rect[ 3 ] - 2 ) )
-		self._unit_health:set_texture_rect( self._health_text_rect[ 1 ] , self._health_text_rect[ 2 ] , self._health_text_rect[ 3 ] * _r , self._health_text_rect[ 4 ] )
+		self._unit_bar:set_w( _r * ( self._bar_text_rect[ 3 ] - 2 ) )
+		self._unit_bar:set_texture_rect( self._bar_text_rect[ 1 ] , self._bar_text_rect[2] , self._bar_text_rect[ 3 ] * _r , self._bar_text_rect[ 4 ] )
 
 	end
 
@@ -254,14 +253,20 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 			local unit = self._fwd_ray.unit
 			if unit:in_slot( 8 ) and alive(unit:parent()) then unit = unit:parent() end
 			local turrets = managers.groupai:state():turrets()
-			if turrets and table.contains(turrets, unit) and alive( unit ) and unit:character_damage() and not unit:character_damage()._dead and unit:base() then	--in_slot(25 when active or 26 when destroyed)
-				managers.hud:set_unit_health_visible( true )
-				managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base():get_name_id() or "TURRET" )
-			elseif alive( unit ) and unit:character_damage() and not unit:character_damage()._dead and unit:base() and unit:base()._tweak_table and ((not managers.enemy:is_civilian( unit ) and managers.enemy:is_enemy( unit )) or WolfHUD:getSetting("show_civilian_healthbar", "boolean")) then
+			if alive( unit ) and unit:in_slot( 25 ) and not unit:character_damage():dead() and (turrets and table.contains(turrets, unit) or WolfHUD:getSetting("show_civilian_healthbar", "boolean")) then
+				self._last_unit = nil
+				if not unit:character_damage():needs_repair() then
+					managers.hud:set_unit_health_visible( true, true )
+					managers.hud:set_unit_health( unit:character_damage()._shield_health * 10 or 0 , unit:character_damage()._SHIELD_HEALTH_INIT * 10 or 0 , unit:base():get_name_id() or "TURRET" )
+				else
+					managers.hud:set_unit_health_visible( true )
+					managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base():get_name_id() or "TURRET" )
+				end
+			elseif alive( unit ) and ( unit:in_slot( 12 ) or unit:in_slot( 21 ) or unit:in_slot( 22 ) ) and not unit:character_damage():dead() and (managers.enemy:is_enemy( unit ) or WolfHUD:getSetting("show_civilian_healthbar", "boolean")) then
 				self._last_unit = unit
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base()._tweak_table or "ENEMY" )
-			elseif alive( unit ) and unit:vehicle() and unit:vehicle_driving() and unit:character_damage() and not self._seat and WolfHUD:getSetting("show_car_healthbar", "boolean") then
+			elseif alive( unit ) and unit:in_slot( 39 ) and WolfHUD:getSetting("show_car_healthbar", "boolean") then
 				self._last_unit = nil
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health or 0 , unit:character_damage()._current_max_health or 0 , string.upper(unit:vehicle_driving()._tweak_data.name) or "VEHICLE" )
