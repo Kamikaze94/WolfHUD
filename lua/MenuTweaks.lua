@@ -316,6 +316,8 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 	MenuManager.show_confirm_blackmarket_buy_weapon_slot = expect_yes
 	MenuManager.show_confirm_mission_asset_buy = expect_yes
 	MenuManager.show_confirm_pay_casino_fee = expect_yes
+	MenuManager.show_play_safehouse_question = expect_yes
+	MenuManager.show_leave_safehouse_dialog = expect_yes
 	
 	local show_person_joining_original = MenuManager.show_person_joining
 	local update_person_joining_original = MenuManager.update_person_joining

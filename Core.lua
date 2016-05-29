@@ -179,7 +179,7 @@ if not _G.WolfHUD then
 			show_downcounter 				= true,	
 			use_realammo					= true,
 		  --HUDChat
-			CHAT_WAIT_TIME					= 10,		--Time before chat fades out
+			CHAT_WAIT_TIME					= 10,		--Time before chat fades out, 0 = never
 			LINE_HEIGHT						= 15,		--Chat font Size
 			MAX_OUTPUT_LINES				= 8,		--Chat Output lines
 		  --KillCounter
@@ -443,20 +443,20 @@ end
 
 Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", function(loc)
 	if _G.PD2KR then
-		loc:load_localization_file(WolfHUD.mod_path .. "loc/korean.txt")
+		loc:load_localization_file(WolfHUD.mod_path .. "loc/korean.json")
 	else
 		for _, filename in pairs(file.GetFiles(WolfHUD.mod_path .. "loc/")) do
-			local str = filename:match('^(.*).txt$')
+			local str = filename:match('^(.*).json$')
 			if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
 				loc:load_localization_file(WolfHUD.mod_path .. "loc/" .. filename)
 				break
 			end
 		end
 	end
-	loc:load_localization_file(WolfHUD.mod_path .. "loc/english.txt", false)
+	loc:load_localization_file(WolfHUD.mod_path .. "loc/english.json", false)
 	
 	if WolfHUD:getSetting("replace_weapon_names", "boolean") then
-		loc:load_localization_file(WolfHUD.mod_path .. "loc/RealWeaponNames.txt")
+		loc:load_localization_file(WolfHUD.mod_path .. "loc/RealWeaponNames.json")
 	end
 	
 	if WolfHUD:getSetting("skip_blackscreen", "boolean") then

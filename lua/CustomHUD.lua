@@ -1324,15 +1324,33 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			w = size * 0.75,
 			layer = 10,
 		})
+		
+		self._condition_icon = self._panel:bitmap({
+			name = "condition_icon",
+			visible = false,
+			color = Color.white,
+			h = size,
+			w = size,
+			layer = 11,
+		})
+		
 		self._icon:set_center(self._panel:w() / 2, self._panel:h() / 2)
 		
 		self._owner:register_listener("Callsign", { "callsign" }, callback(self, self, "set_id"), false)
 		self._owner:register_listener("Callsign", { "voice_com" }, callback(self, self, "set_voice_com_active"), false)
+		self._owner:register_listener("Callsign", { "condition" }, callback(self, self, "set_condition"), false)
 	end
 	
 	function PlayerInfoComponent.Callsign:destroy()
-		self._owner:unregister_listener("Callsign", { "callsign", "voice_com" })
+		self._owner:unregister_listener("Callsign", { "callsign", "voice_com", "condition" })
 		PlayerInfoComponent.Callsign.super.destroy(self)
+	end
+	
+	function PlayerInfoComponent.Callsign:set_is_ai(state)
+		if PlayerInfoComponent.PlayerStatus.super.set_is_ai(self, state) then
+			
+			self._owner:arrange()
+		end
 	end
 	
 	function PlayerInfoComponent.Callsign:update_settings()
@@ -1349,7 +1367,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		PlayerInfoComponent.Callsign.super.set_enabled(self, reason, status)
 		if not self._panel:visible() then
 			self._panel:set_visible(true)
-			self._panel:set_alpha(0)
+			self._icon:set_alpha(0)
 			self._disabled = true
 			return true
 		else
@@ -1368,7 +1386,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.Callsign:_animate_voice_com(icon)
 		self._animating_voice_com = true
-		self._panel:set_alpha(1)
+		self._icon:set_alpha(1)
 		local x = self._panel:w() / 2
 		local y = self._panel:h() / 2
 		icon:set_image("guis/textures/pd2/jukebox_playing", 0, 0, 16, 16 )
@@ -1389,8 +1407,19 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		icon:set_image("guis/textures/pd2/hud_tabs", 84, 34, 19, 19)
 		icon:set_center(x, y)
 		icon:set_size(self:w(), self:h())
-		self._panel:set_alpha(self._disabled and 0 or 1)
+		self._icon:set_alpha(self._disabled and 0 or 1)
 		self._animating_voice_com = false
+	end
+	
+	function PlayerInfoComponent.Callsign:set_condition(icon_data)
+		local visible = (icon_data ~= "mugshot_normal" and self._is_ai)
+		
+		if visible then
+			local icon, texture_rect = tweak_data.hud_icons:get_icon_data(icon_data)
+			self._condition_icon:set_image(icon, unpack(texture_rect))
+		end
+		
+		self._condition_icon:set_visible(visible)
 	end
 	
 	
