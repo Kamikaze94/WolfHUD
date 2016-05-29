@@ -3285,7 +3285,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local wbase = data.unit:base()
 		local name_id = wbase.name_id
 		if wbase._cosmetics_data and wbase._cosmetics_data.name_id then
-			log(json.encode(wbase._cosmetics_data))
 			local skin_id = wbase._cosmetics_data.name_id:gsub("bm_wskn_", "")
 			if tweak_data.blackmarket.weapon_skins[skin_id] then
 				name_id = skin_id

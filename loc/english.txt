@@ -57,6 +57,8 @@
 	"wolfhud_enemy_tank_hw" : "Headless Dozer",
 	"wolfhud_enemy_phalanx_minion" : "Winters Shield",
 	"wolfhud_enemy_phalanx_vip" : "Captain Winters",
+	"swat_van_turret_module" : "SWAT TURRET",
+	"ceiling_turret_module" : "TURRET",
 	"wolfhud_enemy_mobster_boss" : "The Comissar",
 	"wolfhud_enemy_bank_manager" : "Bank Manager",
 	"wolfhud_enemy_inside_man" : "Inside Man",
