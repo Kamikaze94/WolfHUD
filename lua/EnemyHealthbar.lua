@@ -252,8 +252,8 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 		if self._fwd_ray and self._fwd_ray.unit and type(self._fwd_ray.unit) == "userdata" then
 			local unit = self._fwd_ray.unit
 			if unit:in_slot( 8 ) and alive(unit:parent()) then unit = unit:parent() end
-			local turrets = managers.groupai:state():turrets()
-			if alive( unit ) and unit:in_slot( 25 ) and not unit:character_damage():dead() and (turrets and table.contains(turrets, unit) or WolfHUD:getSetting("show_civilian_healthbar", "boolean")) then
+			local turrets = managers.groupai:state():turrets() or {}
+			if alive( unit ) and ((unit:in_slot( 39 ) and table.contains(turrets, unit)) or (unit:in_slot( 25 ) and WolfHUD:getSetting("show_civilian_healthbar", "boolean"))) and not unit:character_damage():dead() then
 				self._last_unit = nil
 				if not unit:character_damage():needs_repair() then
 					managers.hud:set_unit_health_visible( true, true )
@@ -262,11 +262,11 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 					managers.hud:set_unit_health_visible( true )
 					managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base():get_name_id() or "TURRET" )
 				end
-			elseif alive( unit ) and ( unit:in_slot( 12 ) or unit:in_slot( 21 ) or unit:in_slot( 22 ) ) and not unit:character_damage():dead() and (managers.enemy:is_enemy( unit ) or WolfHUD:getSetting("show_civilian_healthbar", "boolean")) then
+			elseif alive( unit ) and ( unit:in_slot( 12 ) or WolfHUD:getSetting("show_civilian_healthbar", "boolean") and ( unit:in_slot( 21 ) or unit:in_slot( 22 ) )) and not unit:character_damage():dead() then
 				self._last_unit = unit
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base()._tweak_table or "ENEMY" )
-			elseif alive( unit ) and unit:in_slot( 39 ) and WolfHUD:getSetting("show_car_healthbar", "boolean") then
+			elseif alive( unit ) and unit:in_slot( 39 ) and WolfHUD:getSetting("show_car_healthbar", "boolean") and unit:vehicle_driving() and not self._seat then
 				self._last_unit = nil
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health or 0 , unit:character_damage()._current_max_health or 0 , string.upper(unit:vehicle_driving()._tweak_data.name) or "VEHICLE" )
@@ -275,7 +275,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 					managers.hud:set_unit_health( self._last_unit:character_damage()._health * 10 or 0 , self._last_unit:character_damage()._HEALTH_INIT * 10 or 0 , self._last_unit:base()._tweak_table or "ENEMY" )
 					local angle = self:getUnitRotation(self._last_unit)
 					if angle < 0 then angle = angle + 360 end
-					if self._last_unit:character_damage()._dead or (angle < 350 and angle > 10) then managers.hud:set_unit_health_visible( false ) end
+					if self._last_unit:character_damage():dead() or (angle < 350 and angle > 10) then managers.hud:set_unit_health_visible( false ) end
 				else
 					managers.hud:set_unit_health_visible( false )
 				end
