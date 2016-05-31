@@ -3,7 +3,7 @@
 	"description" : "This is a Mod Collection of HUD altering scripts. \nIt uses CustomHUD, HUDPanelList, KillCounter, Press2Hold and WeaponLaserColor, made by Seven \n as well as TabStats, NumericSuspicion by friendlyfire, FlashlightExtender by Seven, Enemy Healthbar by Undeadsewer, and many more.\nFor a full list of included mods, go to the GitHUB repository, linked as contact.\nSome scripts are created or modified by me.",
 	"author" : "Kamikaze94",
 	"contact" : "https://github.com/Kamikaze94/WolfHUD",
-	"version" : "1.50",
+	"version" : "2.00",
 	"priority" : 1,
 	"hooks" : [
 		{ "hook_id" : "lib/setups/gamesetup", "script_path" : "Core.lua" },

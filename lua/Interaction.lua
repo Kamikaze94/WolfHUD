@@ -239,7 +239,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			h = 64
 			})
 			
-			self._interact_time:set_y(self._hud_panel:h() / 2 + 10)
+			self._interact_time:set_center_y(self._hud_panel:center_y() + self._circle_radius / 2)
 			if self._interact_time then
 				self._interact_time:show()
 				self._interact_time:set_text(string.format("%.1fs", total))

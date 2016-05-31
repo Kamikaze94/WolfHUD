@@ -286,6 +286,36 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 	
+	function HUDTeammateCustom:change_setting(setting, value)
+		local val = value
+		if setting[1] == "WEAPON" then
+			val = {
+				HIDE = (value == 1),
+				SELECTED_ONLY = (value == 2),
+				UNSELECTED_ONLY = (value == 3),
+				TOTAL_AMMO_ONLY = (value == 5),
+			}
+		elseif setting[1] == "BUILD" then
+			if val == 0 then
+				table.insert(setting, "HIDE")
+				val = true
+			else
+				self:change_setting({"BUILD", "HIDE"}, false)
+				table.insert(setting, "DURATION")
+			end
+		elseif setting[1] == "INTERACTION" and setting[2] == "HIDE" then
+			val = not val
+		end
+		
+		if #setting > 1 then
+			self._settings[setting[1]][setting[2]] = val
+		else
+			self._settings[setting[1]] = val
+		end
+		
+		self:update_settings()
+	end
+	
 	function HUDTeammateCustom:update_settings()
 		self._component_layout = nil	--Prevent constant rearranging during setting change
 		
@@ -3308,6 +3338,14 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 		
 		return update_original(self, ...)
+	end
+	
+	function HUDManager:change_hud_setting(type, setting, value)
+		for i, panel in ipairs(self._teammate_panels) do
+			if panel._is_player and type == "PLAYER" or not panel._is_player and type == "TEAM" then
+				panel:change_setting(setting, value)
+			end
+		end
 	end
 	
 	function HUDManager:add_weapon(data, ...)

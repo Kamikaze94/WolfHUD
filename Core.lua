@@ -182,6 +182,7 @@ if not _G.WolfHUD then
 			CHAT_WAIT_TIME					= 10,		--Time before chat fades out, 0 = never
 			LINE_HEIGHT						= 15,		--Chat font Size
 			MAX_OUTPUT_LINES				= 8,		--Chat Output lines
+			spam_filter						= true,		--Filter PocoHud and NGBTO Chat Spam messages.
 		  --KillCounter
 			use_killcounter 				= true,
 			killcounter_color				= "yellow",
@@ -220,8 +221,9 @@ if not _G.WolfHUD then
 		  --Scripts
 			skip_blackscreen 				= true,		--Skip the blackscreen on mission start
 			stat_screen_delay 				= 5,		--Skip the experience screen after X seconds
+			autopick_card 					= true,		--Automatically pick a card on lootscreen
 			loot_screen_delay 				= 3,		--Skip the loot screen after X seconds
-			spam_filter						= true,		--Filter PocoHud and NGBTO Chat Spam messages.
+			no_slowmotion 					= true,		--Disable mask-up and downed slow motion
 		  --HUDList
 			show_timers 					= true,     --Drills, time locks, hacking etc.
 			show_equipment 					= true,  	--Deployables (ammo, doc bags, body bags)
@@ -540,6 +542,12 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 			},
 		}
 		QuickMenu:new( menu_title, menu_message, menu_options, true )
+	end
+	
+	MenuCallbackHandler.WolfHUD_FocusChanged = function(node, focus)
+		if managers.menu:active_menu().name ~= "menu_main" then
+			return
+		end
 	end
 	
 	MenuCallbackHandler.clbk_change_setting = function(self, item)

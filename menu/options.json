@@ -3,12 +3,13 @@
 	"parent_menu_id" : "lua_mod_options_menu",
 	"title" : "wolfhud_options_name",
 	"description" : "wolfhud_options_help",
+	"focus_changed_callback" : "WolfHUD_FocusChanged",
 	"back_callback" : "WolfHUD_Save",
 	"items" : [
 		{
 			"type" : "divider",
 			"size" : 16,
-			"priority" : 13,
+			"priority" : 15,
 		},
 		{
 			"type" : "toggle",
@@ -17,7 +18,7 @@
 			"description" : "wolfhud_susp_eye_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "show_susp_eye",
-			"priority" : 12,
+			"priority" : 14,
 		},
 		{
 			"type" : "toggle",
@@ -26,7 +27,7 @@
 			"description" : "wolfhud_susp_numberic_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "numberic_suspicion",
-			"priority" : 11,
+			"priority" : 13,
 		},
 		{
 			"type" : "toggle",
@@ -35,12 +36,12 @@
 			"description" : "wolfhud_adv_assault_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "show_advanced_assault",
-			"priority" : 10,
+			"priority" : 12,
 		},
 		{
 			"type" : "divider",
 			"size" : 16,
-			"priority" : 9,
+			"priority" : 11,
 		},
 		{
 			"type" : "toggle",
@@ -49,7 +50,7 @@
 			"description" : "wolfhud_skip_blackscreen_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "skip_blackscreen",
-			"priority" : 8,
+			"priority" : 10,
 		},
 		{
 			"type" : "slider",
@@ -62,7 +63,16 @@
 			"min" : 0,
 			"max" : 20,
 			"step" : 0.1,
-			"priority" : 6,
+			"priority" : 9,
+		},
+		{
+			"type" : "toggle",
+			"id" : "autopick_card",
+			"title" : "wolfhud_loot_screen_pick_card_title",
+			"description" : "wolfhud_loot_screen_pick_card_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "autopick_card",
+			"priority" : 8,
 		},
 		{
 			"type" : "slider",
@@ -75,12 +85,12 @@
 			"min" : 0,
 			"max" : 20,
 			"step" : 0.1,
-			"priority" : 5,
+			"priority" : 7,
 		},
 		{
 			"type" : "divider",
 			"size" : 16,
-			"priority" : 4,
+			"priority" : 6,
 		},
 		{
 			"type" : "toggle",
@@ -89,7 +99,7 @@
 			"description" : "wolfhud_replace_weapon_names_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "replace_weapon_names",
-			"priority" : 3,
+			"priority" : 5,
 		},
 		{
 			"type" : "toggle",
@@ -98,6 +108,15 @@
 			"description" : "wolfhud_enable_burstmode_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "enable_burstmode",
+			"priority" : 4,
+		},
+		{
+			"type" : "toggle",
+			"id" : "no_slowmotion",
+			"title" : "wolfhud_no_slowmotion_title",
+			"description" : "wolfhud_no_slowmotion_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "no_slowmotion",
 			"priority" : 3,
 		},
 		{

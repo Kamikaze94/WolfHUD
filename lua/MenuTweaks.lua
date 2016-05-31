@@ -80,11 +80,12 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 		return val
 	end
 elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then
+	local SKIP_BLACKSCREEN = WolfHUD:getSetting("skip_blackscreen", "boolean")
 	local update_original = IngameWaitingForPlayersState.update
 	function IngameWaitingForPlayersState:update(...)
 		update_original(self, ...)
 		
-		if self._skip_promt_shown and WolfHUD:getSetting("skip_blackscreen", "boolean") then
+		if self._skip_promt_shown and SKIP_BLACKSCREEN then
 			self:_skip()
 		end
 	end
@@ -103,11 +104,12 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" the
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/lootdropscreengui" then
 	local SKIP_LOOT_SCREEN_DELAY = WolfHUD:getSetting("loot_screen_delay", "number")
+	local AUTO_PICK_CARD = WolfHUD:getSetting("autopick_card", "boolean")
 	local update_original = LootDropScreenGui.update
 	function LootDropScreenGui:update(t, ...)
 		update_original(self, t, ...)
 
-		if not self._card_chosen then
+		if not self._card_chosen and AUTO_PICK_CARD then
 			self:_set_selected_and_sync(math.random(3))
 			self:confirm_pressed()
 		end

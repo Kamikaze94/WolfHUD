@@ -26,61 +26,65 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata" then
 	function TimeSpeedEffectTweakData:_init_base_effects()
-		self.mask_on = {
-			speed = 1,
-			fade_in_delay = 0,
-			fade_in = 0,
-			sustain = 0,
-			fade_out = 0,
-			timer = "pausable"
-		}
-		self.mask_on_player = {
-			speed = 1,
-			fade_in_delay = 0,
-			fade_in = 0,
-			sustain = 0,
-			fade_out = 0,
-			timer = "pausable",
-			affect_timer = "player"
-		}
-		self.downed = {
-			speed = 1,
-			fade_in = 0,
-			sustain = 0,
-			fade_out = 0,
-			timer = "pausable"
-		}
-		self.downed_player = {
-			speed = 1,
-			fade_in = 0,
-			sustain = 0,
-			fade_out = 0,
-			timer = "pausable",
-			affect_timer = "player"
-		}
+		if WolfHUD:getSetting("no_slowmotion", "boolean") then
+			self.mask_on = {
+				speed = 1,
+				fade_in_delay = 0,
+				fade_in = 0,
+				sustain = 0,
+				fade_out = 0,
+				timer = "pausable"
+			}
+			self.mask_on_player = {
+				speed = 1,
+				fade_in_delay = 0,
+				fade_in = 0,
+				sustain = 0,
+				fade_out = 0,
+				timer = "pausable",
+				affect_timer = "player"
+			}
+			self.downed = {
+				speed = 1,
+				fade_in = 0,
+				sustain = 0,
+				fade_out = 0,
+				timer = "pausable"
+			}
+			self.downed_player = {
+				speed = 1,
+				fade_in = 0,
+				sustain = 0,
+				fade_out = 0,
+				timer = "pausable",
+				affect_timer = "player"
+			}
+		end
 	end
 
 	function TimeSpeedEffectTweakData:_init_mission_effects()
 		self.mission_effects = {}
-		self.mission_effects.quickdraw = {
-			speed = 1,
-			fade_in_delay = 0,
-			fade_in = 0,
-			sustain = 0,
-			fade_out = 0,
-			timer = "pausable",
-			sync = true
-		}
-		self.mission_effects.quickdraw_player = {
-			speed = 1,
-			fade_in_delay = 0,
-			fade_in = 0,
-			sustain = 0,
-			fade_out = 0,
-			timer = "pausable",
-			affect_timer = "player",
-			sync = true
-		}
+		if WolfHUD:getSetting("no_slowmotion", "boolean") then
+			self.mission_effects.quickdraw = {
+				speed = 1,
+				fade_in_delay = 0,
+				fade_in = 0,
+				sustain = 0,
+				fade_out = 0,
+				timer = "pausable",
+				sync = true
+			}
+			self.mission_effects.quickdraw_player = {
+				speed = 1,
+				fade_in_delay = 0,
+				fade_in = 0,
+				sustain = 0,
+				fade_out = 0,
+				timer = "pausable",
+				affect_timer = "player",
+				sync = true
+			}
+		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/experiencemanager" then
 	local cash_string_original = ExperienceManager.cash_string
