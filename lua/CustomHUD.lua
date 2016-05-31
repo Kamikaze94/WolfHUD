@@ -270,7 +270,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		self._latency:set_right(w)
 		
-		if not (self._latency:visible() or self._player_info:visible()) and self._player_status:visible() then
+		if false or not (self._latency:visible() or self._player_info:visible()) and self._player_status:visible() then
 			self._callsign:set_center(self._player_status:center())
 		end
 				
@@ -390,7 +390,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 		
 		local top_components = { }
-		if self._latency:visible() or self._player_info:visible() or not self._player_status:visible() then
+		if true or self._latency:visible() or self._player_info:visible() or not self._player_status:visible() then
 			table.insert(top_components, self._callsign)
 		end
 		table.insert(top_components, self._player_info)
@@ -1352,7 +1352,18 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			color = Color.white,
 			h = size * 0.75,
 			w = size * 0.75,
-			layer = 10,
+			layer = self._panel:layer() - 2,
+		})
+		
+		self._voice_com = self._panel:bitmap({
+			name = "icon",
+			texture = "guis/textures/pd2/jukebox_playing",
+			texture_rect = { 0, 0, 16, 16 },
+			color = Color.white,
+			visible = false,
+			h = size * 0.75,
+			w = size * 0.75,
+			layer = self._panel:layer() + 3,
 		})
 		
 		self._condition_icon = self._panel:bitmap({
@@ -1361,7 +1372,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			color = Color.white,
 			h = size,
 			w = size,
-			layer = 11,
 		})
 		
 		self._icon:set_center(self._panel:w() / 2, self._panel:h() / 2)
@@ -1390,19 +1400,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.Callsign:set_id(id)
-		self._icon:set_color((tweak_data.chat_colors[id] or Color.white):with_alpha(1))
+		local color = (tweak_data.chat_colors[id] or Color.white):with_alpha(1)
+		self._icon:set_color(color)
+		self._voice_com:set_color(color)
 	end
 	
 	function PlayerInfoComponent.Callsign:set_enabled(reason, status)
-		PlayerInfoComponent.Callsign.super.set_enabled(self, reason, status)
-		if not self._panel:visible() then
+		if PlayerInfoComponent.Callsign.super.set_enabled(self, reason, status) then
+			self._icon:set_visible(self._panel:visible())
 			self._panel:set_visible(true)
-			self._icon:set_alpha(0)
-			self._disabled = true
-			return true
-		else
-			self._panel:set_alpha(1)
-			self._disabled = false
 		end
 	end
 	
@@ -1410,16 +1416,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._voice_com_active = status
 		
 		if status and not self._animating_voice_com then
-			self._icon:animate(callback(self, self, "_animate_voice_com"))
+			self._voice_com:animate(callback(self, self, "_animate_voice_com"))
 		end
 	end
 	
 	function PlayerInfoComponent.Callsign:_animate_voice_com(icon)
 		self._animating_voice_com = true
-		self._icon:set_alpha(1)
 		local x = self._panel:w() / 2
 		local y = self._panel:h() / 2
-		icon:set_image("guis/textures/pd2/jukebox_playing", 0, 0, 16, 16 )
+		icon:set_visible(true)
 		
 		while self._voice_com_active do
 			local T = 2
@@ -1434,10 +1439,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			end
 		end
 		
-		icon:set_image("guis/textures/pd2/hud_tabs", 84, 34, 19, 19)
+		icon:set_visible(false)
 		icon:set_center(x, y)
 		icon:set_size(self:w(), self:h())
-		self._icon:set_alpha(self._disabled and 0 or 1)
 		self._animating_voice_com = false
 	end
 	
@@ -1572,10 +1576,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			texture_rect = { 0, 0, 64, 64 }, 
 			blend_mode = "normal",  
 			color = Color.black,
-			alpha = 0.75,
+			alpha = 0.65,
 			w = size,  
 			h = size,  
-			layer = self._stored_health_radial:layer() - 3,
+			layer = self._health_radial:layer() - 2,
 			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean") or false,
 		})
 		
@@ -1722,8 +1726,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if amount and self._downs ~= amount then
 			self._downs = amount
 			self._downs_counter:set_text(tostring(self._downs))
-			local progress = math.lerp(self:down_amount() / self._max_downs, 1, 0)
-			self._downs_counter:set_color(math.lerp(Color('C2FC97'), Color(1, 1, 0.2, 0), progress))
+			local progress = math.clamp(self:down_amount() / self._max_downs, 0, 1)
+			self._downs_counter:set_color(math.lerp(Color.white, Color(1, 1, 0.2, 0), progress))
 			local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean"))
 			self._downs_counter:set_visible(not disabled and not managers.groupai:state():whisper_mode() or self:down_amount() > 0)
 			self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
