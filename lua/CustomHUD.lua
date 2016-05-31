@@ -270,7 +270,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		self._latency:set_right(w)
 		
-		if false or not (self._latency:visible() or self._player_info:visible()) and self._player_status:visible() then
+		if not (self._latency:visible() or self._player_info:visible()) and self._player_status:visible() then
 			self._callsign:set_center(self._player_status:center())
 		end
 				
@@ -390,7 +390,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 		
 		local top_components = { }
-		if true or self._latency:visible() or self._player_info:visible() or not self._player_status:visible() then
+		if self._latency:visible() or self._player_info:visible() or not self._player_status:visible() then
 			table.insert(top_components, self._callsign)
 		end
 		table.insert(top_components, self._player_info)
@@ -1409,6 +1409,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if PlayerInfoComponent.Callsign.super.set_enabled(self, reason, status) then
 			self._icon:set_visible(self._panel:visible())
 			self._panel:set_visible(true)
+		else
+			self._icon:set_visible(true)
 		end
 	end
 	
