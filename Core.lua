@@ -267,8 +267,8 @@ if not _G.WolfHUD then
 			EQUIPMENT_PRESS_INTERRUPT 		= true, 		--Use the equipment key ('G') to toggle off active interactions
 			SHOW_LOCK_INDICATOR				= true,
 			SHOW_CIRCLE						= true,
-			CIRCLE_SCALE					= 1,
-			TEXT_SCALE						= 1,
+			CIRCLE_SCALE					= 0.8,
+			TEXT_SCALE						= 0.8,
 			SHOW_INTERRUPT_HINT				= true,
 			SHOW_TIME_REMAINING 			= true,			--Show remaining Time in the Interaction-Circle
 			GRADIENT_COLOR 					= "light_green",--Color, which the timer reaches on completition

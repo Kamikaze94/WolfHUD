@@ -3134,19 +3134,19 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	--Buff list
 	
 	local STANDARD_COLOR = Color('FFFFFF')
-	local DEBUFF_COLOR = Color('990000')
-	local TEAM_BUFF_COLOR = Color('33CC33')
+	local DEBUFF_COLOR = Color('ff7575') --Color('990000')
+	local TEAM_BUFF_COLOR = Color('8cff8c')
 	
 	HUDList.BuffItemBase = HUDList.BuffItemBase or class(HUDList.ItemBase)
 	HUDList.BuffItemBase.MAP = {
 		--Buffs
 		aggressive_reload = {
-			atlas = tweak_data.skilltree.skills.speedy_reload.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.speedy_reload.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 		},
 		ammo_efficiency = {
-			atlas = tweak_data.skilltree.skills.single_shot_ammo_return.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.single_shot_ammo_return.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 		},
@@ -3156,31 +3156,31 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = STANDARD_COLOR,
 		},
 		berserker = {
-			atlas = tweak_data.skilltree.skills.wolverine.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.wolverine.icon_xy,
 			class = "BerserkerBuffItem",
 			color = STANDARD_COLOR,
 		},
 		bloodthirst_aced = {
 			--TODO: Need something to differentiate from basic
-			atlas = tweak_data.skilltree.skills.bloodthirst.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.bloodthirst.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		bloodthirst_basic = {
 			--TODO: Need something to differentiate from aced
-			atlas = tweak_data.skilltree.skills.bloodthirst.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.bloodthirst.icon_xy,
 			class = "BuffItemBase",
 			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		bullet_storm = {
-			atlas = tweak_data.skilltree.skills.ammo_reservoir.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.ammo_reservoir.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 		},
 		chameleon = {
-			atlas = tweak_data.skilltree.skills.chameleon.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.chameleon.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 		},
@@ -3191,23 +3191,23 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = true,
 		},
 		combat_medic = {
-			atlas = tweak_data.skilltree.skills.combat_medic.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.combat_medic.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 		},
 		desperado = {
-			atlas = tweak_data.skilltree.skills.expert_handling.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.expert_handling.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 		},
 		die_hard = {
-			atlas = tweak_data.skilltree.skills.show_of_force.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.show_of_force.icon_xy,
 			class = "BuffItemBase",
 			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		dire_need = {
-			atlas = tweak_data.skilltree.skills.dire_need.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.dire_need.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 		},
@@ -3222,7 +3222,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = STANDARD_COLOR,
 		},
 		hostage_taker = {
-			atlas = tweak_data.skilltree.skills.black_marketeer.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.black_marketeer.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 			invert_timers = true,
@@ -3235,12 +3235,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = true,
 		},
 		inspire = {
-			atlas = tweak_data.skilltree.skills.inspire.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.inspire.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 		},
 		messiah = {
-			atlas = tweak_data.skilltree.skills.messiah.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.messiah.icon_xy,
 			class = "BuffItemBase",
 			color = STANDARD_COLOR,
 		},
@@ -3251,41 +3251,41 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = true,
 		},
 		overkill = {
-			atlas = tweak_data.skilltree.skills.overkill.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.overkill.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		painkiller = {
-			atlas = tweak_data.skilltree.skills.fast_learner.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.fast_learner.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		partner_in_crime = {
-			atlas = tweak_data.skilltree.skills.control_freak.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.control_freak.icon_xy,
 			class = "BuffItemBase",
 			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		running_from_death = {
-			atlas = tweak_data.skilltree.skills.running_from_death.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.running_from_death.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 		},
 		quick_fix = {
-			atlas = tweak_data.skilltree.skills.tea_time.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.tea_time.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		shock_and_awe = {
-			atlas = tweak_data.skilltree.skills.shock_and_awe.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.shock_and_awe.icon_xy,
 			class = "ShockAndAweBuffItem",
 			color = STANDARD_COLOR,
 		},
 		swan_song = {
-			atlas = tweak_data.skilltree.skills.perseverance.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.perseverance.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 			ignore = true,
@@ -3296,24 +3296,24 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = STANDARD_COLOR,
 		},
 		trigger_happy = {
-			atlas = tweak_data.skilltree.skills.trigger_happy.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.trigger_happy.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		underdog = {
-			atlas = tweak_data.skilltree.skills.underdog.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.underdog.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 			ignore = true,
 		},
 		unseen_strike = {
-			atlas = tweak_data.skilltree.skills.unseen_strike.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.unseen_strike.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 		},
 		up_you_go = {
-			atlas = tweak_data.skilltree.skills.up_you_go.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.up_you_go.icon_xy,
 			class = "TimedBuffItem",
 			color = STANDARD_COLOR,
 			ignore = true,
@@ -3343,7 +3343,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = true,	--Composite debuff
 		},
 		bullseye_debuff = {
-			atlas = tweak_data.skilltree.skills.prison_wife.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.prison_wife.icon_xy,
 			class = "TimedBuffItem",
 			color = DEBUFF_COLOR,
 		},
@@ -3354,7 +3354,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = true,	--Composite debuff
 		},
 		inspire_debuff = {
-			atlas = tweak_data.skilltree.skills.inspire.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.inspire.icon_xy,
 			class = "TimedBuffItem",
 			color = DEBUFF_COLOR,
 		},
@@ -3369,7 +3369,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = DEBUFF_COLOR,
 		},
 		unseen_strike_debuff = {
-			atlas = tweak_data.skilltree.skills.unseen_strike.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.unseen_strike.icon_xy,
 			class = "TimedBuffItem",
 			color = DEBUFF_COLOR,
 			ignore = true,	--Composite debuff
@@ -3387,9 +3387,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = TEAM_BUFF_COLOR,
 		},
 		bulletproof = {
-			atlas = tweak_data.skilltree.skills.iron_man.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.iron_man.icon_xy,
 			class = "TeamBuffItem",
-			color = TEAM_BUFF_COLOR,
+			color = DEBUFF_COLOR,
 		},
 		crew_chief = {
 			spec = {2, 0},
@@ -3397,14 +3397,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = TEAM_BUFF_COLOR,
 		},
 		endurance = {
-			atlas = tweak_data.skilltree.skills.triathlete.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.triathlete.icon_xy,
 			class = "TeamBuffItem",
 			color = TEAM_BUFF_COLOR,
 		},
 		
 		--Custom/composite buffs
 		uppers = {
-			atlas = tweak_data.skilltree.skills.tea_cookies.icon_xy,
+			atlas_2 = tweak_data.skilltree.skills.tea_cookies.icon_xy,
 			class = "BuffItemBase",
 			color = STANDARD_COLOR,
 		},
@@ -3479,15 +3479,16 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local texture = icon.texture
 		local texture_rect = icon.texture_rect
 		
-		if icon.atlas or icon.spec then
-			local x, y = unpack(icon.atlas or icon.spec)
-			texture_rect = { x * 64, y * 64, 64, 64 }
+		if icon.atlas or icon.atlas_2 or icon.spec then
+			local x, y = unpack(icon.atlas or icon.atlas_2 or icon.spec)
+			local w = icon.atlas_2 and 80 or 64
+			texture_rect = { x * w, y * w, w, w }
 			
 			texture = "guis/"
 			if icon.texture_bundle_folder then
 				texture = string.format("%sdlcs/%s/", texture, icon.texture_bundle_folder)
 			end
-			texture = string.format("%stextures/pd2/%s", texture, icon.atlas and "skilltree/icons_atlas" or "specialization/icons_atlas")
+			texture = string.format("%stextures/pd2/%s", texture, icon.atlas and "skilltree/icons_atlas" or icon.atlas_2 and "skilltree_2/icons_atlas_2" or "specialization/icons_atlas")
 		end
 		
 		self._default_icon_color = icon.color or Color.white
