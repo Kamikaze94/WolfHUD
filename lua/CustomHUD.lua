@@ -1,8 +1,6 @@
 --TODO: Setting update for interaction, but probably not necessary as they are temporary anyway
 --TODO: Clean up interaction activation/deactivation animation, probably a lot of unnecessary rearranges going on
 --TODO: Add back the interaction progress bar bitmap
---TODO: Add instand apply for settings
---TODO: When coming out of Custody, both firemodes are visible, regardless of available firemodes or settings
 
 
 printf = printf or function(...) WolfHUD:print_log(string.format(...)) end
@@ -3279,6 +3277,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	local set_mugshot_voice_original = HUDManager.set_mugshot_voice
 	local set_teammate_carry_info_original = HUDManager.set_teammate_carry_info
 	local remove_teammate_carry_info_original = HUDManager.remove_teammate_carry_info
+	local update_name_label_by_peer_original = HUDManager.update_name_label_by_peer
 	
 	function HUDManager:_create_teammates_panel(hud, ...)
 		hud = hud or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
@@ -3344,14 +3343,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 		
 		return update_original(self, ...)
-	end
-	
-	function HUDManager:change_hud_setting(type, setting, value)
-		for i, panel in ipairs(self._teammate_panels) do
-			if panel._is_player and type == "PLAYER" or not panel._is_player and type == "TEAM" then
-				panel:change_setting(setting, value)
-			end
-		end
 	end
 	
 	function HUDManager:add_weapon(data, ...)
@@ -3423,7 +3414,26 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			self._teammate_panels[i]:remove_carry_info(...)
 		end
 		
-		return set_teammate_carry_info_original(self, i, ...)
+		return remove_teammate_carry_info_original(self, i, ...)
+	end
+	
+	function HUDManager:update_name_label_by_peer(peer)
+		update_name_label_by_peer_original(self, peer)
+		local data = self:_name_label_by_peer_id(peer:id())
+		if data and data.character_name then
+			data.text:set_text(data.character_name)
+			self:align_teammate_name_label(data.panel, data.interact)
+			--Fix for short player names...
+			local text = data.panel:child("text")
+			local cheater = data.panel:child("cheater")
+			if cheater and text then
+				local _, _, tw, _ = text:text_rect()
+				local _, _, cw, _ = cheater:text_rect()
+				local w = math.max(tw, cw)
+				text:set_w(w)
+				cheater:set_w(w)
+			end
+		end
 	end
 	
 	--HARD OVERRIDE (4 -> HUDManager.PLAYER_PANEL)
@@ -3470,6 +3480,14 @@ end
 		if managers.hudlist then
 			local list_panel = managers.hudlist:list("buff_list"):panel()
 			list_panel:set_bottom(hud_panel:h() - self._teammate_panels[HUDManager.PLAYER_PANEL]:panel():h() - 10)
+		end
+	end
+	
+	function HUDManager:change_hud_setting(type, setting, value)
+		for i, panel in ipairs(self._teammate_panels) do
+			if panel._is_player and type == "PLAYER" or not panel._is_player and type == "TEAM" then
+				panel:change_setting(setting, value)
+			end
 		end
 	end
 	

@@ -706,6 +706,12 @@ if RequiredScript == "lib/setups/gamesetup" then
 		end
 	end
 	
+	function GameInfoManager:_bodybags_event(event, key)
+		if event == "set" then
+			self:_listener_callback("bodybags", "set", key)
+		end
+	end
+	
 	function GameInfoManager:_special_equipment_interaction_handler(event, key, unit, interact_id)
 		if event == "add" then
 			if not self._special_equipment[key] then
@@ -2153,6 +2159,7 @@ if RequiredScript == "lib/managers/playermanager" then
 	local add_synced_team_upgrade_original = PlayerManager.add_synced_team_upgrade
 	local peer_dropped_out_original = PlayerManager.peer_dropped_out
 	local on_headshot_dealt_original = PlayerManager.on_headshot_dealt
+	local _set_body_bags_amount_original = PlayerManager._set_body_bags_amount
 	
 	local PLAYER_HAS_SPAWNED = false
 	function PlayerManager:spawned_player(id, ...)
@@ -2370,6 +2377,11 @@ if RequiredScript == "lib/managers/playermanager" then
 		end
 	end
 	
+	function PlayerManager:_set_body_bags_amount(body_bags_amount)
+		managers.gameinfo:event("bodybags", "set", body_bags_amount)
+		_set_body_bags_amount_original(self, body_bags_amount)
+	end
+	
 end
 
 if RequiredScript == "lib/units/beings/player/playermovement" then
@@ -2428,7 +2440,8 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 	
 	function PlayerStandard:_do_action_intimidate(t, interact_type, ...)
 		if interact_type == "cmd_gogo" or interact_type == "cmd_get_up" then
-			managers.gameinfo:event("timed_buff", "activate", "inspire_debuff", { duration = self._ext_movement:rally_skill_data().morale_boost_cooldown_t or 3.5 })
+			local duration = (tweak_data.upgrades.morale_boost_base_cooldown * managers.player:upgrade_value("player", "morale_boost_cooldown_multiplier", 1)) or 3.5
+			managers.gameinfo:event("timed_buff", "activate", "inspire_debuff", { duration = duration })
 		end
 		
 		return _do_action_intimidate_original(self, t, interact_type, ...)

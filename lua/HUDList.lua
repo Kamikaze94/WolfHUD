@@ -430,7 +430,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:register_list("right_side_list", HUDList.VerticalList, { align = "right", x = x, y = y, w = list_width, h = list_height, top_to_bottom = true, item_margin = 5 })
 		
 		local unit_count_list = list:register_item("unit_count_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 1 })
-		local hostage_count_list = list:register_item("hostage_count_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 4 })
+		local stealth_count_list = list:register_item("stealth_count_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 4 })
 		local loot_list = list:register_item("loot_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 2 })
 		local special_equipment_list = list:register_item("special_pickup_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 4 })
 		
@@ -479,14 +479,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDListManager:_whisper_mode_change(event, key, status)
-		local pager_count = self:list("right_side_list"):item("hostage_count_list"):item("PagerCount")
-		if pager_count then
-			pager_count:set_active(pager_count:get_count() > 0 and status)
-		end
 		
-		local cam_count = self:list("right_side_list"):item("hostage_count_list"):item("CamCount")
-		if cam_count then
-			cam_count:set_active(cam_count:get_count() > 0 and status)
+		for _, item in pairs(self:list("right_side_list"):item("stealth_count_list"):items()) do
+			item:set_active(item:get_count() > 0 and status)
 		end
 		
 		for _, item in pairs(self:list("left_side_list"):item("pagers"):items()) do
@@ -616,18 +611,25 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDListManager:_pager_count_event(event, key, data)
-		local item = self:list("right_side_list"):item("hostage_count_list"):item("PagerCount")
+		local item = self:list("right_side_list"):item("stealth_count_list"):item("PagerCount")
 		if item then
 			item:change_count(1)
 		end
 	end
 	
 	function HUDListManager:_cam_count_event(event, key, data)
-		local item = self:list("right_side_list"):item("hostage_count_list"):item("CamCount")
+		local item = self:list("right_side_list"):item("stealth_count_list"):item("CamCount")
 		if event == "add" or event == "enable" then
 			item:change_count(1)
 		elseif event == "disable" or event == "destroy" then
 			item:change_count(-1)
+		end	
+	end
+	
+	function HUDListManager:_bodybag_count_event(event, key, data)
+		local item = self:list("right_side_list"):item("stealth_count_list"):item("BodyBagInv")
+		if event == "set" then
+			item:set_count(key)
 		end	
 	end
 	
@@ -1404,7 +1406,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end	
 	
 	function HUDListManager:_set_show_pager_count()
-		local list = self:list("right_side_list"):item("hostage_count_list")
+		local list = self:list("right_side_list"):item("stealth_count_list")
 		local listener_id = "HUDListManager_pager_count_listener"
 		local events = { "add" }
 		
@@ -1421,10 +1423,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 		
 		self:_set_show_cam_count()
+		self:_set_show_bodybags_count()
 	end
 	
 	function HUDListManager:_set_show_cam_count()
-		local list = self:list("right_side_list"):item("hostage_count_list")
+		local list = self:list("right_side_list"):item("stealth_count_list")
 		local listener_id = "HUDListManager_cam_count_listener"
 		local events = { "add", "enable", "disable", "destroy" }
 		
@@ -1438,6 +1441,24 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		else
 			list:unregister_item("CamCount", true)
+		end
+	end
+	
+	function HUDListManager:_set_show_bodybags_count()
+		local list = self:list("right_side_list"):item("stealth_count_list")
+		local listener_id = "HUDListManager_bodybag_count_listener"
+		local events = { "set" }
+		
+		if HUDListManager.ListOptions.show_pager_count then
+			local clbk = callback(self, self, "_bodybag_count_event")
+			
+			list:register_item("BodyBagInv", HUDList.RightListItem, { atlas = { 5, 11 } })
+			
+			for _, event in pairs(events) do
+				managers.gameinfo:register_listener(listener_id, "bodybags", event, clbk)
+			end
+		else
+			list:unregister_item("BodyBagInv", true)
 		end
 	end
 	
@@ -2291,6 +2312,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:set_active(self._count > 0)
 	end
 	
+	function HUDList.RightListItem:get_count(num)
+		return self._count
+	end
+	
 	
 	HUDList.UnitCountItem = HUDList.UnitCountItem or class(HUDList.RightListItem)
 	HUDList.UnitCountItem.MAP = {
@@ -2371,9 +2396,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
-	function HUDList.UsedPagersItem:get_count()
-		return self._count or 0
-	end
 	
 	HUDList.CamCountItem = HUDList.CamCountItem or class(HUDList.RightListItem)
 	function HUDList.CamCountItem:init(parent, name)
@@ -2388,9 +2410,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:set_count(cam_count)
 	end
 	
-	function HUDList.CamCountItem:get_count()
-		return self._count or 0
-	end
 
 	HUDList.SpecialPickupItem = HUDList.SpecialPickupItem or class(HUDList.RightListItem)
 	HUDList.SpecialPickupItem.MAP = {
