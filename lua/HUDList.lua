@@ -628,7 +628,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDListManager:_bodybag_count_event(event, key, data)
 		local item = self:list("right_side_list"):item("stealth_count_list"):item("BodyBagInv")
-		if event == "set" then
+		local whisper_mode = managers.groupai:state():whisper_mode()
+		if event == "set" and whisper_mode then
 			item:set_count(key)
 		end	
 	end

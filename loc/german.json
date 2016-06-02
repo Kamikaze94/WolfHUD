@@ -101,12 +101,6 @@
 	"wolfhud_options_name" : "WolfHUD Einstellungen",
 	"wolfhud_options_help" : "Passe deine WolfHUD Einstellungen deinem Geschmack an.",
 	
-	"wolfhud_susp_eye_title" : "Zeige Verdachtsanzeige",
-	"wolfhud_susp_eye_desc" : "Zeige die Standart Verdachtspanels.",
-	"wolfhud_susp_numberic_title" : "Zeige numerischen Verdacht",
-	"wolfhud_susp_numberic_desc" : "Zeige den numerischen Verdachtswert.",
-	"wolfhud_adv_assault_title" : "Erweitertes Angiffs Banner",
-	"wolfhud_adv_assault_desc" : "Zeige die Phase des Ansturms, sowie die verbleibende Zeit und Spawns.\n(Nur Host)",
 	"wolfhud_skip_blackscreen_title" : "Übersprige schwarzen Bildschirm",
 	"wolfhud_skip_blackscreen_desc" : "Überspringt den schwarzen Bildschirm beim Missionsstart.\n(Nur Host)",
 	"wolfhud_stat_screen_delay_title" : "Statistik Bildschirm Verzögerung",
@@ -124,8 +118,8 @@
 	"wolfhud_reset_options_confirm" : "Bist du sicher, das du alle Einstellungen zurücksetzten willst?",
 	
 	
-	"wolfhud_panels_options_name" : "Spieler & Teamkammeraden Panels",
-	"wolfhud_panels_options_help" : "Optionen für Spieler Panels.",
+	"wolfhud_panels_options_name" : "Allgemeine HUD Panel Optionen",
+	"wolfhud_panels_options_help" : "Optionen für alle HUD Panels, wie CustomHUD, die Verdachts- oder Schadensanzeige, und viele mehr.",
 	
 	"wolfhud_use_customhud_title" : "Nutze CustomHUD",
 	"wolfhud_use_customhud_desc" : "Ersetzt die Standart HUD mit der erweiterten CustomHUD, erstellt von Se7en.\n(Wird erst beim Mapwechsel aktiv...)",
@@ -134,6 +128,8 @@
 	"wolfhud_customhud_healthbars_mode_a" : "Standart",
 	"wolfhud_customhud_healthbars_mode_b" : "nach Chatfarbe",
 	"wolfhud_customhud_healthbars_mode_c" : "nach Leben",
+	"wolfhud_adv_assault_title" : "Erweitertes Angiffs Banner",
+	"wolfhud_adv_assault_desc" : "Zeige die Phase des Ansturms, sowie die verbleibende Zeit und Spawns.\n(Nur Host)",
 	"wolfhud_use_realammo_title" : "Nutze alternative Ammo",
 	"wolfhud_use_realammo_desc" : "Zeigt die verbleibende Munition richtig, ohne die geladene Munition mitzuzählen.",
 	"wolfhud_show_downcounter_title" : "Zeige Downzähler",
@@ -202,6 +198,17 @@
 	"wolfhud_chat_outputlines_desc" : "Max Zeilen zur Ausgabe, bevor du scrollen musst.",
 	"wolfhud_spam_filter_title" : "Chat Spam Filter",
 	"wolfhud_spam_filter_desc" : "Entfernt PocoHUD and [NGBTO] Spam-Nachrichten aus dem Chat.",
+	
+	
+	"wolfhud_suspicion_options_name" : "Verdachts Optionen",
+	"wolfhud_suspicion_options_help" : "Optionen für die Grösse der Verdachtsanziege, sowie ihrer sichtbaren Komponenten.",
+	
+	"wolfhud_suspicion_scale_title" : "Verdachts Skalierung",
+	"wolfhud_suspicion_scale_desc" : "Skalierungsfaktor der Verdachtsanzeige.",
+	"wolfhud_susp_eye_title" : "Zeige Verdachtsanzeige",
+	"wolfhud_susp_eye_desc" : "Zeige die Standart Verdachtspanels.",
+	"wolfhud_susp_numberic_title" : "Zeige numerischen Verdacht",
+	"wolfhud_susp_numberic_desc" : "Zeige den numerischen Verdachtswert.",
 	
 	
 	"wolfhud_killcounter_options_name" : "Killcounter Optionen",
@@ -294,8 +301,8 @@
 	"wolfhud_hudlist_show_hostages_desc" : "Zeige die Anzahl an gefesselten Zivilisten auf der Karte.",
 	"wolfhud_hudlist_show_minion_count_title" : "Zeige Polizei Geiseln",
 	"wolfhud_hudlist_show_minion_count_desc" : "Zeige die Anzahl an Polizei Geiseln auf der Karte.",
-	"wolfhud_hudlist_show_pager_count_title" : "Zeige Schleichen Zähler",
-	"wolfhud_hudlist_show_pager_count_desc" : "Zeige die Anzahl an bereits ausgelösten Pagern, aktiven Kameras und verfügbaren Leichensäcken.",
+	"wolfhud_hudlist_show_pager_count_title" : "Zeige Anzahl Pager",
+	"wolfhud_hudlist_show_pager_count_desc" : "Zeige die Anzahl an bereits ausgelösten Pagern.",
 	"wolfhud_hudlist_show_loot_title" : "Zeige Beute",
 	"wolfhud_hudlist_show_loot_desc" : "Zähle die bagbare Beute auf der Karte.",
 	"wolfhud_hudlist_aggregate_loot_title" : "Fasse Beute zusammen",

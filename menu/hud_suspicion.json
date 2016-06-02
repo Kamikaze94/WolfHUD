@@ -1,0 +1,37 @@
+{
+	"menu_id" : "wolfhud_suspicion_options_menu",
+	"parent_menu_id" : "wolfhud_panels_options_menu",
+	"title" : "wolfhud_suspicion_options_name",
+	"description" : "wolfhud_suspicion_options_help",
+	"back_callback" : "",
+	"items" : [
+		{
+			"type" : "slider",
+			"id" : "suspicion_scale",
+			"title" : "wolfhud_suspicion_scale_title",
+			"description" : "wolfhud_suspicion_scale_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "suspicion_scale",
+			"default_value" : 1,
+			"min" : 0.3,
+			"max" : 1.2,
+			"step" : 0.01,
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_susp_eye",
+			"title" : "wolfhud_susp_eye_title",
+			"description" : "wolfhud_susp_eye_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_susp_eye",
+		},
+		{
+			"type" : "toggle",
+			"id" : "numberic_suspicion",
+			"title" : "wolfhud_susp_numberic_title",
+			"description" : "wolfhud_susp_numberic_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "numberic_suspicion",
+		}
+	]
+}

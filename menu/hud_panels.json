@@ -26,6 +26,14 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "show_advanced_assault",
+			"title" : "wolfhud_adv_assault_title",
+			"description" : "wolfhud_adv_assault_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_advanced_assault",
+		},
+		{
+			"type" : "toggle",
 			"id" : "use_realammo",
 			"title" : "wolfhud_use_realammo_title",
 			"description" : "wolfhud_use_realammo_desc",

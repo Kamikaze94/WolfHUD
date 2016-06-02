@@ -1,10 +1,9 @@
 {
 	"menu_id" : "wolfhud_enemyhealthbar_options_menu",
-	"parent_menu_id" : "wolfhud_options_menu",
+	"parent_menu_id" : "wolfhud_panels_options_menu",
 	"title" : "wolfhud_enemyhealthbar_options_name",
 	"description" : "wolfhud_enemyhealthbar_options_help",
 	"back_callback" : "",
-	"priority" : 100,
 	"items" : [
 		{
 			"type" : "toggle",

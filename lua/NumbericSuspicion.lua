@@ -5,6 +5,7 @@ local feed_value_original = HUDSuspicion.feed_value
  
 function HUDSuspicion:init(hud, sound_source)
 	hudsuspicion_init_original(self, hud, sound_source)
+	self._scale = 1
 	local _suspicion_text_panel = self._suspicion_panel:panel({
 		name = "suspicion_text_panel",
 		visible = true,
@@ -69,6 +70,7 @@ end
  
 function HUDSuspicion:animate_eye()
 	hudsuspicions_animate_eye_original(self)
+	self:rescale()
 	local visibile = WolfHUD:getSetting("show_susp_eye", "boolean")
 	self._suspicion_panel:child("suspicion_left"):set_visible(visibile)
 	self._suspicion_panel:child("suspicion_right"):set_visible(visibile)
@@ -95,4 +97,33 @@ function HUDSuspicion:feed_value(value)
 		self._last_value_feed = TimerManager:game():time()
 	end
 	feed_value_original(self, value)
+end
+
+function HUDSuspicion:rescale()
+	local scale = WolfHUD:getSetting("suspicion_scale", "number")
+	if self._scale ~= scale then
+		local suspicion_left = self._suspicion_panel:child("suspicion_left")
+		local suspicion_right = self._suspicion_panel:child("suspicion_right")
+		local hud_stealthmeter_bg = self._misc_panel:child("hud_stealthmeter_bg")
+		local suspicion_detected = self._suspicion_panel:child("suspicion_detected")
+		local hud_stealth_eye = self._misc_panel:child("hud_stealth_eye")
+		local hud_stealth_exclam = self._misc_panel:child("hud_stealth_exclam")
+		local suspicion_text_panel = self._suspicion_panel:child("suspicion_text_panel")
+		local suspicion_text = suspicion_text_panel:child("suspicion_text")
+		suspicion_left:set_size((suspicion_left:w() / self._scale) * scale, (suspicion_left:h() / self._scale) * scale)
+		suspicion_right:set_size((suspicion_right:w() / self._scale) * scale, (suspicion_right:h() / self._scale) * scale)
+		hud_stealthmeter_bg:set_size((hud_stealthmeter_bg:w() / self._scale) * scale, (hud_stealthmeter_bg:h() / self._scale) * scale)
+		suspicion_detected:set_font_size((suspicion_detected:font_size() / self._scale) * scale)
+		suspicion_text:set_font_size((suspicion_text:font_size() / self._scale) * scale)
+		hud_stealth_eye:set_size((hud_stealth_eye:w() / self._scale) * scale, (hud_stealth_eye:h() / self._scale) * scale)
+		hud_stealth_exclam:set_size((hud_stealth_exclam:w() / self._scale) * scale, (hud_stealth_exclam:h() / self._scale) * scale)
+		suspicion_left:set_center_x(self._suspicion_panel:w() / 2)
+		suspicion_left:set_center_y(self._suspicion_panel:h() / 2)
+		suspicion_right:set_center(suspicion_left:center())
+		hud_stealthmeter_bg:set_center(suspicion_left:center())
+		hud_stealth_eye:set_center(suspicion_left:center_x(), suspicion_left:bottom() - 4)
+		hud_stealth_exclam:set_center(suspicion_left:center_x(), suspicion_left:top() - 4)
+		suspicion_text:set_y(suspicion_left:top() + (suspicion_left:center_y() - suspicion_left:top()) / 2 - suspicion_text:font_size() / 2)
+		self._scale = scale
+	end
 end

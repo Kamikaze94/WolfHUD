@@ -207,6 +207,7 @@ if not _G.WolfHUD then
 			dmg_vehicle_color				= "yellow",
 			dmg_friendlyfire_color			= "orange",
 		  --Suspicion
+			suspicion_scale					= 1,
 			numberic_suspicion				= true,
 			show_susp_eye					= true,
 		  --Driving HUD
@@ -260,12 +261,14 @@ if not _G.WolfHUD then
 			thug_color 						= "white",		--EnemyCounter Thug and Mobster icon color
 			enemy_color 					= "white",		--EnemyCounter Cop and Specials icon color
 			special_color 					= "white",
-		  --Press2Hold
+		  --Interaction
 			LOCK_MODE 						= 3,			--Disabled (1, Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time (2), or current interaction time(3)
 			MIN_TIMER_DURATION 				= 5, 			--Min interaction duration (in seconds) for the toggle behavior to activate
 			EQUIPMENT_PRESS_INTERRUPT 		= true, 		--Use the equipment key ('G') to toggle off active interactions
 			SHOW_LOCK_INDICATOR				= true,
 			SHOW_CIRCLE						= true,
+			CIRCLE_SCALE					= 1,
+			HIDE_INTERACT_TEXT				= 3,			--Always, While Interactiong, never
 			SHOW_INTERRUPT_HINT				= true,
 			SHOW_TIME_REMAINING 			= true,			--Show remaining Time in the Interaction-Circle
 			GRADIENT_COLOR 					= "light_green",--Color, which the timer reaches on completition
@@ -606,8 +609,6 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_enemy_healthbar.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_indicator.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_tabstats.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_adv.json", WolfHUD, settings)
@@ -615,6 +616,9 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_teampanels.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_playerpanel.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_chat.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_suspicion.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_killcounter.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_indicator.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_enemy_healthbar.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", WolfHUD, settings)
 end)
