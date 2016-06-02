@@ -268,7 +268,7 @@ if not _G.WolfHUD then
 			SHOW_LOCK_INDICATOR				= true,
 			SHOW_CIRCLE						= true,
 			CIRCLE_SCALE					= 1,
-			HIDE_INTERACT_TEXT				= 3,			--Always, While Interactiong, never
+			TEXT_SCALE						= 1,
 			SHOW_INTERRUPT_HINT				= true,
 			SHOW_TIME_REMAINING 			= true,			--Show remaining Time in the Interaction-Circle
 			GRADIENT_COLOR 					= "light_green",--Color, which the timer reaches on completition
