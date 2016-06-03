@@ -316,11 +316,11 @@ if RequiredScript == "lib/setups/gamesetup" then
 		
 		--Temporary upgrades
 		temporary = {
+			damage_speed_multiplier = "second_wind",
 			dmg_multiplier_outnumbered = "underdog",
 			dmg_dampener_outnumbered = "underdog_aced",
 			dmg_dampener_outnumbered_strong = "overdog",
 			dmg_dampener_close_contact = { "close_contact_1", "close_contact_2", "close_contact_3" },
-			combat_medic_damage_multiplier = "combat_medic",
 			overkill_damage_multiplier = "overkill",
 			melee_kill_increase_reload_speed = "bloodthirst_aced",
 			no_ammo_cost = { "bullet_storm", "bullet_storm_aced" },
@@ -329,6 +329,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 			first_aid_damage_reduction = "quick_fix",
 			increased_movement_speed = "running_from_death_aced",
 			reload_weapon_faster = "running_from_death_basic",
+			revive_damage_reduction = "combat_medic",
 			revived_damage_resist = "up_you_go",
 			swap_weapon_faster = "running_from_death_basic",
 			melee_life_leech = "life_drain_debuff",
@@ -2159,6 +2160,12 @@ if RequiredScript == "lib/managers/playermanager" then
 	local add_synced_team_upgrade_original = PlayerManager.add_synced_team_upgrade
 	local peer_dropped_out_original = PlayerManager.peer_dropped_out
 	local on_headshot_dealt_original = PlayerManager.on_headshot_dealt
+	local _on_messiah_recharge_event_original = PlayerManager._on_messiah_recharge_event
+	local use_messiah_charge_original = PlayerManager.use_messiah_charge
+	local mul_to_property_original = PlayerManager.mul_to_property
+	local set_property_original = PlayerManager.set_property
+	local remove_property_original = PlayerManager.remove_property
+	local add_to_temporary_property_original = PlayerManager.add_to_temporary_property
 	local _set_body_bags_amount_original = PlayerManager._set_body_bags_amount
 	
 	local PLAYER_HAS_SPAWNED = false
@@ -2177,18 +2184,10 @@ if RequiredScript == "lib/managers/playermanager" then
 				end
 			end
 		
-			if self:has_category_upgrade("player", "messiah_revive_from_bleed_out") and managers.gameinfo then
-				local function check_messiah_charges()
-					managers.enemy:add_delayed_clbk("messiah_buff", callback(self, self, "_update_messiah_buff"), 0)
-				end
-				
-				self._message_system:register(Message.RevivePlayer, "messiah_buff_listener", check_messiah_charges)
-				if self:has_category_upgrade("player", "recharge_messiah") then
-					self._message_system:register(Message.OnDoctorBagUsed, "messiah_buff_listener", check_messiah_charges)
-				end
-				
-				self:_update_messiah_buff()
-			end
+			if managers.gameinfo and self:has_category_upgrade("player", "messiah_revive_from_bleed_out") and self._messiah_charges > 0 then
+				managers.gameinfo:event("buff", "activate", "messiah")
+				managers.gameinfo:event("buff", "set_stack_count", "messiah", { stack_count = self._messiah_charges })
+ 			end
 			
 			if self:has_category_upgrade("player", "headshot_regen_armor_bonus") then
 				local function on_headshot()
@@ -2304,11 +2303,6 @@ if RequiredScript == "lib/managers/playermanager" then
 		managers.gameinfo:event("buff", "set_value", "bloodthirst_basic", { value = self._melee_dmg_mul })
 	end
 	
-	function PlayerManager:mul_to_accuracy_multiplier(...)
-		mul_to_accuracy_multiplier_original(self, ...)
-		managers.gameinfo:event("buff", "change_stack_count", "desperado", { difference = 1 })
-	end
-	
 	function PlayerManager:on_killshot(...)
 		--TODO: Ex-pres armor regen?
 	
@@ -2367,13 +2361,57 @@ if RequiredScript == "lib/managers/playermanager" then
 		return on_headshot_dealt_original(self, ...)
 	end
 	
+	function PlayerManager:_on_messiah_recharge_event(...)
+		_on_messiah_recharge_event_original(self, ...)
 	
-	function PlayerManager:_update_messiah_buff()
 		if self._messiah_charges > 0 then
 			managers.gameinfo:event("buff", "activate", "messiah")
 			managers.gameinfo:event("buff", "set_stack_count", "messiah", { stack_count = self._messiah_charges })
 		else
 			managers.gameinfo:event("buff", "deactivate", "messiah")
+		end
+	end
+	
+	
+	function PlayerManager:use_messiah_charge(...)
+		use_messiah_charge_original(self, ...)
+		if self._messiah_charges > 0 then
+			managers.gameinfo:event("buff", "activate", "messiah")
+			managers.gameinfo:event("buff", "set_stack_count", "messiah", { stack_count = self._messiah_charges })
+		else
+			managers.gameinfo:event("buff", "deactivate", "messiah")
+		end
+	end
+	
+	function PlayerManager:mul_to_property(name, value, ...)
+		mul_to_property_original(self, name, value, ...)
+		managers.gameinfo:event("buff", "change_stack_count", name, { difference = 1 })
+		managers.gameinfo:event("buff", "set_value", name, { value = self:get_property(name, 1) })
+	end
+	
+	function PlayerManager:set_property(name, value, ...)
+		set_property_original(self, name, value, ...)
+		
+		if name == "revive_damage_reduction" then
+			managers.gameinfo:event("buff", "activate", "combat_medic_passive")
+			managers.gameinfo:event("buff", "set_value", "combat_medic_passive", { value = value })
+		end
+	end
+	
+	function PlayerManager:remove_property(name, ...)
+		remove_property_original(self, name, ...)
+		
+		if name == "revive_damage_reduction" then
+			managers.gameinfo:event("buff", "deactivate", "combat_medic_passive")
+		end
+	end
+	
+	function PlayerManager:add_to_temporary_property(name, time, ...)
+		add_to_temporary_property_original(self, name, time, ...)
+		
+		if name == "bullet_storm" then
+			local t = self._temporary_properties._properties[name][2]
+			managers.gameinfo:event("timed_buff", "activate", name, { expire_t = t })
 		end
 	end
 	
@@ -2403,9 +2441,21 @@ if RequiredScript == "lib/units/beings/player/playermovement" then
 	local FAK_IN_RANGE = false
 	local FAK_RECHECK_T = 0
 	local FAK_RECHECK_INTERVAL = 0.25
+	
 	function PlayerMovement:_update_uppers_buff(t)
 		if t > FAK_RECHECK_T and alive(self._unit) then
-			if FirstAidKitBase.GetFirstAidKit and FirstAidKitBase.GetFirstAidKit(self._unit:position()) then --TEMP: Classic Compatability
+			local player_damage = self._unit:character_damage()
+			if player_damage then
+				local expire_t = player_damage._uppers_elapsed > 0 and (player_damage._uppers_elapsed + player_damage._UPPERS_COOLDOWN) or 0
+				if expire_t > t then
+					managers.gameinfo:event("buff", "deactivate", "uppers")
+					managers.gameinfo:event("timed_buff", "activate", "uppers_debuff", { duration = player_damage._UPPERS_COOLDOWN })
+					FAK_IN_RANGE = false
+					FAK_RECHECK_T = expire_t
+					return
+				end
+			end
+			if FirstAidKitBase.GetFirstAidKit(self._unit:position()) then
 				if not FAK_IN_RANGE then
 					FAK_IN_RANGE = true
 					managers.gameinfo:event("buff", "activate", "uppers")
@@ -2426,7 +2476,6 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 	local _start_action_melee_original = PlayerStandard._start_action_melee
 	local _interupt_action_melee_original = PlayerStandard._interupt_action_melee
 	local _do_melee_damage_original = PlayerStandard._do_melee_damage
-	local _check_action_primary_attack_original = PlayerStandard._check_action_primary_attack
 	local _start_action_interact_original = PlayerStandard._start_action_interact
 	local _interupt_action_interact_original = PlayerStandard._interupt_action_interact
 	local _start_action_use_item_original = PlayerStandard._start_action_use_item
@@ -2436,11 +2485,13 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 	local _interupt_action_reload_original = PlayerStandard._interupt_action_reload
 	local _start_action_charging_weapon_original = PlayerStandard._start_action_charging_weapon
 	local _end_action_charging_weapon_original = PlayerStandard._end_action_charging_weapon
-	local _update_charging_weapon_timers_original = PlayerStandard._update_charging_weapon_timers
 	
 	function PlayerStandard:_do_action_intimidate(t, interact_type, ...)
 		if interact_type == "cmd_gogo" or interact_type == "cmd_get_up" then
 			local duration = (tweak_data.upgrades.morale_boost_base_cooldown * managers.player:upgrade_value("player", "morale_boost_cooldown_multiplier", 1)) or 3.5
+			if managers.player:has_enabled_cooldown_upgrade("cooldown", "long_dis_revive") then
+				duration = (managers.player:get_disabled_cooldown_time("cooldown", "long_dis_revive") - t)
+			end
 			managers.gameinfo:event("timed_buff", "activate", "inspire_debuff", { duration = duration })
 		end
 		
@@ -2475,15 +2526,6 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 			self:_check_damage_stack_skill(t, "melee")
 		end
 		
-		return result
-	end
-	
-	--TODO: Repeat for PlayerTased:_check_action_primary_attack
-	function PlayerStandard:_check_action_primary_attack(t, ...)
-		local result = _check_action_primary_attack_original(self, t, ...)
-		if self._state_data.stacking_dmg_mul then
-			self:_check_damage_stack_skill(t, tostring(self._equipped_unit:base():weapon_tweak_data().category))
-		end
 		return result
 	end
 	
@@ -2792,8 +2834,10 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 	local LAST_ARMOR_REGEN_BUFF_RESET = 0
 	function PlayerDamage:build_suppression(...)
 		build_suppression_original(self, ...)
-		LAST_ARMOR_REGEN_BUFF_RESET = Application:time()
-		self:_check_armor_regen_timer()
+		if self:get_real_armor() < self:_max_armor() then
+			LAST_ARMOR_REGEN_BUFF_RESET = Application:time()
+			self:_check_armor_regen_timer()
+		end
 	end
 	
 	function PlayerDamage:set_armor(armor, ...)
@@ -2877,7 +2921,7 @@ if RequiredScript == "lib/player_actions/skills/playeractionshockandawe" then
 				
 				if kill_count >= target_enemies then
 					active = true
-					local min_threshold = min_bullets + player_manager:upgrade_value("player", "automatic_mag_increase", 0)
+					local min_threshold = min_bullets + (weapon_unit:base():is_category("smg", "assault_rifle", "lmg") and player_manager:upgrade_value("player", "automatic_mag_increase", 0) or 0)
 					local max_threshold = math.floor(min_threshold + math.log(min_reload_increase/max_reload_increase) / math.log(penalty))
 					local data = { 
 						max_bonus = max_reload_increase, 
@@ -2887,22 +2931,23 @@ if RequiredScript == "lib/player_actions/skills/playeractionshockandawe" then
 						max_threshold = max_threshold,
 					}
  					
-					RaycastWeaponBase.SHOCK_AND_AWE_ACTIVE = data
+					RaycastWeaponBase.LOCK_N_LOAD_ACTIVE = data
 					
 					local ammo = weapon_unit:base():get_ammo_remaining_in_clip()
 					local bonus = math.clamp(data.max_bonus * math.pow(data.penalty, ammo - data.min_threshold), data.min_bonus, data.max_bonus)
-					managers.gameinfo:event("buff", "activate", "shock_and_awe")
-					managers.gameinfo:event("buff", "set_value", "shock_and_awe", { value = bonus, show_value = true })
+					managers.gameinfo:event("buff", "activate", "lock_n_load")
+					managers.gameinfo:event("buff", "set_value", "lock_n_load", { value = bonus, show_value = true })
 				end
 			end
 		end
 		
 		--managers.gameinfo:event("buff", "activate", "shock_and_awe")
 		--managers.gameinfo:event("buff", "set_stack_count", "shock_and_awe" { stack_count = target_enemies - kill_count })
-		managers.player:register_message(Message.OnEnemyKilled, "shock_and_awe_buff_listener", on_enemy_killed)
+		managers.player:register_message(Message.OnEnemyKilled, "lock_n_load_buff_listener", on_enemy_killed)
 		shockandawe_original(player_manager, target_enemies, max_reload_increase, min_reload_increase, penalty, min_bullets, ...)
-		managers.gameinfo:event("buff", "deactivate", "shock_and_awe")
-		managers.player:unregister_message(Message.OnEnemyKilled, "shock_and_awe_buff_listener")
+		managers.gameinfo:event("buff", "deactivate", "lock_n_load")
+		managers.player:unregister_message(Message.OnEnemyKilled, "lock_n_load_buff_listener")
+		RaycastWeaponBase.LOCK_N_LOAD_ACTIVE = nil
 	end
 	
 end
@@ -2996,18 +3041,31 @@ if RequiredScript == "lib/units/weapons/raycastweaponbase" then
 	local set_ammo_remaining_in_clip_original = RaycastWeaponBase.set_ammo_remaining_in_clip
 	
 	function RaycastWeaponBase:set_ammo_remaining_in_clip(ammo, ...)
-		if RaycastWeaponBase.SHOCK_AND_AWE_ACTIVE and not (self.is_npc and self:is_npc()) then
-			local data = RaycastWeaponBase.SHOCK_AND_AWE_ACTIVE
+		if RaycastWeaponBase.LOCK_N_LOAD_ACTIVE and not (self.is_npc and self:is_npc()) then
+			local data = RaycastWeaponBase.LOCK_N_LOAD_ACTIVE
 			if ammo <= data.max_threshold and ammo >= data.min_threshold then
 				local bonus = math.clamp(data.max_bonus * math.pow(data.penalty, ammo - data.min_threshold), data.min_bonus, data.max_bonus)
-				managers.gameinfo:event("buff", "set_value", "shock_and_awe", { value = bonus, show_value = true })
+				managers.gameinfo:event("buff", "set_value", "lock_n_load", { value = bonus, show_value = true })
 			end
 		end
 		
 		return set_ammo_remaining_in_clip_original(self, ammo, ...)
  	end
 	
- end
+end
+
+if RequiredScript == "lib/player_actions/skills/playeractiontriggerhappy" then
+
+	local trigger_happy_original = PlayerAction.TriggerHappy.Function
+	
+	function PlayerAction.TriggerHappy.Function(player_manager, damage_bonus, max_stacks, max_time, ...)
+		managers.gameinfo:event("buff", "activate", "trigger_happy")
+		managers.gameinfo:event("buff", "set_duration", "trigger_happy", { expire_t = max_time })
+		trigger_happy_original(player_manager, damage_bonus, max_stacks, max_time, ...)
+		managers.gameinfo:event("buff", "deactivate", "trigger_happy")
+	end
+	
+end
 
 
  
