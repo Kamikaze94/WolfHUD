@@ -28,6 +28,31 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 
 		return populate_mods_original(self, data, ...)
 	end
+	
+	local function getEquipmentAmount(name_id)
+		local data = tweak_data.equipments[name_id]
+		if data then
+			local amounts = data.quantity
+			local amount_str = ""
+			for i = 1, #amounts do
+				local equipment_name = name_id
+				if data.upgrade_name then
+					equipment_name = data.upgrade_name[i]
+				end
+				amount_str = amount_str .. (i > 1 and "/x" or "x") .. tostring((amounts[i] or 0) + managers.player:equiptment_upgrade_value(equipment_name, "quantity"))
+			end
+			return " (" .. amount_str .. ")"
+		end
+		return ""
+	end
+	
+	local populate_deployables_original = BlackMarketGui.populate_deployables
+	function BlackMarketGui:populate_deployables(data)
+		populate_deployables_original(self, data)
+		for i, equipment in ipairs(data) do
+			equipment.name_localized = equipment.name_localized .. getEquipmentAmount(equipment.name)
+		end
+	end
 
 	-- Show all Weapon Names in Inventory Boxxes
 	local orig_blackmarket_gui_slot_item_init = BlackMarketGuiSlotItem.init
