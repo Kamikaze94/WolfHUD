@@ -1,4 +1,4 @@
---TODO: Add standard armor regeneration player action
+--TODO: Forced friendship aced, inspire revive debuff
 
 printf = function(...) 
 	WolfHUD:print_log(string.format(...))
@@ -323,7 +323,6 @@ if RequiredScript == "lib/setups/gamesetup" then
 			dmg_dampener_close_contact = { "close_contact_1", "close_contact_2", "close_contact_3" },
 			overkill_damage_multiplier = "overkill",
 			melee_kill_increase_reload_speed = "bloodthirst_aced",
-			no_ammo_cost = { "bullet_storm", "bullet_storm_aced" },
 			passive_revive_damage_reduction = { "pain_killer", "pain_killer_aced" },
 			berserker_damage_multiplier = { "swan_song", "swan_song_aced" },
 			first_aid_damage_reduction = "quick_fix",
@@ -336,7 +335,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 			loose_ammo_restore_health = "medical_supplies_debuff",
 			loose_ammo_give_team = "ammo_give_out_debuff",
 			armor_break_invulnerable = "armor_break_invulnerable_debuff",
-			single_shot_fast_reload = "aggressive_reload",
+			single_shot_fast_reload = "aggressive_reload_aced",
 		},
 		--Team upgrades
 		damage_dampener = {
@@ -2304,8 +2303,6 @@ if RequiredScript == "lib/managers/playermanager" then
 	end
 	
 	function PlayerManager:on_killshot(...)
-		--TODO: Ex-pres armor regen?
-	
 		local last_killshot = self._on_killshot_t
 		local result = on_killshot_original(self, ...)
 		
@@ -2354,7 +2351,7 @@ if RequiredScript == "lib/managers/playermanager" then
 	
 	function PlayerManager:on_headshot_dealt(...)
 		local t = Application:time()
-		if (self._on_headshot_dealt_t or 0) >= t and self:has_category_upgrade("player", "headshot_regen_armor_bonus") then
+		if (self._on_headshot_dealt_t or 0) <= t and self:has_category_upgrade("player", "headshot_regen_armor_bonus") then
 			managers.gameinfo:event("timed_buff", "activate", "bullseye_debuff", { t = t, duration = tweak_data.upgrades.on_headshot_dealt_cooldown or 0 })
 		end
 		
@@ -2444,17 +2441,6 @@ if RequiredScript == "lib/units/beings/player/playermovement" then
 	
 	function PlayerMovement:_update_uppers_buff(t)
 		if t > FAK_RECHECK_T and alive(self._unit) then
-			local player_damage = self._unit:character_damage()
-			if player_damage then
-				local expire_t = player_damage._uppers_elapsed > 0 and (player_damage._uppers_elapsed + player_damage._UPPERS_COOLDOWN) or 0
-				if expire_t > t then
-					managers.gameinfo:event("buff", "deactivate", "uppers")
-					managers.gameinfo:event("timed_buff", "activate", "uppers_debuff", { duration = player_damage._UPPERS_COOLDOWN })
-					FAK_IN_RANGE = false
-					FAK_RECHECK_T = expire_t
-					return
-				end
-			end
 			if FirstAidKitBase.GetFirstAidKit(self._unit:position()) then
 				if not FAK_IN_RANGE then
 					FAK_IN_RANGE = true
@@ -2487,11 +2473,12 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 	local _end_action_charging_weapon_original = PlayerStandard._end_action_charging_weapon
 	
 	function PlayerStandard:_do_action_intimidate(t, interact_type, ...)
+		if interact_type == "cmd_get_up" and managers.player:has_disabled_cooldown_upgrade("cooldown", "long_dis_revive") then
+			local duration = (managers.player:get_disabled_cooldown_time("cooldown", "long_dis_revive") - t) or 20
+			managers.gameinfo:event("timed_buff", "activate", "inspire_revive_debuff", { duration = duration })
+		end
 		if interact_type == "cmd_gogo" or interact_type == "cmd_get_up" then
 			local duration = (tweak_data.upgrades.morale_boost_base_cooldown * managers.player:upgrade_value("player", "morale_boost_cooldown_multiplier", 1)) or 3.5
-			if managers.player:has_enabled_cooldown_upgrade("cooldown", "long_dis_revive") then
-				duration = (managers.player:get_disabled_cooldown_time("cooldown", "long_dis_revive") - t)
-			end
 			managers.gameinfo:event("timed_buff", "activate", "inspire_debuff", { duration = duration })
 		end
 		
@@ -2635,22 +2622,22 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 		
 		if action_forbidden then
 			if self._state_data.omniscience_t then
-				managers.gameinfo:event("buff", "deactivate", "omniscience")
+				managers.gameinfo:event("buff", "deactivate", "sixth_sense")
 				self._state_data.omniscience_t = nil
 			end
 			return
 		end
 		
 		if not self._state_data.omniscience_t then
-			managers.gameinfo:event("buff", "activate", "omniscience")
-			managers.gameinfo:event("buff", "set_duration", "omniscience", { duration = tweak_data.player.omniscience.start_t })
-			managers.gameinfo:event("buff", "set_stack_count", "omniscience", { stack_count = nil })
+			managers.gameinfo:event("buff", "activate", "sixth_sense")
+			managers.gameinfo:event("buff", "set_duration", "sixth_sense", { duration = tweak_data.player.omniscience.start_t })
+			managers.gameinfo:event("buff", "set_stack_count", "sixth_sense", { stack_count = nil })
 		end
 		
 		self._state_data.omniscience_t = self._state_data.omniscience_t or t + tweak_data.player.omniscience.start_t
 		if t >= self._state_data.omniscience_t then
 			local sensed_targets = World:find_units_quick("sphere", self._unit:movement():m_pos(), tweak_data.player.omniscience.sense_radius, managers.slot:get_mask("trip_mine_targets"))
-			managers.gameinfo:event("buff", "set_stack_count", "omniscience", { stack_count = #sensed_targets })
+			managers.gameinfo:event("buff", "set_stack_count", "sixth_sense", { stack_count = #sensed_targets })
 			
 			for _, unit in ipairs(sensed_targets) do
 				if alive(unit) and not unit:base():char_tweak().is_escort then
@@ -2663,20 +2650,20 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 				end
 			end
 			self._state_data.omniscience_t = t + tweak_data.player.omniscience.interval_t
-			managers.gameinfo:event("buff", "set_duration", "omniscience", { duration = tweak_data.player.omniscience.interval_t })
+			managers.gameinfo:event("buff", "set_duration", "sixth_sense", { duration = tweak_data.player.omniscience.interval_t })
 		end
 	end
 	
 	
-	local PREV_DMG_STACK = {}	--Prevent event flooding
+	--local PREV_DMG_STACK = {}	--Prevent event flooding
 	function PlayerStandard:_check_damage_stack_skill(t, category)
 		local stack = self._state_data.stacking_dmg_mul[category]
 		
 		if stack then
 			local buff_id = category .. "_stack_damage"
 			
-			if not PREV_DMG_STACK[category] or (PREV_DMG_STACK[category][1] ~= stack[1] or PREV_DMG_STACK[category][2] ~= stack[2]) then
-				PREV_DMG_STACK[category] = { stack[1], stack[2] }
+			--if not PREV_DMG_STACK[category] or (PREV_DMG_STACK[category][1] ~= stack[1] or PREV_DMG_STACK[category][2] ~= stack[2]) then
+			--	PREV_DMG_STACK[category] = { stack[1], stack[2] }
 				
 				if stack[2] > 0 then
 					local value = managers.player:upgrade_value(category, "stacking_hit_damage_multiplier", 0)
@@ -2686,7 +2673,7 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 				else
 					managers.gameinfo:event("buff", "deactivate", buff_id)
 				end
-			end
+			--end
 		end
 	end
 	
@@ -2705,6 +2692,18 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 	local change_regenerate_speed_original = PlayerDamage.change_regenerate_speed
 	local build_suppression_original = PlayerDamage.build_suppression
 	local set_armor_original = PlayerDamage.set_armor
+	local _check_bleed_out_original = PlayerDamage._check_bleed_out
+	
+	local HEALTH_RATIO_BONUSES = {
+		melee_damage_health_ratio_multiplier = { category = "melee", buff_id = "berserker" },
+		damage_health_ratio_multiplier = { category = "damage", buff_id = "berserker_aced" },
+		armor_regen_damage_health_ratio_multiplier = { category = "armor_regen", buff_id = "yakuza_recovery" },
+		movement_speed_damage_health_ratio_multiplier = { category = "movement_speed", buff_id = "yakuza_speed" },
+	}
+	local LAST_HEALTH_RATIO = 0
+	local LAST_ARMOR_REGEN_BUFF_RESET = 0
+	local LAST_CHECK_T = 0
+	local ARMOR_GRIND_ACTIVE = false
 	
 	function PlayerDamage:init(...)
 		init_original(self, ...)
@@ -2737,13 +2736,6 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 		end
 	end
 	
-	local HEALTH_RATIO_BONUSES = {
-		melee_damage_health_ratio_multiplier = { category = "melee", buff_id = "berserker" },
-		damage_health_ratio_multiplier = { category = "damage", buff_id = "berserker_aced" },
-		armor_regen_damage_health_ratio_multiplier = { category = "armor_regen", buff_id = "yakuza_recovery" },
-		movement_speed_damage_health_ratio_multiplier = { category = "movement_speed", buff_id = "yakuza_speed" },
-	}
-	local LAST_HEALTH_RATIO = 0
 	function PlayerDamage:set_health(...)
 		set_health_original(self, ...)
 		
@@ -2796,18 +2788,6 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 		return _start_regen_on_the_side_original(self, time, ...)
 	end
 	
-	function PlayerDamage:_regenerate_armor(...)
-		if managers.player:has_category_upgrade("player", "armor_depleted_stagger_shot") then
-			local duration = managers.player:upgrade_value("player", "armor_depleted_stagger_shot", 0)
-			if duration > 0 then
-				managers.gameinfo:event("buff", "set_duration", "dire_need", { duration = duration })
-			end
-		end
-		
-		return _regenerate_armor_original(self, ...)
-	end
-	
-	local ARMOR_GRIND_ACTIVE = false
 	function PlayerDamage:_update_armor_grinding(t, ...)
 		_update_armor_grinding_original(self, t, ...)
 		
@@ -2831,7 +2811,6 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 		self:_check_armor_regen_timer()
 	end
 	
-	local LAST_ARMOR_REGEN_BUFF_RESET = 0
 	function PlayerDamage:build_suppression(...)
 		build_suppression_original(self, ...)
 		if self:get_real_armor() < self:_max_armor() then
@@ -2850,6 +2829,15 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 		end
 	end
 	
+	function PlayerDamage:_check_bleed_out(...)
+		local last_uppers = self._uppers_elapsed or 0
+		
+		local result = _check_bleed_out_original(self, ...)
+		
+		if (self._uppers_elapsed or 0) > last_uppers then
+			managers.gameinfo:event("timed_buff", "activate", "uppers_debuff", { t = self._uppers_elapsed, duration = self._UPPERS_COOLDOWN })
+		end
+	end
 	
 	function PlayerDamage:_custom_on_damage_clbk()
 		if not self:is_downed() then
@@ -2858,7 +2846,6 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 		end
 	end
 	
-	local LAST_CHECK_T = 0
 	function PlayerDamage:_check_armor_regen_timer()
 		if self._regenerate_timer then
 			local t = Application:time()
@@ -2878,6 +2865,33 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 		end
 	end
 	
+	
+end
+
+if RequiredScript == "lib/units/weapons/raycastweaponbase" then
+	
+	local setup_original = RaycastWeaponBase.setup
+	local set_ammo_remaining_in_clip_original = RaycastWeaponBase.set_ammo_remaining_in_clip
+	
+	function RaycastWeaponBase:setup(...)
+		setup_original(self, ...)
+		
+		local user_unit = self._setup and self._setup.user_unit
+		local player_unit = managers.player:player_unit()
+		self._player_is_owner = alive(user_unit) and alive(player_unit) and user_unit:key() == player_unit:key()
+	end
+	
+	function RaycastWeaponBase:set_ammo_remaining_in_clip(ammo, ...)
+		if RaycastWeaponBase.LOCK_N_LOAD_ACTIVE and self._player_is_owner then
+			local data = RaycastWeaponBase.LOCK_N_LOAD_ACTIVE
+			if ammo <= data.max_threshold and ammo >= data.min_threshold then
+				local bonus = math.clamp(data.max_bonus * math.pow(data.penalty, ammo - data.min_threshold), data.min_bonus, data.max_bonus)
+				managers.gameinfo:event("buff", "set_value", "lock_n_load", { value = bonus, show_value = true })
+			end
+		end
+		
+		return set_ammo_remaining_in_clip_original(self, ammo, ...)
+ 	end
 	
 end
 
@@ -2976,11 +2990,10 @@ if RequiredScript == "lib/player_actions/skills/playeractionunseenstrike" then
 		
 		managers.player:register_message(Message.OnPlayerDamage, "unseen_strike_debuff_listener", on_damage_taken)
 		managers.gameinfo:event("buff", "activate", "unseen_strike_debuff")
-		managers.gameinfo:event("buff", "deactivate", "unseen_strike")
 		on_damage_taken()
 		unseenstrike_original(player_manager, min_time, ...)
 		managers.player:unregister_message(Message.OnPlayerDamage, "unseen_strike_debuff_listener")
-		--Defer debuff deactivation to after the buff has been activated to prevent list reordering
+		managers.gameinfo:event("buff", "deactivate", "unseen_strike_debuff")
 	end
 	
 	function PlayerAction.UnseenStrikeStart.Function(player_manager, max_duration, ...)
@@ -2995,10 +3008,9 @@ if RequiredScript == "lib/player_actions/skills/playeractionunseenstrike" then
 		
 		managers.player:register_message(Message.OnPlayerDamage, "unseen_strike_buff_listener", on_damage_taken)
 		managers.gameinfo:event("buff", "activate", "unseen_strike")
-		managers.gameinfo:event("buff", "deactivate", "unseen_strike_debuff")
 		unseenstrike_start_original(player_manager, max_duration, ...)
 		managers.player:unregister_message(Message.OnPlayerDamage, "unseen_strike_buff_listener")
-		--Defer buff deactivation to after the debuff has been activated to prevent list reordering
+		managers.gameinfo:event("buff", "deactivate", "unseen_strike")
 	end
 	
 end
@@ -3008,49 +3020,20 @@ if RequiredScript == "lib/player_actions/skills/playeractionammoefficiency" then
 	local ammo_efficieny_original = PlayerAction.AmmoEfficiency.Function
 	
 	function PlayerAction.AmmoEfficiency.Function(player_manager, target_headshots, bullet_refund, target_time, ...)
-		local weapon_unit = player_manager:equipped_weapon_unit()
-		local invalid_weapon = alive(weapon_unit) and (weapon_unit:base():fire_mode() ~= "single" or not weapon_unit:base():is_category("smg", "assault_rifle", "snp"))
 		local headshots = 1
 		
-		if not invalid_weapon then
-			local function on_headshot()
-				headshots = headshots + 1
-				if headshots < target_headshots then
-					managers.gameinfo:event("buff", "set_stack_count", "ammo_efficiency", { stack_count = target_headshots - headshots })
-				end
-			end
-			
-			player_manager:register_message(Message.OnHeadShot, "ammo_efficiency_buff_listener", on_headshot)
-			managers.gameinfo:event("buff", "activate", "ammo_efficiency")
-			managers.gameinfo:event("buff", "set_duration", "ammo_efficiency", { expire_t = target_time })
-			managers.gameinfo:event("buff", "set_stack_count", "ammo_efficiency", { stack_count = target_headshots - headshots })
+		local function on_headshot()
+			headshots = headshots + 1
+			if headshots < target_headshots then
+				managers.gameinfo:event("buff", "set_stack_count", "ammo_efficiency", { stack_count = target_headshots - headshots })
+ 			end
 		end
 		
 		ammo_efficieny_original(player_manager, target_headshots, bullet_refund, target_time, ...)
 		
-		if not invalid_weapon then
-			player_manager:unregister_message(Message.OnHeadShot, "ammo_efficiency_buff_listener")
-			managers.gameinfo:event("buff", "deactivate", "ammo_efficiency")
-		end
+		player_manager:unregister_message(Message.OnHeadShot, "ammo_efficiency_buff_listener")
+		managers.gameinfo:event("buff", "deactivate", "ammo_efficiency")
 	end
-	
-end
-
-if RequiredScript == "lib/units/weapons/raycastweaponbase" then
-	
-	local set_ammo_remaining_in_clip_original = RaycastWeaponBase.set_ammo_remaining_in_clip
-	
-	function RaycastWeaponBase:set_ammo_remaining_in_clip(ammo, ...)
-		if RaycastWeaponBase.LOCK_N_LOAD_ACTIVE and not (self.is_npc and self:is_npc()) then
-			local data = RaycastWeaponBase.LOCK_N_LOAD_ACTIVE
-			if ammo <= data.max_threshold and ammo >= data.min_threshold then
-				local bonus = math.clamp(data.max_bonus * math.pow(data.penalty, ammo - data.min_threshold), data.min_bonus, data.max_bonus)
-				managers.gameinfo:event("buff", "set_value", "lock_n_load", { value = bonus, show_value = true })
-			end
-		end
-		
-		return set_ammo_remaining_in_clip_original(self, ammo, ...)
- 	end
 	
 end
 
