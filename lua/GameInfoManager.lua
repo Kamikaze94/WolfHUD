@@ -1,4 +1,3 @@
---TODO: Forced friendship aced, inspire revive debuff
 
 printf = function(...) 
 	WolfHUD:print_log(string.format(...))
@@ -337,6 +336,9 @@ if RequiredScript == "lib/setups/gamesetup" then
 			armor_break_invulnerable = "armor_break_invulnerable_debuff",
 			single_shot_fast_reload = "aggressive_reload_aced",
 		},
+		cooldown = {
+			long_dis_revive = "inspire_revive_debuff",
+		},
 		--Team upgrades
 		damage_dampener = {
 			hostage_multiplier =  { id = "crew_chief_9", level = 9 },
@@ -355,6 +357,9 @@ if RequiredScript == "lib/setups/gamesetup" then
 			multiplier =  { id = "crew_chief_7", level = 7 },
 			regen_time_multiplier = { id = "bulletproof", level = 0 },
 			passive_regen_time_multiplier = { id = "armorer_9", level = 9 },
+		},
+		damage = {
+			hostage_absorption = { id = "forced_friendship", level = 0 },
 		},
 --[[
 		weapon = {
@@ -2145,6 +2150,7 @@ end
 if RequiredScript == "lib/managers/playermanager" then
 
 	local spawned_player_original = PlayerManager.spawned_player
+	local disable_cooldown_upgrade_original = PlayerManager.disable_cooldown_upgrade
 	local activate_temporary_upgrade_original = PlayerManager.activate_temporary_upgrade
 	local activate_temporary_upgrade_by_level_original = PlayerManager.activate_temporary_upgrade_by_level
 	local deactivate_temporary_upgrade_original = PlayerManager.deactivate_temporary_upgrade
@@ -2222,6 +2228,19 @@ if RequiredScript == "lib/managers/playermanager" then
 		end
 	end
 	
+	function PlayerManager:disable_cooldown_upgrade(category, upgrade, ...)
+		disable_cooldown_upgrade_original(self, category, upgrade, ...)
+		
+		if self._global.cooldown_upgrades[category] and self._global.cooldown_upgrades[category][upgrade] then
+			local t = Application:time()
+			local expire_t = self._global.cooldown_upgrades[category][upgrade].cooldown_time
+			
+			if expire_t > t then
+				managers.gameinfo:event("temporary_buff", "activate", { t = t, expire_t = expire_t, category = category, upgrade = upgrade })
+			end
+		end
+	end
+	
 	function PlayerManager:activate_temporary_upgrade_by_level(category, upgrade, level, ...)
 		activate_temporary_upgrade_by_level_original(self, category, upgrade, level, ...)
 	
@@ -2266,7 +2285,9 @@ if RequiredScript == "lib/managers/playermanager" then
 	end
 	
 	function PlayerManager:update_hostage_skills(...)
-		local stack_count = (managers.groupai and managers.groupai:state():hostage_count() or 0) + (self:num_local_minions() or 0)
+		local hostages = managers.groupai and managers.groupai:state():hostage_count() or 0
+		local minions = self:num_local_minions() or 0
+		local stack_count = hostages + minions
 		
 		if self:has_team_category_upgrade("health", "hostage_multiplier") or self:has_team_category_upgrade("stamina", "hostage_multiplier") or self:has_team_category_upgrade("damage_dampener", "hostage_multiplier") then
 			if stack_count > 0 then
@@ -2473,10 +2494,6 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 	local _end_action_charging_weapon_original = PlayerStandard._end_action_charging_weapon
 	
 	function PlayerStandard:_do_action_intimidate(t, interact_type, ...)
-		if interact_type == "cmd_get_up" and managers.player:has_disabled_cooldown_upgrade("cooldown", "long_dis_revive") then
-			local duration = (managers.player:get_disabled_cooldown_time("cooldown", "long_dis_revive") - t) or 20
-			managers.gameinfo:event("timed_buff", "activate", "inspire_revive_debuff", { duration = duration })
-		end
 		if interact_type == "cmd_gogo" or interact_type == "cmd_get_up" then
 			local duration = (tweak_data.upgrades.morale_boost_base_cooldown * managers.player:upgrade_value("player", "morale_boost_cooldown_multiplier", 1)) or 3.5
 			managers.gameinfo:event("timed_buff", "activate", "inspire_debuff", { duration = duration })
