@@ -1,4 +1,4 @@
-# WolfHUD BETA
+# WolfHUD
 ####Development Version
   
 This is a Mod collection of several useful HUD altering mods.  
@@ -10,12 +10,6 @@ __I got the permission from _Seven_, _ViciousWalrus_, _Undeadsewer_, _FishTaco_,
 **Big thanks to [Kampfhörnchen](http://forums.lastbullet.net/member.php?action=profile&uid=19364) for creating a better logo and a banner, ^^**
   
 <br><br>
-###NOTE:
-*This version is intended to work with the current __BETA__, as a try to get a smooth transition, once it gets released.  
-However, I needed to mess with quite some code, to switch to the new CustomHUD version, so don't cry, when you crash at a certain point. Consider yourself warned.  
-Some features from the main version are also missing here. No deal-breaking ones, but it'll take some time to rework and implement them again.*
-  
-<br><br>
 <p align="center">
   <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_1.jpg" width="420"/>
   <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_2.jpg" width="420"/>
@@ -23,16 +17,16 @@ Some features from the main version are also missing here. No deal-breaking ones
 </p>
 
 ###Installation:
-1. Click on __'Download .ZIP'__-Button at the top of this site.
+1. Click on the __'Clone or Download'__-Button at the top of this site.
+2. Click on the __'Download .ZIP'__-Button.
 2. Open the downloaded archive, using WinRAR or 7zip.
 3. Extract the __'WolfHUD-master'__-folder into your 'Payday 2/mods'-folder.
 4. Rename __'WolfHUD-master'__-folder to __'WolfHUD'__. 
-5. (Optional) If you don't like the __Federal Inventory icons__, delete the file __'Federal_Inventory.zip'__  
-_(Note: Installing the Federal Inventory icons may keep your game freezed at first startup after installing this mod.  
-Please wait for the prompt window, that tells you to restart the game, once the extraction of the archive is done.)_  
+5. Start the game once. It will promt you to update Federal Inventory and WolfHUD_Textures. Update both.
+6. _(Optional)_ If you don't like the Inventory Icons, go to your "Payday 2/assets/mod_overrides/Federal Inventory"-folder and delete the "guis"-folder. Then open revision.txt and change the number to a higher one, to prevent future updates.
   
 __(You need the [Better Lua injecTor](http://paydaymods.com/download/) for this mod to work)__  
-__(Keep in mind, that this is a kinda development version. For a more stable release, get your version [here](http://paydaymods.com/mods/298/wolfhud).)__  
+__(Keep in mind, that this is a development version. For a more stable release, get your version [here](http://paydaymods.com/mods/298/wolfhud).)__  
 
 ###Updates:
 This mod is now providing automatic updates via paydaymods.com's System.  
