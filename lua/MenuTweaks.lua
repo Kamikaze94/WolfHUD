@@ -28,6 +28,31 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 
 		return populate_mods_original(self, data, ...)
 	end
+	
+	local function getEquipmentAmount(name_id)
+		local data = tweak_data.equipments[name_id]
+		if data then
+			local amounts = data.quantity
+			local amount_str = ""
+			for i = 1, #amounts do
+				local equipment_name = name_id
+				if data.upgrade_name then
+					equipment_name = data.upgrade_name[i]
+				end
+				amount_str = amount_str .. (i > 1 and "/x" or "x") .. tostring((amounts[i] or 0) + managers.player:equiptment_upgrade_value(equipment_name, "quantity"))
+			end
+			return " (" .. amount_str .. ")"
+		end
+		return ""
+	end
+	
+	local populate_deployables_original = BlackMarketGui.populate_deployables
+	function BlackMarketGui:populate_deployables(data)
+		populate_deployables_original(self, data)
+		for i, equipment in ipairs(data) do
+			equipment.name_localized = equipment.name_localized .. getEquipmentAmount(equipment.name)
+		end
+	end
 
 	-- Show all Weapon Names in Inventory Boxxes
 	local orig_blackmarket_gui_slot_item_init = BlackMarketGuiSlotItem.init
@@ -80,11 +105,12 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 		return val
 	end
 elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then
+	local SKIP_BLACKSCREEN = WolfHUD:getSetting("skip_blackscreen", "boolean")
 	local update_original = IngameWaitingForPlayersState.update
 	function IngameWaitingForPlayersState:update(...)
 		update_original(self, ...)
 		
-		if self._skip_promt_shown and WolfHUD:getSetting("skip_blackscreen", "boolean") then
+		if self._skip_promt_shown and SKIP_BLACKSCREEN then
 			self:_skip()
 		end
 	end
@@ -103,11 +129,12 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" the
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/lootdropscreengui" then
 	local SKIP_LOOT_SCREEN_DELAY = WolfHUD:getSetting("loot_screen_delay", "number")
+	local AUTO_PICK_CARD = WolfHUD:getSetting("autopick_card", "boolean")
 	local update_original = LootDropScreenGui.update
 	function LootDropScreenGui:update(t, ...)
 		update_original(self, t, ...)
 
-		if not self._card_chosen then
+		if not self._card_chosen and AUTO_PICK_CARD then
 			self:_set_selected_and_sync(math.random(3))
 			self:confirm_pressed()
 		end
@@ -142,7 +169,15 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/renderers/menunodeskil
 	end
 elseif RequiredScript == "lib/managers/missionassetsmanager" then
 	function MissionAssetsManager:mission_has_preplanning()
-		return tweak_data.preplanning.locations[Global.game_settings and Global.game_settings.level_id] ~= nil
+		if not self._has_locked_asset then
+			for _, asset in ipairs(self._global.assets) do
+				if self:asset_is_buyable(asset) then
+					self._has_locked_asset = true
+					break
+				end
+			end
+		end
+		return tweak_data.preplanning.locations[Global.game_settings and Global.game_settings.level_id] ~= nil and not self._has_locked_asset
 	end
 
 	function MissionAssetsManager:asset_is_buyable(asset)
@@ -159,10 +194,12 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 	end
 
 	function MissionAssetsManager.update_buy_all_assets_asset_cost(self)
-		self._tweak_data.buy_all_assets.money_lock = 0
-		for _, asset in ipairs(self._global.assets) do
-			if self:asset_is_buyable(asset) then
-				self._tweak_data.buy_all_assets.money_lock = self._tweak_data.buy_all_assets.money_lock + (self._tweak_data[asset.id].money_lock or 0)
+		if not self:mission_has_preplanning() and self._tweak_data.buy_all_assets then
+			self._tweak_data.buy_all_assets.money_lock = 0
+			for _, asset in ipairs(self._global.assets) do
+				if self:asset_is_buyable(asset) then
+					self._tweak_data.buy_all_assets.money_lock = self._tweak_data.buy_all_assets.money_lock + (self._tweak_data[asset.id].money_lock or 0)
+				end
 			end
 		end
 	end
@@ -208,8 +245,10 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 	local MissionAssetsManager_sync_unlock_asset_orig = MissionAssetsManager.sync_unlock_asset
 	function MissionAssetsManager.sync_unlock_asset(self, ...)
 		MissionAssetsManager_sync_unlock_asset_orig(self, ...)
-		self:update_buy_all_assets_asset_cost()
-		self:check_all_assets()
+		if not self:mission_has_preplanning() then
+			self:update_buy_all_assets_asset_cost()
+			self:check_all_assets()
+		end
 	end
 
 	if not MissionAssetsManager_unlock_asset_orig then MissionAssetsManager_unlock_asset_orig = MissionAssetsManager.unlock_asset end
@@ -304,6 +343,8 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 	MenuManager.show_confirm_blackmarket_buy_weapon_slot = expect_yes
 	MenuManager.show_confirm_mission_asset_buy = expect_yes
 	MenuManager.show_confirm_pay_casino_fee = expect_yes
+	MenuManager.show_play_safehouse_question = expect_yes
+	MenuManager.show_leave_safehouse_dialog = expect_yes
 	
 	local show_person_joining_original = MenuManager.show_person_joining
 	local update_person_joining_original = MenuManager.update_person_joining

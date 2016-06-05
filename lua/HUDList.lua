@@ -2,9 +2,8 @@ if WolfHUD and not WolfHUD:getSetting("use_hudlist", "boolean") then return end
 printf = function(...) 
 	WolfHUD:print_log(string.format(...))
 end
-
-if RequiredScript == "lib/managers/hudmanagerpd2" then
-
+if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
+	
 	local function format_time_string(value)
 		local frmt_string
 	
@@ -20,10 +19,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		return frmt_string
 	end
-
+	
 	local _setup_player_info_hud_pd2_original = HUDManager._setup_player_info_hud_pd2
 	local update_original = HUDManager.update
-
+	
 	function HUDManager:_setup_player_info_hud_pd2(...)
 		_setup_player_info_hud_pd2_original(self, ...)
 		
@@ -46,17 +45,17 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			return true
 		end
 	end
-
-
+	
+	
 	HUDListManager = HUDListManager or class()
 	HUDListManager.ListOptions = {
 		--General settings
-        right_list_height_offset = HUDManager.CUSTOM_TEAMMATE_PANEL and 0 or 50,   --Margin from top for the right list
-        right_list_scale = WolfHUD:getSetting("hudlist_right_scale", "number"),   --Size scale of right list
-        left_list_height_offset = HUDManager.CUSTOM_TEAMMATE_PANEL and 40 or 70,   --Margin from top for the left list
-        left_list_scale = WolfHUD:getSetting("hudlist_left_scale", "number"),    --Size scale of left list
+        right_list_height_offset = HUDManager.CUSTOM_TEAMMATE_PANELS and 0 or 50,   --Margin from top for the right list
+        right_list_scale = WolfHUD:getSetting("right_list_scale", "number"),   --Size scale of right list
+        left_list_height_offset = HUDManager.CUSTOM_TEAMMATE_PANELS and 40 or 70,   --Margin from top for the left list
+        left_list_scale = WolfHUD:getSetting("left_list_scale", "number"),    --Size scale of left list
         buff_list_height_offset = 80,   --Margin from bottom for the buff list
-        buff_list_scale = WolfHUD:getSetting("hudlist_buff_scale", "number"),    --Size scale of buff list
+        buff_list_scale = WolfHUD:getSetting("buff_list_scale", "number"),    --Size scale of buff list
         
         --Left side list
         show_timers 					= WolfHUD:getSetting("show_timers", "boolean"),     				--Drills, time locks, hacking etc.
@@ -84,32 +83,19 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
         show_special_pickups 			= WolfHUD:getSetting("show_special_pickups", "boolean"),    		--Show number of special equipment/items
         
         --Buff list
-        show_buffs 						= WolfHUD:getSetting("show_buffs", "number"),       				--Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+        show_buffs 						= WolfHUD:getSetting("show_buffs", "boolean"),       				--Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+		
+		list_color 						= WolfHUD:getSetting("list_color", "color"),
+		list_color_bg 					= WolfHUD:getSetting("list_color_bg", "color"),
+		civilian_color 					= WolfHUD:getSetting("civilian_color", "color"),
+		hostage_color 					= WolfHUD:getSetting("civilian_color", "color"),
+		thug_color 						= WolfHUD:getSetting("thug_color", "color"),
+		enemy_color 					= WolfHUD:getSetting("enemy_color", "color"),
+		guard_color 					= WolfHUD:getSetting("enemy_color", "color"),
+		special_color 					= WolfHUD:getSetting("special_color", "color"),
+		turret_color 					= WolfHUD:getSetting("special_color", "color"),
 	}
-	
-	local RightListColor 	= WolfHUD:getSetting("hud_box_color", "color")
-	local RightListBgColor 	= WolfHUD:getSetting("hud_box_bg_color", "color")
-	local LeftListColor 	= RightListColor
-	local LeftListBgColor 	= RightListBgColor
-	local TimerColor 		= LeftListColor
-	local TimerBgColor 		= LeftListBgColor
-	local EquipmentColor 	= LeftListColor
-	local EquipmentBgColor 	= LeftListBgColor
-	local PagerColor 		= LeftListColor
-	local PagerbgColor 		= LeftListBgColor
-	local ECMColor 			= LeftListColor
-	local ECMBgColor 		= LeftListBgColor
-	local TapeLoopColor 	= LeftListColor
-	local TapeLoopBgColor 	= LeftListBgColor
-	
-    local civilian_color 	= WolfHUD:getSetting("civilian_color", "color")
-    local hostage_color 	= civilian_color
-    local thug_color 		= WolfHUD:getSetting("thug_color", "color")
-	local enemy_color 		= WolfHUD:getSetting("enemy_color", "color")
-    local guard_color 		= enemy_color
-    local special_color 	= enemy_color
-    local turret_color 		= special_color
-	
+		
 	HUDListManager.TIMER_SETTINGS = {
 		[132864] = {	--Meltdown vault temperature
 			class = "TemperatureGaugeItem",
@@ -132,7 +118,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		gensec = 					{ type_id = "security",		category = "enemies",	long_name = "GenSec" },
 		gangster = 					{ type_id = "thug",			category = "enemies",	long_name = "Gangster" },
 		mobster = 					{ type_id = "thug",			category = "enemies",	long_name = "Mobster" },
-		biker_escape = 				{ type_id = "thug",			category = "enemies",	long_name = "Gangster" },
+		biker = 					{ type_id = "thug",			category = "enemies",	long_name = "Biker" },
+		biker_escape = 				{ type_id = "thug",			category = "enemies",	long_name = "Biker" },
 		tank = 						{ type_id = "tank",			category = "enemies",	long_name = "Bulldozer" },
 		spooc = 					{ type_id = "spooc",		category = "enemies",	long_name = "Cloaker" },
 		taser = 					{ type_id = "taser",		category = "enemies",	long_name = "Taser" },
@@ -150,7 +137,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		--escort = 					{ type_id = "unique",		category = "civilians",	long_name = "Escort" },
 		--old_hoxton_mission = 		{ type_id = "unique",		category = "civilians",	long_name = "Hoxton" },
 		--inside_man = 				{ type_id = "unique",		category = "civilians",	long_name = "Insider" },
-		--boris = 					{ type_id = "unique",		category = "civilians",	long_name = "?" },
+		--boris = 					{ type_id = "unique",		category = "civilians",	long_name = "Boris" },
 		--escort_undercover = 		{ type_id = "unique",		category = "civilians",	long_name = "Taxman" },
 		
 		--Custom unit definitions
@@ -163,12 +150,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDListManager.SPECIAL_PICKUP_TYPES = {
 		gen_pku_crowbar =					"crowbar",
 		pickup_keycard =					"keycard",
-		pickup_hotel_room_keycard =			"keycard",
+		pickup_hotel_room_keycard =	"keycard",
 		gage_assignment =					"courier",
-		pickup_boards =						"planks",
-		stash_planks_pickup =				"planks",
-		muriatic_acid =						"meth_ingredients",
-		hydrogen_chloride =					"meth_ingredients",
+		pickup_boards =					"planks",
+		stash_planks_pickup =			"planks",
+		muriatic_acid =					"meth_ingredients",
+		hydrogen_chloride =				"meth_ingredients",
 		caustic_soda =						"meth_ingredients",
 		gen_pku_blow_torch =				"blowtorch",
 		drk_pku_blow_torch = 				"blowtorch",
@@ -191,12 +178,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		circuit =					"server",
 		coke =						"coke",
 		coke_pure =					"coke",
-		counterfeit_money =			"money",
+		counterfeit_money =		"money",
 		cro_loot1 =					"bomb",
 		cro_loot2 =					"bomb",
 		diamonds =					"jewelry",
 		din_pig =					"pig",
-		drk_bomb_part =				"bomb",
+		drk_bomb_part =			"bomb",
 		evidence_bag =				"evidence",
 		goat = 						"goat",
 		gold =						"gold",
@@ -207,30 +194,128 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		mad_master_server_value_3 =	"server",
 		mad_master_server_value_4 =	"server",
 		master_server = 			"server",
-		masterpiece_painting =		"painting",
+		masterpiece_painting =	"painting",
 		meth =						"meth",
 		meth_half =					"meth",
 		money =						"money",
 		mus_artifact =				"artifact",
 		mus_artifact_paint =		"painting",
 		painting =					"painting",
+		person =						"body",
 		present = 					"present",
 		prototype = 				"prototype",
 		safe_ovk =					"safe",
 		safe_wpn =					"safe",
 		samurai_suit =				"armor",
 		sandwich =					"toast",
-		turret =					"turret",
+		special_person =			"body",
+		turret =						"turret",
 		unknown =					"dentist",
 		warhead =					"warhead",
-		weapon =					"weapon",
+		weapon =						"weapon",
 		weapon_glock =				"weapon",
 		weapon_scar =				"weapon",
 	}
 	
-	if Global.game_settings.level_id == "mad" then --Don't show Bodybags as loot on other missions...
-		HUDListManager.LOOT_TYPES.person = "body"
-	end
+	HUDListManager.LOOT_TYPES_CONDITIONS = {
+		body = function(id, data)
+			if managers.job:current_level_id() == "mad" then
+				return data.bagged or data.unit:editor_id() ~= -1
+			end
+			
+			--TODO: Bodies need to be omitted from aggregation, okayish for PB heist but bad for generic stealth maps
+			--return managers.groupai and managers.groupai:state():whisper_mode()
+		end,
+	}
+	
+	HUDListManager.BUFFS = {
+		--Buff list items affected by specific buffs/debuffs
+		aggressive_reload_aced = { "aggressive_reload_aced" },
+		ammo_efficiency = { "ammo_efficiency" },
+		ammo_give_out_debuff = { "ammo_give_out_debuff" },
+		anarchist_armor_recovery_debuff = { "anarchist_armor_recovery_debuff" },
+		armor_break_invulnerable = { "armor_break_invulnerable" },
+		armor_break_invulnerable_debuff = { "armor_break_invulnerable_debuff" },
+		berserker = { "berserker", "damage_increase", "melee_damage_increase" },
+		berserker_aced = { "berserker", "damage_increase" },										--TODO: buff remains after expiration, base game does not reset upgrade value
+		bloodthirst_basic = { "bloodthirst_basic", "melee_damage_increase" },
+		bloodthirst_aced = { "bloodthirst_aced" },
+		bullet_storm = { "bullet_storm" },
+		bullet_storm_aced = { "bullet_storm" },
+		bullseye_debuff = { "bullseye_debuff" },
+		close_contact_1 = { "close_contact", "damage_reduction" },
+		close_contact_2 = { "close_contact", "damage_reduction" },
+		close_contact_3 = { "close_contact", "damage_reduction" },
+		combat_medic = { "combat_medic", "damage_reduction" },
+		combat_medic_passive = { "combat_medic_passive", "damage_reduction" },
+		desperado = { "desperado" },
+		die_hard = { "die_hard", "damage_reduction" },
+		dire_need = { "dire_need" },																--TODO: lacks duration, inconsistent treatment in base game at the moment
+		forced_friendship = { "forced_friendship" },
+		grinder = { "grinder" },
+		grinder_debuff = { "grinder_debuff" },
+		hostage_situation = { "hostage_situation", "damage_reduction" },
+		hostage_taker = { "hostage_taker" },
+		inspire = { "inspire" },
+		inspire_debuff = { "inspire_debuff" },
+		inspire_revive_debuff = { "inspire_revive_debuff" },
+		life_drain_debuff = { "life_drain_debuff" },
+		lock_n_load = { "lock_n_load" },
+		medical_supplies_debuff = { "medical_supplies_debuff" },
+		melee_stack_damage = { "melee_stack_damage", "melee_damage_increase" },
+		messiah = { "messiah" },
+		overdog = { "overdog", "damage_reduction" },
+		overkill = { "overkill", "damage_increase" },
+		overkill_aced = { "overkill", "damage_increase" },
+		pain_killer = { "painkiller", "damage_reduction" },
+		pain_killer_aced = { "painkiller", "damage_reduction" },
+		partner_in_crime = { "partner_in_crime" },
+		partner_in_crime_aced = { "partner_in_crime" },
+		quick_fix = { "quick_fix", "damage_reduction" },
+		running_from_death_basic = { "running_from_death" },
+		running_from_death_aced = { "running_from_death" },
+		second_wind = { "second_wind" },
+		sixth_sense = { "sixth_sense" },
+		sociopath_debuff = { "sociopath_debuff" },
+		swan_song = { "swan_song" },
+		swan_song_aced = { "swan_song" },
+		tooth_and_claw = { "tooth_and_claw" },
+		trigger_happy = { "trigger_happy", "damage_increase" },
+		underdog = { "underdog", "damage_increase" },
+		underdog_aced = { "underdog", "damage_reduction" },
+		up_you_go = { "up_you_go", "damage_reduction" },
+		uppers = { "uppers" },
+		uppers_debuff = { "uppers_debuff" },
+		unseen_strike = { "unseen_strike" },
+		unseen_strike_debuff = { "unseen_strike_debuff" },
+		yakuza_recovery = { "yakuza" },
+		yakuza_speed = { "yakuza" },
+		
+		armorer_9 = { "armorer" },
+		bulletproof = { "bulletproof" },
+		crew_chief_1 = { "crew_chief", "damage_reduction" },	--Bonus for <50% health changed separately through set_value
+		crew_chief_3 = { "crew_chief" },
+		crew_chief_5 = { "crew_chief" },
+		crew_chief_9 = { "crew_chief" },	--Damage reduction from hostages covered by hostage_situation
+		--endurance = { "endurance" },		--Baseline Skill
+		
+		--Player action type buffs, possibly do something special with these to separate from skill-related buffs
+		anarchist_armor_regeneration = { "anarchist_armor_regeneration" },
+		standard_armor_regeneration = { "standard_armor_regeneration" },
+		weapon_charge = { "weapon_charge" },
+		melee_charge = { "melee_charge" },
+		reload = {"reload" }, 
+		interact = { "interact"},
+		place_equipment = { "place_equipment" },
+		
+		--Debuffs that are merged into the buff itself
+		composite_debuffs = {
+			armor_break_invulnerable_debuff = "armor_break_invulnerable",
+			grinder_debuff = "grinder",
+			unseen_strike_debuff = "unseen_strike",
+			uppers_debuff = "uppers",
+		},
+	}
 	
 	function HUDListManager:init()
 		self._lists = {}
@@ -291,14 +376,14 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		--Timers
 		local timer_list = list:register_item("timers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5 })
 		timer_list:set_static_item(HUDList.LeftListIcon, 1, 4/5, { 
-			{ atlas = true, texture_rect = { 3 * 64, 6 * 64, 64, 64 }, color = TimerColor },
+			{ atlas = true, texture_rect = { 3 * 64, 6 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
 		})
 		
 		--Deployables
 		local equipment_list = list:register_item("equipment", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5 })
 		equipment_list:set_static_item(HUDList.LeftListIcon, 1, 1, { 
-			{ atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[2] * 64, 64, 64 }, valign = "top", halign = "right", color = EquipmentColor },
-			{ atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[2] * 64, 64, 64 }, valign = "bottom", halign = "left", color = EquipmentColor },
+			{ atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[2] * 64, 64, 64 }, valign = "top", halign = "right", color = HUDListManager.ListOptions.list_color },
+			{ atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[2] * 64, 64, 64 }, valign = "bottom", halign = "left", color = HUDListManager.ListOptions.list_color },
 		})
 		
 		--Minions
@@ -310,25 +395,25 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		--Pagers
 		local pager_list = list:register_item("pagers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5 })
 		pager_list:set_static_item(HUDList.LeftListIcon, 1, 1, { 
-			{ spec = true, texture_rect = { 1 * 64, 4 * 64, 64, 64 }, color = PagerColor },
+			{ spec = true, texture_rect = { 1 * 64, 4 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
 		})
 		
 		--ECMs
 		local ecm_list = list:register_item("ecms", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5 })
 		ecm_list:set_static_item(HUDList.LeftListIcon, 1, 1, { 
-			{ atlas = true, texture_rect = { 1 * 64, 4 * 64, 64, 64 }, color = ECMColor },
+			{ atlas = true, texture_rect = { 1 * 64, 4 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
 		})
 		
 		--ECM trigger
 		local retrigger_list = list:register_item("ecm_retrigger", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5 })
 		retrigger_list:set_static_item(HUDList.LeftListIcon, 1, 1, { 
-			{ atlas = true, texture_rect = { 6 * 64, 2 * 64, 64, 64 }, color = ECMColor },
+			{ atlas = true, texture_rect = { 6 * 64, 2 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
 		})
 		
 		--Tape loop
 		local tape_loop_list = list:register_item("tape_loop", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5 })
 		tape_loop_list:set_static_item(HUDList.LeftListIcon, 1, 1, { 
-			{ atlas = true, texture_rect = { 4 * 64, 2 * 64, 64, 64 }, color = TapeLoopColor },
+			{ atlas = true, texture_rect = { 4 * 64, 2 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
 		})
 		
 		self:_set_show_timers()
@@ -350,7 +435,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local list = self:register_list("right_side_list", HUDList.VerticalList, { align = "right", x = x, y = y, w = list_width, h = list_height, top_to_bottom = true, item_margin = 5 })
 		
 		local unit_count_list = list:register_item("unit_count_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 1 })
-		local hostage_count_list = list:register_item("hostage_count_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 4 })
+		local stealth_count_list = list:register_item("stealth_count_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 4 })
 		local loot_list = list:register_item("loot_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 2 })
 		local special_equipment_list = list:register_item("special_pickup_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 4 })
 		
@@ -360,7 +445,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self:_set_show_hostages()
 		self:_set_show_minion_count()
 		self:_set_show_pager_count()
-		self:_set_show_cam_count()
+--		self:_set_show_cam_count()
 		self:_set_show_loot()
 		self:_set_show_special_pickups()
 	end
@@ -368,7 +453,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_setup_buff_list()
 		local hud_panel = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel
 		local scale = HUDListManager.ListOptions.buff_list_scale or 1
-		local list_height = 45 * scale
+		local list_height = 65 * scale
 		local list_width = hud_panel:w()
 		local x = 0
 		local y
@@ -399,14 +484,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDListManager:_whisper_mode_change(event, key, status)
-		local pager_count = self:list("right_side_list"):item("hostage_count_list"):item("PagerCount")
-		if pager_count then
-			pager_count:set_active(pager_count:get_count() > 0 and status)
-		end
 		
-		local cam_count = self:list("right_side_list"):item("hostage_count_list"):item("CamCount")
-		if cam_count then
-			cam_count:set_active(cam_count:get_count() > 0 and status)
+		for _, item in pairs(self:list("right_side_list"):item("stealth_count_list"):items()) do
+			item:set_active(item:get_count() > 0 and status)
 		end
 		
 		for _, item in pairs(self:list("left_side_list"):item("pagers"):items()) do
@@ -418,6 +498,33 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				item:set_active(item:current_amount() > 0 and status)
 			end
 		end
+		
+		--[[
+		local body_loot_item = self:list("right_side_list"):item("loot_list"):item("body")
+		if body_loot_item then
+			body_loot_item:set_count(0, 0)
+		end
+		]]
+	end
+	
+	function HUDListManager:_get_buff_items(id)
+		local buff_list = self:list("buff_list")
+		local items = {}
+		
+		if HUDListManager.BUFFS[id] then
+			for _, item_id in ipairs(HUDListManager.BUFFS[id]) do
+				local item_data = HUDList.BuffItemBase.MAP and HUDList.BuffItemBase.MAP[item_id]
+				
+				if item_data and not item_data.ignore then
+					local item = 
+						buff_list:item(item_id) or 
+						buff_list:register_item(item_id, item_data.class or "BuffItemBase", item_data)
+					table.insert(items, item)
+				end
+			end
+		end
+		
+		return items
 	end
 	
 	
@@ -457,18 +564,19 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			local category = HUDListManager.UNIT_TYPES[unit_type].category
 			
 			local item = list:item(type_id) or list:item(category)
+			
 			if item then
 				if event == "change" then
 					item:change_count(value)
 				elseif event == "set" then
 					item:set_count(value)
 				end
-			end
 			
-			for _, id in pairs(HUDListManager.UNIT_TYPES[unit_type].force_update or {}) do
-				local item = list:item(id)
-				if item then
-					item:change_count(0)
+				for _, id in pairs(HUDListManager.UNIT_TYPES[unit_type].force_update or {}) do
+					local item = list:item(id)
+					if item then
+						item:change_count(0)
+					end
 				end
 			end
 		end
@@ -508,18 +616,26 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDListManager:_pager_count_event(event, key, data)
-		local item = self:list("right_side_list"):item("hostage_count_list"):item("PagerCount")
+		local item = self:list("right_side_list"):item("stealth_count_list"):item("PagerCount")
 		if item then
 			item:change_count(1)
 		end
 	end
 	
 	function HUDListManager:_cam_count_event(event, key, data)
-		local item = self:list("right_side_list"):item("hostage_count_list"):item("CamCount")
+		local item = self:list("right_side_list"):item("stealth_count_list"):item("CamCount")
 		if event == "add" or event == "enable" then
 			item:change_count(1)
 		elseif event == "disable" or event == "destroy" then
 			item:change_count(-1)
+		end	
+	end
+	
+	function HUDListManager:_bodybag_count_event(event, key, data)
+		local item = self:list("right_side_list"):item("stealth_count_list"):item("BodyBagInv")
+		local whisper_mode = managers.groupai:state():whisper_mode()
+		if event == "set" and whisper_mode then
+			item:set_count(key)
 		end	
 	end
 	
@@ -540,6 +656,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local loot_type = HUDListManager.LOOT_TYPES[data.carry_id]
 		
 		if loot_type then
+			local condition_clbk = HUDListManager.LOOT_TYPES_CONDITIONS[loot_type]
+			if condition_clbk and not condition_clbk(loot_type, data) then
+				return
+			end
+		
 			local item = self:list("right_side_list"):item("loot_list"):item(loot_type)
 			local aggregate_item = self:list("right_side_list"):item("loot_list"):item("aggregate")
 			local bagged_diff = data.bagged and data.count or 0
@@ -592,8 +713,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDListManager:_bag_equipment_event(event, key, data)
-		--printf("HUDListManager:_bag_equipment_event(%s, %s)\n", event, key)
-	
+		printf("HUDListManager:_bag_equipment_event(%s, %s)", event, key)
 		if data.aggregate_key then return end
 	
 		local equipment_list = self:list("left_side_list"):item("equipment")
@@ -668,7 +788,161 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
-
+	function HUDListManager:_buff_event(event, id, data)
+		printf("(%.3f) HUDListManager:_buff_event(%s, %s)", Application:time(), tostring(event), tostring(id))
+		local items = self:_get_buff_items(id)
+		
+		for _, item in ipairs(items) do
+			if item[event] then
+				item[event](item, id, data)
+			else
+				printf("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s", Application:time(), event, id)
+			end
+		end
+		
+		if HUDListManager.BUFFS.composite_debuffs[id] then
+			if event == "activate" or event == "deactivate" or event == "set_duration" then
+				local debuff_parent_id = HUDListManager.BUFFS.composite_debuffs[id]
+				self:_buff_event(event .. "_debuff", debuff_parent_id, data)
+			end
+		end
+	end
+	
+	function HUDListManager:_player_action_event(event, id, data)
+		if HUDListManager.BUFFS[id] then
+			self:_buff_event(event, id, data)
+		end
+	end
+	
+	
+	--General config
+	function HUDListManager:_set_right_list_scale() --TODO
+		return
+	end
+	
+	function HUDListManager:_set_left_list_scale() --TODO
+		return
+	end
+	
+	function HUDListManager:_set_buff_list_scale() --TODO
+		return
+	end
+	function HUDListManager:_set_list_color() --TODO
+		return
+--[[		lists = {"right_side_list", "left_side_list"}
+		for _, list_id in pairs(lists) do
+			local list_side = self:list(list_id)
+			for id, item in pairs(list_side:items()) do
+				--for _, icon in pairs(item._icons) do
+				--	icon:set_color(HUDManager.ListOptions.list_color)
+				--end
+				for id, data in pairs(item:items()) do
+					-- change bg corner color + font color
+				end
+			end
+		end]]
+	end
+	
+	function HUDListManager:_set_list_color_bg() --TODO: Disappearing numbers?
+		return
+--[[		lists = {"right_side_list", "left_side_list"}
+		for _, list_id in pairs(lists) do
+			local list_side = self:list(list_id)
+			for id, item in pairs(list_side:items()) do
+				for id, data in pairs(item:items()) do
+					local x, y, w, h = data._box:x(), data._box:y(), data._box:w(), data._box:h()
+					data._panel:remove(data._box) -- HUD BG Box
+					data._box = HUDBGBox_create(data._panel, {w = w, h = h}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
+					data._box:set_x(x)
+					data._box:set_y(y)
+				end
+			end
+		end]]
+	end
+	
+	function HUDListManager:_set_civilian_color(color)
+		local list = self:list("right_side_list"):item("unit_count_list")
+		if list then
+			for id, data in pairs(list:items()) do
+				if data._unit_category == "civilians" and data._icon then
+					data._icon:set_color(color or HUDListManager.ListOptions.civilian_color)
+				end
+			end
+		end
+		self:_set_hostage_color( HUDListManager.ListOptions.civilian_color )
+	end
+	
+	function HUDListManager:_set_hostage_color(color)
+		local list = self:list("right_side_list"):item("unit_count_list")
+		if list then
+			for id, data in pairs(list:items()) do
+				if (data._unit_type == "cop_hostage" or data._unit_type == "civ_hostage") and data._icon then
+					data._icon:set_color(color or HUDListManager.ListOptions.hostage_color)
+				end
+			end
+		end
+	end
+	
+	function HUDListManager:_set_thug_color(color)
+		local list = self:list("right_side_list"):item("unit_count_list")
+		if list then
+			for id, data in pairs(list:items()) do
+				if (data._unit_type == "thug" or data._unit_type == "thug_boss") and data._icon then
+					data._icon:set_color(color or HUDListManager.ListOptions.thug_color)
+				end
+			end
+		end
+	end
+	
+	function HUDListManager:_set_enemy_color(color)
+		local list = self:list("right_side_list"):item("unit_count_list")
+		if list then
+			for id, data in pairs(list:items()) do
+				if data._unit_type == "cop" and data._icon then
+					data._icon:set_color(color or HUDListManager.ListOptions.enemy_color)
+					if data._shield_filler then
+						data._shield_filler:set_color(HUDListManager.ListOptions.enemy_color)
+					end
+				end
+			end
+		end
+		self:_set_guard_color(HUDListManager.ListOptions.enemy_color)
+	end
+	
+	function HUDListManager:_set_guard_color(color)
+		local list = self:list("right_side_list"):item("unit_count_list")
+		if list then
+			for id, data in pairs(list:items()) do
+				if data._unit_type == "security" and data._icon then
+					data._icon:set_color(color or HUDListManager.ListOptions.guard_color)
+				end
+			end
+		end
+		self:_set_turret_color(HUDListManager.ListOptions.special_color)
+	end
+	
+	function HUDListManager:_set_special_color(color)
+		local list = self:list("right_side_list"):item("unit_count_list")
+		if list then
+			for id, data in pairs(list:items()) do
+				if data._unit_category == "enemies" and data._unit_type ~= "cop" and data._unit_type ~= "security" and data._icon then
+					data._icon:set_color(color or HUDListManager.ListOptions.special_color)
+				end
+			end
+		end
+	end
+	
+	function HUDListManager:_set_turret_color(color)
+		local list = self:list("right_side_list"):item("unit_count_list")
+		if list then
+			for id, data in pairs(list:items()) do
+				if data._unit_type == "turret" and data._icon then
+					data._icon:set_color(color  or HUDListManager.ListOptions.turret_color)
+				end
+			end
+		end
+	end
+	
 	--Left list config
 	function HUDListManager:_set_show_timers()
 		local listener_id = "HUDListManager_timer_listener"
@@ -854,7 +1128,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
-
+	
 	function HUDListManager:_set_show_tape_loop()
 		local list = self:list("left_side_list"):item("tape_loop")
 		local listener_id = "HUDListManager_tape_loop_listener"
@@ -906,7 +1180,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
-
+	
 	--Right list config
 	function HUDListManager:_set_show_enemies()
 		local list = self:list("right_side_list"):item("unit_count_list")
@@ -921,20 +1195,19 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			if data.category == category then
 				items[data.type_id] = category
 				count[data.type_id] = (count[data.type_id] or 0) + managers.gameinfo:get_unit_count(id)
- 			end
- 		end
-
+			end
+		end
+		
 		if HUDListManager.ListOptions.aggregate_enemies then
 			local total_count = 0
 			
 			for category, num in pairs(count) do
 				total_count = total_count + num
 			end
-
+			
 			items = { enemies = category }
 			count = { enemies = total_count }
 		end
-		
 		
 		if HUDListManager.ListOptions.show_enemies then
 			self._unit_count_listeners = self._unit_count_listeners + 1
@@ -1032,7 +1305,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
-		if HUDListManager.ListOptions.show_civilians then
+		if HUDListManager.ListOptions.show_hostages then
 			self._unit_count_listeners = self._unit_count_listeners + 1
 			local clbk = callback(self, self, "_unit_count_event")
 			
@@ -1139,7 +1412,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end	
 	
 	function HUDListManager:_set_show_pager_count()
-		local list = self:list("right_side_list"):item("hostage_count_list")
+		local list = self:list("right_side_list"):item("stealth_count_list")
 		local listener_id = "HUDListManager_pager_count_listener"
 		local events = { "add" }
 		
@@ -1154,10 +1427,13 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		else
 			list:unregister_item("PagerCount", true)
 		end
+		
+		self:_set_show_cam_count()
+		self:_set_show_bodybags_count()
 	end
 	
 	function HUDListManager:_set_show_cam_count()
-		local list = self:list("right_side_list"):item("hostage_count_list")
+		local list = self:list("right_side_list"):item("stealth_count_list")
 		local listener_id = "HUDListManager_cam_count_listener"
 		local events = { "add", "enable", "disable", "destroy" }
 		
@@ -1171,6 +1447,24 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		else
 			list:unregister_item("CamCount", true)
+		end
+	end
+	
+	function HUDListManager:_set_show_bodybags_count()
+		local list = self:list("right_side_list"):item("stealth_count_list")
+		local listener_id = "HUDListManager_bodybag_count_listener"
+		local events = { "set" }
+		
+		if HUDListManager.ListOptions.show_pager_count then
+			local clbk = callback(self, self, "_bodybag_count_event")
+			
+			list:register_item("BodyBagInv", HUDList.RightListItem, { atlas = { 5, 11 } })
+			
+			for _, event in pairs(events) do
+				managers.gameinfo:register_listener(listener_id, "bodybags", event, clbk)
+			end
+		else
+			list:unregister_item("BodyBagInv", true)
 		end
 	end
 	
@@ -1276,112 +1570,80 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self:_set_show_loot()
 	end
 	
-	
 	--Buff list
-	function HUDListManager:_buff_activation(status, buff, ...)
-		local data = HUDList.BuffItemBase.COMPOSITE_ITEMS[buff]
-		local buff = data and data.item or buff
-	
-		if not HUDList.BuffItemBase.IGNORED_BUFFS[buff] then
-			local item = self:list("buff_list"):item(buff)
-			
-			if item then
-				if status then
-					item:activate()
-				elseif not (data and data.keep_on_deactivation) then
-					item:deactivate()
-				end
-				
-				if data then
-					if data.level then
-						item:set_level(data.level(), true)
-					end
-					if data.aced then
-						item:set_aced(data.aced(), true)
-					end
-				end
-			end
-			
-			local buff_data = HUDList.BuffItemBase.BUFF_MAP[buff]
-			if status and buff_data.on_activate then
-				buff_data.on_activate()
-			end
-		end
-	end
-	
-	function HUDListManager:_buff_event(event, buff, ...)
-		local data = HUDList.BuffItemBase.COMPOSITE_ITEMS[buff]
-	
-		if not HUDList.BuffItemBase.IGNORED_BUFFS[data and data.item or buff] then
-			local item = self:list("buff_list"):item(data and data.item or buff)
-			
-			if item then
-				item[event](item, ...)
-			end
-		end
-	end
-	
 	function HUDListManager:_set_show_buffs()
-		local list = self:list("buff_list")
-		
-		local listener_name = "HUDListManager_buff_listener"
-		local listeners = {
-			on_buff_activated = callback(self, self, "_buff_activation", true),
-			on_buff_deactivated = callback(self, self, "_buff_activation", false),
-			--on_buff_set_duration = callback(self, self, "_buff_event", "set_duration"),
-			--on_buff_set_expiration = callback(self, self, "_buff_event", "set_expiration"),
-			on_buff_refresh = callback(self, self, "_buff_event", "refresh"),
-			on_buff_set_aced = callback(self, self, "_buff_event", "set_aced"),
-			on_buff_set_level = callback(self, self, "_buff_event", "set_level"),
-			on_buff_set_stack_count = callback(self, self, "_buff_event", "set_stack_count"),
-			on_buff_set_flash = callback(self, self, "_buff_event", "set_flash"),
-			on_buff_set_progress = callback(self, self, "_buff_event", "set_progress"),
+		local listener_id = "HUDListManager_buff_listener"
+		local sources = { 
+			buff = { 
+				"activate", 
+				"deactivate", 
+				"set_duration", 
+				"set_stack_count", 
+				"add_timed_stack", 
+				"remove_timed_stack",
+				"set_value",
+				clbk = callback(self, self, "_buff_event"),
+			},
+			player_action = {
+				"activate", 
+				"deactivate", 
+				"set_duration",
+				clbk = callback(self, self, "_player_action_event"),
+			},
 		}
 		
-		if HUDListManager.ListOptions.show_buffs < 3 then
-			for name, data in pairs(HUDList.BuffItemBase.BUFF_MAP) do
-				if HUDListManager.ListOptions.show_buffs <= 1 or (data.class == "TimedBuffItem" or data.class == "ChargedBuffItem") then
-					local item = list:register_item(name, data.class or "BuffItemBase", data)
-					if data.aced then
-						item:set_aced(data.aced)
-					end
-					
-					if data.level then
-						item:set_level(data.level)
-					end
-					
-					if data.no_fade then
-						item:set_fade_time(0)
-					end
+		if HUDListManager.ListOptions.show_buffs then
+			local active_buffs = managers.gameinfo:get_buffs()
+			for id, data in pairs(active_buffs) do
+				self:_buff_event("activate", id)
+				
+				if data.stacks then
+					self:_buff_event("add_timed_stack", id, data)
+				end
+				
+				if data.t and data.expire_t then
+					self:_buff_event("set_duration", id, data)
+				end
+				
+				if data.stack_count then
+					self:_buff_event("set_stack_count", id, data)
+				end
+				
+				if data.value then
+					self:_buff_event("set_value", id, data)
 				end
 			end
 			
-			for _, src in ipairs({ PlayerManager.ACTIVE_BUFFS, PlayerManager.ACTIVE_TEAM_BUFFS }) do
-				for buff, data in pairs(src) do
-					self:_buff_activation(true, buff)
-					
-					for _, info in ipairs({ "aced", "level", "stack_count", "progress", "flash" }) do
-						if data[info] then
-							self:_buff_event("set_" .. info, buff, unpack(data[info]))
-						end
-					end
+			local active_buffs = managers.gameinfo:get_buffs()
+			for id, data in pairs(active_buffs) do
+				self:_player_action_event("activate", id, data)
+				
+				if data.t and data.expire_t then
+					self:_player_action_event("set_duration", id, data)
+				end
+				
+				if data.data then
+					self:_player_action_event("set_data", id, data)
 				end
 			end
 		
-			for event, clbk in pairs(listeners) do
-				PlayerManager.register_listener_clbk(listener_name, event, clbk)
+			for src, data in pairs(sources) do
+				for _, event in ipairs(data) do
+					managers.gameinfo:register_listener(listener_id, src, event, data.clbk)
+				end
 			end
 		else
-			for _, item in pairs(list:items()) do
-				item:delete(true)
+			for src, data in pairs(sources) do
+				for _, event in ipairs(data) do
+					managers.gameinfo:unregister_listener(listener_id, src, event)
+				end
 			end
 			
-			for event, _ in pairs(listeners) do
-				PlayerManager.unregister_listener_clbk(listener_name, event)
+			for _, item in pairs(self:list("buff_list"):items()) do
+				item:delete()
 			end
 		end
 	end
-	
 	
 	
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1409,7 +1671,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			layer = 10
 		})
 	end
-
+	
 	function HUDList.ItemBase:post_init(...) end
 	function HUDList.ItemBase:destroy() end
 	function HUDList.ItemBase:name() return self._name end
@@ -1420,7 +1682,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDList.ItemBase:priority() return self._priority end
 	function HUDList.ItemBase:fade_time() return self._fade_time end
 	function HUDList.ItemBase:hidden() return self._force_hide end
-
+	
 	function HUDList.ItemBase:_set_item_visible(status)
 		self._panel:set_visible(status and not self._force_hide)
 	end
@@ -1444,7 +1706,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDList.ItemBase:set_move_speed(speed)
 		self._move_speed = speed
 	end
-
+	
 	function HUDList.ItemBase:set_active(status)
 		if status then
 			self:activate()
@@ -1452,18 +1714,18 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			self:deactivate()
 		end
 	end
-
+	
 	function HUDList.ItemBase:activate()
 		self._active = true
 		self._scheduled_for_deletion = nil
 		self:_show()
 	end
-
+	
 	function HUDList.ItemBase:deactivate()
 		self._active = false
 		self:_hide()
 	end
-
+	
 	function HUDList.ItemBase:delete(instant)
 		self._scheduled_for_deletion = true
 		self._active = false
@@ -1483,7 +1745,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
-
+	
 	function HUDList.ItemBase:_show(instant)
 		if alive(self._panel) then
 			--self._panel:set_visible(true)
@@ -1494,7 +1756,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
-
+	
 	function HUDList.ItemBase:_hide(instant)
 		if alive(self._panel) then
 			self:_fade(0, instant)
@@ -1512,7 +1774,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		--end
 		self:_animate_item()
 	end
-
+	
 	function HUDList.ItemBase:move(x, y, instant)
 		if alive(self._panel) then
 			self._panel:stop()
@@ -1623,7 +1885,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		return color
 	end
-
+	
 	function HUDList.ItemBase:_create_icons(data)
 		local icons_added = {}
 	
@@ -1669,7 +1931,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+	
 	HUDList.ListBase = HUDList.ListBase or class(HUDList.ItemBase) --DO NOT INSTANTIATE THIS CLASS
 	function HUDList.ListBase:init(parent, name, params)
 		params.fade_time = params.fade_time or 0
@@ -1685,11 +1947,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._items = {}
 		self._shown_items = {}
 	end
-
+	
 	function HUDList.ListBase:item(name)
 		return self._items[name]
 	end
-
+	
 	function HUDList.ListBase:items()
 		return self._items
 	end
@@ -1697,7 +1959,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDList.ListBase:num_items()
 		return table.size(self._items)
 	end
-
+	
 	function HUDList.ListBase:active_items()
 		local count  = 0
 		for name, item in pairs(self._items) do
@@ -1707,11 +1969,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 		return count
 	end
-
+	
 	function HUDList.ListBase:shown_items()
 		return #self._shown_items
 	end
-
+	
 	function HUDList.ListBase:update(t, dt)
 		local delete_items = {}
 		for name, item in pairs(self._items) do
@@ -1720,7 +1982,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
-
+	
 	function HUDList.ListBase:register_item(name, class, ...)
 		if not self._items[name] then
 			class = type(class) == "string" and _G.HUDList[class] or class
@@ -1742,13 +2004,13 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		return self._items[name]
 	end
-
+	
 	function HUDList.ListBase:unregister_item(name, instant)
 		if self._items[name] then
 			self._items[name]:delete(instant)
 		end
 	end
-
+	
 	function HUDList.ListBase:set_static_item(class, ...)
 		self:delete_static_item()
 		
@@ -1765,14 +2027,14 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		
 		return self._static_item
 	end
-
+	
 	function HUDList.ListBase:delete_static_item()
 		if self._static_item then
 			self._static_item:delete(true)
 			self._static_item = nil
 		end
 	end
-
+	
 	function HUDList.ListBase:set_item_visible(item, visible)
 		local index
 		for i, shown_item in ipairs(self._shown_items) do
@@ -1826,9 +2088,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDList.ListBase:_remove_item(item)
 		self._items[item:name()] = nil
 	end
-
+	
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+	
 	HUDList.HorizontalList = HUDList.HorizontalList or class(HUDList.ListBase)
 	function HUDList.HorizontalList:init(parent, name, params)
 		params.align = params.align == "top" and "top" or params.align == "bottom" and "bottom" or "center"
@@ -1837,7 +2099,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._right_to_left = params.right_to_left and not self._left_to_right
 		self._centered = params.centered and not (self._right_to_left or self._left_to_right)
 	end
-
+	
 	function HUDList.HorizontalList:_set_default_item_position(item)
 		local offset = self._panel:h() - item:panel():h()
 		local y = item:align() == "top" and 0 or item:align() == "bottom" and offset or offset / 2
@@ -1902,9 +2164,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
-
+	
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+	
 	HUDList.VerticalList = HUDList.VerticalList or class(HUDList.ListBase)
 	function HUDList.VerticalList:init(parent, name, params)
 		params.align = params.align == "left" and "left" or params.align == "right" and "right" or "center"
@@ -1913,13 +2175,13 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._bottom_to_top = params.bottom_to_top and not self._top_to_bottom
 		self._centered = params.centered and not (self._bottom_to_top or self._top_to_bottom)
 	end
-
+	
 	function HUDList.VerticalList:_set_default_item_position(item)
 		local offset = self._panel:w() - item:panel():w()
 		local x = item:align() == "left" and 0 or item:align() == "right" and offset or offset / 2
 		item:panel():set_left(x)
 	end
-
+	
 	function HUDList.VerticalList:setup_static_item()
 		local item = self._static_item
 		local offset = self._panel:w() - item:panel():w()
@@ -1991,7 +2253,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		params.w = params.w or parent:panel():h() / 2
 		params.h = params.h or parent:panel():h()
 		HUDList.RightListItem.super.init(self, parent, name, params)
-		local x, y = unpack(icon.atlas or icon.spec or { 0, 0 })
+	
+		local x, y = unpack((icon.atlas or icon.spec) or { 0, 0 })
 		local texture = icon.texture
 			or icon.spec and "guis/textures/pd2/specialization/icons_atlas" 
 			or icon.atlas and "guis/textures/pd2/skilltree/icons_atlas" 
@@ -2009,13 +2272,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			w = self._panel:w() * (icon.w_ratio or 1),
 			alpha = icon.alpha or 1,
 			blend_mode = icon.blend_mode or "normal",
-			color = icon.color or RightListColor or Color.white,
+			color = icon.color or HUDListManager.ListOptions.list_color or Color.white,
 		})
 		
-		self._box = HUDBGBox_create(self._panel, {
-				w = self._panel:w(),
-				h = self._panel:w(),
-			}, {color = RightListColor, bg_color =  RightListBgColor})
+		self._box = HUDBGBox_create(self._panel, { w = self._panel:w(),	h = self._panel:w() }, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 		self._box:set_bottom(self._panel:bottom())
 		
 		self._text = self._box:text({
@@ -2025,7 +2285,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			vertical = "center",
 			w = self._box:w(),
 			h = self._box:h(),
-			color = RightListColor or Color.white,
+			color = HUDListManager.ListOptions.list_color or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6
 		})
@@ -2058,26 +2318,31 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self:set_active(self._count > 0)
 	end
 	
+	function HUDList.RightListItem:get_count(num)
+		return self._count
+	end
+	
+	
 	HUDList.UnitCountItem = HUDList.UnitCountItem or class(HUDList.RightListItem)
 	HUDList.UnitCountItem.MAP = {
-		enemies =		{ atlas = {6, 1},  color = enemy_color, --[[subtract = { "cop_hostage", "minions" }]] },	--Aggregated enemies
-		cop =			{ atlas = {0, 5},  color = enemy_color, priority = 5, --[[subtract = { "cop_hostage", "minions" }]] },	--Non-special police
-		security =		{ spec = {1, 4},   color = guard_color, priority = 4 },
-		thug =			{ atlas = {4, 12}, color = thug_color, priority = 4 },
-		tank =			{ atlas = {3, 1},  color = special_color, priority = 6 },
-		spooc =			{ atlas = {1, 3},  color = special_color, priority = 6 },
-		taser =			{ atlas = {3, 5},  color = special_color, priority = 6 },
-		shield =		{ texture = "guis/textures/pd2/hud_buff_shield", color = special_color, priority = 6 },
-		sniper =		{ atlas = {6, 5},  color = special_color, priority = 6 },
-		thug_boss =		{ atlas = {1, 1},  color = thug_color, priority = 4 },
-		phalanx =		{ texture = "guis/textures/pd2/hud_buff_shield", color = special_color, priority = 7 },
+		enemies =		{ atlas = {6, 1}, 	color = HUDListManager.ListOptions.enemy_color, --[[subtract = { "cop_hostage", "minions" }]] },	--Aggregated enemies
+		cop =			{ atlas = {0, 5}, 	color = HUDListManager.ListOptions.enemy_color, 	priority = 5, --[[subtract = { "cop_hostage", "minions" }]] },	--Non-special police
+		security =		{ spec = {1, 4}, 	color = HUDListManager.ListOptions.guard_color, 	priority = 4 },
+		thug =			{ atlas = {4, 12}, 	color = HUDListManager.ListOptions.thug_color, 	priority = 4 },
+		tank =			{ atlas = {3, 1}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
+		spooc =			{ atlas = {1, 3}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
+		taser =			{ atlas = {3, 5}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
+		shield =		{ texture = "guis/textures/pd2/hud_buff_shield", color = HUDListManager.ListOptions.special_color, priority = 6 },
+		sniper =		{ atlas = {6, 5}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
+		thug_boss =		{ atlas = {1, 1}, 	color = HUDListManager.ListOptions.thug_color, 	priority = 4 },
+		phalanx =		{ texture = "guis/textures/pd2/hud_buff_shield", color = HUDListManager.ListOptions.special_color, priority = 7 },
 		
-		turret =		{ atlas = {7, 5},  color = turret_color, priority = 4 },
-		unique =		{ atlas = {3, 8},  color = civilian_color, priority = 3, },
-		cop_hostage =	{ atlas = {2, 8},  color = hostage_color, priority = 2 },
-		civ_hostage =	{ atlas = {4, 7},  color = hostage_color, priority = 1 },
-		minion =		{ atlas = {6, 8},  color = hostage_color, priority = 0 },
-		civ =			{ atlas = {6, 7},  color = civilian_color, priority = 3, subtract = { "civ_hostage" } },
+		turret =		{ atlas = {7, 5}, 	color = HUDListManager.ListOptions.turret_color, 	priority = 4 },
+		unique =		{ atlas = {3, 8}, 	color = HUDListManager.ListOptions.civilian_color, priority = 3, },
+		cop_hostage =	{ atlas = {2, 8}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 2 },
+		civ_hostage =	{ atlas = {4, 7}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 1 },
+		minion =		{ atlas = {6, 8}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 0 },
+		civ =			{ atlas = {6, 7}, 	color = HUDListManager.ListOptions.civilian_color, priority = 3, subtract = { "civ_hostage" } },
 	}
 	function HUDList.UnitCountItem:init(parent, name, unit_type, unit_category, subtract_type, unit_data)
 		local unit_data = unit_data or HUDList.UnitCountItem.MAP[unit_type]
@@ -2121,7 +2386,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
-
+	
 	HUDList.UsedPagersItem = HUDList.UsedPagersItem or class(HUDList.RightListItem)
 	function HUDList.UsedPagersItem:init(parent, name)
 		HUDList.UsedPagersItem.super.init(self, parent, name, { spec = {1, 4} })
@@ -2137,18 +2402,20 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
-	function HUDList.UsedPagersItem:get_count()
-		return self._count or 0
-	end
 	
 	HUDList.CamCountItem = HUDList.CamCountItem or class(HUDList.RightListItem)
 	function HUDList.CamCountItem:init(parent, name)
 		HUDList.CamCountItem.super.init(self, parent, name, { atlas = {4, 2} })
+		local cams = managers.gameinfo:get_cams() or {}
+		local cam_count = 0
+		for uid, data in pairs(cams) do
+			if data.active then
+				cam_count = cam_count + 1
+			end
+		end
+		self:set_count(cam_count)
 	end
 	
-	function HUDList.CamCountItem:get_count()
-		return self._count or 0
-	end
 
 	HUDList.SpecialPickupItem = HUDList.SpecialPickupItem or class(HUDList.RightListItem)
 	HUDList.SpecialPickupItem.MAP = {
@@ -2169,13 +2436,14 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDList.LootItem = HUDList.LootItem or class(HUDList.RightListItem)
 	HUDList.LootItem.MAP = {
 		aggregate =		{ text = "", no_localize = true },	--Aggregated loot
-		armor =			{ text = "wolfhud_hudlist_loot_armor" }, 		-- Too long
+		armor =			{ text = "wolfhud_hudlist_loot_armor" }, 
 		artifact =		{ text = "hud_carry_artifact" },
-		bomb =			{ text = "wolfhud_hudlist_loot_bomb" },		-- Too long
+		bomb =			{ text = "wolfhud_hudlist_loot_bomb" },	
+
 		coke =			{ text = "hud_carry_coke" },
 		dentist =		{ text = "???", no_localize = true },
-		diamond =		{ text = "wolfhud_hudlist_loot_diamond" },	-- Too long
-		evidence =		{ text = "wolfhud_hudlist_loot_evidence" },	-- Too long
+		diamond =		{ text = "wolfhud_hudlist_loot_diamond" },
+		evidence =		{ text = "wolfhud_hudlist_loot_evidence" },
 		goat =			{ text = "hud_carry_goat" },
 		gold =			{ text = "hud_carry_gold" },
 		jewelry =		{ text = "hud_carry_diamonds" },
@@ -2188,7 +2456,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		safe =			{ text = "hud_carry_safe" },
 		server =		{ text = "hud_carry_circuit" },
 		shell =			{ text = "hud_carry_ammo" },
-		toast =			{ text = "wolfhud_hudlist_loot_toast" },		-- Too long	
+		toast =			{ text = "wolfhud_hudlist_loot_toast" },
 		turret =		{ text = "hud_carry_turret" },
 		warhead =		{ text = "hud_carry_warhead" },
 		weapon =		{ text = "hud_carry_weapon" },
@@ -2211,7 +2479,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				vertical = "center",
 				w = self._panel:w(),
 				h = self._panel:w(),
-				color = RightListBgColor or Color(0.0, 0.5, 0.0),
+				color = HUDListManager.ListOptions.list_color_bg or Color(0.0, 0.5, 0.0),
 				blend_mode = "normal",
 				font = tweak_data.hud_corner.assault_font,
 				font_size = self._panel:w() * 2.4 / math.min(txt:len(), 8),
@@ -2244,7 +2512,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+	
 	--Left list items
 	
 	HUDList.LeftListIcon = HUDList.LeftListIcon or class(HUDList.ItemBase)
@@ -2285,7 +2553,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	HUDList.TimerItem = HUDList.TimerItem or class(HUDList.ItemBase)
-	HUDList.TimerItem.STANDARD_COLOR = TimerColor or Color(1, 1, 1, 1)
+	HUDList.TimerItem.STANDARD_COLOR = HUDListManager.ListOptions.list_color or Color(1, 1, 1, 1)
 	HUDList.TimerItem.UPGRADE_COLOR = Color(1, 0.0, 0.8, 1.0)
 	HUDList.TimerItem.DISABLED_COLOR = Color(1, 1, 0, 0)
 	HUDList.TimerItem.FLASH_SPEED = 2
@@ -2315,7 +2583,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			vertical = "top",
 			w = self._panel:w(),
 			h = self._panel:h() * 0.3,
-            color = TimerColor or Color.white,
+            color = HUDListManager.ListOptions.list_color or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._panel:h() * 0.3
 		})
@@ -2323,7 +2591,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._box = HUDBGBox_create(self._panel, {
 				w = self._panel:w(),
 				h = self._panel:h() * 0.7,
-			}, { color = TimerColor, bg_color = TimerBgColor })
+			}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 		self._box:set_bottom(self._panel:bottom())
 		
 		self._distance_text = self._box:text({
@@ -2332,7 +2600,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			vertical = "top",
 			w = self._box:w(),
 			h = self._box:h(),
-            color = TimerColor or Color.white,
+            color = HUDListManager.ListOptions.list_color or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.4
 		})
@@ -2343,7 +2611,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			vertical = "bottom",
 			w = self._box:w(),
 			h = self._box:h(),
-            color = TimerColor or Color.white,
+            color = HUDListManager.ListOptions.list_color or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6
 		})
@@ -2466,7 +2734,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._box = HUDBGBox_create(self._panel, {
 				w = self._panel:w(),
 				h = self._panel:h(),
-			}, { color = EquipmentColor, bg_color = EquipmentBgColor })
+			}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 		
 		self._icon = self._panel:bitmap({
 			name = "icon",
@@ -2476,7 +2744,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			w = self:panel():w() * 0.8,
 			blend_mode = "add",
 			layer = 0,
-			color = EquipmentColor or Color.white,
+			color = HUDListManager.ListOptions.list_color or Color.white,
 		})
 		self._icon:set_center(self._panel:center())
 		self._icon:set_top(self._panel:top())
@@ -2597,22 +2865,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		})
 		self._health_bar:set_bottom(self._panel:bottom())
 		
-		if WolfHUD:getSetting("colorize_healthbars", "number") > 1 then
-			self._health_bar:set_color(Color(1, 0, 0, 0))
-			self._health_bar:set_blend_mode("sub")
-			self._panel:bitmap({
-				name = "radial_health_fill",
-				color = tweak_data.chat_colors[1],
-				texture = "guis/textures/pd2/hud_health",
-				texture_rect = { 64, 0, -64, 64 },
-				blend_mode = "add",
-				w = self._panel:w(),
-				h = self._panel:w(),
-				alpha = 1,
-				layer = 1
-			}):set_bottom(self._panel:bottom())
-		end
-		
 		self._hit_indicator = self._panel:bitmap({
 			name = "radial_health",
 			texture = "guis/textures/pd2/hud_radial_rim",
@@ -2685,17 +2937,12 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.MinionItem:set_health(health, skip_animate)
-		local red = health/ self._max_health
-		if WolfHUD:getSetting("colorize_healthbars", "number") > 1 then
-			red = 1 - red
-			self._health_bar:set_rotation(360 * red)
+		self._health_bar:set_color(Color(1, health / self._max_health, 1, 1))
+		
+		if not (skip_animate or self._dead) then
+			self._hit_indicator:stop()
+			self._hit_indicator:animate(callback(self, self, "_animate_damage"))
 		end
-		self._health_bar:set_color(Color(1, red, 1, 1))
-                   
-        if not (skip_animate or self._dead) then
-            self._hit_indicator:stop()
-            self._hit_indicator:animate(callback(self, self, "_animate_damage"))
-        end
 	end
 	
 	function HUDList.MinionItem:set_owner(peer_id)
@@ -2742,7 +2989,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._box = HUDBGBox_create(self._panel, {
 				w = self._panel:w(),
 				h = self._panel:h(),
-			}, { color = PagerColor, bg_color = PagerbgColor })
+			}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 
 		self._timer_text = self._box:text({
 			name = "time",
@@ -2761,7 +3008,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			vertical = "bottom",
 			w = self._box:w(),
 			h = self._box:h(),
-			color = PagerColor or Color.white,
+			color = HUDListManager.ListOptions.list_color or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.5,
 			text = "DIST"
@@ -2805,7 +3052,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._box = HUDBGBox_create(self._panel, {
 				w = self._panel:w(),
 				h = self._panel:h(),
-			}, { color = ECMColor, bg_color = ECMBgColor })
+			}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 		
 		self._text = self._box:text({
 			name = "text",
@@ -2839,7 +3086,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	
 	HUDList.TapeLoopItem = HUDList.TapeLoopItem or class(HUDList.ItemBase)
-	HUDList.TapeLoopItem = HUDList.TapeLoopItem or class(HUDList.ItemBase)
     HUDList.TapeLoopItem.STANDARD_COLOR = Color(1, 1, 1, 1)
     HUDList.TapeLoopItem.DISABLED_COLOR = Color(1, 1, 0, 0)
     HUDList.TapeLoopItem.FLASH_SPEED = 0.8
@@ -2855,7 +3101,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._box = HUDBGBox_create(self._panel, {
 				w = self._panel:w(),
 				h = self._panel:h(),
-			}, { color = TapeLoopColor, bg_color = TapeLoopBgColor })
+			}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 		
 		self._text = self._box:text({
 			name = "text",
@@ -2863,7 +3109,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			vertical = "center",
 			w = self._box:w(),
 			h = self._box:h(),
-			color = TapeLoopColor or Color.white,
+			color = HUDListManager.ListOptions.list_color or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6,
 		})
@@ -2884,331 +3130,468 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
             self._text:set_color(new_color)
 		else
-			self._text:set_color(TapeLoopColor)
+			self._text:set_color(HUDListManager.ListOptions.list_color)
         end
 	end
-	
 	
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	--Buff list
 	
 	HUDList.BuffItemBase = HUDList.BuffItemBase or class(HUDList.ItemBase)
-	HUDList.BuffItemBase.ICON_COLORS = {
-		buff = {
-			icon = Color.white,
-			flash = Color.red,
-			bg = Color(0.75, 1, 1, 1),
-			aced_icon = Color.white,
-			--level_icon = Color(0.4, 0, 1, 0),
-		},
-		team = {
-			icon = Color.white,
-			flash = Color.red,
-			bg = Color(0.5, 0.2, 1, 0.2),
-			aced_icon = Color.white,
-			--level_icon = Color(0.4, 0, 1, 0),
-		},
-		debuff = {
-			icon = Color.white,
-			flash = Color.red,
-			bg = Color(1, 0, 0),
-			aced_icon = Color.white,
-			--level_icon = Color(0.4, 0, 1, 0),
-		},
+	
+	HUDList.BuffItemBase.COLORS = {
+		STANDARD 	= Color('FFFFFF'),
+		DEBUFF 		= Color('FF7575'),
+		TEAM 		= Color('75FF75'),
 	}
 	
-	HUDList.BuffItemBase.BUFF_MAP = {
-		hostage_situation = {
-			spec = { 0, 1 },
-			priority = 2,
-			type = "buff"
-		},
-		partner_in_crime = {
-			atlas = { 1, 10 },
-			priority = 2,
-			type = "buff"
-		},
-		hostage_taker = {
-			atlas = { 2, 10 },
-			priority = 2,
-			type = "buff",	
-			icon_scale = 1.35
-		},
-		underdog = {
-			atlas = { 2, 1 },
-			priority = 3,
-			type = "buff",
-			class = "TimedBuffItem"
-		},
-		overdog = {
-			spec = { 6, 4 },
-			priority = 3,
-			type = "buff",
-			class = "TimedBuffItem"
-		},
-		close_combat = {
-			spec = { 5, 4 },
-			priority = 3,
-			type = "buff",	
-			class = "TimedBuffItem"
-		},
-		combat_medic = {
-			atlas = { 5, 7 },
-			priority = 3,
-			type = "buff",
-			class = "TimedBuffItem"
-		},
-		overkill = {
-			atlas = { 3, 2 },
-			priority = 3,
-			type = "buff",
-			class = "TimedBuffItem"
-		},
-		bullet_storm = {
-			atlas = { 4, 5 },
-			priority = 3,
-			type = "buff",
-			class = "TimedBuffItem"
-		},
-		pain_killer = {
-			atlas = { 0, 10 },
-			priority = 3,
-			type = "buff",
-			class = "TimedBuffItem"
-		},
-		swan_song = {
-			atlas = { 5, 12 },
-			priority = 3,
-			type = "buff",
-			class = "TimedBuffItem"
-		},
-		quick_fix = {
-			atlas = { 1, 11 },
-			priority = 3,
-			type = "buff",
-			class = "TimedBuffItem"
-		},
-		trigger_happy = {
-			atlas = { 7, 11 },
-			priority = 3,
-			type = "buff",
-			class = "TimedBuffItem"
-		},
-		inspire = {
-			atlas = { 4, 9 },
-			priority = 3,
-			type = "buff",
-			class = "TimedBuffItem"
-		},
-		melee_stack_damage = {
-			spec = { 5, 4 },
-			priority = 3,
-			type = "buff",
-			class = "TimedBuffItem"
-		},
-		damage_to_hot = {
-			spec = { 4, 6 },
-			priority = 3,
-			type = "buff",
-			class = "TimedBuffItem"
-		},
-		sixth_sense = {
-			atlas = { 6, 10 },
-			priority = 3,
-			type = "buff",
+	HUDList.BuffItemBase.MAP = {
+		--Buffs
+		aggressive_reload_aced = {
+			atlas_new = tweak_data.skilltree.skills.speedy_reload.icon_xy,
 			class = "TimedBuffItem",
-			flash_color = Color.blue,
-			flash_speed = tweak_data.player.omniscience.interval_t * 0.5
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
 		},
-		bow_charge = {
-			priority = 3,
-			type = "buff",
-			class = "ChargedBuffItem",
-			texture = "guis/textures/contact_vlad", 
-			rect = {1984, 0, 64, 64},
-			flash_speed = 0.2,
-			no_fade = true
-		},
-		melee_charge = {
-			atlas = { 4, 10 },
-			priority = 3,
-			type = "buff",
-			class = "ChargedBuffItem",
-			flash_speed = 0.2,
-			no_fade = true
-		},
-		reload_time = {
-			atlas = { 0, 9 },
-			priority = 3,
-			type = "buff",
-			class = "ChargedBuffItem",
-			flash_color = Color.green
-		},
-		berserker = {
-			atlas = { 2, 2 },
-			priority = 2,
-			type = "buff",
-			class = "BerserkerBuffItem"
-		},
-		crew_chief = {
-			atlas = { 2, 7 },
-			priority = 1,
-			type = "team"
-		},
-		leadership = {
-			atlas = { 7, 7 },
-			priority = 1,
-			type = "team"
-		},
-		bulletproof = {
-			atlas = { 6, 4 },
-			priority = 1,
-			type = "team",
-			aced = true,
-		},
-		armorer = {
-			spec = { 6, 0 },
-			priority = 1,
-			type = "team",
-			level = 9,
-		},
-		endurance = {
-			atlas = { 1, 8 },
-			priority = 1,
-			type = "team",
-			aced = true,
-		},
-		life_drain = {
-			spec = { 7, 4 },
-			priority = 5,
-			type = "debuff",
-			class = "TimedBuffItem"
-		},
-		medical_supplies = {
-			spec = { 4, 5 },
-			priority = 5,
-			type = "debuff",
-			class = "TimedBuffItem"
-		},
-		ammo_give_out = {
-			spec = { 5, 5 },
-			priority = 5,
-			type = "debuff",
+		ammo_efficiency = {
+			atlas_new = tweak_data.skilltree.skills.single_shot_ammo_return.icon_xy,
 			class = "TimedBuffItem",
-		},
-		inspire_debuff = {
-			atlas = { 4, 9 },
-			priority = 5,
-			type = "debuff",
-			class = "TimedBuffItem",
-		},
-		bullseye_debuff = {
-			atlas = { 6, 11 },
-			priority = 5,
-			type = "debuff",
-			class = "TimedBuffItem",
-		},
-		tension_debuff = {
-			spec = { 0, 5 },
-			priority = 5,
-			type = "debuff",
-			class = "TimedBuffItem",
-		},
-		damage_to_hot_debuff = {
-			spec = { 4, 6 },
-			priority = 5,
-			type = "debuff",
-			class = "TimedBuffItem",
-		},
-		armor_regen_debuff = {
-			spec = { 6, 0 },
-			priority = 5,
-			type = "debuff",
-			class = "TimedBuffItem",
-			no_fade = true,
-		},
-		suppression_debuff = {
-			atlas = { 7, 0 },
-			priority = 5,
-			type = "debuff",
-			class = "SuppressionBuffItem",
-			flash_speed = 0.25,
-			no_fade = true,
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
 		},
 		armor_break_invulnerable = {
-			spec = { 6, 1 },
-			priority = 5,
-			type = "buff",
+			spec = {6, 1},
 			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		berserker = {
+			atlas_new = tweak_data.skilltree.skills.wolverine.icon_xy,
+			class = "BerserkerBuffItem",
+			priority = 3,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		bloodthirst_aced = {
+			atlas_new = tweak_data.skilltree.skills.bloodthirst.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			title = "Aced",
+		},
+		bloodthirst_basic = {
+			atlas_new = tweak_data.skilltree.skills.bloodthirst.icon_xy,
+			class = "BuffItemBase",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			title = "Basic",
+			ignore = true,
+		},
+		bullet_storm = {
+			atlas_new = tweak_data.skilltree.skills.ammo_reservoir.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		sixth_sense = {
+			atlas_new = tweak_data.skilltree.skills.chameleon.icon_xy,
+			class = "TimedBuffItem",
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		close_contact = {
+			spec = {5, 4},
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		combat_medic = {
+			atlas_new = tweak_data.skilltree.skills.combat_medic.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		combat_medic_passive = {
+			atlas_new = tweak_data.skilltree.skills.combat_medic.icon_xy,
+			class = "BuffItemBase",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = true,
+ 		},
+		desperado = {
+			atlas_new = tweak_data.skilltree.skills.expert_handling.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		die_hard = {
+			atlas_new = tweak_data.skilltree.skills.show_of_force.icon_xy,
+			class = "BuffItemBase",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = true,
+		},
+		dire_need = {
+			atlas_new = tweak_data.skilltree.skills.dire_need.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		grinder = {
+			spec = {4, 6},
+			class = "TimedStacksBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		hostage_situation = {
+			spec = {0, 1},
+			class = "BuffItemBase",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = true,
+		},
+		hostage_taker = {
+			atlas_new = tweak_data.skilltree.skills.black_marketeer.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			invert_timers = true,
+			ignore = true,
+		},
+		melee_stack_damage = {
+			spec = {5, 4},
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			--ignore = true,
+		},
+		inspire = {
+			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		messiah = {
+			atlas_new = tweak_data.skilltree.skills.messiah.icon_xy,
+			class = "BuffItemBase",
+			priority = 3,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		overdog = {
+			spec = {6, 4},
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = true,
+		},
+		overkill = {
+			atlas_new = tweak_data.skilltree.skills.overkill.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = true,
+		},
+		painkiller = {
+			atlas_new = tweak_data.skilltree.skills.fast_learner.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = true,
+		},
+		partner_in_crime = {
+			atlas_new = tweak_data.skilltree.skills.control_freak.icon_xy,
+			class = "BuffItemBase",
+			priority = 3,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = true,
+		},
+		running_from_death = {
+			atlas_new = tweak_data.skilltree.skills.running_from_death.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		quick_fix = {
+			atlas_new = tweak_data.skilltree.skills.tea_time.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = true,
+		},
+		second_wind = {
+			atlas_new = tweak_data.skilltree.skills.scavenger.icon_xy,
+ 			class = "TimedBuffItem",
+			priority = 4,
+ 			color = HUDList.BuffItemBase.COLORS.STANDARD,
+ 		},
+		lock_n_load = {
+			atlas_new = tweak_data.skilltree.skills.shock_and_awe.icon_xy,
+			class = "ShockAndAweBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		swan_song = {
+			atlas_new = tweak_data.skilltree.skills.perseverance.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = true,
+		},
+		tooth_and_claw = {
+			spec = {0, 3},
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		trigger_happy = {
+			atlas_new = tweak_data.skilltree.skills.trigger_happy.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = true,
+		},
+		underdog = {
+			atlas_new = tweak_data.skilltree.skills.underdog.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = true,
+		},
+		unseen_strike = {
+			atlas_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
+			class = "TimedBuffItem",
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		up_you_go = {
+			atlas_new = tweak_data.skilltree.skills.up_you_go.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = true,
+		},
+		uppers = {
+			atlas_new = tweak_data.skilltree.skills.tea_cookies.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		yakuza = {
+			spec = {6, 6},
+			class = "BerserkerBuffItem",
+			priority = 3,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		
+		--Debuffs
+		anarchist_armor_recovery_debuff = {
+			spec = {0, 1},
+			texture_bundle_folder = "opera",
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
+		},
+		ammo_give_out_debuff = {
+			spec = {5, 5},
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
 		},
 		armor_break_invulnerable_debuff = {
-			spec = { 6, 1 },
-			priority = 5,
-			type = "debuff",
+			spec = {6, 1},
 			class = "TimedBuffItem",
-			on_activate = function()
-				local upgrade_value = managers.player:upgrade_value("temporary", "armor_break_invulnerable")
-				
-				managers.player:activate_timed_buff(
-					"armor_break_invulnerable",
-					upgrade_value and upgrade_value[1] or 0
-				)
-			end,
-		}
-	}
-	
-	HUDList.BuffItemBase.IGNORED_BUFFS = {
-		suppression_debuff = true,
-		hostage_taker = true,
-		crew_chief = true,
-		--hostage_situation = true,
-		swan_song = true,
-		damage_to_hot_debuff = true,
-		melee_charge = WolfHUD:getSetting("SHOW_MELEE", "boolean"),
-		reload_time = WolfHUD:getSetting("SHOW_RELOAD", "boolean"),
-	}
-	
-	HUDList.BuffItemBase.COMPOSITE_ITEMS = {
-		underdog_aced = {		item = "underdog",		keep_on_deactivation = true,
-			aced = function() 
-				return true
-			end
+			priority = 8,
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
+			ignore = true,	--Composite debuff
 		},
-		leadership = {			item = "leadership",
-			aced = function()
-				return managers.player:has_team_category_upgrade("weapon", "recoil_multiplier") or managers.player:has_team_category_upgrade("weapon", "suppression_recoil_multiplier")
-			end
+		bullseye_debuff = {
+			atlas_new = tweak_data.skilltree.skills.prison_wife.icon_xy,
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
 		},
-		crew_chief_3 = {		item = "crew_chief",
-			level = function()
-				if managers.player:has_team_category_upgrade("health", "hostage_multiplier") or managers.player:has_team_category_upgrade("stamina", "hostage_multiplier")  or managers.player:has_team_category_upgrade("damage_dampener", "hostage_multiplier") then
-					return 9
-				elseif managers.player:has_team_category_upgrade("armor", "multiplier") then
-					return 7
-				elseif managers.player:has_team_category_upgrade("health", "passive_multiplier") then
-					return 5
-				elseif managers.player:has_team_category_upgrade("stamina", "passive_multiplier") then
-					return 3
-				else
-					return 0
-				end
-			end
+		grinder_debuff = {
+			spec = {4, 6},
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
+			ignore = true,	--Composite debuff
+		},
+		inspire_debuff = {
+			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
+			title = "Boost",
+		},
+		inspire_revive_debuff = {
+			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
+			title = "Revive",
+		},
+		life_drain_debuff = {
+			spec = {7, 4},
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
+		},
+		medical_supplies_debuff = {
+			spec = {4, 5},
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
+		},
+		unseen_strike_debuff = {
+			atlas_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
+			ignore = true,	--Composite debuff
+		},
+		uppers_debuff = {
+			atlas_new = tweak_data.skilltree.skills.tea_cookies.icon_xy,
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
+			ignore = true,	--Composite debuff
+		},
+		sociopath_debuff = {
+			spec = {3, 5},
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
+		},
+		
+		--Team buffs
+		armorer = {
+			spec = {6, 0},
+			class = "TeamBuffItem",
+			priority = 1,
+			color = HUDList.BuffItemBase.COLORS.TEAM,
+		},
+		bulletproof = {						--TODO: Needs new icon
+			atlas_new = tweak_data.skilltree.skills.iron_man.icon_xy,
+			class = "TeamBuffItem",
+			priority = 1,
+			color = HUDList.BuffItemBase.COLORS.TEAM,
+		},
+		crew_chief = {
+			spec = {2, 0},
+			class = "TeamBuffItem",
+			priority = 1,
+			color = HUDList.BuffItemBase.COLORS.TEAM,
+		},
+		endurance = {
+			atlas_new = tweak_data.skilltree.skills.triathlete.icon_xy,
+			class = "TeamBuffItem",
+			priority = 1,
+			color = HUDList.BuffItemBase.COLORS.TEAM,
+		},
+		forced_friendship = {
+			atlas = tweak_data.skilltree.skills.triathlete.icon_xy,
+			class = "TeamBuffItem",
+			priority = 1,
+			color = HUDList.BuffItemBase.COLORS.TEAM,
+			ignore = true,
+ 		},
+		
+		--Composite buffs
+		damage_increase = {
+			atlas_new = tweak_data.skilltree.skills.prison_wife.icon_xy,
+			class = "DamageIncreaseBuff",
+			priority = 2,
+			color = Color(1, 1, 0),
+			title = "+Dmg",
+		},
+		damage_reduction = {
+			atlas_new = tweak_data.skilltree.skills.disguise.icon_xy,
+			class = "DamageReductionBuff",
+			priority = 2,
+			color = Color(0, 1, 1),
+			title = "-Dmg",
+		},
+		melee_damage_increase = {
+			atlas_new = tweak_data.skilltree.skills.hidden_blade.icon_xy,
+			class = "MeleeDamageIncreaseBuff",
+			priority = 2,
+			color = Color(1, 0, 1),
+			title = "+M.Dmg",
+		},
+		
+		--Player actions
+		anarchist_armor_regeneration = {
+			spec = {0, 0},
+			texture_bundle_folder = "opera",
+			class = "TimedBuffItem",
+			priority = 9,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			invert_timers = true,
+		},
+		standard_armor_regeneration = {
+			spec = {6, 0},
+			class = "TimedBuffItem",
+			priority = 9,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			invert_timers = true,
+		},
+		weapon_charge = {
+			texture = "guis/textures/contact_vlad",
+			texture_rect = {1984, 0, 64, 64},
+			class = "TimedBuffItem",
+			priority = 10,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+		},
+		melee_charge = {
+			atlas = tweak_data.skilltree.skills.hidden_blade.icon_xy,
+			class = "TimedBuffItem",
+			priority = 10,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = WolfHUD:getSetting("SHOW_MELEE", "boolean")
+		},
+		reload = {
+			atlas = {0, 9},
+			class = "TimedBuffItem",
+			priority = 10,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = WolfHUD:getSetting("SHOW_RELOAD", "boolean")
+		},
+		interact = {
+			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
+			class = "TimedBuffItem",
+			priority = 10,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = (WolfHUD:getSetting("SHOW_CIRCLE", "boolean") or WolfHUD:getSetting("SHOW_TIME_REMAINING", "boolean"))
+		},
+		place_equipment = {
+			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
+			class = "TimedBuffItem",
+			priority = 10,
+			color = HUDList.BuffItemBase.COLORS.STANDARD,
+			ignore = (WolfHUD:getSetting("SHOW_CIRCLE", "boolean") or WolfHUD:getSetting("SHOW_TIME_REMAINING", "boolean"))
 		},
 	}
-	HUDList.BuffItemBase.COMPOSITE_ITEMS.leadership_aced = table.deep_map_copy(HUDList.BuffItemBase.COMPOSITE_ITEMS.leadership)
-	HUDList.BuffItemBase.COMPOSITE_ITEMS.leadership_aced.keep_on_deactivation = true
-	HUDList.BuffItemBase.COMPOSITE_ITEMS.crew_chief_5 = table.deep_map_copy(HUDList.BuffItemBase.COMPOSITE_ITEMS.crew_chief_3)
-	HUDList.BuffItemBase.COMPOSITE_ITEMS.crew_chief_5.keep_on_deactivation = true
-	HUDList.BuffItemBase.COMPOSITE_ITEMS.crew_chief_7 = table.deep_map_copy(HUDList.BuffItemBase.COMPOSITE_ITEMS.crew_chief_5)
-	HUDList.BuffItemBase.COMPOSITE_ITEMS.crew_chief_9 = table.deep_map_copy(HUDList.BuffItemBase.COMPOSITE_ITEMS.crew_chief_5)
 	
 	function HUDList.BuffItemBase:init(parent, name, icon, w, h)
-		HUDList.BuffItemBase.super.init(self, parent, name, { priority = icon.priority, align = "bottom", w = w or parent:panel():h(), h = h or parent:panel():h() })
+		HUDList.BuffItemBase.super.init(self, parent, name, { priority = icon.priority, align = "bottom", w = w or parent:panel():h() * 0.7, h = h or parent:panel():h() })
 		
-		local x, y = unpack(icon.atlas or icon.spec or { 0, 0 })
-		local texture = icon.atlas and "guis/textures/pd2/skilltree/icons_atlas" or icon.spec and "guis/textures/pd2/specialization/icons_atlas" or icon.texture
-		local texture_rect = (icon.atlas or icon.spec) and { x * 64, y * 64, 64, 64 } or icon.rect
+		local texture = icon.texture
+		local texture_rect = icon.texture_rect
+		
+		if icon.atlas or icon.atlas_new or icon.spec then
+			local x, y = unpack(icon.atlas or icon.atlas_new or icon.spec)
+			local w = icon.atlas_new and 80 or 64
+			texture_rect = { x * w, y * w, w, w }
+			
+			texture = "guis/"
+			if icon.texture_bundle_folder then
+				texture = string.format("%sdlcs/%s/", texture, icon.texture_bundle_folder)
+			end
+			texture = string.format("%stextures/pd2/%s", texture, icon.atlas_new and "skilltree_2/icons_atlas_2" or icon.atlas and "skilltree/icons_atlas" or "specialization/icons_atlas")
+		end
+		
+		self._default_icon_color = icon.color or Color.white
+		local progress_bar_width = self._panel:w() * 0.05
+		local icon_size = self._panel:w() - progress_bar_width * 4
 		
 		self._icon = self._panel:bitmap({
 				name = "icon",
@@ -3216,101 +3599,98 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				texture_rect = texture_rect,
 				valign = "center",
 				align = "center",
-				h = self:panel():w() * 0.7 * (icon.icon_scale or 1) * (icon.icon_h_ratio or 1),
-				w = self:panel():w() * 0.7 * (icon.icon_scale or 1) * (icon.icon_w_ratio or 1),
-				blend_mode = "normal",
-				layer = 0,
-				color = icon.icon_color or HUDList.BuffItemBase.ICON_COLORS[icon.type].icon or Color.white,
+				h = icon_size,
+				w = icon_size,
+				blend_mode = icon.blend_mode or "normal",
+				color = self._default_icon_color,
 				rotation = icon.icon_rotation or 0,
 		})
 		self._icon:set_center(self:panel():center())
 		
-		self._flash_icon = self._panel:bitmap({
-				name = "flash_icon",
-				texture = texture,
-				texture_rect = texture_rect,
-				valign = "center",
-				align = "center",
-				layer = 0,
-				h = self._icon:h(),
-				w = self._icon:w(),
-				blend_mode = "normal",
-				color = icon.flash_color or HUDList.BuffItemBase.ICON_COLORS[icon.type].flash or Color.blue,
-				alpha = 0,
-				rotation = icon.icon_rotation or 0,
-		})
-		self._flash_icon:set_center(self._icon:center())
-		
-		self._bg = self._panel:bitmap({
+		self._bg = self._panel:rect({
 			name = "bg",
-			texture = "guis/textures/pd2/skilltree/ace",
-			texture_rect = { 37, 28, 54, 70 },
-			valign = "center",
-			align = "center",
-			layer = 0,
 			h = self._icon:h(),
-			w = 0.8 * self._icon:w(),
+			w = self._icon:w(),
 			blend_mode = "normal",
-			layer = -1,
-			color = icon.bg_color or HUDList.BuffItemBase.ICON_COLORS[icon.type].bg or Color.white,
+			layer = -10,
+			color = Color.black,
+			alpha = 0.2,
 		})
 		self._bg:set_center(self._icon:center())
 		
-		self._ace_icon = self._panel:bitmap({
-			name = "ace_icon",
-			texture = "guis/textures/pd2/infamous_symbol",
-			texture_rect = { 2, 5, 12, 16 },
-			w = 1.15 * 12 * self:panel():w()/45,
-			h = 1.15 * 16 * self:panel():w()/45,
-			blend_mode = "normal",
-			valign = "center",
+		self._title = self._panel:text({
+			name = "title",
+			text = icon.title or "",
 			align = "center",
-			layer = 2,
-			color = icon.aced_icon_color or HUDList.BuffItemBase.ICON_COLORS[icon.type].aced_icon or Color.white,
-			visible = false,
+			vertical = "top",
+			w = self._panel:w(),
+			h = (self._panel:h() - icon_size) / 2,
+			layer = 10,
+			color = Color.white,
+			font = tweak_data.hud_corner.assault_font,
+			font_size = 0.95 * (self._panel:h() - icon_size) / 2,
+			blend_mode = "normal",
 		})
 		
-		self._level_bg = self._panel:bitmap({
-			texture = "guis/textures/pd2/infamous_symbol",
-			texture_rect = { 2, 5, 12, 16 },
-			w = 1.15 * 12 * self:panel():w()/45,
-			h = 1.15 * 16 * self:panel():w()/45,
-			blend_mode = "normal",
-			valign = "center",
+		self._value = self._panel:text({
+			name = "value",
 			align = "center",
-			layer = 2,
-			color = icon.level_icon_color or HUDList.BuffItemBase.ICON_COLORS[icon.type].level_icon or Color.white,
-			visible = false,
-		})
-		self._level_text = self._panel:text({
-			name = "level_text",
-			text = "",
-			valign = "center",
-			align = "center",
-			vertical = "center",
-			w = self._level_bg:w(),
-			h = self._level_bg:h(),
-			layer = 3,
-			color = Color.black,
+			vertical = "bottom",
+			w = self._panel:w(),
+			h = (self._panel:h() - icon_size) / 2,
+			layer = 10,
+			color = Color.white,
+			font = tweak_data.hud_corner.assault_font,
+			font_size = 0.95 * (self._panel:h() - icon_size) / 2,
 			blend_mode = "normal",
-			font = tweak_data.hud.small_font,
-			font_size = self._level_bg:h() * 0.75,
-			visible = false,
 		})
-		self._level_text:set_top(self._level_bg:top())
-		self._level_text:set_left(self._level_bg:left())
+		self._value:set_bottom(self._panel:h() + progress_bar_width)
+		
+		self._progress_bar_debuff = PanelFrame:new(self._panel, { 
+			--invert_progress = icon.invert_timers, 
+			bar_w = progress_bar_width, 
+			w = self._panel:w(), 
+			h = self._panel:w(), 
+			color = HUDList.BuffItemBase.COLORS.DEBUFF,
+		})
+		self._progress_bar_debuff:panel():set_center(self._icon:center())
+		self._progress_bar_debuff:panel():set_visible(false)
+		self._progress_bar_debuff:set_ratio(1)
+		
+		self._progress_bar = PanelFrame:new(self._panel, { 
+			invert_progress = icon.invert_timers, 
+			bar_w = progress_bar_width, 
+			w = self._panel:w() - (progress_bar_width+1), 
+			h = self._panel:w() - (progress_bar_width+1),
+			color = icon.progress_color or self._default_icon_color,
+		})
+		self._progress_bar:panel():set_center(self._icon:center())
+		self._progress_bar:panel():set_visible(false)
+		self._progress_bar:set_ratio(1)
+		
+		self._progress_bar_inner = PanelFrame:new(self._panel, { 
+			invert_progress = icon.invert_timers, 
+			bar_w = progress_bar_width, 
+			w = self._panel:w() - (progress_bar_width+1) * 2, 
+			h = self._panel:w() - (progress_bar_width+1) * 2,
+			color = icon.progress_color or self._default_icon_color,
+		})
+		self._progress_bar_inner:panel():set_center(self._icon:center())
+		self._progress_bar_inner:panel():set_visible(false)
+		self._progress_bar_inner:set_ratio(1)
 		
 		self._stack_bg = self._panel:bitmap({
-			w = 26 * self:panel():w()/45,
-			h = 26 * self:panel():w()/45,
+			w = self._icon:w() * 0.4,
+			h = self._icon:h() * 0.4,
 			blend_mode = "normal",
 			texture = "guis/textures/pd2/equip_count",
+			texture_rect = { 5, 5, 22, 22 },
 			layer = 2,
 			alpha = 0.8,
 			visible = false
 		})
-		self._stack_bg:set_right(self._panel:w())
-		self._stack_bg:set_bottom(self._panel:h())
+		self._stack_bg:set_right(self._icon:right())
+		self._stack_bg:set_bottom(self._icon:bottom())
 		
 		self._stack_text = self._panel:text({
 			name = "stack_text",
@@ -3324,837 +3704,555 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			color = Color.black,
 			blend_mode = "normal",
 			font = tweak_data.hud.small_font,
-			font_size = self._stack_bg:h() * 0.55,
+			font_size = self._stack_bg:h() * 0.85,
 			visible = false,
 		})
 		self._stack_text:set_center(self._stack_bg:center())
-		
-		self._flash_speed = icon.flash_speed
 	end
 	
-	function HUDList.BuffItemBase:deactivate(...)
-		HUDList.BuffItemBase.super.deactivate(self, ...)
-		self:set_aced(false, true)
-		self:set_level(0, true)
+	function HUDList.BuffItemBase:post_init()
+		self:set_fade_time(0)
+		self:set_move_speed(0)
 	end
 	
-	function HUDList.BuffItemBase:set_aced(status, override)
-		if override then
-			self._is_aced = status
+	function HUDList.BuffItemBase:activate(id)
+		self._buff_active = true
+		self:_set_progress(0)
+		self:_set_progress_inner(0)
+		HUDList.BuffItemBase.super.activate(self)
+	end
+	
+	function HUDList.BuffItemBase:deactivate(id)
+		self._buff_active = false
+		self._expire_t = nil
+		self._start_t = nil
+		self:_set_progress(0)
+		self:_set_progress_inner(0)
+		if not self._debuff_active then
+			HUDList.BuffItemBase.super.deactivate(self)
 		else
-			self._is_aced = self._is_aced or status
-		end
-		self._ace_icon:set_visible(self._is_aced)
-	end
-	
-	function HUDList.BuffItemBase:set_level(new_level, override)
-		self._current_level = override and new_level or math.max(self._current_level or 0, new_level)
-		self._level_text:set_text(tostring(self._current_level))
-		self._level_bg:set_visible(self._current_level > 1)
-		self._level_text:set_visible(self._current_level > 1)
-	end
-	
-	function HUDList.BuffItemBase:set_stack_count(new_count, show_zero)
-		if not show_zero and new_count <= 0 then
-			self._stack_text:set_visible(false)
-			self._stack_bg:set_visible(false)
-			self._stack_text:set_text("")
-		else
-			self._stack_text:set_visible(true)
-			self._stack_bg:set_visible(true)
-			self._stack_text:set_text(tostring(new_count))
+			self._icon:set_color(HUDList.BuffItemBase.COLORS.DEBUFF)
 		end
 	end
 	
-	function HUDList.BuffItemBase:set_flash(continuous)
-		self:stop_flash()
-		self._flash_icon:animate(callback(self, self, "_animate_flash"), self._flash_speed or 0.5, continuous)
+	function HUDList.BuffItemBase:activate_debuff(id)
+		self._debuff_active = true
+		self._icon:set_color(HUDList.BuffItemBase.COLORS.DEBUFF)
+		HUDList.BuffItemBase.super.activate(self)
 	end
 	
-	function HUDList.BuffItemBase:stop_flash()
-		self._flash_icon:stop()
-		self._flash_icon:set_alpha(0)
-		self._icon:set_alpha(1)
+	function HUDList.BuffItemBase:deactivate_debuff(id)
+		self._debuff_active = false
+		self._debuff_expire_t = nil
+		self._debuff_start_t = nil
+		self._progress_bar_debuff:panel():set_visible(false)
+		self._icon:set_color(self._default_icon_color)
+		if not self._buff_active then
+			HUDList.BuffItemBase.super.deactivate(self)
+		end
 	end
 	
-	function HUDList.BuffItemBase:_animate_flash(icon, duration, continuous)
-		repeat
-			local t = duration
-			while t > 0 do
-				local dt = coroutine.yield()
-				t = math.max(t - dt, 0)
-				local value = math.sin(t/duration * 180)
-				self._flash_icon:set_alpha(value)
-				self._icon:set_alpha(1-value)
-			end
-		until not continuous
-
-		self._flash_icon:set_alpha(0)
-		self._icon:set_alpha(1)
+	function HUDList.BuffItemBase:set_duration(id, data)
+		self._start_t = data.t
+		self._expire_t = data.expire_t
+		self._progress_bar:panel():set_visible(true)
 	end
 	
-	HUDList.TimedBuffItem = HUDList.TimedBuffItem or class(HUDList.BuffItemBase)
-	function HUDList.TimedBuffItem:init(parent, name, icon)
-		HUDList.TimedBuffItem.super.init(self, parent, name, icon)
+	function HUDList.BuffItemBase:set_duration_debuff(id, data)
+		self._debuff_start_t = data.t
+		self._debuff_expire_t = data.expire_t
 		
-		self._timer = CircleBitmapGuiObject:new(self._panel, {
-			use_bg = true,
-			radius = 0.9 * self:panel():w() / 2,
-			color = Color(1, 1, 1, 1),
-			blend_mode = "add",
-			layer = 0
-		})
-		self._timer._circle:set_center(self._icon:center())
-		self._timer._bg_circle:set_center(self._icon:center())
-	end
-	
-	function HUDList.TimedBuffItem:set_duration(duration)
-		self._duration = duration
-	end
-	
-	function HUDList.TimedBuffItem:refresh()
-		self:set_progress(0)
-	end
-	
-	function HUDList.TimedBuffItem:set_progress(ratio)
-		self._timer._circle:set_color(Color(1, ratio, 1, 1))	--TODO: why the hell wont set_current directly on the timer work?
-	end
-	
-	HUDList.ChargedBuffItem = HUDList.ChargedBuffItem or class(HUDList.TimedBuffItem)			
-	function HUDList.ChargedBuffItem:init(...)
-		HUDList.ChargedBuffItem.super.init(self, ...)
-		self._bg:set_visible(false)
-	end
-	
-	function HUDList.ChargedBuffItem:set_progress(ratio)
-		HUDList.ChargedBuffItem.super.set_progress(self, ratio)
-		if ratio >= 1 and not self._flashing then
-			self._flashing = true
-			self:set_flash(true)
-		elseif ratio == 0 and self._flashing then
-			self._flashing = nil
-			self:stop_flash()
+		self._progress_bar_debuff:panel():set_visible(true)
+		
+		if self._buff_active and self._expire_t and self._expire_t < self._debuff_expire_t then
+			self._icon:set_color(self._default_icon_color)
 		end
 	end
+	
+	function HUDList.BuffItemBase:set_progress(id, data)
+		self:_set_progress(data.progress)
+	end
+	
+	function HUDList.BuffItemBase:set_stack_count(id, data)
+		self:_set_stack_count(data.stack_count)
+	end
+	
+	function HUDList.BuffItemBase:set_value(id, data)
+		if data.show_value then
+			self:_set_text(tostring(data.value))
+		end
+	end
+	
+	function HUDList.BuffItemBase:_update_debuff(t, dt)
+		self:_set_progress_debuff((t - self._debuff_start_t) / (self._debuff_expire_t - self._debuff_start_t))
+		
+		if t > self._debuff_expire_t then
+			self._debuff_start_t = nil
+			self._debuff_expire_t = nil
+			self._progress_bar_debuff:panel():set_visible(false)
+		end
+	end
+	
+	function HUDList.BuffItemBase:_set_progress(r)
+		self._progress_bar:set_ratio(1-r)
+	end
+	
+	function HUDList.BuffItemBase:_set_progress_inner(r)
+		self._progress_bar_inner:set_ratio(1-r)
+	end
+	
+	function HUDList.BuffItemBase:_set_progress_debuff(r)
+		self._progress_bar_debuff:set_ratio(r)
+	end
+	
+	function HUDList.BuffItemBase:_set_stack_count(count)
+		self._stack_bg:set_visible(count and true or false)
+		self._stack_text:set_visible(count and true or false)
+		self._stack_text:set_text(count or 0)
+	end
+	
+	function HUDList.BuffItemBase:_set_text(str)
+		self._value:set_text(str)
+	end
+	
 	
 	HUDList.BerserkerBuffItem = HUDList.BerserkerBuffItem or class(HUDList.BuffItemBase)
-	function HUDList.BerserkerBuffItem:init(parent, name)
-		HUDList.BuffItemBase.init(self, parent, name, HUDList.BuffItemBase.BUFF_MAP.berserker)
-		
-		self._text = self._panel:text({
-			name = "text",
-			text = "0",
-			valign = "bottom",
-			halign = "center",
-			align = "center",
-			vertical = "bottom",
-			horizontal = "center",
-			w = self._icon:w(),
-			h = math.round(self._icon:w() * 0.4),
-			layer = 0,
-			color = Color.white,
-			font = tweak_data.hud_corner.assault_font,
-			font_size = math.round(self._icon:w() * 0.4),
-			blend_mode = "normal"
-		})
-		self._icon:set_top(self:panel():top() + self._icon:h() * 0.1) --Extra space for ace card bg
-		self._flash_icon:set_center(self._icon:center())
-		self._bg:set_center(self._icon:center())
-		self._text:set_center(self._icon:center())
-		self._text:set_bottom(self:panel():bottom())
-		self._text_bg = self._panel:rect({
-			name = "text_bg",
-			color = Color.black,
-			layer = -1,
-			alpha = 0.5,
-			blend_mode = "normal",
-			w = self._text:w(),
-			h = self._text:h(),
-		})
-		self._text_bg:set_center(self._text:center())
-	end
-	
-	function HUDList.BerserkerBuffItem:set_progress(ratio)
-		self._text:set_color(self:_get_color_from_table(ratio, 1))
-		self._text:set_text(string.format("%.0f", ratio * 100) .. "%")
-		
-		local _, _, w, _ = self._text:text_rect()
-		self._text_bg:set_w(w)
-		self._text_bg:set_center(self._text:center())
-	end
-	
-	HUDList.SuppressionBuffItem = HUDList.SuppressionBuffItem or class(HUDList.TimedBuffItem)
-	function HUDList.SuppressionBuffItem:set_progress(ratio)
-		HUDList.SuppressionBuffItem.super.set_progress(self, ratio)
-		
-		local max = tweak_data.player.suppression.max_value
-		local current = ratio * (tweak_data.player.suppression.decay_start_delay + max)
-		if current > max and not self._flashing then
-			self._flashing = true
-			self:set_flash(true)
-		elseif current < max and self._flashing then
-			self._flashing = nil
-			self:stop_flash()
+	function HUDList.BerserkerBuffItem:set_value(id, data)
+		if data.show_value then
+			self:_set_text(string.format("%.0f%%", data.value * 100))
 		end
 	end
 	
-end
-
-if RequiredScript == "lib/managers/hud/hudassaultcorner" then
-	local HUDAssaultCorner_init = HUDAssaultCorner.init
-	function HUDAssaultCorner:init(...)
-		HUDAssaultCorner_init(self, ...)
-		local hostages_panel = self._hud_panel:child("hostages_panel")
-		if alive(hostages_panel) then
-			hostages_panel:set_alpha(0)
+	
+	HUDList.ShockAndAweBuffItem = HUDList.ShockAndAweBuffItem or class(HUDList.BuffItemBase)
+	function HUDList.ShockAndAweBuffItem:set_value(id, data)
+		if data.show_value then
+			self:_set_text(string.format("+%.0f%%", (data.value-1) * 100))
 		end
 	end
-end
-
-if RequiredScript == "lib/managers/playermanager" then
-
-	PlayerManager._CHECK_BUFF_ACED = {
-		overkill = function() return managers.player:has_category_upgrade("player", "overkill_all_weapons") end,
-		pain_killer = function(level) return (level and level > 1) end,
-		swan_song = function() return managers.player:has_category_upgrade("player", "berserker_no_ammo_cost") end,
-	}
 	
-	PlayerManager._TEAM_BUFFS = {
-		damage_dampener = {
-			hostage_multiplier =  "crew_chief_9", 
-		},
-		stamina = {
-			multiplier = "endurance",
-			passive_multiplier = "crew_chief_3", 
-			hostage_multiplier =  "crew_chief_9", 
-		},
-		health = {
-			passive_multiplier = "crew_chief_5", 
-			hostage_multiplier = "crew_chief_9", 
-		},
-		armor = {
-			multiplier =  "crew_chief_7", 
-			regen_time_multiplier = "bulletproof", 
-			passive_regen_time_multiplier = "armorer", 
-		},
-		weapon = {
-			recoil_multiplier = "leadership_aced", 
-			suppression_recoil_multiplier = "leadership_aced", 
-		},
-		pistol = {
-			recoil_multiplier = "leadership", 
-			suppression_recoil_multiplier = "leadership", 
-		},
-		akimbo = {
-			recoil_multiplier = "leadership", 
-			suppression_recoil_multiplier = "leadership", 
-		},
-	}
 	
-	PlayerManager._TEMPORARY_BUFFS = {
-		dmg_multiplier_outnumbered = "underdog",
-		dmg_dampener_outnumbered = "underdog_aced",
-		dmg_dampener_outnumbered_strong = "overdog",
-		dmg_dampener_close_contact = "close_combat",
-		combat_medic_damage_multiplier = "combat_medic",
-		overkill_damage_multiplier = "overkill",
-		no_ammo_cost = "bullet_storm",
-		passive_revive_damage_reduction = "pain_killer",
-		berserker_damage_multiplier = "swan_song",
-		first_aid_damage_reduction = "quick_fix",
-		melee_life_leech = "life_drain",
-		loose_ammo_restore_health = "medical_supplies",
-		loose_ammo_give_team = "ammo_give_out",
-		armor_break_invulnerable = "armor_break_invulnerable_debuff",
-	}
-
+	HUDList.TimedBuffItem = HUDList.TimedBuffItem or class(HUDList.BuffItemBase)
+	function HUDList.TimedBuffItem:init(...)
+		HUDList.TimedBuffItem.super.init(self, ...)
+	end
 	
-	PlayerManager.ACTIVE_TEAM_BUFFS = {}
-	PlayerManager.ACTIVE_BUFFS = {}
-	PlayerManager._LISTENER_CALLBACKS = {}
-	
-	local init_original = PlayerManager.init
-	local update_original = PlayerManager.update
-	local count_up_player_minions_original = PlayerManager.count_up_player_minions
-	local count_down_player_minions_original = PlayerManager.count_down_player_minions
-	local update_hostage_skills_original = PlayerManager.update_hostage_skills
-	local activate_temporary_upgrade_original = PlayerManager.activate_temporary_upgrade
-	local activate_temporary_upgrade_by_level_original = PlayerManager.activate_temporary_upgrade_by_level
-	local deactivate_temporary_upgrade_original = PlayerManager.deactivate_temporary_upgrade
-	local aquire_team_upgrade_original = PlayerManager.aquire_team_upgrade
-	local unaquire_team_upgrade_original = PlayerManager.unaquire_team_upgrade
-	local add_synced_team_upgrade_original = PlayerManager.add_synced_team_upgrade
-	local peer_dropped_out_original = PlayerManager.peer_dropped_out
-	
-	function PlayerManager:init(...)
-		init_original(self, ...)
+	function HUDList.TimedBuffItem:update(t, dt)
+		--HUDList.TimedBuffItem.super.update(self, t, dt)
+		if self._debuff_active and self._debuff_expire_t then
+			self:_update_debuff(t, dt)
+		end
 		
-		for category, data in pairs(self._global.team_upgrades) do
-			for upgrade, value in pairs(data) do
-				local buff = PlayerManager._TEAM_BUFFS[category] and PlayerManager._TEAM_BUFFS[category][upgrade]
-				if buff then
-					self:activate_team_buff(buff, 0)
-				else
-					--DEBUG_PRINT("warnings", "Attempting to activate undefined local team buff: " .. tostring(category) .. ", " .. tostring(upgrade) .. "\n")
-				end
+		if self._buff_active and self._expire_t then
+			self:_set_progress((t - self._start_t) / (self._expire_t - self._start_t))
+			if not self._custom_value then
+				local t_left = self._expire_t - t
+				self:_set_text((t_left > 0 and string.format("%0.1fs", t_left) or ""))
+			end
+			
+			if t > self._expire_t then
+				self._start_t = nil
+				self._expire_t = nil
+				self._progress_bar:panel():set_visible(false)
 			end
 		end
 	end
 	
-	function PlayerManager:update(t, dt, ...)
-		update_original(self, t, dt, ...)
+	function HUDList.TimedBuffItem:set_value(id, data)
+		if data.show_value then
+			self._custom_value = true
+			self:_set_text(tostring(data.value))
+		end
+	end
+	
+	
+	HUDList.TimedStacksBuffItem = HUDList.TimedStacksBuffItem or class(HUDList.BuffItemBase)
+	function HUDList.TimedStacksBuffItem:init(...)
+		HUDList.TimedStacksBuffItem.super.init(self, ...)
+		self._stacks = {}
+	end
+	
+	function HUDList.TimedStacksBuffItem:update(t, dt)
+		--HUDList.TimedStacksBuffItem.super.update(self, t, dt)
+		if self._debuff_active and self._debuff_expire_t then
+			self:_update_debuff(t, dt)
+		end
 		
-		local expired_buffs = {}
-		for buff, data in pairs(PlayerManager.ACTIVE_BUFFS) do
-			if data.timed then
-				if data.expire_t <= t then
-					table.insert(expired_buffs, buff)
-				else
-					self:set_buff_attribute(buff, "progress", 1 - (t - data.activation_t) / data.duration)
-				end
+		if #self._stacks > 0 then
+			local stack = self._stacks[#self._stacks]
+			self:_set_progress((stack.expire_t - t) / (stack.expire_t - stack.t))
+		else
+			self:_set_progress(0)
+		end
+		
+		if #self._stacks > 1 then
+			local stack = self._stacks[1]
+			self:_set_progress_inner((stack.expire_t - t) / (stack.expire_t - stack.t))
+		else
+			self:_set_progress_inner(0)
+		end
+	end
+	
+	function HUDList.TimedStacksBuffItem:add_timed_stack(id, data)
+		self:_update_stacks(data.stacks)
+	end
+	
+	function HUDList.TimedStacksBuffItem:remove_timed_stack(id, data)
+		self:_update_stacks(data.stacks)
+	end
+	
+	function HUDList.TimedStacksBuffItem:_update_stacks(stacks)
+		self._stacks = stacks
+		self:_set_stack_count(#self._stacks)
+		self._progress_bar:panel():set_visible(#self._stacks > 0)
+		self._progress_bar_inner:panel():set_visible(#self._stacks > 1)
+	end
+	
+	
+	HUDList.TeamBuffItem = HUDList.TeamBuffItem or class(HUDList.BuffItemBase)
+	function HUDList.TeamBuffItem:init(...)
+		HUDList.TeamBuffItem.super.init(self, ...)
+		self._members = {}
+	end
+	
+	function HUDList.TeamBuffItem:set_stack_count(id, data)
+		--HUDList.TeamBuffItem.super.set_stack_count(self, data)
+		self._members[id] = { level = data.level, count = data.stack_count or 0 }
+		self:_recheck_level()
+	end
+	
+	function HUDList.TeamBuffItem:_recheck_level()
+		local max_level = 0
+		
+		for id, data in pairs(self._members) do
+			if data.count > 0 then
+				max_level = math.max(data.level, max_level)
 			end
 		end
 		
-		for _, buff in ipairs(expired_buffs) do
-			self:deactivate_buff(buff)
-		end
-
-		self._t = t
+		self:_set_text(max_level > 0 and ("Lv. " .. tostring(max_level)) or "")
 	end
 	
-	function PlayerManager:count_up_player_minions(...)
-		local result = count_up_player_minions_original(self, ...)
-		if self._local_player_minions > 0 and self:has_category_upgrade("player", "minion_master_speed_multiplier") then
-			self:activate_buff("partner_in_crime")
-			self:set_buff_attribute("partner_in_crime", "aced", self:has_category_upgrade("player", "minion_master_health_multiplier"))
-		end
-		return result
+	
+	HUDList.CompositeBuff = HUDList.CompositeBuff or class(HUDList.BuffItemBase)
+	function HUDList.CompositeBuff:init(...)
+		HUDList.CompositeBuff.super.init(self, ...)
+		self._member_buffs = {}
+		self._progress_bar:panel():set_visible(true)
+		self._progress_bar_inner:panel():set_visible(true)
 	end
 	
-	function PlayerManager:count_down_player_minions(...)
-		local result = count_down_player_minions_original(self, ...)
-		if self._local_player_minions <= 0 then
-			self:deactivate_buff("partner_in_crime")
-		end
-		return result
-	end
-	
-	function PlayerManager:update_hostage_skills(...)
-		local stack_count = (managers.groupai and managers.groupai:state():hostage_count() or 0) + (self:num_local_minions() or 0)
+	function HUDList.CompositeBuff:activate(id)
+		HUDList.CompositeBuff.super.activate(self, id)
 		
-		if self:has_team_category_upgrade("health", "hostage_multiplier") or self:has_team_category_upgrade("stamina", "hostage_multiplier") or self:has_team_category_upgrade("damage_dampener", "hostage_multiplier") then
-			self:set_buff_active("hostage_situation", stack_count > 0)
-			self:set_buff_attribute("hostage_situation", "stack_count", stack_count)
+		if not self._member_buffs[id] then
+			self._member_buffs[id] = {}
+			--self:_check_buffs()
 		end
-		
-		if self:has_category_upgrade("player", "hostage_health_regen_addend") then
-			self:set_buff_active("hostage_taker", stack_count > 0)
-			self:set_buff_attribute("hostage_taker", "aced", self:upgrade_level("player", "hostage_health_regen_addend", 0) > 1)
-		end
-		
-		return update_hostage_skills_original(self, ...)
 	end
 	
-	function PlayerManager:activate_temporary_upgrade(category, upgrade, ...)
-		local upgrade_value = self:upgrade_value(category, upgrade)
-		if upgrade_value ~= 0 then
-			local buff = PlayerManager._TEMPORARY_BUFFS[upgrade]
-			if buff then
-				self:activate_timed_buff(buff, upgrade_value[2])
-				local check_aced = PlayerManager._CHECK_BUFF_ACED[buff]
-				if check_aced then
-					self:set_buff_attribute(buff, "aced", check_aced() or false)
+	function HUDList.CompositeBuff:deactivate(id)
+		if self._member_buffs[id] then
+			self._member_buffs[id] = nil
+			self:_check_buffs()
+	
+			if next(self._member_buffs) == nil then
+				HUDList.CompositeBuff.super.deactivate(self, id)
+			end
+		end
+	end
+	
+	function HUDList.CompositeBuff:update(t, dt)
+		--HUDList.CompositeBuff.super.update(self, t, dt)
+		
+		if self._min_expire_buff then
+			self:_set_progress_inner((t - self._member_buffs[self._min_expire_buff].start_t) / (self._member_buffs[self._min_expire_buff].expire_t - self._member_buffs[self._min_expire_buff].start_t))
+		end	
+		
+		if self._max_expire_buff then
+			self:_set_progress((t - self._member_buffs[self._max_expire_buff].start_t) / (self._member_buffs[self._max_expire_buff].expire_t - self._member_buffs[self._max_expire_buff].start_t))
+		end
+	end
+	
+	function HUDList.CompositeBuff:set_duration(id, data)
+		if self._member_buffs[id] then
+			self._member_buffs[id].start_t = data.t
+			self._member_buffs[id].expire_t = data.expire_t
+			--self:_check_buffs()
+		end
+	end
+	
+	function HUDList.CompositeBuff:set_stack_count(id, data)
+		if self._member_buffs[id] and self._member_buffs[id].stack_count ~= data.stack_count then
+			self._member_buffs[id].stack_count = data.stack_count
+			--self:_check_buffs()
+		end
+	end
+	
+	function HUDList.CompositeBuff:set_value(id, data)
+		if self._member_buffs[id] and self._member_buffs[id].value ~= data.value then
+			printf("HUDList.CompositeBuff:set_value(%s, %s)", id, tostring(data.value))
+			self._member_buffs[id].value = data.value
+			self:_check_buffs()
+		end
+	end
+	
+	function HUDList.CompositeBuff:_check_buffs()
+		local max_expire
+		local min_expire
+		
+		for id, data in pairs(self._member_buffs) do
+			if data.expire_t then
+				if not max_expire or data.expire_t > self._member_buffs[max_expire].expire_t then
+					max_expire = id
 				end
+				if not min_expire or data.expire_t < self._member_buffs[min_expire].expire_t then
+					min_expire = id
+				end
+			end
+		end		
+	
+		self._max_expire_buff = max_expire
+		self._min_expire_buff = min_expire
+		
+		if not self._max_expire_buff then
+			self._progress_bar:set_ratio(1)
+		end
+		
+		if not self._min_expire_buff or self._member_buffs[self._min_expire_buff].expire_t == self._member_buffs[self._max_expire_buff].expire_t then
+			self._min_expire_buff = nil
+			self._progress_bar_inner:set_ratio(1)
+		end
+		
+		self:_update_value()
+	end
+	
+	
+	HUDList.DamageIncreaseBuff = HUDList.DamageIncreaseBuff or class(HUDList.CompositeBuff)
+	function HUDList.DamageIncreaseBuff:init(...)
+		HUDList.DamageIncreaseBuff.super.init(self, ...)
+		
+		self._buff_weapon_requirements = {
+			overkill = {
+				shotgun = true,
+				saw = true,
+			},
+			berserker = {
+				saw = true,
+			},
+		}
+		
+		self._buff_weapon_exclusions = {
+			overkill_aced = {
+				shotgun = true,
+				saw = true,
+			},
+			berserker_aced = {
+				saw = true,
+			},
+		}
+		
+		self._buff_effects = {
+			berserker = function(active_buffs)
+				return 1 + (active_buffs.berserker.value or 0) * managers.player:upgrade_value("player", "melee_damage_health_ratio_multiplier", 0)
+			end,
+			berserker_aced = function(active_buffs)
+				return 1 + (active_buffs.berserker_aced.value or 0) * managers.player:upgrade_value("player", "damage_health_ratio_multiplier", 0)
+			end,
+		}
+	end
+	
+	function HUDList.DamageIncreaseBuff:update(t, dt)
+		HUDList.DamageIncreaseBuff.super.update(self, t, dt)
+		
+		if not alive(self._player_unit) and alive(managers.player:player_unit()) then
+			self._player_unit = managers.player:player_unit()
+			self._player_unit:inventory():add_listener("DamageIncreaseBuff", { "equip" }, callback(self, self, "_on_weapon_equipped"))
+			self:_on_weapon_equipped(self._player_unit)
+		end
+	end
+	
+	function HUDList.DamageIncreaseBuff:_on_weapon_equipped(unit)
+		self._weapon_unit = unit:inventory():equipped_unit()
+		self._weapon_id = self._weapon_unit:base():get_name_id()
+		self._weapon_tweak = self._weapon_unit:base():weapon_tweak_data()
+		
+		self:_update_value()
+	end
+	
+	function HUDList.DamageIncreaseBuff:_update_value()
+		local text = ""
+	
+		if alive(self._weapon_unit) then
+			if self._weapon_tweak.ignore_damage_upgrades then
+				text = "(0%)"
 			else
-				--DEBUG_PRINT("warnings", "Attempting to activate undefined buff: " .. tostring(category) .. ", " .. tostring(upgrade) .. "\n")
-			end
-		end
-		
-		return activate_temporary_upgrade_original(self, category, upgrade, ...)
-	end
-	
-	function PlayerManager:activate_temporary_upgrade_by_level(category, upgrade, level, ...)
-		local upgrade_level = self:upgrade_level(category, upgrade, 0) or 0
-		if level > upgrade_level then
-			local upgrade_value = self:upgrade_value_by_level(category, upgrade, level, 0)
-			if upgrade_value ~= 0 then
-				local buff = PlayerManager._TEMPORARY_BUFFS[upgrade]
-				if buff then
-					self:activate_timed_buff(buff, upgrade_value[2])
-					local check_aced = PlayerManager._CHECK_BUFF_ACED[buff]
-					if check_aced then
-						self:set_buff_attribute(buff, "aced", check_aced() or false)
-					end
-				else
-					--DEBUG_PRINT("warnings", "Attempting to activate undefined buff: " .. tostring(category) .. ", " .. tostring(upgrade) .. " (" .. "level: " .. tostring(level) .. ")\n")
-				end
-			end
-		end
-
-		return activate_temporary_upgrade_by_level_original(self, category, upgrade, level, ...)
-	end
-
-	function PlayerManager:deactivate_temporary_upgrade(category, upgrade, ...)
-		local upgrade_value = self:upgrade_value(category, upgrade)
-		if self._temporary_upgrades[category] and upgrade_value ~= 0 then
-			local buff = PlayerManager._TEMPORARY_BUFFS[upgrade]
-			if buff then
-				self:deactivate_buff(buff)
-			else
-					--DEBUG_PRINT("warnings", "Attempting to deactivate undefined buff: " .. tostring(category) .. ", " .. tostring(upgrade) .. "\n")
-			end
-		end
-		
-		return deactivate_temporary_upgrade_original(self, category, upgrade, ...)
-	end
-	
-	function PlayerManager:aquire_team_upgrade(upgrade, ...)
-		aquire_team_upgrade_original(self, upgrade, ...)
-		
-		local buff = PlayerManager._TEAM_BUFFS[upgrade.category] and PlayerManager._TEAM_BUFFS[upgrade.category][upgrade.upgrade]
-		if buff then
-			self:activate_team_buff(buff, 0)
-		else
-			--DEBUG_PRINT("warnings", "Attempting to activate undefined local team buff: " .. tostring(upgrade.category) .. ", " .. tostring(upgrade.upgrade) .. "\n")
-		end
-	end
-	
-	function PlayerManager:unaquire_team_upgrade(upgrade, ...)
-		unaquire_team_upgrade_original(self, upgrade, ...)
-		
-		local buff = PlayerManager._TEAM_BUFFS[upgrade.category] and PlayerManager._TEAM_BUFFS[upgrade.category][upgrade.upgrade]
-		if buff then
-			self:deactivate_team_buff(buff, 0)
-		else
-			--DEBUG_PRINT("warnings", "Attempting to deactivate undefined local team buff: " .. tostring(upgrade.category) .. ", " .. tostring(upgrade.upgrade) .. "\n")
-		end
-	end
-
-	function PlayerManager:add_synced_team_upgrade(peer_id, category, upgrade, ...)
-		add_synced_team_upgrade_original(self, peer_id, category, upgrade, ...)
-	
-		local buff = PlayerManager._TEAM_BUFFS[category] and PlayerManager._TEAM_BUFFS[category][upgrade]
-		if buff then
-			self:activate_team_buff(buff, peer_id)
-		else
-			--DEBUG_PRINT("warnings", "Attempting to activate undefined team buff: " .. tostring(category) .. ", " .. tostring(upgrade) .. " from peer ID: " .. tostring(peer_id) .. "\n")
-		end
-	end
-	
-	function PlayerManager:peer_dropped_out(peer, ...)
-		local peer_id = peer:id()
-		local buffs = {}
-		
-		for category, data in pairs(self._global.synced_team_upgrades[peer_id] or {}) do
-			for upgrade, value in pairs(data) do
-				local buff = PlayerManager._TEAM_BUFFS[category] and PlayerManager._TEAM_BUFFS[category][upgrade]
-				if buff then
-					table.insert(buffs, buff)
-				else
-					--DEBUG_PRINT("warnings", "Attempting to deactivate undefined local team buff: " .. tostring(category) .. ", " .. tostring(upgrade) .. "\n")
-				end
-			end
-		end
-		
-		peer_dropped_out_original(self, peer, ...)
-		
-		for _, buff in pairs(buffs) do
-			self:deactivate_team_buff(buff, peer_id)
-		end
-	end
-	
-	
-	
-	function PlayerManager:activate_team_buff(buff, peer)
-		PlayerManager.ACTIVE_TEAM_BUFFS[buff] = PlayerManager.ACTIVE_TEAM_BUFFS[buff] or {}
-		
-		if not PlayerManager.ACTIVE_TEAM_BUFFS[buff][peer] then
-			PlayerManager.ACTIVE_TEAM_BUFFS[buff][peer] = true
-			PlayerManager.ACTIVE_TEAM_BUFFS[buff].count = (PlayerManager.ACTIVE_TEAM_BUFFS[buff].count or 0) + 1
-			--DEBUG_PRINT("buff_basic", "TEAM BUFF ADD: " .. tostring(buff) .. " -> " .. tostring(PlayerManager.ACTIVE_TEAM_BUFFS[buff].count) .. "\n")
-			
-			if PlayerManager.ACTIVE_TEAM_BUFFS[buff].count == 1 then
-				--DEBUG_PRINT("buff_basic", "\tACTIVATE\n")
-				PlayerManager._do_listener_callback("on_buff_activated", buff)
-			end
-		end
-	end
-	
-	function PlayerManager:deactivate_team_buff(buff, peer)
-		if PlayerManager.ACTIVE_TEAM_BUFFS[buff] and PlayerManager.ACTIVE_TEAM_BUFFS[buff][peer] then
-			PlayerManager.ACTIVE_TEAM_BUFFS[buff][peer] = nil
-			PlayerManager.ACTIVE_TEAM_BUFFS[buff].count = PlayerManager.ACTIVE_TEAM_BUFFS[buff].count - 1
-			--DEBUG_PRINT("buff_basic", "TEAM BUFF REMOVE: " .. tostring(buff) .. " -> " .. tostring(PlayerManager.ACTIVE_TEAM_BUFFS[buff].count) .. "\n")
-			
-			if PlayerManager.ACTIVE_TEAM_BUFFS[buff].count <= 0 then
-				--DEBUG_PRINT("buff_basic", "\tDEACTIVATE\n")
-				PlayerManager.ACTIVE_TEAM_BUFFS[buff] = nil
-				PlayerManager._do_listener_callback("on_buff_deactivated", buff)
-			end
-		end
-	end
-	
-	function PlayerManager:set_buff_active(buff, status)
-		if status then
-			self:activate_buff(buff)
-		else
-			self:deactivate_buff(buff)
-		end
-	end
-	
-	function PlayerManager:activate_buff(buff)
-		if not PlayerManager.ACTIVE_BUFFS[buff] then
-			PlayerManager._do_listener_callback("on_buff_activated", buff)
-			PlayerManager.ACTIVE_BUFFS[buff] = {}
-		end
-	end
-	
-	function PlayerManager:deactivate_buff(buff)
-		if PlayerManager.ACTIVE_BUFFS[buff] then
-			PlayerManager._do_listener_callback("on_buff_deactivated", buff)
-			PlayerManager.ACTIVE_BUFFS[buff] = nil
-		end
-	end
-	
-	function PlayerManager:activate_timed_buff(buff, duration)
-		self:activate_buff(buff)
-		
-		PlayerManager.ACTIVE_BUFFS[buff].timed = true
-		PlayerManager.ACTIVE_BUFFS[buff].activation_t = self._t
-		
-		if PlayerManager.ACTIVE_BUFFS[buff].duration ~= duration then
-			PlayerManager.ACTIVE_BUFFS[buff].duration = duration
-			PlayerManager._do_listener_callback("on_buff_set_duration", buff, duration)
-		end
-		
-		local expiration_t = self._t + duration
-		if PlayerManager.ACTIVE_BUFFS[buff].expire_t ~=  expiration_t then
-			PlayerManager.ACTIVE_BUFFS[buff].expire_t = expiration_t
-			PlayerManager._do_listener_callback("on_buff_set_expiration", buff, expiration_t)
-		end
-	end
-	
-	function PlayerManager:refresh_timed_buff(buff)
-		if PlayerManager.ACTIVE_BUFFS[buff] then
-			PlayerManager.ACTIVE_BUFFS[buff].activation_t = self._t
-			local expire_t = self._t + PlayerManager.ACTIVE_BUFFS[buff].duration
-			PlayerManager.ACTIVE_BUFFS[buff].expire_t = expire_t
-			PlayerManager._do_listener_callback("on_buff_set_expiration", buff, expire_t)
-			PlayerManager._do_listener_callback("on_buff_refresh", buff)
-		end
-	end
-	
-	function PlayerManager:set_buff_attribute(buff, attribute, ...)
-		if PlayerManager.ACTIVE_BUFFS[buff] then
-			PlayerManager.ACTIVE_BUFFS[buff][attribute] = { ... }
-		end
-		
-		PlayerManager._do_listener_callback("on_buff_set_" .. attribute, buff, ...)
-	end
-	
-
-	function PlayerManager.register_listener_clbk(name, event, clbk)
-		PlayerManager._LISTENER_CALLBACKS[event] = PlayerManager._LISTENER_CALLBACKS[event] or {}
-		PlayerManager._LISTENER_CALLBACKS[event][name] = clbk
-	end
-	
-	function PlayerManager.unregister_listener_clbk(name, event)
-		for event_id, listeners in pairs(PlayerManager._LISTENER_CALLBACKS) do
-			if not event or event_id == event then
-				for id, clbk in pairs(listeners) do
-					if id == name then
-						PlayerManager._LISTENER_CALLBACKS[event_id][id] = nil
-						break
-					end
-				end
-			end
-		end
-	end
-	
-	function PlayerManager._do_listener_callback(event, ...)
-		if PlayerManager._LISTENER_CALLBACKS[event] then
-			for id, clbk in pairs(PlayerManager._LISTENER_CALLBACKS[event]) do
-				clbk(...)
-			end
-		end
-	end
-	
-end
-
-if RequiredScript == "lib/units/beings/player/playerdamage" then
-
-	local set_health_original = PlayerDamage.set_health
-	local _damage_screen_original = PlayerDamage._damage_screen
-	local build_suppression_original = PlayerDamage.build_suppression
-	local restore_armor_original = PlayerDamage.restore_armor
-	local set_armor_original = PlayerDamage.set_armor
-	local _upd_health_regen_original = PlayerDamage._upd_health_regen
-	local add_damage_to_hot_original = PlayerDamage.add_damage_to_hot
-	
-
-	PlayerDamage._ARMOR_REGEN_TABLE = {
-		[tweak_data.upgrades.values.player.headshot_regen_armor_bonus[1] ] = "bullseye_debuff",
-		[tweak_data.upgrades.values.player.killshot_regen_armor_bonus[1] ] = "tension_debuff",
-		[tweak_data.upgrades.values.player.headshot_regen_armor_bonus[2] ] = "bullseye_debuff",
-		[tweak_data.upgrades.values.player.killshot_regen_armor_bonus[1] + tweak_data.upgrades.values.player.killshot_close_regen_armor_bonus[1] ] = "tension_debuff",
-	}
-
-	function PlayerDamage:set_health(...)
-		set_health_original(self, ...)
-		
-		local threshold = tweak_data.upgrades.player_damage_health_ratio_threshold
-		local ratio = self:health_ratio()
-		if managers.player:has_category_upgrade("player", "melee_damage_health_ratio_multiplier") then
-			if ratio <= threshold then
-				managers.player:activate_buff("berserker")
-				managers.player:set_buff_attribute("berserker", "progress", 1 - ratio / math.max(0.01, threshold))
-				managers.player:set_buff_attribute("berserker", "aced", managers.player:has_category_upgrade("player", "damage_health_ratio_multiplier"), true)
-			else
-				managers.player:deactivate_buff("berserker")
-			end
-		end
-	end
-	
-	function PlayerDamage:_damage_screen(...)
-		_damage_screen_original(self, ...)
-		if self._regenerate_timer then
-			local delay = self._regenerate_timer + (self._supperssion_data.decay_start_t and (self._supperssion_data.decay_start_t - managers.player:player_timer():time()) or 0)
-			managers.player:activate_timed_buff("armor_regen_debuff", delay)
-		end
-	end
-	
-	function PlayerDamage:build_suppression(amount, ...)
-		if not self:_chk_suppression_too_soon(amount) then
-			build_suppression_original(self, amount, ...)
-			
-			if self._supperssion_data.value > 0 then
-				managers.player:activate_timed_buff("suppression_debuff", tweak_data.player.suppression.decay_start_delay + self._supperssion_data.value)
-			end
-
-			if self._supperssion_data.value == tweak_data.player.suppression.max_value then
-				if self:get_real_armor() < self:_total_armor() and self._regenerate_timer then
-					managers.player:refresh_timed_buff("armor_regen_debuff")
-				end
-			end
-		end
-	end
-	
-	function PlayerDamage:restore_armor(armor_regen, ...)
-		restore_armor_original(self, armor_regen, ...)
-
-		local buff = PlayerDamage._ARMOR_REGEN_TABLE[armor_regen]
-		if buff then
-			local cooldown_key = buff == "bullseye_debuff" and "on_headshot_dealt_cooldown" or "on_killshot_cooldown"
-			managers.player:activate_timed_buff(buff, tweak_data.upgrades[cooldown_key])
-		end
-	end
-	
-	function PlayerDamage:set_armor(armor, ...)
-		set_armor_original(self, armor, ...)
-		
-		if armor >= self:_total_armor() then
-			managers.player:deactivate_buff("armor_regen_debuff")
-		end
-	end
-	
-	function PlayerDamage:_upd_health_regen(...)
-		local old_stack_count = #self._damage_to_hot_stack
-		
-		_upd_health_regen_original(self, ...)
-		
-		if #self._damage_to_hot_stack ~= old_stack_count then
-			managers.player:set_buff_attribute("damage_to_hot", "stack_count", #self._damage_to_hot_stack)
-		end
-	end
-
-	function PlayerDamage:add_damage_to_hot(...)
-		if not (self:got_max_doh_stacks() or self:need_revive() or self:dead() or self._check_berserker_done) then
-			local duration = ((self._doh_data.total_ticks or 1) + managers.player:upgrade_value("player", "damage_to_hot_extra_ticks", 0)) * self._doh_data.tick_time
-			local stacks = (#self._damage_to_hot_stack or 0) + 1
-			managers.player:activate_timed_buff("damage_to_hot_debuff", tweak_data.upgrades.damage_to_hot_data.stacking_cooldown)
-			managers.player:activate_timed_buff("damage_to_hot", duration)
-			managers.player:set_buff_attribute("damage_to_hot", "stack_count", stacks)
-		end
-		
-		return add_damage_to_hot_original(self, ...)
-	end
-	
-end
-
-if RequiredScript == "lib/units/beings/player/playermovement" then
-
-	local on_morale_boost_original = PlayerMovement.on_morale_boost
-
-	function PlayerMovement:on_morale_boost(...)
-		managers.player:activate_timed_buff("inspire", tweak_data.upgrades.morale_boost_time)
-		return on_morale_boost_original(self, ...)
-	end
-
-end
-
-if RequiredScript == "lib/units/beings/player/states/playerstandard" then
-	
-	local _start_action_reload_original = PlayerStandard._start_action_reload
-	local _update_reload_timers_original = PlayerStandard._update_reload_timers
-	local _interupt_action_reload_original = PlayerStandard._interupt_action_reload
-	local _start_action_charging_weapon_original = PlayerStandard._start_action_charging_weapon
-	local _end_action_charging_weapon_original = PlayerStandard._end_action_charging_weapon
-	local _update_charging_weapon_timers_original = PlayerStandard._update_charging_weapon_timers
-	local _start_action_melee_original = PlayerStandard._start_action_melee
-	local _update_melee_timers_original = PlayerStandard._update_melee_timers
-	local _do_melee_damage_original = PlayerStandard._do_melee_damage
-	local _do_action_intimidate_original = PlayerStandard._do_action_intimidate
-	local _check_action_primary_attack_original = PlayerStandard._check_action_primary_attack
-
-	function PlayerStandard:_update_omniscience(t, dt)
-		if managers.groupai:state():whisper_mode() then
-			local action_forbidden = not managers.player:has_category_upgrade("player", "standstill_omniscience") or managers.player:current_state() == "civilian" or self:_interacting() or self._ext_movement:has_carry_restriction() or self:is_deploying() or self:_changing_weapon() or self:_is_throwing_grenade() or self:_is_meleeing() or self:_on_zipline() or self._moving or self:running() or self:_is_reloading() or self:in_air() or self:in_steelsight() or self:is_equipping() or self:shooting() or not tweak_data.player.omniscience
-			if action_forbidden then
-				if self._state_data.omniscience_t then
-					--managers.player:set_buff_attribute("sixth_sense", "stack_count", 0)
-					managers.player:deactivate_buff("sixth_sense")
-					self._state_data.omniscience_t = nil
-					self._state_data.omniscience_units_detected = {}
-				end
-				return
-			end
-			
-			if not self._state_data.omniscience_t then
-				managers.player:activate_timed_buff("sixth_sense", tweak_data.player.omniscience.start_t + 0.05)
-				managers.player:set_buff_attribute("sixth_sense", "stack_count", 0)
-				self._state_data.omniscience_t = t + tweak_data.player.omniscience.start_t
-			end
-			
-			if t >= self._state_data.omniscience_t then
-				local sensed_targets = World:find_units_quick("sphere", self._unit:movement():m_pos(), tweak_data.player.omniscience.sense_radius, World:make_slot_mask(12, 21, 33))
-				self._state_data.omniscience_units_detected = self._state_data.omniscience_units_detected or {}
-				managers.player:set_buff_attribute("sixth_sense", "stack_count", #sensed_targets, true)
+				local weapon_category = self._weapon_tweak.category
+				local value = 1
 				
-				for _, unit in ipairs(sensed_targets) do
-					if alive(unit) and not tweak_data.character[unit:base()._tweak_table].is_escort and not unit:anim_data().tied then
-						if not self._state_data.omniscience_units_detected[unit:key()] or t >= self._state_data.omniscience_units_detected[unit:key()] then
-							self._state_data.omniscience_units_detected[unit:key()] = t + tweak_data.player.omniscience.target_resense_t
-							managers.game_play_central:auto_highlight_enemy(unit, true)
-							--managers.player:set_buff_attribute("sixth_sense", "flash")
-							break
+				for id, data in pairs(self._member_buffs) do
+					if not self._buff_weapon_requirements[id] or self._buff_weapon_requirements[id][weapon_category] then
+						if not (self._buff_weapon_exclusions[id] and self._buff_weapon_exclusions[id][weapon_category]) then
+							local clbk = self._buff_effects[id]
+							value = value * (clbk and clbk(self._member_buffs) or (data.value or 1))
 						end
 					end
 				end
-				self._state_data.omniscience_t = t + tweak_data.player.omniscience.interval_t
-				managers.player:activate_timed_buff("sixth_sense", tweak_data.player.omniscience.interval_t + 0.05)
+				
+				text = string.format("+%.0f%%", (value-1)*100)
 			end
 		end
-	end
-
-	function PlayerStandard:_start_action_reload(t, ...)
-		local result = _start_action_reload_original(self, t, ...)
-		managers.player:activate_buff("reload_time")
-		managers.player:set_buff_attribute("reload_time", "progress", 0)
-		self._state_data.reload_offset = t
-		return result
-	end
-	
-	function PlayerStandard:_update_reload_timers(t, ...)
-		if not self._state_data.reload_expire_t then
-			managers.player:deactivate_buff("reload_time")
-		else
-			local progress = (t - self._state_data.reload_offset or 0) / (self._state_data.reload_expire_t - self._state_data.reload_offset or 0)
-			managers.player:set_buff_attribute("reload_time", "progress", progress)
-		end
-		return _update_reload_timers_original(self, t, ...)
-	end
-	
-	function PlayerStandard:_interupt_action_reload(...)
-		managers.player:deactivate_buff("reload_time")
-		return _interupt_action_reload_original(self, ...)
-	end
-	
-	function PlayerStandard:_start_action_charging_weapon(...)
-		managers.player:activate_buff("bow_charge")
-		managers.player:set_buff_attribute("bow_charge", "progress", 0)
-		return _start_action_charging_weapon_original(self, ...)
-	end
-
-	function PlayerStandard:_end_action_charging_weapon(...)
-		managers.player:deactivate_buff("bow_charge")
-		return _end_action_charging_weapon_original(self, ...)
-	end
-
-	function PlayerStandard:_update_charging_weapon_timers(...)
-		if self._state_data.charging_weapon then
-			local weapon = self._equipped_unit:base()
-			if not weapon:charge_fail() then
-				managers.player:set_buff_attribute("bow_charge", "progress", weapon:charge_multiplier())
-			end
-		end
-		return _update_charging_weapon_timers_original(self, ...)
-	end
-
-	function PlayerStandard:_start_action_melee(...)
-		managers.player:set_buff_attribute("melee_charge", "progress", 0)
-		return _start_action_melee_original(self, ...)
-	end
-
-	function PlayerStandard:_update_melee_timers(t, ...)
-		if self._state_data.meleeing and self._state_data.melee_start_t and self._state_data.melee_start_t + 0.3 < t then
-			managers.player:activate_buff("melee_charge")
-			managers.player:set_buff_attribute("melee_charge", "progress", self:_get_melee_charge_lerp_value(t))
-		end
-		return _update_melee_timers_original(self, t, ...)
-	end
-	
-	function PlayerStandard:_do_melee_damage(t, ...)
-		managers.player:deactivate_buff("melee_charge")
 		
-		local result = _do_melee_damage_original(self, t, ...)
-		if self._state_data.stacking_dmg_mul then
-			local stack = self._state_data.stacking_dmg_mul.melee
-			if stack then
-				if stack[2] > 0 then
-					managers.player:activate_timed_buff("melee_stack_damage", (stack[1] or 0) - t)
-					managers.player:set_buff_attribute("melee_stack_damage", "stack_count", stack[2])
-				else
-					managers.player:deactivate_buff("melee_stack_damage")
-				end
-			end
-		end
-		return result
+		self:_set_text(text)
 	end
 	
-	function PlayerStandard:_do_action_intimidate(t, interact_type, ...)
-		if interact_type == "cmd_gogo" or interact_type == "cmd_get_up" then
-			managers.player:activate_timed_buff("inspire_debuff", self._ext_movement:rally_skill_data().morale_boost_cooldown_t or 3.5)
-		end
-		return _do_action_intimidate_original(self, t, interact_type, ...)
+	HUDList.MeleeDamageIncreaseBuff = HUDList.MeleeDamageIncreaseBuff or class(HUDList.CompositeBuff)
+	function HUDList.MeleeDamageIncreaseBuff:init(...)
+		HUDList.MeleeDamageIncreaseBuff.super.init(self, ...)
+		
+		self._buff_effects = {
+			berserker = function(value)
+				return 1 + (value or 0) * managers.player:upgrade_value("player", "melee_damage_health_ratio_multiplier", 0)
+			end,
+		}
 	end
 	
-	function PlayerStandard:_check_action_primary_attack(t, ...)
-		local result = _check_action_primary_attack_original(self, t, ...)
-		if self._state_data.stacking_dmg_mul then
-			local weapon_category = self._equipped_unit:base():weapon_tweak_data().category
-			local stack = self._state_data.stacking_dmg_mul[weapon_category]
-			if stack then
-				if stack[2] > 0 then
-					managers.player:activate_timed_buff("trigger_happy", (stack[1] or 0) - t)
-					managers.player:set_buff_attribute("trigger_happy", "stack_count", stack[2])
-				else
-					managers.player:deactivate_buff("trigger_happy")
-				end
-			end
+	function HUDList.MeleeDamageIncreaseBuff:_update_value()
+		local value = 1
+		
+		for id, data in pairs(self._member_buffs) do
+			local clbk = self._buff_effects[id]
+			value = value * (clbk and clbk(data.value) or (data.value or 1))
 		end
-		return result
+		
+		self:_set_text(string.format("+%.0f%%", (value-1)*100))
+	end
+	
+	HUDList.DamageReductionBuff = HUDList.DamageReductionBuff or class(HUDList.CompositeBuff)
+	function HUDList.DamageReductionBuff:init(...)
+		HUDList.DamageReductionBuff.super.init(self, ...)
+		self._buff_effects = {}
+	end
+	
+	function HUDList.DamageReductionBuff:_update_value()
+		local value = 1
+		
+		for id, data in pairs(self._member_buffs) do
+			local clbk = self._buff_effects[id]
+			value = value * (clbk and clbk(self._member_buffs) or (data.value or 1))
+		end
+		
+		self:_set_text(string.format("-%.0f%%", (1-value)*100))
+	end
+	
+	
+	PanelFrame = PanelFrame or class()
+	
+	function PanelFrame:init(parent, settings)
+		settings = settings or {}
+		
+		local h = settings.h or parent:h()
+		local w = settings.w or parent:w()
+		local total = 2*w + 2*h
+		
+		self._panel = parent:panel({
+			w = w,
+			h = h,
+			alpha = settings.alpha or 1,
+		})
+		
+		self._invert_progress = settings.invert_progress
+		self._stages = { 0, w/total, (w+h)/total, (2*w+h)/total, 1 }
+		self._top = self._panel:rect({})
+		self._bottom = self._panel:rect({})
+		self._left = self._panel:rect({})
+		self._right = self._panel:rect({})
+		
+		self:set_width(settings.bar_w or 2)
+		self:set_color(settings.color or Color.white)
+		self:reset()
+	end
+	
+	function PanelFrame:panel()
+		return self._panel
+	end
+	
+	function PanelFrame:set_width(w)
+		self._top:set_h(w)
+		self._top:set_top(0)
+		self._bottom:set_h(w)
+		self._bottom:set_bottom(self._panel:h())
+		self._left:set_w(w)
+		self._left:set_left(0)
+		self._right:set_w(w)
+		self._right:set_right(self._panel:w())
+	end
+	
+	function PanelFrame:set_color(c)
+		self._top:set_color(c)
+		self._bottom:set_color(c)
+		self._left:set_color(c)
+		self._right:set_color(c)
+	end
+	
+	function PanelFrame:reset()
+		self._current_stage = 1
+		self._top:set_w(self._panel:w())
+		self._right:set_h(self._panel:h())
+		self._right:set_bottom(self._panel:h())
+		self._bottom:set_w(self._panel:w())
+		self._bottom:set_right(self._panel:w())
+		self._left:set_h(self._panel:h())
+	end
+	
+	function PanelFrame:set_ratio(r)
+		r = math.clamp(r, 0, 1)
+		if self._invert_progress then
+			r = 1-r
+		end
+		
+		if r < self._stages[self._current_stage] then
+			self:reset()
+		end
+		
+		while r > self._stages[self._current_stage + 1] do
+			if self._current_stage == 1 then
+				self._top:set_w(0)
+			elseif self._current_stage == 2 then
+				self._right:set_h(0)
+			elseif self._current_stage == 3 then
+				self._bottom:set_w(0)
+			elseif self._current_stage == 4 then
+				self._left:set_h(0)
+			end
+			self._current_stage = self._current_stage + 1
+		end
+		
+		local low = self._stages[self._current_stage]
+		local high = self._stages[self._current_stage + 1]
+		local stage_progress = (r - low) / (high - low)
+		
+		if self._current_stage == 1 then
+			self._top:set_w(self._panel:w() * (1-stage_progress))
+			self._top:set_right(self._panel:w())
+		elseif self._current_stage == 2 then
+			self._right:set_h(self._panel:h() * (1-stage_progress))
+			self._right:set_bottom(self._panel:h())
+		elseif self._current_stage == 3 then
+			self._bottom:set_w(self._panel:w() * (1-stage_progress))
+		elseif self._current_stage == 4 then
+			self._left:set_h(self._panel:h() * (1-stage_progress))
+		end
 	end
 end
 
-if RequiredScript == "lib/managers/objectinteractionmanager" then
+if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 	local init_original = ObjectInteractionManager.init
 
 	function ObjectInteractionManager:init(...)
 		init_original(self, ...)
-		if HUDListManager.ListOptions.remove_answered_pager_contour then
+		if managers.gameinfo and WolfHUD:getSetting("remove_answered_pager_contour", "boolean") then
 			managers.gameinfo:register_listener("pager_contour_remover", "pager", "answered", callback(nil, _G, "pager_answered_clbk"))
-		else
-			managers.gameinfo:unregister_listener("pager_contour_remover", "pager", "answered")
 		end
 	end
 
@@ -4165,6 +4263,17 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
 	function remove_answered_pager_contour_clbk(unit)
 		if alive(unit) then
 			unit:contour():remove(tweak_data.interaction.corpse_alarm_pager.contour_preset)
+		end
+	end
+end
+
+if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
+	local HUDAssaultCorner_init = HUDAssaultCorner.init
+	function HUDAssaultCorner:init(...)
+		HUDAssaultCorner_init(self, ...)
+		local hostages_panel = self._hud_panel:child("hostages_panel")
+		if alive(hostages_panel) then
+			hostages_panel:set_alpha(0)
 		end
 	end
 end

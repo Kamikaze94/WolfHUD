@@ -29,13 +29,13 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 	}
 		
 	WeaponLaser._suffix_map = {
-	player = "player",
-	default = "teammates",
-	cop_sniper = "sniper",
-	turret_module_active = "turret_active",
-	turret_module_rearming = "turret_reloading",
-	turret_module_mad = "turret_jammed"
-}
+		player = "player",
+		default = "teammates",
+		cop_sniper = "sniper",
+		turret_module_active = "turret_active",
+		turret_module_rearming = "turret_reloading",
+		turret_module_mad = "turret_jammed"
+	}
 	
 	if WolfHUD:getSetting("use_weaponlasers", "boolean") then   
 		function WeaponLaser:init(...)
@@ -89,30 +89,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 		end
 
 	end
- 
-elseif string.lower(RequiredScript) == "lib/units/weapons/raycastweaponbase" then
- 
-	local on_equip_original = RaycastWeaponBase.on_equip
- 
-	function RaycastWeaponBase:on_equip(...)
-		if self._has_gadget then
-			self:_setup_laser()
-			if alive(self._second_gun) then
-				self._second_gun:base():_setup_laser()
-			end
-		end
-			   
-		return on_equip_original(self, ...)
-	end
-	   
-	function RaycastWeaponBase:_setup_laser()
-		for id, part in pairs(self._parts) do
-			local base = part.unit and part.unit:base()
-			if base and base.set_color_by_theme then
-				base:set_color_by_theme("player")
-			end
-		end
-	end
+
 elseif string.lower(RequiredScript) == "lib/units/weapons/weaponflashlight" then
 	local init_flash_cbk = WeaponFlashLight.init
 	local update_flash_cbk = WeaponFlashLight.update
@@ -131,59 +108,71 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/weaponflashlight" then
 			self._light:set_far_range((WolfHUD:getSetting("flashlight_range", "number") * 100))
 		end
 	end
-
+	
 elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then 
+	
+	function NewRaycastWeaponBase:_setup_laser()
+		for id, part in pairs(self._parts) do
+			local base = part.unit and part.unit:base()
+			if base and base.set_color_by_theme then
+				if WolfHUD:getSetting("use_weaponlasers", "boolean") then
+					base:set_color_by_theme("player")
+				end
+				self._has_laser = WolfHUD:getSetting("laser_autoon", "boolean")
+			end
+		end
+	end
+	
 	if not _NewRaycastWeaponBase_on_equip then _NewRaycastWeaponBase_on_equip = NewRaycastWeaponBase.on_equip end
+	if not _NewRaycastWeaponBase_toggle_gadget then _NewRaycastWeaponBase_toggle_gadget = NewRaycastWeaponBase.toggle_gadget end
 	
 	function NewRaycastWeaponBase:on_equip()
 		_NewRaycastWeaponBase_on_equip(self)
-		if not WolfHUD:getSetting("laser_autoon", "boolean") then 
-			self._has_laser = false 
-		end
-		if self._has_gadget and self._has_laser == nil and (managers.weapon_factory and tweak_data and tweak_data.weapon and tweak_data.weapon.factory) then
-			local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
-			for _, id in pairs(gadgets) do
-				local part_data = tweak_data.weapon.factory.parts[id]
-				if part_data and (part_data.sub_type == "laser" or part_data.type == "grip") then
-					self._has_laser = true
-					break
-				else
-					self._has_laser = false
-				end
+		if self._has_gadget then
+			self:_setup_laser()
+			if alive(self._second_gun) then
+				self._second_gun:base():_setup_laser()
 			end
 		end
 		self:set_gadget_on(self._stored_gadget_on or (self._has_laser and 1 or 0), false)
 	end
 
-	if not _NewRaycastWeaponBase_toggle_gadget then _NewRaycastWeaponBase_toggle_gadget = NewRaycastWeaponBase.toggle_gadget end
 	function NewRaycastWeaponBase:toggle_gadget()
 		if _NewRaycastWeaponBase_toggle_gadget(self) then
 			self._stored_gadget_on = (WolfHUD:getSetting("laser_remember_state", "boolean")) and self._gadget_on
 			return true
 		end
 	end
+	
 elseif RequiredScript == "lib/units/weapons/shotgun/newshotgunbase" then
 
-	local on_equip_original = NewShotgunBase.on_equip
-	
-	function NewShotgunBase:on_equip(...)
-		if not WolfHUD:getSetting("laser_autoon", "boolean") then 
-			self._has_laser = false 
-		end
-		if self._has_gadget and self._has_laser == nil and (managers.weapon_factory and tweak_data and tweak_data.weapon and tweak_data.weapon.factory) then
-			local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
-			for _, id in pairs(gadgets) do
-				local part_data = tweak_data.weapon.factory.parts[id]
-				if part_data and (part_data.sub_type == "laser" or part_data.type == "grip") then
-					self._has_laser = true
-					break
-				else
-					self._has_laser = false
+    function NewShotgunBase:_setup_laser()
+        for id, part in pairs(self._parts) do
+            local base = part.unit and part.unit:base()
+            if base and base.set_color_by_theme then
+                if WolfHUD:getSetting("use_weaponlasers", "boolean") then
+					base:set_color_by_theme("player")
 				end
-			end
-		end
-		self:set_gadget_on(self._stored_gadget_on or (self._has_laser and 1 or 0), false)
-		return on_equip_original(self, ...)
-	end
+				self._has_laser = WolfHUD:getSetting("laser_autoon", "boolean")
+            end
+        end
+    end
 
+	if not _NewShotgunBase_on_equip then _NewShotgunBase_on_equip = NewShotgunBase.on_equip end
+    if not _NewShotgunBase_toggle_gadget then _NewShotgunBase_toggle_gadget = NewShotgunBase.toggle_gadget end
+
+    function NewShotgunBase:on_equip()
+        _NewShotgunBase_on_equip(self)
+        if self._has_gadget then
+            self:_setup_laser()
+        end
+        self:set_gadget_on(self._stored_gadget_on or (self._has_laser and 1 or 0), false)
+    end
+
+    function NewShotgunBase:toggle_gadget()
+        if _NewShotgunBase_toggle_gadget(self) then
+            self._stored_gadget_on = (WolfHUD:getSetting("laser_remember_state", "boolean")) and self._gadget_on or 0
+            return true
+        end
+    end
 end

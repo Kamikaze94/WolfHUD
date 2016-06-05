@@ -1,6 +1,6 @@
 {
 	"menu_id" : "wolfhud_killcounter_options_menu",
-	"parent_menu_id" : "wolfhud_teampanels_options_menu",
+	"parent_menu_id" : "wolfhud_panels_options_menu",
 	"title" : "wolfhud_killcounter_options_name",
 	"description" : "wolfhud_killcounter_options_help",
 	"back_callback" : "",
@@ -67,6 +67,19 @@
 			"description" : "wolfhud_killcounter_show_ai_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "SHOW_AI_KILLS",
+		},
+		{
+			"type" : "divider",
+			"size" : 16,
+		},
+		
+		{
+			"type" : "toggle",
+			"id" : "SHOW_ACCURACY",
+			"title" : "wolfhud_killcounter_show_accuracy_title",
+			"description" : "wolfhud_killcounter_show_accuracy_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "SHOW_ACCURACY",
 		},
 		{
 			"type" : "divider",

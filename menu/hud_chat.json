@@ -1,6 +1,6 @@
 {
 	"menu_id" : "wolfhud_chat_options_menu",
-	"parent_menu_id" : "wolfhud_teampanels_options_menu",
+	"parent_menu_id" : "wolfhud_panels_options_menu",
 	"title" : "wolfhud_chat_options_name",
 	"description" : "wolfhud_chat_options_help",
 	"back_callback" : "",

@@ -8,6 +8,8 @@ if not _G.WolfHUD then
 	WolfHUD.version = "1.0"
 	WolfHUD.menu_ids = { 
 		"wolfhud_options_menu", 
+		"wolfhud_panels_options_menu",
+		"wolfhud_playerpanel_options_menu",
 		"wolfhud_teampanels_options_menu", 
 		"wolfhud_chat_options_menu", 
 		"wolfhud_killcounter_options_menu", 
@@ -74,11 +76,11 @@ if not _G.WolfHUD then
 		["lib/managers/experiencemanager"] = { "Scripts.lua" },
 		["lib/managers/moneymanager"] = { "Scripts.lua" },
 		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua", "TabStats.lua" },
-		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "Interaction.lua", "BurstFire.lua", "AdvAssault.lua" },
-		["lib/managers/playermanager"] = { "HUDList.lua" },
-		["lib/managers/trademanager"] = { "DownCounter.lua" },
+		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
+		["lib/managers/statisticsmanager"] = { "KillCounter.lua" },
+		["lib/managers/playermanager"] = { "GameInfoManager.lua" },
 		["lib/managers/hud/huddriving"] = { "DrivingHUD.lua" },
-		["lib/managers/hud/hudteammate"] = { "CustomHUD.lua", "KillCounter.lua", "DownCounter.lua", "Scripts.lua", "BurstFire.lua" },
+		["lib/managers/hud/hudteammate"] = { "CustomHUD.lua", "KillCounter.lua", "DownCounter.lua", "BurstFire.lua" },
 		["lib/managers/hud/hudtemp"] = { "CustomHUD.lua" },
 		["lib/managers/hud/hudassaultcorner"] = { "HUDList.lua", "AdvAssault.lua" },
 		["lib/managers/hud/hudobjectives"] = { "EnhancedObjective.lua" },
@@ -107,22 +109,29 @@ if not _G.WolfHUD then
 		["lib/units/equipment/ecm_jammer/ecmjammerbase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/grenade_crate/grenadecratebase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/sentry_gun/sentrygunbase"] = { "GameInfoManager.lua", "KillCounter.lua" },
-		["lib/units/equipment/sentry_gun/sentrygundamage"] = { "GameInfoManager.lua" },
-		["lib/units/interactions/interactionext"] = { "Interaction.lua" },
+		["lib/units/equipment/sentry_gun/sentrygundamage"] = { "GameInfoManager.lua", "SentryTweaks.lua" },
+		["lib/units/interactions/interactionext"] = { "GameInfoManager.lua", "Interaction.lua", "SentryTweaks.lua" },
 		["lib/units/weapons/akimboweaponbase"] = { "BurstFire.lua" },
-		["lib/units/weapons/sentrygunweapon"] = { "GameInfoManager.lua" },
+		["lib/units/weapons/sentrygunweapon"] = { "GameInfoManager.lua", "SentryTweaks.lua" },
 		["lib/units/weapons/weaponlaser"] = { "WeaponLasers.lua" },
 		["lib/units/weapons/weaponflashlight"] = { "WeaponLasers.lua" },
-		["lib/units/weapons/raycastweaponbase"] = { "Scripts.lua", "WeaponLasers.lua" },
+		["lib/units/weapons/raycastweaponbase"] = { "GameInfoManager.lua", "Scripts.lua" },
 		["lib/units/weapons/newraycastweaponbase"] = { "WeaponLasers.lua", "BurstFire.lua" },
+		["lib/units/weapons/shotgun/newshotgunbase"] = { "WeaponLasers.lua" },
 		["lib/units/props/securitycamera"] = { "GameInfoManager.lua" },
-		["lib/units/beings/player/playerdamage"] = { "HUDList.lua", "DamageIndicator.lua" },
-		["lib/units/beings/player/playermovement"] = { "HUDList.lua" },
+		["lib/units/beings/player/playerdamage"] = { "GameInfoManager.lua", "DamageIndicator.lua" },
+		["lib/units/beings/player/playermovement"] = { "GameInfoManager.lua" },
 		["lib/units/beings/player/huskplayermovement"] = { "DownCounter.lua" },
 		["lib/units/beings/player/states/playercivilian"] = { "Interaction.lua" },
-		["lib/units/beings/player/states/playerstandard"] = { "HUDList.lua", "EnemyHealthbar.lua", "Interaction.lua", "BurstFire.lua" },
+		["lib/units/beings/player/states/playerstandard"] = { "GameInfoManager.lua", "EnemyHealthbar.lua", "Interaction.lua", "BurstFire.lua" },
 		["lib/units/beings/player/states/playerbleedout"] = { "DownCounter.lua" },
 		["lib/units/vehicles/vehicledamage"] = { "DamageIndicator.lua" },
+		["lib/player_actions/skills/playeractionbloodthirstbase"] = { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractionexperthandling"] = { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractionshockandawe"] = { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractiondireneed"] = { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractionunseenstrike"] = { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractiontriggerhappy"] = { "GameInfoManager.lua" },
 		["lib/states/ingamedriving"] = { "DrivingHUD.lua" },
 		["lib/states/ingamewaitingforplayers"] = { "MenuTweaks.lua" },
 		["lib/tweak_data/guitweakdata"] = { "MenuTweaks.lua" },	
@@ -136,21 +145,52 @@ if not _G.WolfHUD then
 		{
 		  --CustomHUD
 			use_customhud 					= true,
-			PLAYER_PANEL_SCALE 				= 0.85,		--Size of local Player HUD Panel
-			TEAMMATE_PANEL_SCALE 			= 0.75,		--Size of Teammates/AI's HUD Panels
-			colorize_healthbars				= 2,		--Colorize mode: 1 = none, 2 = by peer id, 3 = by health amount
+			PLAYER_SCALE 					= 1,		--Size of local Player HUD Panel
+			PLAYER_OPACITY					= 0.85,
+			PLAYER_NAME						= false,
+			PLAYER_RANK						= false,
+			PLAYER_CHARACTER				= false,
+			PLAYER_STATUS					= true,
+			PLAYER_EQUIPMENT				= true,
+			PLAYER_SPECIALEQUIPMENT			= true,
+			PLAYER_CALLSIGN					= false,
+			PLAYER_CARRY					= true,
+			PLAYER_WEAPON_ICON				= 4,
+			PLAYER_WEAPON_NAME				= 1,
+			PLAYER_WEAPON_AMMO				= 4,
+			PLAYER_WEAPON_FIREMODE			= 2,
+			TEAM_SCALE 						= 0.8,		--Size of Teammates/AI's HUD Panels
+			TEAM_OPACITY					= 0.85,
+			TEAM_NAME						= true,
+			TEAM_RANK						= true,
+			TEAM_CHARACTER					= false,
+			TEAM_LATENCY					= true,
+			TEAM_STATUS						= true,
+			TEAM_EQUIPMENT					= true,
+			TEAM_SPECIALEQUIPMENT			= true,
+			TEAM_CALLSIGN					= false,
+			TEAM_CARRY						= true,
+			TEAM_BUILD						= 15,
+			TEAM_WEAPON_ICON				= 4,
+			TEAM_WEAPON_NAME				= 1,
+			TEAM_WEAPON_AMMO				= 4,
+			TEAM_WEAPON_FIREMODE			= 1,
+			TEAM_INTERACTION_HIDE			= true,		-- Show Interaction
+			TEAM_INTERACTION_MINDURATION	= 1,		--Hide Interaction if shorter than X sec.
 			show_downcounter 				= true,	
 			use_realammo					= true,
 		  --HUDChat
-			CHAT_WAIT_TIME					= 10,		--Time before chat fades out
+			CHAT_WAIT_TIME					= 10,		--Time before chat fades out, 0 = never
 			LINE_HEIGHT						= 15,		--Chat font Size
 			MAX_OUTPUT_LINES				= 8,		--Chat Output lines
+			spam_filter						= true,		--Filter PocoHud and NGBTO Chat Spam messages.
 		  --KillCounter
 			use_killcounter 				= true,
 			killcounter_color				= "yellow",
 			SHOW_SPECIAL_KILLS 				= true,		--KillCounter shows special kills
 			SHOW_HEADSHOT_KILLS 			= true,		--KillCounter shows headshot kills
 			SHOW_AI_KILLS 					= true,		--Show KillCounter for Bots
+			SHOW_ACCURACY					= true,
 			max_corpses 					= 100,		--Maximum number of laying around corpses
 		  --Enemy Healthbar
 			show_enemy_healthbar 			= true,		--Show healthbars
@@ -168,6 +208,7 @@ if not _G.WolfHUD then
 			dmg_vehicle_color				= "yellow",
 			dmg_friendlyfire_color			= "orange",
 		  --Suspicion
+			suspicion_scale					= 1,
 			numberic_suspicion				= true,
 			show_susp_eye					= true,
 		  --Driving HUD
@@ -182,8 +223,9 @@ if not _G.WolfHUD then
 		  --Scripts
 			skip_blackscreen 				= true,		--Skip the blackscreen on mission start
 			stat_screen_delay 				= 5,		--Skip the experience screen after X seconds
+			autopick_card 					= true,		--Automatically pick a card on lootscreen
 			loot_screen_delay 				= 3,		--Skip the loot screen after X seconds
-			spam_filter						= true,		--Filter PocoHud and NGBTO Chat Spam messages.
+			no_slowmotion 					= true,		--Disable mask-up and downed slow motion
 		  --HUDList
 			show_timers 					= true,     --Drills, time locks, hacking etc.
 			show_equipment 					= true,  	--Deployables (ammo, doc bags, body bags)
@@ -208,23 +250,26 @@ if not _G.WolfHUD then
 				separate_bagged_loot 		= true,     --Show bagged loot as a separate value
 			show_special_pickups 			= true,    	--Show number of special equipment/items
 
-			show_buffs 						= 1,     	--Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+			show_buffs 						= true,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
 			
 			use_hudlist 					= true,
-			hudlist_right_scale				= 1,
-			hudlist_left_scale				= 1,
-			hudlist_buff_scale				= 1,
-			hud_box_color 					= "white",		--Left and Right List font color
-			hud_box_bg_color 				= "black",		--Left and Right List BG color
+			right_list_scale				= 1,
+			left_list_scale					= 1,
+			buff_list_scale					= 1,
+			list_color	 					= "white",		--Left and Right List font color
+			list_color_bg	 				= "black",		--Left and Right List BG color
 			civilian_color 					= "white", 		--EnemyCounter Civillian and Hostage icon color
 			thug_color 						= "white",		--EnemyCounter Thug and Mobster icon color
 			enemy_color 					= "white",		--EnemyCounter Cop and Specials icon color
-		  --Press2Hold
+			special_color 					= "white",
+		  --Interaction
 			LOCK_MODE 						= 3,			--Disabled (1, Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time (2), or current interaction time(3)
 			MIN_TIMER_DURATION 				= 5, 			--Min interaction duration (in seconds) for the toggle behavior to activate
 			EQUIPMENT_PRESS_INTERRUPT 		= true, 		--Use the equipment key ('G') to toggle off active interactions
 			SHOW_LOCK_INDICATOR				= true,
 			SHOW_CIRCLE						= true,
+			CIRCLE_SCALE					= 0.8,
+			TEXT_SCALE						= 0.8,
 			SHOW_INTERRUPT_HINT				= true,
 			SHOW_TIME_REMAINING 			= true,			--Show remaining Time in the Interaction-Circle
 			GRADIENT_COLOR 					= "light_green",--Color, which the timer reaches on completition
@@ -259,7 +304,27 @@ if not _G.WolfHUD then
 	
 	function WolfHUD:print_log(text)
 		if self.DEBUG_MODE then
-			log("[WolfHUD] " .. text)
+			local function log_table(userdata)
+				local text = ""
+				for id, data in pairs(userdata) do
+					if type(data) == "table" then
+						log( id .. " = {")
+						log_table(data)
+						log("}")
+					elseif type(data) ~= "function" then
+						log( id .. " = " .. tostring(data) .. "")
+					else
+						log( "function " .. id .. "(...)")
+					end
+				end
+			end
+			if type(text) == "table" or type(text) == "userdata" then
+				log_table(text)
+				return
+			elseif type(text) == "function" then
+				text = "Error, cannot log function... " 
+			end
+			log("[WolfHUD] " .. tostring(text))
 		end
 	end
 	
@@ -276,9 +341,12 @@ if not _G.WolfHUD then
 				end
 			end
 			file:close()
+		else
+			self:print_log("Error while loading, settings file could not be opened (" .. self.settings_path .. ")")
 		end
 		if corrupt then 
 			self:Save()
+			self:print_log("Invalid settings stored in savefile, resaving...")
 		end
 	end
 
@@ -287,6 +355,8 @@ if not _G.WolfHUD then
 		if file then
 			file:write(json.encode(self.settings))
 			file:close()
+		else
+			self:print_log("Error while saving, settings file could not be opened (" .. self.settings_path .. ")")
 		end
 	end
 	
@@ -307,7 +377,7 @@ if not _G.WolfHUD then
 						if SystemInfo:platform() == Idstring("WIN32") then  --Windows
 							os.execute('cmd /c mkdir "./' .. v["install_dir"] .. v["install_folder"] .. '"')
 						else --Linux
-							log("mod_override folder '" .. v["install_folder"] .. "' is missing!")
+							log("[WolfHUD] mod_override folder '" .. v["install_folder"] .. "' is missing!")
 						end
 					end
 					local file = io.open(v["revision"], "w+")
@@ -379,20 +449,20 @@ end
 
 Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", function(loc)
 	if _G.PD2KR then
-		loc:load_localization_file(WolfHUD.mod_path .. "loc/korean.txt")
+		loc:load_localization_file(WolfHUD.mod_path .. "loc/korean.json")
 	else
 		for _, filename in pairs(file.GetFiles(WolfHUD.mod_path .. "loc/")) do
-			local str = filename:match('^(.*).txt$')
+			local str = filename:match('^(.*).json$')
 			if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
 				loc:load_localization_file(WolfHUD.mod_path .. "loc/" .. filename)
 				break
 			end
 		end
 	end
-	loc:load_localization_file(WolfHUD.mod_path .. "loc/english.txt", false)
+	loc:load_localization_file(WolfHUD.mod_path .. "loc/english.json", false)
 	
 	if WolfHUD:getSetting("replace_weapon_names", "boolean") then
-		loc:load_localization_file(WolfHUD.mod_path .. "loc/RealWeaponNames.txt")
+		loc:load_localization_file(WolfHUD.mod_path .. "loc/RealWeaponNames.json")
 	end
 	
 	if WolfHUD:getSetting("skip_blackscreen", "boolean") then
@@ -478,6 +548,12 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		QuickMenu:new( menu_title, menu_message, menu_options, true )
 	end
 	
+	MenuCallbackHandler.WolfHUD_FocusChanged = function(node, focus)
+		if managers.menu:active_menu().name ~= "menu_main" then
+			return
+		end
+	end
+	
 	MenuCallbackHandler.clbk_change_setting = function(self, item)
 		local value
 		if item._type == "toggle" then
@@ -502,7 +578,26 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuCallbackHandler.clbk_change_hudlist_setting = function(self, item)
 		self:clbk_change_setting(item)
 		local name = item:parameters().name
-		if HUDManager then HUDManager:change_list_setting(tostring(name), WolfHUD:getSetting(name)) end
+		if managers.hud and HUDListManager then managers.hud:change_list_setting(tostring(name), WolfHUD:getSetting(name)) end
+	end
+	
+	MenuCallbackHandler.clbk_change_hudlist_color_setting = function(self, item)
+		self:clbk_change_color_setting(item)
+		local name = item:parameters().name
+		if managers.hud and HUDListManager then managers.hud:change_list_setting(tostring(name), WolfHUD:getSetting(name, "color")) end
+	end
+	
+	MenuCallbackHandler.clbk_change_customhud_setting = function(self, item)
+		self:clbk_change_setting(item)
+		if managers.hud and HUDManager.CUSTOM_TEAMMATE_PANELS and managers.hud.change_hud_setting then 
+			local name = item:parameters().name
+			local setting = {}
+			for word in string.gmatch(name, "[%a%d]+") do
+				table.insert(setting, word)
+			end
+			local type = table.remove(setting, 1)
+			managers.hud:change_hud_setting(type, setting, WolfHUD:getSetting(name)) 
+		end
 	end
 	
 	WolfHUD:Load()
@@ -515,37 +610,16 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_enemy_healthbar.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_indicator.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_tabstats.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_adv.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_panels.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_teampanels.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_playerpanel.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_chat.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_suspicion.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_killcounter.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_indicator.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_enemy_healthbar.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", WolfHUD, settings)
 end)
-
---[[
-Hooks:Add("MenuManagerPostInitialize", "MenuManagerPostInitialize_WolfHUD", function(menu_manager)
-	for __, menu_id in ipairs(WolfHUD.menu_ids) do
-		local menu = MenuHelper:GetMenu(menu_id)
-		for __, menu_item in ipairs(menu._items) do
-			if menu_item._type == "multiple_choice" and #menu_item._options <= 0 then
-				menu_item:clear_options()
-				for id, data in ipairs(WolfHUD.color_table) do
-					menu_item:add_option(CoreMenuItemOption.ItemOption:new({
-						_meta = "option",
-						text_id = "wolfhud_color_" .. (data.name or "unknown"),
-						value = data.name,
-						localize = true
-					}))
-				end
-				local item_id = menu_item:parameters().name
-				local value = WolfHUD:getSetting(tostring(item_id), "string")
-				menu_item:set_value(value)
-			end
-		end
-	end
-end)
-]]

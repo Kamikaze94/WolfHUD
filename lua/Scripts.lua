@@ -11,85 +11,80 @@ if string.lower(RequiredScript) == "lib/units/weapons/raycastweaponbase" then
 		setup_original(self, ...)
 		self._bullet_slotmask = self._bullet_slotmask - World:make_slot_mask(16)
 	end
-elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
-	local HUDTeammate_set_ammo_amount_by_type = HUDTeammate.set_ammo_amount_by_type
-	function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, current_left, max)
+elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
+	local set_teammate_ammo_amount_orig = HUDManager.set_teammate_ammo_amount
+	
+	function HUDManager:set_teammate_ammo_amount(id, selection_index, max_clip, current_clip, current_left, max)
 		if WolfHUD:getSetting("use_realammo", "boolean") then
---[[			local weapon = managers.blackmarket["equipped_" .. type](managers.blackmarket)
-			if weapon and tweak_data.weapon[weapon.weapon_id].category == "saw" then
-				self._saw_fl_used = self._saw_fl_used or 0
-				if current_left <= 0 and current_clip <= 0 then
-					self._saw_fl_used = self._saw_fl_used + 1 % 3
-				elseif current_left > (math.floor(max / max_clip) - 1) and current_clip <= 0 then
-					self._saw_fl_used = 0	--Buggs, when taking ammobag before using up all ammo...
-				end
-				current_left = current_left * max_clip + current_clip + (max % max_clip) * (self._saw_fl_used == 0 and 1 or 0)
-			end]]
 			local total_left = current_left - current_clip
 			if total_left >= 0 then 
 				current_left = total_left
 				max = max - current_clip
 			end
 		end
-		HUDTeammate_set_ammo_amount_by_type(self, type, max_clip, current_clip, current_left, max)
+		return set_teammate_ammo_amount_orig(self, id, selection_index, max_clip, current_clip, current_left, max)
 	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata" then
 	function TimeSpeedEffectTweakData:_init_base_effects()
-		self.mask_on = {
-			speed = 1,
-			fade_in_delay = 0,
-			fade_in = 0,
-			sustain = 0,
-			fade_out = 0,
-			timer = "pausable"
-		}
-		self.mask_on_player = {
-			speed = 1,
-			fade_in_delay = 0,
-			fade_in = 0,
-			sustain = 0,
-			fade_out = 0,
-			timer = "pausable",
-			affect_timer = "player"
-		}
-		self.downed = {
-			speed = 1,
-			fade_in = 0,
-			sustain = 0,
-			fade_out = 0,
-			timer = "pausable"
-		}
-		self.downed_player = {
-			speed = 1,
-			fade_in = 0,
-			sustain = 0,
-			fade_out = 0,
-			timer = "pausable",
-			affect_timer = "player"
-		}
+		if WolfHUD:getSetting("no_slowmotion", "boolean") then
+			self.mask_on = {
+				speed = 1,
+				fade_in_delay = 0,
+				fade_in = 0,
+				sustain = 0,
+				fade_out = 0,
+				timer = "pausable"
+			}
+			self.mask_on_player = {
+				speed = 1,
+				fade_in_delay = 0,
+				fade_in = 0,
+				sustain = 0,
+				fade_out = 0,
+				timer = "pausable",
+				affect_timer = "player"
+			}
+			self.downed = {
+				speed = 1,
+				fade_in = 0,
+				sustain = 0,
+				fade_out = 0,
+				timer = "pausable"
+			}
+			self.downed_player = {
+				speed = 1,
+				fade_in = 0,
+				sustain = 0,
+				fade_out = 0,
+				timer = "pausable",
+				affect_timer = "player"
+			}
+		end
 	end
 
 	function TimeSpeedEffectTweakData:_init_mission_effects()
 		self.mission_effects = {}
-		self.mission_effects.quickdraw = {
-			speed = 1,
-			fade_in_delay = 0,
-			fade_in = 0,
-			sustain = 0,
-			fade_out = 0,
-			timer = "pausable",
-			sync = true
-		}
-		self.mission_effects.quickdraw_player = {
-			speed = 1,
-			fade_in_delay = 0,
-			fade_in = 0,
-			sustain = 0,
-			fade_out = 0,
-			timer = "pausable",
-			affect_timer = "player",
-			sync = true
-		}
+		if WolfHUD:getSetting("no_slowmotion", "boolean") then
+			self.mission_effects.quickdraw = {
+				speed = 1,
+				fade_in_delay = 0,
+				fade_in = 0,
+				sustain = 0,
+				fade_out = 0,
+				timer = "pausable",
+				sync = true
+			}
+			self.mission_effects.quickdraw_player = {
+				speed = 1,
+				fade_in_delay = 0,
+				fade_in = 0,
+				sustain = 0,
+				fade_out = 0,
+				timer = "pausable",
+				affect_timer = "player",
+				sync = true
+			}
+		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/experiencemanager" then
 	local cash_string_original = ExperienceManager.cash_string
