@@ -46,12 +46,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		}
 	}
 
-	function HUDDriving:init(hud, full_hud)
+	function HUDDriving:init(hud)
+		if not hud then
+			hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
+		end
 		self._hud_panel = hud.panel
-		self._full_hud_panel = full_hud.panel
 		self._name = ""
-		--self._hud_panel:clear()
-		--self._full_hud_panel:clear()
 		self._markers = {}
 		local x_pos, y_pos
 		if pdth_hud then
@@ -205,6 +205,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		loot_bitmap:set_y(self.drivingpanel:h() + ((y_pos + -120) + (loot_bitmap:h() / 2)))
 		
 		local vis = WolfHUD:getSetting("show_car_healthbar", "boolean")
+		self._health_texture_rect = { 2, 18, 232,	11 }
 		self._health_text = self.drivingpanel:text({
 			name = "health",
 			text = "100000 HP",
@@ -228,7 +229,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			valign = "bottom",
 			name 			= "health_bar",
 			texture 		= "guis/textures/pd2/healthshield",
-			texture_rect 	= { 2, 18, 232,	11 },
+			texture_rect 	= self._health_texture_rect,
 			blend_mode 		= "normal",
 			visible = vis
 		})
@@ -238,17 +239,17 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			valign = "bottom",
 			name 			= "unit_shield",
 			texture 		= "guis/textures/pd2/healthshield",
-			texture_rect 	= { 1, 1, 234, 13 },
+			texture_rect 	= { 1, 1, 236, 13 },
 			blend_mode 		= "normal",
 			visible = vis
 		})
 		self._health_bar:set_left(self.drivingpanel:center_x() + (x_pos + loot_bitmap:w() - 74))
 		self._health_bar:set_y(self.drivingpanel:h() + ((y_pos + -154) + (loot_bitmap:h() / 2)))
-		self._health_bar:set_w(self._health_bar:w()/2 - 16)
+		self._health_bar:set_w(self._health_bar:w()/2 - 12)
 		self._health_bar:set_h(self._health_bar:h() + 15)
 		self._health_shield:set_left(self.drivingpanel:center_x() + (x_pos + loot_bitmap:w() - 75))
 		self._health_shield:set_y(self.drivingpanel:h() + ((y_pos + -155) + (loot_bitmap:h() / 2)))
-		self._health_shield:set_w(self._health_shield:w()/2 - 14)
+		self._health_shield:set_w(self._health_shield:w()/2 - 10)
 		self._health_shield:set_h(self._health_shield:h() + 15)
 		self._health_text:set_left(self.drivingpanel:center_x() + (x_pos + loot_bitmap:w() - 75))
 		self._health_text:set_y(self._health_shield:y())
@@ -311,6 +312,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			self._health_text:set_color(Color.white) 
 		end
 		self._health_bar:set_w(health_perc * (self._health_shield:w() - 2))
+		self._health_bar:set_texture_rect(self._health_texture_rect[1], self._health_texture_rect[2], self._health_texture_rect[3] * health_perc, self._health_texture_rect[4], )
 
 		if self._name ~= name then
 			self._name = name
@@ -474,18 +476,17 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 		self.orig.at_exit(self)
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
-	function HUDManager:_create_assault_corner()
+	local _setup_player_info_hud_pd2_original = HUDManager._setup_player_info_hud_pd2
+	
+	function HUDManager:_setup_player_info_hud_pd2()
+		_setup_player_info_hud_pd2_original(self)
 		local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
-		local full_hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
-		full_hud.panel:clear()
-		self._hud_assault_corner = HUDAssaultCorner:new(hud, full_hud)
-		self:setup_driving_hud(hud, full_hud)
+		self:create_driving_hud(hud)
 	end
 
-
-	function HUDManager:setup_driving_hud(hud, full_hud)
-		print("HUDManager:setup_driving_hud()")
-		self._hud_driving = HUDDriving:new(hud, full_hud)
+	function HUDManager:create_driving_hud(hud)
+		print("HUDManager:create_driving_hud()")
+		self._hud_driving = HUDDriving:new(hud)
 	end
 
 	function HUDManager:set_driving_vehicle_state(speed, rpm, gear, people, people_total, name, seats_table, loot_current, loot_total, health_current, health_total)
