@@ -3481,6 +3481,11 @@ end
 			local list_panel = managers.hudlist:list("buff_list"):panel()
 			list_panel:set_bottom(hud_panel:h() - self._teammate_panels[HUDManager.PLAYER_PANEL]:panel():h() - 10)
 		end
+		if self._hud_chat_ingame and self._set_custom_hud_chat_offset then
+			local player_panel = self._teammate_panels[HUDManager.PLAYER_PANEL]:panel()
+			local offset = (player_panel:x() + player_panel:w() > hud_panel:w() - HUDChat.WIDTH) and (player_panel:h() + HUDChat.LINE_HEIGHT) or 0
+			self:_set_custom_hud_chat_offset(offset)
+		end
 	end
 	
 	function HUDManager:change_hud_setting(type, setting, value)

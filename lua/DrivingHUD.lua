@@ -312,7 +312,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			self._health_text:set_color(Color.white) 
 		end
 		self._health_bar:set_w(health_perc * (self._health_shield:w() - 2))
-		self._health_bar:set_texture_rect(self._health_texture_rect[1], self._health_texture_rect[2], self._health_texture_rect[3] * health_perc, self._health_texture_rect[4], )
+		self._health_bar:set_texture_rect(self._health_texture_rect[1], self._health_texture_rect[2], self._health_texture_rect[3] * health_perc, self._health_texture_rect[4])
 
 		if self._name ~= name then
 			self._name = name
