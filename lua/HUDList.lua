@@ -3469,8 +3469,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 1,
 			color = HUDList.BuffItemBase.COLORS.TEAM,
 		},
-		bulletproof = {						--TODO: Needs new icon
-			atlas_new = tweak_data.skilltree.skills.iron_man.icon_xy,
+		bulletproof = {						--TODO: Needs new icon (Faster Team armor recovery)
+			atlas_new = tweak_data.skilltree.skills.disguise.icon_xy,
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.COLORS.TEAM,
@@ -3578,9 +3578,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local texture_rect = icon.texture_rect
 		
 		if icon.atlas or icon.atlas_new or icon.spec then
-			local x, y = unpack(icon.atlas or icon.atlas_new or icon.spec)
-			local w = icon.atlas_new and 80 or 64
-			texture_rect = { x * w, y * w, w, w }
+			local x, y = unpack(icon.atlas_new or icon.atlas or icon.spec)
+			local rect = icon.atlas_new and 80 or 64
+			texture_rect = { x * rect, y * rect, rect, rect }
 			
 			texture = "guis/"
 			if icon.texture_bundle_folder then

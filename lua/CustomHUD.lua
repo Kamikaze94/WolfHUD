@@ -1084,7 +1084,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.Build:update_settings()
-		if self:set_enabled("setting", not self._settings.BUILD.HIDE then
+		if self:set_enabled("setting", not self._settings.BUILD.HIDE) then
 			self._owner:arrange()
 		end
 		self._duration = self._settings.BUILD.DURATION
