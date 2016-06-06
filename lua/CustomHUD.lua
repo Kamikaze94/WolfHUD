@@ -294,13 +294,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 				TOTAL_AMMO_ONLY = (value == 5),
 			}
 		elseif setting[1] == "BUILD" then
-			if val == 0 then
-				table.insert(setting, "HIDE")
-				val = true
-			else
-				self:change_setting({"BUILD", "HIDE"}, false)
-				table.insert(setting, "DURATION")
-			end
+			table.insert(setting, "DURATION")
 		elseif setting[1] == "INTERACTION" and setting[2] == "HIDE" then
 			val = not val
 		end
@@ -1090,7 +1084,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.Build:update_settings()
-		if self:set_enabled("setting", not self._settings.BUILD.HIDE) then
+		if self:set_enabled("setting", not (self._settings.BUILD.HIDE or self._settings.BUILD.DURATION == 0)) then
 			self._owner:arrange()
 		end
 		self._duration = self._settings.BUILD.DURATION
