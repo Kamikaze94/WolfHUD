@@ -170,13 +170,15 @@ if not _G.WolfHUD then
 			TEAM_SPECIALEQUIPMENT			= true,
 			TEAM_CALLSIGN					= false,
 			TEAM_CARRY						= true,
-			TEAM_BUILD						= 15,
+			TEAM_BUILD_HIDE					= true,
+			TEAM_BUILD_DURATION				= 15,
 			TEAM_WEAPON_ICON				= 4,
 			TEAM_WEAPON_NAME				= 1,
 			TEAM_WEAPON_AMMO				= 4,
 			TEAM_WEAPON_FIREMODE			= 1,
 			TEAM_INTERACTION_HIDE			= true,		-- Show Interaction
 			TEAM_INTERACTION_MINDURATION	= 1,		--Hide Interaction if shorter than X sec.
+			show_pacified_civilians			= true,
 			show_downcounter 				= true,	
 			use_realammo					= true,
 		  --HUDChat
@@ -444,6 +446,8 @@ if MenuNodeMainGui then
 		if alive(self._version_string) then
 			self._version_string:set_text("Payday 2 v" .. Application:version() .. " | WolfHUD v" .. WolfHUD.version)
 		end
+	local outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string())
+	log(json.encode(outfit))
 	end)
 end
 

@@ -159,8 +159,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			CARRY = WolfHUD:getSetting("TEAM_CARRY", "boolean"),	--Show currently carried bag
 			BUILD = {	--Show perk deck and number of skills acquired in each tree (not used by player)
 				--Pick max one
-				HIDE = (WolfHUD:getSetting("TEAM_BUILD", "number") == 0),	--Don't show build at all
-				DURATION = WolfHUD:getSetting("TEAM_BUILD", "number"),	--Time in seconds to show the build from when player joins. Information is hidden when duration has expired, or never removed if value is nil/undefined
+				HIDE = WolfHUD:getSetting("TEAM_BUILD_HIDE", "number"),	--Don't show build at all
+				DURATION = WolfHUD:getSetting("TEAM_BUILD_DURATION", "number") > 0 and WolfHUD:getSetting("TEAM_BUILD_DURATION", "number") or nil,	--Time in seconds to show the build from when player joins. Information is hidden when duration has expired, or never removed if value is nil/undefined
 			},
 			WEAPON = {
 				--Show/hide various elements of the weapons panels.
@@ -293,9 +293,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 				UNSELECTED_ONLY = (value == 3),
 				TOTAL_AMMO_ONLY = (value == 5),
 			}
-		elseif setting[1] == "BUILD" then
-			table.insert(setting, "DURATION")
-		elseif setting[1] == "INTERACTION" and setting[2] == "HIDE" then
+		elseif setting[1] == "BUILD" and setting[2] == "DURATION" then
+			val = val == 0 and nil or val
+		elseif (setting[1] == "INTERACTION" or setting[1] == "BUILD") and setting[2] == "HIDE" then
 			val = not val
 		end
 		
@@ -1084,7 +1084,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.Build:update_settings()
-		if self:set_enabled("setting", not (self._settings.BUILD.HIDE or self._settings.BUILD.DURATION == 0)) then
+		if self:set_enabled("setting", not self._settings.BUILD.HIDE then
 			self._owner:arrange()
 		end
 		self._duration = self._settings.BUILD.DURATION
@@ -1133,12 +1133,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.Build:set_skills(data)
 		local trees = { "M", "E", "T", "G", "F" }
-		local text = "|"
+		local text = ""
 		
-		for tree, skills in ipairs(data) do
-			if tonumber(skills) > 0 then
-				text = string.format("%s %s:%02d |", text, trees[tree] or tostring(tree), tonumber(skills))
-			end
+		for i = 0, (math.floor(#data / 3) - 1) do
+			text = string.format("%s %s: %02d %02d %02d ||", text, trees[(i + 1)] or tostring(i), tonumber(data[(i * 3) + 1]), tonumber(data[(i * 3) + 2]), tonumber(data[(i * 3) + 3]))
 		end
 		
 		self._skills:set_text(text)
@@ -3514,7 +3512,7 @@ end
 		local outfit
 		
 		if peer_id == managers.network:session():local_peer():id() then
-			--local outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string())
+			--outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string())
 			--Weapons handled by HUDManager:add_weapon()
 		else
 			local peer = managers.network:session():peer(peer_id)
