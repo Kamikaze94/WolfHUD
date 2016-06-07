@@ -23,11 +23,11 @@ elseif RequiredScript == "lib/units/weapons/sentrygunweapon" then
 	
 	function SentryGunWeapon:setup(...)
 		old_setup(self, ...)
-		if self._owner == managers.player:player_unit() and managers.player:has_category_upgrade("sentry_gun", "ap_bullets") then
+		if Network:is_server() and self._owner == managers.player:player_unit() and managers.player:has_category_upgrade("sentry_gun", "ap_bullets") then
 			managers.enemy:add_delayed_clbk("Auto_AP_" .. tostring(self._unit:key()), callback(self, self, "_switch_fire_mode"), Application:time() + 0.01)
 		end
 	end
-
+	
 	function SentryGunWeapon:_switch_fire_mode()
 		_switch_fire_original(self)
 		if self._unit:base() and self._unit:base():is_owner() then

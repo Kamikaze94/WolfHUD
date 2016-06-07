@@ -2482,9 +2482,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				color = HUDListManager.ListOptions.list_color_bg or Color(0.0, 0.5, 0.0),
 				blend_mode = "normal",
 				font = tweak_data.hud_corner.assault_font,
-				font_size = self._panel:w() * 2.4 / math.min(txt:len(), 8),
+				font_size = self._panel:w() * 0.45,
 				layer = 10
 			})
+			local _, _, w, h = self._name_text:text_rect()
+			local font_size = math.min(self._name_text:font_size() * (self._name_text:w() / w) * 0.9, self._name_text:font_size())
+			self._name_text:set_font_size(font_size)
 			self._name_text:set_center(self._icon:center())
 			self._name_text:set_y(self._name_text:y() + self._icon:h() * 0.1)
 		end

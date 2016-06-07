@@ -446,8 +446,6 @@ if MenuNodeMainGui then
 		if alive(self._version_string) then
 			self._version_string:set_text("Payday 2 v" .. Application:version() .. " | WolfHUD v" .. WolfHUD.version)
 		end
-	local outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string())
-	log(json.encode(outfit))
 	end)
 end
 
