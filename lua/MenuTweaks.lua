@@ -1,19 +1,6 @@
 if string.lower(RequiredScript) == "lib/managers/menumanager" then
 	function MenuCallbackHandler:is_dlc_latest_locked(check_dlc) return false end
 elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then 
-	-- Show Mod Icons of all Mods in Inventory Boxxes
-	local orig_blackmarket_gui_slot_item_select = BlackMarketGuiSlotItem.select
-	function BlackMarketGuiSlotItem:select(instant, no_sound)
-		self._data.hide_unselected_mini_icons = false
-		return orig_blackmarket_gui_slot_item_select(self, instant, no_sound)
-	end
-
-	local orig_blackmarket_gui_slot_item_deselect = BlackMarketGuiSlotItem.deselect
-	function BlackMarketGuiSlotItem:deselect(instant)
-		self._data.hide_unselected_mini_icons = false
-		return orig_blackmarket_gui_slot_item_deselect(self, instant)
-	end
-
 	-- Remove free Buckshot ammo, if you own Gage Shotty DLC
 	local populate_mods_original = BlackMarketGui.populate_mods
 	function BlackMarketGui:populate_mods(data, ...)
@@ -50,23 +37,32 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	function BlackMarketGui:populate_deployables(data)
 		populate_deployables_original(self, data)
 		for i, equipment in ipairs(data) do
-			equipment.name_localized = equipment.name_localized .. getEquipmentAmount(equipment.name)
+			equipment.name_localized = equipment.name_localized .. (equipment.unlocked and getEquipmentAmount(equipment.name) or "")
 		end
 	end
 
 	-- Show all Weapon Names in Inventory Boxxes
 	local orig_blackmarket_gui_slot_item_init = BlackMarketGuiSlotItem.init
 	function BlackMarketGuiSlotItem:init(main_panel, data, ...)
-		data.custom_name_text = data.custom_name_text or (not data.mid_text or data.mid_text == "") and data.name_localized
---[[	if (data.category == "primaries" or data.category == "secondaries") and data.mini_icons then
-			local silent = false
-			for id, w_data in pairs(data.mini_icons) do	--Needs to handle Bows (excl. Explosive Bolt) and silent motor saw
-				if w_data.texture == "guis/textures/pd2/blackmarket/inv_mod_silencer" then
-					silent = true
+		if (data.category == "primaries" or data.category == "secondaries") and data.mini_icons then
+			local category = tweak_data.weapon[data.name].category
+			local is_saw = (category == "saw")
+			local has_silencer = (category == "bow" or category == "crossbow")
+			local has_explosive = false
+			for id, w_data in pairs(data.mini_icons) do	--Needs to handle silent motor saw
+				if w_data.alpha == 1 then
+					if w_data.texture == "guis/textures/pd2/blackmarket/inv_mod_silencer" then
+						has_silencer = true
+					elseif w_data.texture == "guis/textures/pd2/blackmarket/inv_mod_ammo_explosive" then
+						has_explosive = true
+					end
 				end
 			end
-			data.custom_name_text = tostring(data.custom_name_text) .. " " .. (silent and utf8.char(57363) or "")
-		end]]
+			local silent = has_silencer and not has_explosive
+			data.name_localized = tostring(data.name_localized) .. (not is_saw and (" " .. (silent and utf8.char(57363) or "")) or "")
+			data.hide_unselected_mini_icons = false		--Always enable mod mini icons
+		end
+		data.custom_name_text = data.custom_name_text or (not data.mid_text or data.mid_text == "") and data.name_localized
 		return orig_blackmarket_gui_slot_item_init(self, main_panel, data, ...)
 	end
 	
