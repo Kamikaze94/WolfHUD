@@ -15,6 +15,9 @@ Weapon tweak data attributes:
 	DELAYED_BURST_RECOIL:
 		true/false	-	Build up and delay recoil until last shot in burst is fired
 ]]
+if not WolfHUD:getSetting("enable_burstmode", "boolean") then
+	return
+end
 
 if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 
@@ -100,7 +103,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 	
 	--Semi-override
 	function NewRaycastWeaponBase:toggle_firemode(...)
-		return self._has_burst_fire and not self._locked_fire_mode and self:_check_toggle_burst() or toggle_firemode_original(self, ...)
+		return self:can_use_burst_mode() and not self._locked_fire_mode and self:_check_toggle_burst() or toggle_firemode_original(self, ...)
 	end
 	
 	

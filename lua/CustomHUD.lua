@@ -2476,14 +2476,14 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			end
 		end
 		
-		if data.FIRE_MODE then
-			if data.FIRE_MODE.HIDE then
+		if data.FIREMODE then
+			if data.FIREMODE.HIDE then
 				selected[self._fire_mode_panel] = selected[self._fire_mode_panel] and false
 				unselected[self._fire_mode_panel] = unselected[self._fire_mode_panel] and false
-			elseif data.FIRE_MODE.SELECTED_ONLY then
+			elseif data.FIREMODE.SELECTED_ONLY then
 				selected[self._fire_mode_panel] = selected[self._fire_mode_panel] and true
 				unselected[self._fire_mode_panel] = unselected[self._fire_mode_panel] and false
-			elseif data.FIRE_MODE.UNSELECTED_ONLY then
+			elseif data.FIREMODE.UNSELECTED_ONLY then
 				selected[self._fire_mode_panel] = selected[self._fire_mode_panel] and false
 				unselected[self._fire_mode_panel] = unselected[self._fire_mode_panel] and true
 			end

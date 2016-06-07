@@ -62,8 +62,8 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 			}
 		end
 		
-		function WeaponLaser:update(unit, t, dt, ...)
-			update_original(self, unit, t, dt, ...)
+		function WeaponLaser:update(unit, t, ...)
+			update_original(self, unit, t, ...)
 			local theme = self._theme_type
 			local suffix = self._suffix_map[theme]
 			local col = Color.white
@@ -93,16 +93,16 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 elseif string.lower(RequiredScript) == "lib/units/weapons/weaponflashlight" then
 	local init_flash_cbk = WeaponFlashLight.init
 	local update_flash_cbk = WeaponFlashLight.update
-	function WeaponFlashLight:init(unit)
-		init_flash_cbk(self, unit)
+	function WeaponFlashLight:init(...)
+		init_flash_cbk(self, ...)
 		local angle = WolfHUD:getSetting("flashlight_angle", "number") --Angle/width of beam, 0-160 (default 60)
 		local range = (WolfHUD:getSetting("flashlight_range", "number") * 100) --Range of beam, 0+ (default 1000 -> 10m)
 		self._light:set_spot_angle_end(math.clamp(angle, 0, 160))
 		self._light:set_far_range(range)
 	end
 	
-	function WeaponFlashLight:update(unit, t, dt)
-		update_flash_cbk(self, unit, t, dt)
+	function WeaponFlashLight:update(...)
+		update_flash_cbk(self, ...)
 		if not self._is_haunted then
 			self._light:set_spot_angle_end(math.clamp(WolfHUD:getSetting("flashlight_angle", "number"), 0, 160))
 			self._light:set_far_range((WolfHUD:getSetting("flashlight_range", "number") * 100))
@@ -145,7 +145,7 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 	end
 	
 elseif RequiredScript == "lib/units/weapons/shotgun/newshotgunbase" then
-
+	
     function NewShotgunBase:_setup_laser()
         for id, part in pairs(self._parts) do
             local base = part.unit and part.unit:base()
@@ -161,16 +161,16 @@ elseif RequiredScript == "lib/units/weapons/shotgun/newshotgunbase" then
 	if not _NewShotgunBase_on_equip then _NewShotgunBase_on_equip = NewShotgunBase.on_equip end
     if not _NewShotgunBase_toggle_gadget then _NewShotgunBase_toggle_gadget = NewShotgunBase.toggle_gadget end
 
-    function NewShotgunBase:on_equip()
-        _NewShotgunBase_on_equip(self)
+    function NewShotgunBase:on_equip(...)
+        _NewShotgunBase_on_equip(self, ...)
         if self._has_gadget then
             self:_setup_laser()
         end
         self:set_gadget_on(self._stored_gadget_on or (self._has_laser and 1 or 0), false)
     end
 
-    function NewShotgunBase:toggle_gadget()
-        if _NewShotgunBase_toggle_gadget(self) then
+    function NewShotgunBase:toggle_gadget(...)
+        if _NewShotgunBase_toggle_gadget(self, ...) then
             self._stored_gadget_on = (WolfHUD:getSetting("laser_remember_state", "boolean")) and self._gadget_on or 0
             return true
         end
