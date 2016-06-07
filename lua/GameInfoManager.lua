@@ -330,6 +330,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 			revive_damage_reduction = "combat_medic",
 			revived_damage_resist = "up_you_go",
 			swap_weapon_faster = "running_from_death_basic",
+			team_damage_speed_multiplier_received = "second_wind",
 			melee_life_leech = "life_drain_debuff",
 			loose_ammo_restore_health = "medical_supplies_debuff",
 			loose_ammo_give_team = "ammo_give_out_debuff",
