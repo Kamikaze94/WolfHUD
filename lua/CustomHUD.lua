@@ -1133,10 +1133,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.Build:set_skills(data)
 		local trees = { "M", "E", "T", "G", "F" }
-		local text = ""
+		local text = "|"
 		
-		for i = 0, (math.floor(#data / 3) - 1) do
-			text = string.format("%s %s: %02d %02d %02d ||", text, trees[(i + 1)] or tostring(i), tonumber(data[(i * 3) + 1]), tonumber(data[(i * 3) + 2]), tonumber(data[(i * 3) + 3]))
+		for tree, skills in ipairs(data) do
+			if tonumber(skills) > 0 then
+				text = string.format("%s %s:%02d |", text, trees[tree] or tostring(tree), tonumber(skills))
+			end
 		end
 		
 		self._skills:set_text(text)

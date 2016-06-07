@@ -253,7 +253,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 			local unit = self._fwd_ray.unit
 			if unit:in_slot( 8 ) and alive(unit:parent()) then unit = unit:parent() end
 			local turrets = managers.groupai:state():turrets() or {}
-			if alive( unit ) and ((unit:in_slot( 39 ) and table.contains(turrets, unit)) or (unit:in_slot( 25 ) and WolfHUD:getSetting("show_civilian_healthbar", "boolean"))) and not unit:character_damage():dead() then
+			if alive( unit ) and unit:in_slot( 25 ) and (table.contains(turrets, unit) or WolfHUD:getSetting("show_civilian_healthbar", "boolean") and Network:is_server()) and not unit:character_damage():dead() then
 				self._last_unit = nil
 				if not unit:character_damage():needs_repair() then
 					managers.hud:set_unit_health_visible( true, true )
@@ -262,7 +262,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 					managers.hud:set_unit_health_visible( true )
 					managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base():get_name_id() or "TURRET" )
 				end
-			elseif alive( unit ) and ( unit:in_slot( 12 ) or WolfHUD:getSetting("show_civilian_healthbar", "boolean") and ( unit:in_slot( 21 ) or unit:in_slot( 22 ) )) and not unit:character_damage():dead() then
+			elseif alive( unit ) and ( unit:in_slot( 12 ) or WolfHUD:getSetting("show_civilian_healthbar", "boolean") and ( unit:in_slot( 21 ) or unit:in_slot( 22 ) ) or unit:in_slot( 16 ) and Network:is_server()) and not unit:character_damage():dead() then
 				self._last_unit = unit
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base()._tweak_table or "ENEMY" )
