@@ -121,6 +121,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		biker = 					{ type_id = "thug",			category = "enemies",	long_name = "Biker" },
 		biker_escape = 				{ type_id = "thug",			category = "enemies",	long_name = "Biker" },
 		tank = 						{ type_id = "tank",			category = "enemies",	long_name = "Bulldozer" },
+		tank_hw = 					{ type_id = "tank",			category = "enemies",	long_name = "Headless Dozer" },
 		spooc = 					{ type_id = "spooc",		category = "enemies",	long_name = "Cloaker" },
 		taser = 					{ type_id = "taser",		category = "enemies",	long_name = "Taser" },
 		shield = 					{ type_id = "shield",		category = "enemies",	long_name = "Shield" },
@@ -3338,7 +3339,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = true,
+			ignore = WolfHUD:getSetting("PLAYER_STATUS", "boolean"),
 		},
 		tooth_and_claw = {
 			spec = {0, 3},
