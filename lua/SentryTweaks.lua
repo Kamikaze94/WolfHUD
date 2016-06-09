@@ -23,8 +23,29 @@ elseif RequiredScript == "lib/units/weapons/sentrygunweapon" then
 	
 	function SentryGunWeapon:setup(...)
 		old_setup(self, ...)
-		if Network:is_server() and self._owner == managers.player:player_unit() and managers.player:has_category_upgrade("sentry_gun", "ap_bullets") then
-			managers.enemy:add_delayed_clbk("Auto_AP_" .. tostring(self._unit:key()), callback(self, self, "_switch_fire_mode"), Application:time() + 0.01)
+		local enable_ap = false
+		local laser_theme
+		if self._owner then
+			self._laser_align = self._unit:get_object(Idstring("fire"))
+			if self._owner == managers.player:player_unit() then
+				laser_theme = "player"
+				if Network:is_server() and managers.player:has_category_upgrade("sentry_gun", "ap_bullets") then
+					enable_ap = true
+				end
+			else
+				laser_theme = "default"
+			end
+			managers.enemy:add_delayed_clbk("Sentry_post_setup_" .. tostring(self._unit:key()), callback(self, self, "post_setup", {laser_theme, enable_ap}), Application:time() + 0.01)
+		end
+	end
+	
+	function SentryGunWeapon:post_setup(data)
+		local laser_theme, enable_ap = unpack(data)
+		if laser_theme then
+			self:set_laser_enabled(laser_theme)
+		end
+		if enable_ap then
+			self:_switch_fire_mode()
 		end
 	end
 	
