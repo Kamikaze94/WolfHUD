@@ -65,6 +65,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			color = Color(1, 0.80, 0.25, 0.35)
 		}
 	}
+	
 	function HUDStatsScreen:init()
 		init_original(self)
 		local right_panel = self._full_hud_panel:child("right_panel")
