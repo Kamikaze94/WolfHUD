@@ -1516,13 +1516,13 @@ if RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
 			local health_mult = 1
 			local damage_mult = 1
 			local joker_level = (owner_base:upgrade_level("player", "convert_enemies_health_multiplier", 0) or 0)
-			local partner_in_crime_level = math.min((owner_base:upgrade_level("player", "passive_convert_enemies_health_multiplier", 0) or 0), 2)	-- Someone getting a level of 4, wtf?
+			local partner_in_crime_level = owner_base:upgrade_level("player", "passive_convert_enemies_health_multiplier", 0) or 0
 			if joker_level > 0 then
-				health_mult = health_mult * tweak_data.upgrades.values.player.convert_enemies_health_multiplier[joker_level]
-				damage_mult = damage_mult * tweak_data.upgrades.values.player.convert_enemies_damage_multiplier[joker_level]
+				health_mult = health_mult * managers.player:upgrade_value_by_level("player", "convert_enemies_health_multiplier", joker_level, 1)
+				damage_mult = damage_mult * managers.player:upgrade_value_by_level("player", "convert_enemies_damage_multiplier", joker_level, 1)
 			end
 			if partner_in_crime_level > 0 then
-				health_mult = health_mult * (tweak_data.upgrades.values.player.passive_convert_enemies_health_multiplier[partner_in_crime_level] or 1)
+				health_mult = health_mult * managers.player:upgrade_value_by_level("player", "passive_convert_enemies_health_multiplier", partner_in_crime_level, 1)
 			end
 			
 			managers.gameinfo:event("minion", "add", tostring(unit:key()), unit, peer_id, health_mult, damage_mult)
@@ -1585,11 +1585,11 @@ if RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 			local health_mult = 1
 			local damage_mult = 1
 			if joker_level > 0 then
-				health_mult = health_mult * tweak_data.upgrades.values.player.convert_enemies_health_multiplier[joker_level]
-				damage_mult = damage_mult * tweak_data.upgrades.values.player.convert_enemies_damage_multiplier[joker_level]
+				health_mult = health_mult * managers.player:upgrade_value_by_level("player", "convert_enemies_health_multiplier", joker_level, 1)
+				damage_mult = damage_mult * managers.player:upgrade_value_by_level("player", "convert_enemies_damage_multiplier", joker_level, 1)
 			end
 			if partner_in_crime_level > 0 then
-				health_mult = health_mult * tweak_data.upgrades.values.player.passive_convert_enemies_health_multiplier[partner_in_crime_level]
+				health_mult = health_mult * managers.player:upgrade_value_by_level("player", "passive_convert_enemies_health_multiplier", partner_in_crime_level, 1)
 			end
 			
 			managers.gameinfo:event("minion", "add", tostring(unit:key()), unit, owner_id, health_mult, damage_mult)
