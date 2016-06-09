@@ -198,10 +198,19 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 	
 	function HUDInteraction:set_interaction_bar_width(current, total)
 		set_interaction_bar_width_original(self, current, total)
+		local color_end = Color.white
+		if not HUDInteraction.GRADIENT_COLOR then
+			local t = Application:time()
+			local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
+			color_end = Color(r, g, b)
+		else
+			color_end = HUDInteraction.GRADIENT_COLOR
+		end
+		
 		if HUDInteraction.SHOW_TIME_REMAINING then
 			self._interact_time:set_text(string.format("%.1fs", math.max(total - current, 0)))
 			local perc = current/total
-			local color = perc * HUDInteraction.GRADIENT_COLOR + (1-perc) * Color.white
+			local color = math.lerp(Color.white, color_end, perc)--perc * color + (1-perc) * Color.white
 			self._interact_time:set_color(color)
 			self._interact_time:set_alpha(1)
 			self._interact_time:set_visible(perc < 1)
@@ -221,7 +230,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD:getSetting("SHOW_LOCK_INDICATOR", "boolean")
 		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD:getSetting("SHOW_TIME_REMAINING", "boolean")
 		HUDInteraction.SHOW_CIRCLE 	= WolfHUD:getSetting("SHOW_CIRCLE", "boolean")
-		HUDInteraction.GRADIENT_COLOR = WolfHUD:getSetting("GRADIENT_COLOR", "color")
+		HUDInteraction.GRADIENT_COLOR = not (WolfHUD:getSetting("GRADIENT_COLOR", "string") == "rainbow") and WolfHUD:getSetting("GRADIENT_COLOR", "color") or false
 		if HUDInteraction.SHOW_CIRCLE then
 			if PlayerStandard.LOCK_MODE > 1 and HUDInteraction.SHOW_LOCK_INDICATOR then
 				self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {

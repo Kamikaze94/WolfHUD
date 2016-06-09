@@ -9,6 +9,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "security" ] 					= "wolfhud_enemy_security",
 		[ "gensec" ] 					= "wolfhud_enemy_gensec",
 		[ "cop" ] 						= "wolfhud_enemy_cop",
+		[ "cop_scared" ]				= "wolfhud_enemy_cop",
 		[ "fbi" ] 						= "wolfhud_enemy_fbi",
 		[ "swat" ] 						= "wolfhud_enemy_swat",
 		[ "heavy_swat" ] 				= "wolfhud_enemy_heavy_swat",

@@ -1589,7 +1589,7 @@ if RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 				damage_mult = damage_mult * tweak_data.upgrades.values.player.convert_enemies_damage_multiplier[joker_level]
 			end
 			if partner_in_crime_level > 0 then
-				health_mult = health_mult * tweak_data.upgrades.values.player.passive_convert_enemies_health_multiplier[partner_in_crime_level]
+				health_mult = health_mult * (tweak_data.upgrades.values.player.passive_convert_enemies_health_multiplier[partner_in_crime_level] --[[or 1]])
 			end
 			
 			managers.gameinfo:event("minion", "add", tostring(unit:key()), unit, owner_id, health_mult, damage_mult)

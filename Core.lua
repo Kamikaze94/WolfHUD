@@ -20,7 +20,8 @@ if not _G.WolfHUD then
 		"wolfhud_dmgindicator_options_menu", 
 		"wolfhud_enemyhealthbar_options_menu", 
 		"wolfhud_press2hold_options_menu", 
-		"wolfhud_lasers_options_menu" 
+		"wolfhud_gadget_options_menu",
+		"wolfhud_gadget_laser_options_menu"
 	}
 	WolfHUD.settings = {}
 	
@@ -109,8 +110,8 @@ if not _G.WolfHUD then
 		["lib/units/equipment/ecm_jammer/ecmjammerbase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/grenade_crate/grenadecratebase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/sentry_gun/sentrygunbase"] = { "GameInfoManager.lua", "KillCounter.lua" },
-		["lib/units/equipment/sentry_gun/sentrygundamage"] = { "GameInfoManager.lua", "SentryTweaks.lua" },
-		["lib/units/interactions/interactionext"] = { "GameInfoManager.lua", "Interaction.lua", "SentryTweaks.lua" },
+		["lib/units/equipment/sentry_gun/sentrygundamage"] = { "GameInfoManager.lua" },
+		["lib/units/interactions/interactionext"] = { "GameInfoManager.lua", "Interaction.lua" },
 		["lib/units/weapons/akimboweaponbase"] = { "BurstFire.lua" },
 		["lib/units/weapons/sentrygunweapon"] = { "GameInfoManager.lua", "SentryTweaks.lua" },
 		["lib/units/weapons/weaponlaser"] = { "WeaponLasers.lua" },
@@ -287,8 +288,12 @@ if not _G.WolfHUD then
 			laser_glow 						= 5,			--Divider for laser beam
 			laser_player 					= "light_blue",	--Player laser color id
 			laser_player_alpha 				= 0.3,			--Player laser alpha
+			laser_player_sentry				= "light_blue",	--Player sentry laser color id
+			laser_player_sentry_alpha 		= 0.1,			--Player sentry laser alpha
 			laser_teammates 				= "light_blue",	--Teammates laser color id
 			laser_teammates_alpha 			= 0.15,			--Teammates laser alpha
+			laser_teammates_sentry 			= "light_blue",	--Teammates sentry laser color id
+			laser_teammates_sentry_alpha 	= 0.1,			--Teammates sentry laser alpha
 			laser_sniper 					= "red",		--Sniper laser color id
 			laser_sniper_alpha 				= 0.5,			--Sniper laser alpha
 			laser_turret_active 			= "red",		--Active turret laser color id
@@ -611,6 +616,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	end
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets_lasers.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_tabstats.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info.json", WolfHUD, settings)

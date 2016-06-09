@@ -121,7 +121,8 @@
 				"wolfhud_colors_green",
 				"wolfhud_colors_blue",
 				"wolfhud_colors_gray",
-				"wolfhud_colors_black"
+				"wolfhud_colors_black",
+				"wolfhud_colors_rainbow"
 			],
 			"value" : "GRADIENT_COLOR",
 		},

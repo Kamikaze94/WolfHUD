@@ -6,13 +6,21 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 			color = WolfHUD:getSetting("laser_player", "color"),
 			alpha = WolfHUD:getSetting("laser_player_alpha", "number"),
 		},
-		cop_sniper = {  				--Enemy snipers
-			color = WolfHUD:getSetting("laser_sniper", "color"),
-			alpha = WolfHUD:getSetting("laser_sniper_alpha", "number"),
+		player_sentry = {	  			--Player Sentry Gun
+			color = WolfHUD:getSetting("laser_player", "color"),
+			alpha = WolfHUD:getSetting("laser_player_alpha", "number"),
 		},
 		default = {	 					--Team mates
 			color = WolfHUD:getSetting("laser_teammates", "color"),
 			alpha = WolfHUD:getSetting("laser_teammates_alpha", "number"),
+		},
+		default_sentry = {	 			--Team mates Sentry Gun
+			color = WolfHUD:getSetting("laser_teammates", "color"),
+			alpha = WolfHUD:getSetting("laser_teammates_alpha", "number"),
+		},
+		cop_sniper = {  				--Enemy snipers
+			color = WolfHUD:getSetting("laser_sniper", "color"),
+			alpha = WolfHUD:getSetting("laser_sniper_alpha", "number"),
 		},
 		turret_module_active = {		--SWAT turret standard
 			color = WolfHUD:getSetting("laser_turret_active", "color"),
@@ -30,7 +38,9 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 		
 	WeaponLaser._suffix_map = {
 		player = "player",
+		player_sentry = "player_sentry",
 		default = "teammates",
+		default_sentry = "teammates_sentry",
 		cop_sniper = "sniper",
 		turret_module_active = "turret_active",
 		turret_module_rearming = "turret_reloading",
