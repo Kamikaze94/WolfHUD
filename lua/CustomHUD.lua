@@ -1225,7 +1225,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 	
-	function PlayerInfoComponent.KillCounter:increment(is_special)
+	function PlayerInfoComponent.KillCounter:increment(is_special, headshot)
 		self._kills = self._kills + 1
 		self._special_kills = self._special_kills + (is_special and 1 or 0)
 		self._headshot_kills = self._headshot_kills + (headshot and 1 or 0)
