@@ -66,6 +66,38 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		}
 	}
 	
+	local STAT_ITEMS = {
+		{name = "accuracy", 		text_id = "victory_hit_accuracy", 				color = Color.white, no_alltime = true},
+		{name = "total_damage", 	text_id = "wolfhud_tabstats_total_damage", 		color = Color(1, 0.69, 0.19, 0.38), no_alltime = true},
+		{name = "tanks_killed", 	text_id = "wolfhud_tabstats_tanks_killed", 		color = Color.red},
+		{name = "cloakers_killed", 	text_id = "wolfhud_tabstats_cloakers_killed", 	color = Color.green},
+		{name = "shields_killed", 	text_id = "wolfhud_tabstats_shields_killed", 	color = Color.yellow},
+		{name = "snipers_killed", 	text_id = "wolfhud_tabstats_snipers_killed", 	color = Color(1, 0.67, 0.84, 0.90)},
+		{name = "tasers_killed", 	text_id = "wolfhud_tabstats_tasers_killed", 	color = Color(1, 0, 0.55, 0.55)},
+		{name = "gensec_killed", 	text_id = "wolfhud_tabstats_gensec_killed", 	color = Color(1, 0.75, 1, 0.24)},
+		{name = "melee_killed", 	text_id = "wolfhud_tabstats_melee_kills", 		color = Color(1, 0.54, 0.02, 0.02)},
+		{name = "explosion_killed", text_id = "wolfhud_tabstats_explosion_kills", 	color = Color(1, 1, 0.5, 0)},
+		{name = "total_killed", 	text_id = "wolfhud_tabstats_nonspecial_kills", 	color = Color(1, 0.78, 0.15, 0.21)},
+		{name = "total_downs", 		text_id = "victory_total_downed", 				color = Color(1, 0.5, 0.5, 0.5)},
+		{name = "total_revives", 	text_id = "wolfhud_tabstats_total_revives", 	color = Color(1, 1, 0, 0.4)},
+	
+	}
+	
+	local function getMaskImage()
+		local player = managers.player:player_unit()
+		local char_data = player and managers.criminals:character_data_by_unit(player)
+		local mask_id = char_data and char_data.mask_id
+		if mask_id then
+			local guis_catalog = "guis/"
+			local bundle_folder = tweak_data.blackmarket.masks[mask_id] and tweak_data.blackmarket.masks[mask_id].texture_bundle_folder
+			if bundle_folder then
+				guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+			end
+			mask_icon = tweak_data.blackmarket.masks[mask_id].custom_texture or guis_catalog .. "textures/pd2/blackmarket/icons/masks/" .. mask_id
+		end
+		return mask_icon
+	end
+	
 	function HUDStatsScreen:init()
 		init_original(self)
 		local right_panel = self._full_hud_panel:child("right_panel")
@@ -257,7 +289,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			y = 0,
 			name = "blank2",
 			color = Color.white,
-			font_size = 18,
+			font_size = font_size,
 			font = tweak_data.menu.pd2_small_font,
 			text = "",
 			align = "right",
@@ -266,760 +298,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			h = 18
 		})
 		blank2:set_y(math.round(spending_cash_text:bottom()))
-		local accuracy_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "accuracy_text",
-			color = Color.white,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local accuracy_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "accuracy_title",
-			color = Color.white,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("victory_hit_accuracy"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		accuracy_text:set_y(math.round(blank2:bottom()))
-		accuracy_title:set_top(accuracy_text:top())
-		local total_damage_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "total_damage_text",
-			color = Color(1, 0.69, 0.19, 0.38),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local total_damage_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "total_damage_title",
-			color = Color(1, 0.69, 0.19, 0.38),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_total_damage"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		total_damage_text:set_y(math.round(accuracy_text:bottom()))
-		total_damage_title:set_top(total_damage_text:top())
-		local tanks_killed_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "tanks_killed_text",
-			color = Color.red,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local tanks_killed_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "tanks_killed_title",
-			color = Color.red,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_tanks_killed"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local tanks_killed_total_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "tanks_killed_total_text",
-			color = Color.red,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local tanks_killed_total_title = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "tanks_killed_total_title",
-			color = Color.red,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		tanks_killed_text:set_y(math.round(total_damage_text:bottom()))
-		tanks_killed_title:set_top(tanks_killed_text:top())
-		tanks_killed_title:set_left(0)
-		tanks_killed_total_text:set_top(tanks_killed_text:top())
-		tanks_killed_total_title:set_top(tanks_killed_text:top())
-		tanks_killed_total_text:set_left(tanks_killed_text:right()+10)
-		tanks_killed_total_title:set_left(tanks_killed_text:right()+10)
-		local cloakers_killed_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "cloakers_killed_text",
-			color = Color.green,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local cloakers_killed_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "cloakers_killed_title",
-			color = Color.green,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_cloakers_killed"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local cloakers_killed_total_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "cloakers_killed_total_text",
-			color = Color.green,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local cloakers_killed_total_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "cloakers_killed_total_title",
-			color = Color.green,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		cloakers_killed_text:set_y(math.round(tanks_killed_text:bottom()))
-		cloakers_killed_title:set_top(cloakers_killed_text:top())
-		cloakers_killed_title:set_left(0)
-		cloakers_killed_total_text:set_top(cloakers_killed_text:top())
-		cloakers_killed_total_title:set_top(cloakers_killed_text:top())
-		cloakers_killed_total_text:set_left(cloakers_killed_text:right()+10)
-		cloakers_killed_total_title:set_left(cloakers_killed_text:right()+10)
-		local shields_killed_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "shields_killed_text",
-			color = Color.yellow,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local shields_killed_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "shields_killed_title",
-			color = Color.yellow,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_shields_killed"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local shields_killed_total_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "shields_killed_total_text",
-			color = Color.yellow,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local shields_killed_total_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "shields_killed_total_title",
-			color = Color.yellow,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		shields_killed_text:set_y(math.round(cloakers_killed_text:bottom()))
-		shields_killed_title:set_top(shields_killed_text:top())
-		shields_killed_title:set_left(0)
-		shields_killed_total_text:set_top(shields_killed_text:top())
-		shields_killed_total_title:set_top(shields_killed_text:top())
-		shields_killed_total_text:set_left(shields_killed_text:right()+10)
-		shields_killed_total_title:set_left(shields_killed_text:right()+10)
-		local snipers_killed_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "snipers_killed_text",
-			color = Color(1, 0.67, 0.84, 0.90),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local snipers_killed_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "snipers_killed_title",
-			color = Color(1, 0.67, 0.84, 0.90),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_snipers_killed"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local snipers_killed_total_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "snipers_killed_total_text",
-			color = Color(1, 0.67, 0.84, 0.90),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local snipers_killed_total_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "snipers_killed_total_title",
-			color = Color(1, 0.67, 0.84, 0.90),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		snipers_killed_text:set_y(math.round(shields_killed_text:bottom()))
-		snipers_killed_title:set_top(snipers_killed_text:top())
-		snipers_killed_title:set_left(0)
-		snipers_killed_total_text:set_top(snipers_killed_text:top())
-		snipers_killed_total_title:set_top(snipers_killed_text:top())
-		snipers_killed_total_text:set_left(snipers_killed_text:right()+10)
-		snipers_killed_total_title:set_left(snipers_killed_text:right()+10)
-		local tasers_killed_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "tasers_killed_text",
-			color = Color(1, 0, 0.55, 0.55),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local tasers_killed_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "tasers_killed_title",
-			color = Color(1, 0, 0.55, 0.55),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_tasers_killed"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local tasers_killed_total_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "tasers_killed_total_text",
-			color = Color(1, 0, 0.55, 0.55),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local tasers_killed_total_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "tasers_killed_total_title",
-			color = Color(1, 0, 0.55, 0.55),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		tasers_killed_text:set_y(math.round(snipers_killed_text:bottom()))
-		tasers_killed_title:set_top(tasers_killed_text:top())
-		tasers_killed_title:set_left(0)
-		tasers_killed_total_text:set_top(tasers_killed_text:top())
-		tasers_killed_total_title:set_top(tasers_killed_text:top())
-		tasers_killed_total_text:set_left(tasers_killed_text:right()+10)
-		tasers_killed_total_title:set_left(tasers_killed_text:right()+10)
-		local gensec_killed_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "gensec_killed_text",
-			color = Color(1, 0.75, 1, 0.24),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local gensec_killed_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "gensec_killed_title",
-			color = Color(1, 0.75, 1, 0.24),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_gensec_killed"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local gensec_killed_total_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "gensec_killed_total_text",
-			color = Color(1, 0.75, 1, 0.24),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local gensec_killed_total_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "gensec_killed_total_title",
-			color = Color(1, 0.75, 1, 0.24),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		gensec_killed_text:set_y(math.round(tasers_killed_text:bottom()))
-		gensec_killed_title:set_top(gensec_killed_text:top())
-		gensec_killed_title:set_left(0)
-		gensec_killed_total_text:set_top(gensec_killed_text:top())
-		gensec_killed_total_title:set_top(gensec_killed_text:top())
-		gensec_killed_total_text:set_left(gensec_killed_text:right()+10)
-		gensec_killed_total_title:set_left(gensec_killed_text:right()+10)
-		local melee_killed_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "melee_killed_text",
-			color = Color(1, 0.54, 0.02, 0.02),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local melee_killed_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "melee_killed_title",
-			color = Color(1, 0.54, 0.02, 0.02),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_melee_kills"),
-			align = "left",
-			vertical = "top",
-			
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local melee_killed_total_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "melee_killed_total_text",
-			color = Color(1, 0.54, 0.02, 0.02),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local melee_killed_total_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "melee_killed_total_title",
-			color = Color(1, 0.54, 0.02, 0.02),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
-			align = "left",
-			vertical = "top",		
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		melee_killed_text:set_y(math.round(gensec_killed_text:bottom()))
-		melee_killed_title:set_top(melee_killed_text:top())
-		melee_killed_title:set_left(0)
-		melee_killed_total_text:set_top(melee_killed_text:top())
-		melee_killed_total_title:set_top(melee_killed_text:top())
-		melee_killed_total_text:set_left(melee_killed_text:right()+10)
-		melee_killed_total_title:set_left(melee_killed_text:right()+10)
-		local explosion_killed_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "explosion_killed_text",
-			color = Color(1, 1, 0.5, 0),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local explosion_killed_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "explosion_killed_title",
-			color = Color(1, 1, 0.5, 0),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_explosion_kills"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local explosion_killed_total_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "explosion_killed_total_text",
-			color = Color(1, 1, 0.5, 0),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local explosion_killed_total_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "explosion_killed_total_title",
-			color = Color(1, 1, 0.5, 0),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		explosion_killed_text:set_y(math.round(melee_killed_text:bottom()))
-		explosion_killed_title:set_top(explosion_killed_text:top())
-		explosion_killed_title:set_left(0)
-		explosion_killed_total_text:set_top(explosion_killed_text:top())
-		explosion_killed_total_title:set_top(explosion_killed_text:top())
-		explosion_killed_total_text:set_left(explosion_killed_text:right()+10)
-		explosion_killed_total_title:set_left(explosion_killed_text:right()+10)
-		local total_killed_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "total_killed_text",
-			color = Color(1, 0.78, 0.15, 0.21),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local total_killed_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "total_killed_title",
-			color = Color(1, 0.78, 0.15, 0.21),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_nonspecial_kills"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local total_killed_alltime_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "total_killed_alltime_text",
-			color = Color(1, 0.78, 0.15, 0.21),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local total_killed_alltime_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "total_killed_alltime_title",
-			color = Color(1, 0.78, 0.15, 0.21),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		total_killed_text:set_y(math.round(explosion_killed_text:bottom()))
-		total_killed_title:set_top(total_killed_text:top())
-		total_killed_title:set_left(0)
-		total_killed_alltime_text:set_top(total_killed_text:top())
-		total_killed_alltime_title:set_top(total_killed_text:top())
-		total_killed_alltime_text:set_left(total_killed_text:right()+10)
-		total_killed_alltime_title:set_left(total_killed_text:right()+10)
-		local total_downs_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "total_downs_text",
-			color = Color(1, 0.5, 0.5, 0.5),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local total_downs_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "total_downs_title",
-			color = Color(1, 0.5, 0.5, 0.5),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("victory_total_downed"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local total_downs_alltime_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "total_downs_alltime_text",
-			color = Color(1, 0.5, 0.5, 0.5),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local total_downs_alltime_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "total_downs_alltime_title",
-			color = Color(1, 0.5, 0.5, 0.5),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		total_downs_text:set_y(math.round(total_killed_text:bottom()))
-		total_downs_title:set_top(total_downs_text:top())
-		total_downs_title:set_left(0)
-		total_downs_alltime_text:set_top(total_downs_text:top())
-		total_downs_alltime_title:set_top(total_downs_text:top())
-		total_downs_alltime_text:set_left(total_downs_text:right()+10)
-		total_downs_alltime_title:set_left(total_downs_text:right()+10)
-		local total_revives_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "total_revives_text",
-			color = Color(1, 1, 0, 0.4),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local total_revives_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "total_revives_title",
-			color = Color(1, 1, 0, 0.4),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_total_revives"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local total_revives_alltime_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "total_revives_alltime_text",
-			color = Color(1, 1, 0, 0.4),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		local total_revives_alltime_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "total_revives_alltime_title",
-			color = Color(1, 1, 0, 0.4),
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
-			align = "left",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		total_revives_text:set_y(math.round(total_downs_text:bottom()))
-		total_revives_title:set_top(total_revives_text:top())
-		total_revives_title:set_left(0)
-		total_revives_alltime_text:set_top(total_revives_text:top())
-		total_revives_alltime_title:set_top(total_revives_text:top())
-		total_revives_alltime_text:set_left(total_revives_text:right()+10)
-		total_revives_alltime_title:set_left(total_revives_text:right()+10)
 		
 		local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
 		local mask_color = Color(1, 0.8, 0.5, 0.2)
@@ -1027,22 +305,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			mask_icon = characters[managers.criminals:local_character_name()].texture
 			mask_color = characters[managers.criminals:local_character_name()].color
 		end
-		if WolfHUD:getSetting("use_actual_mask", "boolean") then
-			local player = managers.player:player_unit()
-			local char_data = player and managers.criminals:character_data_by_unit(player)
-			local mask_id = char_data and char_data.mask_id
-			if mask_id then
-				local guis_catalog = "guis/"
-				local bundle_folder = tweak_data.blackmarket.masks[mask_id] and tweak_data.blackmarket.masks[mask_id].texture_bundle_folder
-				if bundle_folder then
-					guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-				end
-				mask_icon = tweak_data.blackmarket.masks[mask_id].custom_texture or guis_catalog .. "textures/pd2/blackmarket/icons/masks/" .. mask_id
-			end
+		self._actual_mask = WolfHUD:getSetting("use_actual_mask", "boolean")
+		if self._actual_mask then
+			mask_icon = getMaskImage()
 		end
 		
 		local logo = right_panel:bitmap({
-			name = "ghost_icon",
+			name = "character_icon",
 			texture = mask_icon,
 			w = day_wrapper_panel:w()/2-5,
 			h = day_wrapper_panel:w()/2-5,
@@ -1051,6 +320,82 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		})
 		logo:set_left(2.1*(day_wrapper_panel:w()/3))
 		logo:set_top(day_wrapper_panel:child("paygrade_title"):top() + 20)
+		
+		local y = blank2:bottom()
+		self._tabstats_font_size = WolfHUD:getSetting("tabstats_font_size", "number") or 18
+		self._tabstats_color = WolfHUD:getSetting("tabstats_color", "string")
+		local items_color = self._tabstats_color ~= "rainbow" and WolfHUD:getSetting("tabstats_color", "color") or false
+		for i, data in ipairs(STAT_ITEMS) do
+			local name = data.name
+			local color = items_color or data.color
+			local killed_text = day_wrapper_panel:text({
+				layer = 0,
+				x =  0,
+				y = 0,
+				name = name .. "_text",
+				color = color,
+				font_size = self._tabstats_font_size,
+				font = tweak_data.menu.pd2_small_font,
+				text = "",
+				align = "right",
+				vertical = "top",
+				w = day_wrapper_panel:w()/2-5,
+				h = 18
+			})
+			local killed_title = day_wrapper_panel:text({
+				layer = 0,
+				x = 0,
+				y = 0,
+				name = name .. "_title",
+				color = color,
+				font_size = self._tabstats_font_size,
+				font = tweak_data.menu.pd2_small_font,
+				text = managers.localization:to_upper_text(data.text_id or ""),
+				align = "left",
+				vertical = "top",
+				w = day_wrapper_panel:w()/2-5,
+				h = 18
+			})
+			killed_text:set_y(math.round(y))
+			killed_title:set_top(killed_text:top())
+			killed_title:set_left(0)
+			
+			if not data.no_alltime then
+				local killed_alltime_text = day_wrapper_panel:text({
+					layer = 0,
+					x =  0,
+					y = 0,
+					name = name .. "_alltime_text",
+					color = color,
+					font_size = self._tabstats_font_size,
+					font = tweak_data.menu.pd2_small_font,
+					text = "",
+					align = "right",
+					vertical = "top",
+					w = day_wrapper_panel:w()/2-5,
+					h = 18
+				})
+				local killed_alltime_title = day_wrapper_panel:text({
+					layer = 0,
+					x =  0,
+					y = 0,
+					name = name .. "_alltime_title",
+					color = color,
+					font_size = self._tabstats_font_size,
+					font = tweak_data.menu.pd2_small_font,
+					text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
+					align = "left",
+					vertical = "top",
+					w = day_wrapper_panel:w()/2-5,
+					h = 18
+				})
+				killed_alltime_text:set_top(killed_text:top())
+				killed_alltime_title:set_top(killed_text:top())
+				killed_alltime_text:set_left(killed_text:right()+10)
+				killed_alltime_title:set_left(killed_text:right()+10)
+			end
+			y = killed_text:bottom()
+		end
 		
 		self:update(day_wrapper_panel)
 	end
@@ -1083,38 +428,68 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	end
 
 	function HUDStatsScreen:update(day_wrapper_panel)
-		--log(tostring(managers.localization:text('menu_jukebox_' .. )))
+		local font_size = WolfHUD:getSetting("tabstats_font_size", "number")
+		local color_name = WolfHUD:getSetting("tabstats_color", "string")
+		local actual_mask = WolfHUD:getSetting("use_actual_mask", "boolean")
+		if self._tabstats_font_size ~= font_size or self._tabstats_color ~= color_name then
+			local color = color_name ~= "rainbow" and WolfHUD:getSetting("tabstats_color", "color") or false
+			local sub_items = {"_title", "_text", "_alltime_title", "_alltime_text"}
+			for i, data in ipairs(STAT_ITEMS) do
+				for j, suffix in ipairs(sub_items) do
+					local item = day_wrapper_panel:child(data.name .. suffix)
+					if item then
+						item:set_font_size(font_size)
+						item:set_color(color or data.color)
+					end
+				end
+			end
+			self._tabstats_font_size = font_size
+			self._tabstats_color = color_name
+		end
+		if actual_mask ~= self._actual_mask then
+			local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
+			if not actual_mask then
+				local char_table = characters[managers.criminals:local_character_name()]
+				mask_icon = char_table and char_table.texture or mask_icon
+			else
+				mask_icon = getMaskImage()
+			end
+			local item = day_wrapper_panel:parent():child("character_icon")
+			if item then item:set_image(mask_icon) end
+		end
+		
 		day_wrapper_panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)) .. " (" .. (managers.statistics:session_total_civilian_kills() or 0) .. ")")
 		day_wrapper_panel:child("offshore_payout_text"):set_text(managers.experience:cash_string(managers.money:get_potential_payout_from_current_stage() - math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate"))))
 		day_wrapper_panel:child("spending_cash_text"):set_text(managers.experience:cash_string(math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate")) - managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)))
+		
 		day_wrapper_panel:child("accuracy_text"):set_text(managers.statistics:session_hit_accuracy() .. "%")
 		day_wrapper_panel:child("tanks_killed_text"):set_text(managers.statistics._global.session.killed.tank_green.count 
 																+ managers.statistics._global.session.killed.tank_black.count 
 																+ managers.statistics._global.session.killed.tank_skull.count 
 																+ managers.statistics._global.session.killed.tank_hw.count)
-		day_wrapper_panel:child("tanks_killed_total_text"):set_text(managers.statistics._global.killed.tank_green.count 
+		day_wrapper_panel:child("tanks_killed_alltime_text"):set_text(managers.statistics._global.killed.tank_green.count 
 																+ managers.statistics._global.killed.tank_black.count 
 																+ managers.statistics._global.killed.tank_skull.count 
 																+ managers.statistics._global.killed.tank_hw.count)
 		day_wrapper_panel:child("cloakers_killed_text"):set_text(managers.statistics._global.session.killed.spooc.count)
-		day_wrapper_panel:child("cloakers_killed_total_text"):set_text(managers.statistics._global.killed.spooc.count)
+		day_wrapper_panel:child("cloakers_killed_alltime_text"):set_text(managers.statistics._global.killed.spooc.count)
 		day_wrapper_panel:child("shields_killed_text"):set_text(managers.statistics._global.session.killed.shield.count)
-		day_wrapper_panel:child("shields_killed_total_text"):set_text(managers.statistics._global.killed.shield.count)
+		day_wrapper_panel:child("shields_killed_alltime_text"):set_text(managers.statistics._global.killed.shield.count)
 		day_wrapper_panel:child("snipers_killed_text"):set_text(managers.statistics._global.session.killed.sniper.count)
-		day_wrapper_panel:child("snipers_killed_total_text"):set_text(managers.statistics._global.killed.sniper.count)
+		day_wrapper_panel:child("snipers_killed_alltime_text"):set_text(managers.statistics._global.killed.sniper.count)
 		day_wrapper_panel:child("tasers_killed_text"):set_text(managers.statistics._global.session.killed.taser.count)
-		day_wrapper_panel:child("tasers_killed_total_text"):set_text(managers.statistics._global.killed.taser.count)
+		day_wrapper_panel:child("tasers_killed_alltime_text"):set_text(managers.statistics._global.killed.taser.count)
 		day_wrapper_panel:child("melee_killed_text"):set_text(managers.statistics._global.session.killed.total.melee)
-		day_wrapper_panel:child("melee_killed_total_text"):set_text(managers.statistics._global.killed.total.melee)
+		day_wrapper_panel:child("melee_killed_alltime_text"):set_text(managers.statistics._global.killed.total.melee)
 		if 0 <= math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate")) - managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0) then
 			day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.friend_color)
 		else
 			day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.heat_cold_color)
 		end
 		day_wrapper_panel:child("explosion_killed_text"):set_text(managers.statistics._global.session.killed.total.explosion)
-		day_wrapper_panel:child("explosion_killed_total_text"):set_text(managers.statistics._global.killed.total.explosion)
+		day_wrapper_panel:child("explosion_killed_alltime_text"):set_text(managers.statistics._global.killed.total.explosion)
 		day_wrapper_panel:child("gensec_killed_text"):set_text(managers.statistics._global.session.killed.gensec.count)
-		day_wrapper_panel:child("gensec_killed_total_text"):set_text(managers.statistics._global.killed.gensec.count)
+		day_wrapper_panel:child("gensec_killed_alltime_text"):set_text(managers.statistics._global.killed.gensec.count)
 		day_wrapper_panel:child("total_killed_text"):set_text(managers.statistics._global.session.killed.total.count -
 																managers.statistics:session_total_specials_kills() -
 																managers.statistics._global.session.killed.mobster_boss.count -

@@ -328,8 +328,12 @@
 	"wolfhud_tabstats_clock_mode_b" : "24-h",
 	"wolfhud_use_tabstats_title" : "Benutze TabStats",
 	"wolfhud_use_tabstats_desc" : "Zeige deine Statistiken auf dem Tab Panel, anstatt der Missionseinführung.\n(Wird erst beim Mapwechsel aktiv...)",
+	"wolfhud_tabstats_font_size_title" : "Schriftgröße der Liste",
+	"wolfhud_tabstats_font_size_desc" : "Schriftgröße der Liste mit erweiterten Statistiken.",
+	"wolfhud_tabstats_color_title" : "Farbe der Liste",
+	"wolfhud_tabstats_color_desc" : "Farbe der Liste mit erweiterten Statistiken.",
 	"wolfhud_tabstats_actual_mask_title" : "Benutze aktuelle Maske",
-	"wolfhud_tabstats_actual_mask_desc" : "Zeige deine aktuelle Maske anstatt des Profilbildes des gespielten Charakters.\n(Wird erst beim Mapwechsel aktiv...)",
+	"wolfhud_tabstats_actual_mask_desc" : "Zeige deine aktuelle Maske anstatt des Profilbildes des gespielten Charakters.",
 	"wolfhud_tabstats_numberic_loot_title" : "Numerischer Beute Zähler",
 	"wolfhud_tabstats_numberic_loot_desc" : "Ersetze das Taschenzählspiel mit der wirklichen Zahl an gesicherter Beute.",
 	

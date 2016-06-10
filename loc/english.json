@@ -320,8 +320,12 @@
 	"wolfhud_tabstats_clock_mode_b" : "24-h",
 	"wolfhud_use_tabstats_title" : "Use TabStats",
 	"wolfhud_use_tabstats_desc" : "Show your Statistics on Tab Screen instead, of the Mission briefing.\n(A Map change is needed to apply...)",
+	"wolfhud_tabstats_font_size_title" : "List Font Size",
+	"wolfhud_tabstats_font_size_desc" : "Font Size for the advanced statistics list.",
+	"wolfhud_tabstats_color_title" : "List Color",
+	"wolfhud_tabstats_color_desc" : "Color for the advanced statistics list.",
 	"wolfhud_tabstats_actual_mask_title" : "Use actual mask",
-	"wolfhud_tabstats_actual_mask_desc" : "Use your Actual mask instead of your played character picture.\n(A Map change is needed to apply...)",
+	"wolfhud_tabstats_actual_mask_desc" : "Use your Actual mask instead of your played character picture.",
 	"wolfhud_tabstats_numberic_loot_title" : "Numberic Loot Counter",
 	"wolfhud_tabstats_numberic_loot_desc" : "Disable the bag counting minigame and display the number right away.",
 	

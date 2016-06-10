@@ -221,6 +221,8 @@ if not _G.WolfHUD then
 		  --TabStats
 			use_tabstats					= true,
 			clock_mode						= 3,		-- 1 = disabled, 2 = 12h, 3 = 24h
+			tabstats_color 					= "rainbow",
+			tabstats_font_size 				= 18,
 			use_actual_mask					= true,
 			numberic_loot					= true,
 		  --Scripts

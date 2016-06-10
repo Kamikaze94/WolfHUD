@@ -149,17 +149,17 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 
 	end )
 
-	function HUDManager:set_unit_health_visible( visible, shield )		
+	function HUDManager:set_unit_health_visible( visible, shield )	
+		if self._shield ~= shield then
+			self._shield = shield or false
+			self._bar_text_rect = self._shield and self._shield_text_rect or self._health_text_rect
+		end	
+		
 		if visible == true and not self._unit_health_visible and WolfHUD:getSetting("show_enemy_healthbar", "boolean") then
 		
 			self._unit_health_visible = true
 			self._unit_health_enemy_location:set_visible(WolfHUD:getSetting("show_healthbar_pointer", "boolean"))
 			self._unit_health_panel:stop()
-			if self._shield ~= shield then
-				self._shield = shield or false
-				self._bar_text_rect = self._shield and self._shield_text_rect or self._health_text_rect
-				self._unit_bar:set_texture_rect(self._bar_text_rect)
-			end
 			self._unit_health_panel:animate( function( p )
 				self._unit_health_panel:set_visible( true )
 				
