@@ -286,13 +286,13 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 	end
 
 	local MissionAssetsManager_sync_load_orig = MissionAssetsManager.sync_load
-	function MissionAssetsManager.sync_load(self, _ARG_1_, ...)
+	function MissionAssetsManager.sync_load(self, data, ...)
 		if not self:mission_has_preplanning() then
-			self._global = _ARG_1_.MissionAssetsManager
+			self._global = data.MissionAssetsManager
 			self:insert_buy_all_assets_asset()
 			self:check_all_assets()
 		end
-		MissionAssetsManager_sync_load_orig(self, _ARG_1_, ...)
+		MissionAssetsManager_sync_load_orig(self, data, ...)
 	end
 elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	if not WolfHUD:getSetting("spam_filter", "boolean") then return end
@@ -321,9 +321,9 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	}
 	
 	ChatManager._BLOCK_PATTERNS = {
-	  ".-NGBTO.+",
+	  ".-%[NGBTO%].+",
 	  --NGBTO info blocker Should work since its mass spam.
-	  "[%d:]+%d:%d%d.+"
+	  "[%d:]+%d:%d%d.-<DIV>.+"
 	  --Blocks anything, that starts with numbers and ':' and then has a divider (Might block other mods, not only Poco...)
 	}
 
@@ -332,11 +332,11 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	function ChatManager:_receive_message(channel_id, name, message, ...)
 		local message2 = message
 		for key, subst in pairs(ChatManager._SUB_TABLE) do
-				message2 = message:gsub(key, subst)
+				message2 = message2:gsub(key, subst)
 		end
 		for _, pattern in ipairs(ChatManager._BLOCK_PATTERNS) do
 			if message2:match("^" .. pattern .. "$") then
-				return
+				return _receive_message_original(self, channel_id, name, "Pattern found: " .. pattern, ...)
 			end
 		end
 		return _receive_message_original(self, channel_id, name, message, ...)

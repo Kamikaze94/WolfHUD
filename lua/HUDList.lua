@@ -612,7 +612,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		elseif event == "remove" then
 			pager_list:unregister_item(key)
 		elseif event == "answered" then
-			pager_list:item(key):set_answered()
+			local item = pager_list:item(key)
+			if item then
+				item:set_answered()
+			end
 		end
 	end
 	

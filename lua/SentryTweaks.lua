@@ -5,7 +5,9 @@ if RequiredScript == "lib/units/weapons/sentrygunweapon" then
 	
 	function SentryGunWeapon:init(...)
 		old_setup(self, ...)
-		managers.enemy:add_delayed_clbk("Sentry_post_init_" .. tostring(self._unit:key()), callback(self, self, "post_init"), Application:time() + 0.01)
+		if tweak_data.blackmarket.deployables[self._unit:base():get_type()] then
+			managers.enemy:add_delayed_clbk("Sentry_post_init_" .. tostring(self._unit:key()), callback(self, self, "post_init"), Application:time() + 0.01)
+		end
 	end
 	
 	function SentryGunWeapon:post_init()
