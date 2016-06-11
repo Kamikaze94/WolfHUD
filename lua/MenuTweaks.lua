@@ -321,7 +321,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	}
 	
 	ChatManager._BLOCK_PATTERNS = {
-	  ".-[NGBTO]:.+",
+	  ".-NGBTO.+",
 	  --NGBTO info blocker Should work since its mass spam.
 	  "[%d:]+%d:%d%d.+"
 	  --Blocks anything, that starts with numbers and ':' and then has a divider (Might block other mods, not only Poco...)
