@@ -647,6 +647,7 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 						+ self:session_enemy_killed_by_type("tank_hw", type)
 		elseif enemy == "non_special" then	--added new "enemy"
 			return self:session_killed_by_weapons()
+						+ self:session_enemy_killed_by_type("total", "melee")
 						- self:session_total_specials_kills()
 						- self:session_enemy_killed_by_type("sniper", type)
 						- self:session_enemy_killed_by_type("mobster_boss", type)
@@ -710,7 +711,7 @@ elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 
 	function CopDamage:_process_damage(aggressor, damage)
 		if alive(aggressor) and aggressor:base() then
-			if aggressor == managers.player:player_unit() or aggressor:base()._thrower_unit == managers.player:player_unit() then
+			if aggressor:in_slot( 2 ) or (aggressor:in_slot( 25 ) and aggressor:base():get_owner_id() == managers.network:session():local_peer():id()) or aggressor:base()._thrower_unit == managers.player:player_unit() then
 				HUDStatsScreen:add_damage(damage)
 			end
 		end

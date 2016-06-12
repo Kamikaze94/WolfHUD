@@ -86,7 +86,7 @@ end
 				--Enemy
 			elseif attacker:in_slot(25)	then
 				--Turret
-				local owner = attacker:base()._owner_id
+				local owner = attacker:base():get_owner_id()
 				if owner then 
 					killer =  managers.criminals:character_unit_by_peer_id(owner)
 				end

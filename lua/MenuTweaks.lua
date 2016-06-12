@@ -336,7 +336,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 		end
 		for _, pattern in ipairs(ChatManager._BLOCK_PATTERNS) do
 			if message2:match("^" .. pattern .. "$") then
-				return _receive_message_original(self, channel_id, name, "Pattern found: " .. pattern, ...)
+				return WolfHUD.DEBUG_MODE and _receive_message_original(self, channel_id, name, "Pattern found: " .. pattern, ...)
 			end
 		end
 		return _receive_message_original(self, channel_id, name, message, ...)
