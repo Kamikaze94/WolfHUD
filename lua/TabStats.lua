@@ -67,19 +67,19 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	}
 	
 	local STAT_ITEMS = {
-		{ name = "accuracy", 			text_id = "victory_hit_accuracy", 				color = Color.white, 					no_alltime = true	},
-		{ name = "total_damage", 		text_id = "wolfhud_tabstats_total_damage", 		color = Color(1, 0.69, 0.19, 0.38), 	no_alltime = true	},
-		{ name = "tanks_killed", 		text_id = "wolfhud_tabstats_tanks_killed", 		color = Color.red, 											},
-		{ name = "cloakers_killed", 	text_id = "wolfhud_tabstats_cloakers_killed", 	color = Color.green											},
-		{ name = "shields_killed", 		text_id = "wolfhud_tabstats_shields_killed", 	color = Color.yellow										},
-		{ name = "snipers_killed", 		text_id = "wolfhud_tabstats_snipers_killed", 	color = Color(1, 0.67, 0.84, 0.90)							},
-		{ name = "tasers_killed", 		text_id = "wolfhud_tabstats_tasers_killed", 	color = Color(1, 0, 0.55, 0.55)								},
-		{ name = "gensec_killed", 		text_id = "wolfhud_tabstats_gensec_killed", 	color = Color(1, 0.75, 1, 0.24)								},
-		{ name = "melee_killed", 		text_id = "wolfhud_tabstats_melee_kills", 		color = Color(1, 0.54, 0.02, 0.02)							},
-		{ name = "explosion_killed", 	text_id = "wolfhud_tabstats_explosion_kills", 	color = Color(1, 1, 0.5, 0)									},
-		{ name = "total_killed", 		text_id = "wolfhud_tabstats_nonspecial_kills", 	color = Color(1, 0.78, 0.15, 0.21)							},
-		{ name = "total_downs", 		text_id = "victory_total_downed", 				color = Color(1, 0.5, 0.5, 0.5)								},
-		{ name = "total_revives", 		text_id = "wolfhud_tabstats_total_revives", 	color = Color(1, 1, 0, 0.4)									},
+		{ name = "accuracy", 			text_id = "victory_hit_accuracy", 				color = Color.white, 				manual_update = true, no_alltime = true	},
+		{ name = "total_damage", 		text_id = "wolfhud_tabstats_total_damage", 		color = Color(1, 0.69, 0.19, 0.38), manual_update = true, no_alltime = true	},
+		{ name = "tanks_killed", 		text_id = "wolfhud_tabstats_tanks_killed", 		color = Color.red, 					update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"tank", "count"}			}, 	},
+		{ name = "cloakers_killed", 	text_id = "wolfhud_tabstats_cloakers_killed", 	color = Color.green,				update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"spooc", "count"}			}, 	},
+		{ name = "shields_killed", 		text_id = "wolfhud_tabstats_shields_killed", 	color = Color.yellow,				update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"shield", "count"}		}, 	},
+		{ name = "snipers_killed", 		text_id = "wolfhud_tabstats_snipers_killed", 	color = Color(1, 0.67, 0.84, 0.90),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"sniper", "count"}		}, 	},
+		{ name = "tasers_killed", 		text_id = "wolfhud_tabstats_tasers_killed", 	color = Color(1, 0, 0.55, 0.55), 	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"taser", "count"}			}, 	},
+		{ name = "gensec_killed", 		text_id = "wolfhud_tabstats_gensec_killed", 	color = Color(1, 0.75, 1, 0.24),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"gensec", "count"}		}, 	},
+		{ name = "melee_killed", 		text_id = "wolfhud_tabstats_melee_kills", 		color = Color(1, 0.54, 0.02, 0.02),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"total", "melee"}			}, 	},
+		{ name = "explosion_killed", 	text_id = "wolfhud_tabstats_explosion_kills", 	color = Color(1, 1, 0.5, 0),		update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"total", "explosion"}		}, 	},
+		{ name = "total_killed", 		text_id = "wolfhud_tabstats_nonspecial_kills", 	color = Color(1, 0.78, 0.15, 0.21),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"non_special", "count"}	}, 	},
+		{ name = "total_downs", 		text_id = "victory_total_downed", 				color = Color(1, 0.5, 0.5, 0.5),	update = {func = "total_downed", 					func_alltime = "total_downed_alltime", 	params = {}							}, 	},
+		{ name = "total_revives", 		text_id = "wolfhud_tabstats_total_revives", 	color = Color(1, 1, 0, 0.4),		update = {func = "session_total_revives", 			func_alltime = "total_revives",			params = {}							}, 	},
 	
 	}
 	
@@ -407,7 +407,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	function HUDStatsScreen:reset_damage()
 		TOTAL_DAMAGE = 0
 	end
-
+	
 	function HUDStatsScreen:update_time()
 		local right_panel = self._full_hud_panel:child("right_panel")
 		if right_panel then
@@ -428,37 +428,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	end
 
 	function HUDStatsScreen:update(day_wrapper_panel)
-		local font_size = WolfHUD:getSetting("tabstats_font_size", "number")
-		local color_name = WolfHUD:getSetting("tabstats_color", "string")
-		local actual_mask = WolfHUD:getSetting("use_actual_mask", "boolean")
-		if self._tabstats_font_size ~= font_size or self._tabstats_color ~= color_name then
-			local color = color_name ~= "rainbow" and WolfHUD:getSetting("tabstats_color", "color") or false
-			local sub_items = {"_title", "_text", "_alltime_title", "_alltime_text"}
-			for i, data in ipairs(STAT_ITEMS) do
-				for j, suffix in ipairs(sub_items) do
-					local item = day_wrapper_panel:child(data.name .. suffix)
-					if item then
-						item:set_font_size(font_size)
-						item:set_color(color or data.color)
-					end
-				end
-			end
-			self._tabstats_font_size = font_size
-			self._tabstats_color = color_name
-		end
-		if actual_mask ~= self._actual_mask then
-			local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
-			if not actual_mask then
-				local char_table = characters[managers.criminals:local_character_name()]
-				mask_icon = char_table and char_table.texture or mask_icon
-			else
-				mask_icon = getMaskImage()
-			end
-			local item = day_wrapper_panel:parent():child("character_icon")
-			if item then item:set_image(mask_icon) end
-		end
-		
-		day_wrapper_panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)) .. " (" .. (managers.statistics:session_total_civilian_kills() or 0) .. ")")
 		day_wrapper_panel:child("offshore_payout_text"):set_text(managers.experience:cash_string(managers.money:get_potential_payout_from_current_stage() - math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate"))))
 		day_wrapper_panel:child("spending_cash_text"):set_text(managers.experience:cash_string(math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate")) - managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)))
 		if 0 <= math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate")) - managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0) then
@@ -466,31 +435,27 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		else
 			day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.heat_cold_color)
 		end
+		day_wrapper_panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)) .. " (" .. (managers.statistics:session_total_civilian_kills() or 0) .. ")")
 		
 		day_wrapper_panel:child("accuracy_text"):set_text(managers.statistics:session_hit_accuracy() .. "%")
 		day_wrapper_panel:child("total_damage_text"):set_text(managers.money:add_decimal_marks_to_string(tostring(math.round(TOTAL_DAMAGE))))
-		day_wrapper_panel:child("tanks_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("tank", "count"))
-		day_wrapper_panel:child("tanks_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("tank", "count"))
-		day_wrapper_panel:child("cloakers_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("spooc", "count"))
-		day_wrapper_panel:child("cloakers_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("spooc", "count"))
-		day_wrapper_panel:child("shields_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("shield", "count"))
-		day_wrapper_panel:child("shields_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("shield", "count"))
-		day_wrapper_panel:child("snipers_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("sniper", "count"))
-		day_wrapper_panel:child("snipers_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("sniper", "count"))
-		day_wrapper_panel:child("tasers_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("taser", "count"))
-		day_wrapper_panel:child("tasers_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("taser", "count"))
-		day_wrapper_panel:child("gensec_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("gensec", "count"))
-		day_wrapper_panel:child("gensec_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("gensec", "count"))
-		day_wrapper_panel:child("melee_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("total", "melee"))
-		day_wrapper_panel:child("melee_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("total", "melee"))
-		day_wrapper_panel:child("explosion_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("total", "explosion"))
-		day_wrapper_panel:child("explosion_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("total", "explosion"))
-		day_wrapper_panel:child("total_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("non_special", "count"))
-		day_wrapper_panel:child("total_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("total", "count"))
-		day_wrapper_panel:child("total_downs_text"):set_text(managers.statistics:total_downed())
-		day_wrapper_panel:child("total_downs_alltime_text"):set_text(managers.statistics:total_downed_alltime())
-		day_wrapper_panel:child("total_revives_text"):set_text(managers.statistics:session_total_revives())
-		day_wrapper_panel:child("total_revives_alltime_text"):set_text(managers.statistics:total_revives())
+		
+		for i, data in ipairs(STAT_ITEMS) do
+			if not data.manual_update then
+				local update_data = data.update
+				if update_data then
+					local suffix_table = { func = "_text"}
+					if not data.no_alltime then suffix_table.func_alltime = "_alltime_text" end
+					for func, suffix in pairs(suffix_table) do 
+						local item = day_wrapper_panel:child(data.name .. suffix)
+						if item and update_data[func] and managers.statistics[update_data[func]] then
+							local value = managers.statistics[update_data[func]](managers.statistics, unpack(update_data.params))
+							item:set_text(value)
+						end
+					end
+				end
+			end
+		end
 	end
 
 	function HUDStatsScreen:clean_up(right_panel)
@@ -510,6 +475,41 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		
 		self:clean_up(right_panel)		
 		self:update(right_panel:child("day_wrapper_panel"))
+	end
+	
+	function HUDStatsScreen:update_setting(setting, value)
+		local font_size = (setting == "tabstats_font_size" and value) or self._tabstats_font_size
+		local color_name = (setting == "tabstats_color" and value) or self._tabstats_color
+		local actual_mask = (setting == "use_actual_mask" and value) or setting ~= "use_actual_mask" and self._actual_mask
+		local dwp = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel"):child("day_wrapper_panel")
+		if self._tabstats_font_size ~= font_size or self._tabstats_color ~= color_name then
+			log(color_name)
+			local color = color_name ~= "rainbow" and WolfHUD:getSetting("tabstats_color", "color") or false
+			local sub_items = {"_title", "_text", "_alltime_title", "_alltime_text"}
+			for i, data in ipairs(STAT_ITEMS) do
+				for j, suffix in ipairs(sub_items) do
+					local item = dwp:child(data.name .. suffix)
+					if item then
+						item:set_font_size(font_size)
+						item:set_color(color or data.color)
+					end
+				end
+			end
+			self._tabstats_font_size = font_size
+			self._tabstats_color = color_name
+		end
+		if actual_mask ~= self._actual_mask then
+			local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
+			if not actual_mask then
+				local char_table = characters[managers.criminals:local_character_name()]
+				mask_icon = char_table and char_table.texture or mask_icon
+			else
+				mask_icon = getMaskImage()
+			end
+			local item = dwp:parent():child("character_icon")
+			if item then item:set_image(mask_icon) end
+			self._actual_mask = actual_mask
+		end
 	end
 		
 	Hooks:PostHook( HUDStatsScreen, "init", "WolfHUD_LPI_Compatability", function(self)
@@ -657,7 +657,7 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 	end
 	
 	--Fixed dozers not beeing counted (HARD OVERWRITE)
-	StatisticsManager.session_total_specials_kills = function(self)
+	function StatisticsManager:session_total_specials_kills()
 		return self:session_enemy_killed_by_type("shield", "count") 
 					+ self:session_enemy_killed_by_type("spooc", "count") 
 					+ self:session_enemy_killed_by_type("tank", "count") 
@@ -671,8 +671,22 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 						+ self:enemy_killed_by_type("tank_black", type)
 						+ self:enemy_killed_by_type("tank_skull", type)
 						+ self:enemy_killed_by_type("tank_hw", type)
+		elseif enemy == "non_special" then	--added new "enemy"
+			return self:enemy_killed_by_type("total", type)
+						- self:total_specials_kills()
+						- self:enemy_killed_by_type("sniper", type)
+						- self:enemy_killed_by_type("mobster_boss", type)
+						- self:enemy_killed_by_type("hector_boss", type)
+						- self:enemy_killed_by_type("hector_boss_no_armor", type)
 		end
 		return self._global.killed and self._global.killed[enemy] and self._global.killed[enemy][type] or 0
+	end
+	
+	function StatisticsManager:total_specials_kills()
+		return self:enemy_killed_by_type("shield", "count") 
+					+ self:enemy_killed_by_type("spooc", "count") 
+					+ self:enemy_killed_by_type("tank", "count") 
+					+ self:enemy_killed_by_type("taser", "count")
 	end
 	
 	function StatisticsManager:total_downed_alltime()
@@ -703,10 +717,18 @@ elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	local HUDManager_update_original = HUDManager.update
+	local next_time_t = 0
 	function HUDManager:update(...)
 		HUDManager_update_original(self, ...)
-		if self._hud_statsscreen then
+		if self._hud_statsscreen and next_time_t < Application:time() then
 			self._hud_statsscreen:update_time()
+			next_time_t = Application:time() + 1
+		end
+	end
+	
+	function HUDManager:change_tabstats_setting(setting, value)
+		if self._hud_statsscreen then
+			self._hud_statsscreen:update_setting(setting, value)
 		end
 	end
 end

@@ -36,7 +36,7 @@
 			"id" : "tabstats_font_size",
 			"title" : "wolfhud_tabstats_font_size_title",
 			"description" : "wolfhud_tabstats_font_size_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_tabstats_setting",
 			"value" : "tabstats_font_size",
 			"default_value" : 18,
 			"min" : 10,
@@ -48,7 +48,7 @@
 			"id" : "tabstats_color",
 			"title" : "wolfhud_tabstats_color_title",
 			"description" : "wolfhud_tabstats_color_desc",
-			"callback" : "clbk_change_color_setting",
+			"callback" : "clbk_change_tabstats_color_setting",
 			"items" : [
 				"wolfhud_colors_white",
 				"wolfhud_colors_light_yellow",
@@ -75,7 +75,7 @@
 			"id" : "use_actual_mask",
 			"title" : "wolfhud_tabstats_actual_mask_title",
 			"description" : "wolfhud_tabstats_actual_mask_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_tabstats_setting",
 			"value" : "use_actual_mask",
 		},
 		{

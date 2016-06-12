@@ -609,6 +609,18 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		end
 	end
 	
+	MenuCallbackHandler.clbk_change_tabstats_setting = function(self, item)
+		self:clbk_change_setting(item)
+		local name = item:parameters().name
+		if managers.hud and managers.hud.change_tabstats_setting then managers.hud:change_tabstats_setting(tostring(name), WolfHUD:getSetting(name)) end
+	end
+	
+	MenuCallbackHandler.clbk_change_tabstats_color_setting = function(self, item)
+		self:clbk_change_color_setting(item)
+		local name = item:parameters().name
+		if managers.hud and managers.hud.change_tabstats_setting then managers.hud:change_tabstats_setting(tostring(name), WolfHUD:getSetting(name)) end
+	end
+		
 	WolfHUD:Load()
 	local settings = clone(WolfHUD.settings)
 	for k, v in pairs(settings) do
