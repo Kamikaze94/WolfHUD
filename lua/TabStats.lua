@@ -67,19 +67,19 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	}
 	
 	local STAT_ITEMS = {
-		{name = "accuracy", 		text_id = "victory_hit_accuracy", 				color = Color.white, no_alltime = true},
-		{name = "total_damage", 	text_id = "wolfhud_tabstats_total_damage", 		color = Color(1, 0.69, 0.19, 0.38), no_alltime = true},
-		{name = "tanks_killed", 	text_id = "wolfhud_tabstats_tanks_killed", 		color = Color.red},
-		{name = "cloakers_killed", 	text_id = "wolfhud_tabstats_cloakers_killed", 	color = Color.green},
-		{name = "shields_killed", 	text_id = "wolfhud_tabstats_shields_killed", 	color = Color.yellow},
-		{name = "snipers_killed", 	text_id = "wolfhud_tabstats_snipers_killed", 	color = Color(1, 0.67, 0.84, 0.90)},
-		{name = "tasers_killed", 	text_id = "wolfhud_tabstats_tasers_killed", 	color = Color(1, 0, 0.55, 0.55)},
-		{name = "gensec_killed", 	text_id = "wolfhud_tabstats_gensec_killed", 	color = Color(1, 0.75, 1, 0.24)},
-		{name = "melee_killed", 	text_id = "wolfhud_tabstats_melee_kills", 		color = Color(1, 0.54, 0.02, 0.02)},
-		{name = "explosion_killed", text_id = "wolfhud_tabstats_explosion_kills", 	color = Color(1, 1, 0.5, 0)},
-		{name = "total_killed", 	text_id = "wolfhud_tabstats_nonspecial_kills", 	color = Color(1, 0.78, 0.15, 0.21)},
-		{name = "total_downs", 		text_id = "victory_total_downed", 				color = Color(1, 0.5, 0.5, 0.5)},
-		{name = "total_revives", 	text_id = "wolfhud_tabstats_total_revives", 	color = Color(1, 1, 0, 0.4)},
+		{ name = "accuracy", 			text_id = "victory_hit_accuracy", 				color = Color.white, 					no_alltime = true	},
+		{ name = "total_damage", 		text_id = "wolfhud_tabstats_total_damage", 		color = Color(1, 0.69, 0.19, 0.38), 	no_alltime = true	},
+		{ name = "tanks_killed", 		text_id = "wolfhud_tabstats_tanks_killed", 		color = Color.red, 											},
+		{ name = "cloakers_killed", 	text_id = "wolfhud_tabstats_cloakers_killed", 	color = Color.green											},
+		{ name = "shields_killed", 		text_id = "wolfhud_tabstats_shields_killed", 	color = Color.yellow										},
+		{ name = "snipers_killed", 		text_id = "wolfhud_tabstats_snipers_killed", 	color = Color(1, 0.67, 0.84, 0.90)							},
+		{ name = "tasers_killed", 		text_id = "wolfhud_tabstats_tasers_killed", 	color = Color(1, 0, 0.55, 0.55)								},
+		{ name = "gensec_killed", 		text_id = "wolfhud_tabstats_gensec_killed", 	color = Color(1, 0.75, 1, 0.24)								},
+		{ name = "melee_killed", 		text_id = "wolfhud_tabstats_melee_kills", 		color = Color(1, 0.54, 0.02, 0.02)							},
+		{ name = "explosion_killed", 	text_id = "wolfhud_tabstats_explosion_kills", 	color = Color(1, 1, 0.5, 0)									},
+		{ name = "total_killed", 		text_id = "wolfhud_tabstats_nonspecial_kills", 	color = Color(1, 0.78, 0.15, 0.21)							},
+		{ name = "total_downs", 		text_id = "victory_total_downed", 				color = Color(1, 0.5, 0.5, 0.5)								},
+		{ name = "total_revives", 		text_id = "wolfhud_tabstats_total_revives", 	color = Color(1, 1, 0, 0.4)									},
 	
 	}
 	
@@ -461,46 +461,36 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		day_wrapper_panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)) .. " (" .. (managers.statistics:session_total_civilian_kills() or 0) .. ")")
 		day_wrapper_panel:child("offshore_payout_text"):set_text(managers.experience:cash_string(managers.money:get_potential_payout_from_current_stage() - math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate"))))
 		day_wrapper_panel:child("spending_cash_text"):set_text(managers.experience:cash_string(math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate")) - managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)))
-		
-		day_wrapper_panel:child("accuracy_text"):set_text(managers.statistics:session_hit_accuracy() .. "%")
-		day_wrapper_panel:child("tanks_killed_text"):set_text(managers.statistics._global.session.killed.tank_green.count 
-																+ managers.statistics._global.session.killed.tank_black.count 
-																+ managers.statistics._global.session.killed.tank_skull.count 
-																+ managers.statistics._global.session.killed.tank_hw.count)
-		day_wrapper_panel:child("tanks_killed_alltime_text"):set_text(managers.statistics._global.killed.tank_green.count 
-																+ managers.statistics._global.killed.tank_black.count 
-																+ managers.statistics._global.killed.tank_skull.count 
-																+ managers.statistics._global.killed.tank_hw.count)
-		day_wrapper_panel:child("cloakers_killed_text"):set_text(managers.statistics._global.session.killed.spooc.count)
-		day_wrapper_panel:child("cloakers_killed_alltime_text"):set_text(managers.statistics._global.killed.spooc.count)
-		day_wrapper_panel:child("shields_killed_text"):set_text(managers.statistics._global.session.killed.shield.count)
-		day_wrapper_panel:child("shields_killed_alltime_text"):set_text(managers.statistics._global.killed.shield.count)
-		day_wrapper_panel:child("snipers_killed_text"):set_text(managers.statistics._global.session.killed.sniper.count)
-		day_wrapper_panel:child("snipers_killed_alltime_text"):set_text(managers.statistics._global.killed.sniper.count)
-		day_wrapper_panel:child("tasers_killed_text"):set_text(managers.statistics._global.session.killed.taser.count)
-		day_wrapper_panel:child("tasers_killed_alltime_text"):set_text(managers.statistics._global.killed.taser.count)
-		day_wrapper_panel:child("melee_killed_text"):set_text(managers.statistics._global.session.killed.total.melee)
-		day_wrapper_panel:child("melee_killed_alltime_text"):set_text(managers.statistics._global.killed.total.melee)
 		if 0 <= math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate")) - managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0) then
 			day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.friend_color)
 		else
 			day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.heat_cold_color)
 		end
-		day_wrapper_panel:child("explosion_killed_text"):set_text(managers.statistics._global.session.killed.total.explosion)
-		day_wrapper_panel:child("explosion_killed_alltime_text"):set_text(managers.statistics._global.killed.total.explosion)
-		day_wrapper_panel:child("gensec_killed_text"):set_text(managers.statistics._global.session.killed.gensec.count)
-		day_wrapper_panel:child("gensec_killed_alltime_text"):set_text(managers.statistics._global.killed.gensec.count)
-		day_wrapper_panel:child("total_killed_text"):set_text(managers.statistics._global.session.killed.total.count -
-																managers.statistics:session_total_specials_kills() -
-																managers.statistics._global.session.killed.mobster_boss.count -
-																managers.statistics._global.session.killed.hector_boss.count -
-																managers.statistics._global.session.killed.hector_boss_no_armor.count)
-		day_wrapper_panel:child("total_killed_alltime_text"):set_text(managers.statistics._global.killed.total.count)
-		day_wrapper_panel:child("total_damage_text"):set_text(math.round(TOTAL_DAMAGE))
-		day_wrapper_panel:child("total_downs_text"):set_text(managers.statistics._global.session.downed.bleed_out + managers.statistics._global.session.downed.incapacitated)
-		day_wrapper_panel:child("total_downs_alltime_text"):set_text(managers.statistics._global.downed.bleed_out + managers.statistics._global.downed.incapacitated)
-		day_wrapper_panel:child("total_revives_text"):set_text(managers.statistics._global.session.revives.player_count .. " / " .. managers.statistics._global.session.revives.npc_count)
-		day_wrapper_panel:child("total_revives_alltime_text"):set_text(managers.statistics._global.revives.player_count .. " / " .. managers.statistics._global.revives.npc_count)
+		
+		day_wrapper_panel:child("accuracy_text"):set_text(managers.statistics:session_hit_accuracy() .. "%")
+		day_wrapper_panel:child("total_damage_text"):set_text(managers.money:add_decimal_marks_to_string(tostring(math.round(TOTAL_DAMAGE))))
+		day_wrapper_panel:child("tanks_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("tank", "count"))
+		day_wrapper_panel:child("tanks_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("tank", "count"))
+		day_wrapper_panel:child("cloakers_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("spooc", "count"))
+		day_wrapper_panel:child("cloakers_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("spooc", "count"))
+		day_wrapper_panel:child("shields_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("shield", "count"))
+		day_wrapper_panel:child("shields_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("shield", "count"))
+		day_wrapper_panel:child("snipers_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("sniper", "count"))
+		day_wrapper_panel:child("snipers_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("sniper", "count"))
+		day_wrapper_panel:child("tasers_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("taser", "count"))
+		day_wrapper_panel:child("tasers_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("taser", "count"))
+		day_wrapper_panel:child("gensec_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("gensec", "count"))
+		day_wrapper_panel:child("gensec_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("gensec", "count"))
+		day_wrapper_panel:child("melee_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("total", "melee"))
+		day_wrapper_panel:child("melee_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("total", "melee"))
+		day_wrapper_panel:child("explosion_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("total", "explosion"))
+		day_wrapper_panel:child("explosion_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("total", "explosion"))
+		day_wrapper_panel:child("total_killed_text"):set_text(managers.statistics:session_enemy_killed_by_type("non_special", "count"))
+		day_wrapper_panel:child("total_killed_alltime_text"):set_text(managers.statistics:enemy_killed_by_type("total", "count"))
+		day_wrapper_panel:child("total_downs_text"):set_text(managers.statistics:total_downed())
+		day_wrapper_panel:child("total_downs_alltime_text"):set_text(managers.statistics:total_downed_alltime())
+		day_wrapper_panel:child("total_revives_text"):set_text(managers.statistics:session_total_revives())
+		day_wrapper_panel:child("total_revives_alltime_text"):set_text(managers.statistics:total_revives())
 	end
 
 	function HUDStatsScreen:clean_up(right_panel)
@@ -646,6 +636,55 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			bag_text:set_left(bag:right())
 			bag_text:set_center_y(math.round(bag:center_y()))
 		end
+	end
+elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
+	local session_enemy_killed_by_type_original = StatisticsManager.session_enemy_killed_by_type
+	function StatisticsManager:session_enemy_killed_by_type(enemy, type)
+		if enemy == "tank" then	--Fixed dozer count
+			return self:session_enemy_killed_by_type("tank_green", type)
+						+ self:session_enemy_killed_by_type("tank_black", type)
+						+ self:session_enemy_killed_by_type("tank_skull", type)
+						+ self:session_enemy_killed_by_type("tank_hw", type)
+		elseif enemy == "non_special" then	--added new "enemy"
+			return self:session_killed_by_weapons()
+						- self:session_total_specials_kills()
+						- self:session_enemy_killed_by_type("sniper", type)
+						- self:session_enemy_killed_by_type("mobster_boss", type)
+						- self:session_enemy_killed_by_type("hector_boss", type)
+						- self:session_enemy_killed_by_type("hector_boss_no_armor", type)
+		end
+		return session_enemy_killed_by_type_original(self, enemy, type)
+	end
+	
+	--Fixed dozers not beeing counted (HARD OVERWRITE)
+	StatisticsManager.session_total_specials_kills = function(self)
+		return self:session_enemy_killed_by_type("shield", "count") 
+					+ self:session_enemy_killed_by_type("spooc", "count") 
+					+ self:session_enemy_killed_by_type("tank", "count") 
+					+ self:session_enemy_killed_by_type("taser", "count")
+	end
+	
+	--New Functions
+	function StatisticsManager:enemy_killed_by_type(enemy, type)
+		if enemy == "tank" then
+			return self:enemy_killed_by_type("tank_green", type)
+						+ self:enemy_killed_by_type("tank_black", type)
+						+ self:enemy_killed_by_type("tank_skull", type)
+						+ self:enemy_killed_by_type("tank_hw", type)
+		end
+		return self._global.killed and self._global.killed[enemy] and self._global.killed[enemy][type] or 0
+	end
+	
+	function StatisticsManager:total_downed_alltime()
+		return self._global.downed.bleed_out + self._global.downed.incapacitated
+	end
+	
+	function StatisticsManager:session_total_revives()
+		return self._global.session.revives.player_count .. " / " .. self._global.session.revives.npc_count
+	end
+	
+	function StatisticsManager:total_revives()
+		return self._global.revives.player_count .. " / " .. self._global.revives.npc_count
 	end
 elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 	local _on_damage_received_original = CopDamage._on_damage_received
