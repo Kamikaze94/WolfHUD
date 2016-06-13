@@ -2506,7 +2506,8 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 	function PlayerStandard:_start_action_melee(t, input, instant, ...)
 		if not instant then
 			local duration = tweak_data.blackmarket.melee_weapons[managers.blackmarket:equipped_melee_weapon()].stats.charge_time
-			managers.gameinfo:event("player_action", "activate", "melee_charge", { t = t, duration = duration })
+			managers.gameinfo:event("player_action", "activate", "melee_charge")
+			managers.gameinfo:event("player_action", "set_duration", "melee_charge", { t = t, duration = duration })
 		end
 		
 		return _start_action_melee_original(self, t, input, instant, ...)

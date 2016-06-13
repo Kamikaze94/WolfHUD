@@ -235,7 +235,6 @@ if not _G.WolfHUD then
 			show_timers 					= true,     --Drills, time locks, hacking etc.
 			show_equipment 					= true,  	--Deployables (ammo, doc bags, body bags)
 			show_sentries 					= true,   	--Deployable sentries
-				hide_empty_sentries 		= true, 	--Hide sentries with no ammo if player lacks the skill to refill them
 			show_ecms 						= true,		--Active ECMs
 			show_ecm_retrigger 				= true,  	--Countdown for players own ECM feedback retrigger delay
 			show_minions 					= true,  	--Converted enemies, type and health

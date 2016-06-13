@@ -400,11 +400,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		self:update(day_wrapper_panel)
 	end
 
-	function HUDStatsScreen:add_damage(amount)
+	function HUDStatsScreen.add_damage(amount)
 		TOTAL_DAMAGE = TOTAL_DAMAGE + (amount*10)
 	end
 
-	function HUDStatsScreen:reset_damage()
+	function HUDStatsScreen.reset_damage()
 		TOTAL_DAMAGE = 0
 	end
 	
@@ -712,7 +712,7 @@ elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 	function CopDamage:_process_damage(aggressor, damage)
 		if alive(aggressor) and aggressor:base() then
 			if aggressor:in_slot( 2 ) or (aggressor:in_slot( 25 ) and aggressor:base():get_owner_id() == managers.network:session():local_peer():id()) or aggressor:base()._thrower_unit == managers.player:player_unit() then
-				HUDStatsScreen:add_damage(damage)
+				HUDStatsScreen.add_damage(damage)
 			end
 		end
 	end

@@ -45,7 +45,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	
 	local function getEquipmentAmount(name_id)
 		local data = tweak_data.equipments[name_id]
-		if data then
+		if data and data.quantity then
 			local amounts = data.quantity
 			local amount_str = ""
 			for i = 1, #amounts do

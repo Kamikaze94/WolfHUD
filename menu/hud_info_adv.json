@@ -32,14 +32,6 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "hide_empty_sentries",
-			"title" : "wolfhud_hudlist_hide_empty_sentries_title",
-			"description" : "wolfhud_hudlist_hide_empty_sentries_desc",
-			"callback" : "clbk_change_hudlist_setting",
-			"value" : "hide_empty_sentries",
-		},
-		{
-			"type" : "toggle",
 			"id" : "show_ecms",
 			"title" : "wolfhud_hudlist_show_ecms_title",
 			"description" : "wolfhud_hudlist_show_ecms_desc",

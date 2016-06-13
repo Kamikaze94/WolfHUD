@@ -61,7 +61,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
         show_timers 					= WolfHUD:getSetting("show_timers", "boolean"),     				--Drills, time locks, hacking etc.
         show_equipment 					= WolfHUD:getSetting("show_equipment", "boolean"),  				--Deployables (ammo, doc bags, body bags)
         show_sentries 					= WolfHUD:getSetting("show_sentries", "boolean"),   				--Deployable sentries
-            hide_empty_sentries 		= WolfHUD:getSetting("hide_empty_sentries", "boolean"),     		--Hide sentries with no ammo if player lacks the skill to refill them
         show_ecms 						= WolfHUD:getSetting("show_ecms", "boolean"),       				--Active ECMs
         show_ecm_retrigger 				= WolfHUD:getSetting("show_ecm_retrigger", "boolean"),      		--Countdown for players own ECM feedback retrigger delay
         show_minions 					= WolfHUD:getSetting("show_minions", "boolean"),    				--Converted enemies, type and health
@@ -780,11 +779,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				elseif event == "set_ammo_ratio" then
 					item:set_ammo_ratio(data.ammo_ratio)
 					
-					if HUDListManager.ListOptions.hide_empty_sentries then
-						if not managers.player:has_category_upgrade("sentry_gun", "can_reload") then
-							item:set_active(data.ammo_ratio > 0)
-						end
-					end
+					local has_ammo = data.ammo_ratio <= 0
+					if item:is_active() ~= has_ammo then
+						if not (data.owner and data.owner == managers.network:session():local_peer():id()) then
+							item:set_active(has_ammo)
+ 						end
+ 					end
 				elseif event == "set_health_ratio" then
 					item:set_health_ratio(data.health_ratio)
 				end
@@ -1202,6 +1202,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
+		self._unit_count_listeners = self._unit_count_listeners + 1
+		
 		if HUDListManager.ListOptions.aggregate_enemies then
 			local total_count = 0
 			
@@ -1214,7 +1216,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 		
 		if HUDListManager.ListOptions.show_enemies then
-			self._unit_count_listeners = self._unit_count_listeners + 1
 			local clbk = callback(self, self, "_unit_count_event")
 			
 			for id, category in pairs(items) do
@@ -1269,8 +1270,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
+		self._unit_count_listeners = self._unit_count_listeners + 1
+		
 		if HUDListManager.ListOptions.show_civilians then
-			self._unit_count_listeners = self._unit_count_listeners + 1
 			local clbk = callback(self, self, "_unit_count_event")
 			
 			for id, category in pairs(items) do
@@ -1309,8 +1311,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
+		self._unit_count_listeners = self._unit_count_listeners + 1
+		
 		if HUDListManager.ListOptions.show_hostages then
-			self._unit_count_listeners = self._unit_count_listeners + 1
 			local clbk = callback(self, self, "_unit_count_event")
 			
 			for id, category in pairs(items) do
@@ -1349,8 +1352,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
+		self._unit_count_listeners = self._unit_count_listeners + 1
+		
 		if HUDListManager.ListOptions.show_minion_count then
-			self._unit_count_listeners = self._unit_count_listeners + 1
 			local clbk = callback(self, self, "_unit_count_event")
 			
 			for id, category in pairs(items) do
@@ -1389,8 +1393,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
+		self._unit_count_listeners = self._unit_count_listeners + 1
+		
 		if HUDListManager.ListOptions.show_turrets then
-			self._unit_count_listeners = self._unit_count_listeners + 1
 			local clbk = callback(self, self, "_unit_count_event")
 			
 			for id, category in pairs(items) do
@@ -3160,24 +3165,28 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		ammo_efficiency = {
 			atlas_new = tweak_data.skilltree.skills.single_shot_ammo_return.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		armor_break_invulnerable = {
 			spec = {6, 1},
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		berserker = {
 			atlas_new = tweak_data.skilltree.skills.wolverine.icon_xy,
 			class = "BerserkerBuffItem",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		bloodthirst_aced = {
 			atlas_new = tweak_data.skilltree.skills.bloodthirst.icon_xy,
@@ -3186,6 +3195,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ace_icon = true,
 			title = "Aced",
+			ignore = false,
 		},
 		bloodthirst_basic = {
 			atlas_new = tweak_data.skilltree.skills.bloodthirst.icon_xy,
@@ -3200,23 +3210,27 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		sixth_sense = {
 			atlas_new = tweak_data.skilltree.skills.chameleon.icon_xy,
 			class = "TimedBuffItem",
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		close_contact = {
 			spec = {5, 4},
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		combat_medic = {
 			atlas_new = tweak_data.skilltree.skills.combat_medic.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		combat_medic_passive = {
 			atlas_new = tweak_data.skilltree.skills.combat_medic.icon_xy,
@@ -3230,6 +3244,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		die_hard = {
 			atlas_new = tweak_data.skilltree.skills.show_of_force.icon_xy,
@@ -3243,12 +3258,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		grinder = {
 			spec = {4, 6},
 			class = "TimedStacksBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		hostage_situation = {
 			spec = {0, 1},
@@ -3270,19 +3287,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			--ignore = true,
+			ignore = true,
 		},
 		inspire = {
 			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		messiah = {
 			atlas_new = tweak_data.skilltree.skills.messiah.icon_xy,
 			class = "BuffItemBase",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		overdog = {
 			spec = {6, 4},
@@ -3317,6 +3336,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		quick_fix = {
 			atlas_new = tweak_data.skilltree.skills.tea_time.icon_xy,
@@ -3330,12 +3350,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
  			class = "TimedBuffItem",
 			priority = 4,
  			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
  		},
 		lock_n_load = {
 			atlas_new = tweak_data.skilltree.skills.shock_and_awe.icon_xy,
 			class = "ShockAndAweBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		swan_song = {
 			atlas_new = tweak_data.skilltree.skills.perseverance.icon_xy,
@@ -3349,6 +3371,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		trigger_happy = {
 			atlas_new = tweak_data.skilltree.skills.trigger_happy.icon_xy,
@@ -3368,6 +3391,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			atlas_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
 			class = "TimedBuffItem",
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		up_you_go = {
 			atlas_new = tweak_data.skilltree.skills.up_you_go.icon_xy,
@@ -3381,12 +3405,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		yakuza = {
 			spec = {6, 6},
 			class = "BerserkerBuffItem",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		
 		--Debuffs
@@ -3396,12 +3422,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = false,
 		},
 		ammo_give_out_debuff = {
 			spec = {5, 5},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = false,
 		},
 		armor_break_invulnerable_debuff = {
 			spec = {6, 1},
@@ -3415,6 +3443,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = false,
 		},
 		grinder_debuff = {
 			spec = {4, 6},
@@ -3429,6 +3458,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			title = "Boost",
+			ignore = false,
 		},
 		inspire_revive_debuff = {
 			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
@@ -3437,18 +3467,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ace_icon = true,
 			title = "Revive",
+			ignore = false,
 		},
 		life_drain_debuff = {
 			spec = {7, 4},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = false,
 		},
 		medical_supplies_debuff = {
 			spec = {4, 5},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = false,
 		},
 		unseen_strike_debuff = {
 			atlas_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
@@ -3469,6 +3502,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = false,
 		},
 		
 		--Team buffs
@@ -3477,24 +3511,28 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
+			ignore = false,
 		},
 		bulletproof = {						--TODO: Needs new icon (Faster Team armor recovery)
 			atlas_new = tweak_data.skilltree.skills.iron_man.icon_xy,
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
+			ignore = false,
 		},
 		crew_chief = {
 			spec = {2, 0},
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
+			ignore = false,
 		},
 		endurance = {
 			atlas_new = tweak_data.skilltree.skills.triathlete.icon_xy,
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
+			ignore = false,
 		},
 		forced_friendship = {
 			atlas = tweak_data.skilltree.skills.triathlete.icon_xy,
@@ -3511,6 +3549,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 2,
 			color = Color(1, 1, 0),
 			title = "+Dmg",
+			ignore = false,
 		},
 		damage_reduction = {
 			atlas_new = tweak_data.skilltree.skills.disguise.icon_xy,
@@ -3518,6 +3557,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 2,
 			color = Color(0, 1, 1),
 			title = "-Dmg",
+			ignore = false,
 		},
 		melee_damage_increase = {
 			atlas_new = tweak_data.skilltree.skills.hidden_blade.icon_xy,
@@ -3525,6 +3565,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 2,
 			color = Color(1, 0, 1),
 			title = "+M.Dmg",
+			ignore = false,
 		},
 		
 		--Player actions
@@ -3535,6 +3576,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 9,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			invert_timers = true,
+			ignore = false,
 		},
 		standard_armor_regeneration = {
 			spec = {6, 0},
@@ -3542,6 +3584,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 9,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			invert_timers = true,
+			ignore = false,
 		},
 		weapon_charge = {
 			texture = "guis/textures/contact_vlad",
@@ -3549,6 +3592,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 10,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
 		},
 		melee_charge = {
 			atlas = tweak_data.skilltree.skills.hidden_blade.icon_xy,
@@ -3872,7 +3916,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		
 		if self._buff_active and self._expire_t then
 			self:_set_progress((t - self._start_t) / (self._expire_t - self._start_t))
-			if not self._custom_value then
+			if WolfHUD.DEBUG_MODE and not self._custom_value then
 				local t_left = self._expire_t - t
 				self:_set_text((t_left > 0 and string.format("%0.1fs", t_left) or ""))
 			end
