@@ -25,8 +25,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		return set_teammate_ammo_amount_orig(self, id, selection_index, max_clip, current_clip, current_left, max)
 	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata" then
-	function TimeSpeedEffectTweakData:_init_base_effects()
-		if WolfHUD:getSetting("no_slowmotion", "boolean") then
+	if WolfHUD:getSetting("no_slowmotion", "boolean") then
+		function TimeSpeedEffectTweakData:_init_base_effects()
 			self.mask_on = {
 				speed = 1,
 				fade_in_delay = 0,
@@ -60,11 +60,9 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata"
 				affect_timer = "player"
 			}
 		end
-	end
 
-	function TimeSpeedEffectTweakData:_init_mission_effects()
-		self.mission_effects = {}
-		if WolfHUD:getSetting("no_slowmotion", "boolean") then
+		function TimeSpeedEffectTweakData:_init_mission_effects()
+			self.mission_effects = {}
 			self.mission_effects.quickdraw = {
 				speed = 1,
 				fade_in_delay = 0,

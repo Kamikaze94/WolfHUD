@@ -379,6 +379,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 	}
 	
 	function GameInfoManager:init()
+		self._t = 0
 		self._listeners = {}
 		
 		self._timers = {}
@@ -1179,7 +1180,13 @@ if RequiredScript == "lib/setups/gamesetup" then
 		end
 	end
 	
-	function GameInfoManager:_update_player_timer_expiration(t, dt)
+	function GameInfoManager:_update_player_timer_expiration(ut, udt)
+		local t = Application:time()
+		local dt = t - self._t
+		self._t = t
+		
+		printf("_update_player_timer_expiration: %f - %f / %f - %f\n", ut, udt, t, dt)
+	
 		while self._auto_expire_timers.expire_t[1] and self._auto_expire_timers.expire_t[1].expire_t < t do
 			local data = self._auto_expire_timers.expire_t[1]
 			local id = data.id
@@ -2507,7 +2514,7 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 		if not instant then
 			local duration = tweak_data.blackmarket.melee_weapons[managers.blackmarket:equipped_melee_weapon()].stats.charge_time
 			managers.gameinfo:event("player_action", "activate", "melee_charge")
-			managers.gameinfo:event("player_action", "set_duration", "melee_charge", { t = t, duration = duration })
+			managers.gameinfo:event("player_action", "set_duration", "melee_charge", { duration = duration })
 		end
 		
 		return _start_action_melee_original(self, t, input, instant, ...)
@@ -2542,7 +2549,7 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 			managers.gameinfo:event("buff", "set_value", "die_hard", { value = value })
 		end
 		
-		managers.gameinfo:event("player_action", "activate", "interact", { t = t, duration = timer })
+		managers.gameinfo:event("player_action", "activate", "interact", { duration = timer })
 		managers.gameinfo:event("player_action", "set_data", "interact", { interact_id = interact_object:interaction().tweak_data })
 		
 		return _start_action_interact_original(self, t, input, timer, interact_object, ...)
@@ -2583,7 +2590,7 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 		_start_action_reload_original(self, t, ...)
 		
 		if self._state_data.reload_expire_t then
-			managers.gameinfo:event("player_action", "activate", "reload", { t = t, expire_t = self._state_data.reload_expire_t })
+			managers.gameinfo:event("player_action", "activate", "reload", { expire_t = self._state_data.reload_expire_t })
 		end
 	end
 	
@@ -2606,7 +2613,7 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 	
 	function PlayerStandard:_start_action_charging_weapon(t, ...)
 		managers.gameinfo:event("player_action", "activate", "weapon_charge")
-		managers.gameinfo:event("player_action", "set_duration", "weapon_charge", { t = t, duration = self._equipped_unit:base():charge_max_t() })
+		managers.gameinfo:event("player_action", "set_duration", "weapon_charge", { duration = self._equipped_unit:base():charge_max_t() })
 		return _start_action_charging_weapon_original(self, t, ...)
 	end
 
@@ -2686,7 +2693,7 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 				
 				if stack[2] > 0 then
 					local value = managers.player:upgrade_value(category, "stacking_hit_damage_multiplier", 0)
-					managers.gameinfo:event("timed_buff", "activate", buff_id, { t = t, expire_t = stack[1] })
+					managers.gameinfo:event("timed_buff", "activate", buff_id, { expire_t = stack[1] })
 					managers.gameinfo:event("buff", "set_stack_count", buff_id, { stack_count = stack[2] })
 					managers.gameinfo:event("buff", "set_value", buff_id, { value = 1 + stack[2] * value })
 				else
@@ -2729,10 +2736,12 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 		
 		if managers.player:has_category_upgrade("player", "damage_to_armor") then
 			local function on_damage(dmg_info)
-				local t = Application:time()
-				if (self._damage_to_armor.elapsed == t) or (t - self._damage_to_armor.elapsed > self._damage_to_armor.target_tick) then
-					managers.gameinfo:event("timed_buff", "activate", "anarchist_armor_recovery_debuff", { t = t, duration = self._damage_to_armor.target_tick })
-				end
+				if self._unit == dmg_info.attacker_unit then
+					local t = Application:time()
+					if (self._damage_to_armor.elapsed == t) or (t - self._damage_to_armor.elapsed > self._damage_to_armor.target_tick) then
+						managers.gameinfo:event("timed_buff", "activate", "anarchist_armor_recovery_debuff", { t = t, duration = self._damage_to_armor.target_tick })
+					end
+ 				end
 			end
 			
 			CopDamage.register_listener("anarchist_debuff_listener", {"on_damage"}, on_damage)
@@ -2794,7 +2803,7 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 		if self._health_regen_update_timer then
 			if self._health_regen_update_timer > (old_timer or 0) and self:health_ratio() < 1 then
 				--TODO: Muscle regen?
-				managers.gameinfo:event("buff", "set_duration", "hostage_taker", { t = t, duration = self._health_regen_update_timer })
+				managers.gameinfo:event("buff", "set_duration", "hostage_taker", { duration = self._health_regen_update_timer })
 			end
 		end
 	end
@@ -2811,7 +2820,7 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 		_update_armor_grinding_original(self, t, ...)
 		
 		if self._armor_grinding.elapsed == 0 and ARMOR_GRIND_ACTIVE then
-			managers.gameinfo:event("player_action", "set_duration", "anarchist_armor_regeneration", { t = t, duration = self._armor_grinding.target_tick })
+			managers.gameinfo:event("player_action", "set_duration", "anarchist_armor_regeneration", { duration = self._armor_grinding.target_tick })
 		end
 	end
 	
@@ -2854,7 +2863,7 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 		local result = _check_bleed_out_original(self, ...)
 		
 		if (self._uppers_elapsed or 0) > last_uppers then
-			managers.gameinfo:event("timed_buff", "activate", "uppers_debuff", { t = self._uppers_elapsed, duration = self._UPPERS_COOLDOWN })
+			managers.gameinfo:event("timed_buff", "activate", "uppers_debuff", { duration = self._UPPERS_COOLDOWN })
 		end
 	end
 	

@@ -779,7 +779,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				elseif event == "set_ammo_ratio" then
 					item:set_ammo_ratio(data.ammo_ratio)
 					
-					local has_ammo = data.ammo_ratio <= 0
+					local has_ammo = data.ammo_ratio > 0
 					if item:is_active() ~= has_ammo then
 						if not (data.owner and data.owner == managers.network:session():local_peer():id()) then
 							item:set_active(has_ammo)
@@ -3595,6 +3595,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = false,
 		},
 		melee_charge = {
+			--atlas_new = tweak_data.skilltree.skills.hidden_blade.icon_xy,
 			atlas = tweak_data.skilltree.skills.hidden_blade.icon_xy,
 			class = "TimedBuffItem",
 			priority = 10,
@@ -3602,6 +3603,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = WolfHUD:getSetting("SHOW_MELEE", "boolean")
 		},
 		reload = {
+			--atlas_new = tweak_data.skilltree.skills.speedy_reload.icon_xy,
 			atlas = {0, 9},
 			class = "TimedBuffItem",
 			priority = 10,
@@ -3609,6 +3611,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = WolfHUD:getSetting("SHOW_RELOAD", "boolean")
 		},
 		interact = {
+			--atlas_new = tweak_data.skilltree.skills.second_chances.icon_xy,
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
 			class = "TimedBuffItem",
 			priority = 10,

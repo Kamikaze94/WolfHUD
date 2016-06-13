@@ -67,6 +67,16 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 			equipment.name_localized = equipment.name_localized .. (equipment.unlocked and getEquipmentAmount(equipment.name) or "")
 		end
 	end
+	
+	local populate_grenades_original = BlackMarketGui.populate_grenades
+	function BlackMarketGui:populate_grenades(data, ...)
+		populate_grenades_original(self, data, ...)
+		local t_data = tweak_data.blackmarket.projectiles
+		for i, throwable in ipairs(data) do
+			local has_amount = throwable.unlocked and t_data[throwable.name] or false
+			throwable.name_localized = throwable.name_localized .. (has_amount and " (x" .. t_data[throwable.name].max_amount .. ")" or "")
+		end
+	end
 
 	-- Show all Names in Inventory Boxxes
 	local orig_blackmarket_gui_slot_item_init = BlackMarketGuiSlotItem.init
