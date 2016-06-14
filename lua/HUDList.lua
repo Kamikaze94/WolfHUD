@@ -106,42 +106,42 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	}
 	
 	HUDListManager.UNIT_TYPES = {
-		cop = 						{ type_id = "cop",			category = "enemies",	long_name = "Cop" },
-		fbi = 						{ type_id = "cop",			category = "enemies",	long_name = "FBI" },
-		swat = 						{ type_id = "cop",			category = "enemies",	long_name = "SWAT" },
-		heavy_swat = 				{ type_id = "cop",			category = "enemies",	long_name = "H. SWAT" },
-		fbi_swat = 					{ type_id = "cop",			category = "enemies",	long_name = "FBI SWAT" },
-		fbi_heavy_swat = 			{ type_id = "cop",			category = "enemies",	long_name = "H. FBI SWAT" },
-		city_swat = 				{ type_id = "cop",			category = "enemies",	long_name = "Elite" },
-		security = 					{ type_id = "security",		category = "enemies",	long_name = "Sec. guard" },
-		gensec = 					{ type_id = "security",		category = "enemies",	long_name = "GenSec" },
-		gangster = 					{ type_id = "thug",			category = "enemies",	long_name = "Gangster" },
-		mobster = 					{ type_id = "thug",			category = "enemies",	long_name = "Mobster" },
-		biker = 					{ type_id = "thug",			category = "enemies",	long_name = "Biker" },
-		biker_escape = 				{ type_id = "thug",			category = "enemies",	long_name = "Biker" },
-		tank = 						{ type_id = "tank",			category = "enemies",	long_name = "Bulldozer" },
-		tank_hw = 					{ type_id = "tank",			category = "enemies",	long_name = "Headless Dozer" },
-		spooc = 					{ type_id = "spooc",		category = "enemies",	long_name = "Cloaker" },
-		taser = 					{ type_id = "taser",		category = "enemies",	long_name = "Taser" },
-		shield = 					{ type_id = "shield",		category = "enemies",	long_name = "Shield" },
-		sniper = 					{ type_id = "sniper",		category = "enemies",	long_name = "Sniper" },
-		mobster_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "Commissar" },
-		hector_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "Hector" },
-		hector_boss_no_armor = 		{ type_id = "thug_boss",	category = "enemies",	long_name = "Hector" },
-		phalanx_vip = 				{ type_id = "phalanx",		category = "enemies",	long_name = "Cpt. Winter" },
-		phalanx_minion = 			{ type_id = "phalanx",		category = "enemies",	long_name = "Phalanx" },
-		civilian = 					{ type_id = "civ",			category = "civilians",	long_name = "Civilian" },
-		civilian_female = 			{ type_id = "civ",			category = "civilians",	long_name = "Civilian" },
-		bank_manager = 				{ type_id = "civ",			category = "civilians",	long_name = "Bank mngr." },
-		--drunk_pilot = 			{ type_id = "unique",		category = "civilians",	long_name = "Pilot" },
-		--escort = 					{ type_id = "unique",		category = "civilians",	long_name = "Escort" },
-		--old_hoxton_mission = 		{ type_id = "unique",		category = "civilians",	long_name = "Hoxton" },
-		--inside_man = 				{ type_id = "unique",		category = "civilians",	long_name = "Insider" },
-		--boris = 					{ type_id = "unique",		category = "civilians",	long_name = "Boris" },
-		--escort_undercover = 		{ type_id = "unique",		category = "civilians",	long_name = "Taxman" },
+		cop = 						{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_cop" },
+		fbi = 						{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_fbi" },
+		swat = 						{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_swat" },
+		heavy_swat = 				{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_heavy_swat" },
+		fbi_swat = 					{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_swat" },
+		fbi_heavy_swat = 			{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_heavy_swat" },
+		city_swat = 				{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_city_swat" },
+		security = 					{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" },
+		gensec = 					{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_gensec" },
+		gangster = 					{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_gangster" },
+		mobster = 					{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_mobster" },
+		biker = 					{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_biker" },
+		biker_escape = 				{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_biker" },
+		tank = 						{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank" },
+		tank_hw = 					{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank_hw" },
+		spooc = 					{ type_id = "spooc",		category = "enemies",	long_name = "wolfhud_enemy_spook" },
+		taser = 					{ type_id = "taser",		category = "enemies",	long_name = "wolfhud_enemy_taser" },
+		shield = 					{ type_id = "shield",		category = "enemies",	long_name = "wolfhud_enemy_shield" },
+		sniper = 					{ type_id = "sniper",		category = "enemies",	long_name = "wolfhud_enemy_sniper" },
+		mobster_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_mobster_boss" },
+		hector_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_hector_boss" },
+		hector_boss_no_armor = 		{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_hector_boss_no_armor" },
+		phalanx_vip = 				{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_phalanx_vip" },
+		phalanx_minion = 			{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_phalanx_minion" },
+		civilian = 					{ type_id = "civ",			category = "civilians",	long_name = "wolfhud_enemy_civilian" },
+		civilian_female = 			{ type_id = "civ",			category = "civilians",	long_name = "wolfhud_enemy_civilian" },
+		bank_manager = 				{ type_id = "civ",			category = "civilians",	long_name = "wolfhud_enemy_bank_manager" },
+		--drunk_pilot = 			{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_drunk_pilot" },
+		--escort = 					{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_escort" },
+		--old_hoxton_mission = 		{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_old_hoxton_mission" },
+		--inside_man = 				{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_inside_man" },
+		--boris = 					{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_boris" },
+		--escort_undercover = 		{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_escort_undercover" },
 		
 		--Custom unit definitions
-		turret = 					{ type_id = "turret",		category = "turrets",	long_name = "SWAT Turret" },
+		turret = 					{ type_id = "turret",		category = "turrets",	long_name = "wolfhud_enemy_swat_van" },
 		cop_hostage =				{ type_id = "cop_hostage",	category = "hostages",	--[[force_update = { "cop", "enemies" }]] },
 		civ_hostage =				{ type_id = "civ_hostage",	category = "hostages",	force_update = { "civ" } },
 		minion =					{ type_id = "minion",		category = "minions",		--[[force_update = { "cop", "enemies" }]] },
@@ -150,12 +150,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDListManager.SPECIAL_PICKUP_TYPES = {
 		gen_pku_crowbar =					"crowbar",
 		pickup_keycard =					"keycard",
-		pickup_hotel_room_keycard =	"keycard",
+		pickup_hotel_room_keycard =			"keycard",
 		gage_assignment =					"courier",
-		pickup_boards =					"planks",
-		stash_planks_pickup =			"planks",
-		muriatic_acid =					"meth_ingredients",
-		hydrogen_chloride =				"meth_ingredients",
+		pickup_boards =						"planks",
+		stash_planks_pickup =				"planks",
+		muriatic_acid =						"meth_ingredients",
+		hydrogen_chloride =					"meth_ingredients",
 		caustic_soda =						"meth_ingredients",
 		gen_pku_blow_torch =				"blowtorch",
 		drk_pku_blow_torch = 				"blowtorch",
@@ -2861,8 +2861,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		
 		self._unit = unit
 		self._max_health = unit:character_damage()._HEALTH_INIT
-		local type_string = HUDListManager.UNIT_TYPES[unit:base()._tweak_table] and
-			HUDListManager.UNIT_TYPES[unit:base()._tweak_table].long_name or "UNDEF"
+		local type_table = HUDListManager.UNIT_TYPES[unit:base()._tweak_table]
+		local type_string = type_table and managers.localization:to_upper_text(type_table.long_name) or "UNDEF"
+		if type_string:len() > 10 then
+			type_string, _ = type_string:match("(%w+)(.+)")
+			type_string = type_string:sub(0, 10)
+		end
 	
 		self._health_bar = self._panel:bitmap({
 			name = "radial_health",
@@ -3194,7 +3198,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ace_icon = true,
-			title = "Aced",
+			title = "wolfhud_hudlist_buff_aced",
+			localized = true,
 			ignore = false,
 		},
 		bloodthirst_basic = {
@@ -3202,7 +3207,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "BuffItemBase",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			title = "Basic",
+			title = "wolfhud_hudlist_buff_basic",
+			localized = true,
 			ignore = true,
 		},
 		bullet_storm = {
@@ -3457,7 +3463,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			title = "Boost",
+			title = "wolfhud_hudlist_buff_boost",
+			localized = true,
 			ignore = false,
 		},
 		inspire_revive_debuff = {
@@ -3466,7 +3473,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ace_icon = true,
-			title = "Revive",
+			title = "wolfhud_hudlist_buff_revive",
+			localized = true,
 			ignore = false,
 		},
 		life_drain_debuff = {
@@ -3548,7 +3556,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "DamageIncreaseBuff",
 			priority = 2,
 			color = Color(1, 1, 0),
-			title = "+Dmg",
+			title = "wolfhud_hudlist_buff_dmg_inc",
+			localized = true,
 			ignore = false,
 		},
 		damage_reduction = {
@@ -3556,7 +3565,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "DamageReductionBuff",
 			priority = 2,
 			color = Color(0, 1, 1),
-			title = "-Dmg",
+			title = "wolfhud_hudlist_buff_dmg_dec",
+			localized = true,
 			ignore = false,
 		},
 		melee_damage_increase = {
@@ -3564,7 +3574,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "MeleeDamageIncreaseBuff",
 			priority = 2,
 			color = Color(1, 0, 1),
-			title = "+M.Dmg",
+			title = "wolfhud_hudlist_buff_mdmg_inc",
+			localized = true,
 			ignore = false,
 		},
 		
@@ -3690,7 +3701,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		
 		self._title = self._panel:text({
 			name = "title",
-			text = icon.title or "",
+			text = icon.localized and managers.localization:text(icon.title) or icon.title or "",
 			align = "center",
 			vertical = "top",
 			w = self._panel:w(),

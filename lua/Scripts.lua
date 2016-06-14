@@ -25,63 +25,25 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		return set_teammate_ammo_amount_orig(self, id, selection_index, max_clip, current_clip, current_left, max)
 	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata" then
-	if WolfHUD:getSetting("no_slowmotion", "boolean") then
-		function TimeSpeedEffectTweakData:_init_base_effects()
-			self.mask_on = {
-				speed = 1,
-				fade_in_delay = 0,
-				fade_in = 0,
-				sustain = 0,
-				fade_out = 0,
-				timer = "pausable"
-			}
-			self.mask_on_player = {
-				speed = 1,
-				fade_in_delay = 0,
-				fade_in = 0,
-				sustain = 0,
-				fade_out = 0,
-				timer = "pausable",
-				affect_timer = "player"
-			}
-			self.downed = {
-				speed = 1,
-				fade_in = 0,
-				sustain = 0,
-				fade_out = 0,
-				timer = "pausable"
-			}
-			self.downed_player = {
-				speed = 1,
-				fade_in = 0,
-				sustain = 0,
-				fade_out = 0,
-				timer = "pausable",
-				affect_timer = "player"
-			}
-		end
-
-		function TimeSpeedEffectTweakData:_init_mission_effects()
-			self.mission_effects = {}
-			self.mission_effects.quickdraw = {
-				speed = 1,
-				fade_in_delay = 0,
-				fade_in = 0,
-				sustain = 0,
-				fade_out = 0,
-				timer = "pausable",
-				sync = true
-			}
-			self.mission_effects.quickdraw_player = {
-				speed = 1,
-				fade_in_delay = 0,
-				fade_in = 0,
-				sustain = 0,
-				fade_out = 0,
-				timer = "pausable",
-				affect_timer = "player",
-				sync = true
-			}
+	local init_original = TimeSpeedEffectTweakData.init
+	function TimeSpeedEffectTweakData:init()
+		init_original(self)
+		if WolfHUD:getSetting("no_slowmotion", "boolean") then
+			local function disable_effect(table)
+				for name, data in pairs(table) do
+					if data.speed and data.sustain then
+						data.speed = 1
+						data.fade_in_delay = 0
+						data.fade_in = 0
+						data.sustain = 0
+						data.fade_out = 0
+					elseif type(data) == "table" then
+						disable_effect(data)
+					end
+				end
+			end
+			
+			disable_effect(self)
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/experiencemanager" then

@@ -25,6 +25,14 @@
 	"wolfhud_hudlist_loot_evidence" : "Evidence",
 	"wolfhud_hudlist_loot_toast" : "Toast",
 	
+	"wolfhud_hudlist_buff_basic" : "Basic",
+	"wolfhud_hudlist_buff_aced" : "Aced",
+	"wolfhud_hudlist_buff_boost" : "Boost",
+	"wolfhud_hudlist_buff_revive" : "Revive",
+	"wolfhud_hudlist_buff_dmg_inc" : "+Dmg",
+	"wolfhud_hudlist_buff_dmg_dec" : "-Dmg",
+	"wolfhud_hudlist_buff_mdmg_inc" : "+M.Dmg",
+	
 	"wolfhud_tabstats_total_damage" : "Total Damage:",
 	"wolfhud_tabstats_tanks_killed" : "Bulldozers killed:",
 	"wolfhud_tabstats_cloakers_killed" : "Cloakers killed:",
@@ -48,7 +56,7 @@
 	"wolfhud_enemy_fbi" : "FBI Unit",
 	"wolfhud_enemy_swat" : "SWAT Unit",
 	"wolfhud_enemy_heavy_swat" : "Heavy SWAT",
-	"wolfhud_enemy_city_swat" : "City SWAT / MURKYWATER",
+	"wolfhud_enemy_city_swat" : "Elite Unit",
 	"wolfhud_enemy_shield" : "Shield",
 	"wolfhud_enemy_spook" : "Cloaker",
 	"wolfhud_enemy_taser" : "Taser",
