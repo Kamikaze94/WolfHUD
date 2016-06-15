@@ -1516,8 +1516,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			align = "center",
 			vertical = "center",
 			layer = 2,
-			w = size * 0.37,
-			h = size * 0.37,
+			w = size * 0.45,
+			h = size * 0.45,
 			layer = self._stored_health_radial:layer() + 1,
 		})
 		self._stamina_radial:set_center(size / 2, size / 2)
@@ -3064,7 +3064,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if self:visible() then
 			self._panel:stop()
 			self._text:set_color(success and Color.green or Color.red)
-			self._text:set_text(success and "DONE" or "ABORTED")
+			self._text:set_text(managers.localization:to_upper_text(success and "wolfhud_customhud_interaction_done" or "wolfhud_customhud_interaction_aborted"))
 			--self._interaction:set_enabled("active", false)
 			--self:arrange()
 		end

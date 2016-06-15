@@ -18,6 +18,9 @@
 	"wolfhud_advassault_time_overdue" : "ÜBERFÄLLIG",
 	"wolfhud_locked_assault" : "Endloser Polizei Ansturm!!!   Verschwinde so schnell wie möglich!!!",
 	
+	"wolfhud_customhud_interaction_done" : "ABSCHLUSS",
+	"wolfhud_customhud_interaction_aborted" : "ABBRUCH",
+	
 	"wolfhud_hudlist_device_timer" : "Timer",
 	"wolfhud_hudlist_device_drill" : "Bohrer",
 	"wolfhud_hudlist_device_hack" : "Hack",
