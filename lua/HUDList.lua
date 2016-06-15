@@ -768,8 +768,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			if data.active then
 				equipment_list:register_item(key, HUDList.SentryEquipmentItem, data):activate()
 			else
-				equipment_list:unregister_item(key)
+				--equipment_list:unregister_item(key)
 			end
+		elseif event == "destroy" then
+			equipment_list:unregister_item(key)
 		else
 			local item = equipment_list:item(key)
 			
@@ -1157,7 +1159,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDListManager:_set_show_sentries()
 		local listener_id = "HUDListManager_sentry_listener"
-		local events = { "set_active", "set_owner", "set_ammo_ratio", "set_health_ratio" }
+		local events = { "set_active", "set_owner", "set_ammo_ratio", "set_health_ratio", "destroy" }
 		local spawned_items = managers.gameinfo:get_sentries()
 		
 		if HUDListManager.ListOptions.show_sentries then
@@ -2760,21 +2762,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		})
 		self._icon:set_center(self._panel:center())
 		self._icon:set_top(self._panel:top())
-		
-		self._info_text = self._panel:text({
-			name = "info",
-			text = "",
-			align = "center",
-			vertical = "bottom",
-			w = self._panel:w(),
-			h = self._panel:h() * 0.4,
-			color = Color.white,
-			layer = 1,
-			font = tweak_data.hud_corner.assault_font,
-			font_size = self._panel:h() * 0.4,
-		})
-		self._info_text:set_bottom(self._panel:bottom())
-		
 		self:set_owner(owner)
 	end
 	
@@ -2800,6 +2787,20 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDList.BagEquipmentItem = HUDList.BagEquipmentItem or class(HUDList.EquipmentItem)
 	function HUDList.BagEquipmentItem:init(parent, name, data)
 		HUDList.EquipmentItem.init(self, parent, name, data.type, data.unit, data.owner)
+	
+		self._info_text = self._panel:text({
+			name = "info",
+			text = "",
+			align = "center",
+			vertical = "bottom",
+			w = self._panel:w(),
+			h = self._panel:h() * 0.4,
+			color = Color.white,
+			layer = 1,
+			font = tweak_data.hud_corner.assault_font,
+			font_size = self._panel:h() * 0.4,
+		})
+		self._info_text:set_bottom(self._panel:h())		
 		
 		self._amount_format = "%.0f" .. (data.type == "ammo_bag" and "%%" or "")
 		self._amount_offset = 0
@@ -2839,20 +2840,101 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDList.SentryEquipmentItem = HUDList.SentryEquipmentItem or class(HUDList.EquipmentItem)
 	function HUDList.SentryEquipmentItem:init(parent, name, data)
 		HUDList.EquipmentItem.init(self, parent, name, "sentry", data.unit)
+		--[[
+		self._bar_bg = self._panel:rect({
+			name = "bar_bg",
+			x = self._panel:w() * 0.1,
+			w = self._panel:w() * 0.8,
+			h = self._panel:h() * 0.3,
+			color = Color.black,
+			alpha = 0.5,
+			layer = 0,
+		})
+		self._bar_bg:set_bottom(self._panel:h() * 0.9)
+		
+		self._health_bar = self._panel:rect({
+			name = "health_bar",
+			x = self._bar_bg:x(),
+			y = self._bar_bg:y(),
+			h = self._bar_bg:h() * 0.5,
+			color = Color(0.7, 0.0, 0.0),
+			layer = 1,
+		})
+		
+		self._ammo_bar = self._panel:rect({
+			name = "ammo_bar",
+			x = self._bar_bg:x(),
+			y = self._bar_bg:y() + self._bar_bg:h() * 0.5,
+			h = self._bar_bg:h() * 0.5,
+			color = Color(0.0, 0.7, 0.0),
+			layer = 1,
+		})
+		]]
+		self._info_text = self._panel:text({
+			name = "info",
+			text = "",
+			align = "center",
+			vertical = "bottom",
+			w = self._panel:w(),
+			h = self._panel:h() * 0.4,
+			color = Color.white,
+			layer = 1,
+			font = tweak_data.hud_corner.assault_font,
+			font_size = self._panel:h() * 0.4,
+		})
+		self._info_text:set_bottom(self._panel:bottom())
+		
 		self:set_owner(data.owner)
 		self:set_ammo_ratio(data.ammo_ratio)
 		self:set_health_ratio(data.health_ratio)
 	end
 	
+	
 	function HUDList.SentryEquipmentItem:set_ammo_ratio(ratio)
 		self._ammo_ratio = ratio or 0
 		self._info_text:set_text(string.format("%.0f%%", self._ammo_ratio * 100))
+		self:_update_animate()
 	end
 	
 	function HUDList.SentryEquipmentItem:set_health_ratio(ratio)
 		self._health_ratio = ratio or 0
 		self._info_text:set_color(self:_get_color_from_table(self._health_ratio, 1))
+		self:_update_animate()
 	end
+	
+	function HUDList.SentryEquipmentItem:_update_animate()
+		if self._health_ratio and self._ammo_ratio then
+			local dead = self._health_ratio <= 0
+			local empty = self._ammo_ratio <= 0
+				
+			if not self._animating then
+				if dead or empty then
+					self._animating = true
+					self._icon:animate(callback(self, self, "_flash_icon"), Color.red)
+				end
+			else
+				if not (dead or empty) then
+					self._animating = nil
+					self._icon:stop()
+					self:_set_color()
+				end
+			end
+		end
+	end
+	
+	function HUDList.SentryEquipmentItem:_flash_icon(icon, flash_color)
+		local base_color = self._icon:color()
+		local t = 0
+		
+		while true do
+			local s = math.sin(t*720) * 0.5 + 0.5
+			local r = math.lerp(base_color.r, flash_color.r, s)
+			local g = math.lerp(base_color.g, flash_color.g, s)
+			local b = math.lerp(base_color.b, flash_color.b, s)
+			self._icon:set_color(Color(r, g, b))
+			t = t + coroutine.yield()
+		end
+ 	end
 	
 	
 	HUDList.MinionItem = HUDList.MinionItem or class(HUDList.ItemBase)

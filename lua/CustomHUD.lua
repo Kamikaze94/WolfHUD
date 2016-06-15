@@ -1,6 +1,7 @@
 --TODO: Setting update for interaction, but probably not necessary as they are temporary anyway
 --TODO: Clean up interaction activation/deactivation animation, probably a lot of unnecessary rearranges going on
---TODO: Add back the interaction progress bar bitmap
+--TODO: Add rescale to Weapon, AllWeapon, Equipment and Special Equipment
+--TODO: Fix Rescale of Kill and Accuracy Counter
 
 
 printf = printf or function(...) WolfHUD:print_log(string.format(...)) end
@@ -317,11 +318,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		self._panel:set_alpha(self._settings.OPACITY)
 		if self._scale ~= self._settings.SCALE then
-			self._scale = self._settings.SCALE
-			
+			local scale_factor = self._settings.SCALE / self._scale
 			for i, component in ipairs(self._all_components) do
-				--component:rescale(self._scale)	--TODO: Implement rescale function for components
+				component:rescale(scale_factor)	--TODO: Implement rescale function for components
 			end
+			self._scale = self._settings.SCALE
 		end
 		
 		self:_rebuild_layout()
@@ -791,6 +792,14 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	end
 	
+	function PlayerInfoComponent.Base:rescale(factor)
+		if factor and factor ~= 1 then
+			self._panel:set_w(self._panel:w() * factor)
+			self._panel:set_h(self._panel:h() * factor)
+			return true
+		end
+	end
+	
 	function PlayerInfoComponent.Base:set_is_ai(state)	--Override for classes that change behavior for AI/non-AI
 		local state = state and true or false
 		
@@ -934,6 +943,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:_update_component_visibility()
 	end
 	
+	function PlayerInfoComponent.PlayerInfo:rescale(factor)
+		if PlayerInfoComponent.PlayerInfo.super.rescale(self, factor) then
+			for name, component in pairs(self._components) do
+				component:set_h(component:h() * factor)
+				component:set_font_size(component:font_size() * factor)
+			end
+		end
+	end
+	
 	function PlayerInfoComponent.PlayerInfo:set_is_ai(state)
 		if PlayerInfoComponent.PlayerInfo.super.set_is_ai(self, state) then
 			self:_update_component_visibility()
@@ -1030,6 +1048,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 	
+	function PlayerInfoComponent.Latency:rescale(factor)
+		if PlayerInfoComponent.Latency.super.rescale(self, factor) then
+			self._text:set_h(self._text:h() * factor)
+			self._text:set_font_size(self._text:font_size() * factor)
+		end
+	end
+	
 	function PlayerInfoComponent.Latency:set_is_ai(state)
 		if PlayerInfoComponent.Latency.super.set_is_ai(self, state) and self:set_enabled("ai", not self._is_ai) then
 			self._owner:arrange()
@@ -1088,6 +1113,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			self._owner:arrange()
 		end
 		self._duration = self._settings.BUILD.DURATION
+	end
+	
+	function PlayerInfoComponent.Build:rescale(factor)
+		if PlayerInfoComponent.Build.super.rescale(self, factore) then
+			self._specialization:set_h(self._specialization:h() * factor)
+			self._skills:set_h(self._skills:h() * factor)
+			self._specialization:set_font_size(self._specialization:font_size() * factor)
+			self._skills:set_font_size(self._skills:font_size() * factor)
+		end
 	end
 	
 	function PlayerInfoComponent.Build:set_is_ai(state)
@@ -1219,6 +1253,17 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 	
+	function PlayerInfoComponent.KillCounter:rescale(factor)
+		if PlayerInfoComponent.KillCounter.super.rescale(self, factor) then
+			self._icon:set_w(self._icon:w() * factor)
+			self._icon:set_h(self._icon:h() * factor)
+			self._text:set_h(self._text:h() * factor)
+			self._text:set_font_size(self._text:font_size() * factor)
+			self._text:set_left(self._icon:right() + 1)
+			self._owner:arrange()
+		end
+	end
+	
 	function PlayerInfoComponent.KillCounter:set_is_ai(state)
 		if PlayerInfoComponent.KillCounter.super.set_is_ai(self, state) and self:set_enabled("ai", self._settings.KILL_COUNTER.SHOW_BOT_KILLS or not self._is_ai) then
 			self._owner:arrange()
@@ -1313,6 +1358,17 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 	
+	function PlayerInfoComponent.AccuracyCounter:rescale(factor)
+		if PlayerInfoComponent.AccuracyCounter.super.rescale(self, factor) then
+			self._icon:set_w(self._icon:w() * factor)
+			self._icon:set_h(self._icon:h() * factor)
+			self._text:set_h(self._text:h() * factor)
+			self._text:set_font_size(self._text:font_size() * factor)
+			self._text:set_left(self._icon:right() + 1)
+			self._owner:arrange()
+		end
+	end
+	
 	function PlayerInfoComponent.AccuracyCounter:set_is_local_player(state)
 		if PlayerInfoComponent.AccuracyCounter.super.set_is_local_player(self, state) and self:set_enabled("player", self._is_local_player) then
 			self._owner:arrange()
@@ -1388,6 +1444,20 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function PlayerInfoComponent.Callsign:update_settings()
 		if self:set_enabled("setting", self._settings.CALLSIGN) then
 			self._owner:arrange()
+		end
+	end
+	
+	function PlayerInfoComponent.Callsign:rescale(factor)
+		if PlayerInfoComponent.Callsign.super.rescale(self, factor) then
+			self._icon:set_w(self._icon:w() * factor)
+			self._icon:set_h(self._icon:h() * factor)
+			self._voice_com:set_w(self._voice_com:w() * factor)
+			self._voice_com:set_h(self._voice_com:h() * factor)
+			self._condition_icon:set_w(self._condition_icon:w() * factor)
+			self._condition_icon:set_h(self._condition_icon:h() * factor)
+			self._icon:set_center(self._panel:w() / 2, self._panel:h() / 2)
+			self._voice_com:set_center(self._panel:w() / 2, self._panel:h() / 2)
+			self._condition_icon:set_center(self._panel:w() / 2, self._panel:h() / 2)
 		end
 	end
 	
@@ -1564,7 +1634,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		self._detection_counter:set_center(size / 2, size / 2)
 		
-		self._panel:bitmap({
+		local center_bg = self._panel:bitmap({
 			name = "center_bg",  
 			texture = "guis/textures/pd2/crimenet_marker_glow",  
 			texture_rect = { 0, 0, 64, 64 }, 
@@ -1627,6 +1697,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._maniac_absorb_radial:set_center(size / 2, size / 2)
 		
 		--self._maniac_stack_radial = ...
+		self._components = {health_bg, self._health_radial, self._stored_health_radial, self._armor_radial, --[[self._stamina_radial,]] self._damage_indicator, self._downs_counter, self._detection_counter, center_bg, self._condition_icon, self._custom_radial_icon, self._maniac_absorb_radial}
 		
 		local tweak = tweak_data.upgrades
 		self._max_absorb = tweak.cocaine_stacks_dmg_absorption_value * tweak.values.player.cocaine_stack_absorption_multiplier[1] * tweak.max_total_cocaine_stacks  / tweak.cocaine_stacks_convert_levels[2]
@@ -1679,6 +1750,19 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function PlayerInfoComponent.PlayerStatus:update_settings()
 		if self:set_enabled("setting", self._settings.STATUS) then
 			self._owner:arrange()
+		end
+	end
+	
+	function PlayerInfoComponent.PlayerStatus:rescale(factor)
+		if PlayerInfoComponent.PlayerStatus.super.rescale(self, factor) then
+			for id, component in pairs(self._components) do
+				component:set_w(component:w() * factor)
+				component:set_h(component:h() * factor)
+				component:set_center(self._health_radial:w() / 2, self._health_radial:h() / 2)
+			end
+			self._downs_counter:set_font_size(self._downs_counter:font_size() * factor)
+			self._detection_counter:set_font_size(self._detection_counter:font_size() * factor)
+			self._condition_timer:set_font_size(self._condition_timer:font_size() * factor)
 		end
 	end
 	

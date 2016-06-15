@@ -14,7 +14,7 @@
 			"callback" : "clbk_change_customhud_setting",
 			"value" : "PLAYER_SCALE",
 			"default_value" : 1,
-			"min" : 0,
+			"min" : 0.01,
 			"max" : 2,
 			"step" : 0.01,
 		},
