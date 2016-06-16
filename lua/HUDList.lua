@@ -4049,20 +4049,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self:_set_text(tostring(data.value))
 		end
 	end
-	
-	HUDList.BikerBuffItem = HUDList.BikerBuffItem or class(HUDList.TimedStacksBuffItem)
-
-	function HUDList.BikerBuffItem:_set_stack_count(count)
-		local charges = tweak_data.upgrades.wild_max_triggers_per_time - count
-		if charges <= 0 then
-			self:activate_debuff()
-		else
-			self:deactivate_debuff()
-		end
 		
-		HUDList.BikerBuffItem.super._set_stack_count(self, charges)
-	end
-	
 	HUDList.TimedStacksBuffItem = HUDList.TimedStacksBuffItem or class(HUDList.BuffItemBase)
 	function HUDList.TimedStacksBuffItem:init(...)
 		HUDList.TimedStacksBuffItem.super.init(self, ...)
@@ -4105,6 +4092,18 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._progress_bar_inner:panel():set_visible(#self._stacks > 1)
 	end
 	
+	HUDList.BikerBuffItem = HUDList.BikerBuffItem or class(HUDList.TimedStacksBuffItem)
+
+	function HUDList.BikerBuffItem:_set_stack_count(count)
+		local charges = tweak_data.upgrades.wild_max_triggers_per_time - count
+		if charges <= 0 then
+			self:activate_debuff()
+		else
+			self:deactivate_debuff()
+		end
+		
+		HUDList.BikerBuffItem.super._set_stack_count(self, charges)
+	end
 	
 	HUDList.TeamBuffItem = HUDList.TeamBuffItem or class(HUDList.BuffItemBase)
 	function HUDList.TeamBuffItem:init(...)

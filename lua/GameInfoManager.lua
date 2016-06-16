@@ -1,3 +1,4 @@
+--TODO: Weapon Cases not recognized, when in opened crate
 
 printf = function(...) 
 	WolfHUD:print_log(string.format(...))
