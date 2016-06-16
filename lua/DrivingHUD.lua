@@ -43,8 +43,15 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			["passenger_back_right"] = { offset_x = -45, offset_y = -55, binding = "right bottom", seat = true},
 			texture_rect = { 1024, 512, 512, 512},
 			texture = "guis/textures/contact_vlad"
+		},
+		["Bike"] = {
+			["driver"] = { offset_x = "center_x", offset_y = 105, binding = "top", seat = true},
+			texture_rect = { 1536, 512, 512, 512},
+			texture = "guis/textures/contact_vlad"
 		}
 	}
+	
+	main_table["Rust's bike"] = deep_clone(main_table["Bike"])
 
 	function HUDDriving:init(hud)
 		if not hud then

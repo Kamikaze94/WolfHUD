@@ -136,8 +136,8 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 	if not _NewRaycastWeaponBase_on_equip then _NewRaycastWeaponBase_on_equip = NewRaycastWeaponBase.on_equip end
 	if not _NewRaycastWeaponBase_toggle_gadget then _NewRaycastWeaponBase_toggle_gadget = NewRaycastWeaponBase.toggle_gadget end
 	
-	function NewRaycastWeaponBase:on_equip()
-		_NewRaycastWeaponBase_on_equip(self)
+	function NewRaycastWeaponBase:on_equip(...)
+		_NewRaycastWeaponBase_on_equip(self, ...)
 		if self._has_gadget then
 			self:_setup_laser()
 			if alive(self._second_gun) then
@@ -147,8 +147,8 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 		self:set_gadget_on(self._stored_gadget_on or (self._has_laser and 1 or 0), false)
 	end
 
-	function NewRaycastWeaponBase:toggle_gadget()
-		if _NewRaycastWeaponBase_toggle_gadget(self) then
+	function NewRaycastWeaponBase:toggle_gadget(...)
+		if _NewRaycastWeaponBase_toggle_gadget(self, ...) then
 			self._stored_gadget_on = (WolfHUD:getSetting("laser_remember_state", "boolean")) and self._gadget_on
 			return true
 		end

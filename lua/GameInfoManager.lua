@@ -288,6 +288,11 @@ if RequiredScript == "lib/setups/gamesetup" then
 			[151598] = "ggc_armory_grenade",
 			[151611] = "ggc_armory_ammo",
 			[151612] = "ggc_armory_ammo",
+			[101472] = "tbh_armory_ammo",
+			[101473] = "tbh_armory_ammo",
+			[101226] = "tbh_armory_grenade",
+			[101469] = "tbh_armory_grenade",
+			[100776] = "tbh_armory_grenade",
 		},
 	}
 	
@@ -830,7 +835,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 			end
 			
 			local aggregate_key = GameInfoManager._EQUIPMENT.AGGREAGATE_ITEMS[self._deployables[key].unit:editor_id()]
-			
+			--log(self._deployables[key].type .. " | " .. self._deployables[key].unit:editor_id())
 			if event == "destroy" then
 				self:_listener_callback("bag_deployable", "destroy", key, self._deployables[key])
 				self._deployables[key] = nil
@@ -1009,7 +1014,11 @@ if RequiredScript == "lib/setups/gamesetup" then
 			local expire_t = data.expire_t or data.duration and (data.duration + t) or t
 			local key = string.format("%s_%f_%f", id, t, math.random())
 			
-			table.insert(self._buffs[id].stacks, { key = key, t = t, expire_t = expire_t })
+			local i = #self._buffs[id].stacks
+			while self._buffs[id].stacks[i] and self._buffs[id].stacks[i].expire_t > expire_t do
+				i = i - 1
+			end
+			table.insert(self._buffs[id].stacks, i + 1, { key = key, t = t, expire_t = expire_t })
 			self:_add_player_timer_expiration(key, id, expire_t, self._timed_stack_expire_clbk)
 			
 			self:_listener_callback("buff", "add_timed_stack", id, self._buffs[id])
@@ -2179,6 +2188,7 @@ if RequiredScript == "lib/managers/playermanager" then
 	local set_property_original = PlayerManager.set_property
 	local remove_property_original = PlayerManager.remove_property
 	local add_to_temporary_property_original = PlayerManager.add_to_temporary_property
+	local chk_wild_kill_counter_original = PlayerManager.chk_wild_kill_counter
 	local _set_body_bags_amount_original = PlayerManager._set_body_bags_amount
 	
 	local PLAYER_HAS_SPAWNED = false
@@ -2438,6 +2448,49 @@ if RequiredScript == "lib/managers/playermanager" then
 		if name == "bullet_storm" then
 			local t = self._temporary_properties._properties[name][2]
 			managers.gameinfo:event("timed_buff", "activate", name, { expire_t = t })
+		end
+	end
+	
+	function PlayerManager:chk_wild_kill_counter(...)
+		local t = Application:time()
+		local player = self:player_unit()
+		local expire_t
+		
+		if alive(player) and (managers.player:has_category_upgrade("player", "wild_health_amount") or managers.player:has_category_upgrade("player", "wild_armor_amount")) then
+			local dmg = player:character_damage()
+			local missing_health_ratio = math.clamp(1 - dmg:health_ratio(), 0, 1)
+			local missing_armor_ratio = math.clamp(1 - dmg:armor_ratio(), 0, 1)
+			local less_armor_wild_cooldown = managers.player:upgrade_value("player", "less_armor_wild_cooldown", 0)
+			local less_health_wild_cooldown = managers.player:upgrade_value("player", "less_health_wild_cooldown", 0)
+			local trigger_cooldown = tweak_data.upgrades.wild_trigger_time or 30
+
+			if less_health_wild_cooldown ~= 0 and less_health_wild_cooldown[1] ~= 0 then
+				local missing_health_stacks = math.floor(missing_health_ratio / less_health_wild_cooldown[1])
+				trigger_cooldown = trigger_cooldown - less_health_wild_cooldown[2] * missing_health_stacks
+			end
+			if less_armor_wild_cooldown ~= 0 and less_armor_wild_cooldown[1] ~= 0 then
+				local missing_armor_stacks = math.floor(missing_armor_ratio / less_armor_wild_cooldown[1])
+				trigger_cooldown = trigger_cooldown - less_armor_wild_cooldown[2] * missing_armor_stacks
+			end
+			
+			expire_t = t + math.max(trigger_cooldown, 0)
+		end
+		
+		local old_stacks = 0
+		if self._wild_kill_triggers then
+			old_stacks = #self._wild_kill_triggers
+			for i = 1, #self._wild_kill_triggers, 1 do
+				if self._wild_kill_triggers[i] > t then
+					break
+				end
+				old_stacks = old_stacks - 1
+			end
+		end
+		
+		chk_wild_kill_counter_original(self, ...)
+		
+		if self._wild_kill_triggers and #self._wild_kill_triggers > old_stacks then
+			managers.gameinfo:event("timed_stack_buff", "add_stack", "biker", { t = t, expire_t = expire_t })
 		end
 	end
 	

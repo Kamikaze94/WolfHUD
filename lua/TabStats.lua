@@ -63,6 +63,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		sydney = {
 			texture = "guis/dlcs/opera/textures/pd2/blackmarket/icons/characters/sydney",
 			color = Color(1, 0.80, 0.25, 0.35)
+		},
+		wild = {
+			texture = "guis/dlcs/wild/textures/pd2/blackmarket/icons/characters/wild",
+			color = Color(1, 0.80, 0.25, 0.35)
 		}
 	}
 	
@@ -651,6 +655,7 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 						- self:session_total_specials_kills()
 						- self:session_enemy_killed_by_type("sniper", type)
 						- self:session_enemy_killed_by_type("mobster_boss", type)
+						- self:session_enemy_killed_by_type("biker_boss", type)
 						- self:session_enemy_killed_by_type("hector_boss", type)
 						- self:session_enemy_killed_by_type("hector_boss_no_armor", type)
 		end
@@ -677,6 +682,7 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 						- self:total_specials_kills()
 						- self:enemy_killed_by_type("sniper", type)
 						- self:enemy_killed_by_type("mobster_boss", type)
+						- self:enemy_killed_by_type("biker_boss", type)
 						- self:enemy_killed_by_type("hector_boss", type)
 						- self:enemy_killed_by_type("hector_boss_no_armor", type)
 		end

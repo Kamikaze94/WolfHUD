@@ -25,8 +25,7 @@ if RequiredScript == "lib/units/weapons/sentrygunweapon" then
 		if enable_ap then
 			self:_switch_fire_mode()
 			managers.network:session():send_to_peers_synched("sentrygun_sync_state", self._unit)
-			local add_contour = self._use_armor_piercing and self._unit:base():ap_contour_id() or self._unit:base():standard_contour_id()
-			self._unit:base():set_contour(add_contour)
+			self._unit:event_listener():call("on_switch_fire_mode", self._use_armor_piercing)
 		end
 	end
 end

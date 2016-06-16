@@ -7,6 +7,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "biker_escape" ] 				= "wolfhud_enemy_biker",
 		[ "mobster" ] 					= "wolfhud_enemy_mobster",
 		[ "security" ] 					= "wolfhud_enemy_security",
+		[ "security_undominatable" ] 	= "wolfhud_enemy_security",
 		[ "gensec" ] 					= "wolfhud_enemy_gensec",
 		[ "cop" ] 						= "wolfhud_enemy_cop",
 		[ "cop_scared" ]				= "wolfhud_enemy_cop",
@@ -28,6 +29,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "ceiling_turret_module" ] 	= "wolfhud_enemy_ceiling_turret",
 		[ "sentry_gun" ]				= "wolfhud_enemy_sentry_gun",
 		[ "mobster_boss" ] 				= "wolfhud_enemy_mobster_boss",
+		[ "biker_boss" ] 				= "wolfhud_enemy_biker_boss",
 		[ "bank_manager" ] 				= "wolfhud_enemy_bank_manager",
 		[ "inside_man" ] 				= "wolfhud_enemy_inside_man",
 		[ "escort_undercover" ] 		= "wolfhud_enemy_escort_undercover",
@@ -51,7 +53,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "dragon" ] 					= "menu_dragon",
 		[ "bodhi" ] 					= "menu_bodhi",
 		[ "jimmy" ] 					= "menu_jimmy",
-		[ "sydney" ] 					= "menu_sydney"
+		[ "sydney" ] 					= "menu_sydney",
+		[ "wild" ]						= "menu_wild",
 	}
 
 	Hooks:PostHook( HUDManager , "_player_hud_layout" , "WolfHUDPostHUDManagerPlayerInfoHUDLayout" , function( self )

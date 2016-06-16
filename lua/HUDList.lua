@@ -114,6 +114,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		fbi_heavy_swat = 			{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_heavy_swat" },
 		city_swat = 				{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_city_swat" },
 		security = 					{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" },
+		security_undominatable = 	{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" },
 		gensec = 					{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_gensec" },
 		gangster = 					{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_gangster" },
 		mobster = 					{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_mobster" },
@@ -126,6 +127,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		shield = 					{ type_id = "shield",		category = "enemies",	long_name = "wolfhud_enemy_shield" },
 		sniper = 					{ type_id = "sniper",		category = "enemies",	long_name = "wolfhud_enemy_sniper" },
 		mobster_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_mobster_boss" },
+		biker_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_biker_boss" },
 		hector_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_hector_boss" },
 		hector_boss_no_armor = 		{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_hector_boss_no_armor" },
 		phalanx_vip = 				{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_phalanx_vip" },
@@ -175,15 +177,18 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDListManager.LOOT_TYPES = {
 		ammo =						"shell",
 		artifact_statue =			"artifact",
+		bike_part_light = 			"bike",
+		bike_part_heavy = 			"bike",
 		circuit =					"server",
 		coke =						"coke",
 		coke_pure =					"coke",
-		counterfeit_money =		"money",
+		counterfeit_money =			"money",
 		cro_loot1 =					"bomb",
 		cro_loot2 =					"bomb",
 		diamonds =					"jewelry",
 		din_pig =					"pig",
-		drk_bomb_part =			"bomb",
+		drk_bomb_part =				"bomb",
+		drone_control_helmet =		"drone_control",
 		evidence_bag =				"evidence",
 		goat = 						"goat",
 		gold =						"gold",
@@ -194,14 +199,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		mad_master_server_value_3 =	"server",
 		mad_master_server_value_4 =	"server",
 		master_server = 			"server",
-		masterpiece_painting =	"painting",
+		masterpiece_painting =		"painting",
 		meth =						"meth",
 		meth_half =					"meth",
 		money =						"money",
 		mus_artifact =				"artifact",
 		mus_artifact_paint =		"painting",
 		painting =					"painting",
-		person =						"body",
+		person =					"body",
 		present = 					"present",
 		prototype = 				"prototype",
 		safe_ovk =					"safe",
@@ -209,10 +214,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		samurai_suit =				"armor",
 		sandwich =					"toast",
 		special_person =			"body",
-		turret =						"turret",
+		turret =					"turret",
 		unknown =					"dentist",
 		warhead =					"warhead",
-		weapon =						"weapon",
+		weapon =					"weapon",
 		weapon_glock =				"weapon",
 		weapon_scar =				"weapon",
 	}
@@ -2449,11 +2454,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		aggregate =		{ text = "", no_localize = true },	--Aggregated loot
 		armor =			{ text = "wolfhud_hudlist_loot_armor" }, 
 		artifact =		{ text = "hud_carry_artifact" },
+		bike = 			{ text = "hud_carry_bike_part" },
 		bomb =			{ text = "wolfhud_hudlist_loot_bomb" },	
-
 		coke =			{ text = "hud_carry_coke" },
 		dentist =		{ text = "???", no_localize = true },
 		diamond =		{ text = "wolfhud_hudlist_loot_diamond" },
+		drone_control = { text = "hud_carry_helmet" },
 		evidence =		{ text = "wolfhud_hudlist_loot_evidence" },
 		goat =			{ text = "hud_carry_goat" },
 		gold =			{ text = "hud_carry_gold" },
@@ -2470,7 +2476,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		toast =			{ text = "wolfhud_hudlist_loot_toast" },
 		turret =		{ text = "hud_carry_turret" },
 		warhead =		{ text = "hud_carry_warhead" },
-		weapon =		{ text = "hud_carry_weapon" },
+		weapon =		{ text = "wolfhud_hudlist_loot_weapon" },
 		body = 			{ text = "hud_carry_person" },
 	}
 	function HUDList.LootItem:init(parent, name, loot_data)
@@ -2485,7 +2491,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			
 			self._name_text = self._panel:text({
 				name = "text",
-				text = txt:sub(1, 8) or "",
+				text = txt:sub(1, 10) or "",
 				align = "center",
 				vertical = "center",
 				w = self._panel:w(),
@@ -3274,6 +3280,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = false,
 		},
+		biker = {
+			spec = {0, 0},
+			texture_bundle_folder = "wild",
+			class = "BikerBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
+		},
 		bloodthirst_aced = {
 			atlas_new = tweak_data.skilltree.skills.bloodthirst.icon_xy,
 			class = "TimedBuffItem",
@@ -3900,22 +3914,26 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.BuffItemBase:activate_debuff(id)
-		self._debuff_active = true
-		self._icon:set_color(HUDList.BuffItemBase.ICON_COLOR.DEBUFF)
-		self._ace_icon:set_color(HUDList.BuffItemBase.ICON_COLOR.DEBUFF)
-		HUDList.BuffItemBase.super.activate(self)
+		if not self._debuff_active then
+			self._debuff_active = true
+			self._icon:set_color(HUDList.BuffItemBase.ICON_COLOR.DEBUFF)
+			self._ace_icon:set_color(HUDList.BuffItemBase.ICON_COLOR.DEBUFF)
+			HUDList.BuffItemBase.super.activate(self)
+		end
 	end
 	
 	function HUDList.BuffItemBase:deactivate_debuff(id)
-		self._debuff_active = false
-		self._debuff_expire_t = nil
-		self._debuff_start_t = nil
-		self._progress_bar_debuff:panel():set_visible(false)
-		self._icon:set_color(self._default_icon_color)
-		self._ace_icon:set_color(self._default_icon_color)
-		if not self._buff_active then
-			HUDList.BuffItemBase.super.deactivate(self)
-		end
+		if self._debuff_active then
+			self._debuff_active = false
+			self._debuff_expire_t = nil
+			self._debuff_start_t = nil
+			self._progress_bar_debuff:panel():set_visible(false)
+			self._icon:set_color(self._default_icon_color)
+			self._ace_icon:set_color(self._default_icon_color)
+			if not self._buff_active then
+				HUDList.BuffItemBase.super.deactivate(self)
+			end
+ 		end
 	end
 	
 	function HUDList.BuffItemBase:set_duration(id, data)
@@ -4032,6 +4050,18 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
+	HUDList.BikerBuffItem = HUDList.BikerBuffItem or class(HUDList.TimedStacksBuffItem)
+
+	function HUDList.BikerBuffItem:_set_stack_count(count)
+		local charges = tweak_data.upgrades.wild_max_triggers_per_time - count
+		if charges <= 0 then
+			self:activate_debuff()
+		else
+			self:deactivate_debuff()
+		end
+		
+		HUDList.BikerBuffItem.super._set_stack_count(self, charges)
+	end
 	
 	HUDList.TimedStacksBuffItem = HUDList.TimedStacksBuffItem or class(HUDList.BuffItemBase)
 	function HUDList.TimedStacksBuffItem:init(...)
