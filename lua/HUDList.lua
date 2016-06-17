@@ -172,6 +172,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		diamond_pickup_pal = 				"small_loot",
 		ring_band = 						"small_loot",
 		safe_loot_pickup = 					"small_loot",
+		press_pick_up =						"secret_item",
 	}
 	
 	HUDListManager.LOOT_TYPES = {
@@ -188,7 +189,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		diamonds =					"jewelry",
 		din_pig =					"pig",
 		drk_bomb_part =				"bomb",
-		drone_control_helmet =		"drone_control",
+		drone_control_helmet =		"drone_ctrl",
 		evidence_bag =				"evidence",
 		goat = 						"goat",
 		gold =						"gold",
@@ -2443,6 +2444,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		meth_ingredients =			{ waypoints = { 192, 32, 32, 32 } },
 		blowtorch = 				{ hudpickups = { 96, 192, 32, 32 } },
 		thermite = 					{ hudpickups = { 64, 64, 32, 32 } },
+		secret_item =				{ waypoints = { 96, 64, 32, 32 } },
 	}
 	function HUDList.SpecialPickupItem:init(parent, name, pickup_data)
 		HUDList.SpecialPickupItem.super.init(self, parent, name, pickup_data or HUDList.SpecialPickupItem.MAP[name])
@@ -2459,7 +2461,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		coke =			{ text = "hud_carry_coke" },
 		dentist =		{ text = "???", no_localize = true },
 		diamond =		{ text = "wolfhud_hudlist_loot_diamond" },
-		drone_control = { text = "hud_carry_helmet" },
+		drone_ctrl = 	{ text = "hud_carry_helmet" },
 		evidence =		{ text = "wolfhud_hudlist_loot_evidence" },
 		goat =			{ text = "hud_carry_goat" },
 		gold =			{ text = "hud_carry_gold" },

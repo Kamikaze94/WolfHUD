@@ -1,4 +1,3 @@
---TODO: Weapon Cases not recognized, when in opened crate
 
 printf = function(...) 
 	WolfHUD:print_log(string.format(...))
@@ -155,6 +154,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 			diamond_pickup_pal = 				"_special_equipment_interaction_handler",
 			ring_band = 						"_special_equipment_interaction_handler",
 			safe_loot_pickup = 					"_special_equipment_interaction_handler",
+			press_pick_up =						"_special_equipment_interaction_handler",
 			firstaid_box =						"_deployable_interaction_handler",
 			ammo_bag =							"_deployable_interaction_handler",
 			doctor_bag =						"_deployable_interaction_handler",
@@ -163,9 +163,11 @@ if RequiredScript == "lib/setups/gamesetup" then
 		},
 		INTERACTION_TO_CARRY = {
 			weapon_case =				"weapon",
+			weapon_case_axis_z =		"weapon",
 			samurai_armor =				"samurai_suit",
 			gen_pku_warhead_box =		"warhead",
 			corpse_dispose =			"person",
+			hold_open_case =			"drone_control_helmet",	--May be reused in future heists for other loot
 		},
 		BAGGED_IDS = {
 			painting_carry_drop = true,
@@ -289,11 +291,11 @@ if RequiredScript == "lib/setups/gamesetup" then
 			[151598] = "ggc_armory_grenade",
 			[151611] = "ggc_armory_ammo",
 			[151612] = "ggc_armory_ammo",
-			[101472] = "tbh_armory_ammo",
-			[101473] = "tbh_armory_ammo",
-			[101226] = "tbh_armory_grenade",
-			[101469] = "tbh_armory_grenade",
-			[100776] = "tbh_armory_grenade",
+			[100776] = "biker_bunker_grenade",
+			[101226] = "biker_bunker_grenade",
+			[101469] = "biker_bunker_grenade",
+			[101472] = "biker_bunker_ammo",
+			[101473] = "biker_bunker_ammo",
 		},
 	}
 	
