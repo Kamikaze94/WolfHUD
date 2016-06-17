@@ -267,6 +267,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		inspire_revive_debuff = { "inspire_revive_debuff" },
 		life_drain_debuff = { "life_drain_debuff" },
 		lock_n_load = { "lock_n_load" },
+		maniac = { "maniac" },
 		medical_supplies_debuff = { "medical_supplies_debuff" },
 		melee_stack_damage = { "melee_stack_damage", "melee_damage_increase" },
 		messiah = { "messiah" },
@@ -3316,12 +3317,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = false,
 		},
-		sixth_sense = {
-			atlas_new = tweak_data.skilltree.skills.chameleon.icon_xy,
-			class = "TimedBuffItem",
-			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = false,
-		},
 		close_contact = {
 			spec = {5, 4},
 			class = "TimedBuffItem",
@@ -3386,6 +3381,20 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			invert_timers = true,
 			ignore = true,
 		},
+		inspire = {
+			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
+		},
+		lock_n_load = {
+			atlas_new = tweak_data.skilltree.skills.shock_and_awe.icon_xy,
+			class = "ShockAndAweBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = false,
+		},
 		melee_stack_damage = {
 			spec = {5, 4},
 			class = "TimedBuffItem",
@@ -3393,12 +3402,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = true,
 		},
-		inspire = {
-			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
-			class = "TimedBuffItem",
+		maniac = {
+			spec = {0, 0},
+			texture_bundle_folder = "coco",
+			class = "BuffItemBase",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = false,
+			ignore = true,
 		},
 		messiah = {
 			atlas_new = tweak_data.skilltree.skills.messiah.icon_xy,
@@ -3456,10 +3466,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
  			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = false,
  		},
-		lock_n_load = {
-			atlas_new = tweak_data.skilltree.skills.shock_and_awe.icon_xy,
-			class = "ShockAndAweBuffItem",
-			priority = 4,
+		sixth_sense = {
+			atlas_new = tweak_data.skilltree.skills.chameleon.icon_xy,
+			class = "TimedBuffItem",
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = false,
 		},
@@ -3589,6 +3598,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = false,
 		},
+		sociopath_debuff = {
+			spec = {3, 5},
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = false,
+		},
 		unseen_strike_debuff = {
 			atlas_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
 			class = "TimedBuffItem",
@@ -3603,13 +3619,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = true,	--Composite debuff
 		},
-		sociopath_debuff = {
-			spec = {3, 5},
-			class = "TimedBuffItem",
-			priority = 8,
-			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			ignore = false,
-		},
 		
 		--Team buffs
 		armorer = {
@@ -3620,7 +3629,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = false,
 		},
 		bulletproof = {						--TODO: Needs new icon (Faster Team armor recovery)
-			atlas_new = tweak_data.skilltree.skills.iron_man.icon_xy,
+			--atlas_new = tweak_data.skilltree.skills.iron_man.icon_xy,
+			spec = {6, 2},
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,

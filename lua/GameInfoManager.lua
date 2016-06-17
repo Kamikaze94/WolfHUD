@@ -2192,6 +2192,7 @@ if RequiredScript == "lib/managers/playermanager" then
 	local remove_property_original = PlayerManager.remove_property
 	local add_to_temporary_property_original = PlayerManager.add_to_temporary_property
 	local chk_wild_kill_counter_original = PlayerManager.chk_wild_kill_counter
+	local set_synced_cocaine_stacks_original = PlayerManager.set_synced_cocaine_stacks
 	local _set_body_bags_amount_original = PlayerManager._set_body_bags_amount
 	
 	local PLAYER_HAS_SPAWNED = false
@@ -2494,6 +2495,25 @@ if RequiredScript == "lib/managers/playermanager" then
 		
 		if self._wild_kill_triggers and #self._wild_kill_triggers > old_stacks then
 			managers.gameinfo:event("timed_stack_buff", "add_stack", "biker", { t = t, expire_t = expire_t })
+		end
+	end
+	
+	function PlayerManager:set_synced_cocaine_stacks(...)
+		set_synced_cocaine_stacks_original(self, ...)
+		
+		local max_stack = 0
+		for peer_id, data in pairs(self._global.synced_cocaine_stacks) do
+			if data.in_use and data.amount > max_stack then
+				max_stack = data.amount
+			end
+		end
+		
+		local ratio = max_stack / tweak_data.upgrades.max_total_cocaine_stacks
+		if ratio > 0 then
+			managers.gameinfo:event("buff", "activate", "maniac")
+			managers.gameinfo:event("buff", "set_value", "maniac", { value = string.format("%.0f%%", ratio*100), show_value = true } )
+		else
+			managers.gameinfo:event("buff", "deactivate", "maniac")
 		end
 	end
 	
