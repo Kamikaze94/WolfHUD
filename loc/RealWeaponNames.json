@@ -29,6 +29,7 @@
 	"bm_w_benelli" 				: "Benelli M4 Super 90",
 	"bm_w_ksg" 					: "Kel-tec KSG",
 	"bm_w_aa12" 				: "MPS AA-12 CQB",
+	"bm_w_boot"					: "Winchester Model 1887",
 
 	"bm_w_jowi" 				: "Akimbo Glock 26",
 	"bm_w_x_1911" 				: "Akimbo M1911 Lightweight Operator",
@@ -97,6 +98,7 @@
 	"bm_w_baka" 				: "IMI Micro Uzi",
 	"bm_w_x_sr2" 				: "Akimbo SR-2M Veresk",
 	"bm_w_sr2" 					: "SR-2M Veresk",
+	"bm_w_hajk"					: "AR15 S4F",
 
 
 
