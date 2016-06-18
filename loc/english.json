@@ -28,6 +28,7 @@
 	"wolfhud_hudlist_loot_diamond" : "Diamond",
 	"wolfhud_hudlist_loot_evidence" : "Evidence",
 	"wolfhud_hudlist_loot_toast" : "Toast",
+	
 	"wolfhud_hudlist_buff_basic" : "Basic",
 	"wolfhud_hudlist_buff_aced" : "Aced",
 	"wolfhud_hudlist_buff_boost" : "Boost",
@@ -430,6 +431,7 @@
 	"wolfhud_flashlight_angle_desc" : "Set the angle, in which your flashlight spreads.",
 	"wolfhud_flashlight_range_title" : "Flashlight range",
 	"wolfhud_flashlight_range_desc" : "Select how far your flashlight will shine. (X in meters)",
+	
 	
 	"wolfhud_gadget_laser_options_name" : "Laser Color Options",
 	"wolfhud_gadget_laser_options_help" : "Set the colors for lasers ingame.",
