@@ -2947,16 +2947,17 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	
 	HUDList.MinionItem = HUDList.MinionItem or class(HUDList.ItemBase)
+	HUDList.MinionItem.name_max = 10
 	function HUDList.MinionItem:init(parent, name, unit)
 		HUDList.MinionItem.super.init(self, parent, name, { align = "center", w = parent:panel():h() * 4/5, h = parent:panel():h() })
 		
 		self._unit = unit
 		self._max_health = unit:character_damage()._HEALTH_INIT
-		local type_table = unit:base()._tweak_table and HUDListManager.UNIT_TYPES[unit:base()._tweak_table]
-		local type_string = type_table and type_table.long_name and managers.localization:to_upper_text(type_table.long_name) or "UNKNOWN"
-		if type_string:len() > 10 then
-			type_string, _ = type_string:match("(%w+)(.+)")
-			type_string = type_string:sub(0, 10)
+		local type_table = unit:base()._tweak_table and HUDListManager.UNIT_TYPES[unit:base()._tweak_table] or false
+		local type_string = type_table and managers.localization:to_upper_text(type_table.long_name) or "UNKNOWN"
+		if type_string:len() > self.name_max then
+			type_string, _ = type_string:match("(%S+)(.+)")
+			type_string = type_string:sub(0, self.name_max)
 		end
 	
 		self._health_bar = self._panel:bitmap({
