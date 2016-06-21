@@ -6,14 +6,14 @@ if RequiredScript == "lib/units/weapons/sentrygunweapon" then
 	function SentryGunWeapon:init(...)
 		old_setup(self, ...)
 		if tweak_data.blackmarket.deployables[self._unit:base():get_type()] then
-			managers.enemy:add_delayed_clbk("Sentry_post_init_" .. tostring(self._unit:key()), callback(self, self, "post_init"), Application:time() + 0.01)
+			managers.enemy:add_delayed_clbk("Sentry_post_init_" .. tostring(self._unit:key()), callback(self, self, "post_init"), Application:time() + 0)
 		end
 	end
 	
 	function SentryGunWeapon:post_init()
 		local enable_ap = false
 		local laser_theme = ""
-		if self._unit:base():get_owner_id() == managers.network:session():local_peer():id() then
+		if self._unit:base():is_owner() then
 			laser_theme = "player_sentry"
 			enable_ap = managers.player:has_category_upgrade("sentry_gun", "ap_bullets")
 		else

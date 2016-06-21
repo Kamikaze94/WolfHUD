@@ -25,8 +25,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDManager:_setup_player_info_hud_pd2(...)
 		_setup_player_info_hud_pd2_original(self, ...)
-		
-		managers.hudlist = HUDListManager:new()
+		if managers.gameinfo then
+			managers.hudlist = HUDListManager:new()
+		end
 	end
 	
 	function HUDManager:update(t, dt, ...)
@@ -107,6 +108,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	HUDListManager.UNIT_TYPES = {
 		cop = 						{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_cop" 					},
+		cop_female = 				{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_cop" 					},
 		fbi = 						{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_fbi" 					},
 		swat = 						{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_swat" 					},
 		heavy_swat = 				{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_heavy_swat" 				},
@@ -141,6 +143,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		--inside_man = 				{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_inside_man" 				},
 		--boris = 					{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_boris" 					},
 		--escort_undercover = 		{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_escort_undercover" 		},
+		--mechanic = 				{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_biker_mechanic" 			},
 		
 		--Custom unit definitions
 		turret = 					{ type_id = "turret",		category = "turrets",	long_name = "wolfhud_enemy_swat_van" 				},
