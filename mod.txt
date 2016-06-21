@@ -78,7 +78,7 @@
 	],
 	"updates" : [
 		{
-			"revision" : 13,
+			"revision" : 14,
 			"identifier" : "wolfhud",
 		},
 		{
