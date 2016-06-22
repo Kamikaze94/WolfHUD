@@ -447,7 +447,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local unit_count_list = list:register_item("unit_count_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 1 })
 		local stealth_count_list = list:register_item("stealth_count_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 4 })
 		local loot_list = list:register_item("loot_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 2 })
-		local special_equipment_list = list:register_item("special_pickup_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 4 })
+		local special_equipment_list = list:register_item("special_pickup_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 3 })
 		
 		self:_set_show_enemies()
 		self:_set_show_turrets()
@@ -1440,7 +1440,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if HUDListManager.ListOptions.show_pager_count then
 			local clbk = callback(self, self, "_pager_count_event")
 			
-			list:register_item("PagerCount", HUDList.UsedPagersItem)
+			list:register_item("PagerCount", HUDList.UsedPagersItem, { spec = {1, 4} }, { priority = 1 })
 			
 			for _, event in pairs(events) do
 				managers.gameinfo:register_listener(listener_id, "pager", event, clbk)
@@ -1461,7 +1461,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if HUDListManager.ListOptions.show_pager_count then
 			local clbk = callback(self, self, "_cam_count_event")
 			
-			list:register_item("CamCount", HUDList.CamCountItem)
+			list:register_item("CamCount", HUDList.CamCountItem, { atlas = {4, 2} }, { priority = 2 })
 			
 			for _, event in pairs(events) do
 				managers.gameinfo:register_listener(listener_id, "camera", event, clbk)
@@ -1479,7 +1479,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if HUDListManager.ListOptions.show_pager_count then
 			local clbk = callback(self, self, "_bodybag_count_event")
 			
-			list:register_item("BodyBagInv", HUDList.RightListItem, { atlas = { 5, 11 } })
+			list:register_item("BodyBagInv", HUDList.RightListItem, { atlas = { 5, 11 } }, { priority = 3 })
 			
 			for _, event in pairs(events) do
 				managers.gameinfo:register_listener(listener_id, "bodybags", event, clbk)
@@ -2409,8 +2409,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	
 	HUDList.UsedPagersItem = HUDList.UsedPagersItem or class(HUDList.RightListItem)
-	function HUDList.UsedPagersItem:init(parent, name)
-		HUDList.UsedPagersItem.super.init(self, parent, name, { spec = {1, 4} })
+	function HUDList.UsedPagersItem:init(...)
+		HUDList.UsedPagersItem.super.init(self, ...)
 		local pager_count = table.size(managers.gameinfo:get_pagers() or {})
 		self:set_count(pager_count)
 	end
@@ -2425,8 +2425,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	
 	HUDList.CamCountItem = HUDList.CamCountItem or class(HUDList.RightListItem)
-	function HUDList.CamCountItem:init(parent, name)
-		HUDList.CamCountItem.super.init(self, parent, name, { atlas = {4, 2} })
+	function HUDList.CamCountItem:init(...)
+		HUDList.CamCountItem.super.init(self, ...)
 		local cams = managers.gameinfo:get_cams() or {}
 		local cam_count = 0
 		for uid, data in pairs(cams) do
