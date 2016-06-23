@@ -43,7 +43,7 @@ if not _G.WolfHUD then
 			{ color = Color('0000FF'), name = "blue" },
 			{ color = Color('808080'), name = "gray" },
 			{ color = Color('000000'), name = "black" },
-			{ color = Color('000000'), name = "rainbow" },		--(only available in laser + killcounter colors)
+			{ color = Color('000000'), name = "rainbow" },
 		}
 	end
 	if not WolfHUD.inventory_names then		
@@ -127,6 +127,7 @@ if not _G.WolfHUD then
 		["lib/units/beings/player/states/playerstandard"] = { "GameInfoManager.lua", "EnemyHealthbar.lua", "Interaction.lua", "BurstFire.lua" },
 		["lib/units/beings/player/states/playerbleedout"] = { "DownCounter.lua" },
 		["lib/units/vehicles/vehicledamage"] = { "DamageIndicator.lua" },
+		["lib/utils/temporarypropertymanager"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractionbloodthirstbase"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractionexperthandling"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractionshockandawe"] = { "GameInfoManager.lua" },

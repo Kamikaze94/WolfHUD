@@ -407,10 +407,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		return self._showing_stats_screen or false
 	end
 	
-	function HUDStatsScreen:update_stats()
+	function HUDStatsScreen:update_stats(item)
 		local dwp = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel"):child("day_wrapper_panel")
 		if dwp then
-			self:update(dwp)
+			self:update(dwp, item)
 		end
 	end
 	
@@ -433,18 +433,20 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		end
 	end
 
-	function HUDStatsScreen:update(day_wrapper_panel)
-		day_wrapper_panel:child("offshore_payout_text"):set_text(managers.experience:cash_string(managers.money:get_potential_payout_from_current_stage() - math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate"))))
-		day_wrapper_panel:child("spending_cash_text"):set_text(managers.experience:cash_string(math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate")) - managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)))
-		if 0 <= math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate")) - managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0) then
-			day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.friend_color)
-		else
-			day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.heat_cold_color)
+	function HUDStatsScreen:update(day_wrapper_panel, item)
+		if not item then
+			day_wrapper_panel:child("offshore_payout_text"):set_text(managers.experience:cash_string(managers.money:get_potential_payout_from_current_stage() - math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate"))))
+			day_wrapper_panel:child("spending_cash_text"):set_text(managers.experience:cash_string(math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate")) - managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)))
+			if 0 <= math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate")) - managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0) then
+				day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.friend_color)
+			else
+				day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.heat_cold_color)
+			end
+			day_wrapper_panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)) .. " (" .. (managers.statistics:session_total_civilian_kills() or 0) .. ")")
 		end
-		day_wrapper_panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)) .. " (" .. (managers.statistics:session_total_civilian_kills() or 0) .. ")")
 		
 		for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
-			if not data.manual_update then
+			if not data.manual_update and (not item or item == data.name) then
 				local update_data = data.update
 				if update_data then
 					local suffix_table = { func = "_text"}
@@ -648,7 +650,17 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
+	local shot_fired_original = StatisticsManager.shot_fired
 	local session_enemy_killed_by_type_original = StatisticsManager.session_enemy_killed_by_type
+	
+	function StatisticsManager:shot_fired(data, ...)
+		local value = shot_fired_original(self, data, ...)
+		if managers.hud and managers.hud.update_stats_screen then
+			managers.hud:update_stats_screen("accuracy")
+		end
+		return value
+	end
+	
 	function StatisticsManager:session_enemy_killed_by_type(enemy, type)
 		if enemy == "tank" then	--Fixed dozer count
 			return self:session_enemy_killed_by_type("tank_green", type)
@@ -752,10 +764,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		end
 	end
 	
-	function HUDManager:update_stats_screen()
+	function HUDManager:update_stats_screen(item)
 		if self._hud_statsscreen and self._hud_statsscreen.stats_visible then
 			if self._hud_statsscreen:stats_visible() then
-				self._hud_statsscreen:update_stats()
+				self._hud_statsscreen:update_stats(item)
 			end
 		end
 	end

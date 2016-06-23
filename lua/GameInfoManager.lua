@@ -329,7 +329,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 			dmg_dampener_outnumbered_strong = "overdog",
 			dmg_dampener_close_contact = { "close_contact_1", "close_contact_2", "close_contact_3" },
 			overkill_damage_multiplier = "overkill",
-			melee_kill_increase_reload_speed = "bloodthirst_aced",
+			--melee_kill_increase_reload_speed = "bloodthirst_aced",
 			passive_revive_damage_reduction = { "pain_killer", "pain_killer_aced" },
 			berserker_damage_multiplier = { "swan_song", "swan_song_aced" },
 			first_aid_damage_reduction = "quick_fix",
@@ -344,6 +344,10 @@ if RequiredScript == "lib/setups/gamesetup" then
 			loose_ammo_give_team = "ammo_give_out_debuff",
 			armor_break_invulnerable = "armor_break_invulnerable_debuff",
 			single_shot_fast_reload = "aggressive_reload_aced",
+			
+			--"properties"
+			bloodthirst_reload_speed = "bloodthirst_aced",
+			revived_damage_reduction = "pain_killer",
 		},
 		cooldown = {
 			long_dis_revive = "inspire_revive_debuff",
@@ -2520,6 +2524,23 @@ if RequiredScript == "lib/managers/playermanager" then
 	function PlayerManager:_set_body_bags_amount(body_bags_amount)
 		managers.gameinfo:event("bodybags", "set", body_bags_amount)
 		_set_body_bags_amount_original(self, body_bags_amount)
+	end
+	
+end
+
+if RequiredScript == "lib/utils/temporarypropertymanager" then
+
+	local activate_property_original = TemporaryPropertyManager.activate_property
+	local remove_property_original = TemporaryPropertyManager.remove_property
+	
+	function TemporaryPropertyManager:activate_property(prop, time, value, ...)
+		managers.gameinfo:event("temporary_buff", "activate", { duration = time, category = "temporary", upgrade = prop, value = value })
+		return activate_property_original(self, prop, time, value, ...)
+	end
+	
+	function TemporaryPropertyManager:remove_property(prop, ...)
+		managers.gameinfo:event("temporary_buff", "deactivate", { category = "temporary", upgrade = prop })
+		return remove_property_original(self, prop, ...)
 	end
 	
 end
