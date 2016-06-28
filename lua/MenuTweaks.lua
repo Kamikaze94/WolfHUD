@@ -46,16 +46,20 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	local function getEquipmentAmount(name_id)
 		local data = tweak_data.equipments[name_id]
 		if data and data.quantity then
-			local amounts = data.quantity
-			local amount_str = ""
-			for i = 1, #amounts do
-				local equipment_name = name_id
-				if data.upgrade_name then
-					equipment_name = data.upgrade_name[i]
+			if type(data.quantity) == "table" then
+				local amounts = data.quantity
+				local amount_str = ""
+				for i = 1, #amounts do
+					local equipment_name = name_id
+					if data.upgrade_name then
+						equipment_name = data.upgrade_name[i]
+					end
+					amount_str = amount_str .. (i > 1 and "/x" or "x") .. tostring((amounts[i] or 0) + managers.player:equiptment_upgrade_value(equipment_name, "quantity"))
 				end
-				amount_str = amount_str .. (i > 1 and "/x" or "x") .. tostring((amounts[i] or 0) + managers.player:equiptment_upgrade_value(equipment_name, "quantity"))
+				return " (" .. amount_str .. ")"
+			else
+				return " (x" .. tostring(data.quantity) .. ")"
 			end
-			return " (" .. amount_str .. ")"
 		end
 		return ""
 	end

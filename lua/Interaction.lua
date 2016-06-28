@@ -230,9 +230,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD:getSetting("SHOW_LOCK_INDICATOR", "boolean")
 		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD:getSetting("SHOW_TIME_REMAINING", "boolean")
 		HUDInteraction.SHOW_CIRCLE 	= WolfHUD:getSetting("SHOW_CIRCLE", "boolean")
+		HUDInteraction.LOCK_MODE = PlayerStandard.LOCK_MODE or 1
 		HUDInteraction.GRADIENT_COLOR = not (WolfHUD:getSetting("GRADIENT_COLOR", "string") == "rainbow") and WolfHUD:getSetting("GRADIENT_COLOR", "color") or false
 		if HUDInteraction.SHOW_CIRCLE then
-			if PlayerStandard.LOCK_MODE > 1 and HUDInteraction.SHOW_LOCK_INDICATOR then
+			if HUDInteraction.LOCK_MODE > 1 and HUDInteraction.SHOW_LOCK_INDICATOR then
 				self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {
 					radius = self._circle_radius,
 					color = Color.red,
@@ -289,7 +290,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		end
 		
 		if not complete and self._old_text then
-			self._hud_panel:child(self._child_name_text):set_text(self._old_text or self._hud_panel:child(self._child_name_text):text())
+			self._hud_panel:child(self._child_name_text):set_text(self._old_text or "")
 		elseif complete and HUDInteraction.SHOW_CIRCLE then
 			local bitmap = self._hud_panel:bitmap({texture = "guis/textures/pd2/hud_progress_active", blend_mode = "add", align = "center", valign = "center", layer = 2, w = 2 * self._circle_radius, h = 2 * self._circle_radius})
 			bitmap:set_position(bitmap:parent():w() / 2 - bitmap:w() / 2, bitmap:parent():h() / 2 - bitmap:h() / 2)

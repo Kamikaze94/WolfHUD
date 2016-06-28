@@ -132,7 +132,7 @@ if not _G.WolfHUD then
 		["lib/player_actions/skills/playeractionexperthandling"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractionshockandawe"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractiondireneed"] = { "GameInfoManager.lua" },
-		["lib/player_actions/skills/playeractionunseenstrike"] = { "GameInfoManager.lua" },
+--		["lib/player_actions/skills/playeractionunseenstrike"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractiontriggerhappy"] = { "GameInfoManager.lua" },
 		["lib/states/ingamedriving"] = { "DrivingHUD.lua" },
 		["lib/states/ingamewaitingforplayers"] = { "MenuTweaks.lua" },
@@ -212,7 +212,7 @@ if not _G.WolfHUD then
 			dmg_vehicle_color				= "yellow",
 			dmg_friendlyfire_color			= "orange",
 		  --Suspicion
-			suspicion_scale					= 1,
+			suspicion_scale					= 0.8,
 			numberic_suspicion				= true,
 			show_susp_eye					= true,
 		  --Driving HUD
