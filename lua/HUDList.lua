@@ -3156,9 +3156,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.ECMItem:init(parent, name)
 		HUDList.ItemBase.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
 		
-		self._max_duration = tweak_data.upgrades.ecm_jammer_base_battery_life * 
-			tweak_data.upgrades.values.ecm_jammer.duration_multiplier[1] * 
-			tweak_data.upgrades.values.ecm_jammer.duration_multiplier_2[1]
+		local base = tweak_data.upgrades.ecm_jammer_base_battery_life
+		local upgrades = ECMJammerBase.battery_life_multiplier
+		self._max_duration = base * upgrades[#upgrades]
 		
 		self._box = HUDBGBox_create(self._panel, {
 				w = self._panel:w(),
