@@ -13,7 +13,6 @@ function GroupAIStateBase:_upd_criminal_suspicion_progress(...)
 							obs_susp_data._subdued_civ = true
 							color = Color(0, 0.71, 1)
 							arrow_color = Color(0, 0.35, 0.5)
-							waypoint.bitmap:set_image("guis/textures/menu_singletick")
 						end
 					elseif obs_susp_data.alerted then
 						if not obs_susp_data._alerted_civ then
