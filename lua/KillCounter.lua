@@ -186,15 +186,18 @@ elseif RequiredScript == "lib/managers/statisticsmanager" then
 		]]
 		
 		local name_id = data.name_id or data.weapon_unit:base():get_name_id()
-		local slot = tweak_data.weapon[name_id].use_data.selection_index
-		local weapon_data = self._global.session.shots_by_weapon[name_id]
-		local weapon_accuracy = 0
-		if weapon_data.total > 0 then
-			weapon_accuracy = math.floor(100 * weapon_data.hits / weapon_data.total)
+		local weapon_tweak = tweak_data.weapon[name_id]
+		local slot = weapon_tweak and weapon_tweak.use_data and weapon_tweak.use_data.selection_index
+		if slot then	--Exclude throwables like exploding cards mod...
+			local weapon_data = name_id and self._global.session.shots_by_weapon[name_id]
+			local weapon_accuracy = 0
+			if weapon_data and weapon_data.total > 0 then
+				weapon_accuracy = math.floor(100 * weapon_data.hits / weapon_data.total)
+			end
+			managers.hud:set_teammate_weapon_accuracy(HUDManager.PLAYER_PANEL, slot, weapon_accuracy)
 		end
 		
 		managers.hud:set_teammate_accuracy(HUDManager.PLAYER_PANEL, self:session_hit_accuracy())
-		managers.hud:set_teammate_weapon_accuracy(HUDManager.PLAYER_PANEL, slot, weapon_accuracy)
 	end
 
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
