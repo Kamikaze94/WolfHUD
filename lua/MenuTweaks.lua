@@ -5,6 +5,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	local populate_weapon_category_new_original = BlackMarketGui.populate_weapon_category_new
 	function BlackMarketGui:populate_weapon_category_new(data, ...)
 		local value = populate_weapon_category_new_original(self, data, ...)
+		local show_icons = not WolfHUD:getSetting("show_mini_icons", "boolean")
 		for id, w_data in ipairs(data) do
 			if tweak_data.weapon[w_data.name] then	--Filter out locked or empty slots
 				local category = tweak_data.weapon[w_data.name].category
@@ -22,7 +23,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 				end
 				local silent = has_silencer and not has_explosive
 				w_data.name_localized = tostring(w_data.name_localized) .. (not is_saw and (" " .. (silent and utf8.char(57363) or "")) or "")
-				w_data.hide_unselected_mini_icons = false
+				w_data.hide_unselected_mini_icons = show_icons
 			end
 		end
 		return value
@@ -85,14 +86,16 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	-- Show all Names in Inventory Boxxes
 	local orig_blackmarket_gui_slot_item_init = BlackMarketGuiSlotItem.init
 	function BlackMarketGuiSlotItem:init(main_panel, data, ...)
-		data.custom_name_text = data.custom_name_text or (data.unlocked and not data.empty_slot) and data.name_localized
+		if WolfHUD:getSetting("inventory_names", "boolean") then
+			data.custom_name_text = data.custom_name_text or (data.unlocked and not data.empty_slot) and data.name_localized
+		end
 		return orig_blackmarket_gui_slot_item_init(self, main_panel, data, ...)
 	end
 	
 	--Replace Tab Names with custom ones...
 	local BlackMarketGuiTabItem_init_original = BlackMarketGuiTabItem.init
 	function BlackMarketGuiTabItem:init(main_panel, data, ...)
-		if WolfHUD.inventory_names and WolfHUD.inventory_names[data.category] and type(data.on_create_data[1]) == "number" then
+		if WolfHUD:getSetting("inventory_tab_names", "boolean") and WolfHUD.inventory_names and WolfHUD.inventory_names[data.category] and type(data.on_create_data[1]) == "number" then
 			local id = math.floor((data.on_create_data[1] / #data.on_create_data) + 1)
 			data.name_localized = WolfHUD.inventory_names[data.category][id] or nil
 		end

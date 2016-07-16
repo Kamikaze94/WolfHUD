@@ -64,7 +64,7 @@ end
 ]]
 
 	local _on_damage_received_original = CopDamage._on_damage_received
-	--Workaround for Teammate Headshots, since col_ray doesn't get forwarded...
+	--Workaround for Teammate Headshots, since col_ray doesn't get forwarded...  (self._sync_ibody)
 	local sync_damage_bullet_original = CopDamage.sync_damage_bullet
 	local sync_damage_melee_original = CopDamage.sync_damage_melee
 
@@ -99,15 +99,15 @@ end
 			
 			if alive(killer) then
 				local is_special = managers.groupai:state():is_enemy_special(self._unit) or (self._unit:base()._tweak_table == "sniper")
-				local i_body = data.col_ray and data.col_ray.body and self._unit:get_body_index(data.col_ray.body:name())
+				local i_body = data.col_ray and data.col_ray.body and self._unit:get_body_index(data.col_ray.body:name()) or self._sync_ibody
 				local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
 				local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false
 				if killer:in_slot(2) then
-					managers.hud:increment_teammate_kill_count(HUDManager.PLAYER_PANEL, true, is_special, headshot)
+					managers.hud:increment_teammate_kill_count(HUDManager.PLAYER_PANEL, is_special, headshot)
 				else
 					local crim_data = managers.criminals:character_data_by_unit(killer)
 					if crim_data and crim_data.panel_id then
-						managers.hud:increment_teammate_kill_count(crim_data.panel_id, true, is_special, headshot)
+						managers.hud:increment_teammate_kill_count(crim_data.panel_id, is_special, headshot)
 					end
 				end
 			end
@@ -118,38 +118,19 @@ end
 		if self._dead then
 			self:_process_kill(data)
 		end
-		
+		self._sync_ibody = nil
 		return _on_damage_received_original(self, data, ...)
 	end
 	
 	function CopDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body, ...)
-		local val = sync_damage_bullet_original(self, attacker_unit, damage_percent, i_body, ...)
-		if self._dead then
-			local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
-			local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false
-			if headshot then
-				local crim_data = managers.criminals:character_data_by_unit(attacker_unit)
-				if crim_data and crim_data.panel_id then
-					managers.hud:increment_teammate_kill_count(crim_data.panel_id, false, false, headshot)
-				end
-			end
-		end
-		return val
+		self._sync_ibody = i_body
+		return sync_damage_bullet_original(self, attacker_unit, damage_percent, i_body, ...)
 	end
 	
 	function CopDamage:sync_damage_melee(attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
-		local val = sync_damage_melee_original(self, attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
-		if self._dead then
-			local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
-			local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false
-			if headshot then
-				local crim_data = managers.criminals:character_data_by_unit(attacker_unit)
-				if crim_data and crim_data.panel_id then
-					managers.hud:increment_teammate_kill_count(crim_data.panel_id, false, false, headshot)
-				end
-			end
-		end
-		return val
+		self._sync_ibody = i_body
+		return sync_damage_melee_original(self, attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
+		
 	end
 
 	--TODO: Add sync damage checks for non-local bots and players
@@ -196,8 +177,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDManager.KILL_COUNTER_PLUGIN = true
 	HUDManager.ACCURACY_PLUGIN = true
 
-	HUDManager.increment_teammate_kill_count = HUDManager.increment_teammate_kill_count or function (self, i, normal_kill, is_special, headshot)
-		self._teammate_panels[i]:increment_kill_count(normal_kill, is_special, headshot)
+	HUDManager.increment_teammate_kill_count = HUDManager.increment_teammate_kill_count or function (self, i, is_special, headshot)
+		self._teammate_panels[i]:increment_kill_count(is_special, headshot)
 	end
 	
 	HUDManager.reset_teammate_kill_count = HUDManager.reset_teammate_kill_count or function(self, i)
@@ -314,8 +295,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			self:set_accuracy(0)
 		end
 
-		function HUDTeammate:increment_kill_count(normal_kill, is_special, headshot)
-			self._kill_count = self._kill_count + (normal_kill and 1 or 0)
+		function HUDTeammate:increment_kill_count(is_special, headshot)
+			self._kill_count = self._kill_count + 1
 			self._kill_count_special = self._kill_count_special + (is_special and 1 or 0)
 			self._headshot_kills = self._headshot_kills + (headshot and 1 or 0)
 			self:_update_kill_count_text()

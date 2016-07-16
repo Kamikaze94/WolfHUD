@@ -61,10 +61,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
         --Left side list
         show_timers 					= WolfHUD:getSetting("show_timers", "boolean"),     				--Drills, time locks, hacking etc.
 --      show_equipment 					= WolfHUD:getSetting("show_equipment", "boolean"),  				--Deployables (ammo, doc bags, body bags)
-		show_ammo_bags 					= true,
-		show_doc_bags 					= true,
-		show_body_bags 					= true,
-		show_grenade_crates 			= true,
+		show_ammo_bags 					= WolfHUD:getSetting("show_ammo_bags", "boolean"),
+		show_doc_bags 					= WolfHUD:getSetting("show_doc_bags", "boolean"),
+		show_body_bags 					= WolfHUD:getSetting("show_body_bags", "boolean"),
+		show_grenade_crates 			= WolfHUD:getSetting("show_grenade_crates", "boolean"),
         show_sentries 					= WolfHUD:getSetting("show_sentries", "boolean"),   				--Deployable sentries
         show_ecms 						= WolfHUD:getSetting("show_ecms", "boolean"),       				--Active ECMs
         show_ecm_retrigger 				= WolfHUD:getSetting("show_ecm_retrigger", "boolean"),      		--Countdown for player owned ECM feedback retrigger delay
@@ -79,11 +79,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
         show_turrets 					= WolfHUD:getSetting("show_turrets", "boolean"),    				--Show active SWAT turrets
         show_civilians 					= WolfHUD:getSetting("show_civilians", "boolean"),  				--Currently spawned, untied civs
         show_hostages 					= WolfHUD:getSetting("show_hostages", "boolean"),   				--Currently tied civilian and dominated cops
-			aggregate_hostages 			= false,															--Aggregate all hostages into a single item
+			aggregate_hostages 			= WolfHUD:getSetting("aggregate_hostages", "boolean"),															--Aggregate all hostages into a single item
         show_minion_count 				= WolfHUD:getSetting("show_minion_count", "boolean"),       		--Current number of jokered enemies
         show_pager_count 				= WolfHUD:getSetting("show_pager_count", "boolean"),        		--Show number of triggered pagers (only counts pagers triggered while you were present)
-		show_cam_count					= true,
-		show_bodybags_count				= true,
+		show_cam_count					= WolfHUD:getSetting("show_cam_count", "boolean"),
+		show_bodybags_count				= WolfHUD:getSetting("show_bodybags_count", "boolean"),
         show_loot 						= WolfHUD:getSetting("show_loot", "boolean"),       				--Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
             aggregate_loot 				= WolfHUD:getSetting("aggregate_loot", "boolean"), 					--Aggregate all loot into a single item
             separate_bagged_loot 		= WolfHUD:getSetting("separate_bagged_loot", "boolean"),     		--Show bagged/unbagged loot as separate values
@@ -2209,6 +2209,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:set_active(self._count > 0 and status)
 	end
 	
+	function HUDList.CamCountItem:set_count(num)
+		if managers.groupai:state():whisper_mode() then
+			HUDList.CamCountItem.super.set_count(self, num)
+		end
+	end
+	
 	
 	HUDList.BodyBagsInvItem = HUDList.BodyBagsInvItem or class(HUDList.RightListItem)
 	function HUDList.BodyBagsInvItem:init(...)
@@ -2241,6 +2247,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.BodyBagsInvItem:_whisper_mode_change(status)
 		self:set_active(self._count > 0 and status)
+	end
+	
+	function HUDList.BodyBagsInvItem:set_count(num)
+		if managers.groupai:state():whisper_mode() then
+			HUDList.BodyBagsInvItem.super.set_count(self, num)
+		end
 	end
 	
 
@@ -2884,7 +2896,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			text = "0",
 			align = "left",
 			vertical = "top",
-			x = 2, 
+			x = 3, 
 			y = 2,
 			w = self._panel:w(),
 			h = self._panel:h(),
@@ -2892,7 +2904,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			alpha = 0.75,
 			layer = 10,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._panel:h() * 0.45,
+			font_size = self._panel:h() * 0.3,
 		})
 		
 		self:_set_ammo_ratio(data)
@@ -2936,6 +2948,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.SentryEquipmentItem:_set_kills(data)
+		if data.kills == 10 then
+			self._kills:set_font_size(self._panel:h() * 0.25)
+		end
 		self._kills:set_text(tostring(data.kills))
 	end
 	
@@ -2973,7 +2988,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		HUDList.MinionItem.super.init(self, parent, name, { align = "center", w = parent:panel():h() * 4/5, h = parent:panel():h() })
 		
 		self._unit = data.unit
-		local type_table = unit:base()._tweak_table and HUDListManager.UNIT_TYPES[unit:base()._tweak_table] or false
+		local type_table = self._unit:base()._tweak_table and HUDListManager.UNIT_TYPES[self._unit:base()._tweak_table] or false
 		local type_string = type_table and managers.localization:to_upper_text(type_table.long_name) or "UNKNOWN"
 		if type_string:len() > self.name_max then
 			type_string, _ = type_string:match("(%S+)(.+)")
@@ -3054,6 +3069,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			w = self._panel:w(),
 			h = self._panel:w(),
 			color = Color.white,
+			alpha = 0.75,
 			layer = 10,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._panel:w() * 0.3,
@@ -3098,6 +3114,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.MinionItem:_set_kills(data)
+		if data.kills == 10 then
+			self._kills:set_font_size(self._panel:w() * 0.2)
+		end
 		self._kills:set_text(data.kills)
 	end
 	
@@ -3862,7 +3881,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			texture = string.format("%stextures/pd2/%s", texture, icon.atlas_new and "skilltree_2/icons_atlas_2" or icon.atlas and "skilltree/icons_atlas" or "specialization/icons_atlas")
 		end
 		
-		self._default_icon_color = icon.color or Color.white
+		self._default_icon_color = icon.color or HUDList.BuffItemBase.ICON_COLOR.STANDARD or Color.white
 		local progress_bar_width = self._panel:w() * 0.05
 		local icon_size = self._panel:w() - progress_bar_width * 4
 		
@@ -3913,7 +3932,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			w = self._panel:w(),
 			h = (self._panel:h() - icon_size) / 2,
 			layer = 10,
-			color = Color.white,
+			color = self._default_icon_color,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = 0.7 * (self._panel:h() - icon_size) / 2,
 			blend_mode = "normal",
@@ -4140,7 +4159,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			
 			if self._debuff_expire_t then
 				table.insert(time_str, { 
-					str = string.format("%.1f", self._debuff_expire_t - t), 
+					str = string.format("%.1fs", self._debuff_expire_t - t), 
 					color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF
 				})
 			end
@@ -4148,10 +4167,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		
 		if self._buff_active and self._expire_t then
 			self:_set_progress((t - self._start_t) / (self._expire_t - self._start_t))
-			if WolfHUD.DEBUG_MODE and not self._custom_value then
-				local t_left = self._expire_t - t
-				self:_set_text((t_left > 0 and string.format("%0.1fs", t_left) or ""))
-			end
 			
 			if t > self._expire_t then
 				self._start_t = nil
@@ -4160,7 +4175,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 			
 			if self._expire_t then
-				table.insert(time_str, { str = string.format("%.1f", self._expire_t - t) })
+				table.insert(time_str, { 
+					str = string.format("%.1fs", self._expire_t - t), 
+					color = self._default_icon_color
+				})
 			end
 		end
 		
@@ -4200,7 +4218,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			
 			if self._debuff_expire_t then
 				table.insert(time_str, { 
-					str = string.format("%.1f", self._debuff_expire_t - t), 
+					str = string.format("%.1fs", self._debuff_expire_t - t), 
 					color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF
 				})
 			end
@@ -4227,7 +4245,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			
 			for i, data in ipairs(time_str) do
 				str = str .. data.str
-				table.insert(color_ranges, { offset, string.len(str), data.color or HUDList.BuffItemBase.ICON_COLOR.STANDARD })
+				table.insert(color_ranges, { offset, string.len(str), data.color or self._default_icon_color or HUDList.BuffItemBase.ICON_COLOR.STANDARD })
 				if i < #time_str then
 					str = str .. " "
 				end

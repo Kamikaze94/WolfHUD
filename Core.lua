@@ -237,7 +237,10 @@ if not _G.WolfHUD then
 			no_slowmotion 					= true,		--Disable mask-up and downed slow motion
 		  --HUDList
 			show_timers 					= true,     --Drills, time locks, hacking etc.
-			show_equipment 					= true,  	--Deployables (ammo, doc bags, body bags)
+			show_ammo_bags					= true,  	--Deployables (ammo)
+			show_doc_bags					= true,  	--Deployables (doc bags)
+			show_body_bags					= true,  	--Deployables (body bags)
+			show_grenade_crates				= true,  	--Deployables (grenades)
 			show_sentries 					= true,   	--Deployable sentries
 			show_ecms 						= true,		--Active ECMs
 			show_ecm_retrigger 				= true,  	--Countdown for players own ECM feedback retrigger delay
@@ -251,8 +254,11 @@ if not _G.WolfHUD then
 			show_turrets 					= true,    	--Show active SWAT turrets
 			show_civilians 					= true,  	--Currently spawned, untied civs
 			show_hostages 					= true,   	--Currently tied civilian and dominated cops
+				aggregate_hostages			= false,
 			show_minion_count 				= true,     --Current number of jokered enemies
 			show_pager_count 				= true,		--Show number of triggered pagers (only counts pagers triggered while you were present)
+			show_cam_count					= true,
+			show_bodybags_count				= true,
 			show_loot 						= true,     --Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
 				aggregate_loot 				= false, 	--Don't split loot on type; use a single entry for all
 				separate_bagged_loot 		= true,     --Show bagged loot as a separate value
@@ -307,10 +313,16 @@ if not _G.WolfHUD then
 			laser_turret_alpha 				= 0.15,			--Turret laser alpha
 			flashlight_angle 				= 100,			--Flashlight angle
 			flashlight_range 				= 20,			--Flashlight range (in m)
+			flashlight_mult					= 2,
+			flashlight_color				= "white",
 			
 			show_advanced_assault			= true,
+			enable_burstmode				= true,
+			
 			replace_weapon_names 			= true,
-			enable_burstmode				= true
+			inventory_tab_names				= true,
+			inventory_names					= true,
+			show_mini_icons					= true
 		}
 	end
 	

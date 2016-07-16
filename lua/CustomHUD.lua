@@ -708,8 +708,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:set_accuracy(0)
 	end
 	
-	function HUDTeammateCustom:increment_kill_count(normal_kill, is_special, headshot)
-		self:call_listeners("increment_kill_count", normal_kill, is_special, headshot)
+	function HUDTeammateCustom:increment_kill_count(is_special, headshot)
+		self:call_listeners("increment_kill_count", is_special, headshot)
 	end
 	
 	function HUDTeammateCustom:reset_kill_count()
@@ -1147,6 +1147,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._specialization:set_x(w)
 		w = w + self._specialization:w()
 		
+		self._specialization:set_x(0)
+		local w = self._specialization:w() + self._panel:h() * 0.3
+		self._skills:set_x(w)
+		w = w + self._skills:w()
+		
 		if self:set_size(w, self._panel:h()) then
 			self._owner:arrange()
 		end
@@ -1158,7 +1163,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			
 		if name_id then
 			local text = managers.localization:text(name_id)
-			self._specialization:set_text(string.format("%s: %d", text, level))
+			self._specialization:set_text(string.format("%s: %d |", text, level))
 			local _, _, w, _ = self._specialization:text_rect()
 			self._specialization:set_w(w)
 			self:arrange()
@@ -1167,13 +1172,24 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.Build:set_skills(data)
 		local trees = { "M", "E", "T", "G", "F" }
-		local text = "|"
+		local text = ""
 		
-		for tree, skills in ipairs(data) do
-			if tonumber(skills) > 0 then
-				text = string.format("%s %s:%02d |", text, trees[tree] or tostring(tree), tonumber(skills))
+		for tree = 1, #trees, 1 do
+			local tree_has_points = false
+			local skill_string = ""
+			
+			for sub_tree = 1, 3, 1 do
+				local skills = data[(tree-1) * 3 + sub_tree]
+				skill_string = string.format("%s%02d%s", skill_string, tonumber(skills), sub_tree < 3 and "|" or "")
+				if tonumber(skills) > 0 then
+					tree_has_points = true
+				end
 			end
-		end
+			
+			if tree_has_points then
+				text = string.format("%s%s:%s%s", text, trees[tree] or tostring(tree), skill_string, tree < #trees and " " or "")
+ 			end
+ 		end
 		
 		self._skills:set_text(text)
 		local _, _, w, _ = self._skills:text_rect()
@@ -1270,8 +1286,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 	
-	function PlayerInfoComponent.KillCounter:increment(normal_kill, is_special, headshot)
-		self._kills = self._kills + (normal_kill and 1 or 0)
+	function PlayerInfoComponent.KillCounter:increment(is_special, headshot)
+		self._kills = self._kills + 1
 		self._special_kills = self._special_kills + (is_special and 1 or 0)
 		self._headshot_kills = self._headshot_kills + (headshot and 1 or 0)
 		self:_update_text()
@@ -3641,8 +3657,8 @@ end
 		--TODO
 	end
 	
-	function HUDManager:increment_teammate_kill_count(i, normal_kill, is_special, headshot)
-		self._teammate_panels[i]:increment_kill_count(normal_kill, is_special, headshot)
+	function HUDManager:increment_teammate_kill_count(i, is_special, headshot)
+		self._teammate_panels[i]:increment_kill_count(is_special, headshot)
 	end
 	
 	function HUDManager:reset_teammate_kill_count(i)

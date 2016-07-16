@@ -48,6 +48,14 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "aggregate_hostages",
+			"title" : "wolfhud_hudlist_aggregate_hostages_title",
+			"description" : "wolfhud_hudlist_aggregate_hostages_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "aggregate_hostages",
+		},
+		{
+			"type" : "toggle",
 			"id" : "show_minion_count",
 			"title" : "wolfhud_hudlist_show_minion_count_title",
 			"description" : "wolfhud_hudlist_show_minion_count_desc",
@@ -61,6 +69,22 @@
 			"description" : "wolfhud_hudlist_show_pager_count_desc",
 			"callback" : "clbk_change_hudlist_setting",
 			"value" : "show_pager_count",
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_cam_count",
+			"title" : "wolfhud_hudlist_show_cam_count_title",
+			"description" : "wolfhud_hudlist_show_cam_count_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "show_cam_count",
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_bodybags_count",
+			"title" : "wolfhud_hudlist_show_bodybags_count_title",
+			"description" : "wolfhud_hudlist_show_bodybags_count_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "show_bodybags_count",
 		},
 		{
 			"type" : "toggle",

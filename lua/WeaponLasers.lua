@@ -111,11 +111,20 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/weaponflashlight" then
 		self._light:set_far_range(range)
 	end
 	
-	function WeaponFlashLight:update(...)
-		update_flash_cbk(self, ...)
+	function WeaponFlashLight:update(unit, t, dt, ...)
+		update_flash_cbk(self, unit, t, dt, ...)
 		if not self._is_haunted then
+			local col = Color.white
+			if WolfHUD:getSetting("flashlight_color", "string") == "rainbow" then
+				local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
+				col = Color(r, g, b)
+			else
+				col = WolfHUD:getSetting("flashlight_color", "color")
+			end
 			self._light:set_spot_angle_end(math.clamp(WolfHUD:getSetting("flashlight_angle", "number"), 0, 160))
 			self._light:set_far_range((WolfHUD:getSetting("flashlight_range", "number") * 100))
+			self._light:set_multiplier(WolfHUD:getSetting("flashlight_mult", "number"))
+			self._light:set_color(col)
 		end
 	end
 	

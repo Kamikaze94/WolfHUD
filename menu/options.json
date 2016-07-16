@@ -9,7 +9,7 @@
 		{
 			"type" : "divider",
 			"size" : 16,
-			"priority" : 11,
+			"priority" : 15,
 		},
 		{
 			"type" : "toggle",
@@ -18,7 +18,7 @@
 			"description" : "wolfhud_skip_blackscreen_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "skip_blackscreen",
-			"priority" : 10,
+			"priority" : 14,
 		},
 		{
 			"type" : "slider",
@@ -31,7 +31,7 @@
 			"min" : 0,
 			"max" : 20,
 			"step" : 0.1,
-			"priority" : 9,
+			"priority" : 13,
 		},
 		{
 			"type" : "toggle",
@@ -40,7 +40,7 @@
 			"description" : "wolfhud_loot_screen_pick_card_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "autopick_card",
-			"priority" : 8,
+			"priority" : 12,
 		},
 		{
 			"type" : "slider",
@@ -53,12 +53,12 @@
 			"min" : 0,
 			"max" : 20,
 			"step" : 0.1,
-			"priority" : 7,
+			"priority" : 11,
 		},
 		{
 			"type" : "divider",
 			"size" : 16,
-			"priority" : 6,
+			"priority" : 10,
 		},
 		{
 			"type" : "toggle",
@@ -67,6 +67,38 @@
 			"description" : "wolfhud_replace_weapon_names_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "replace_weapon_names",
+			"priority" : 9,
+		},
+		{
+			"type" : "toggle",
+			"id" : "inventory_tab_names",
+			"title" : "wolfhud_inventory_tab_names_title",
+			"description" : "wolfhud_inventory_tab_names_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "inventory_tab_names",
+			"priority" : 8,
+		},
+		{
+			"type" : "toggle",
+			"id" : "inventory_names",
+			"title" : "wolfhud_inventory_names_title",
+			"description" : "wolfhud_inventory_names_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "inventory_names",
+			"priority" : 7,
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_mini_icons",
+			"title" : "wolfhud_show_mini_icons_title",
+			"description" : "wolfhud_show_mini_icons_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_mini_icons",
+			"priority" : 6,
+		},
+		{
+			"type" : "divider",
+			"size" : 8,
 			"priority" : 5,
 		},
 		{
