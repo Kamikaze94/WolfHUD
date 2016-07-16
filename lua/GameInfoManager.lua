@@ -142,6 +142,7 @@ if RequiredScript == "lib/setups/setup" then
 			caustic_soda =						"_special_equipment_interaction_handler",
 			gen_pku_blow_torch =				"_special_equipment_interaction_handler",
 			drk_pku_blow_torch = 				"_special_equipment_interaction_handler",
+			hold_born_receive_item_blow_torch = "_special_equipment_interaction_handler",
 			gen_pku_thermite = 					"_special_equipment_interaction_handler",
 			gen_pku_thermite_paste = 			"_special_equipment_interaction_handler",
 			hold_take_gas_can = 				"_special_equipment_interaction_handler",
@@ -760,10 +761,10 @@ if RequiredScript == "lib/setups/setup" then
 		end
 	end
 	
-	function GameInfoManager:_bodybags_event(event, key, data)
+	function GameInfoManager:_bodybags_event(event, key, amount)
 		if event == "set" then
-			self._bodybag_amount = key
-			self:_listener_callback("bodybags", "set", self._bodybag_amount)
+			self._bodybag_amount = amount
+			self:_listener_callback("bodybags", "set", key, self._bodybag_amount)
 		end
 	end
 	
@@ -2647,7 +2648,7 @@ if RequiredScript == "lib/managers/playermanager" then
 	end
 	
 	function PlayerManager:_set_body_bags_amount(body_bags_amount)
-		managers.gameinfo:event("bodybags", "set", body_bags_amount)
+		managers.gameinfo:event("bodybags", "set", nil, body_bags_amount)
 		_set_body_bags_amount_original(self, body_bags_amount)
 	end
 	

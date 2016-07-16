@@ -708,8 +708,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:set_accuracy(0)
 	end
 	
-	function HUDTeammateCustom:increment_kill_count(is_special, headshot)
-		self:call_listeners("increment_kill_count", is_special, headshot)
+	function HUDTeammateCustom:increment_kill_count(normal_kill, is_special, headshot)
+		self:call_listeners("increment_kill_count", normal_kill, is_special, headshot)
 	end
 	
 	function HUDTeammateCustom:reset_kill_count()
@@ -1270,8 +1270,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 	
-	function PlayerInfoComponent.KillCounter:increment(is_special, headshot)
-		self._kills = self._kills + 1
+	function PlayerInfoComponent.KillCounter:increment(normal_kill, is_special, headshot)
+		self._kills = self._kills + (normal_kill and 1 or 0)
 		self._special_kills = self._special_kills + (is_special and 1 or 0)
 		self._headshot_kills = self._headshot_kills + (headshot and 1 or 0)
 		self:_update_text()
@@ -3641,8 +3641,8 @@ end
 		--TODO
 	end
 	
-	function HUDManager:increment_teammate_kill_count(i, is_special, headshot)
-		self._teammate_panels[i]:increment_kill_count(is_special, headshot)
+	function HUDManager:increment_teammate_kill_count(i, normal_kill, is_special, headshot)
+		self._teammate_panels[i]:increment_kill_count(normal_kill, is_special, headshot)
 	end
 	
 	function HUDManager:reset_teammate_kill_count(i)

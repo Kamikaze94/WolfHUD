@@ -64,6 +64,9 @@ end
 ]]
 
 	local _on_damage_received_original = CopDamage._on_damage_received
+	--Workaround for Teammate Headshots, since col_ray doesn't get forwarded...
+	local sync_damage_bullet_original = CopDamage.sync_damage_bullet
+	local sync_damage_melee_original = CopDamage.sync_damage_melee
 
 	function CopDamage:_process_kill(data)
 		local killer
@@ -100,57 +103,15 @@ end
 				local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
 				local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false
 				if killer:in_slot(2) then
-					managers.hud:increment_teammate_kill_count(HUDManager.PLAYER_PANEL, is_special, headshot)
+					managers.hud:increment_teammate_kill_count(HUDManager.PLAYER_PANEL, true, is_special, headshot)
 				else
 					local crim_data = managers.criminals:character_data_by_unit(killer)
 					if crim_data and crim_data.panel_id then
-						managers.hud:increment_teammate_kill_count(crim_data.panel_id, is_special, headshot)
+						managers.hud:increment_teammate_kill_count(crim_data.panel_id, true, is_special, headshot)
 					end
 				end
 			end
 		end
-		
---[[
-		if alive(data.attacker_unit) then
-			if data.attacker_unit:base().sentry_gun then
-				killer = managers.criminals:character_unit_by_peer_id(data.attacker_unit:base()._owner_id)
-				weapon_type = "sentry"
-			elseif data.attacker_unit:base().thrower_unit then
-				killer = data.attacker_unit:base():thrower_unit()
-				
-				if alive(data.attacker_unit:base():weapon_unit()) then
-					weapon_type = "weapon"
-					weapon_slot = tweak_data.weapon[data.attacker_unit:base():weapon_unit():base():get_name_id()].use_data.selection_index
-				else
-					weapon_type = "throwable"
-				end
-			elseif data.name_id and tweak_data.blackmarket.melee_weapons[data.name_id] then
-				killer = data.attacker_unit
-				weapon_type = "melee"
-			elseif alive(data.weapon_unit) then
-				killer = data.attacker_unit
-				local name_id = data.weapon_unit:base():get_name_id()
-				
-				if tweak_data.blackmarket.projectiles[name_id] then
-					weapon_type = "throwable"
-				elseif tweak_data.weapon[name_id] then
-					weapon_type = "weapon"
-					weapon_slot = tweak_data.weapon[name_id].use_data.selection_index
-				elseif name_id == "trip_mine" then
-					weapon_type = "trip_mine"
-				end
-			end
-		end
-		
-		if killer and weapon_type then
-			if killer == managers.player:player_unit() then
-				managers.hud:increment_teammate_kill_count(HUDManager.PLAYER_PANEL, managers.groupai:state():is_enemy_special(self._unit))
-				managers.hud:increment_teammate_kill_count_detailed(HUDManager.PLAYER_PANEL, self._unit, weapon_type, weapon_slot)
-			elseif not managers.criminals:character_peer_id_by_unit(killer) then
-				--io.write("DEBUG: Kill by bot " .. tostring(managers.criminals:character_name_by_unit(killer)) .. ": " .. tostring(weapon_type) .. " (" .. tostring(weapon_slot) .. ")\n")
-			end
-		end
-]]
 	end
 	
 	function CopDamage:_on_damage_received(data, ...)
@@ -159,6 +120,36 @@ end
 		end
 		
 		return _on_damage_received_original(self, data, ...)
+	end
+	
+	function CopDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body, ...)
+		local val = sync_damage_bullet_original(self, attacker_unit, damage_percent, i_body, ...)
+		if self._dead then
+			local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
+			local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false
+			if headshot then
+				local crim_data = managers.criminals:character_data_by_unit(attacker_unit)
+				if crim_data and crim_data.panel_id then
+					managers.hud:increment_teammate_kill_count(crim_data.panel_id, false, false, headshot)
+				end
+			end
+		end
+		return val
+	end
+	
+	function CopDamage:sync_damage_melee(attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
+		local val = sync_damage_melee_original(self, attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
+		if self._dead then
+			local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
+			local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false
+			if headshot then
+				local crim_data = managers.criminals:character_data_by_unit(attacker_unit)
+				if crim_data and crim_data.panel_id then
+					managers.hud:increment_teammate_kill_count(crim_data.panel_id, false, false, headshot)
+				end
+			end
+		end
+		return val
 	end
 
 	--TODO: Add sync damage checks for non-local bots and players
@@ -205,8 +196,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDManager.KILL_COUNTER_PLUGIN = true
 	HUDManager.ACCURACY_PLUGIN = true
 
-	HUDManager.increment_teammate_kill_count = HUDManager.increment_teammate_kill_count or function (self, i, is_special, headshot)
-		self._teammate_panels[i]:increment_kill_count(is_special, headshot)
+	HUDManager.increment_teammate_kill_count = HUDManager.increment_teammate_kill_count or function (self, i, normal_kill, is_special, headshot)
+		self._teammate_panels[i]:increment_kill_count(normal_kill, is_special, headshot)
 	end
 	
 	HUDManager.reset_teammate_kill_count = HUDManager.reset_teammate_kill_count or function(self, i)
@@ -323,8 +314,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			self:set_accuracy(0)
 		end
 
-		function HUDTeammate:increment_kill_count(is_special, headshot)
-			self._kill_count = self._kill_count + 1
+		function HUDTeammate:increment_kill_count(normal_kill, is_special, headshot)
+			self._kill_count = self._kill_count + (normal_kill and 1 or 0)
 			self._kill_count_special = self._kill_count_special + (is_special and 1 or 0)
 			self._headshot_kills = self._headshot_kills + (headshot and 1 or 0)
 			self:_update_kill_count_text()

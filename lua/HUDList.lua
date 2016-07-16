@@ -171,9 +171,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		caustic_soda =						"meth_ingredients",
 		gen_pku_blow_torch =				"blowtorch",
 		drk_pku_blow_torch = 				"blowtorch",
+		hold_born_receive_item_blow_torch = "blowtorch",
+		--thermite = 						"thermite",
+		--gasoline = 						"thermite",
 		gen_pku_thermite = 					"thermite",
 		gen_pku_thermite_paste = 			"thermite",
 		hold_take_gas_can = 				"thermite",
+		--gen_pku_thermite_paste_z_axis = 	"thermite",
 		money_wrap_single_bundle = 			"small_loot",
 		money_wrap_single_bundle_active = 	"small_loot",
 		money_wrap_single_bundle_dyn = 		"small_loot",
@@ -1138,7 +1142,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		
 		if HUDListManager.ListOptions.aggregate_hostages then
 			self:_update_unit_count_list_items(list, "hostages", all_ids, HUDListManager.ListOptions.show_hostages)
- 		end
+		else
+			for unit_type, unit_ids in pairs(all_types) do
+				self:_update_unit_count_list_items(list, unit_type, unit_ids, HUDListManager.ListOptions.show_hostages)
+			end
+		end
 	end
 	
 	function HUDListManager:_set_aggregate_hostages()
@@ -2213,6 +2221,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				source = "bodybags",
 				event = { "set" },
 				clbk = callback(self, self, "_change_bodybag_count"),
+				data_only = true,
 			},
 			{
 				name = "HUDList_bodybags_count_listener",
@@ -2226,10 +2235,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:set_count(managers.gameinfo:get_bodybag_amount())
 	end
 	
-	function HUDList.BodyBagsInvItem:_change_bodybag_count(event, key, ...)
-		if event == "set" then
-			self:set_count(key)
-		end	
+	function HUDList.BodyBagsInvItem:_change_bodybag_count(amount)
+		self:set_count(amount)
 	end
 	
 	function HUDList.BodyBagsInvItem:_whisper_mode_change(status)
@@ -2239,15 +2246,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	HUDList.SpecialPickupItem = HUDList.SpecialPickupItem or class(HUDList.RightListItem)
 	HUDList.SpecialPickupItem.MAP = {
-		crowbar =					{ hudpickups = { 0, 64, 32, 32 } },
-		keycard =					{ hudpickups = { 32, 0, 32, 32 } },
-		small_loot = 				{ hudpickups = { 32, 224, 32, 32} },
-		courier = 					{ atlas = { 6, 0 } },
-		planks =					{ hudpickups = { 0, 32, 32, 32 } },
-		meth_ingredients =			{ waypoints = { 192, 32, 32, 32 } },
-		blowtorch = 				{ hudpickups = { 96, 192, 32, 32 } },
-		thermite = 					{ hudpickups = { 64, 64, 32, 32 } },
-		secret_item =				{ waypoints = { 96, 64, 32, 32 } },
+		crowbar =					{ hudpickups = { 0, 64, 32, 32 }, 	priority = 1 },
+		keycard =					{ hudpickups = { 32, 0, 32, 32 }, 	priority = 1 },
+		small_loot = 				{ hudpickups = { 32, 224, 32, 32}, 	priority = 3 },
+		courier = 					{ atlas = { 6, 0 }, 				priority = 3 },
+		planks =					{ hudpickups = { 0, 32, 32, 32 }, 	priority = 2 },
+		meth_ingredients =			{ waypoints = { 192, 32, 32, 32 }, 	priority = 2 },
+		blowtorch = 				{ hudpickups = { 96, 192, 32, 32 }, priority = 1 },
+		thermite = 					{ hudpickups = { 64, 64, 32, 32 }, 	priority = 1 },
+		secret_item =				{ waypoints = { 96, 64, 32, 32 }, 	priority = 4 },
 	}
 	
 	function HUDList.SpecialPickupItem:init(parent, name, id, members)
