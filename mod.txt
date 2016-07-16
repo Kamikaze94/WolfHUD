@@ -6,7 +6,7 @@
 	"version" : "2.00",
 	"priority" : 1,
 	"hooks" : [
-		{ "hook_id" : "lib/setups/gamesetup", 									"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/setups/setup", 										"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/menumanager", 								"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/menumanagerdialogs", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/chatmanager", 								"script_path" : "Core.lua" },
@@ -57,6 +57,7 @@
         { "hook_id" : "lib/units/weapons/raycastweaponbase", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/weapons/newraycastweaponbase", 				"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/weapons/shotgun/newshotgunbase", 				"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/units/weapons/trip_mine/tripminebase", 				"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/beings/player/playerdamage", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/beings/player/playermovement", 				"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/beings/player/huskplayermovement", 			"script_path" : "Core.lua" },

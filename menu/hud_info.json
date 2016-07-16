@@ -16,48 +16,9 @@
 			"priority" : 18,
 		},
 		{
-			"type" : "slider",
-			"id" : "right_list_scale",
-			"title" : "wolfhud_hudlist_scale_right_title",
-			"description" : "wolfhud_hudlist_scale_right_desc",
-			"callback" : "clbk_change_hudlist_setting",
-			"value" : "right_list_scale",
-			"default_value" : 1,
-			"min" : 0.5,
-			"max" : 2,
-			"step" : 0.01,
-			"priority" : 17,
-		},
-		{
-			"type" : "slider",
-			"id" : "left_list_scale",
-			"title" : "wolfhud_hudlist_scale_left_title",
-			"description" : "wolfhud_hudlist_scale_left_desc",
-			"callback" : "clbk_change_hudlist_setting",
-			"value" : "left_list_scale",
-			"default_value" : 1,
-			"min" : 0.5,
-			"max" : 2,
-			"step" : 0.01,
-			"priority" : 16,
-		},
-		{
-			"type" : "slider",
-			"id" : "buff_list_scale",
-			"title" : "wolfhud_hudlist_scale_buff_title",
-			"description" : "wolfhud_hudlist_scale_buff_desc",
-			"callback" : "clbk_change_hudlist_setting",
-			"value" : "buff_list_scale",
-			"default_value" : 1,
-			"min" : 0.5,
-			"max" : 2,
-			"step" : 0.01,
-			"priority" : 15,
-		},
-		{
 			"type" : "divider",
 			"size" : 16,
-			"priority" : 14,
+			"priority" : 17,
 		},
 		{
 			"type" : "multiple_choice",
@@ -84,7 +45,7 @@
 				"wolfhud_colors_black"
 			],
 			"value" : "list_color",
-			"priority" : 13,
+			"priority" : 16,
 		},
 		{
 			"type" : "multiple_choice",
@@ -111,12 +72,7 @@
 				"wolfhud_colors_black"
 			],
 			"value" : "list_color_bg",
-			"priority" : 12,
-		},
-		{
-			"type" : "divider",
-			"size" : 8,
-			"priority" : 11,
+			"priority" : 15,
 		},
 		{
 			"type" : "multiple_choice",
@@ -143,8 +99,7 @@
 				"wolfhud_colors_black"
 			],
 			"value" : "civilian_color",
-			"priority" : 10,
-		"priority" : 10,
+			"priority" : 14,
 		},
 		{
 			"type" : "multiple_choice",
@@ -171,7 +126,7 @@
 				"wolfhud_colors_black"
 			],
 			"value" : "thug_color",
-			"priority" : 9,
+			"priority" : 13,
 		},
 		{
 			"type" : "multiple_choice",
@@ -198,7 +153,7 @@
 				"wolfhud_colors_black"
 			],
 			"value" : "enemy_color",
-			"priority" : 8,
+			"priority" : 12,
 		},
 		{
 			"type" : "multiple_choice",
@@ -225,11 +180,55 @@
 				"wolfhud_colors_black"
 			],
 			"value" : "special_color",
-			"priority" : 7,
+			"priority" : 11,
 		},
 		{
 			"type" : "divider",
 			"size" : 16,
+			"priority" : 10,
+		},
+		{
+			"type" : "slider",
+			"id" : "right_list_scale",
+			"title" : "wolfhud_hudlist_scale_right_title",
+			"description" : "wolfhud_hudlist_scale_right_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "right_list_scale",
+			"default_value" : 1,
+			"min" : 0.5,
+			"max" : 2,
+			"step" : 0.01,
+			"priority" : 9,
+		},
+		{
+			"type" : "slider",
+			"id" : "left_list_scale",
+			"title" : "wolfhud_hudlist_scale_left_title",
+			"description" : "wolfhud_hudlist_scale_left_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "left_list_scale",
+			"default_value" : 1,
+			"min" : 0.5,
+			"max" : 2,
+			"step" : 0.01,
+			"priority" : 8,
+		},
+		{
+			"type" : "slider",
+			"id" : "buff_list_scale",
+			"title" : "wolfhud_hudlist_scale_buff_title",
+			"description" : "wolfhud_hudlist_scale_buff_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "buff_list_scale",
+			"default_value" : 1,
+			"min" : 0.5,
+			"max" : 2,
+			"step" : 0.01,
+			"priority" : 7,
+		},
+		{
+			"type" : "divider",
+			"size" : 8,
 			"priority" : 6,
 		}
 	]

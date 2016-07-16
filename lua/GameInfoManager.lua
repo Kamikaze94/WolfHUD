@@ -3,17 +3,17 @@ printf = function(...)
 	WolfHUD:print_log(string.format(...))
 end
 
-if RequiredScript == "lib/setups/gamesetup" then
+if RequiredScript == "lib/setups/setup" then
 	
-	local init_managers_original = GameSetup.init_managers
-	local update_original = GameSetup.update
+	local init_managers_original = Setup.init_managers
+	local update_original = Setup.update
 	
-	function GameSetup:init_managers(managers, ...)
+	function Setup:init_managers(managers, ...)
 		managers.gameinfo = managers.gameinfo or GameInfoManager:new()
 		return init_managers_original(self, managers, ...)
 	end
 	
-	function GameSetup:update(t, dt, ...)
+	function Setup:update(t, dt, ...)
 		managers.gameinfo:update(t, dt)
 		return update_original(self, t, dt, ...)
 	end
@@ -52,8 +52,7 @@ if RequiredScript == "lib/setups/gamesetup" then
 			--General functions
 			update = function(timers, key, t, timer)
 				if timers[key] then
-					timers[key].t = t
-					timers[key].timer = timer
+					timers[key].timer_value = timer
 					managers.gameinfo:_listener_callback("timer", "update", key, timers[key])
 				end
 			end,
@@ -265,6 +264,19 @@ if RequiredScript == "lib/setups/gamesetup" then
 	GameInfoManager._INTERACTIONS.IGNORE_IDS.welcome_to_the_jungle_1_night = table.deep_map_copy(GameInfoManager._INTERACTIONS.IGNORE_IDS.welcome_to_the_jungle_1)
 	
 	GameInfoManager._EQUIPMENT = {
+		SENTRY_KEYS = {
+			--unit:name():key() for friendly sentries
+			["07bd083cc5f2d3ba"] = true,	--Standard U100+
+			["c71d763cd8d33588"] = true,	--Suppressed U100+
+			["b1f544e379409e6c"] = true,	--GGC BFD sentries
+		},
+		INTERACTION_ID_TO_TYPE = {
+			firstaid_box =						"doc_bag",
+			ammo_bag =							"ammo_bag",
+			doctor_bag =						"doc_bag",
+			bodybags_bag =						"body_bag",
+			grenade_crate =					"grenade_crate",
+		},
 		AMOUNT_OFFSETS = {
 			--interaction_id or editor_id
 			firstaid_box = -1,	--GGC drill asset, HB infirmary
@@ -401,13 +413,20 @@ if RequiredScript == "lib/setups/gamesetup" then
 		self._turrets = {}
 		self._pagers = {}
 		self._cams = {}
+		self._bodybag_amount = 0
 		self._loot = {}
 		self._special_equipment = {}
 		self._ecms = {}
-		self._deployables = {}
+		self._deployables = {
+			ammo_bag = {},
+			doc_bag = {},
+			body_bag = {},
+			grenade_crate = {},
+		}
 		self._sentries = {}
 		self._buffs = {}
 		self._player_actions = {}
+		self._tape_loop = {}
 		
 		self._auto_expire_timers = {
 			on_expire = {},
@@ -479,6 +498,11 @@ if RequiredScript == "lib/setups/gamesetup" then
 			return self._cams
 		end
 	end
+	
+	function GameInfoManager:get_bodybag_amount()
+		return self._bodybag_amount
+	end
+	
 	function GameInfoManager:get_special_equipment(key)
 		if key then
 			return self._special_equipment[key]
@@ -503,12 +527,23 @@ if RequiredScript == "lib/setups/gamesetup" then
 		end
 	end
 	
-	function GameInfoManager:get_deployables(key)
+	function GameInfoManager:get_tape_loop(key)
 		if key then
-			return self._deployables[key]
+			return self._tape_loop[key]
 		else
-			return self._deployables
+			return self._tape_loop
 		end
+	end
+	
+	function GameInfoManager:get_deployables(type, key)
+
+		if type and key then
+			return self._deployables[type][key]
+		elseif type then
+			return self._deployables[type]
+ 		else
+ 			return self._deployables
+ 		end
 	end
 	
 	function GameInfoManager:get_sentries(key)
@@ -561,10 +596,11 @@ if RequiredScript == "lib/setups/gamesetup" then
 		end
 	end
 	
-	function GameInfoManager:_unit_event(event, key, unit, unit_type)
+	function GameInfoManager:_unit_event(event, key, data)
 		if event == "add" then
 			if not self._units[key] then
-				self._units[key] = { unit = unit, type = unit_type }
+				local unit_type = data.unit:base()._tweak_table
+				self._units[key] = { unit = data.unit, type = unit_type }
 				self:_listener_callback("unit", event, key, self._units[key])
 				self:_unit_count_event("change", unit_type, 1)
 			end
@@ -592,43 +628,34 @@ if RequiredScript == "lib/setups/gamesetup" then
 		end
 	end
 	
-	function GameInfoManager:_minion_event(event, key, ...)
+	function GameInfoManager:_minion_event(event, key, data)
 		if event == "add" then
-			local unit, owner, health_multiplier, damage_multiplier = ...
-			
 			if not self._minions[key] then
-				self._minions[key] = { unit = unit, kills = 0 }
+				self._minions[key] = { unit = data.unit, kills = 0 }
 				self:_listener_callback("minion", "add", key, self._minions[key])
 				self:_unit_count_event("change", "minion", 1)
-			end
-			
-			if owner and self._minions[key].owner ~= owner then
-				self._minions[key].owner = owner
-				self:_listener_callback("minion", "set_owner", key, self._minions[key])
-			end
-			
-			if health_multiplier and self._minions[key].health_multiplier ~= health_multiplier then
-				self._minions[key].health_multiplier = health_multiplier
-				self:_listener_callback("minion", "set_health_multiplier", key, self._minions[key])
-			end
-			
-			if damage_multiplier and self._minions[key].damage_multiplier ~= damage_multiplier then
-				self._minions[key].damage_multiplier = damage_multiplier
-				self:_listener_callback("minion", "set_damage_multiplier", key, self._minions[key])
 			end
 		elseif self._minions[key] then
 			if event == "remove" then
 				self:_listener_callback("minion", "remove", key, self._minions[key])
 				self:_unit_count_event("change", "minion", -1)
 				self._minions[key] = nil
-			elseif event == "set_health" then
-				local health = ...
-				self._minions[key].health = health
-				self:_listener_callback("minion", "set_health", key, self._minions[key])
-			elseif event == "increment_kills" then
-				self._minions[key].kills = self._minions[key].kills + 1
-				self:_listener_callback("minion", "set_kills", key, self._minions[key])
-			end
+			else
+				if event == "set_health_ratio" then
+					self._minions[key].health_ratio = data.health_ratio
+				elseif event == "increment_kills" then
+					event = "set_kills"
+					self._minions[key].kills = self._minions[key].kills + 1
+				elseif event == "set_owner" then
+					self._minions[key].owner = data.owner
+				elseif event == "set_damage_resistance" then
+					self._minions[key].damage_resistance = data.damage_resistance
+				elseif event == "set_damage_multiplier" then
+					self._minions[key].damage_multiplier = data.damage_multiplier
+				end
+				
+				self:_listener_callback("minion", event, key, self._minions[key])
+ 			end
 		end
 	end
 	
@@ -646,61 +673,69 @@ if RequiredScript == "lib/setups/gamesetup" then
 		end
 	end
 	
-	function GameInfoManager:_interactive_unit_event(event, key, unit)
+	function GameInfoManager:_interactive_unit_event(event, key, data)
 		local lookup = GameInfoManager._INTERACTIONS
 		local level_id = managers.job:current_level_id()
-		local editor_id = unit:editor_id()
 		
-		if lookup.IGNORE_IDS[level_id] and lookup.IGNORE_IDS[level_id][editor_id] then
+		if lookup.IGNORE_IDS[level_id] and lookup.IGNORE_IDS[level_id][data.editor_id] then
 			return
 		end
 		
-		if lookup.CONDITIONAL_IGNORE_IDS[editor_id] then
-			if lookup.CONDITIONAL_IGNORE_IDS[editor_id]() then
+		if lookup.CONDITIONAL_IGNORE_IDS[data.editor_id] then
+			if lookup.CONDITIONAL_IGNORE_IDS[data.editor_id]() then
 				return
 			end
 		end
 		
-		local interact_id = unit:interaction().tweak_data
-		local interact_clbk = lookup.INTERACTION_TO_CALLBACK[interact_id]
+		local interact_clbk = lookup.INTERACTION_TO_CALLBACK[data.interact_id]
 		
 		if interact_clbk then
-			self[interact_clbk](self, event, key, unit, interact_id)
+			self[interact_clbk](self, event, key, data)
 		else
-			local carry_id = unit:carry_data() and unit:carry_data():carry_id() or lookup.INTERACTION_TO_CARRY[interact_id] or (self._loot[key] and self._loot[key].carry_id)
+			local carry_id = data.unit:carry_data() and data.unit:carry_data():carry_id() or lookup.INTERACTION_TO_CARRY[data.interact_id] or (self._loot[key] and self._loot[key].carry_id)
 			
 			if carry_id then
-				printf("%s - %s: %d", event, carry_id, editor_id)
-				self:_loot_interaction_handler(event, key, unit, interact_id, carry_id)
+				printf("%s - %s: %d", event, carry_id, data.editor_id)
+				data.carry_id = carry_id
+				self:_loot_interaction_handler(event, key, data)
 			else
-				self:_listener_callback("interactable_unit", event, key, unit, interact_id, carry_id)
+				self:_listener_callback("interactable_unit", event, key, data.unit, data.interact_id, carry_id)
 			end
 		end
 	end
 	
-	function GameInfoManager:_pager_event(event, key, unit)
+	function GameInfoManager:_pager_event(event, key, data)
 		if event == "add" then
 			if not self._pagers[key] then
-				self._pagers[key] = { unit = unit, active = true, answered = false }
+				local t = Application:time()
+				self._pagers[key] = { 
+					unit = data.unit, 
+					active = true, 
+					answered = false,
+					start_t = t,
+					expire_t = t + 12,
+				}
 				self:_listener_callback("pager", "add", key, self._pagers[key])
 			end
-		elseif event == "remove" then
-			if self._pagers[key] and self._pagers[key].active then
-				self._pagers[key].active = false
-				self:_listener_callback("pager", "remove", key, self._pagers[key])
-			end
-		elseif event == "answered" then
-			if self._pagers[key] and not self._pagers[key].answered then
-				self._pagers[key].answered = true
-				self:_listener_callback("pager", "answered", key, self._pagers[key])
+		elseif self._pagers[key] then
+			if event == "remove" then
+				if self._pagers[key].active then
+					self._pagers[key].active = false
+					self:_listener_callback("pager", "remove", key, self._pagers[key])
+				end
+			elseif event == "set_answered" then
+				if not self._pagers[key].answered then
+					self._pagers[key].answered = true
+					self:_listener_callback("pager", "set_answered", key, self._pagers[key])
+				end
 			end
 		end
 	end
 	
-	function GameInfoManager:_camera_event(event, key, unit)
+	function GameInfoManager:_camera_event(event, key, data)
 		if event == "add" then
 			if not self._cams[key] then
-				self._cams[key] = { unit = unit, active = true, destroyed = false }
+				self._cams[key] = { unit = data.unit, active = true, destroyed = false }
 				self:_listener_callback("camera", "add", key, self._cams[key])
 			else
 				self._cams[key].active = true
@@ -725,206 +760,232 @@ if RequiredScript == "lib/setups/gamesetup" then
 		end
 	end
 	
-	function GameInfoManager:_bodybags_event(event, key)
+	function GameInfoManager:_bodybags_event(event, key, data)
 		if event == "set" then
-			self:_listener_callback("bodybags", "set", key)
+			self._bodybag_amount = key
+			self:_listener_callback("bodybags", "set", self._bodybag_amount)
 		end
 	end
 	
-	function GameInfoManager:_special_equipment_interaction_handler(event, key, unit, interact_id)
+	function GameInfoManager:_special_equipment_interaction_handler(event, key, data)
 		if event == "add" then
 			if not self._special_equipment[key] then
-				self._special_equipment[key] = { unit = unit, interact_id = interact_id }
+				self._special_equipment[key] = { unit = data.unit, interact_id = data.interact_id }
 				self:_listener_callback("special_equipment", "add", key, self._special_equipment[key])
+				self:_special_equipment_count_event("change", data.interact_id, 1, self._special_equipment[key])
 			end
 		elseif event == "remove" then
 			if self._special_equipment[key] then
 				self:_listener_callback("special_equipment", "remove", key, self._special_equipment[key])
+				self:_special_equipment_count_event("change", data.interact_id, -1, self._special_equipment[key])
 				self._special_equipment[key] = nil
 			end
 		end
 	end
 	
-	function GameInfoManager:_deployable_interaction_handler(event, key, unit, interact_id)
-		if self._deployables[key] then
-			local active = event == "add"
-			self:_bag_deployable_event("set_active", key, active)
-			
-			local offset = GameInfoManager._EQUIPMENT.AMOUNT_OFFSETS[unit:editor_id()] or GameInfoManager._EQUIPMENT.AMOUNT_OFFSETS[interact_id]
-			if active and offset then
-				self:_bag_deployable_event("set_amount_offset", key, offset)
+	function GameInfoManager:_special_equipment_count_event(event, interact_id, value, data)
+		if event == "change" then
+			if value ~= 0 then
+				self:_listener_callback("special_equipment_count", "change", interact_id, value, data)
 			end
 		end
 	end
 	
-	function GameInfoManager:_loot_interaction_handler(event, key, unit, interact_id, carry_id)
-		if event == "add" then
-			if not self._loot[key] then
-				local composite_lookup = GameInfoManager._INTERACTIONS.COMPOSITE_LOOT_UNITS
-				local count = composite_lookup[unit:editor_id()] or composite_lookup[interact_id] or 1
-				local bagged = GameInfoManager._INTERACTIONS.BAGGED_IDS[interact_id] and true or false
+	function GameInfoManager:_deployable_interaction_handler(event, key, data)
+		local type = GameInfoManager._EQUIPMENT.INTERACTION_ID_TO_TYPE[data.interact_id]
+		
+		if self._deployables[type][key] then
+ 			local active = event == "add"
+			local offset = GameInfoManager._EQUIPMENT.AMOUNT_OFFSETS[data.unit:editor_id()] or GameInfoManager._EQUIPMENT.AMOUNT_OFFSETS[data.interact_id]
 			
-				self._loot[key] = { unit = unit, carry_id = carry_id, count = count, bagged = bagged }
-				self:_listener_callback("loot", "add", key, self._loot[key])
-			end
-		elseif event == "remove" then
-			if self._loot[key] then
-				self:_listener_callback("loot", "remove", key, self._loot[key])
-				self._loot[key] = nil
+			self:_bag_deployable_event("set_active", key, { active = active }, type)
+ 			
+ 			if active and offset then
+				self:_bag_deployable_event("set_amount_offset", key, { amount_offset = offset }, type)
+ 			end
+ 		end
+ 	end
+	
+	function GameInfoManager:_loot_interaction_handler(event, key, data)
+ 		if event == "add" then
+ 			if not self._loot[key] then
+ 				local composite_lookup = GameInfoManager._INTERACTIONS.COMPOSITE_LOOT_UNITS
+				local count = composite_lookup[data.editor_id] or composite_lookup[data.interact_id] or 1
+				local bagged = GameInfoManager._INTERACTIONS.BAGGED_IDS[data.interact_id] and true or false
+
+				self._loot[key] = { unit = data.unit, carry_id = data.carry_id, count = count, bagged = bagged }
+ 				self:_listener_callback("loot", "add", key, self._loot[key])
+				self:_loot_count_event("change", data.carry_id, bagged, count, self._loot[key])
+ 			end
+ 		elseif event == "remove" then
+ 			if self._loot[key] then
+ 				self:_listener_callback("loot", "remove", key, self._loot[key])
+				self:_loot_count_event("change", data.carry_id, self._loot[key].bagged, -self._loot[key].count, self._loot[key])
+ 				self._loot[key] = nil
+ 			end
+ 		end
+ 	end
+	
+	function GameInfoManager:_loot_count_event(event, carry_id, bagged, value, data)
+		if event == "change" then
+			if value ~= 0 then
+				self:_listener_callback("loot_count", "change", carry_id, bagged, value, data)
 			end
 		end
 	end
 	
-	function GameInfoManager:_ecm_event(event, key, ...)
+	function GameInfoManager:_ecm_event(event, key, data)
 		if event == "create" then
 			if not self._ecms[key] then
-				local unit = ...
-				self._ecms[key] = { unit = unit }
-				self:_listener_callback("ecm", "create", key, self._ecms[key])
+				self._ecms[key] = { unit = data.unit }
+				self:_listener_callback("ecm", event, key, self._ecms[key])
 			end
-		elseif event == "destroy" then
-			if self._ecms[key] then
-				self:_listener_callback("ecm", "destroy", key, self._ecms[key])
-				self._ecms[key] = nil
-			end
-		else
-			if self._ecms[key] then
-				if event == "set_jammer_active" then
-					local active = ...
-					if self._ecms[key].active ~= active then
-						self._ecms[key].active = active
-						self:_listener_callback("ecm", "set_jammer_active", key, self._ecms[key])
-					end
-				elseif event == "set_retrigger_active" then
-					local active = ...
-					if self._ecms[key].retrigger ~= active then
-						self._ecms[key].retrigger = active
-						self:_listener_callback("ecm", "set_retrigger_active", key, self._ecms[key])
-					end
-				elseif event == "update" then
-					local battery, retrigger_t = ...
-					
-					if self._ecms[key].active then
-						self._ecms[key].battery = battery
-						self:_listener_callback("ecm", "set_battery", key, self._ecms[key])
-					end
-					
-					if self._ecms[key].retrigger then
-						self._ecms[key].retrigger_t = retrigger_t
-						self:_listener_callback("ecm", "set_retrigger", key, self._ecms[key])
-					end
+		elseif self._ecms[key] then
+			if event == "set_jammer_battery" then
+				if self._ecms[key].jammer_active then
+					self._ecms[key].jammer_battery = data.jammer_battery
+					self:_listener_callback("ecm", event, key, self._ecms[key])
 				end
-			end
+			elseif event == "set_retrigger_delay" then
+				if self._ecms[key].retrigger_active then
+					self._ecms[key].retrigger_delay = data.retrigger_delay
+					self:_listener_callback("ecm", event, key, self._ecms[key])
+				end
+			elseif event == "set_jammer_active" then
+				if self._ecms[key].jammer_active ~= data.jammer_active then
+					self._ecms[key].jammer_active = data.jammer_active
+					self:_listener_callback("ecm", event, key, self._ecms[key])
+				end
+			elseif event == "set_retrigger_active" then
+				if self._ecms[key].retrigger_active ~= data.retrigger_active then
+					self._ecms[key].retrigger_active = data.retrigger_active
+					self:_listener_callback("ecm", event, key, self._ecms[key])
+				end
+			elseif event == "set_owner" then
+				self._ecms[key].owner = data.owner
+				self:_listener_callback("ecm", event, key, self._ecms[key])
+			elseif event == "set_upgrade_level" then
+				self._ecms[key].upgrade_level = data.upgrade_level
+				self:_listener_callback("ecm", event, key, self._ecms[key])
+			elseif event == "destroy" then
+				self:_listener_callback("ecm", event, key, self._ecms[key])
+				self._ecms[key] = nil
+ 			end
 		end
 	end
 	
-	function GameInfoManager:_bag_deployable_event(event, key, ...)
+	function GameInfoManager:_doc_bag_event(event, key, data)
+		self:_bag_deployable_event(event, key, data, "doc_bag")
+	end
+	
+	function GameInfoManager:_ammo_bag_event(event, key, data)
+		self:_bag_deployable_event(event, key, data, "ammo_bag")
+	end
+	
+	function GameInfoManager:_body_bag_event(event, key, data)
+		self:_bag_deployable_event(event, key, data, "body_bag")
+	end
+	
+	function GameInfoManager:_grenade_crate_event(event, key, data)
+		self:_bag_deployable_event(event, key, data, "grenade_crate")
+	end
+	
+	function GameInfoManager:_bag_deployable_event(event, key, data, type)
 		if event == "create" then
-			if not self._deployables[key] then
-				local unit, bag_type = ...
-				self._deployables[key] = { unit = unit, type = bag_type }
-				self:_listener_callback("bag_deployable", "create", key, self._deployables[key])
-			end
-		elseif self._deployables[key] then
+			if not self._deployables[type][key] then
+				self._deployables[type][key] = { unit = data.unit }
+				self:_listener_callback(type, "create", key, self._deployables[type][key])
+ 			end
+		elseif self._deployables[type][key] then
 			local function update_aggregate_attribute(aggregate_key, attr)
-				if not self._deployables[aggregate_key] then return end
+				if not self._deployables[type][aggregate_key] then return end
 			
 				local total = 0
-				for k, v in pairs(self._deployables[aggregate_key].aggregate_members or {}) do
-					if self._deployables[k].active then
-						total = total + (self._deployables[k][attr] or 0)
-					end
-				end
+				for k, v in pairs(self._deployables[type][aggregate_key].aggregate_members or {}) do
+					if self._deployables[type][k].active then
+						total = total + (self._deployables[type][k][attr] or 0)
+ 					end
+ 				end
 				
-				self._deployables[aggregate_key][attr] = total
-				self:_listener_callback("bag_deployable", "set_" .. attr, aggregate_key, self._deployables[aggregate_key])
+				self._deployables[type][aggregate_key][attr] = total
+				self:_listener_callback(type, "set_" .. attr, aggregate_key, self._deployables[type][aggregate_key])
 				printf("UPDATE AGGREGATE %s: %s", tostring(attr), tostring(total))
 			end
 			
-			local aggregate_key = GameInfoManager._EQUIPMENT.AGGREAGATE_ITEMS[self._deployables[key].unit:editor_id()]
+			local aggregate_key = GameInfoManager._EQUIPMENT.AGGREAGATE_ITEMS[self._deployables[type][key].unit:editor_id()]
 			--log(self._deployables[key].type .. " | " .. self._deployables[key].unit:editor_id())
 			if event == "destroy" then
-				self:_listener_callback("bag_deployable", "destroy", key, self._deployables[key])
-				self._deployables[key] = nil
+				self:_listener_callback(type, "destroy", key, self._deployables[type][key])
+				self._deployables[type][key] = nil
 				
-				if aggregate_key and self._deployables[aggregate_key] then
-					self._deployables[aggregate_key].aggregate_members[key] = nil
+				if aggregate_key and self._deployables[type][aggregate_key] then
+					self._deployables[type][aggregate_key].aggregate_members[key] = nil
 					
-					if next(self._deployables[aggregate_key].aggregate_members or {}) == nil then
-						self:_listener_callback("bag_deployable", "destroy", aggregate_key, self._deployables[aggregate_key])
-						self._deployables[aggregate_key] = nil
-						--update_aggregate_attribute(aggregate_key, "amount")
-						--update_aggregate_attribute(aggregate_key, "max_amount")
-						--update_aggregate_attribute(aggregate_key, "amount_offset")
-					end
+					if next(self._deployables[type][aggregate_key].aggregate_members or {}) == nil then
+						self:_listener_callback(type, "destroy", aggregate_key, self._deployables[type][aggregate_key])
+						self._deployables[type][aggregate_key] = nil
+ 					end
 				end
-			elseif event == "set_active" then
-				local active = ...
+			elseif event == "set_active" then				
+				if aggregate_key then
+					self._deployables[type][key].aggregate_key = aggregate_key
+				end
+				
+				if self._deployables[type][key].active ~= data.active then
+					self._deployables[type][key].active = data.active
+					self:_listener_callback(type, "set_active", key, self._deployables[type][key])
+ 				end
 				
 				if aggregate_key then
-					self._deployables[key].aggregate_key = aggregate_key
-				end
-				
-				if self._deployables[key].active ~= active then
-					self._deployables[key].active = active
-					self:_listener_callback("bag_deployable", "set_active", key, self._deployables[key])
-				end
-				
-				if aggregate_key then
-					self._deployables[aggregate_key] = self._deployables[aggregate_key] or {
-						type = self._deployables[key].type, 
-						position = self._deployables[key].unit:interaction():interact_position(),
-						aggregate_members = {},
-					}
-					self._deployables[aggregate_key].aggregate_members[key] = true
+					self._deployables[type][aggregate_key] = self._deployables[type][aggregate_key] or {
+						position = self._deployables[type][key].unit:interaction():interact_position(),
+ 						aggregate_members = {},
+ 					}
+					self._deployables[type][aggregate_key].aggregate_members[key] = true
 					--TODO: Update position for each member added?
 					
 					local aggregate_active = false
-					for k, v in pairs(self._deployables[aggregate_key].aggregate_members or {}) do
-						if self._deployables[k].active then
-							aggregate_active = true
-							break
-						end
-					end
+					for k, v in pairs(self._deployables[type][aggregate_key].aggregate_members or {}) do
+						if self._deployables[type][k].active then
+ 							aggregate_active = true
+ 							break
+ 						end
+ 					end
 			
-					if self._deployables[aggregate_key].active ~= aggregate_active then
-						self._deployables[aggregate_key].active = aggregate_active
-						self:_listener_callback("bag_deployable", "set_active", aggregate_key, self._deployables[aggregate_key])
-					end
+					if self._deployables[type][aggregate_key].active ~= aggregate_active then
+						self._deployables[type][aggregate_key].active = aggregate_active
+						self:_listener_callback(type, "set_active", aggregate_key, self._deployables[type][aggregate_key])
+ 					end
 					
 					update_aggregate_attribute(aggregate_key, "amount")
 					update_aggregate_attribute(aggregate_key, "max_amount")
 					update_aggregate_attribute(aggregate_key, "amount_offset")
 				end
 			elseif event == "set_owner" then
-				local owner = ...
-				self._deployables[key].owner = owner
-				self:_listener_callback("bag_deployable", "set_owner", key, self._deployables[key])
-					
-				if aggregate_key then
-					self._deployables[aggregate_key].owner = owner
-					self:_listener_callback("bag_deployable", "set_owner", aggregate_key, self._deployables[aggregate_key])
-				end
+				self._deployables[type][key].owner = data.owner
+				self:_listener_callback(type, "set_owner", key, self._deployables[type][key])
+				
+				--if aggregate_key then
+				--	self._deployables[type][aggregate_key].owner = owner
+				--	self:_listener_callback(type, "set_owner", aggregate_key, self._deployables[type][aggregate_key])
+				--end
 			elseif event == "set_max_amount" then
-				local max_amount = ...
-				self._deployables[key].max_amount = max_amount
-				self:_listener_callback("bag_deployable", "set_max_amount", key, self._deployables[key])
+				self._deployables[type][key].max_amount = data.max_amount
+				self:_listener_callback(type, "set_max_amount", key, self._deployables[type][key])
 				
 				if aggregate_key then
 					update_aggregate_attribute(aggregate_key, "max_amount")
 				end
 			elseif event == "set_amount_offset" then
-				local amount_offset = ...
-				self._deployables[key].amount_offset = amount_offset
-				self:_listener_callback("bag_deployable", "set_amount_offset", key, self._deployables[key])
+				self._deployables[type][key].amount_offset = data.amount_offset
+				self:_listener_callback(type, "set_amount_offset", key, self._deployables[type][key])
 				
 				if aggregate_key then
 					update_aggregate_attribute(aggregate_key, "amount_offset")
 				end
 			elseif event == "set_amount" then
-				local amount = ...
-				self._deployables[key].amount = amount
-				self:_listener_callback("bag_deployable", "set_amount", key, self._deployables[key])
+				self._deployables[type][key].amount = data.amount
+				self:_listener_callback(type, "set_amount", key, self._deployables[type][key])
 				
 				if aggregate_key then
 					update_aggregate_attribute(aggregate_key, "amount")
@@ -933,49 +994,44 @@ if RequiredScript == "lib/setups/gamesetup" then
 		end
 	end
 	
-	function GameInfoManager:_tape_loop_event(event, key, ...)
+	function GameInfoManager:_tape_loop_event(event, key, data)
 		if event == "start" then
-			local unit, duration = ...
-			self:_listener_callback("tape_loop", "start", key, unit, duration)
-		elseif event == "stop" then
-			self:_listener_callback("tape_loop", "stop", key)
-		end
+			if not self._tape_loop[key] then
+				self._tape_loop[key] = { unit = data.unit, expire_t = data.expire_t }
+				self:_listener_callback("tape_loop", "start", key, data)
+			end
+		elseif event == "stop" and self._tape_loop[key] then
+			self:_listener_callback("tape_loop", "stop", key, self._tape_loop[key])
+			self._tape_loop[key] = nil
+ 		end
 	end
 	
-	function GameInfoManager:_sentry_event(event, key, ...)
+	function GameInfoManager:_sentry_event(event, key, data)
 		printf("GameInfoManager:_sentry_event(%s, %s)", event, key)
 		
 		if event == "create" then
-			if not self._sentries[key] then
-				local unit = ...
-				self._sentries[key] = { unit = unit }
-				self:_listener_callback("sentry", "create", key, self._sentries[key])
-			end
+			if not self._sentries[key] and GameInfoManager._EQUIPMENT.SENTRY_KEYS[tostring(data.unit:name():key())] then
+				self._sentries[key] = { unit = data.unit, kills = 0 }
+				self:_listener_callback("sentry", event, key, self._sentries[key])
+ 			end
 		elseif self._sentries[key] then
-			if event == "destroy" then
-				self._sentries[key].active = false
-				self:_listener_callback("sentry", "set_active", key, self._sentries[key])
-				self:_listener_callback("sentry", "destroy", key, self._sentries[key])
-				self._sentries[key] = nil
-			elseif event == "set_active" then
-				local active = ...
-				if self._sentries[key].active ~= active then
-					self._sentries[key].active = active
-					self:_listener_callback("sentry", "set_active", key, self._sentries[key])
-				end
+			if event == "set_active" then
+				if self._sentries[key].active == data.active then return end
+				self._sentries[key].active = data.active
 			elseif event == "set_ammo_ratio" then
-				local ammo_ratio = ...
-				self._sentries[key].ammo_ratio = ammo_ratio
-				self:_listener_callback("sentry", "set_ammo_ratio", key, self._sentries[key])
+				self._sentries[key].ammo_ratio = data.ammo_ratio
+			elseif event == "increment_kills" then
+				event = "set_kills"
+				self._sentries[key].kills = self._sentries[key].kills + 1
 			elseif event == "set_health_ratio" then
-				local health_ratio = ...
-				self._sentries[key].health_ratio = health_ratio
-				self:_listener_callback("sentry", "set_health_ratio", key, self._sentries[key])
+				self._sentries[key].health_ratio = data.health_ratio
 			elseif event == "set_owner" then
-				local owner = ...
-				self._sentries[key].owner = owner
-				self:_listener_callback("sentry", "set_owner", key, self._sentries[key])
+				self._sentries[key].owner = data.owner
+			elseif event == "destroy" then
+				self._sentries[key] = nil
 			end
+			
+			self:_listener_callback("sentry", event, key, self._sentries[key])
 		end
 	end
 	
@@ -1141,10 +1197,19 @@ if RequiredScript == "lib/setups/gamesetup" then
 	end
 	
 	
-	function GameInfoManager:register_listener(listener_id, source_type, event, clbk)
+	function GameInfoManager:register_listener(listener_id, source_type, event, clbk, keys, data_only)
+		local listener_keys = nil
+		
+		if keys then
+			listener_keys = {}
+			for _, key in ipairs(keys) do
+				listener_keys[key] = true
+			end
+		end
+
 		self._listeners[source_type] = self._listeners[source_type] or {}
 		self._listeners[source_type][event] = self._listeners[source_type][event] or {}
-		self._listeners[source_type][event][listener_id] = clbk
+		self._listeners[source_type][event][listener_id] = { clbk = clbk, keys = listener_keys, data_only = data_only }
 	end
 	
 	function GameInfoManager:unregister_listener(listener_id, source_type, event)
@@ -1156,9 +1221,15 @@ if RequiredScript == "lib/setups/gamesetup" then
 	end
 	
 	function GameInfoManager:_listener_callback(source, event, key, ...)
-		for listener_id, clbk in pairs(self._listeners[source] and self._listeners[source][event] or {}) do
-			clbk(event, key, ...)
-		end
+		for listener_id, data in pairs(self._listeners[source] and self._listeners[source][event] or {}) do
+			if not data.keys or data.keys[key] then
+				if data.data_only then
+					data.clbk(...)
+				else
+					data.clbk(event, key, ...)
+				end
+			end
+ 		end
 	end
 	
 	function GameInfoManager:_add_player_timer_expiration(key, id, expire_t, expire_clbk)
@@ -1459,7 +1530,7 @@ if RequiredScript == "lib/managers/enemymanager" then
 	local on_civilian_destroyed_original = EnemyManager.on_civilian_destroyed
 	
 	function EnemyManager:on_enemy_registered(unit, ...)
-		managers.gameinfo:event("unit", "add", tostring(unit:key()), unit, unit:base()._tweak_table)
+		managers.gameinfo:event("unit", "add", tostring(unit:key()), { unit = unit })
 		return on_enemy_registered_original(self, unit, ...)
 	end
 	
@@ -1469,7 +1540,7 @@ if RequiredScript == "lib/managers/enemymanager" then
 	end
 	
 	function EnemyManager:register_civilian(unit, ...)
-		managers.gameinfo:event("unit", "add", tostring(unit:key()), unit, unit:base()._tweak_table)
+		managers.gameinfo:event("unit", "add", tostring(unit:key()), { unit = unit })
 		return register_civilian_original(self, unit, ...)
 	end
 	
@@ -1533,35 +1604,27 @@ if RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
 		convert_hostage_to_criminal_original(self, unit, peer_unit, ...)
 		
 		if unit:brain()._logic_data.is_converted then
-			local peer_id = peer_unit and managers.network:session():peer_by_unit(peer_unit):id() or managers.network:session():local_peer():id()
-			local owner_base = peer_unit and peer_unit:base() or managers.player
+			local key = tostring(unit:key())
+ 			local peer_id = peer_unit and managers.network:session():peer_by_unit(peer_unit):id() or managers.network:session():local_peer():id()
+ 			local owner_base = peer_unit and peer_unit:base() or managers.player
+			local damage_mult = (owner_base:upgrade_value("player", "convert_enemies_damage_multiplier", 1) or 1)
 			
-			local health_mult = 1
-			local damage_mult = 1
-			local joker_level = (owner_base:upgrade_level("player", "convert_enemies_health_multiplier", 0) or 0)
-			local partner_in_crime_level = owner_base:upgrade_level("player", "passive_convert_enemies_health_multiplier", 0) or 0
-			if joker_level > 0 then
-				health_mult = health_mult * managers.player:upgrade_value_by_level("player", "convert_enemies_health_multiplier", joker_level, 1)
-				damage_mult = damage_mult * managers.player:upgrade_value_by_level("player", "convert_enemies_damage_multiplier", joker_level, 1)
-			end
-			if partner_in_crime_level > 0 then
-				health_mult = health_mult * managers.player:upgrade_value_by_level("player", "passive_convert_enemies_health_multiplier", partner_in_crime_level, 1)
-			end
-			
-			managers.gameinfo:event("minion", "add", tostring(unit:key()), unit, peer_id, health_mult, damage_mult)
+			managers.gameinfo:event("minion", "add", key, { unit = unit })
+			managers.gameinfo:event("minion", "set_owner", key, { owner = peer_id })
+			if damage_mult > 1 then
+				managers.gameinfo:event("minion", "set_damage_multiplier", key, { damage_multiplier = damage_mult })
+ 			end
 		end
 	end
 	
 	function GroupAIStateBase:sync_converted_enemy(converted_enemy, ...)
 		sync_converted_enemy_original(self, converted_enemy, ...)
-		managers.gameinfo:event("minion", "add", tostring(converted_enemy:key()), converted_enemy)
+		managers.gameinfo:event("minion", "add", tostring(converted_enemy:key()), { unit = converted_enemy })
 	end
 	
 	function GroupAIStateBase:set_whisper_mode(enabled, ...)
-		if self._whisper_mode ~= enabled then
-			managers.gameinfo:event("whisper_mode", "change", nil, enabled)
-		end
 		set_whisper_mode_original(self, enabled, ...)
+		managers.gameinfo:event("whisper_mode", "change", nil, enabled)
 	end
 	
 	
@@ -1601,21 +1664,18 @@ if RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 	local interaction_set_active_original = UnitNetworkHandler.interaction_set_active
 	local alarm_pager_interaction_original = UnitNetworkHandler.alarm_pager_interaction
 	
-	function UnitNetworkHandler:mark_minion(unit, owner_id, joker_level, partner_in_crime_level, ...)
-		mark_minion_original(self, unit, owner_id, joker_level, partner_in_crime_level, ...)
+	function UnitNetworkHandler:mark_minion(unit, owner_id, joker_level, ...)
+		mark_minion_original(self, unit, owner_id, joker_level, ...)
 		
 		if self._verify_character(unit) then
-			local health_mult = 1
-			local damage_mult = 1
-			if joker_level > 0 then
-				health_mult = health_mult * managers.player:upgrade_value_by_level("player", "convert_enemies_health_multiplier", joker_level, 1)
-				damage_mult = damage_mult * managers.player:upgrade_value_by_level("player", "convert_enemies_damage_multiplier", joker_level, 1)
+			local key = tostring(unit:key())
+			local damage_mult = joker_level > 0 and tweak_data.upgrades.values.player.convert_enemies_damage_multiplier[joker_level] or 1
+ 			
+			managers.gameinfo:event("minion", "add", key, { unit = unit })
+			managers.gameinfo:event("minion", "set_owner", key, { owner = owner_id })
+			if damage_mult > 1 then
+				managers.gameinfo:event("minion", "set_damage_multiplier", key, { damage_multiplier = damage_mult })
 			end
-			if partner_in_crime_level > 0 then
-				health_mult = health_mult * managers.player:upgrade_value_by_level("player", "passive_convert_enemies_health_multiplier", partner_in_crime_level, 1)
-			end
-			
-			managers.gameinfo:event("minion", "add", tostring(unit:key()), unit, owner_id, health_mult, damage_mult)
 		end
 	end
 	
@@ -1640,15 +1700,16 @@ if RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 			if tweak_data == "corpse_alarm_pager" then
 				if not alive(unit) then
 					local u_data = managers.enemy:get_corpse_unit_data_from_id(u_id)
-					if not u_data then return end
 					unit = u_data and u_data.unit
 				end
 				
-				if not active then
-					managers.gameinfo:event("pager", "remove", tostring(unit:key()))
-				elseif not flash then
-					managers.gameinfo:event("pager", "answered", tostring(unit:key()))
-				end
+				if alive(unit) then
+					if not active then
+						--managers.gameinfo:event("pager", "remove", tostring(unit:key()))
+					elseif not flash then
+						managers.gameinfo:event("pager", "set_answered", tostring(unit:key()))
+					end
+ 				end
 			end
 		end
 
@@ -1660,9 +1721,9 @@ if RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 			local unit_data = managers.enemy:get_corpse_unit_data_from_id(u_id)
 			if unit_data and unit_data.unit:interaction():active() and unit_data.unit:interaction().tweak_data == tweak_table and self._verify_sender(sender) then
 				if status == 1 then
-					managers.gameinfo:event("pager", "answered", tostring(unit_data.unit:key()))
+					managers.gameinfo:event("pager", "set_answered", tostring(unit_data.unit:key()))
 				else
-					managers.gameinfo:event("pager", "remove", tostring(unit_data.unit:key()))
+					--managers.gameinfo:event("pager", "remove", tostring(unit_data.unit:key()))
 				end
 			end
 		end
@@ -1674,20 +1735,43 @@ end
 
 if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	
+	local convert_to_criminal_original = CopDamage.convert_to_criminal
 	local _on_damage_received_original = CopDamage._on_damage_received
 	local chk_killshot_original = CopDamage.chk_killshot
 	
+	function CopDamage:_update_minion_dmg_resist(data)
+		if alive(self._unit) then
+			managers.gameinfo:event("minion", "set_damage_resistance", tostring(self._unit:key()), data)
+		end
+	end
+	
+	function CopDamage:convert_to_criminal(...)
+		convert_to_criminal_original(self, ...)
+		
+		if self._damage_reduction_multiplier < 1 then
+			local key = tostring(self._unit:key())
+			local data = { damage_resistance = self._damage_reduction_multiplier }
+			managers.enemy:add_delayed_clbk(key .. "_update_minion_dmg_resist", callback(self, self, "_update_minion_dmg_resist", data), 0)
+		end
+	end
+	
 	function CopDamage:_on_damage_received(damage_info, ...)
 		if self._unit:in_slot(16) then
-			managers.gameinfo:event("minion", "set_health", tostring(self._unit:key()), self._health)
+			managers.gameinfo:event("minion", "set_health_ratio", tostring(self._unit:key()), { health_ratio = self:health_ratio() })
 		end
 		return _on_damage_received_original(self, damage_info, ...)
 	end
 	
 	function CopDamage:chk_killshot(attacker_unit, ...)
-		if alive(attacker_unit) and managers.gameinfo:get_minions(tostring(attacker_unit:key())) then
-			managers.gameinfo:event("minion", "increment_kills", tostring(attacker_unit:key()))
-		end
+		if alive(attacker_unit) then
+			local key = tostring(attacker_unit:key())
+			
+			if attacker_unit:in_slot(16) and managers.gameinfo:get_minions(key) then
+				managers.gameinfo:event("minion", "increment_kills", key)
+			elseif attacker_unit:in_slot(25) and managers.gameinfo:get_sentries(key) then
+				managers.gameinfo:event("sentry", "increment_kills", key)
+			end
+ 		end
 		
 		return chk_killshot_original(self, attacker_unit, ...)
 	end
@@ -1701,7 +1785,7 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
 	local add_unit_original = ObjectInteractionManager.add_unit
 	local remove_unit_original = ObjectInteractionManager.remove_unit
 	local interact_original = ObjectInteractionManager.interact
-	local interupt_action_interact_original = ObjectInteractionManager.interupt_action_interact
+	--local interupt_action_interact_original = ObjectInteractionManager.interupt_action_interact
 	
 	function ObjectInteractionManager:init(...)
 		init_original(self, ...)
@@ -1725,12 +1809,12 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
 	
 	function ObjectInteractionManager:interact(...)
 		if alive(self._active_unit) and self._active_unit:interaction().tweak_data == "corpse_alarm_pager" then
-			managers.gameinfo:event("pager", "answered", tostring(self._active_unit:key()))
+			managers.gameinfo:event("pager", "set_answered", tostring(self._active_unit:key()))
 		end
 		
 		return interact_original(self, ...)
 	end
-	
+--[[	
 	function ObjectInteractionManager:interupt_action_interact(...)
 		if alive(self._active_unit) and self._active_unit:interaction() and self._active_unit:interaction().tweak_data == "corpse_alarm_pager" then
 			managers.gameinfo:event("pager", "remove", tostring(self._active_unit:key()))
@@ -1738,26 +1822,30 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
 		
 		return interupt_action_interact_original(self, ...)
 	end
-	
+]]
 	
 	function ObjectInteractionManager:add_unit_clbk(unit)
 		self._queued_units[tostring(unit:key())] = unit
 	end
 	
-	function ObjectInteractionManager:remove_unit_clbk(unit)
+	function ObjectInteractionManager:remove_unit_clbk(unit, interact_id)
 		local key = tostring(unit:key())
 		
 		if self._queued_units[key] then
 			self._queued_units[key] = nil
 		else
-			managers.gameinfo:event("interactive_unit", "remove", key, unit)
+			local id = interact_id or unit:interaction().tweak_data
+			local editor_id = unit:editor_id()
+			managers.gameinfo:event("interactive_unit", "remove", key, { unit = unit, editor_id = editor_id, interact_id = id })
 		end
 	end
 	
 	function ObjectInteractionManager:_process_queued_units(t)
 		for key, unit in pairs(self._queued_units) do
 			if alive(unit) then
-				managers.gameinfo:event("interactive_unit", "add", key, unit)
+				local interact_id = unit:interaction().tweak_data
+				local editor_id = unit:editor_id()
+				managers.gameinfo:event("interactive_unit", "add", key, { unit = unit, editor_id = editor_id, interact_id = interact_id })
 			end
 		end
 	
@@ -1771,6 +1859,17 @@ if RequiredScript == "lib/units/interactions/interactionext" then
 	local set_tweak_data_original = BaseInteractionExt.set_tweak_data
 	
 	function BaseInteractionExt:set_tweak_data(...)
+		local old_tweak = self.tweak_data
+		local was_active = self:active()
+		
+		set_tweak_data_original(self, ...)
+		
+		if was_active and self:active() and self.tweak_data ~= old_tweak then
+			managers.interaction:remove_unit_clbk(self._unit, old_tweak)
+			managers.interaction:add_unit_clbk(self._unit)
+		end
+
+	--[[
 		if self:active() then
 			managers.interaction:remove_unit_clbk(self._unit)
 		end
@@ -1780,38 +1879,69 @@ if RequiredScript == "lib/units/interactions/interactionext" then
 		if self:active() then
 			managers.interaction:add_unit_clbk(self._unit)
 		end
+	]]
 	end
+	
+--[[
+
+	function SecurityCameraInteractionExt:set_active(active, sync, ...)
+		if self._unit:enabled() then
+			if self:active() ~= active then
+				--printf("(%.2f) SecurityCameraInteractionExt:set_active(%s, %s) - %s\n", Application:time(), tostring(active), tostring(sync), tostring(self:active()))
+				SecurityCamera.set_camera_value(tostring(self._unit:key()), active and true or nil)
+			end
+		end
+		SecurityCameraInteractionExt.super.set_active(self, active, sync, ...)
+	end
+]]
 	
 end
 
 if RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 	
 	local init_original = ECMJammerBase.init
+	local setup_original = ECMJammerBase.setup
+	local sync_setup_original = ECMJammerBase.sync_setup
 	local set_active_original = ECMJammerBase.set_active
 	local _set_feedback_active_original = ECMJammerBase._set_feedback_active
 	local update_original = ECMJammerBase.update
-	local _send_net_event_original = ECMJammerBase._send_net_event
-	local sync_net_event_original = ECMJammerBase.sync_net_event
+	local contour_interaction_original = ECMJammerBase.contour_interaction
 	local destroy_original = ECMJammerBase.destroy
 	
-	function ECMJammerBase:init(...)
-		init_original(self, ...)
-		managers.gameinfo:event("ecm", "create", tostring(self._unit:key()), self._unit)
+	function ECMJammerBase:init(unit, ...)
+		managers.gameinfo:event("ecm", "create", tostring(unit:key()), { unit = unit })
+		return init_original(self, unit, ...)
 	end
 	
+	function ECMJammerBase:setup(upgrade_lvl, owner, ...)
+		managers.gameinfo:event("ecm", "set_owner", tostring(self._unit:key()), { owner = owner })
+		managers.gameinfo:event("ecm", "set_upgrade_level", tostring(self._unit:key()), { upgrade_level = upgrade_lvl })
+		return setup_original(self, upgrade_lvl, owner, ...)
+	end
+	
+	function ECMJammerBase:sync_setup(upgrade_lvl, peer_id, ...)
+		managers.gameinfo:event("ecm", "set_owner", tostring(self._unit:key()), { owner = peer_id })
+		managers.gameinfo:event("ecm", "set_upgrade_level", tostring(self._unit:key()), { upgrade_level = upgrade_lvl })
+		return sync_setup_original(self, upgrade_lvl, peer_id, ...)
+ 	end
+	
 	function ECMJammerBase:set_active(active, ...)
-		managers.gameinfo:event("ecm", "set_jammer_active", tostring(self._unit:key()), active)
+		if self._jammer_active ~= active then
+			managers.gameinfo:event("ecm", "set_jammer_active", tostring(self._unit:key()), { jammer_active = active })
+		end
+
 		return set_active_original(self, active, ...)
 	end
 	
 	function ECMJammerBase:_set_feedback_active(state, ...)
-		if not state then
-			local peer_id = managers.network:session() and managers.network:session():local_peer() and managers.network:session():local_peer():id()
-			if peer_id and (peer_id == self._owner_id) and managers.player:has_category_upgrade("ecm_jammer", "can_retrigger") then
-				self._feedback_recharge_t = tweak_data.upgrades.ecm_feedback_retrigger_interval or 60
-				managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), true)
-			end
-		end
+		if not state and self._feedback_active then
+			local peer_id = managers.network:session():local_peer():id()
+			
+			if self._owner_id == peer_id and managers.player:has_category_upgrade("ecm_jammer", "can_retrigger") then
+				self._retrigger_delay = tweak_data.upgrades.ecm_feedback_retrigger_interval or 60
+				managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), { retrigger_active = true })
+ 			end
+ 		end
 	
 		return _set_feedback_active_original(self, state, ...)
 	end
@@ -1819,40 +1949,32 @@ if RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 	function ECMJammerBase:update(unit, t, dt, ...)
 		update_original(self, unit, t, dt, ...)
 		
-		if self._chk_feedback_retrigger_t then
-			self._feedback_recharge_t = self._chk_feedback_retrigger_t
-		elseif self._feedback_recharge_t then
-			self._feedback_recharge_t = self._feedback_recharge_t - dt
-		end
-			
-		if self._feedback_recharge_t or self._jammer_active then
-			managers.gameinfo:event("ecm", "update", tostring(self._unit:key()), self._battery_life or 0, self._feedback_recharge_t or 0)
+		if not self._battery_empty then
+			managers.gameinfo:event("ecm", "set_jammer_battery", tostring(self._unit:key()), { jammer_battery = self._battery_life })
+ 		end
+		
+		if self._retrigger_delay then
+			self._retrigger_delay = self._retrigger_delay - dt
+			managers.gameinfo:event("ecm", "set_retrigger_delay", tostring(self._unit:key()), { retrigger_delay = self._retrigger_delay })
+			if self._retrigger_delay <= 0 then
+				self._retrigger_delay = tweak_data.upgrades.ecm_feedback_retrigger_interval or 60
+			end
 		end
 	end
 	
-	function ECMJammerBase:_send_net_event(event_id, ...)
-		if event_id == self._NET_EVENTS.feedback_restart then
-			self._feedback_recharge_t = nil
-			managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), false)
-		end
-		
-		return _send_net_event_original(self, event_id, ...)
-	end
-	
-	function ECMJammerBase:sync_net_event(event_id, ...)
-		if event_id == self._NET_EVENTS.feedback_restart then
-			self._feedback_recharge_t = nil
-			managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), false)
-		end
-		
-		return sync_net_event_original(self, event_id, ...)
-	end
+	function ECMJammerBase:contour_interaction(...)
+		if self._owner_id == managers.network:session():local_peer():id() and managers.player:has_category_upgrade("ecm_jammer", "can_activate_feedback") then
+			self._retrigger_delay = nil
+			managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), { retrigger_active = false })
+ 		end
+ 		
+		return contour_interaction_original(self, ...)
+ 	end
 	
 	function ECMJammerBase:destroy(...)
-		managers.gameinfo:event("ecm", "set_jammer_active", tostring(self._unit:key()), false)
-		managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), false)
-		managers.gameinfo:event("ecm", "destroy", tostring(self._unit:key()))
 		destroy_original(self, ...)
+		managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), { retrigger_active = false })
+		managers.gameinfo:event("ecm", "destroy", tostring(self._unit:key()))
 	end
 	
 end
@@ -1867,31 +1989,33 @@ if RequiredScript == "lib/units/equipment/doctor_bag/doctorbagbase" then
 	
 	function DoctorBagBase.spawn(pos, rot, amount_upgrade_lvl, peer_id, ...)
 		local unit = spawn_original(pos, rot, amount_upgrade_lvl, peer_id, ...)
-		local key = tostring(unit:key())
-		managers.gameinfo:event("bag_deployable", "create", key, unit, "doc_bag")
-		managers.gameinfo:event("bag_deployable", "set_owner", key, peer_id)
+		if alive(unit) then
+			local key = tostring(unit:key())
+			managers.gameinfo:event("doc_bag", "create", key, { unit = unit })
+			managers.gameinfo:event("doc_bag", "set_owner", key, { owner = peer_id })
+		end
 		return unit
 	end
 	
 	function DoctorBagBase:init(unit, ...)
 		local key = tostring(unit:key())
-		managers.gameinfo:event("bag_deployable", "create", key, unit, "doc_bag")
+		managers.gameinfo:event("doc_bag", "create", key, { unit = unit })
 		init_original(self, unit, ...)
-		managers.gameinfo:event("bag_deployable", "set_max_amount", key, self._max_amount)
+		managers.gameinfo:event("doc_bag", "set_max_amount", key, { max_amount = self._max_amount })
 	end
 	
 	function DoctorBagBase:sync_setup(amount_upgrade_lvl, peer_id, ...)
-		managers.gameinfo:event("bag_deployable", "set_owner", tostring(self._unit:key()), peer_id)
+		managers.gameinfo:event("doc_bag", "set_owner", tostring(self._unit:key()), { owner = peer_id })
 		return sync_setup_original(self, amount_upgrade_lvl, peer_id, ...)
 	end
 	
 	function DoctorBagBase:_set_visual_stage(...)
-		managers.gameinfo:event("bag_deployable", "set_amount", tostring(self._unit:key()), self._amount)
+		managers.gameinfo:event("doc_bag", "set_amount", tostring(self._unit:key()), { amount = self._amount })
 		return _set_visual_stage_original(self, ...)
 	end
 	
 	function DoctorBagBase:destroy(...)
-		managers.gameinfo:event("bag_deployable", "destroy", tostring(self._unit:key()))
+		managers.gameinfo:event("doc_bag", "destroy", tostring(self._unit:key()))
 		return destroy_original(self, ...)
 	end
 	
@@ -1907,31 +2031,33 @@ if RequiredScript == "lib/units/equipment/ammo_bag/ammobagbase" then
 	
 	function AmmoBagBase.spawn(pos, rot, ammo_upgrade_lvl, peer_id, ...)
 		local unit = spawn_original(pos, rot, ammo_upgrade_lvl, peer_id, ...)
-		local key = tostring(unit:key())
-		managers.gameinfo:event("bag_deployable", "create", key, unit, "ammo_bag")
-		managers.gameinfo:event("bag_deployable", "set_owner", key, peer_id)
+		if alive(unit) then
+			local key = tostring(unit:key())
+			managers.gameinfo:event("ammo_bag", "create", key, { unit = unit })
+			managers.gameinfo:event("ammo_bag", "set_owner", key, { owner = peer_id })
+		end
 		return unit
 	end
 	
 	function AmmoBagBase:init(unit, ...)
 		local key = tostring(unit:key())
-		managers.gameinfo:event("bag_deployable", "create", key, unit, "ammo_bag")
+		managers.gameinfo:event("ammo_bag", "create", key, { unit = unit })
 		init_original(self, unit, ...)
-		managers.gameinfo:event("bag_deployable", "set_max_amount", key, self._max_ammo_amount * 100)
+		managers.gameinfo:event("ammo_bag", "set_max_amount", key, { max_amount = self._max_ammo_amount })
 	end
 	
 	function AmmoBagBase:sync_setup(ammo_upgrade_lvl, peer_id, ...)
-		managers.gameinfo:event("bag_deployable", "set_owner", tostring(self._unit:key()), peer_id)
+		managers.gameinfo:event("ammo_bag", "set_owner", tostring(self._unit:key()), { owner = peer_id })
 		return sync_setup_original(self, ammo_upgrade_lvl, peer_id, ...)
 	end
 	
 	function AmmoBagBase:_set_visual_stage(...)
-		managers.gameinfo:event("bag_deployable", "set_amount", tostring(self._unit:key()), self._ammo_amount * 100)
+		managers.gameinfo:event("ammo_bag", "set_amount", tostring(self._unit:key()), { amount = self._ammo_amount })
 		return _set_visual_stage_original(self, ...)
 	end
 	
 	function AmmoBagBase:destroy(...)
-		managers.gameinfo:event("bag_deployable", "destroy", tostring(self._unit:key()))
+		managers.gameinfo:event("ammo_bag", "destroy", tostring(self._unit:key()))
 		return destroy_original(self, ...)
 	end
 	
@@ -1947,31 +2073,33 @@ if RequiredScript == "lib/units/equipment/bodybags_bag/bodybagsbagbase" then
 	
 	function BodyBagsBagBase.spawn(pos, rot, upgrade_lvl, peer_id, ...)
 		local unit = spawn_original(pos, rot, upgrade_lvl, peer_id, ...)
-		local key = tostring(unit:key())
-		managers.gameinfo:event("bag_deployable", "create", key, unit, "body_bag")
-		managers.gameinfo:event("bag_deployable", "set_owner", key, peer_id)
+		if alive(unit) then
+			local key = tostring(unit:key())
+			managers.gameinfo:event("body_bag", "create", key, { unit = unit })
+			managers.gameinfo:event("body_bag", "set_owner", key, { owner = peer_id })
+		end
 		return unit
 	end
 	
 	function BodyBagsBagBase:init(unit, ...)
 		local key = tostring(unit:key())
-		managers.gameinfo:event("bag_deployable", "create", key, unit, "body_bag")
+		managers.gameinfo:event("body_bag", "create", key, { unit = unit })
 		init_original(self, unit, ...)
-		managers.gameinfo:event("bag_deployable", "set_max_amount", key, self._max_bodybag_amount)
+		managers.gameinfo:event("body_bag", "set_max_amount", key, { max_amount = self._max_bodybag_amount })
 	end
 	
 	function BodyBagsBagBase:sync_setup(upgrade_lvl, peer_id, ...)
-		managers.gameinfo:event("bag_deployable", "set_owner", tostring(self._unit:key()), peer_id)
+		managers.gameinfo:event("body_bag", "set_owner", tostring(self._unit:key()), { owner = peer_id })
 		return sync_setup_original(self, upgrade_lvl, peer_id, ...)
 	end
 	
 	function BodyBagsBagBase:_set_visual_stage(...)
-		managers.gameinfo:event("bag_deployable", "set_amount", tostring(self._unit:key()), self._bodybag_amount)
+		managers.gameinfo:event("body_bag", "set_amount", tostring(self._unit:key()), { amount = self._bodybag_amount })
 		return _set_visual_stage_original(self, ...)
 	end
 	
 	function BodyBagsBagBase:destroy(...)
-		managers.gameinfo:event("bag_deployable", "destroy", tostring(self._unit:key()))
+		managers.gameinfo:event("body_bag", "destroy", tostring(self._unit:key()))
 		return destroy_original(self, ...)
 	end
 	
@@ -1986,26 +2114,26 @@ if RequiredScript == "lib/units/equipment/grenade_crate/grenadecratebase" then
 	
 	function GrenadeCrateBase:init(unit, ...)
 		local key = tostring(unit:key())
-		managers.gameinfo:event("bag_deployable", "create", key, unit, "grenade_crate")
+		managers.gameinfo:event("grenade_crate", "create", key, { unit = unit })
 		init_original(self, unit, ...)
-		managers.gameinfo:event("bag_deployable", "set_max_amount", key, self._max_grenade_amount)
+		managers.gameinfo:event("grenade_crate", "set_max_amount", key, { max_amount = self._max_grenade_amount })
 	end
 	
 	function GrenadeCrateBase:_set_visual_stage(...)
-		managers.gameinfo:event("bag_deployable", "set_amount", tostring(self._unit:key()), self._grenade_amount)
+		managers.gameinfo:event("grenade_crate", "set_amount", tostring(self._unit:key()), { amount = self._grenade_amount })
 		return _set_visual_stage_original(self, ...)
 	end
 	
 	function GrenadeCrateBase:destroy(...)
-		managers.gameinfo:event("bag_deployable", "destroy", tostring(self._unit:key()))
+		managers.gameinfo:event("grenade_crate", "destroy", tostring(self._unit:key()))
 		return destroy_original(self, ...)
 	end
 	
 	function CustomGrenadeCrateBase:init(unit, ...)
 		local key = tostring(unit:key())
-		managers.gameinfo:event("bag_deployable", "create", key, unit, "grenade_crate", true)
+		managers.gameinfo:event("grenade_crate", "create", key, { unit = unit })
 		custom_init_original(self, unit, ...)
-		managers.gameinfo:event("bag_deployable", "set_max_amount", key, self._max_grenade_amount)
+		managers.gameinfo:event("grenade_crate", "set_max_amount", key, { max_amount = self._max_grenade_amount })
 	end
 	
 end
@@ -2013,16 +2141,24 @@ end
 if RequiredScript == "lib/units/props/securitycamera" then
 	
 	local _start_tape_loop_original = SecurityCamera._start_tape_loop
+	local _deactivate_tape_loop_restart_original = SecurityCamera._deactivate_tape_loop_restart
 	local _deactivate_tape_loop_original = SecurityCamera._deactivate_tape_loop
-	local init_original = SecurityCamera.init
 	local on_unit_set_enabled_original = SecurityCamera.on_unit_set_enabled
+	local generate_cooldown_original = SecurityCamera.generate_cooldown
+	
+	local init_original = SecurityCamera.init
 	local set_update_enabled_original = SecurityCamera.set_update_enabled
 	local destroy_original = SecurityCamera.destroy
 	
-	function SecurityCamera:_start_tape_loop(tape_loop_t, ...)
-		managers.gameinfo:event("tape_loop", "start", tostring(self._unit:key()), self._unit, tape_loop_t + 6)
-		return _start_tape_loop_original(self, tape_loop_t, ...)
+	function SecurityCamera:_start_tape_loop(...)
+		_start_tape_loop_original(self, ...)
+		managers.gameinfo:event("tape_loop", "start", tostring(self._unit:key()), { unit = self._unit, expire_t = self._tape_loop_end_t + 6 })
 	end
+	
+	function SecurityCamera:_deactivate_tape_loop_restart(...)
+		managers.gameinfo:event("tape_loop", "stop", tostring(self._unit:key()))
+		return _deactivate_tape_loop_restart_original(self, ...)
+ 	end
 	
 	function SecurityCamera:_deactivate_tape_loop(...)
 		managers.gameinfo:event("tape_loop", "stop", tostring(self._unit:key()))
@@ -2031,7 +2167,7 @@ if RequiredScript == "lib/units/props/securitycamera" then
 	end
 	
 	function SecurityCamera:init(unit)
-		managers.gameinfo:event("camera", "add", tostring(unit:key()), unit)
+		managers.gameinfo:event("camera", "add", tostring(unit:key()), { unit })
 		return init_original(self, unit)
 	end
 	
@@ -2064,43 +2200,30 @@ if RequiredScript == "lib/units/equipment/sentry_gun/sentrygunbase" then
 	local spawn_original = SentryGunBase.spawn
 	local init_original = SentryGunBase.init
 	local sync_setup_original = SentryGunBase.sync_setup
-	local activate_as_module_original = SentryGunBase.activate_as_module
 	local destroy_original = SentryGunBase.destroy
-	local load_original = SentryGunBase.load
 	
 	function SentryGunBase.spawn(owner, pos, rot, peer_id, ...)
 		local unit = spawn_original(owner, pos, rot, peer_id, ...)
-		managers.gameinfo:event("sentry", "create", tostring(unit:key()), unit)
-		managers.gameinfo:event("sentry", "set_owner", tostring(unit:key()), peer_id)
+		if alive(unit) then
+			managers.gameinfo:event("sentry", "create", tostring(unit:key()), { unit = unit })
+			managers.gameinfo:event("sentry", "set_owner", tostring(unit:key()), { owner = peer_id })
+		end
 		return unit
 	end
 	
 	function SentryGunBase:init(unit, ...)
-		managers.gameinfo:event("sentry", "create", tostring(unit:key()), unit)
+		managers.gameinfo:event("sentry", "create", tostring(unit:key()), { unit = unit })
 		init_original(self, unit, ...)
 	end
 	
 	function SentryGunBase:sync_setup(upgrade_lvl, peer_id, ...)
-		managers.gameinfo:event("sentry", "set_owner", tostring(self._unit:key()), peer_id)
+		managers.gameinfo:event("sentry", "set_owner", tostring(self._unit:key()), { owner = peer_id })
 		return sync_setup_original(self, upgrade_lvl, peer_id, ...)
 	end
-	
-	function SentryGunBase:activate_as_module(...)
-		managers.gameinfo:event("sentry", "destroy", tostring(self._unit:key()))
-		return activate_as_module_original(self, ...)
-	end
-	
+		
 	function SentryGunBase:destroy(...)
 		managers.gameinfo:event("sentry", "destroy", tostring(self._unit:key()))
 		return destroy_original(self, ...)
-	end
-	
-	function SentryGunBase:load(...)
-		load_original(self, ...)
-		
-		if self._is_module then
-			managers.gameinfo:event("sentry", "destroy", tostring(self._unit:key()))
-		end
 	end
 	
 end
@@ -2109,35 +2232,41 @@ if RequiredScript == "lib/units/equipment/sentry_gun/sentrygundamage" then
 	
 	local init_original = SentryGunDamage.init
 	local set_health_original = SentryGunDamage.set_health
+	local sync_health_original = SentryGunDamage.sync_health
 	local _apply_damage_original = SentryGunDamage._apply_damage
 	local die_original = SentryGunDamage.die
 	local load_original = SentryGunDamage.load
 	
 	function SentryGunDamage:init(...)
 		init_original(self, ...)
-		managers.gameinfo:event("sentry", "set_active", tostring(self._unit:key()), true)
-		managers.gameinfo:event("sentry", "set_health_ratio", tostring(self._unit:key()), self:health_ratio())
+		managers.gameinfo:event("sentry", "set_active", tostring(self._unit:key()), { active = true })
+		managers.gameinfo:event("sentry", "set_health_ratio", tostring(self._unit:key()), { health_ratio = self:health_ratio() })
 	end
 	
 	function SentryGunDamage:set_health(...)
 		set_health_original(self, ...)
-		managers.gameinfo:event("sentry", "set_health_ratio", tostring(self._unit:key()), self:health_ratio())
+		managers.gameinfo:event("sentry", "set_health_ratio", tostring(self._unit:key()), { health_ratio = self:health_ratio() })
 	end
+	
+	function SentryGunDamage:sync_health(...)
+		sync_health_original(self, ...)
+		managers.gameinfo:event("sentry", "set_health_ratio", tostring(self._unit:key()), { health_ratio = self:health_ratio() })
+ 	end
 	
 	function SentryGunDamage:_apply_damage(...)
 		local result = _apply_damage_original(self, ...)
-		managers.gameinfo:event("sentry", "set_health_ratio", tostring(self._unit:key()), self:health_ratio())
+		managers.gameinfo:event("sentry", "set_health_ratio", tostring(self._unit:key()), { health_ratio = self:health_ratio() })
 		return result
 	end
 	
 	function SentryGunDamage:die(...)
-		managers.gameinfo:event("sentry", "set_active", tostring(self._unit:key()), false)
+		managers.gameinfo:event("sentry", "set_active", tostring(self._unit:key()), { active = false })
 		return die_original(self, ...)
 	end
 	
 	function SentryGunDamage:load(...)
 		load_original(self, ...)
-		managers.gameinfo:event("sentry", "set_health_ratio", tostring(self._unit:key()), self:health_ratio())
+		managers.gameinfo:event("sentry", "set_health_ratio", tostring(self._unit:key()), { health_ratio = self:health_ratio() })
 	end
 	
 end
@@ -2151,22 +2280,22 @@ if RequiredScript == "lib/units/weapons/sentrygunweapon" then
 	
 	function SentryGunWeapon:init(...)
 		init_original(self, ...)
-		managers.gameinfo:event("sentry", "set_ammo_ratio", tostring(self._unit:key()), self:ammo_ratio())
+		managers.gameinfo:event("sentry", "set_ammo_ratio", tostring(self._unit:key()), { ammo_ratio = self:ammo_ratio() })
 	end
 	
 	function SentryGunWeapon:change_ammo(...)
 		change_ammo_original(self, ...)
-		managers.gameinfo:event("sentry", "set_ammo_ratio", tostring(self._unit:key()), self:ammo_ratio())
+		managers.gameinfo:event("sentry", "set_ammo_ratio", tostring(self._unit:key()), { ammo_ratio = self:ammo_ratio() })
 	end
 	
 	function SentryGunWeapon:sync_ammo(...)
 		sync_ammo_original(self, ...)
-		managers.gameinfo:event("sentry", "set_ammo_ratio", tostring(self._unit:key()), self:ammo_ratio())
+		managers.gameinfo:event("sentry", "set_ammo_ratio", tostring(self._unit:key()), { ammo_ratio = self:ammo_ratio() })
 	end
 	
 	function SentryGunWeapon:load(...)
 		load_original(self, ...)
-		managers.gameinfo:event("sentry", "set_ammo_ratio", tostring(self._unit:key()), self:ammo_ratio())
+		managers.gameinfo:event("sentry", "set_ammo_ratio", tostring(self._unit:key()), { ammo_ratio = self:ammo_ratio() })
 	end
 	
 end
@@ -2215,7 +2344,7 @@ if RequiredScript == "lib/managers/playermanager" then
 				end
 			end
 		
-			if managers.gameinfo and self:has_category_upgrade("player", "messiah_revive_from_bleed_out") and self._messiah_charges > 0 then
+			if self:has_category_upgrade("player", "messiah_revive_from_bleed_out") and self._messiah_charges > 0 then
 				managers.gameinfo:event("buff", "activate", "messiah")
 				managers.gameinfo:event("buff", "set_stack_count", "messiah", { stack_count = self._messiah_charges })
  			end
@@ -2363,18 +2492,14 @@ if RequiredScript == "lib/managers/playermanager" then
 	function PlayerManager:aquire_team_upgrade(upgrade, ...)
 		aquire_team_upgrade_original(self, upgrade, ...)
 		
-		if managers.gameinfo then
-			local value = self:team_upgrade_value(upgrade.category, upgrade.upgrade, 0)
-			managers.gameinfo:event("team_buff", "activate", { peer = 0, category = upgrade.category, upgrade = upgrade.upgrade, value = value })
-		end
+		local value = self:team_upgrade_value(upgrade.category, upgrade.upgrade, 0)
+		managers.gameinfo:event("team_buff", "activate", { peer = 0, category = upgrade.category, upgrade = upgrade.upgrade, value = value })
 	end
 	
 	function PlayerManager:unaquire_team_upgrade(upgrade, ...)
 		unaquire_team_upgrade_original(self, upgrade, ...)
 		
-		if managers.gameinfo then
-			managers.gameinfo:event("team_buff", "deactivate", { peer = 0, category = upgrade.category, upgrade = upgrade.upgrade })
-		end
+		managers.gameinfo:event("team_buff", "deactivate", { peer = 0, category = upgrade.category, upgrade = upgrade.upgrade })
 	end
 	
 	function PlayerManager:add_synced_team_upgrade(peer_id, category, upgrade, ...)
@@ -2973,7 +3098,7 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 	
 	function PlayerDamage:_check_armor_regen_timer()
 		if self._regenerate_timer then
-			local t = Application:time()
+			local t = managers.player:player_timer():time()
 			local duration = self._regenerate_timer / (self._regenerate_speed or 1)
 			
 			if self._supperssion_data.decay_start_t and self._supperssion_data.decay_start_t > t then
@@ -2981,11 +3106,9 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 			end
 			
 			if duration > 0 and t > LAST_CHECK_T then
-				local start_t = LAST_ARMOR_REGEN_BUFF_RESET
-				local expire_t = t + duration
 				LAST_CHECK_T = t
 				managers.gameinfo:event("player_action", "activate", "standard_armor_regeneration")
-				managers.gameinfo:event("player_action", "set_duration", "standard_armor_regeneration", { t = start_t, expire_t = expire_t })
+				managers.gameinfo:event("player_action", "set_duration", "standard_armor_regeneration", { t = LAST_ARMOR_REGEN_BUFF_RESET, duration = duration })
 			end
 		end
 	end

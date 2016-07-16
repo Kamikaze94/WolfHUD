@@ -15,7 +15,9 @@ if not _G.WolfHUD then
 		"wolfhud_killcounter_options_menu", 
 		"wolfhud_drivinghud_options_menu", 
 		"wolfhud_infopanels_options_menu", 
-		"wolfhud_infopanels_adv_options_menu", 
+		"wolfhud_infopanels_left_options_menu",
+		"wolfhud_infopanels_right_options_menu",
+		"wolfhud_infopanels_buff_options_menu",
 		"wolfhud_tabstats_options_menu",
 		"wolfhud_dmgindicator_options_menu", 
 		"wolfhud_enemyhealthbar_options_menu", 
@@ -69,7 +71,7 @@ if not _G.WolfHUD then
 	end
 	
 	WolfHUD.hook_files = WolfHUD.hook_files or {
-		["lib/setups/gamesetup"] = { "GameInfoManager.lua" },
+		["lib/setups/setup"] = { "GameInfoManager.lua" },
 		["lib/managers/menumanager"] = { "MenuTweaks.lua" },
 		["lib/managers/menumanagerdialogs"] = { "MenuTweaks.lua" },
 		["lib/managers/chatmanager"] = { "MenuTweaks.lua" },
@@ -113,12 +115,13 @@ if not _G.WolfHUD then
 		["lib/units/equipment/sentry_gun/sentrygundamage"] = { "GameInfoManager.lua" },
 		["lib/units/interactions/interactionext"] = { "GameInfoManager.lua", "Interaction.lua" },
 		["lib/units/weapons/akimboweaponbase"] = { "BurstFire.lua" },
-		["lib/units/weapons/sentrygunweapon"] = { "GameInfoManager.lua", "SentryTweaks.lua" },
+		["lib/units/weapons/sentrygunweapon"] = { "GameInfoManager.lua", "EquipmentTweaks.lua" },
 		["lib/units/weapons/weaponlaser"] = { "WeaponLasers.lua" },
 		["lib/units/weapons/weaponflashlight"] = { "WeaponLasers.lua" },
 		["lib/units/weapons/raycastweaponbase"] = { "GameInfoManager.lua", "Scripts.lua" },
 		["lib/units/weapons/newraycastweaponbase"] = { "WeaponLasers.lua", "BurstFire.lua" },
 		["lib/units/weapons/shotgun/newshotgunbase"] = { "WeaponLasers.lua" },
+		["lib/units/weapons/trip_mine/tripminebase"] = { "EquipmentTweaks.lua" },
 		["lib/units/props/securitycamera"] = { "GameInfoManager.lua" },
 		["lib/units/beings/player/playerdamage"] = { "GameInfoManager.lua", "DamageIndicator.lua" },
 		["lib/units/beings/player/playermovement"] = { "GameInfoManager.lua" },
@@ -634,7 +637,9 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_tabstats.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_adv.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_right.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_left.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_panels.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_teampanels.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_playerpanel.json", WolfHUD, settings)

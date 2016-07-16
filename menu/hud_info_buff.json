@@ -1,0 +1,18 @@
+{
+	"menu_id" : "wolfhud_infopanels_buff_options_menu",
+	"parent_menu_id" : "wolfhud_infopanels_options_menu",
+	"title" : "wolfhud_infopanels_buff_options_name",
+	"description" : "wolfhud_infopanels_buff_options_help",
+	"back_callback" : "",
+	"priority" : 3,
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "show_buffs",
+			"title" : "wolfhud_hudlist_show_buffs_title",
+			"description" : "wolfhud_hudlist_show_buffs_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "show_buffs",
+		}
+	]
+}
