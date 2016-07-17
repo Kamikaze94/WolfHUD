@@ -1,3 +1,6 @@
+--		TODO: Add Ingame Options for DMG Popup
+--		TODO: Add Ingame Options for Buffs
+
 if not _G.WolfHUD then
 	_G.WolfHUD = {}
 	WolfHUD.mod_path = ModPath
@@ -71,7 +74,7 @@ if not _G.WolfHUD then
 	end
 	
 	WolfHUD.hook_files = WolfHUD.hook_files or {
-		["lib/setups/setup"] = { "GameInfoManager.lua" },
+		["lib/setups/setup"] = { "GameInfoManager.lua", "WaypointsManager.lua" },
 		["lib/managers/menumanager"] = { "MenuTweaks.lua" },
 		["lib/managers/menumanagerdialogs"] = { "MenuTweaks.lua" },
 		["lib/managers/chatmanager"] = { "MenuTweaks.lua" },
@@ -79,7 +82,7 @@ if not _G.WolfHUD then
 		["lib/managers/experiencemanager"] = { "Scripts.lua" },
 		["lib/managers/moneymanager"] = { "Scripts.lua" },
 		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua", "TabStats.lua" },
-		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
+		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "WaypointsManager.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
 		["lib/managers/statisticsmanager"] = { "KillCounter.lua", "TabStats.lua" },
 		["lib/managers/playermanager"] = { "GameInfoManager.lua" },
 		["lib/managers/hud/huddriving"] = { "DrivingHUD.lua" },
@@ -105,7 +108,8 @@ if not _G.WolfHUD then
 		["lib/units/props/timergui"] = { "GameInfoManager.lua" },
 		["lib/units/props/digitalgui"] = { "GameInfoManager.lua" },
 		["lib/units/props/securitylockgui"] = { "GameInfoManager.lua" },
-		["lib/units/enemies/cop/copdamage"] = { "GameInfoManager.lua", "KillCounter.lua", "TabStats.lua" },
+		["lib/units/civilians/civiliandamage"] = { "DamagePopup.lua" },
+		["lib/units/enemies/cop/copdamage"] = { "GameInfoManager.lua", "KillCounter.lua", "DamagePopup.lua", "TabStats.lua" },
 		["lib/units/equipment/ammo_bag/ammobagbase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/bodybags_bag/bodybagsbagbase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/doctor_bag/doctorbagbase"] = { "DownCounter.lua", "GameInfoManager.lua" },
@@ -214,6 +218,11 @@ if not _G.WolfHUD then
 			dmg_crit_color					= "purple",
 			dmg_vehicle_color				= "yellow",
 			dmg_friendlyfire_color			= "orange",
+		  --Damage Popup
+			show_dmg_popup					= true,
+			dmg_popup_time	 				= 3,
+			dmg_popup_color					= "yellow",
+			dmg_popup_headshot_color		= "red",
 		  --Suspicion
 			suspicion_scale					= 0.8,
 			numberic_suspicion				= true,

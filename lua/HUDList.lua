@@ -154,9 +154,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		
 		--Custom unit definitions
 		turret = 					{ type_id = "turret",		category = "turrets",	long_name = "wolfhud_enemy_swat_van" 				},
-		cop_hostage =				{ type_id = "cop_hostage",	category = "hostages",	--[[force_update = { "cop", "enemies" }]] 			},
+		cop_hostage =				{ type_id = "cop_hostage",	category = "hostages",	force_update = { "cop", "enemies" } 				},
+		sec_hostage =				{ type_id = "cop_hostage",	category = "hostages",	force_update = { "security", "enemies" } 			},
 		civ_hostage =				{ type_id = "civ_hostage",	category = "hostages",	force_update = { "civ" } 							},
-		minion =					{ type_id = "minion",		category = "minions",	--[[force_update = { "cop", "enemies" }]] 			},
+		cop_minion =				{ type_id = "minion",		category = "minions",	force_update = { "cop", "enemies" } 				},
+		sec_minion =				{ type_id = "minion",		category = "minions",	force_update = { "security", "enemies" }			},
 	}
 	
 	HUDListManager.SPECIAL_PICKUP_TYPES = {
@@ -2040,9 +2042,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	HUDList.UnitCountItem = HUDList.UnitCountItem or class(HUDList.RightListItem)
 	HUDList.UnitCountItem.MAP = {
-		enemies =		{ atlas = {6, 1}, 	color = HUDListManager.ListOptions.enemy_color, --[[subtract = { "cop_hostage", "minions" }]] },	--Aggregated enemies
-		cop =			{ atlas = {0, 5}, 	color = HUDListManager.ListOptions.enemy_color, 	priority = 5, --[[subtract = { "cop_hostage", "minions" }]] },	--Non-special police
-		security =		{ spec = {1, 4}, 	color = HUDListManager.ListOptions.guard_color, 	priority = 4 },
+		enemies =		{ atlas = {6, 1}, 	color = HUDListManager.ListOptions.enemy_color, subtract = { "cop_hostage", "sec_hostage", "minions" } },	--Aggregated enemies
+		cop =			{ atlas = {0, 5}, 	color = HUDListManager.ListOptions.enemy_color, 	priority = 5, subtract = { "cop_hostage", "cop_minion" } },	--Non-special police
+		security =		{ spec = {1, 4}, 	color = HUDListManager.ListOptions.guard_color, 	priority = 4, subtract = { "sec_hostage", "sec_minion" }  },
 		thug =			{ atlas = {4, 12}, 	color = HUDListManager.ListOptions.thug_color, 	priority = 4 },
 		tank =			{ atlas = {3, 1}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
 		spooc =			{ atlas = {1, 3}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
@@ -2053,7 +2055,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		phalanx =		{ texture = "guis/textures/pd2/hud_buff_shield", color = HUDListManager.ListOptions.special_color, priority = 7 },
 		
 		turret =		{ atlas = {7, 5}, 	color = HUDListManager.ListOptions.turret_color, 	priority = 4 },
-		unique =		{ atlas = {3, 8}, 	color = HUDListManager.ListOptions.civilian_color, priority = 3, },
+		unique =		{ atlas = {3, 8}, 	color = HUDListManager.ListOptions.civilian_color, 	priority = 3 },
 		cop_hostage =	{ atlas = {2, 8}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 2 },
 		civ_hostage =	{ atlas = {4, 7}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 1 },
 		minion =		{ atlas = {6, 8}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 0 },
@@ -3945,7 +3947,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			w = self._panel:w(),
 			h = (self._panel:h() - icon_size) / 2,
 			layer = 10,
-			color = Color.white,
+			color = self._default_icon_color,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = 0.7 * (self._panel:h() - icon_size) / 2,
 			blend_mode = "normal",

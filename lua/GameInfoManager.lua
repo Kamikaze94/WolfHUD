@@ -634,12 +634,20 @@ if RequiredScript == "lib/setups/setup" then
 			if not self._minions[key] then
 				self._minions[key] = { unit = data.unit, kills = 0 }
 				self:_listener_callback("minion", "add", key, self._minions[key])
-				self:_unit_count_event("change", "minion", 1)
+				if self._minions[key].unit:base()._tweak_table:find("security") or self._minions[key].unit:base()._tweak_table:find("gensec") then
+					self:_unit_count_event("change", "sec_minion", 1)
+				else
+					self:_unit_count_event("change", "cop_minion", 1)
+				end
 			end
 		elseif self._minions[key] then
 			if event == "remove" then
 				self:_listener_callback("minion", "remove", key, self._minions[key])
-				self:_unit_count_event("change", "minion", -1)
+				if self._minions[key].unit:base()._tweak_table:find("security") or self._minions[key].unit:base()._tweak_table:find("gensec") then
+					self:_unit_count_event("change", "sec_minion", -1)
+				else
+					self:_unit_count_event("change", "cop_minion", -1)
+				end
 				self._minions[key] = nil
 			else
 				if event == "set_health_ratio" then
@@ -1631,25 +1639,30 @@ if RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
 	
 	function GroupAIStateBase:_client_hostage_count_cbk()
 		local police_hostages = 0
+		local security_hostages = 0
 		local civilian_hostages = self._hostage_headcount
 	
 		for u_key, u_data in pairs(managers.enemy:all_enemies()) do
 			if u_data and u_data.unit and u_data.unit.anim_data and u_data.unit:anim_data() then
 				if u_data.unit:anim_data().surrender then
-					police_hostages = police_hostages + 1
+					if u_data.unit:base()._tweak_table:find("security") or u_data.unit:base()._tweak_table:find("gensec") then
+						security_hostages = security_hostages + 1
+					else
+						police_hostages = police_hostages + 1
+					end
 				end
 			end
 		end
 		
-		civilian_hostages = civilian_hostages - police_hostages
+		civilian_hostages = civilian_hostages - police_hostages - security_hostages
 		managers.gameinfo:event("unit_count", "set", "civ_hostage", civilian_hostages)
 		managers.gameinfo:event("unit_count", "set", "cop_hostage", police_hostages)
+		managers.gameinfo:event("unit_count", "set", "sec_hostage", security_hostages)
 	end
 	
 	function GroupAIStateBase:_update_hostage_count()
 		if Network:is_server() then
-			managers.gameinfo:event("unit_count", "set", "civ_hostage", self._hostage_headcount - self._police_hostage_headcount)
-			managers.gameinfo:event("unit_count", "set", "cop_hostage", self._police_hostage_headcount)
+			managers.enemy:add_delayed_clbk("hostage_count_update", callback(self, self, "_client_hostage_count_cbk"), Application:time() + 0.01)
 		else
 			self:_client_hostage_count_cbk()
 		end
