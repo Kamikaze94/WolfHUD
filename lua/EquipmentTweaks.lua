@@ -29,12 +29,11 @@ if RequiredScript == "lib/units/weapons/sentrygunweapon" then
 		end
 	end
 elseif RequiredScript == "lib/units/weapons/trip_mine/tripminebase" then
-	local TripMineBase_setup_original = TripMineBase.setup
-	function TripMineBase:setup(...)
-		local val = TripMineBase_setup_original(self, ...)
-		if self._sensor_upgrade and managers.groupai:state():whisper_mode() then
+	local set_active_original = TripMineBase.set_active
+	function TripMineBase:set_active(active, owner, ...)
+		if owner and owner == managers.player:player_unit() and managers.groupai:state():whisper_mode() then
 			self._startup_armed = false
 		end
-		return val
+		set_active_original(self, active, owner, ...)
 	end
 end

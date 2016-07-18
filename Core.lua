@@ -139,7 +139,7 @@ if not _G.WolfHUD then
 		["lib/player_actions/skills/playeractionexperthandling"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractionshockandawe"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractiondireneed"] = { "GameInfoManager.lua" },
---		["lib/player_actions/skills/playeractionunseenstrike"] = { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractionunseenstrike"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractiontriggerhappy"] = { "GameInfoManager.lua" },
 		["lib/states/ingamedriving"] = { "DrivingHUD.lua" },
 		["lib/states/ingamewaitingforplayers"] = { "MenuTweaks.lua" },
