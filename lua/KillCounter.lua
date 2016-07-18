@@ -204,8 +204,12 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		local set_name_original = HUDTeammate.set_name
 		local set_state_original = HUDTeammate.set_state
 
-		function HUDTeammate:init(...)
-			init_original(self, ...)
+		function HUDTeammate:init(i, teammates_panel, ...)
+			if not HUDManager.CUSTOM_TEAMMATE_PANELS and WolfHUD:getSetting("SHOW_ACCURACY", "boolean") then			
+				teammates_panel:set_h(teammates_panel:h() + 5)
+				teammates_panel:set_y(teammates_panel:y() - 5)
+			end
+			init_original(self, i, teammates_panel, ...)
 			if not HUDManager.CUSTOM_TEAMMATE_PANELS then
 				self:_init_killcount()
 				self:init_accuracy()

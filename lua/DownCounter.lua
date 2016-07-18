@@ -98,18 +98,23 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 			
 			self._max_downs = tweak_data.player.damage.LIVES_INIT - 1 + (is_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
 			self._downs = 0
+			
+			if managers.gameinfo then
+				managers.gameinfo:register_listener("HealthRadial_whisper_mode_listener" .. tostring(self._id), "whisper_mode", "change", callback(self, self, "_whisper_mode_change"))
+			end
 		end
 	end)
 	
-	local set_health_original = HUDTeammate.set_health
-	function HUDTeammate:set_health(...)
-		set_health_original(self, ...)
-		-- Hacky workaround to get a whisper mode listener...
-		local whisper_mode = managers.groupai:state():whisper_mode()
-		if (not self._risk and whisper_mode) or (not self._prev_loud and not whisper_mode) or (self._prev_loud and whisper_mode) then
+	Hooks:PostHook( HUDTeammate, "remove_panel", "WolfHUD_DownCounter_HUDTeammate_remove_panel", function(self, ...)
+		if not HUDManager.CUSTOM_TEAMMATE_PANELS then	-- For CustomHUD Compatability...
+			managers.gameinfo:unregister_listener("HealthRadial_whisper_mode_listener" .. tostring(self._id), "whisper_mode", "change")
+		end
+	end)
+	
+	if not HUDManager.CUSTOM_TEAMMATE_PANELS then
+		function HUDTeammate:_whisper_mode_change(event, key, status)
 			self:set_downs()
 		end
-		self._prev_loud = not whisper_mode
 	end
 	
 	HUDTeammate.set_downs = HUDTeammate.set_downs or function(self, i)
