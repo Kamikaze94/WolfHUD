@@ -434,15 +434,21 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	end
 
 	function HUDStatsScreen:update(day_wrapper_panel, item)
-		if not item then
-			day_wrapper_panel:child("offshore_payout_text"):set_text(managers.experience:cash_string(managers.money:get_potential_payout_from_current_stage() - math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate"))))
-			day_wrapper_panel:child("spending_cash_text"):set_text(managers.experience:cash_string(math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate")) - managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)))
-			if 0 <= math.round(managers.money:get_potential_payout_from_current_stage() * managers.money:get_tweak_value("money_manager", "offshore_rate")) - managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0) then
+		if managers.money and managers.statistics and managers.experience and not item then
+			local money_current_stage 	= managers.money:get_potential_payout_from_current_stage() or 0
+			local offshore_rate 		= managers.money:get_tweak_value("money_manager", "offshore_rate") or 0
+			local civilian_kills 		= managers.statistics:session_total_civilian_kills() or 0
+			local cleaner_costs			= (managers.money:get_civilian_deduction() or 0) * civilian_kills
+			local offshore_money 		= money_current_stage - math.round(money_current_stage * offshore_rate)
+			local spending_cash 		= money_current_stage * offshore_rate - cleaner_costs
+			day_wrapper_panel:child("offshore_payout_text"):set_text(managers.experience:cash_string(offshore_money))
+			day_wrapper_panel:child("spending_cash_text"):set_text(managers.experience:cash_string(spending_cash))
+			if spending_cash >= 0 then
 				day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.friend_color)
 			else
 				day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.heat_cold_color)
 			end
-			day_wrapper_panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(managers.money:get_civilian_deduction() * (managers.statistics:session_total_civilian_kills() or 0)) .. " (" .. (managers.statistics:session_total_civilian_kills() or 0) .. ")")
+			day_wrapper_panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(cleaner_costs) .. " (" .. tostring(civilian_kills) .. ")")
 		end
 		
 		for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
