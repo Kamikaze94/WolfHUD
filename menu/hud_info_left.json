@@ -93,14 +93,6 @@
 			"description" : "wolfhud_hudlist_show_tape_loop_desc",
 			"callback" : "clbk_change_hudlist_setting",
 			"value" : "show_tape_loop",
-		},
-		{
-			"type" : "toggle",
-			"id" : "remove_answered_pager_contour",
-			"title" : "wolfhud_hudlist_remove_answered_pagers_title",
-			"description" : "wolfhud_hudlist_remove_answered_pagers_desc",
-			"callback" : "clbk_change_hudlist_setting",
-			"value" : "remove_answered_pager_contour",
 		}
 	]
 }

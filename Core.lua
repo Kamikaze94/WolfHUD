@@ -23,6 +23,7 @@ if not _G.WolfHUD then
 		"wolfhud_infopanels_buff_options_menu",
 		"wolfhud_tabstats_options_menu",
 		"wolfhud_dmgindicator_options_menu", 
+		"wolfhud_dmgpopup_options_menu",
 		"wolfhud_enemyhealthbar_options_menu", 
 		"wolfhud_press2hold_options_menu", 
 		"wolfhud_gadget_options_menu",
@@ -245,6 +246,17 @@ if not _G.WolfHUD then
 			loot_screen_delay 				= 3,		--Skip the loot screen after X seconds
 			no_slowmotion 					= true,		--Disable mask-up and downed slow motion
 		  --HUDList
+			use_hudlist 					= true,
+			right_list_scale				= 1,
+			left_list_scale					= 1,
+			buff_list_scale					= 1,
+			list_color	 					= "white",		--Left and Right List font color
+			list_color_bg	 				= "black",		--Left and Right List BG color
+			civilian_color 					= "white", 		--EnemyCounter Civillian and Hostage icon color
+			thug_color 						= "white",		--EnemyCounter Thug and Mobster icon color
+			enemy_color 					= "white",		--EnemyCounter Cop and Specials icon color
+			special_color 					= "white",
+			
 			show_timers 					= true,     --Drills, time locks, hacking etc.
 			show_ammo_bags					= true,  	--Deployables (ammo)
 			show_doc_bags					= true,  	--Deployables (doc bags)
@@ -274,17 +286,63 @@ if not _G.WolfHUD then
 			show_special_pickups 			= true,    	--Show number of special equipment/items
 
 			show_buffs 						= true,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
-			
-			use_hudlist 					= true,
-			right_list_scale				= 1,
-			left_list_scale					= 1,
-			buff_list_scale					= 1,
-			list_color	 					= "white",		--Left and Right List font color
-			list_color_bg	 				= "black",		--Left and Right List BG color
-			civilian_color 					= "white", 		--EnemyCounter Civillian and Hostage icon color
-			thug_color 						= "white",		--EnemyCounter Thug and Mobster icon color
-			enemy_color 					= "white",		--EnemyCounter Cop and Specials icon color
-			special_color 					= "white",
+			aggressive_reload_aced_buff		= true,
+			ammo_efficiency_buff			= true,
+			armor_break_invulnerable_buff	= true,
+			berserker_buff					= true,
+			biker_buff						= true,
+			bloodthirst_basic_buff			= false,
+			bloodthirst_aced_buff			= true,
+			bullet_storm_buff				= true,
+			close_contact_buff				= true,
+			combat_medic_buff				= true,
+			combat_medic_passive_buff		= false,
+			desperado_buff					= true,
+			die_hard_buff					= false,
+			dire_need_buff					= true,
+			grinder_buff					= true,
+			hostage_situation_buff			= false,
+			hostage_taker_buff				= false,
+			inspire_buff					= true,
+			lock_n_load_buff				= true,
+			melee_stack_damage_buff			= false,
+			maniac_buff						= false,
+			messiah_buff					= true,
+			overdog_buff					= false,
+			overkill_buff					= false,
+			painkiller_buff					= false,
+			partner_in_crime_buff			= false,
+			running_from_death_buff			= true,
+			quick_fix_buff					= false,
+			second_wind_buff				= true,
+			sixth_sense_buff				= true,
+			swan_song_buff					= false,
+			tooth_and_claw_buff				= true,
+			trigger_happy_buff				= false,
+			underdog_buff					= false,
+			unseen_strike_buff				= true,
+			up_you_go_buff					= false,
+			uppers_buff						= true,
+			yakuza_buff						= false,
+			anarchist_armor_recovery_debuff	= true,
+			ammo_give_out_debuff			= true,
+			armor_break_invulnerable_debuff	= false,
+			bullseye_debuff					= true,
+			grinder_debuff					= false,
+			inspire_debuff					= true,
+			inspire_revive_debuff			= true,
+			life_drain_debuff				= true,
+			medical_supplies_debuff			= true,
+			sociopath_debuff				= true,
+			unseen_strike_debuff			= false,
+			uppers_debuff					= false,
+			armorer_teambuff				= true,
+			bulletproof_teambuff			= true,
+			crew_chief_teambuff				= true,
+			forced_friendship_teambuff		= true,
+			damage_increase_compbuff		= true,
+			damage_reduction_compbuff		= true,
+			melee_damage_increase_compbuff	= true,
 		  --Interaction
 			LOCK_MODE 						= 3,			--Disabled (1, Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time (2), or current interaction time(3)
 			MIN_TIMER_DURATION 				= 5, 			--Min interaction duration (in seconds) for the toggle behavior to activate
@@ -668,6 +726,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_suspicion.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_killcounter.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_indicator.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_popup.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_enemy_healthbar.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", WolfHUD, settings)
 end)

@@ -57,6 +57,14 @@
 			"value" : "show_downcounter",
 		},
 		{
+			"type" : "toggle",
+			"id" : "remove_answered_pager_contour",
+			"title" : "wolfhud_hudlist_remove_answered_pagers_title",
+			"description" : "wolfhud_hudlist_remove_answered_pagers_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "remove_answered_pager_contour",
+		},
+		{
 			"type" : "divider",
 			"size" : 16,
 		}
