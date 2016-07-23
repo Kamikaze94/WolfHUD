@@ -174,12 +174,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		gen_pku_blow_torch =				"blowtorch",
 		drk_pku_blow_torch = 				"blowtorch",
 		hold_born_receive_item_blow_torch = "blowtorch",
-		--thermite = 						"thermite",
-		--gasoline = 						"thermite",
+		thermite = 							"thermite",
+		gasoline = 							"thermite",
+		gasoline_engine = 					"thermite",
 		gen_pku_thermite = 					"thermite",
 		gen_pku_thermite_paste = 			"thermite",
+		gen_int_thermite_rig = 				"thermite",
 		hold_take_gas_can = 				"thermite",
-		--gen_pku_thermite_paste_z_axis = 	"thermite",
+		gen_pku_thermite_paste_z_axis = 	"thermite",
 		money_wrap_single_bundle = 			"small_loot",
 		money_wrap_single_bundle_active = 	"small_loot",
 		money_wrap_single_bundle_dyn = 		"small_loot",
@@ -721,9 +723,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		
 		if event == "set_retrigger_active" then
 			if data.retrigger_active then
-				list:register_item(key, HUDList.ECMRetriggerItem, data):activate()
+				list:register_item(string.format("%s_retrigger", key), HUDList.ECMRetriggerItem, data):activate()
  			else
- 				list:unregister_item(key)
+ 				list:unregister_item(string.format("%s_retrigger", key))
+ 			end
+		elseif event == "set_feedback_active" then
+			if data.feedback_active then
+				list:register_item(string.format("%s_feedback", key), HUDList.ECMFeedbackItem, data):activate()
+ 			else
+ 				list:unregister_item(string.format("%s_feedback", key))
  			end
 		end
 	end
@@ -1016,7 +1024,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("left_side_list"):item("ecm_retrigger")
 		local ecms = managers.gameinfo:get_ecms()
 		local listener_id = "HUDListManager_ecm_listener"
-		local events = { "set_retrigger_active" } 
+		local events = { "set_retrigger_active", "set_feedback_active" } 
 		local clbk = callback(self, self, "_ecm_retrigger_event")
 	
 		for _, event in pairs(events) do
@@ -2054,7 +2062,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		thug_boss =		{ atlas = {1, 1}, 	color = HUDListManager.ListOptions.thug_color, 	priority = 4 },
 		phalanx =		{ texture = "guis/textures/pd2/hud_buff_shield", color = HUDListManager.ListOptions.special_color, priority = 7 },
 		
-		turret =		{ atlas = {7, 5}, 	color = HUDListManager.ListOptions.turret_color, 	priority = 4 },
+		turret =		{ atlas = {7, 5}, 	color = HUDListManager.ListOptions.turret_color, 	priority = 5 },
 		unique =		{ atlas = {3, 8}, 	color = HUDListManager.ListOptions.civilian_color, 	priority = 3 },
 		cop_hostage =	{ atlas = {2, 8}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 2 },
 		civ_hostage =	{ atlas = {4, 7}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 1 },
@@ -3315,6 +3323,58 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._text:set_text(format_time_string(data.retrigger_delay))
 			self._text:set_color(self:_get_color_from_table(self._max_duration - data.retrigger_delay, self._max_duration))
 		end
+	end
+	
+	
+	HUDList.ECMFeedbackItem = HUDList.ECMFeedbackItem or class(HUDList.ItemBase)
+	function HUDList.ECMFeedbackItem:init(parent, name, data)
+		HUDList.ECMFeedbackItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
+		
+		self._max_duration = 60
+		self._expire_t = 0
+		self._flash_color_table = {
+			{ ratio = 0.0, color = self.DISABLED_COLOR },
+			{ ratio = 1.0, color = self.STANDARD_COLOR }
+        }
+		
+		self._box = HUDBGBox_create(self._panel, {
+				w = self._panel:w(),
+				h = self._panel:h(),
+			}, {})
+		
+		self._text = self._box:text({
+			name = "text",
+			align = "center",
+			vertical = "center",
+			w = self._box:w(),
+			h = self._box:h(),
+			color = Color(1, 0.0, 0.8, 1.0),
+			font = tweak_data.hud_corner.assault_font,
+			font_size = self._box:h() * 0.6,
+		})
+		
+		self:_set_feedback_duration(data)
+		
+		local key = tostring(data.unit:key())
+		table.insert(self._listener_clbks, { 
+			name = string.format("HUDList_ecm_feedback_listener_%s", key), 
+			source = "ecm", 
+			event = { "set_feedback_duration" }, 
+			clbk = callback(self, self, "_set_feedback_duration"), 
+			keys = { key }, 
+			data_only = true
+		})
+	end
+	
+	function HUDList.ECMFeedbackItem:_set_feedback_duration(data)
+		if data.feedback_active then
+			self._max_duration = data.feedback_duration or 60
+			self._expire_t = data.feedback_expire_t or 0
+		end
+	end
+	
+	function HUDList.ECMFeedbackItem:update(t, dt)
+		local duration = math.max(0, self._expire_t - t)
 	end
 	
 	

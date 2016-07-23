@@ -3181,7 +3181,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		local t = 0
 		while timer > t do		
 			local time_left = timer - t
-			local r = t / timer
+			local r = math.clamp(t / timer, 0, 1)
 			
 			self._progress_timer:set_text(string.format("%.1fs", time_left))
 			self._progress_bar:set_w(self._progress_bar_bg:w() * r)

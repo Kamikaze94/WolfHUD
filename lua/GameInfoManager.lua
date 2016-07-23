@@ -143,9 +143,13 @@ if RequiredScript == "lib/setups/setup" then
 			gen_pku_blow_torch =				"_special_equipment_interaction_handler",
 			drk_pku_blow_torch = 				"_special_equipment_interaction_handler",
 			hold_born_receive_item_blow_torch = "_special_equipment_interaction_handler",
+			thermite = 							"_special_equipment_interaction_handler",
+			gasoline = 							"_special_equipment_interaction_handler",
+			gasoline_engine = 					"_special_equipment_interaction_handler",
 			gen_pku_thermite = 					"_special_equipment_interaction_handler",
 			gen_pku_thermite_paste = 			"_special_equipment_interaction_handler",
 			hold_take_gas_can = 				"_special_equipment_interaction_handler",
+			gen_pku_thermite_paste_z_axis = 	"_special_equipment_interaction_handler",
 			money_wrap_single_bundle = 			"_special_equipment_interaction_handler",
 			money_wrap_single_bundle_active = 	"_special_equipment_interaction_handler",
 			money_wrap_single_bundle_dyn = 		"_special_equipment_interaction_handler",
@@ -860,6 +864,12 @@ if RequiredScript == "lib/setups/setup" then
 					self._ecms[key].retrigger_delay = data.retrigger_delay
 					self:_listener_callback("ecm", event, key, self._ecms[key])
 				end
+			elseif event == "set_feedback_duration" then
+				if self._ecms[key].feedback_active then
+					self._ecms[key].feedback_duration = data.feedback_duration
+					self._ecms[key].feedback_expire_t = data.feedback_expire_t
+					self:_listener_callback("ecm", event, key, self._ecms[key])
+				end
 			elseif event == "set_jammer_active" then
 				if self._ecms[key].jammer_active ~= data.jammer_active then
 					self._ecms[key].jammer_active = data.jammer_active
@@ -868,6 +878,11 @@ if RequiredScript == "lib/setups/setup" then
 			elseif event == "set_retrigger_active" then
 				if self._ecms[key].retrigger_active ~= data.retrigger_active then
 					self._ecms[key].retrigger_active = data.retrigger_active
+					self:_listener_callback("ecm", event, key, self._ecms[key])
+				end
+			elseif event == "set_feedback_active" then
+				if self._ecms[key].feedback_active ~= data.feedback_active then
+					self._ecms[key].feedback_active = data.feedback_active
 					self:_listener_callback("ecm", event, key, self._ecms[key])
 				end
 			elseif event == "set_owner" then
@@ -1956,8 +1971,10 @@ if RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 				managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), { retrigger_active = true })
  			end
  		end
-	
-		return _set_feedback_active_original(self, state, ...)
+		managers.gameinfo:event("ecm", "set_feedback_active", tostring(self._unit:key()), { feedback_active = state })
+		local val = _set_feedback_active_original(self, state, ...)
+		managers.gameinfo:event("ecm", "set_feedback_duration", tostring(self._unit:key()), { feedback_duration = self._feedback_duration, feedback_expire_t = self._feedback_expire_t })	
+		return val
 	end
 	
 	function ECMJammerBase:update(unit, t, dt, ...)
@@ -1966,13 +1983,17 @@ if RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 		if not self._battery_empty then
 			managers.gameinfo:event("ecm", "set_jammer_battery", tostring(self._unit:key()), { jammer_battery = self._battery_life })
  		end
-		
+				
 		if self._retrigger_delay then
 			self._retrigger_delay = self._retrigger_delay - dt
 			managers.gameinfo:event("ecm", "set_retrigger_delay", tostring(self._unit:key()), { retrigger_delay = self._retrigger_delay })
 			if self._retrigger_delay <= 0 then
 				self._retrigger_delay = tweak_data.upgrades.ecm_feedback_retrigger_interval or 60
 			end
+		end
+		
+		if self._feedback_active and self._feedback_expire_t < t then
+			managers.gameinfo:event("ecm", "set_feedback_active", tostring(self._unit:key()), { feedback_active = false })
 		end
 	end
 	
@@ -1988,6 +2009,7 @@ if RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 	function ECMJammerBase:destroy(...)
 		destroy_original(self, ...)
 		managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), { retrigger_active = false })
+		managers.gameinfo:event("ecm", "set_feedback_active", tostring(self._unit:key()), { feedback_active = false })
 		managers.gameinfo:event("ecm", "destroy", tostring(self._unit:key()))
 	end
 	

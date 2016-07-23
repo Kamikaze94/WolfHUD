@@ -78,6 +78,7 @@ if not _G.WolfHUD then
 		["lib/setups/setup"] = { "GameInfoManager.lua", "WaypointsManager.lua" },
 		["lib/managers/menumanager"] = { "MenuTweaks.lua" },
 		["lib/managers/menumanagerdialogs"] = { "MenuTweaks.lua" },
+		["lib/managers/blackmarketmanager"] = { "EquipmentTweaks.lua" },
 		["lib/managers/chatmanager"] = { "MenuTweaks.lua" },
 		["lib/managers/localizationmanager"] = { "AdvAssault.lua" },
 		["lib/managers/experiencemanager"] = { "Scripts.lua" },
@@ -114,11 +115,11 @@ if not _G.WolfHUD then
 		["lib/units/equipment/ammo_bag/ammobagbase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/bodybags_bag/bodybagsbagbase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/doctor_bag/doctorbagbase"] = { "DownCounter.lua", "GameInfoManager.lua" },
-		["lib/units/equipment/ecm_jammer/ecmjammerbase"] = { "GameInfoManager.lua" },
+		["lib/units/equipment/ecm_jammer/ecmjammerbase"] = { "GameInfoManager.lua", "EquipmentTweaks.lua" },
 		["lib/units/equipment/grenade_crate/grenadecratebase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/sentry_gun/sentrygunbase"] = { "GameInfoManager.lua", "KillCounter.lua" },
 		["lib/units/equipment/sentry_gun/sentrygundamage"] = { "GameInfoManager.lua" },
-		["lib/units/interactions/interactionext"] = { "GameInfoManager.lua", "Interaction.lua" },
+		["lib/units/interactions/interactionext"] = { "GameInfoManager.lua", "Interaction.lua", "EquipmentTweaks.lua" },
 		["lib/units/weapons/akimboweaponbase"] = { "BurstFire.lua" },
 		["lib/units/weapons/sentrygunweapon"] = { "GameInfoManager.lua", "EquipmentTweaks.lua" },
 		["lib/units/weapons/weaponlaser"] = { "WeaponLasers.lua" },
@@ -382,6 +383,10 @@ if not _G.WolfHUD then
 			flashlight_range 				= 20,			--Flashlight range (in m)
 			flashlight_mult					= 2,
 			flashlight_color				= "white",
+		  --Equipment Tweaks
+			senty_auto_ap 					= true,
+			tripmine_auto_sensor_stealth	= true,
+			ecm_feedback_disabled_stealth	= true,
 			
 			show_advanced_assault			= true,
 			enable_burstmode				= true,

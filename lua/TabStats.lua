@@ -419,7 +419,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		if right_panel then
 			local text = ""
 			local x = 0
-			mode = WolfHUD:getSetting("clock_mode", "number")
+			local mode = WolfHUD:getSetting("clock_mode", "number")
 			if mode >= 3 then
 				text = os.date("%X")
 				x = right_panel:child("time_icon"):w()
@@ -434,6 +434,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	end
 
 	function HUDStatsScreen:update(day_wrapper_panel, item)
+		if not day_wrapper_panel then return end
 		if managers.money and managers.statistics and managers.experience and not item then
 			local money_current_stage 	= managers.money:get_potential_payout_from_current_stage() or 0
 			local offshore_rate 		= managers.money:get_tweak_value("money_manager", "offshore_rate") or 0
