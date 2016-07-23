@@ -1,0 +1,34 @@
+{
+	"menu_id" : "wolfhud_equipment_options_menu",
+	"parent_menu_id" : "wolfhud_options_menu",
+	"title" : "wolfhud_equipment_options_name",
+	"description" : "wolfhud_equipment_options_help",
+	"back_callback" : "",
+	"priority" : 100,
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "senty_auto_ap",
+			"title" : "wolfhud_equipment_senty_auto_ap_title",
+			"description" : "wolfhud_equipment_senty_auto_ap_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "senty_auto_ap",
+		},
+		{
+			"type" : "toggle",
+			"id" : "tripmine_auto_sensor_stealth",
+			"title" : "wolfhud_equipment_tripmine_auto_sensor_stealth_title",
+			"description" : "wolfhud_equipment_tripmine_auto_sensor_stealth_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "tripmine_auto_sensor_stealth",
+		},
+		{
+			"type" : "toggle",
+			"id" : "ecm_feedback_disabled_stealth",
+			"title" : "wolfhud_equipment_ecm_feedback_disabled_stealth_title",
+			"description" : "wolfhud_equipment_ecm_feedback_disabled_stealth_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "ecm_feedback_disabled_stealth",
+		}
+	]
+}

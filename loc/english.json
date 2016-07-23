@@ -346,6 +346,14 @@
 	"wolfhud_infopanels_buff_options_name" : "Buff List Options",
 	"wolfhud_infopanels_buff_options_help" : "Options for the buff info list."
 	
+	
+	"wolfhud_infopanels_buff_buffs_options_name" : "Skill Buffs",
+	"wolfhud_infopanels_buff_buffs_options_help" : "",
+	"wolfhud_infopanels_buff_debuffs_options_name" : "Skill Debuffs",
+	"wolfhud_infopanels_buff_debuffs_options_help" : "",
+	"wolfhud_infopanels_buff_teambuffs_options_name" : "Team Buffs & Perk Decks",
+	"wolfhud_infopanels_buff_teambuffs_options_help" : "",
+	
 	"wolfhud_hudlist_show_buffs_title" : "Show Buffs",
 	"wolfhud_hudlist_show_buffs_desc" : "Display active Buffs in the bottom center of your screen.",
 	"wolfhud_hudlist_damage_increase_compbuff_title" : "Damage Increase Composite Buff",
@@ -432,27 +440,27 @@
 	"wolfhud_hudlist_yakuza_buff_desc" : "",
 	"wolfhud_hudlist_anarchist_armor_recovery_debuff_title" : "Anarchist Perk Deck",
 	"wolfhud_hudlist_anarchist_armor_recovery_debuff_desc" : "",
-	"wolfhud_hudlist_ammo_give_out_debuff_title" : "Ammo give out",
+	"wolfhud_hudlist_ammo_give_out_debuff_title" : "Ammo give out Debuff",
 	"wolfhud_hudlist_ammo_give_out_debuff_desc" : "",
-	"wolfhud_hudlist_bullseye_debuff_title" : "Bullseye",
+	"wolfhud_hudlist_bullseye_debuff_title" : "Bullseye Debuff",
 	"wolfhud_hudlist_bullseye_debuff_desc" : "",
 	"wolfhud_hudlist_inspire_debuff_title" : "Inspire Boost Debuff",
 	"wolfhud_hudlist_inspire_debuff_desc" : "",
 	"wolfhud_hudlist_inspire_revive_debuff_title" : "Inspire Revive Debuff",
 	"wolfhud_hudlist_inspire_revive_debuff_desc" : "",
-	"wolfhud_hudlist_life_drain_debuff_title" : "Life Drain",
+	"wolfhud_hudlist_life_drain_debuff_title" : "Life Drain Debuff",
 	"wolfhud_hudlist_life_drain_debuff_desc" : "",
 	"wolfhud_hudlist_medical_supplies_debuff_title" : "Medical Supplies Debuff",
 	"wolfhud_hudlist_medical_supplies_debuff_desc" : "",
 	"wolfhud_hudlist_sociopath_debuff_title" : "Sociopath Perk Deck",
 	"wolfhud_hudlist_sociopath_debuff_desc" : "",
-	"wolfhud_hudlist_armorer_teambuff_title" : "Armorer",
+	"wolfhud_hudlist_armorer_teambuff_title" : "Armorer Perk Deck",
 	"wolfhud_hudlist_armorer_teambuff_desc" : "",
-	"wolfhud_hudlist_bulletproof_teambuff_title" : "Bulletproof",
+	"wolfhud_hudlist_bulletproof_teambuff_title" : "Bulletproof Teambuff",
 	"wolfhud_hudlist_bulletproof_teambuff_desc" : "",
 	"wolfhud_hudlist_crew_chief_teambuff_title" : "Crew Chief Perk Deck",
 	"wolfhud_hudlist_crew_chief_teambuff_desc" : "",
-	"wolfhud_hudlist_forced_friendship_teambuff_title" : "Forced Friendship",
+	"wolfhud_hudlist_forced_friendship_teambuff_title" : "Forced Friendship Teambuff",
 	"wolfhud_hudlist_forced_friendship_teambuff_desc" : "",
 	
 	
@@ -557,6 +565,17 @@
 	"wolfhud_doubletap_nades_stealth_desc" : "When checked, you need to doubletap to throw a nade in stealth. \nOnly to prevent accidents.",
 	"wolfhud_hold_to_pick_title" : "Auto Pickup",
 	"wolfhud_hold_to_pick_desc" : "Small loot will be automatically picked up, while pressing your interaction key.",
+	
+	
+	"wolfhud_equipment_options_name" : "Equipment Tweak Options",
+	"wolfhud_equipment_options_help" : "Options that can change the behaviour of your Equipment ingame.",
+	
+	"wolfhud_equipment_senty_auto_ap_title" : "Sentry Auto AP-Mode",
+	"wolfhud_equipment_senty_auto_ap_desc" : "Sentries will spawn in AP Mode, if you have the required Skill.",
+	"wolfhud_equipment_tripmine_auto_sensor_stealth_title" : "Trip-Mine Auto Sensor-Mode",
+	"wolfhud_equipment_tripmine_auto_sensor_stealth_desc" : "Trip-Mines will spawn in Sensor Mode, while you are in stealth.",
+	"wolfhud_equipment_ecm_feedback_disabled_stealth_title" : "No ECM Feedback",
+	"wolfhud_equipment_ecm_feedback_disabled_stealth_desc" : "ECM Feedback will be disabled during stealth.",
 	
 	
 	"wolfhud_gadget_options_name" : "Weapon Gadget Options",

@@ -21,11 +21,16 @@ if not _G.WolfHUD then
 		"wolfhud_infopanels_left_options_menu",
 		"wolfhud_infopanels_right_options_menu",
 		"wolfhud_infopanels_buff_options_menu",
+		"wolfhud_infopanels_buff_buffs_options_menu",
+		"wolfhud_infopanels_buff_debuffs_options_menu",
+		"wolfhud_infopanels_buff_teambuffs_options_menu",
+		"wolfhud_infopanels_buff_perks_options_menu",
 		"wolfhud_tabstats_options_menu",
 		"wolfhud_dmgindicator_options_menu", 
 		"wolfhud_dmgpopup_options_menu",
 		"wolfhud_enemyhealthbar_options_menu", 
 		"wolfhud_press2hold_options_menu", 
+		"wolfhud_equipment_options_menu",
 		"wolfhud_gadget_options_menu",
 		"wolfhud_gadget_laser_options_menu"
 	}
@@ -718,10 +723,14 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets_lasers.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/equipment.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_tabstats.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff_buffs.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff_debuffs.json", WolfHUD, settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff_teambuffs.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_right.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_left.json", WolfHUD, settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_panels.json", WolfHUD, settings)
