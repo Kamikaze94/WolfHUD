@@ -67,96 +67,90 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HUDManager.CUSTOM_TEAMMATE_PANELS then
 	
 	Hooks:PostHook( HUDTeammate, "init", "WolfHUD_DownCounter_HUDTeammate_init", function(self, i, teammates_panel, is_player, ...)
-		if not HUDManager.CUSTOM_TEAMMATE_PANELS then	-- For CustomHUD Compatability...
-			self._health_panel = self._player_panel:child("radial_health_panel")
-			
-			local risk_indicator_bg = self._health_panel:bitmap({
-				name = "risk_indicator_bg",  
-				texture = "guis/textures/pd2/crimenet_marker_glow",  
-				texture_rect = { 0, 0, 64, 64 }, 
-				blend_mode = "normal",  
-				color = Color.black,
-				alpha = 0.6,
-				w = self._health_panel:w(),  
-				h = self._health_panel:h(),  
-				layer = 1,
-			})
-			
-			local risk_indicator = self._health_panel:text({
-				name = "risk_indicator",
-				text = "?",
-				color = Color(1, 1, 0, 0),
-				blend_mode = "normal",
-				layer = 2,
-				w = self._health_panel:w(),
-				h = self._health_panel:h(),
-				vertical = "center",
-				align = "center",
-				font_size = 15,
-				font = tweak_data.menu.pd2_medium_font
-			})
-			
-			self._max_downs = tweak_data.player.damage.LIVES_INIT - 1 + (is_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
-			self._downs = 0
-			
-			if managers.gameinfo then
-				managers.gameinfo:register_listener("HealthRadial_whisper_mode_listener" .. tostring(self._id), "whisper_mode", "change", callback(self, self, "_whisper_mode_change"))
-			end
+		self._health_panel = self._player_panel:child("radial_health_panel")
+		
+		local risk_indicator_bg = self._health_panel:bitmap({
+			name = "risk_indicator_bg",  
+			texture = "guis/textures/pd2/crimenet_marker_glow",  
+			texture_rect = { 0, 0, 64, 64 }, 
+			blend_mode = "normal",  
+			color = Color.black,
+			alpha = 0.6,
+			w = self._health_panel:w(),  
+			h = self._health_panel:h(),  
+			layer = 1,
+		})
+		
+		local risk_indicator = self._health_panel:text({
+			name = "risk_indicator",
+			text = "?",
+			color = Color(1, 1, 0, 0),
+			blend_mode = "normal",
+			layer = 2,
+			w = self._health_panel:w(),
+			h = self._health_panel:h(),
+			vertical = "center",
+			align = "center",
+			font_size = 15,
+			font = tweak_data.menu.pd2_medium_font
+		})
+		risk_indicator:set_font_size(self._main_player and 15 or 12)
+		
+		self._max_downs = tweak_data.player.damage.LIVES_INIT - 1 + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
+		self._downs = self._main_player and self._max_downs or 0
+		self._risk = 0
+		
+		if managers.gameinfo then
+			managers.gameinfo:register_listener("HealthRadial_whisper_mode_listener" .. tostring(self._id), "whisper_mode", "change", callback(self, self, "_whisper_mode_change"))
 		end
 	end)
 	
 	Hooks:PostHook( HUDTeammate, "remove_panel", "WolfHUD_DownCounter_HUDTeammate_remove_panel", function(self, ...)
-		if not HUDManager.CUSTOM_TEAMMATE_PANELS then	-- For CustomHUD Compatability...
-			managers.gameinfo:unregister_listener("HealthRadial_whisper_mode_listener" .. tostring(self._id), "whisper_mode", "change")
-		end
+		managers.gameinfo:unregister_listener("HealthRadial_whisper_mode_listener" .. tostring(self._id), "whisper_mode", "change")
 	end)
 	
-	if not HUDManager.CUSTOM_TEAMMATE_PANELS then
-		function HUDTeammate:_whisper_mode_change(event, key, status)
-			self:set_downs()
-		end
-	end
+	Hooks:PostHook( HUDTeammate, "set_health", "WolfHUD_DownCounter_HUDTeammate_set_health", function(self, ...)
+		self:set_downs()
+	end)
 	
+	function HUDTeammate:_whisper_mode_change(event, key, status)
+		self:set_downs()
+	end
+		
 	HUDTeammate.set_downs = HUDTeammate.set_downs or function(self, i)
 		if not self._health_panel then return end
 		if not i or self._downs ~= i then
 			self._downs = i or self._downs
-			self._health_panel:child("risk_indicator_bg"):set_visible(WolfHUD:getSetting("show_downcounter", "boolean"))
-			local alpha = WolfHUD:getSetting("show_downcounter", "boolean") and 1 or 0
-			if managers.groupai:state():whisper_mode() and self._downs == self._max_downs then
-				if not self._risk then
-					self._risk = 99
-					if self._id == HUDManager.PLAYER_PANEL then
-						self._health_panel:child("risk_indicator"):set_font_size(15)
-						self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_local(75)))
-					elseif self:peer_id() ~= nil then
-						self._health_panel:child("risk_indicator"):set_font_size(12)
-						self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_peer(managers.network:session():peer(self:peer_id()), 75)))
-					end
-					self._health_panel:child("risk_indicator"):set_text(utf8.char(57363))
-					if self._risk < 99 then
-						local r = (self._risk-3)/72
-						local g = 0.8-0.6*((self._risk-3)/72)
-						local b = 1-(self._risk-3)/72
-						color = Color(1, r, g, b)
-						self._health_panel:child("risk_indicator"):set_text(utf8.char(57363) .. tostring(self._risk))
-					end
-					self._health_panel:child("risk_indicator"):set_color(color:with_alpha(alpha))
+			local visible = WolfHUD:getSetting("show_downcounter", "boolean") and not self._ai
+			local risk_indicator = self._health_panel:child("risk_indicator")
+			risk_indicator:set_visible(visible)
+			self._health_panel:child("risk_indicator_bg"):set_visible(visible)
+			
+			if not visible then return end
+			
+			local color = risk_indicator:color()
+			local text = risk_indicator:text()
+			if managers.groupai:state():whisper_mode() and self:down_amount() <= 0 then
+				local risk = 0
+				if self._main_player then
+					risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_local(75)))
+				elseif self:peer_id() then
+					risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_peer(managers.network:session():peer(self:peer_id()), 75)))
+				end
+				if self._risk ~= risk then
+					self._risk = risk
+					local r = (self._risk-3)/72
+					local g = 0.8-0.6*((self._risk-3)/72)
+					local b = 1-(self._risk-3)/72
+					color = Color(1, r, g, b)
+					text = utf8.char(57363) .. tostring(self._risk)
 				end
 			else
-				local downs_text = self._downs
-				local color = Color.white
-				if self._id == HUDManager.PLAYER_PANEL then
-					self._health_panel:child("risk_indicator"):set_font_size(15)
-					color = self._downs > 2 and Color('C2FC97') or self._downs > 1 and Color('CEA168') or Color('E24E4E')
-				elseif self:peer_id() ~= nil then
-					self._health_panel:child("risk_indicator"):set_font_size(12)
-					color = self._downs > 2 and Color('E24E4E') or self._downs > 1 and Color('CEA168') or Color('C2FC97')
-				end
-				alpha = (WolfHUD:getSetting("show_downcounter", "boolean") and (self:peer_id() ~= nil or self._id == HUDManager.PLAYER_PANEL) and 1 or 0)
-				self._health_panel:child("risk_indicator"):set_text(tostring(downs_text))
-				self._health_panel:child("risk_indicator"):set_color(color:with_alpha(alpha))
+				color = math.lerp(Color.white, Color.red, self:down_amount() / self._max_downs)
+				text = tostring(self._downs)
 			end
+			risk_indicator:set_color(color)
+			risk_indicator:set_text(text)
 		end
 	end
 	
@@ -165,6 +159,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 	end
 	
 	HUDTeammate.reset_downs = HUDTeammate.reset_downs or function(self)
-		self:set_downs(0)
+		self:set_downs((self._main_player and self._max_downs) or 0)
+	end
+	
+	HUDTeammate.down_amount = HUDTeammate.down_amount or function(self)
+		return self._main_player and self._max_downs - self._downs or self._downs
 	end
 end

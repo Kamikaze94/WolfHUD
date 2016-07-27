@@ -549,7 +549,17 @@ if MenuNodeMainGui then
 end
 
 Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", function(loc)
-	if _G.PD2KR then
+	local chinese = false
+	for k, v in pairs(LuaModManager.Mods) do
+		local info = v.definition
+		if info["name"] == "ChnMod" then
+			chinese = true
+			break
+		end
+	end
+	if chinese then
+		loc:load_localization_file(WolfHUD.mod_path .. "loc/chinese.json")
+	elseif _G.PD2KR then
 		loc:load_localization_file(WolfHUD.mod_path .. "loc/korean.json")
 	else
 		for _, filename in pairs(file.GetFiles(WolfHUD.mod_path .. "loc/")) do

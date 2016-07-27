@@ -1,0 +1,6 @@
+{
+	"menu_jowi" : "Wick",
+	"hud_int_hold_grab_the_bag" : "Hold $BTN_INTERACT; to grab the $BAG;",
+	
+	"wolfhud_int_locked" : "PRESS $BTN_CANCEL; TO INTERRUPT"
+}
