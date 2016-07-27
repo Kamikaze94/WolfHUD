@@ -604,6 +604,8 @@
 	"wolfhud_flashlight_mult_desc" : "Kann das Licht deiner Taschenlampe erhellen oder verdunkeln.",
 	"wolfhud_flashlight_color_title" : "Taschenlampen Farbe",
 	"wolfhud_flashlight_color_desc" : "Bringe einen coolen Farbfilter vor deiner Taschenlampe an.",
+	"wolfhud_show_angeled_sight_title" : "Zeige Winkelvisir",
+	"wolfhud_show_angeled_sight_desc" : "Neige die Waffe in deiner Hand, während das Winkelvisir benutzt wird.",
 	
 	
 	"wolfhud_gadget_laser_options_name" : "Laser Color Options",

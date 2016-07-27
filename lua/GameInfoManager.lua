@@ -1992,7 +1992,7 @@ if RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 			end
 		end
 		
-		if self._feedback_active and self._feedback_expire_t and self._feedback_expire_t < t) then
+		if self._feedback_active and self._feedback_expire_t and self._feedback_expire_t < t then
 			managers.gameinfo:event("ecm", "set_feedback_active", tostring(self._unit:key()), { feedback_active = false })
 		end
 	end

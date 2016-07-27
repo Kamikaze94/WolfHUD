@@ -596,6 +596,8 @@
 	"wolfhud_flashlight_mult_desc" : "Increase or decrease the brightness of your flashlight.",
 	"wolfhud_flashlight_color_title" : "Flashlight Color",
 	"wolfhud_flashlight_color_desc" : "Install a cool color filter in front of your flashlight.",
+	"wolfhud_show_angeled_sight_title" : "Show Angeled Sight",
+	"wolfhud_show_angeled_sight_desc" : "Tilt the weapon in your Hand, while the angeled sight is enabled.",
 	
 	"wolfhud_gadget_laser_options_name" : "레이저 색 설정",
 	"wolfhud_gadget_laser_options_help" : "인게임 레이저 색을 설정합니다.",

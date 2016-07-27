@@ -95,6 +95,18 @@
 				"wolfhud_colors_rainbow"
 			],
 			"value" : "flashlight_color"
+		},
+		{
+			"type" : "divider",
+			"size" : 12
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_angeled_sight",
+			"title" : "wolfhud_show_angeled_sight_title",
+			"description" : "wolfhud_show_angeled_sight_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_angeled_sight"
 		}
 	]
 }

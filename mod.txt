@@ -44,6 +44,7 @@
 		{ "hook_id" : "lib/units/props/securitycamera", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/civilians/civiliandamage", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/enemies/cop/copdamage", 						"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/units/cameras/fpcameraplayerbase", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/equipment/ammo_bag/ammobagbase", 				"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/equipment/bodybags_bag/bodybagsbagbase", 		"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/equipment/doctor_bag/doctorbagbase", 			"script_path" : "Core.lua" },
