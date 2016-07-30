@@ -14,7 +14,7 @@ __Preview:__
 _(Outdated, need to take some new ones soon... :P )_
 <p align="center">
   <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_1.jpg" width="420"/>
-  <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_2.jpg" width="420"/>  
+  <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_2.jpg" width="420"/><br>
   <i>(Click to view bigger version)</i>
 </p>
 
