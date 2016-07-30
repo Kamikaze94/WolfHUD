@@ -60,7 +60,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	local _on_damage_received_original = CopDamage._on_damage_received
 	function CopDamage:_on_damage_received(data, ...)
 		if WolfHUD:getSetting("show_dmg_popup", "boolean") then
-			if data.damage > 0.09 and data.attacker_unit and (data.attacker_unit == managers.player:player_unit() or data.attacker_unit:base()._thrower_unit == managers.player:player_unit()) then
+			if data.damage > 0.09 and data.attacker_unit and alive(managers.player:player_unit()) and (data.attacker_unit == managers.player:player_unit() or data.attacker_unit:base()._thrower_unit == managers.player:player_unit()) then
 				local headshot = self._head_body_name and data.col_ray and data.col_ray.body and data.col_ray.body:name() == self._ids_head_body_name
 				self:show_popup(data.damage, self._dead, headshot)
 			end
@@ -76,17 +76,14 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 			self._dmg_value = self._dmg_value + (damage * 10)
 			managers.waypoints:set_waypoint_duration(id, CopDamage._popup_fade_t)
 			managers.waypoints:set_waypoint_label(id, math.ceil(self._dmg_value))
-			if dead then
-				--managers.waypoints:set_waypoint_icon(id, "guis/textures/pd2/risklevel_blackscreen", {0, 0, 64, 64})
-				managers.waypoints:get_waypoint_component(id, "icon"):set_color(headshot and CopDamage._popup_headshot_color or CopDamage._popup_color)
-				managers.waypoints:get_waypoint_component(id, "label"):set_color(headshot and CopDamage._popup_headshot_color or CopDamage._popup_color)
-				managers.waypoints:set_waypoint_component_setting(id, "icon", "show", dead)
-			end
+			managers.waypoints:get_waypoint_component(id, "icon"):set_color(headshot and CopDamage._popup_headshot_color or CopDamage._popup_color)
+			managers.waypoints:get_waypoint_component(id, "label"):set_color(headshot and CopDamage._popup_headshot_color or CopDamage._popup_color)
+			managers.waypoints:set_waypoint_component_setting(id, "icon", "show", dead)
 		else
 			self._dmg_value = (damage * 10)
 						
 			local params = {
-				unit = self._unit,--:get_object(Idstring("Head"))
+				unit = self._unit,
 				on_minimap = false,
 				scale = 2,
 				color = (headshot and CopDamage._popup_headshot_color or CopDamage._popup_color),
@@ -125,8 +122,8 @@ elseif RequiredScript == "lib/units/civilians/civiliandamage" then
 	local _on_damage_received_original = CivilianDamage._on_damage_received
 	function CivilianDamage:_on_damage_received(data, ...)
 		if WolfHUD:getSetting("show_dmg_popup", "boolean") then
-			if data.damage > 0.09 and data.attacker_unit and (data.attacker_unit == managers.player:player_unit() or data.attacker_unit:base()._thrower_unit == managers.player:player_unit()) then
-				local headshot = self._head_body_name and data.col_ray and data.col_ray.body and data.col_ray.body:name() == self._ids_head_body_name
+			if data.damage > 0.09 and data.attacker_unit and alive(managers.player:player_unit()) and (data.attacker_unit == managers.player:player_unit() or data.attacker_unit:base()._thrower_unit == managers.player:player_unit()) then
+				local headshot = data.col_ray and data.col_ray.body and data.col_ray.body:name() == Idstring("head")
 				self:show_popup(data.damage, self._dead, headshot)
 			end
 		end

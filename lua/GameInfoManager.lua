@@ -144,7 +144,6 @@ if RequiredScript == "lib/setups/setup" then
 			drk_pku_blow_torch = 				"_special_equipment_interaction_handler",
 			hold_born_receive_item_blow_torch = "_special_equipment_interaction_handler",
 			thermite = 							"_special_equipment_interaction_handler",
-			gasoline = 							"_special_equipment_interaction_handler",
 			gasoline_engine = 					"_special_equipment_interaction_handler",
 			gen_pku_thermite = 					"_special_equipment_interaction_handler",
 			gen_pku_thermite_paste = 			"_special_equipment_interaction_handler",
