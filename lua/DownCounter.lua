@@ -68,6 +68,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 	
 	Hooks:PostHook( HUDTeammate, "init", "WolfHUD_DownCounter_HUDTeammate_init", function(self, i, teammates_panel, is_player, ...)
 		self._health_panel = self._health_panel or self._player_panel:child("radial_health_panel")
+		self._max_downs = tweak_data.player.damage.LIVES_INIT - 1 + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
+		self._downs = self._main_player and self._max_downs or 0
 		
 		local risk_indicator_bg = self._health_panel:bitmap({
 			name = "risk_indicator_bg",  
@@ -83,7 +85,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 		
 		self._downs_counter = self._health_panel:text({
 			name = "downs",
-			text = "?",
+			text = tostring(self._downs),
 			color = Color.white,
 			align = "center",
 			vertical = "center",
@@ -109,9 +111,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean") and not self._ai or false,
 		})
 				
-		self._max_downs = tweak_data.player.damage.LIVES_INIT - 1 + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
-		self._downs = self._main_player and self._max_downs or 0
-		
 		if managers.gameinfo then
 			managers.gameinfo:register_listener("HealthRadial_whisper_mode_listener" .. tostring(self._id), "whisper_mode", "change", callback(self, self, "_whisper_mode_change"))
 		end
@@ -123,6 +122,13 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 	
 	Hooks:PostHook( HUDTeammate, "set_health", "WolfHUD_DownCounter_HUDTeammate_set_health", function(self, ...)
 		self:set_detection()
+	end)
+	
+	Hooks:PreHook( HUDTeammate, "set_name", "WolfHUD_DownCounter_HUDTeammate_set_name", function(self, teammate_name, ...)
+		if teammate_name ~= self._name then
+			self._name = teammate_name
+			self:reset_downs()
+		end
 	end)
 	
 	function HUDTeammate:_whisper_mode_change(event, key, status)

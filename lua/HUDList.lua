@@ -2870,7 +2870,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		
 		self._health_bar = self._panel:rect({
 			name = "health_bar",
-			x = self._bar_bg:x()+1,
+			x = self._bar_bg:x(),
 			y = self._bar_bg:y(),
 			h = self._bar_bg:h() * 0.5,
 			color = Color(0.7, 0.0, 0.0),
@@ -2885,21 +2885,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = Color(0.0, 0.7, 0.0),
 			layer = 1,
 		})
-		--[[
-		self._info_text = self._panel:text({
-			name = "info",
-			text = "",
-			align = "center",
-			vertical = "bottom",
-			w = self._panel:w(),
-			h = self._panel:h() * 0.4,
-			color = Color.white,
-			layer = 1,
-			font = tweak_data.hud_corner.assault_font,
-			font_size = self._panel:h() * 0.4,
-		})
-		self._info_text:set_bottom(self._panel:bottom())
-		]]
 		
 		self._kills = self._panel:text({
 			name = "kills",
@@ -2937,7 +2922,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if data.ammo_ratio then
 			self._ammo_ratio = data.ammo_ratio
 			self._ammo_bar:set_w(self._bar_bg:w() * self._ammo_ratio)
-			--self._info_text:set_text(string.format("%.0f%%", self._ammo_ratio * 100))
 			
 			if self._ammo_ratio <= 0 then
 				self:_set_inactive()
@@ -2949,7 +2933,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if data.health_ratio then
 			self._health_ratio = data.health_ratio or 0
 			self._health_bar:set_w(self._bar_bg:w() * self._health_ratio)
-			--self._info_text:set_color(self:_get_color_from_table(self._health_ratio, 1))
 			
 			if self._health_ratio <= 0 then
 				self:_set_inactive()
