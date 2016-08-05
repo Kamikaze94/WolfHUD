@@ -58,9 +58,7 @@ elseif RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 	end
 	
 	function ECMJammerBase:destroy(...)
-		if self._owner_id and self._owner_id == managers.network:session():local_peer():id() then
-			managers.gameinfo:unregister_listener("ECMContour_whisper_mode_listener" .. tostring(self._unit:key()), "whisper_mode", "change")
-		end
+		managers.gameinfo:unregister_listener("ECMContour_whisper_mode_listener" .. tostring(self._unit:key()), "whisper_mode", "change")
 		destroy_original(self, ...)
 	end
 	
