@@ -144,6 +144,7 @@ if RequiredScript == "lib/setups/setup" then
 			drk_pku_blow_torch = 				"_special_equipment_interaction_handler",
 			hold_born_receive_item_blow_torch = "_special_equipment_interaction_handler",
 			thermite = 							"_special_equipment_interaction_handler",
+			--gasoline = 							"_special_equipment_interaction_handler",	--Spots to place gas canister
 			gasoline_engine = 					"_special_equipment_interaction_handler",
 			gen_pku_thermite = 					"_special_equipment_interaction_handler",
 			gen_pku_thermite_paste = 			"_special_equipment_interaction_handler",
@@ -244,10 +245,13 @@ if RequiredScript == "lib/setups/setup" then
 			arm_und = {	--Transport: Underpass (8x money)
 				[101237] = true, [101238] = true, [101239] = true, [103835] = true, [103836] = true, [103837] = true, [103838] = true, [101240] = true,
 			},
-			ukrainian_job = {	--Ukrainian Job (3x money)
+			ukrainian_job = {	--Ukrainian Job (3x money, 2x Small loot)
 				[101514] = true,
 				[102052] = true,
 				[102402] = true,
+				
+				[100033] = true,
+				[100034] = true,
 			},
 			firestarter_2 = {	--Firestarter day 2 (1x keycard)
 				[107208] = true,

@@ -175,6 +175,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		drk_pku_blow_torch = 				"blowtorch",
 		hold_born_receive_item_blow_torch = "blowtorch",
 		thermite = 							"thermite",
+		gasoline = 							"thermite",
 		gasoline_engine = 					"thermite",
 		gen_pku_thermite = 					"thermite",
 		gen_pku_thermite_paste = 			"thermite",

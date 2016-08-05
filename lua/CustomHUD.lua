@@ -1849,9 +1849,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			if risk then
 				self._risk = risk
 			elseif self._is_local_player then
-				self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_local(75)))
+				self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_local(tweak_data.player.SUSPICION_OFFSET_LERP or 0.75) * 100))
 			elseif self._owner:peer_id() then
-				self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_peer(managers.network:session():peer(self._owner:peer_id()), 75)))
+				self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_peer(managers.network:session():peer(self._owner:peer_id()), tweak_data.player.SUSPICION_OFFSET_LERP or 0.75) * 100))
 			end
 			if self._risk then
 				local color = self._risk < 50 and Color(1, 0, 0.8, 1) or Color(1, 1, 0.2, 0)
@@ -1865,9 +1865,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:_whisper_mode_change(event, key, status)
-			local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean"))
-			self._downs_counter:set_visible(not disabled and not status or self:down_amount() > 0)
-			self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
+		local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean"))
+		self._downs_counter:set_visible(not disabled and (not status or self:down_amount() > 0))
+		self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:set_armor(current, total)
