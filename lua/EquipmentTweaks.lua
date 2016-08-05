@@ -52,7 +52,7 @@ elseif RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 	end
 	
 	function ECMJammerBase:contour_interaction(...)
-		if not (managers.groupai:state():whisper_mode() or WolfHUD:getSetting("ecm_feedback_disabled_stealth", "boolean")) then
+		if not (managers.groupai:state():whisper_mode() and WolfHUD:getSetting("ecm_feedback_disabled_stealth", "boolean")) then
 			contour_interaction_original(self, ...)
 		end
 	end
@@ -69,11 +69,19 @@ elseif RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 	end
 elseif RequiredScript == "lib/units/interactions/interactionext" then
 	local ECMJammerInteaction_can_interact_original = ECMJammerInteractionExt.can_interact
+	local ECMJammerInteraction_can_select_original = ECMJammerInteractionExt.can_select
 	function ECMJammerInteractionExt:can_interact(...)
 		if WolfHUD:getSetting("ecm_feedback_disabled_stealth", "boolean") and managers.groupai:state():whisper_mode() then
 			return false
 		end
 		return ECMJammerInteaction_can_interact_original(self, ...)
+	end
+	
+	function ECMJammerInteractionExt:can_select(...)
+		if WolfHUD:getSetting("ecm_feedback_disabled_stealth", "boolean") and managers.groupai:state():whisper_mode() then
+			return false
+		end
+		return ECMJammerInteraction_can_select_original(self, ...)
 	end
 elseif RequiredScript == "lib/managers/blackmarketmanager" then
 	local equipped_armor_original = BlackMarketManager.equipped_armor

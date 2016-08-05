@@ -3287,6 +3287,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.ECMRetriggerItem:init(parent, name, data)
 		HUDList.ECMRetriggerItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
 
+		self._unit = data.unit
 		self._max_duration = tweak_data.upgrades.ecm_feedback_retrigger_interval or 60
 		
 		self._box = HUDBGBox_create(self._panel, {
@@ -3297,12 +3298,23 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._text = self._box:text({
 			name = "text",
 			align = "center",
-			vertical = "center",
+			vertical = "top",
 			w = self._box:w(),
 			h = self._box:h(),
 			color = Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6,
+		})
+		
+		self._distance_text = self._box:text({
+			name = "distance",
+			align = "center",
+			vertical = "bottom",
+			w = self._box:w(),
+			h = self._box:h(),
+            color = HUDListManager.ListOptions.list_color or Color.white,
+			font = tweak_data.hud_corner.assault_font,
+			font_size = self._box:h() * 0.4
 		})
 		
 		self:_set_retrigger_delay(data)
@@ -3325,17 +3337,20 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
+	function HUDList.ECMRetriggerItem:update(t, dt)
+		local player = managers.player:player_unit()
+		local distance = alive(player) and (mvector3.normalize(player:position() - self._unit:position()) / 100) or 0
+		self._distance_text:set_text(string.format("%.0fm", distance))
+	end
+	
 	
 	HUDList.ECMFeedbackItem = HUDList.ECMFeedbackItem or class(HUDList.ItemBase)
 	function HUDList.ECMFeedbackItem:init(parent, name, data)
 		HUDList.ECMFeedbackItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
 		
+		self._unit = data.unit
 		self._max_duration = 60
 		self._expire_t = 0
-		self._flash_color_table = {
-			{ ratio = 0.0, color = self.DISABLED_COLOR },
-			{ ratio = 1.0, color = self.STANDARD_COLOR }
-        }
 		
 		self._box = HUDBGBox_create(self._panel, {
 				w = self._panel:w(),
@@ -3345,12 +3360,23 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._text = self._box:text({
 			name = "text",
 			align = "center",
-			vertical = "center",
+			vertical = "top",
 			w = self._box:w(),
 			h = self._box:h(),
 			color = Color(1, 0.0, 0.8, 1.0),
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6,
+		})
+		
+		self._distance_text = self._box:text({
+			name = "distance",
+			align = "center",
+			vertical = "bottom",
+			w = self._box:w(),
+			h = self._box:h(),
+            color = HUDListManager.ListOptions.list_color or Color.white,
+			font = tweak_data.hud_corner.assault_font,
+			font_size = self._box:h() * 0.4
 		})
 		
 		self:_set_feedback_duration(data)
@@ -3375,6 +3401,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.ECMFeedbackItem:update(t, dt)
 		local duration = math.max(0, self._expire_t - t)
+		self._text:set_text(format_time_string(duration))
+		
+		local player = managers.player:player_unit()
+		local distance = alive(player) and (mvector3.normalize(player:position() - self._unit:position()) / 100) or 0
+		self._distance_text:set_text(string.format("%.0fm", distance))
 	end
 	
 	
