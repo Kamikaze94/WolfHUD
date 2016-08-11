@@ -129,7 +129,6 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/weaponflashlight" then
 	end
 	
 elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then 
-	
 	function NewRaycastWeaponBase:_setup_laser()
 		for id, part in pairs(self._parts) do
 			local base = part.unit and part.unit:base()
@@ -153,18 +152,9 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 				self._second_gun:base():_setup_laser()
 			end
 		end
-		self:set_gadget_on(self._stored_gadget_on or (self._has_laser and 1 or 0), false)
+		self:set_gadget_on(self._has_laser and 1 or 0, false)
 	end
-
-	function NewRaycastWeaponBase:toggle_gadget(...)
-		if _NewRaycastWeaponBase_toggle_gadget(self, ...) then
-			self._stored_gadget_on = (WolfHUD:getSetting("laser_remember_state", "boolean")) and self._gadget_on
-			return true
-		end
-	end
-	
-elseif RequiredScript == "lib/units/weapons/shotgun/newshotgunbase" then
-	
+elseif string.lower(RequiredScript) == "lib/units/weapons/shotgun/newshotgunbase" then
     function NewShotgunBase:_setup_laser()
         for id, part in pairs(self._parts) do
             local base = part.unit and part.unit:base()
@@ -185,16 +175,9 @@ elseif RequiredScript == "lib/units/weapons/shotgun/newshotgunbase" then
         if self._has_gadget then
             self:_setup_laser()
         end
-        self:set_gadget_on(self._stored_gadget_on or (self._has_laser and 1 or 0), false)
+        self:set_gadget_on(self._has_laser and 1 or 0, false)
     end
-
-    function NewShotgunBase:toggle_gadget(...)
-        if _NewShotgunBase_toggle_gadget(self, ...) then
-            self._stored_gadget_on = (WolfHUD:getSetting("laser_remember_state", "boolean")) and self._gadget_on or 0
-            return true
-        end
-    end
-elseif RequiredScript == "lib/units/cameras/fpcameraplayerbase" then
+elseif string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" then
 	local clbk_stance_entered_original = FPCameraPlayerBase.clbk_stance_entered
 	FPCameraPlayerBase.angled_sight_rotation    = {
 		--m95 	= Rotation(-0.4, 0, -45),
@@ -238,7 +221,7 @@ elseif RequiredScript == "lib/units/cameras/fpcameraplayerbase" then
 	function FPCameraPlayerBase:set_weapon_name(name)
 		self._weapon_name = name
 	end
-elseif RequiredScript == "lib/units/beings/player/states/playerstandard" then
+elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
 	local _stance_entered_original = PlayerStandard._stance_entered
 	PlayerStandard.ANGELED_SIGHTS = {
 		wpn_fps_upg_o_45iron = true

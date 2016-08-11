@@ -586,8 +586,6 @@
 	"wolfhud_gadget_options_name" : "Waffen Gadget Optionen",
 	"wolfhud_gadget_options_help" : "Wähle die Laserfarben und Taschenlampen-Parameter.",
 	
-	"wolfhud_laser_remember_state_title" : "Merke Gadget Zustand",
-	"wolfhud_laser_remember_state_desc" : "Speichere den Gadget Zustand beim wechseln der Waffe und stelle ihn nach erneutem wechsel wieder her.",
 	"wolfhud_laser_autoon_title" : "Auto Laser An",
 	"wolfhud_laser_autoon_desc" : "Schaltet die Laser beim Missionsstart automatisch ein, wenn die Waffe einen Laser besitzt.",
 	"wolfhud_use_weaponlasers_title" : "Benutze Laserfarben",

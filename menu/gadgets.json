@@ -8,15 +8,6 @@
 	"items" : [
 		{
 			"type" : "toggle",
-			"id" : "laser_remember_state",
-			"title" : "wolfhud_laser_remember_state_title",
-			"description" : "wolfhud_laser_remember_state_desc",
-			"callback" : "clbk_change_setting",
-			"value" : "laser_remember_state",
-			"priority" : 110
-		},
-		{
-			"type" : "toggle",
 			"id" : "laser_autoon",
 			"title" : "wolfhud_laser_autoon_title",
 			"description" : "wolfhud_laser_autoon_desc",

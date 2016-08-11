@@ -581,8 +581,6 @@
 	"wolfhud_gadget_options_name" : "Weapon Gadget Options",
 	"wolfhud_gadget_options_help" : "Specify your custom laser colors.",
 	
-	"wolfhud_laser_remember_state_title" : "Remember Gadget State",
-	"wolfhud_laser_remember_state_desc" : "Save gadget state on weapon switch and restore it after switching again.",
 	"wolfhud_laser_autoon_title" : "Automatic Laser On",
 	"wolfhud_laser_autoon_desc" : "Automatically turns the laser gadget on at startup, on weapons that have one.",
 	"wolfhud_use_weaponlasers_title" : "Enable Laser Colors",

@@ -578,9 +578,7 @@
      
     "wolfhud_gadget_options_name" : "Настройки гаджетов оружия",
     "wolfhud_gadget_options_help" : "Настройте пользовательские цвета лазеров.",
-     
-    "wolfhud_laser_remember_state_title" : "Запомнить состояние гаджета",
-    "wolfhud_laser_remember_state_desc" : "Сохраняет состояние гаджета на переключателе оружия и восстанавливает его после повторного включения.",
+    
     "wolfhud_laser_autoon_title" : "Включение автолазера",
     "wolfhud_laser_autoon_desc" : "Автоматически включается гаджет лазера при запуске на оружии, которое его имеет.",
     "wolfhud_use_weaponlasers_title" : "Включение цветов лазера",

@@ -3,7 +3,7 @@ printf = function(...)
 	WolfHUD:print_log(string.format(...))
 end
 
-if RequiredScript == "lib/setups/setup" then
+if string.lower(RequiredScript) == "lib/setups/setup" then
 	
 	local init_managers_original = Setup.init_managers
 	local update_original = Setup.update
@@ -1331,7 +1331,7 @@ if RequiredScript == "lib/setups/setup" then
 	
 end
 
-if RequiredScript == "lib/units/props/digitalgui" then
+if string.lower(RequiredScript) == "lib/units/props/digitalgui" then
 	
 	local init_original = DigitalGui.init
 	local update_original = DigitalGui.update
@@ -1423,7 +1423,7 @@ if RequiredScript == "lib/units/props/digitalgui" then
 	
 end
 
-if RequiredScript == "lib/units/props/timergui" then
+if string.lower(RequiredScript) == "lib/units/props/timergui" then
 	
 	local init_original = TimerGui.init
 	local set_background_icons_original = TimerGui.set_background_icons
@@ -1500,7 +1500,7 @@ if RequiredScript == "lib/units/props/timergui" then
 	
 end
 
-if RequiredScript == "lib/units/props/securitylockgui" then
+if string.lower(RequiredScript) == "lib/units/props/securitylockgui" then
 	
 	local init_original = SecurityLockGui.init
 	local update_original = SecurityLockGui.update
@@ -1548,7 +1548,7 @@ if RequiredScript == "lib/units/props/securitylockgui" then
 	
 end
 
-if RequiredScript == "lib/managers/enemymanager" then
+if string.lower(RequiredScript) == "lib/managers/enemymanager" then
 	
 	local on_enemy_registered_original = EnemyManager.on_enemy_registered
 	local on_enemy_unregistered_original = EnemyManager.on_enemy_unregistered
@@ -1583,7 +1583,7 @@ if RequiredScript == "lib/managers/enemymanager" then
 	
 end
 
-if RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
+if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebase" then
 	
 	local register_turret_original = GroupAIStateBase.register_turret
 	local unregister_turret_original = GroupAIStateBase.unregister_turret
@@ -1688,7 +1688,7 @@ if RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
 	
 end
 
-if RequiredScript == "lib/network/handlers/unitnetworkhandler" then
+if string.lower(RequiredScript) == "lib/network/handlers/unitnetworkhandler" then
 	
 	local mark_minion_original = UnitNetworkHandler.mark_minion
 	local hostage_trade_original = UnitNetworkHandler.hostage_trade
@@ -1765,7 +1765,7 @@ if RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 	
 end
 
-if RequiredScript == "lib/units/enemies/cop/copdamage" then
+if string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 	
 	local convert_to_criminal_original = CopDamage.convert_to_criminal
 	local _on_damage_received_original = CopDamage._on_damage_received
@@ -1810,7 +1810,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	
 end
 
-if RequiredScript == "lib/managers/objectinteractionmanager" then
+if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 	
 	local init_original = ObjectInteractionManager.init
 	local update_original = ObjectInteractionManager.update
@@ -1886,7 +1886,7 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
 	
 end
 
-if RequiredScript == "lib/units/interactions/interactionext" then
+if string.lower(RequiredScript) == "lib/units/interactions/interactionext" then
 	
 	local set_tweak_data_original = BaseInteractionExt.set_tweak_data
 	
@@ -1929,7 +1929,7 @@ if RequiredScript == "lib/units/interactions/interactionext" then
 	
 end
 
-if RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
+if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 	
 	local init_original = ECMJammerBase.init
 	local setup_original = ECMJammerBase.setup
@@ -2018,7 +2018,7 @@ if RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 	
 end
 
-if RequiredScript == "lib/units/equipment/doctor_bag/doctorbagbase" then
+if string.lower(RequiredScript) == "lib/units/equipment/doctor_bag/doctorbagbase" then
 	
 	local spawn_original = DoctorBagBase.spawn
 	local init_original = DoctorBagBase.init
@@ -2060,7 +2060,7 @@ if RequiredScript == "lib/units/equipment/doctor_bag/doctorbagbase" then
 	
 end
 
-if RequiredScript == "lib/units/equipment/ammo_bag/ammobagbase" then
+if string.lower(RequiredScript) == "lib/units/equipment/ammo_bag/ammobagbase" then
 	
 	local spawn_original = AmmoBagBase.spawn
 	local init_original = AmmoBagBase.init
@@ -2102,7 +2102,7 @@ if RequiredScript == "lib/units/equipment/ammo_bag/ammobagbase" then
 	
 end
 
-if RequiredScript == "lib/units/equipment/bodybags_bag/bodybagsbagbase" then
+if string.lower(RequiredScript) == "lib/units/equipment/bodybags_bag/bodybagsbagbase" then
 	
 	local spawn_original = BodyBagsBagBase.spawn
 	local init_original = BodyBagsBagBase.init
@@ -2144,7 +2144,7 @@ if RequiredScript == "lib/units/equipment/bodybags_bag/bodybagsbagbase" then
 	
 end
 
-if RequiredScript == "lib/units/equipment/grenade_crate/grenadecratebase" then
+if string.lower(RequiredScript) == "lib/units/equipment/grenade_crate/grenadecratebase" then
 	
 	local init_original = GrenadeCrateBase.init
 	local _set_visual_stage_original = GrenadeCrateBase._set_visual_stage
@@ -2177,7 +2177,7 @@ if RequiredScript == "lib/units/equipment/grenade_crate/grenadecratebase" then
 	
 end
 
-if RequiredScript == "lib/units/props/securitycamera" then
+if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 	
 	local _start_tape_loop_original = SecurityCamera._start_tape_loop
 	local _deactivate_tape_loop_restart_original = SecurityCamera._deactivate_tape_loop_restart
@@ -2234,7 +2234,7 @@ if RequiredScript == "lib/units/props/securitycamera" then
 	end
 end
 
-if RequiredScript == "lib/units/equipment/sentry_gun/sentrygunbase" then
+if string.lower(RequiredScript) == "lib/units/equipment/sentry_gun/sentrygunbase" then
 	
 	local spawn_original = SentryGunBase.spawn
 	local init_original = SentryGunBase.init
@@ -2267,7 +2267,7 @@ if RequiredScript == "lib/units/equipment/sentry_gun/sentrygunbase" then
 	
 end
 
-if RequiredScript == "lib/units/equipment/sentry_gun/sentrygundamage" then
+if string.lower(RequiredScript) == "lib/units/equipment/sentry_gun/sentrygundamage" then
 	
 	local init_original = SentryGunDamage.init
 	local set_health_original = SentryGunDamage.set_health
@@ -2310,7 +2310,7 @@ if RequiredScript == "lib/units/equipment/sentry_gun/sentrygundamage" then
 	
 end
 
-if RequiredScript == "lib/units/weapons/sentrygunweapon" then
+if string.lower(RequiredScript) == "lib/units/weapons/sentrygunweapon" then
 	
 	local init_original = SentryGunWeapon.init
 	local change_ammo_original = SentryGunWeapon.change_ammo
@@ -2339,7 +2339,7 @@ if RequiredScript == "lib/units/weapons/sentrygunweapon" then
 	
 end
 
-if RequiredScript == "lib/managers/playermanager" then
+if string.lower(RequiredScript) == "lib/managers/playermanager" then
 
 	local spawned_player_original = PlayerManager.spawned_player
 	local disable_cooldown_upgrade_original = PlayerManager.disable_cooldown_upgrade
@@ -2692,7 +2692,7 @@ if RequiredScript == "lib/managers/playermanager" then
 	
 end
 
-if RequiredScript == "lib/utils/temporarypropertymanager" then
+if string.lower(RequiredScript) == "lib/utils/temporarypropertymanager" then
 
 	local activate_property_original = TemporaryPropertyManager.activate_property
 	local remove_property_original = TemporaryPropertyManager.remove_property
@@ -2709,7 +2709,7 @@ if RequiredScript == "lib/utils/temporarypropertymanager" then
 	
 end
 
-if RequiredScript == "lib/units/beings/player/playermovement" then
+if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 	
 	local update_original = PlayerMovement.update
 	local on_morale_boost_original = PlayerMovement.on_morale_boost
@@ -2746,7 +2746,7 @@ if RequiredScript == "lib/units/beings/player/playermovement" then
 	
 end
 
-if RequiredScript == "lib/units/beings/player/states/playerstandard" then
+if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
 	
 	local _do_action_intimidate_original = PlayerStandard._do_action_intimidate
 	local _start_action_melee_original = PlayerStandard._start_action_melee
@@ -2966,7 +2966,7 @@ if RequiredScript == "lib/units/beings/player/states/playerstandard" then
 	
 end
 
-if RequiredScript == "lib/units/beings/player/playerdamage" then
+if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 	
 	local init_original = PlayerDamage.init
 	local add_damage_to_hot_original = PlayerDamage.add_damage_to_hot
@@ -3155,7 +3155,7 @@ if RequiredScript == "lib/units/beings/player/playerdamage" then
 	
 end
 
-if RequiredScript == "lib/units/weapons/raycastweaponbase" then
+if string.lower(RequiredScript) == "lib/units/weapons/raycastweaponbase" then
 	
 	local setup_original = RaycastWeaponBase.setup
 	local set_ammo_remaining_in_clip_original = RaycastWeaponBase.set_ammo_remaining_in_clip
@@ -3182,7 +3182,7 @@ if RequiredScript == "lib/units/weapons/raycastweaponbase" then
 	
 end
 
-if RequiredScript == "lib/player_actions/skills/playeractionbloodthirstbase" then
+if string.lower(RequiredScript) == "lib/player_actions/skills/playeractionbloodthirstbase" then
 	
 	local bloodthirstbase_original = PlayerAction.BloodthirstBase.Function
 	
@@ -3195,7 +3195,7 @@ if RequiredScript == "lib/player_actions/skills/playeractionbloodthirstbase" the
 	
 end
 
-if RequiredScript == "lib/player_actions/skills/playeractionexperthandling" then
+if string.lower(RequiredScript) == "lib/player_actions/skills/playeractionexperthandling" then
 	
 	local experthandling_original = PlayerAction.ExpertHandling.Function
 	
@@ -3208,7 +3208,7 @@ if RequiredScript == "lib/player_actions/skills/playeractionexperthandling" then
 	
 end
 
-if RequiredScript == "lib/player_actions/skills/playeractionshockandawe" then
+if string.lower(RequiredScript) == "lib/player_actions/skills/playeractionshockandawe" then
 	
 	local shockandawe_original = PlayerAction.ShockAndAwe.Function
 	
@@ -3253,7 +3253,7 @@ if RequiredScript == "lib/player_actions/skills/playeractionshockandawe" then
 	
 end
 
-if RequiredScript == "lib/player_actions/skills/playeractiondireneed" then
+if string.lower(RequiredScript) == "lib/player_actions/skills/playeractiondireneed" then
 	
 	local direneed_original = PlayerAction.DireNeed.Function
 	
@@ -3265,7 +3265,7 @@ if RequiredScript == "lib/player_actions/skills/playeractiondireneed" then
 	
 end
 
-if RequiredScript == "lib/player_actions/skills/playeractionunseenstrike" then
+if string.lower(RequiredScript) == "lib/player_actions/skills/playeractionunseenstrike" then
 	
 	local unseenstrike_original = PlayerAction.UnseenStrike.Function
 	local unseenstrike_start_original = PlayerAction.UnseenStrikeStart.Function
@@ -3302,7 +3302,7 @@ if RequiredScript == "lib/player_actions/skills/playeractionunseenstrike" then
 	
 end
 
-if RequiredScript == "lib/player_actions/skills/playeractionammoefficiency" then
+if string.lower(RequiredScript) == "lib/player_actions/skills/playeractionammoefficiency" then
 
 	local ammo_efficieny_original = PlayerAction.AmmoEfficiency.Function
 	
@@ -3324,7 +3324,7 @@ if RequiredScript == "lib/player_actions/skills/playeractionammoefficiency" then
 	
 end
 
-if RequiredScript == "lib/player_actions/skills/playeractiontriggerhappy" then
+if string.lower(RequiredScript) == "lib/player_actions/skills/playeractiontriggerhappy" then
 
 	local trigger_happy_original = PlayerAction.TriggerHappy.Function
 	
@@ -3340,7 +3340,7 @@ end
 
  
 --[[
-if RequiredScript == "lib/managers/objectinteractionmanager" then
+if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 	
 	local init_original = ObjectInteractionManager.init
 	local update_original = ObjectInteractionManager.update
@@ -3478,7 +3478,7 @@ if RequiredScript == "lib/managers/objectinteractionmanager" then
 	
 end
 
-if RequiredScript == "lib/units/props/missiondoor" then
+if string.lower(RequiredScript) == "lib/units/props/missiondoor" then
 
 	local deactivate_original = MissionDoor.deactivate
 	

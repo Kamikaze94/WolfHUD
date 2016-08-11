@@ -578,8 +578,6 @@
 	"wolfhud_gadget_options_name" : "무기 가젯 옵션",
 	"wolfhud_gadget_options_help" : "무기 가젯을 사용자에 맞게 설정합니다.",
 	
-	"wolfhud_laser_remember_state_title" : "무기 가젯 기억",
-	"wolfhud_laser_remember_state_desc" : "가젯을 저장해서 무기를 바꿀때 가젯 상태가 없어지지 않습니다.",
 	"wolfhud_laser_autoon_title" : "자동 레이저",
 	"wolfhud_laser_autoon_desc" : "자동으로 레이저를 활성화 시킵니다.",
 	"wolfhud_use_weaponlasers_title" : "사용자 지정 레이저 활성화",

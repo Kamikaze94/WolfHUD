@@ -366,7 +366,6 @@ if not _G.WolfHUD then
 			SUPRESS_NADES_STEALTH			= true,
 			HOLD2PICK						= true,
 		  --Laser-Colors
-			laser_remember_state			= true,
 			laser_autoon					= true,
 			use_weaponlasers 				= true,
 		    laser_light 					= 10,			--Multiplier for laser dot
