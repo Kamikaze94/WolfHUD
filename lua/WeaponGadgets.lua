@@ -51,6 +51,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 		function WeaponLaser:init(...)
 			init_original(self, ...)
 			self:init_themes()
+			self._brush = Draw:brush(self._themes[self._theme_type].brush)
 			self:set_color_by_theme(self._theme_type)
 		end
 		   
@@ -142,7 +143,6 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 	end
 	
 	if not _NewRaycastWeaponBase_on_equip then _NewRaycastWeaponBase_on_equip = NewRaycastWeaponBase.on_equip end
-	if not _NewRaycastWeaponBase_toggle_gadget then _NewRaycastWeaponBase_toggle_gadget = NewRaycastWeaponBase.toggle_gadget end
 	
 	function NewRaycastWeaponBase:on_equip(...)
 		_NewRaycastWeaponBase_on_equip(self, ...)

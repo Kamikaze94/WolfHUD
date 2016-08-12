@@ -23,6 +23,8 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 	elseif RequiredScript == "lib/managers/hud/hudteammate" then
 
 		local init_original = HUDTeammate.init
+		local set_name_original = HUDTeammate.set_name
+		local set_callsign_original = HUDTeammate.set_callsign
 
 		function HUDTeammate:init(i, ...)
 			init_original(self, i, ...)
@@ -30,6 +32,26 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 			if i == HUDManager.PLAYER_PANEL and not HUDManager.CUSTOM_TEAMMATE_PANELS then
 				self:_create_stamina_circle()
 			end
+		end
+		--[[
+		function HUDTeammate:set_name(name, ...)
+			if self._main_player or self:peer_id() then
+				local peer = self:peer_id() and managers.network:session():peer(self:peer_id())
+				local infamy, level = peer and peer:rank() or managers.experience:current_rank(), peer and peer:level() or managers.experience:current_level()
+				local level_str = string.format(" [%s%s]", 
+					(infamy or 0) > 0 and string.format("%s-", managers.experience:rank_string(infamy)) or "",
+					tostring(level)
+				)
+				name = name .. level_str
+			end
+			return set_name_original(self, name,...)
+		end
+		]]
+		
+		function HUDTeammate:set_callsign(id, ...)
+			local color = tweak_data.chat_colors[id] or Color.white
+			self._panel:child("name"):set_color(color)
+			return set_callsign_original(self, id, ...)
 		end
 		
 		function HUDTeammate:_create_stamina_circle()
