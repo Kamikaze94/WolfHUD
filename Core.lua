@@ -131,7 +131,6 @@ if not _G.WolfHUD then
 		["lib/units/weapons/weaponflashlight"] = { "WeaponGadgets.lua" },
 		["lib/units/weapons/raycastweaponbase"] = { "GameInfoManager.lua", "Scripts.lua" },
 		["lib/units/weapons/newraycastweaponbase"] = { "WeaponGadgets.lua", "BurstFire.lua" },
-		["lib/units/weapons/shotgun/newshotgunbase"] = { "WeaponGadgets.lua" },
 		["lib/units/weapons/trip_mine/tripminebase"] = { "EquipmentTweaks.lua" },
 		["lib/units/props/securitycamera"] = { "GameInfoManager.lua" },
 		["lib/units/beings/player/playerdamage"] = { "GameInfoManager.lua", "DamageIndicator.lua" },

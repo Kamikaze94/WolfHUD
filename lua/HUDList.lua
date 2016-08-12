@@ -3281,23 +3281,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._text = self._box:text({
 			name = "text",
 			align = "center",
-			vertical = "top",
+			vertical = "center",
 			w = self._box:w(),
 			h = self._box:h(),
 			color = Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6,
-		})
-		
-		self._distance_text = self._box:text({
-			name = "distance",
-			align = "center",
-			vertical = "bottom",
-			w = self._box:w(),
-			h = self._box:h(),
-            color = HUDListManager.ListOptions.list_color or Color.white,
-			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.4
 		})
 		
 		self:_set_retrigger_delay(data)
@@ -3318,12 +3307,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._text:set_text(format_time_string(data.retrigger_delay))
 			self._text:set_color(self:_get_color_from_table(self._max_duration - data.retrigger_delay, self._max_duration))
 		end
-	end
-	
-	function HUDList.ECMRetriggerItem:update(t, dt)
-		local player = managers.player:player_unit()
-		local distance = alive(player) and (mvector3.normalize(player:position() - self._unit:position()) / 100) or 0
-		self._distance_text:set_text(string.format("%.0fm", distance))
 	end
 	
 	

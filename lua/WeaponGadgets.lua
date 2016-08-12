@@ -154,29 +154,6 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 		end
 		self:set_gadget_on(self._last_gadget_idx or self._has_laser and 1 or 0, false)
 	end
-elseif string.lower(RequiredScript) == "lib/units/weapons/shotgun/newshotgunbase" then
-    function NewShotgunBase:_setup_laser()
-        for id, part in pairs(self._parts) do
-            local base = part.unit and part.unit:base()
-            if base and base.set_color_by_theme then
-                if WolfHUD:getSetting("use_weaponlasers", "boolean") then
-					base:set_color_by_theme("player")
-				end
-				self._has_laser = WolfHUD:getSetting("laser_autoon", "boolean")
-            end
-        end
-    end
-
-	if not _NewShotgunBase_on_equip then _NewShotgunBase_on_equip = NewShotgunBase.on_equip end
-    if not _NewShotgunBase_toggle_gadget then _NewShotgunBase_toggle_gadget = NewShotgunBase.toggle_gadget end
-
-    function NewShotgunBase:on_equip(...)
-        _NewShotgunBase_on_equip(self, ...)
-        if self._has_gadget then
-            self:_setup_laser()
-        end
-        self:set_gadget_on(self._last_gadget_idx or self._has_laser and 1 or 0, false)
-    end
 elseif string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" then
 	local clbk_stance_entered_original = FPCameraPlayerBase.clbk_stance_entered
 	FPCameraPlayerBase.angled_sight_rotation    = {

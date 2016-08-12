@@ -1,7 +1,5 @@
 --TODO: Setting update for interaction, but probably not necessary as they are temporary anyway
 --TODO: Clean up interaction activation/deactivation animation, probably a lot of unnecessary rearranges going on
---TODO: Add rescale to Weapon, AllWeapon, Equipment and Special Equipment
---TODO: Fix Rescale of Kill and Accuracy Counter
 
 
 printf = printf or function(...) WolfHUD:print_log(string.format(...)) end
@@ -1271,9 +1269,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.KillCounter:rescale(factor)
 		if PlayerInfoComponent.KillCounter.super.rescale(self, factor) then
-			self._icon:set_w(self._icon:w() * factor)
-			self._icon:set_h(self._icon:h() * factor)
-			self._text:set_h(self._text:h() * factor)
+			self._icon:set_size(self._icon:w() * factor, self._icon:h() * factor)
+			self._text:set_size(self._text:w() * factor, self._text:h() * factor)
 			self._text:set_font_size(self._text:font_size() * factor)
 			self._text:set_left(self._icon:right() + 1)
 			self._owner:arrange()
@@ -1376,9 +1373,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.AccuracyCounter:rescale(factor)
 		if PlayerInfoComponent.AccuracyCounter.super.rescale(self, factor) then
-			self._icon:set_w(self._icon:w() * factor)
-			self._icon:set_h(self._icon:h() * factor)
-			self._text:set_h(self._text:h() * factor)
+			self._icon:set_size(self._icon:w() * factor, self._icon:h() * factor)
+			self._text:set_size(self._text:w() * factor, self._text:h() * factor)
 			self._text:set_font_size(self._text:font_size() * factor)
 			self._text:set_left(self._icon:right() + 1)
 			self._owner:arrange()
@@ -1883,14 +1879,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		local ratio = amount / (self._stamina_max or 1)
 		self._stamina_radial:set_color(Color(ratio, 1, 1))
 		
-	--[[
-		if value <= tweak_data.player.movement_state.stamina.MIN_STAMINA_THRESHOLD and not self._animating_low_stamina then
+		if amount <= tweak_data.player.movement_state.stamina.MIN_STAMINA_THRESHOLD and not self._animating_low_stamina then
 			self._animating_low_stamina = true
-			stamina_bar:animate(callback(self, self, "_animate_low_stamina"), stamina_bar_outline)
-		elseif value > tweak_data.player.movement_state.stamina.MIN_STAMINA_THRESHOLD and self._animating_low_stamina then
+			self._stamina_radial:animate(callback(self, self, "_animate_low_stamina"))
+		elseif amount > tweak_data.player.movement_state.stamina.MIN_STAMINA_THRESHOLD and self._animating_low_stamina then
 			self._animating_low_stamina = nil
 		end
-	]]
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:damage_taken()
@@ -1962,6 +1956,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			indicator:set_alpha(t / st)
 		end
 		indicator:set_alpha(0)
+	end
+	
+	function PlayerInfoComponent.PlayerStatus:_animate_low_stamina(stamina_radial)
+		local t = 0
+		while self._animating_low_stamina do
+			t = t + coroutine.yield()
+			stamina_radial:set_alpha(math.sin(360 * t * 2) * 0.3 + 0.6)
+		end
+		stamina_radial:set_alpha(1)
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:_animate_timer(timer, initial)
@@ -2041,6 +2044,18 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function PlayerInfoComponent.Carry:update_settings()
 		if self:set_enabled("setting", self._settings.CARRY) then
 			self._owner:arrange()
+		end
+	end
+	
+	function PlayerInfoComponent.Carry:rescale(factor)
+		if PlayerInfoComponent.Carry.super.rescale(self, factor) then
+			self._player_height = self._player_height * factor
+			self._team_height = self._team_height * factor
+			local component_size = self._panel:h() / (self._is_local_player and 1 or 2)
+			self._icon:set_size(component_size, component_size)
+			self._text:set_h(component_size)
+			self._text:set_font_size(component_size * 0.8)
+			self:arrange()
 		end
 	end
 	
@@ -2156,6 +2171,14 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function PlayerInfoComponent.CenterPanel:update_settings()
 		for _, component in pairs(self._components) do
 			component:update_settings()
+		end
+	end
+	
+	function PlayerInfoComponent.CenterPanel:rescale(factor)
+		if PlayerInfoComponent.Weapon.super.rescale(self, factor) then
+			for _, component in pairs(self._components) do
+				component:rescale(factor)
+			end
 		end
 	end
 	
@@ -2342,6 +2365,20 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		self._aggregate_ammo_panel:set_visible(self._settings.WEAPON.AMMO.TOTAL_AMMO_ONLY and true or false)
 		self:arrange()
+	end
+	
+	function PlayerInfoComponent.Weapons:rescale(factor)
+		if PlayerInfoComponent.Weapons.super.rescale(self, factor) then
+			for _, weapon in pairs(self._weapons) do
+				weapon:rescale(factor)
+			end
+			self._aggregate_ammo_panel:set_w(self._aggregate_ammo_panel:w() * factor)
+			self._aggregate_ammo_panel:set_h(self._aggregate_ammo_panel:h() * factor)
+			for i, panel in ipairs(self._aggregate_ammo) do
+				panel:set_font_size(panel:font_size() * factor)
+			end
+			self:arrange()
+		end
 	end
 	
 	function PlayerInfoComponent.Weapons:set_is_ai(state)
@@ -2605,6 +2642,26 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:set_selected(self._is_selected)
 	end
 	
+	function PlayerInfoComponent.Weapon:rescale(factor)
+		if PlayerInfoComponent.Weapon.super.rescale(self, factor) then
+			self._icon_panel:set_w(self._icon_panel:w() * factor)
+			self._icon_panel:set_h(self._icon_panel:h() * factor)
+			local name_label = self._icon_panel:child("label")
+			name_label:set_font_size(name_label:font_size() * factor)
+			self._ammo_panel:set_w(self._ammo_panel:w() * factor)
+			self._ammo_panel:set_h(self._ammo_panel:h() * factor)
+			local total_ammo = self._ammo_panel:child("total")
+			local mag_ammo = self._ammo_panel:child("mag")
+			total_ammo:set_font_size(total_ammo:font_size() * factor)
+			mag_ammo:set_font_size(mag_ammo:font_size() * factor)
+			self._fire_mode_panel:set_w(self._fire_mode_panel:w() * factor)
+			self._fire_mode_panel:set_h(self._fire_mode_panel:h() * factor)
+			local active_fire_mode = self._fire_mode_panel:child("active_mode")
+			active_fire_mode:set_font_size(active_fire_mode:font_size() * factor)
+			self:arrange()
+		end
+	end
+	
 	function PlayerInfoComponent.Weapon:arrange()
 		local MARGIN = self._panel:h() * 0.05
 		local w = MARGIN
@@ -2762,6 +2819,21 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 	
+	function PlayerInfoComponent.Equipment:rescale(factor)
+		if PlayerInfoComponent.Equipment.super.rescale(self, factor) then
+			for i, name in ipairs(self._equipment_types) do
+				local panel = self._panel:child(name)
+				local icon = panel:child("icon")
+				local amount = panel:child("amount")
+				panel:set_h(panel:h() * factor)
+				icon:set_size(icon:w() * factor, icon:h() * factor)
+				amount:set_size(amount:w() * factor, amount:h() * factor)
+				amount:set_font_size(amount:font_size() * factor)
+			end
+			self:arrange()
+		end
+	end
+	
 	function PlayerInfoComponent.Equipment:set_is_ai(state)
 		if PlayerInfoComponent.Equipment.super.set_is_ai(self, state) and self:set_enabled("ai", not self._is_ai) then
 			self._owner:arrange()
@@ -2912,6 +2984,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 		
 		self:arrange()
+	end
+	
+	function PlayerInfoComponent.SpecialEquipment:rescale(factor)
+		if PlayerInfoComponent.SpecialEquipment.super.rescale(self, factor) then
+			for i, panel in ipairs(self._special_equipment) do
+				self:_scale_item(panel)
+			end
+			self:arrange()
+		end
 	end
 	
 	function PlayerInfoComponent.SpecialEquipment:set_is_ai(state)
