@@ -152,7 +152,7 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 				self._second_gun:base():_setup_laser()
 			end
 		end
-		self:set_gadget_on(self._has_laser and 1 or 0, false)
+		self:set_gadget_on(self._last_gadget_idx or self._has_laser and 1 or 0, false)
 	end
 elseif string.lower(RequiredScript) == "lib/units/weapons/shotgun/newshotgunbase" then
     function NewShotgunBase:_setup_laser()
@@ -175,7 +175,7 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/shotgun/newshotgunbase
         if self._has_gadget then
             self:_setup_laser()
         end
-        self:set_gadget_on(self._has_laser and 1 or 0, false)
+        self:set_gadget_on(self._last_gadget_idx or self._has_laser and 1 or 0, false)
     end
 elseif string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" then
 	local clbk_stance_entered_original = FPCameraPlayerBase.clbk_stance_entered

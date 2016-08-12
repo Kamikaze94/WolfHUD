@@ -24,7 +24,6 @@ if not _G.WolfHUD then
 		"wolfhud_infopanels_buff_buffs_options_menu",
 		"wolfhud_infopanels_buff_debuffs_options_menu",
 		"wolfhud_infopanels_buff_teambuffs_options_menu",
-		"wolfhud_infopanels_buff_perks_options_menu",
 		"wolfhud_tabstats_options_menu",
 		"wolfhud_dmgindicator_options_menu", 
 		"wolfhud_dmgpopup_options_menu",
@@ -636,17 +635,19 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 					WolfHUD:Reset()
 					for __, menu_id in ipairs(WolfHUD.menu_ids) do
 						local menu = MenuHelper:GetMenu(menu_id)
-						for __, menu_item in ipairs(menu._items) do
-							local item_id = menu_item:parameters().name
-							local value = WolfHUD:getSetting(tostring(item_id))
-							if value ~= nil and menu_item.set_value then
-								value = WolfHUD:getColorID(value) or value
-								if menu_item._type == "toggle" then
-									value = (value and "on" or "off")
-								end
-								menu_item:set_value(value)
-								for __, clbk in pairs( menu_item:parameters().callback ) do
-									clbk(menu_item)
+						if menu then
+							for __, menu_item in ipairs(menu._items) do
+								local item_id = menu_item:parameters().name
+								local value = WolfHUD:getSetting(tostring(item_id))
+								if value ~= nil and menu_item.set_value then
+									value = WolfHUD:getColorID(value) or value
+									if menu_item._type == "toggle" then
+										value = (value and "on" or "off")
+									end
+									menu_item:set_value(value)
+									for __, clbk in pairs( menu_item:parameters().callback ) do
+										clbk(menu_item)
+									end
 								end
 							end
 						end

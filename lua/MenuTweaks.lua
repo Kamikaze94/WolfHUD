@@ -141,7 +141,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" the
 	local SKIP_STAT_SCREEN_DELAY = WolfHUD:getSetting("stat_screen_delay", "number")
 	function StageEndScreenGui:update(t, ...)
 		update_original(self, t, ...)
-		if not self._button_not_clickable and SKIP_STAT_SCREEN_DELAY >= 0 then
+		if not self._button_not_clickable and SKIP_STAT_SCREEN_DELAY > 0 then
 			self._auto_continue_t = self._auto_continue_t or (t + SKIP_STAT_SCREEN_DELAY)
 			if t >= self._auto_continue_t then
 				managers.menu_component:post_event("menu_enter")
@@ -161,7 +161,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/lootdropscreengui" the
 			self:confirm_pressed()
 		end
 		
-		if not self._button_not_clickable and SKIP_LOOT_SCREEN_DELAY >= 0 then
+		if not self._button_not_clickable and SKIP_LOOT_SCREEN_DELAY > 0 then
 			self._auto_continue_t = self._auto_continue_t or (t + SKIP_LOOT_SCREEN_DELAY)
 			if t >= self._auto_continue_t then
 				self:continue_to_lobby()
