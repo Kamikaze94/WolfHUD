@@ -577,7 +577,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDListManager:_update_unit_count_list_items(list, id, members, show)
 		if show then
-			local data = HUDList.UnitCountItem.MAP[id]
+			local data = HUDList.UnitCountItem.MAP[id] or {}
 			local item = list:register_item(id, data.class or HUDList.UnitCountItem, id, members)
 		else
 			list:unregister_item(id, true)
@@ -2066,6 +2066,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		unique =		{ atlas = {3, 8}, 	color = HUDListManager.ListOptions.civilian_color, 	priority = 3 },
 		cop_hostage =	{ atlas = {2, 8}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 2 },
 		civ_hostage =	{ atlas = {4, 7}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 1 },
+		hostages =		{ atlas = {4, 7}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 1 },
 		minion =		{ atlas = {6, 8}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 0 },
 		civ =			{ atlas = {6, 7}, 	color = HUDListManager.ListOptions.civilian_color, priority = 3, subtract = { "civ_hostage" } },
 	}

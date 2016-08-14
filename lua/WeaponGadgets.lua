@@ -51,7 +51,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 		function WeaponLaser:init(...)
 			init_original(self, ...)
 			self:init_themes()
-			self._brush = Draw:brush(self._themes[self._theme_type].brush)
+			--self._brush = Draw:brush(self._themes[self._theme_type].brush)	--Alpha doesn't apply to snipers, lasers tuning off on interaction/down?
 			self:set_color_by_theme(self._theme_type)
 		end
 		   
@@ -142,17 +142,21 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 		end
 	end
 	
-	if not _NewRaycastWeaponBase_on_equip then _NewRaycastWeaponBase_on_equip = NewRaycastWeaponBase.on_equip end
-	
+	local on_equip_original = NewRaycastWeaponBase.on_equip
+	local toggle_gadget_original = NewRaycastWeaponBase.toggle_gadget
 	function NewRaycastWeaponBase:on_equip(...)
-		_NewRaycastWeaponBase_on_equip(self, ...)
-		if self._has_gadget then
+		on_equip_original(self, ...)
+		if self._has_gadget and self._has_laser == nil then
 			self:_setup_laser()
 			if alive(self._second_gun) then
 				self._second_gun:base():_setup_laser()
 			end
 		end
-		self:set_gadget_on(self._last_gadget_idx or self._has_laser and 1 or 0, false)
+		self:set_gadget_on(self._saved_gadget_state or self._has_laser and 1 or 0, false)
+	end
+	function NewRaycastWeaponBase:toggle_gadget(...)
+		toggle_gadget_original(self, ...)
+		self._saved_gadget_state = self._gadget_on or 0
 	end
 elseif string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" then
 	local clbk_stance_entered_original = FPCameraPlayerBase.clbk_stance_entered
