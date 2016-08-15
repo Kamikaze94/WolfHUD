@@ -2985,7 +2985,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local type_table = self._unit:base()._tweak_table and HUDListManager.UNIT_TYPES[self._unit:base()._tweak_table] or false
 		local type_string = type_table and managers.localization:to_upper_text(type_table.long_name) or "UNKNOWN"
 		if type_string:len() > self.name_max then
-			type_string, _ = type_string:match("(%S+)(.+)")
+			type_string = type_string:match("(%S+)(.+)")
 			type_string = type_string:sub(0, self.name_max)
 		end
 	
