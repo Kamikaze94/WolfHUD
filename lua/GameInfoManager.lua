@@ -1682,7 +1682,8 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 		if Network:is_server() then
 			managers.enemy:add_delayed_clbk("hostage_count_update", callback(self, self, "_client_hostage_count_cbk"), Application:time() + 0.01)
 		else
-			self:_client_hostage_count_cbk()
+			managers.enemy:add_delayed_clbk("hostage_count_update", callback(self, self, "_client_hostage_count_cbk"), Application:time() + 0.01)
+			--self:_client_hostage_count_cbk()
 		end
 	end
 	
@@ -1976,7 +1977,9 @@ if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase
  		end
 		managers.gameinfo:event("ecm", "set_feedback_active", tostring(self._unit:key()), { feedback_active = state })
 		local val = _set_feedback_active_original(self, state, ...)
-		managers.gameinfo:event("ecm", "set_feedback_duration", tostring(self._unit:key()), { feedback_duration = self._feedback_duration, feedback_expire_t = self._feedback_expire_t })	
+		if Network:is_server() then
+			managers.gameinfo:event("ecm", "set_feedback_duration", tostring(self._unit:key()), { feedback_duration = self._feedback_duration, feedback_expire_t = self._feedback_expire_t })
+		end	
 		return val
 	end
 	

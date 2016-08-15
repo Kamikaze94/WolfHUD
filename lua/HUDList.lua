@@ -7,11 +7,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local function format_time_string(value)
 		local frmt_string
 	
-		if value >= 60 then
-			frmt_string = string.format("%d:%02d", math.floor(value / 60), math.ceil(value % 60))
-		elseif value >= 9.9 then
-			frmt_string = string.format("%d", math.ceil(value))
-		elseif value >= 0 then
+		if math.floor(value) > 60 then
+			frmt_string = string.format("%d:%02d", math.floor(value / 60), math.floor(value % 60))
+		elseif math.floor(value) > 9.9 then
+			frmt_string = string.format("%d", math.floor(value))
+		elseif value > 0 then
 			frmt_string = string.format("%.1f", value)
 		else
 			frmt_string = string.format("%.1f", 0)
@@ -2663,11 +2663,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.TemperatureGaugeItem:_update_timer(data)
-		local dv = math.abs(self._last_value - data.timer_value)
-		local estimate = "n/a"
+		local dv = math.max(data.timer_value - self._last_value, 0)
+		local estimate = "N/A"
 		
 		if dv > 0 then
-			local time_left = math.abs(self._goal - data.timer_value) / dv
+			local time_left = math.max(self._goal - data.timer_value, 0) / dv
 			estimate = format_time_string(time_left)
 		end
 	
@@ -2679,11 +2679,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	HUDList.EquipmentItem = HUDList.EquipmentItem or class(HUDList.ItemBase)
 	HUDList.EquipmentItem.EQUIPMENT_TABLE = {
-		sentry = {				atlas = { 7, 5 }, priority = 1 },
-		ammo_bag = {		atlas = { 1, 0 }, priority = 3 },
-		doc_bag = {			atlas = { 2, 7 }, priority = 4 },
-		body_bag = {			atlas = { 5, 11 }, priority = 5 },
-		grenade_crate = {	preplanning = { 1, 0 }, priority = 2 },
+		sentry 			= {	atlas 		= { 7,  5 }, priority = 1 },
+		ammo_bag 		= {	atlas 		= { 1,  0 }, priority = 3 },
+		doc_bag 		= {	atlas 		= { 2,  7 }, priority = 4 },
+		body_bag 		= {	atlas 		= { 5, 11 }, priority = 5 },
+		grenade_crate 	= {	preplanning = { 1,  0 }, priority = 2 },
 	}
 	function HUDList.EquipmentItem:init(parent, name, data, equipment_type)
 		local icon_data = HUDList.EquipmentItem.EQUIPMENT_TABLE[equipment_type]
@@ -3326,13 +3326,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		
 		self._text = self._box:text({
 			name = "text",
+			text = "Active",
 			align = "center",
-			vertical = "top",
+			vertical = "center",
 			w = self._box:w(),
-			h = self._box:h(),
+			h = self._box:h() * 0.7,
 			color = Color(1, 0.0, 0.8, 1.0),
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.6,
+			font_size = self._box:h() * 0.5,
 		})
 		
 		self._distance_text = self._box:text({
@@ -3360,15 +3361,19 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.ECMFeedbackItem:_set_feedback_duration(data)
-		if data.feedback_active then
-			self._max_duration = data.feedback_duration or 60
-			self._expire_t = data.feedback_expire_t or 0
+		if data.feedback_active and (data.feedback_duration or data.feedback_expire_t) then
+			local t = Application:time()
+			self._max_duration = data.feedback_duration or (data.feedback_expire_t - t) or 15
+			self._expire_t = data.feedback_expire_t or (t + data.feedback_duration) or 0
+			self._text:set_font_size(self._box:h() * 0.6)
 		end
 	end
 	
 	function HUDList.ECMFeedbackItem:update(t, dt)
-		local duration = math.max(0, self._expire_t - t)
-		self._text:set_text(format_time_string(duration))
+		if self._expire_t >= t then
+			local duration = math.max(0, self._expire_t - t)
+			self._text:set_text(format_time_string(duration))
+		end
 		
 		local player = managers.player:player_unit()
 		local distance = alive(player) and (mvector3.normalize(player:position() - self._unit:position()) / 100) or 0
