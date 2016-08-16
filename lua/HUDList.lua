@@ -399,13 +399,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:register_list("left_side_list", HUDList.VerticalList, { align = "left", x = x, y = y, w = list_width, h = list_height, top_to_bottom = true, item_margin = 5 })
 	
 		--Timers
-		local timer_list = list:register_item("timers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5 })
+		local timer_list = list:register_item("timers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 3 })
 		timer_list:set_static_item(HUDList.LeftListIcon, 1, 4/5, { 
 			{ atlas = true, texture_rect = { 3 * 64, 6 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
 		})
 		
 		--Deployables
-		local equipment_list = list:register_item("equipment", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5 })
+		local equipment_list = list:register_item("equipment", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 1 })
 		equipment_list:set_static_item(HUDList.LeftListIcon, 1, 1, { 
 			--{ atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[2] * 64, 64, 64 }, valign = "top", halign = "right", color = HUDListManager.ListOptions.list_color },
 			--{ atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[2] * 64, 64, 64 }, valign = "bottom", halign = "left", color = HUDListManager.ListOptions.list_color },
@@ -416,31 +416,31 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		})
 		
 		--Minions
-		local minion_list = list:register_item("minions", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, left_to_right = true, item_margin = 5 })
+		local minion_list = list:register_item("minions", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, left_to_right = true, item_margin = 5, priority = 4 })
 		minion_list:set_static_item(HUDList.LeftListIcon, 1, 4/5, { 
 			{ atlas = true, texture_rect = { 6 * 64, 8 * 64, 64, 64 } },
 		})
 		
 		--Pagers
-		local pager_list = list:register_item("pagers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5 })
+		local pager_list = list:register_item("pagers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 2 })
 		pager_list:set_static_item(HUDList.LeftListIcon, 1, 1, { 
 			{ spec = true, texture_rect = { 1 * 64, 4 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
 		})
 		
 		--ECMs
-		local ecm_list = list:register_item("ecms", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5 })
+		local ecm_list = list:register_item("ecms", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5, priority = 5 })
 		ecm_list:set_static_item(HUDList.LeftListIcon, 1, 1, { 
 			{ atlas = true, texture_rect = { 1 * 64, 4 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
 		})
 		
 		--ECM trigger
-		local retrigger_list = list:register_item("ecm_retrigger", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5 })
+		local retrigger_list = list:register_item("ecm_retrigger", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5, priority = 6 })
 		retrigger_list:set_static_item(HUDList.LeftListIcon, 1, 1, { 
 			{ atlas = true, texture_rect = { 6 * 64, 2 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
 		})
 		
 		--Tape loop
-		local tape_loop_list = list:register_item("tape_loop", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5 })
+		local tape_loop_list = list:register_item("tape_loop", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5, priority = 7 })
 		tape_loop_list:set_static_item(HUDList.LeftListIcon, 1, 1, { 
 			{ atlas = true, texture_rect = { 4 * 64, 2 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
 		})
@@ -499,6 +499,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		else
 			y = hud_panel:bottom() - ((HUDListManager.ListOptions.buff_list_height_offset or 80) + list_height)
+		end
+		
+		if managers.subtitle then
+			local sub_presenter = managers.subtitle:presenter()
+			if sub_presenter then
+				sub_presenter:set_bottom(y)
+			end
 		end
 		
 		local buff_list = self:register_list("buff_list", HUDList.HorizontalList, { 
@@ -803,18 +810,26 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	--General config
 	function HUDListManager:_set_right_list_scale() --TODO
-		return
+		self:unregister_list("right_side_list", true)
+		self:_setup_right_list()
 	end
 	
 	function HUDListManager:_set_left_list_scale() --TODO
-		return
+		self:unregister_list("left_side_list", true)
+		self:_setup_left_list()
 	end
 	
 	function HUDListManager:_set_buff_list_scale() --TODO
-		return
+		self:unregister_list("buff_list", true)
+		self:_setup_buff_list()
 	end
 	function HUDListManager:_set_list_color() --TODO
-		return
+		self:unregister_list("right_side_list", true)
+		self:unregister_list("left_side_list", true)
+		self:unregister_list("buff_list", true)
+		self:_setup_right_list()
+		self:_setup_left_list()
+		self:_setup_buff_list()
 --[[		lists = {"right_side_list", "left_side_list"}
 		for _, list_id in pairs(lists) do
 			local list_side = self:list(list_id)
@@ -830,7 +845,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDListManager:_set_list_color_bg() --TODO: Disappearing numbers?
-		return
+		self:unregister_list("right_side_list", true)
+		self:unregister_list("left_side_list", true)
+		self:unregister_list("buff_list", true)
+		self:_setup_right_list()
+		self:_setup_left_list()
+		self:_setup_buff_list()
 --[[		lists = {"right_side_list", "left_side_list"}
 		for _, list_id in pairs(lists) do
 			local list_side = self:list(list_id)
@@ -862,7 +882,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
 			for id, data in pairs(list:items()) do
-				if (data._unit_type == "cop_hostage" or data._unit_type == "civ_hostage") and data._icon then
+				if data._unit_type:find("hostage") and data._icon then
 					data._icon:set_color(color or HUDListManager.ListOptions.hostage_color)
 				end
 			end
@@ -873,7 +893,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
 			for id, data in pairs(list:items()) do
-				if (data._unit_type == "thug" or data._unit_type == "thug_boss") and data._icon then
+				if data._unit_type:find("thug") and data._icon then
 					data._icon:set_color(color or HUDListManager.ListOptions.thug_color)
 				end
 			end
@@ -884,7 +904,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
 			for id, data in pairs(list:items()) do
-				if data._unit_type == "cop" and data._icon then
+				if data._unit_type:find("cop") and data._icon then
 					data._icon:set_color(color or HUDListManager.ListOptions.enemy_color)
 					if data._shield_filler then
 						data._shield_filler:set_color(HUDListManager.ListOptions.enemy_color)
@@ -899,7 +919,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
 			for id, data in pairs(list:items()) do
-				if data._unit_type == "security" and data._icon then
+				if data._unit_type:find("security") and data._icon then
 					data._icon:set_color(color or HUDListManager.ListOptions.guard_color)
 				end
 			end
@@ -911,7 +931,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
 			for id, data in pairs(list:items()) do
-				if data._unit_category == "enemies" and data._unit_type ~= "cop" and data._unit_type ~= "security" and data._icon then
+				if data._unit_category == "enemies" and not (data._unit_type:find("cop") or data._unit_type:find("security")) and data._icon then
 					data._icon:set_color(color or HUDListManager.ListOptions.special_color)
 				end
 			end
@@ -2529,7 +2549,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._powered = data.powered
 		self._upgradable = data.upgradable
 		
-		local txt = managers.localization:text(self.DEVICE_TYPES[self._device_type]) or "Timer"
+		local txt = self.DEVICE_TYPES[self._device_type] and managers.localization:text(self.DEVICE_TYPES[self._device_type]) or "Timer"
 		self._type_text = self._panel:text({
 			name = "type_text",
 			text = txt,
@@ -2659,20 +2679,22 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.TemperatureGaugeItem:update(t, dt)
-	
+		local estimate = "N/A"
+		if self._time_left and self._last_update_t then
+			local time_left = self._time_left - math.max(t - self._last_update_t, 0)
+			estimate = format_time_string(time_left)
+		end
+		self._time_text:set_text(estimate)
 	end
 	
 	function HUDList.TemperatureGaugeItem:_update_timer(data)
 		local dv = math.max(data.timer_value - self._last_value, 0)
-		local estimate = "N/A"
-		
 		if dv > 0 then
-			local time_left = math.max(self._goal - data.timer_value, 0) / dv
-			estimate = format_time_string(time_left)
+			self._time_left = math.max(self._goal - data.timer_value, 0) / dv
+			self._last_update_t = Application:time()
 		end
 	
 		self._distance_text:set_text(string.format("%d / %d", data.timer_value, self._goal))
-		self._time_text:set_text(estimate)
 		self._last_value = data.timer_value
 	end
 	
@@ -3277,7 +3299,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._box = HUDBGBox_create(self._panel, {
 				w = self._panel:w(),
 				h = self._panel:h(),
-			}, {})
+			}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 		
 		self._text = self._box:text({
 			name = "text",
@@ -3322,7 +3344,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._box = HUDBGBox_create(self._panel, {
 				w = self._panel:w(),
 				h = self._panel:h(),
-			}, {})
+			}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 		
 		self._text = self._box:text({
 			name = "text",

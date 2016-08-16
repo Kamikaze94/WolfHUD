@@ -169,4 +169,29 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudheisttimer" then
 		})
 		self._last_time = 0
 	end
+elseif string.lower(RequiredScript) == "core/lib/managers/subtitle/coresubtitlepresenter" then
+	core:module("CoreSubtitlePresenter")
+	local _on_resolution_changed_original = OverlayPresenter._on_resolution_changed
+	function OverlayPresenter:_on_resolution_changed(...)
+		_on_resolution_changed_original(self, ...)
+		self:set_font(self.__font_name or self:_default_font_name(), self.__font_size or self:_default_font_size())
+		if self.__subtitle_panel then
+			self.__subtitle_panel:set_height(self._bottom_y or self.__subtitle_panel:h())
+			local label = self.__subtitle_panel:child("label")
+			if label then
+				label:set_h(self.__subtitle_panel:h())
+				label:set_w(self.__subtitle_panel:w())
+			end
+			local shadow = self.__subtitle_panel:child("shadow")
+			if shadow then
+				shadow:set_h(self.__subtitle_panel:h())
+				shadow:set_w(self.__subtitle_panel:w())
+			end
+		end
+	end
+	
+	function OverlayPresenter:set_bottom(y)
+		self._bottom_y = y
+		self:_on_resolution_changed()
+	end
 end

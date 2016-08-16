@@ -152,6 +152,7 @@ if not _G.WolfHUD then
 		["lib/tweak_data/guitweakdata"] = { "MenuTweaks.lua" },	
 		["lib/tweak_data/timespeedeffecttweakdata"] = { "Scripts.lua" },
 		["core/lib/managers/menu/items/coremenuitemslider"] = { "MenuTweaks.lua" },
+		["core/lib/managers/subtitle/coresubtitlepresenter"] = { "EnhancedObjective.lua" },
 	}
 	
 	

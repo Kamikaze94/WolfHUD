@@ -230,8 +230,12 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			watchdogs_2 = {	--Watchdogs day 2 (8x coke)
 				[100054] = true, [100058] = true, [100426] = true, [100427] = true, [100428] = true, [100429] = true, [100491] = true, [100492] = true, [100494] = true, [100495] = true,
 			},
-			family = {	--Diamond store (1x money)
+			family = {	--Diamond store (1x money, 3x safe_loot_pickup)
 				[100899] = true,
+				
+				[100900] = true,
+				[100901] = true,
+				[100902] = true,
 			},	--Hotline Miami day 1 (1x money)
 			mia_1 = {	--Hotline Miami day 1 (1x money)
 				[104526] = true,
