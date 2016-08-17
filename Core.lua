@@ -149,6 +149,7 @@ if not _G.WolfHUD then
 		["lib/player_actions/skills/playeractiontriggerhappy"] = { "GameInfoManager.lua" },
 		["lib/states/ingamedriving"] = { "DrivingHUD.lua" },
 		["lib/states/ingamewaitingforplayers"] = { "MenuTweaks.lua" },
+		["lib/tweak_data/tweakdata"] = { "MenuTweaks.lua" },	
 		["lib/tweak_data/guitweakdata"] = { "MenuTweaks.lua" },	
 		["lib/tweak_data/timespeedeffecttweakdata"] = { "Scripts.lua" },
 		["core/lib/managers/menu/items/coremenuitemslider"] = { "MenuTweaks.lua" },

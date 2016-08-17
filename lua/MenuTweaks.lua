@@ -101,6 +101,13 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 		end
 		return BlackMarketGuiTabItem_init_original(self, main_panel, data, ...)
 	end
+elseif string.lower(RequiredScript) == "lib/tweak_data/tweakdata" then
+	if tweak_data then
+		tweak_data.menu = tweak_data.menu or {}
+		tweak_data.menu.MUSIC_CHANGE = 1
+		tweak_data.menu.SFX_CHANGE = 1
+		tweak_data.menu.VOICE_CHANGE = 0.01
+	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/guitweakdata" then
 	local GuiTweakData_init_orig = GuiTweakData.init
 	function GuiTweakData:init(...)
@@ -113,6 +120,7 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 	core:import("CoreMenuItem")
 	local init_actual = ItemSlider.init
 	local highlight_row_item_actual = ItemSlider.highlight_row_item
+	local set_value_original = ItemSlider.set_value
 	function ItemSlider:init(...)
 		init_actual(self, ...)
 		self._show_slider_text = true
@@ -125,6 +133,21 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 			1, _G.tweak_data.screen_colors.button_stage_2:with_alpha(0.6)
 		})
 		return val
+	end
+	
+	function ItemSlider:set_value(value, ...)
+		if (value - self._min) % self._step > 0 then
+			local pre_value, post_value = self._min, self._min + self._step
+			while post_value < self._max do
+				if pre_value < value and post_value > value then
+					value = (value - pre_value) < (post_value - value) and pre_value or post_value
+					break
+				end
+				pre_value = pre_value + self._step
+				post_value = post_value + self._step
+			end
+		end
+		set_value_original(self, value, ...)
 	end
 elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then
 	local SKIP_BLACKSCREEN = WolfHUD:getSetting("skip_blackscreen", "boolean")
