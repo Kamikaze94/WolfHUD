@@ -597,6 +597,7 @@
 	"wolfhud_show_angeled_sight_title" : "기울어진 무기",
 	"wolfhud_show_angeled_sight_desc" : "무기도 같이 기울어지게 나오게 설정합니다. (가방을 들 경우)",
 	
+	
 	"wolfhud_gadget_laser_options_name" : "레이저 색 설정",
 	"wolfhud_gadget_laser_options_help" : "인게임 레이저 색을 설정합니다.",
 	
