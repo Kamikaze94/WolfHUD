@@ -2527,10 +2527,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	HUDList.TimerItem = HUDList.TimerItem or class(HUDList.ItemBase)
-	HUDList.TimerItem.STANDARD_COLOR = HUDListManager.ListOptions.list_color or Color(1, 1, 1, 1)
-	HUDList.TimerItem.UPGRADE_COLOR = Color(1, 0.0, 0.8, 1.0)
-	HUDList.TimerItem.DISABLED_COLOR = Color(1, 1, 0, 0)
-	HUDList.TimerItem.FLASH_SPEED = 2
 	HUDList.TimerItem.DEVICE_TYPES = {
 		digital = "wolfhud_hudlist_device_timer", 
 		drill = "wolfhud_hudlist_device_drill",
@@ -2541,6 +2537,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	}
 	function HUDList.TimerItem:init(parent, name, data)
 		HUDList.ItemBase.init(self, parent, name, { align = "left", w = parent:panel():h() * 4/5, h = parent:panel():h() })
+		
+		self.STANDARD_COLOR = HUDListManager.ListOptions.list_color or Color(1, 1, 1, 1)
+		self.UPGRADE_COLOR = Color(1, 0.0, 0.8, 1.0)
+		self.DISABLED_COLOR = Color(1, 1, 0, 0)
+		self.FLASH_SPEED = 2
 		
 		self._show_distance = true
 		self._unit = data.unit
@@ -2557,7 +2558,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			vertical = "top",
 			w = self._panel:w(),
 			h = self._panel:h() * 0.3,
-            color = HUDListManager.ListOptions.list_color or Color.white,
+            color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._panel:h() * 0.3
 		})
@@ -2574,7 +2575,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			vertical = "top",
 			w = self._box:w(),
 			h = self._box:h(),
-            color = HUDListManager.ListOptions.list_color or Color.white,
+            color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.4
 		})
@@ -2585,7 +2586,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			vertical = "bottom",
 			w = self._box:w(),
 			h = self._box:h(),
-            color = HUDListManager.ListOptions.list_color or Color.white,
+            color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6
 		})
@@ -3404,11 +3405,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	
 	HUDList.TapeLoopItem = HUDList.TapeLoopItem or class(HUDList.ItemBase)
-    HUDList.TapeLoopItem.STANDARD_COLOR = Color(1, 1, 1, 1)
-    HUDList.TapeLoopItem.DISABLED_COLOR = Color(1, 1, 0, 0)
-    HUDList.TapeLoopItem.FLASH_SPEED = 0.8
 	function HUDList.TapeLoopItem:init(parent, name, data)
 		HUDList.TapeLoopItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
+		
+		self.STANDARD_COLOR = HUDListManager.ListOptions.list_color or Color(1, 1, 1, 1)
+		self.DISABLED_COLOR = Color(1, 1, 0, 0)
+		self.FLASH_SPEED = 0.8
 		
 		self._unit = data.unit
 		self._expire_t = data.expire_t
@@ -3428,7 +3430,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			vertical = "center",
 			w = self._box:w(),
 			h = self._box:h(),
-			color = HUDListManager.ListOptions.list_color or Color.white,
+			color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6,
 		})
