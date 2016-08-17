@@ -118,6 +118,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			STATUS = WolfHUD:getSetting("PLAYER_STATUS", "boolean"),	--Show health/armor/condition etc.
 			EQUIPMENT = WolfHUD:getSetting("PLAYER_EQUIPMENT", "boolean"),	--Show throwables, cable ties and deployables
 			SPECIALEQUIPMENT = WolfHUD:getSetting("PLAYER_SPECIALEQUIPMENT", "boolean"),	--Show special equipment/tools (keycards etc.)
+			SPECIALEQUIPMENTROWS = WolfHUD:getSetting("PLAYER_SPECIALEQUIPMENTROWS", "number"),
 			CALLSIGN = WolfHUD:getSetting("PLAYER_CALLSIGN", "boolean"),	--Show the callsign and voice chat icon
 			CARRY = WolfHUD:getSetting("PLAYER_CARRY", "boolean"),	--Show currently carried bag
 			BUILD = {	--Show perk deck and number of skills acquired in each tree (not used by player)
@@ -176,6 +177,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			STATUS = WolfHUD:getSetting("TEAM_STATUS", "boolean"),	--Show health/armor/condition etc.
 			EQUIPMENT = WolfHUD:getSetting("TEAM_EQUIPMENT", "boolean"),	--Show throwables, cable ties and deployables
 			SPECIALEQUIPMENT = WolfHUD:getSetting("TEAM_SPECIALEQUIPMENT", "boolean"),	--Show special equipment/tools (keycards etc.)
+			SPECIALEQUIPMENTROWS = WolfHUD:getSetting("TEAM_SPECIALEQUIPMENTROWS", "number"),
 			CALLSIGN = WolfHUD:getSetting("TEAM_CALLSIGN", "boolean"),	--Show the callsign and voice chat icon
 			CARRY = WolfHUD:getSetting("TEAM_CARRY", "boolean"),	--Show currently carried bag
 			BUILD = {	--Show perk deck and number of skills acquired in each tree (not used by player)
@@ -2979,7 +2981,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		PlayerInfoComponent.SpecialEquipment.super.init(self, panel, owner, "special_equipment", 0, height)
 		
 		self._settings = settings
-		self._items_per_column = self._settings.SPECIAL_EQUIPMENT_ROWS or 3
+		self._items_per_column = self._settings.SPECIALEQUIPMENTROWS or 3
 		self._special_equipment = {}
 		
 		self:set_enabled("active", false)
@@ -2998,8 +3000,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function PlayerInfoComponent.SpecialEquipment:update_settings()
 		self:set_enabled("setting", self._settings.SPECIALEQUIPMENT)
 		
-		if self._items_per_column ~= (self._settings.SPECIAL_EQUIPMENT_ROWS or 3) then
-			self._items_per_column = self._settings.SPECIAL_EQUIPMENT_ROWS or 3
+		if self._items_per_column ~= (self._settings.SPECIALEQUIPMENTROWS or 3) then
+			self._items_per_column = self._settings.SPECIALEQUIPMENTROWS or 3
 			for i, panel in ipairs(self._special_equipment) do
 				self:_scale_item(panel)
 			end

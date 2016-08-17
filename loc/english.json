@@ -175,6 +175,8 @@
 	"wolfhud_panels_show_equip_desc" : "Show the players equipment.",
 	"wolfhud_panels_show_special_equip_title" : "Show Special Equipment",
 	"wolfhud_panels_show_special_equip_desc" : "Show the players picked up special equipment.",
+	"wolfhud_panels_special_equip_rows_title" : "Special Equipment Rows",
+	"wolfhud_panels_special_equip_rows_desc" : "Number of Special Equipment Items that get placed in one column.",
 	"wolfhud_panels_show_callsign_title" : "Show Callsign",
 	"wolfhud_panels_show_callsign_desc" : "Show a callsign for that player.",
 	"wolfhud_panels_show_carry_title" : "Show Carry",

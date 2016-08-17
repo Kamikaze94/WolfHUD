@@ -182,6 +182,8 @@
 	"wolfhud_panels_show_equip_desc" : "Zeige das Equipment des Spielers.",
 	"wolfhud_panels_show_special_equip_title" : "Zeige spezielles Equipment",
 	"wolfhud_panels_show_special_equip_desc" : "Zeige das Aufgehobene spezielle Equipment des Spielers.",
+	"wolfhud_panels_special_equip_rows_title" : "spezielles Equipment Zeilen",
+	"wolfhud_panels_special_equip_rows_desc" : "Anzahl an Spezial-Equipment pro Spalte.",
 	"wolfhud_panels_show_callsign_title" : "Zeige Callsign",
 	"wolfhud_panels_show_callsign_desc" : "Zeige das Callsign für den Spieler.",
 	"wolfhud_panels_show_carry_title" : "Zeige Trageinfos",

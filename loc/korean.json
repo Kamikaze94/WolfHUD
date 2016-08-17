@@ -174,6 +174,8 @@
 	"wolfhud_panels_show_equip_desc" : "플레이어의 장비를 표시합니다.",
 	"wolfhud_panels_show_special_equip_title" : "특별한 장비",
 	"wolfhud_panels_show_special_equip_desc" : "플레이어의 특별한 장비를 표시합니다.",
+	"wolfhud_panels_special_equip_rows_title" : "Special Equipment Rows",
+	"wolfhud_panels_special_equip_rows_desc" : "Number of Special Equipment Items that get placed in one column.",
 	"wolfhud_panels_show_callsign_title" : "Show Callsign",
 	"wolfhud_panels_show_callsign_desc" : "Show a callsign for that player.",
 	"wolfhud_panels_show_carry_title" : "Show Carry",
@@ -596,7 +598,6 @@
 	"wolfhud_flashlight_color_desc" : "손전등의 색을 설정합니다.",
 	"wolfhud_show_angeled_sight_title" : "기울어진 무기",
 	"wolfhud_show_angeled_sight_desc" : "무기도 같이 기울어지게 나오게 설정합니다. (가방을 들 경우)",
-	
 	
 	"wolfhud_gadget_laser_options_name" : "레이저 색 설정",
 	"wolfhud_gadget_laser_options_help" : "인게임 레이저 색을 설정합니다.",

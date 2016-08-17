@@ -175,6 +175,8 @@
     "wolfhud_panels_show_equip_desc" : "Показывает снаряжение игроков.",
     "wolfhud_panels_show_special_equip_title" : "Отображение особого снаряжения",
     "wolfhud_panels_show_special_equip_desc" : "Показывает особое снаряжение у игроков.",
+	"wolfhud_panels_special_equip_rows_title" : "Special Equipment Rows",
+	"wolfhud_panels_special_equip_rows_desc" : "Number of Special Equipment Items that get placed in one column.",
     "wolfhud_panels_show_callsign_title" : "Отображение позывных",
     "wolfhud_panels_show_callsign_desc" : "Показывает позывные для этого игрока.",
     "wolfhud_panels_show_carry_title" : "Отображение Кэрри",
