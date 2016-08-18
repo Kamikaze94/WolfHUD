@@ -182,7 +182,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			CARRY = WolfHUD:getSetting("TEAM_CARRY", "boolean"),	--Show currently carried bag
 			BUILD = {	--Show perk deck and number of skills acquired in each tree (not used by player)
 				--Pick max one
-				HIDE = WolfHUD:getSetting("TEAM_BUILD_HIDE", "number"),	--Don't show build at all
+				HIDE = not WolfHUD:getSetting("TEAM_BUILD_HIDE", "number"),	--Don't show build at all
 				DURATION = WolfHUD:getSetting("TEAM_BUILD_DURATION", "number") > 0 and WolfHUD:getSetting("TEAM_BUILD_DURATION", "number") or nil,	--Time in seconds to show the build from when player joins. Information is hidden when duration has expired, or never removed if value is nil/undefined
 			},
 			WEAPON = {
@@ -318,7 +318,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			}
 		elseif setting[1] == "BUILD" and setting[2] == "DURATION" then
 			val = val == 0 and nil or val
-		elseif (setting[1] == "INTERACTION" or setting[1] == "BUILD") and setting[2] == "HIDE" then
+		elseif setting[2] == "HIDE" then
 			val = not val
 		end
 		
