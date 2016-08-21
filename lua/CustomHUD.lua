@@ -3675,10 +3675,18 @@ end
 				end
 			end
 		end
-		
+		local player_panel = self._teammate_panels[HUDManager.PLAYER_PANEL]
+		local y = hud_panel:h() - (player_panel and player_panel:panel():h() or 0) - 10
 		if managers.hudlist then
 			local list_panel = managers.hudlist:list("buff_list"):panel()
-			list_panel:set_bottom(hud_panel:h() - self._teammate_panels[HUDManager.PLAYER_PANEL]:panel():h() - 10)
+			list_panel:set_bottom(y)
+			y = list_panel:top()
+		end
+		if managers.subtitle then
+			local sub_presenter = managers.subtitle:presenter()
+			if sub_presenter then
+				sub_presenter:set_bottom(y)
+			end
 		end
 		if self._hud_chat_ingame and self._set_custom_hud_chat_offset then
 			local player_panel = self._teammate_panels[HUDManager.PLAYER_PANEL]:panel()

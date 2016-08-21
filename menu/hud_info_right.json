@@ -112,6 +112,14 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "show_potential_loot",
+			"title" : "wolfhud_hudlist_show_potential_loot_title",
+			"description" : "wolfhud_hudlist_show_potential_loot_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "show_potential_loot",
+		},
+		{
+			"type" : "toggle",
 			"id" : "show_special_pickups",
 			"title" : "wolfhud_hudlist_show_special_pickups_title",
 			"description" : "wolfhud_hudlist_show_special_pickups_desc",

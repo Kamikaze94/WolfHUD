@@ -292,6 +292,7 @@ if not _G.WolfHUD then
 			show_loot 						= true,     --Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
 				aggregate_loot 				= false, 	--Don't split loot on type; use a single entry for all
 				separate_bagged_loot 		= true,     --Show bagged loot as a separate value
+				show_potential_loot			= false,
 			show_special_pickups 			= true,    	--Show number of special equipment/items
 
 			show_buffs 						= true,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default

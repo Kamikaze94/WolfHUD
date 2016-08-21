@@ -87,6 +87,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
         show_loot 						= WolfHUD:getSetting("show_loot", "boolean"),       				--Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
             aggregate_loot 				= WolfHUD:getSetting("aggregate_loot", "boolean"), 					--Aggregate all loot into a single item
             separate_bagged_loot 		= WolfHUD:getSetting("separate_bagged_loot", "boolean"),     		--Show bagged/unbagged loot as separate values
+			show_potential_loot			= WolfHUD:getSetting("show_potential_loot", "boolean"), 
         show_special_pickups 			= WolfHUD:getSetting("show_special_pickups", "boolean"),    		--Show number of special equipment/items
         
         --Buff list
@@ -241,14 +242,22 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		weapon_scar =				"weapon",
 	}
 	
+	HUDListManager.POTENTIAL_LOOT_TYPES = {
+		crate = 					"crate",
+	}
+	
 	HUDListManager.LOOT_TYPES_CONDITIONS = {
 		body = function(id, data)
 			if managers.job:current_level_id() == "mad" then
 				return data.bagged or data.unit:editor_id() ~= -1
 			end
-			
-			--TODO: Bodies need to be omitted from aggregation, okayish for PB heist but bad for generic stealth maps
-			--return managers.groupai and managers.groupai:state():whisper_mode()
+		end,
+		crate = function(id, data)
+			local level_id = managers.job:current_level_id() or ""
+			local disabled_lvls = { election_day = true, election_day_prof = true, mia = true, mia_prof = true,	pal = true }
+			if not disabled_lvls[level_id] then
+				return true
+			end
 		end,
 	}
 	
@@ -480,6 +489,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:_set_show_cam_count()
 		self:_set_show_bodybags_count()
 		self:_set_show_loot()
+		self:_set_show_potential_loot()
 		self:_set_show_special_pickups()
 	end
 	
@@ -491,12 +501,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local x = 0
 		local y
 		
-		if HUDManager.CUSTOM_TEAMMATE_PANEL then
-			if managers.hud._teammate_panels_custom then
-				y = managers.hud._teammate_panels_custom[HUDManager.PLAYER_PANEL]:panel():top() - (list_height + 5)
-			else
-				y = managers.hud._teammate_panels[HUDManager.PLAYER_PANEL]:panel():top() - (list_height + 5)
-			end
+		if HUDManager.CUSTOM_TEAMMATE_PANELS then
+			y = managers.hud._teammate_panels[HUDManager.PLAYER_PANEL]:panel():top() - (list_height + 10)
 		else
 			y = hud_panel:bottom() - ((HUDListManager.ListOptions.buff_list_height_offset or 80) + list_height)
 		end
@@ -1317,6 +1323,26 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		for _, item in pairs(self:list("right_side_list"):item("loot_list"):items()) do
 			item:update_value()
 		end
+	end
+	
+	function HUDListManager:_set_show_potential_loot()
+		local list = self:list("right_side_list"):item("loot_list")
+		local all_ids = {}
+		local all_types = {}
+		
+		for loot_id, loot_type in pairs(HUDListManager.POTENTIAL_LOOT_TYPES) do
+			all_types[loot_type] = all_types[loot_type] or {}
+			table.insert(all_types[loot_type], loot_id)
+			table.insert(all_ids, loot_id)
+ 		end
+		
+		for loot_type, members in pairs(all_types) do
+			if HUDListManager.ListOptions.show_potential_loot then
+				list:register_item(loot_type, HUDList.LootItem, loot_type, members)
+			else
+				list:unregister_item(loot_type, true)
+			end
+ 		end
 	end
 	
 	--Buff list
@@ -2343,36 +2369,37 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDList.LootItem.MAP = {
 		aggregate =		{ text = "", no_localize = true },	--Aggregated loot
 		
-		armor =			{ text = "wolfhud_hudlist_loot_armor" }, 
-		artifact =		{ text = "hud_carry_artifact" },
-		bike = 			{ text = "hud_carry_bike_part" },
-		bomb =			{ text = "wolfhud_hudlist_loot_bomb" },	
-		coke =			{ text = "hud_carry_coke" },
-		dentist =		{ text = "???", no_localize = true },
-		diamond =		{ text = "wolfhud_hudlist_loot_diamond" },
-		drone_ctrl = 	{ text = "hud_carry_helmet" },
-		evidence =		{ text = "wolfhud_hudlist_loot_evidence" },
-		goat =			{ text = "hud_carry_goat" },
-		gold =			{ text = "hud_carry_gold" },
-		jewelry =		{ text = "hud_carry_diamonds" },
-		meth =			{ text = "hud_carry_meth" },
-		money =			{ text = "hud_carry_money" },
-		painting =		{ text = "hud_carry_painting" },
-		pig =			{ text = "hud_carry_pig" },
-		present =		{ text = "hud_carry_present" },
-		prototype =		{ text = "hud_carry_prototype" },
-		safe =			{ text = "hud_carry_safe" },
-		server =		{ text = "hud_carry_circuit" },
-		shell =			{ text = "hud_carry_ammo" },
-		toast =			{ text = "wolfhud_hudlist_loot_toast" },
-		turret =		{ text = "hud_carry_turret" },
-		warhead =		{ text = "hud_carry_warhead" },
-		weapon =		{ text = "wolfhud_hudlist_loot_weapon" },
-		body = 			{ text = "hud_carry_person" },
+		armor =			{ text = "wolfhud_hudlist_loot_armor", 		priority = 1 }, 
+		artifact =		{ text = "hud_carry_artifact", 				priority = 1 },
+		bike = 			{ text = "hud_carry_bike_part", 			priority = 1 },
+		bomb =			{ text = "wolfhud_hudlist_loot_bomb", 		priority = 1 },	
+		coke =			{ text = "hud_carry_coke", 					priority = 1 },
+		dentist =		{ text = "???", no_localize = true, 		priority = 1 },
+		diamond =		{ text = "wolfhud_hudlist_loot_diamond", 	priority = 1 },
+		drone_ctrl = 	{ text = "hud_carry_helmet", 				priority = 1 },
+		evidence =		{ text = "wolfhud_hudlist_loot_evidence", 	priority = 1 },
+		goat =			{ text = "hud_carry_goat", 					priority = 1 },
+		gold =			{ text = "hud_carry_gold", 					priority = 1 },
+		jewelry =		{ text = "hud_carry_diamonds", 				priority = 1 },
+		meth =			{ text = "hud_carry_meth", 					priority = 1 },
+		money =			{ text = "hud_carry_money", 				priority = 1 },
+		painting =		{ text = "hud_carry_painting", 				priority = 1 },
+		pig =			{ text = "hud_carry_pig", 					priority = 1 },
+		present =		{ text = "hud_carry_present", 				priority = 1 },
+		prototype =		{ text = "hud_carry_prototype", 			priority = 1 },
+		safe =			{ text = "hud_carry_safe", 					priority = 1 },
+		server =		{ text = "hud_carry_circuit", 				priority = 1 },
+		shell =			{ text = "hud_carry_ammo", 					priority = 1 },
+		toast =			{ text = "wolfhud_hudlist_loot_toast", 		priority = 1 },
+		turret =		{ text = "hud_carry_turret", 				priority = 1 },
+		warhead =		{ text = "hud_carry_warhead", 				priority = 1 },
+		weapon =		{ text = "wolfhud_hudlist_loot_weapon", 	priority = 1 },
+		body = 			{ text = "hud_carry_person", 				priority = 1 },
+		crate = 		{ text = "wolfhud_hudlist_loot_crate", 		priority = 2, no_separate = true },
 	}
 	function HUDList.LootItem:init(parent, name, id, members)
 		local loot_data = HUDList.LootItem.MAP[id]
-		HUDList.LootItem.super.init(self, parent, name, loot_data.icon_data or { hudtabs = { 32, 33, 32, 32 }, alpha = 0.75, w_ratio = 1.2 })
+		HUDList.LootItem.super.init(self, parent, name, loot_data.icon_data or { hudtabs = { 32, 33, 32, 32 }, alpha = 0.75, w_ratio = 1.2 }, loot_data)
 		
 		self._id = id
 		self._loot_types = {}
@@ -2452,12 +2479,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		return self._unbagged_count or 0, self._bagged_count or 0
  	end
 	
-	 	function HUDList.LootItem:set_count(unbagged, bagged)
+	function HUDList.LootItem:set_count(unbagged, bagged)
 		self._unbagged_count = unbagged
  		self._bagged_count = bagged
 		self._total_count = self._unbagged_count + self._bagged_count
  		
- 		if HUDListManager.ListOptions.separate_bagged_loot then
+ 		if HUDListManager.ListOptions.separate_bagged_loot and not HUDList.LootItem.MAP[self._id].no_separate then
 			self._text:set_text(self._unbagged_count .. "/" .. self._bagged_count)
  		else
 			self._text:set_text(self._total_count)
@@ -2467,7 +2494,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.LootItem:_change_loot_count_clbk(event, carry_id, bagged, value, data)
-		local loot_type = HUDListManager.LOOT_TYPES[carry_id]
+		local loot_type = HUDListManager.LOOT_TYPES[carry_id] or HUDListManager.POTENTIAL_LOOT_TYPES[carry_id]
 		local condition_clbk = HUDListManager.LOOT_TYPES_CONDITIONS[loot_type]
 		
 		if not condition_clbk or condition_clbk(loot_type, data) then

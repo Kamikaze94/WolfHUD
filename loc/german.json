@@ -31,6 +31,7 @@
 	"wolfhud_hudlist_loot_diamond" : "Diamant",
 	"wolfhud_hudlist_loot_evidence" : "Beweise",
 	"wolfhud_hudlist_loot_toast" : "Toast",
+	"wolfhud_hudlist_loot_crate" : "Kiste",
 	
 	"wolfhud_hudlist_buff_basic" : "Basic",
 	"wolfhud_hudlist_buff_aced" : "Aced",
@@ -347,6 +348,8 @@
 	"wolfhud_hudlist_aggregate_loot_desc" : "Zeige alle Beutearten in einer Info Box.",
 	"wolfhud_hudlist_separate_bagged_loot_title" : "Separiere verpackte Beute",
 	"wolfhud_hudlist_separate_bagged_loot_desc" : "Separiere nicht verpackte und lose Beute.",
+	"wolfhud_hudlist_show_potential_loot_title" : "Zeige potenzielle Beute",
+	"wolfhud_hudlist_show_potential_loot_desc" : "Zeige die Anzahl der Kisten auf der Map im Beute-Zähler. \n(Merke, Kisten können auch leer sein...)",
 	"wolfhud_hudlist_show_special_pickups_title" : "Zeige Spezial Equipment",
 	"wolfhud_hudlist_show_special_pickups_desc" : "Zeige die Anzahl an Chemikalien, Schlüsselkarten, etc. auf der Karte.",
 	

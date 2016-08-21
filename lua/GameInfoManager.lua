@@ -171,6 +171,9 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			samurai_armor =				"samurai_suit",
 			gen_pku_warhead_box =		"warhead",
 			corpse_dispose =			"person",
+			crate_loot = 				"crate",
+			crate_loot_crowbar = 		"crate",
+			crate_weapon_crowbar = 		"crate",
 			hold_open_case =			"drone_control_helmet",	--May be reused in future heists for other loot
 		},
 		BAGGED_IDS = {
@@ -827,7 +830,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
  	end
 	
 	function GameInfoManager:_loot_interaction_handler(event, key, data)
- 		if event == "add" then
+		if event == "add" then
  			if not self._loot[key] then
  				local composite_lookup = GameInfoManager._INTERACTIONS.COMPOSITE_LOOT_UNITS
 				local count = composite_lookup[data.editor_id] or composite_lookup[data.interact_id] or 1

@@ -28,6 +28,7 @@
 	"wolfhud_hudlist_loot_diamond" : "Diamond",
 	"wolfhud_hudlist_loot_evidence" : "Evidence",
 	"wolfhud_hudlist_loot_toast" : "Toast",
+	"wolfhud_hudlist_loot_crate" : "Crate",
 	
 	"wolfhud_hudlist_buff_basic" : "Basic",
 	"wolfhud_hudlist_buff_aced" : "Aced",
@@ -341,6 +342,8 @@
 	"wolfhud_hudlist_aggregate_loot_desc" : "Show all loot types in one count value.",
 	"wolfhud_hudlist_separate_bagged_loot_title" : "Separate bagged Loot",
 	"wolfhud_hudlist_separate_bagged_loot_desc" : "Separate unbagged and bagged loot counter.",
+	"wolfhud_hudlist_show_potential_loot_title" : "Show potential loot",
+	"wolfhud_hudlist_show_potential_loot_desc" : "Show the amount of crates on the map in the loot counter. \n(Remember, crates might be empty...)",
 	"wolfhud_hudlist_show_special_pickups_title" : "Show Special Pickups",
 	"wolfhud_hudlist_show_special_pickups_desc" : "Show amount of chemicals, keycards and other stuff on the map.",
 	
