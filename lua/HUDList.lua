@@ -84,6 +84,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
         show_pager_count 				= WolfHUD:getSetting("show_pager_count", "boolean"),        		--Show number of triggered pagers (only counts pagers triggered while you were present)
 		show_cam_count					= WolfHUD:getSetting("show_cam_count", "boolean"),
 		show_bodybags_count				= WolfHUD:getSetting("show_bodybags_count", "boolean"),
+		show_corpse_count				= WolfHUD:getSetting("show_corpse_count", "boolean"),
         show_loot 						= WolfHUD:getSetting("show_loot", "boolean"),       				--Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
             aggregate_loot 				= WolfHUD:getSetting("aggregate_loot", "boolean"), 					--Aggregate all loot into a single item
             separate_bagged_loot 		= WolfHUD:getSetting("separate_bagged_loot", "boolean"),     		--Show bagged/unbagged loot as separate values
@@ -488,6 +489,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:_set_show_pager_count()
 		self:_set_show_cam_count()
 		self:_set_show_bodybags_count()
+		self:_set_show_corpse_count()
 		self:_set_show_loot()
 		self:_set_show_potential_loot()
 		self:_set_show_special_pickups()
@@ -1249,6 +1251,16 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			list:register_item("BodyBagInv", HUDList.BodyBagsInvItem, { atlas = { 5, 11 } }, { priority = 3 })
 		else
 			list:unregister_item("BodyBagInv", true)
+		end
+	end
+	
+	function HUDListManager:_set_show_corpse_count()
+		local list = self:list("right_side_list"):item("stealth_list")
+		
+		if HUDListManager.ListOptions.show_corpse_count then
+			list:register_item("CorpseCount", HUDList.CorpseCountItem, { texture = "guis/textures/pd2/risklevel_blackscreen" }, { priority = 4 })
+		else
+			list:unregister_item("CorpseCount", true)
 		end
 	end
 	
@@ -2312,6 +2324,99 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
+	HUDList.CorpseCountItem = HUDList.CorpseCountItem or class(HUDList.RightListItem)
+	function HUDList.CorpseCountItem:init(...)
+		HUDList.CorpseCountItem.super.init(self, ...)
+		
+		self._keys = {"person", "special_person"}
+		self._total_count = 0
+		self._bagged_count = 0
+		self._unbagged_count = 0
+		
+		self._listener_clbks = {
+			{
+				name = "HUDList_corpse_count_listener",
+				source = "loot_count",
+				event = { "change" },
+				clbk = callback(self, self, "_change_corpse_count"),
+				keys = self._keys
+			},
+			{
+				name = "HUDList_corpse_count_listener",
+				source = "pager",
+				event = { "add", "remove" },
+				clbk = callback(self, self, "_pager_event"),
+			},
+			{
+				name = "HUDList_corpse_count_listener",
+				source = "whisper_mode",
+				event = { "change" },
+				clbk = callback(self, self, "_whisper_mode_change"),
+				data_only = true,
+			}
+		}
+		
+		local pagers = managers.gameinfo:get_pagers() or {}
+		for uid, data in pairs(pagers) do
+			if data.active then
+				self._unbagged_count = self._unbagged_count + 1
+			end
+		end		
+		for _, data in pairs(managers.gameinfo:get_loot()) do
+			if table.contains(self._keys, data.carry_id) then
+				if data.bagged then
+					self._bagged_count = self._bagged_count + data.count
+				else
+					self._unbagged_count = self._unbagged_count + data.count
+				end
+			end
+		end
+		
+		self:set_count(self._unbagged_count, self._bagged_count)
+	end
+	
+	function HUDList.CorpseCountItem:_change_corpse_count(event, carry_id, bagged, value, data)
+		local bagged_count = self._bagged_count
+		local unbagged_count = self._unbagged_count
+		
+		if bagged then
+			bagged_count = bagged_count + value
+		else
+			unbagged_count = unbagged_count + value
+		end
+			
+		self:set_count(unbagged_count, bagged_count)
+ 	end
+	
+	function HUDList.CorpseCountItem:_pager_event(event, key, data)
+		local bagged_count = self._bagged_count
+		local unbagged_count = self._unbagged_count
+		
+		if event == "add" then
+			unbagged_count = unbagged_count + 1
+		elseif event == "remove" then
+			unbagged_count = unbagged_count - 1
+		end
+			
+		self:set_count(unbagged_count, bagged_count)
+ 	end
+	
+	function HUDList.CorpseCountItem:_whisper_mode_change(status)
+		self:set_active(self._count > 0 and status)
+	end
+	
+	function HUDList.CorpseCountItem:set_count(unbagged, bagged)
+		if managers.groupai:state():whisper_mode() then
+			self._unbagged_count = unbagged
+			self._bagged_count = bagged
+			self._total_count = self._unbagged_count + self._bagged_count
+			
+			self._text:set_text(self._unbagged_count .. "/" .. self._bagged_count)
+			
+			self:set_active(self._total_count > 0)
+		end
+	end
+	
 
 	HUDList.SpecialPickupItem = HUDList.SpecialPickupItem or class(HUDList.RightListItem)
 	HUDList.SpecialPickupItem.MAP = {
@@ -2395,7 +2500,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		warhead =		{ text = "hud_carry_warhead", 				priority = 1 },
 		weapon =		{ text = "wolfhud_hudlist_loot_weapon", 	priority = 1 },
 		body = 			{ text = "hud_carry_person", 				priority = 1 },
-		crate = 		{ text = "wolfhud_hudlist_loot_crate", 		priority = 2, no_separate = true },
+		crate = 		{ text = "wolfhud_hudlist_loot_crate", 		priority = 2, no_separate = true }
 	}
 	function HUDList.LootItem:init(parent, name, id, members)
 		local loot_data = HUDList.LootItem.MAP[id]

@@ -335,6 +335,8 @@
 	"wolfhud_hudlist_show_cam_count_desc" : "스텔스 일 경우 총 카메라 몇 대가 작동중인지 표시합니다.",
 	"wolfhud_hudlist_show_bodybags_count_title" : "시체가방 표시",
 	"wolfhud_hudlist_show_bodybags_count_desc" : "스텔스 일 경우 HUD에 시체가방 수 를 표시합니다.",
+	"wolfhud_hudlist_show_corpse_count_title" : "Show Corpse Count",
+	"wolfhud_hudlist_show_corpse_count_desc" : "Show the amount of Corpses and bagged bodies on the map while in stealth.",
 	"wolfhud_hudlist_show_loot_title" : "루트 표시",
 	"wolfhud_hudlist_show_loot_desc" : "현재 맵에 있는 가방에 담을수 있는 루트를 표시합니다.",
 	"wolfhud_hudlist_aggregate_loot_title" : "Aggregate Loot",

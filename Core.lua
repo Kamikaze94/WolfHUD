@@ -289,6 +289,7 @@ if not _G.WolfHUD then
 			show_pager_count 				= true,		--Show number of triggered pagers (only counts pagers triggered while you were present)
 			show_cam_count					= true,
 			show_bodybags_count				= true,
+			show_corpse_count				= false,
 			show_loot 						= true,     --Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
 				aggregate_loot 				= false, 	--Don't split loot on type; use a single entry for all
 				separate_bagged_loot 		= true,     --Show bagged loot as a separate value

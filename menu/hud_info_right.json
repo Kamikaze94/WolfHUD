@@ -88,6 +88,14 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "show_corpse_count",
+			"title" : "wolfhud_hudlist_show_corpse_count_title",
+			"description" : "wolfhud_hudlist_show_corpse_count_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "show_corpse_count",
+		},
+		{
+			"type" : "toggle",
 			"id" : "show_loot",
 			"title" : "wolfhud_hudlist_show_loot_title",
 			"description" : "wolfhud_hudlist_show_loot_desc",
