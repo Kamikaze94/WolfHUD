@@ -3545,7 +3545,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self.FLASH_SPEED = 0.8
 		
 		self._unit = data.unit
-		self._expire_t = data.expire_t
+		self._expire_t = 0
 		self._flash_color_table = {
 			{ ratio = 0.0, color = self.DISABLED_COLOR },
 			{ ratio = 1.0, color = self.STANDARD_COLOR }
@@ -3566,6 +3566,24 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6,
 		})
+		
+		self:_set_expire_t(data)
+		
+		local key = tostring(data.unit:key())
+		table.insert(self._listener_clbks, { 
+			name = string.format("HUDList_tape_loop_listener_%s", key), 
+			source = "tape_loop", 
+			event = { "set_expire_t" }, 
+			clbk = callback(self, self, "_set_expire_t"), 
+			keys = { key }, 
+			data_only = true
+		})
+	end
+	
+	function HUDList.TapeLoopItem:_set_expire_t(data)
+		if data.expire_t then
+			self._expire_t = data.expire_t
+		end
 	end
 	
 	function HUDList.TapeLoopItem:update(t, dt)
@@ -3575,7 +3593,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
             self._text:set_color(new_color)
 		else
-			self._text:set_color(HUDListManager.ListOptions.list_color)
+			self._text:set_color(self.STANDARD_COLOR or Color.white)
         end
 	end
 	

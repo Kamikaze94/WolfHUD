@@ -1031,12 +1031,17 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	function GameInfoManager:_tape_loop_event(event, key, data)
 		if event == "start" then
 			if not self._tape_loop[key] then
-				self._tape_loop[key] = { unit = data.unit, expire_t = data.expire_t }
+				self._tape_loop[key] = { unit = data.unit }
 				self:_listener_callback("tape_loop", "start", key, data)
 			end
-		elseif event == "stop" and self._tape_loop[key] then
-			self:_listener_callback("tape_loop", "stop", key, self._tape_loop[key])
-			self._tape_loop[key] = nil
+		elseif self._tape_loop[key] then
+			if event == "set_expire_t" then
+				self._tape_loop[key].expire_t = data.expire_t
+				self:_listener_callback("tape_loop", "set_expire_t", key, data)
+			elseif event == "stop" then
+				self:_listener_callback("tape_loop", "stop", key, self._tape_loop[key])
+				self._tape_loop[key] = nil
+			end
  		end
 	end
 	
@@ -2201,7 +2206,8 @@ if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 	
 	function SecurityCamera:_start_tape_loop(...)
 		_start_tape_loop_original(self, ...)
-		managers.gameinfo:event("tape_loop", "start", tostring(self._unit:key()), { unit = self._unit, expire_t = self._tape_loop_end_t + 6 })
+		managers.gameinfo:event("tape_loop", "start", tostring(self._unit:key()), { unit = self._unit })
+		managers.gameinfo:event("tape_loop", "set_expire_t", tostring(self._unit:key()), { expire_t = self._tape_loop_end_t + 6 })
 	end
 	
 	function SecurityCamera:_deactivate_tape_loop_restart(...)
