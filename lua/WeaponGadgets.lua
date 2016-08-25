@@ -1,4 +1,4 @@
-if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
+if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" and WolfHUD:getSetting("use_weaponlasers", "boolean") then
 	local init_original = WeaponLaser.init
 	local update_original = WeaponLaser.update
 	WeaponLaser.DEFINITIONS = {
@@ -47,60 +47,57 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" then
 		turret_module_mad = "turret_jammed"
 	}
 	
-	if WolfHUD:getSetting("use_weaponlasers", "boolean") then   
-		function WeaponLaser:init(...)
-			init_original(self, ...)
-			self:init_themes()
-			--self._brush = Draw:brush(self._themes[self._theme_type].brush)	--Alpha doesn't apply to snipers, lasers tuning off on interaction/down?
-			self:set_color_by_theme(self._theme_type)
+	function WeaponLaser:init(...)
+		init_original(self, ...)
+		self:init_themes()
+		--self._brush = Draw:brush(self._themes[self._theme_type].brush)	--Alpha doesn't apply to snipers
+		self:set_color_by_theme(self._theme_type)
+	end
+	   
+	function WeaponLaser:init_themes()
+		for theme, data in pairs(WeaponLaser.DEFINITIONS) do
+			self:update_theme(theme, data.color, data.alpha)
 		end
-		   
-		function WeaponLaser:init_themes()
-			for theme, data in pairs(WeaponLaser.DEFINITIONS) do
-				self:update_theme(theme, data.color, data.alpha)
+	end
+ 
+	function WeaponLaser:update_theme(name, color, alpha)
+		self._themes[name] = self._themes[name] or {}
+		local color = color or self._themes[name].brush or Color.white
+		local alpha = alpha or self._themes[name].brush and self._themes[name].brush.alpha or 0
+ 
+		self._themes[name] = {
+			light = color * WolfHUD:getSetting("laser_light", "number"),
+			glow = color / WolfHUD:getSetting("laser_glow", "number"),
+			brush = color:with_alpha(alpha)
+		}
+	end
+	
+	function WeaponLaser:update(unit, t, ...)
+		update_original(self, unit, t, ...)
+		local theme = self._theme_type
+		local suffix = self._suffix_map[theme]
+		local col = Color.white
+		if suffix then 
+			if WolfHUD:getSetting("laser_" .. suffix, "string") == "rainbow" then
+				local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
+				col = Color(r, g, b)
+			else
+				col = WolfHUD:getSetting("laser_" .. suffix, "color")
 			end
-		end
-	 
-		function WeaponLaser:update_theme(name, color, alpha)
-			self._themes[name] = self._themes[name] or {}
-			local color = color or self._themes[name].brush or Color.white
-			local alpha = alpha or self._themes[name].brush and self._themes[name].brush.alpha or 0
-	 
-			self._themes[name] = {
-				light = color * WolfHUD:getSetting("laser_light", "number"),
-				glow = color / WolfHUD:getSetting("laser_glow", "number"),
-				brush = color:with_alpha(alpha)
-			}
-		end
-		
-		function WeaponLaser:update(unit, t, ...)
-			update_original(self, unit, t, ...)
-			local theme = self._theme_type
-			local suffix = self._suffix_map[theme]
-			local col = Color.white
-			if suffix then 
-				if WolfHUD:getSetting("laser_" .. suffix, "string") == "rainbow" then
-					local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
-					col = Color(r, g, b)
-				else
-					col = WolfHUD:getSetting("laser_" .. suffix, "color")
-				end
-				local alpha = 1
-				if suffix == "turret_active" or suffix == "turret_reloading" or suffix == "turret_jammed" then
-					alpha = WolfHUD:getSetting("laser_turret_alpha", "number")
-				else
-					alpha = WolfHUD:getSetting("laser_" .. suffix .. "_alpha", "number")
-				end
-				if self._themes[theme].brush == col:with_alpha(alpha) then return end
+			local alpha = 1
+			if suffix == "turret_active" or suffix == "turret_reloading" or suffix == "turret_jammed" then
+				alpha = WolfHUD:getSetting("laser_turret_alpha", "number")
+			else
+				alpha = WolfHUD:getSetting("laser_" .. suffix .. "_alpha", "number")
+			end
+			if self._themes[theme].brush ~= col:with_alpha(alpha) then 
 				self:update_theme(theme, col, alpha)
 				self:set_color_by_theme(theme)
-			else
-				log("[WolfHUD] Trying to update unknown laser theme: " .. theme)
 			end
+		else
+			log("[WolfHUD] Trying to update unknown laser theme: " .. theme)
 		end
-
 	end
-
 elseif string.lower(RequiredScript) == "lib/units/weapons/weaponflashlight" then
 	local init_flash_cbk = WeaponFlashLight.init
 	local update_flash_cbk = WeaponFlashLight.update

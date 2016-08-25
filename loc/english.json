@@ -517,7 +517,7 @@
 	"wolfhud_dmgpopup_options_help" : "Popup near an enemies head, displaying the damage dealt.",
 	
 	"wolfhud_show_dmg_popup_title" : "Show Damage Popup",
-	"wolfhud_show_dmg_popup_desc" : "Enablt the damage popup.",
+	"wolfhud_show_dmg_popup_desc" : "Enable the damage popup.",
 	"wolfhud_dmg_popup_time_title" : "Popup Time",
 	"wolfhud_dmg_popup_time_desc" : "Determines how long the popup will stay.",
 	"wolfhud_dmg_popup_color_title" : "Bodyshot Popup Color",
