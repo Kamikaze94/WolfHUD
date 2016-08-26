@@ -174,7 +174,7 @@ elseif string.lower(RequiredScript) == "core/lib/managers/subtitle/coresubtitlep
 	local _on_resolution_changed_original = OverlayPresenter._on_resolution_changed
 	function OverlayPresenter:_on_resolution_changed(...)
 		_on_resolution_changed_original(self, ...)
-		self:set_font(self.__font_name or self:_default_font_name(), self.__font_size or self:_default_font_size())
+		--self:set_font(self.__font_name or self:_default_font_name(), self.__font_size or self:_default_font_size())
 		if self.__subtitle_panel then
 			self.__subtitle_panel:set_height(self._bottom_y or self.__subtitle_panel:h())
 			local label = self.__subtitle_panel:child("label")
