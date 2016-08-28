@@ -3476,7 +3476,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	local set_mugshot_voice_original = HUDManager.set_mugshot_voice
 	local set_teammate_carry_info_original = HUDManager.set_teammate_carry_info
 	local remove_teammate_carry_info_original = HUDManager.remove_teammate_carry_info
-	local update_name_label_by_peer_original = HUDManager.update_name_label_by_peer
 	
 	function HUDManager:_create_teammates_panel(hud, ...)
 		hud = hud or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
@@ -3614,25 +3613,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 		
 		return remove_teammate_carry_info_original(self, i, ...)
-	end
-	
-	function HUDManager:update_name_label_by_peer(peer)
-		update_name_label_by_peer_original(self, peer)
-		local data = self:_name_label_by_peer_id(peer:id())
-		if data and data.character_name then
-			data.text:set_text(data.character_name)
-			self:align_teammate_name_label(data.panel, data.interact)
-			--Fix for short player names...
-			local text = data.panel:child("text")
-			local cheater = data.panel:child("cheater")
-			if cheater and text then
-				local _, _, tw, _ = text:text_rect()
-				local _, _, cw, _ = cheater:text_rect()
-				local w = math.max(tw, cw)
-				text:set_w(w)
-				cheater:set_w(w)
-			end
-		end
 	end
 	
 	--HARD OVERRIDE (4 -> HUDManager.PLAYER_PANEL)

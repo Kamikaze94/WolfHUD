@@ -4278,6 +4278,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		else
 			self._icon:set_color(HUDList.BuffItemBase.ICON_COLOR.DEBUFF)
 			self._ace_icon:set_color(HUDList.BuffItemBase.ICON_COLOR.DEBUFF)
+			self._value:set_text("")
 		end
 	end
 	
@@ -4298,6 +4299,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._progress_bar_debuff:panel():set_visible(false)
 			self._icon:set_color(self._default_icon_color)
 			self._ace_icon:set_color(self._default_icon_color)
+			self._value:set_text("")
 			if not self._buff_active then
 				HUDList.BuffItemBase.super.deactivate(self)
 			end
