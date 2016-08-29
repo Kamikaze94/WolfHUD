@@ -140,7 +140,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 	
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudheisttimer" then
 	
-	
 	function HUDHeistTimer:init(hud)
 		self._hud_panel = hud.panel
 		if self._hud_panel:child("heist_timer_panel") then
@@ -174,9 +173,19 @@ elseif string.lower(RequiredScript) == "core/lib/managers/subtitle/coresubtitlep
 	local _on_resolution_changed_original = OverlayPresenter._on_resolution_changed
 	function OverlayPresenter:_on_resolution_changed(...)
 		_on_resolution_changed_original(self, ...)
-		--self:set_font(self.__font_name or self:_default_font_name(), self.__font_size or self:_default_font_size())
-		if self.__subtitle_panel then
-			self.__subtitle_panel:set_height(self._bottom_y or self.__subtitle_panel:h())
+		self:apply_bottom_offset()
+	end
+	
+	function OverlayPresenter:set_bottom(offset)
+		if self._bottom_off ~= offset then
+			self._bottom_off = offset
+			self:apply_bottom_offset()
+		end
+	end
+	
+	function OverlayPresenter:apply_bottom_offset()
+		if self.__subtitle_panel and self._bottom_off then
+			self.__subtitle_panel:set_height(self._bottom_off or self.__subtitle_panel:h())
 			local label = self.__subtitle_panel:child("label")
 			if label then
 				label:set_h(self.__subtitle_panel:h())
@@ -188,10 +197,5 @@ elseif string.lower(RequiredScript) == "core/lib/managers/subtitle/coresubtitlep
 				shadow:set_w(self.__subtitle_panel:w())
 			end
 		end
-	end
-	
-	function OverlayPresenter:set_bottom(y)
-		self._bottom_y = y
-		self:_on_resolution_changed()
 	end
 end

@@ -408,9 +408,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	end
 	
 	function HUDStatsScreen:update_stats(item)
-		local dwp = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel"):child("day_wrapper_panel")
-		if dwp then
-			self:update(dwp, item)
+		if self._use_tab_stats then
+			local dwp = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel"):child("day_wrapper_panel")
+			if dwp then
+				self:update(dwp, item)
+			end
 		end
 	end
 	
@@ -434,7 +436,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	end
 
 	function HUDStatsScreen:update(day_wrapper_panel, item)
-		if not day_wrapper_panel then return end
+		if not (self._use_tab_stats and day_wrapper_panel) then return end
 		if managers.money and managers.statistics and managers.experience and not item then
 			local money_current_stage 	= managers.money:get_potential_payout_from_current_stage() or 0
 			local offshore_rate 		= managers.money:get_tweak_value("money_manager", "offshore_rate") or 0
@@ -498,36 +500,38 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	end
 	
 	function HUDStatsScreen:update_setting(setting, value)
-		local font_size = (setting == "tabstats_font_size" and value) or self._tabstats_font_size
-		local color_name = (setting == "tabstats_color" and value) or self._tabstats_color
-		local actual_mask = (setting == "use_actual_mask" and value) or setting ~= "use_actual_mask" and self._actual_mask
-		local dwp = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel"):child("day_wrapper_panel")
-		if self._tabstats_font_size ~= font_size or self._tabstats_color ~= color_name then
-			local color = color_name ~= "rainbow" and WolfHUD:getSetting("tabstats_color", "color") or false
-			local sub_items = {"_title", "_text", "_alltime_title", "_alltime_text"}
-			for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
-				for j, suffix in ipairs(sub_items) do
-					local item = dwp:child(data.name .. suffix)
-					if item then
-						item:set_font_size(font_size)
-						item:set_color(color or data.color)
+		if self._use_tab_stats then
+			local font_size = (setting == "tabstats_font_size" and value) or self._tabstats_font_size
+			local color_name = (setting == "tabstats_color" and value) or self._tabstats_color
+			local actual_mask = (setting == "use_actual_mask" and value) or setting ~= "use_actual_mask" and self._actual_mask
+			local dwp = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel"):child("day_wrapper_panel")
+			if self._tabstats_font_size ~= font_size or self._tabstats_color ~= color_name then
+				local color = color_name ~= "rainbow" and WolfHUD:getSetting("tabstats_color", "color") or false
+				local sub_items = {"_title", "_text", "_alltime_title", "_alltime_text"}
+				for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
+					for j, suffix in ipairs(sub_items) do
+						local item = dwp:child(data.name .. suffix)
+						if item then
+							item:set_font_size(font_size)
+							item:set_color(color or data.color)
+						end
 					end
 				end
+				self._tabstats_font_size = font_size
+				self._tabstats_color = color_name
 			end
-			self._tabstats_font_size = font_size
-			self._tabstats_color = color_name
-		end
-		if actual_mask ~= self._actual_mask then
-			local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
-			if not actual_mask then
-				local char_table = HUDStatsScreen.CHARACTERS[managers.criminals:local_character_name()]
-				mask_icon = char_table and char_table.texture or mask_icon
-			else
-				mask_icon = self.getMaskImage()
+			if actual_mask ~= self._actual_mask then
+				local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
+				if not actual_mask then
+					local char_table = HUDStatsScreen.CHARACTERS[managers.criminals:local_character_name()]
+					mask_icon = char_table and char_table.texture or mask_icon
+				else
+					mask_icon = self.getMaskImage()
+				end
+				local item = dwp:parent():child("character_icon")
+				if item then item:set_image(mask_icon) end
+				self._actual_mask = actual_mask
 			end
-			local item = dwp:parent():child("character_icon")
-			if item then item:set_image(mask_icon) end
-			self._actual_mask = actual_mask
 		end
 	end
 		

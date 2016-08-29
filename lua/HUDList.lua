@@ -511,7 +511,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		
 		if managers.subtitle then
 			local sub_presenter = managers.subtitle:presenter()
-			if sub_presenter then
+			if sub_presenter and sub_presenter.set_bottom then
 				sub_presenter:set_bottom(y)
 			end
 		end
