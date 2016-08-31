@@ -1,12 +1,11 @@
 if RequiredScript == "lib/units/weapons/sentrygunweapon" then
 	local old_setup = SentryGunWeapon.init
-	local _switch_fire_original = SentryGunWeapon._switch_fire_mode
-	local _setup_contour_original = SentryGunWeapon._setup_contour
+	local old_destroy = SentryGunWeapon.destroy
 	
 	function SentryGunWeapon:init(...)
 		old_setup(self, ...)
 		if tweak_data.blackmarket.deployables[self._unit:base():get_type()] then
-			managers.enemy:add_delayed_clbk("Sentry_post_init_" .. tostring(self._unit:key()), callback(self, self, "post_init"), Application:time() + 0)
+			managers.enemy:add_delayed_clbk("Sentry_post_init_" .. tostring(self._unit:key()), callback(self, self, "post_init"), Application:time() + 0.05)
 		end
 	end
 	
@@ -23,10 +22,17 @@ if RequiredScript == "lib/units/weapons/sentrygunweapon" then
 		self:set_laser_enabled(laser_theme)
 		
 		if WolfHUD:getSetting("senty_auto_ap", "boolean") and enable_ap then
-			self:_switch_fire_mode()
-			managers.network:session():send_to_peers_synched("sentrygun_sync_state", self._unit)
-			self._unit:event_listener():call("on_switch_fire_mode", self._use_armor_piercing)
+			if self._fire_mode_unit and alive(self._fire_mode_unit) then
+				self:_switch_fire_mode()
+				managers.network:session():send_to_peers_synched("sentrygun_sync_state", self._unit)
+				self._unit:event_listener():call("on_switch_fire_mode", self._use_armor_piercing)
+			end
 		end
+	end
+	
+	function SentryGunWeapon:destroy(...)
+		managers.enemy:remove_delayed_clbk("Sentry_post_init_" .. tostring(self._unit:key()))
+		old_destroy(self, ...)
 	end
 elseif RequiredScript == "lib/units/weapons/trip_mine/tripminebase" then
 	local set_active_original = TripMineBase.set_active

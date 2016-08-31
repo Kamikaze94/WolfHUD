@@ -2423,12 +2423,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		crowbar =					{ hudpickups = { 0, 64, 32, 32 }, 	priority = 1 },
 		keycard =					{ hudpickups = { 32, 0, 32, 32 }, 	priority = 1 },
 		small_loot = 				{ hudpickups = { 32, 224, 32, 32}, 	priority = 3 },
-		courier = 					{ atlas = { 6, 0 }, 				priority = 3 },
+		courier = 					{ atlas 	 = { 6, 0 }, 			priority = 3 },	--texture = "guis/dlcs/gage_pack_jobs/textures/pd2/endscreen/gage_assignment"	or	texture = "guis/textures/pd2/crimenet_marker_gage", texture_rect = { 5, 5, 20, 20 }
 		planks =					{ hudpickups = { 0, 32, 32, 32 }, 	priority = 2 },
-		meth_ingredients =			{ waypoints = { 192, 32, 32, 32 }, 	priority = 2 },
+		meth_ingredients =			{ waypoints  = { 192, 32, 32, 32 }, priority = 2 },
 		blowtorch = 				{ hudpickups = { 96, 192, 32, 32 }, priority = 1 },
 		thermite = 					{ hudpickups = { 64, 64, 32, 32 }, 	priority = 1 },
-		secret_item =				{ waypoints = { 96, 64, 32, 32 }, 	priority = 4 },
+		secret_item =				{ waypoints  = { 96, 64, 32, 32 }, 	priority = 4 },
 	}
 	
 	function HUDList.SpecialPickupItem:init(parent, name, id, members)
