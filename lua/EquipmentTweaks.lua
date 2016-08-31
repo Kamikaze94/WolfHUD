@@ -1,4 +1,4 @@
-if RequiredScript == "lib/units/weapons/sentrygunweapon" then
+if string.lower(RequiredScript) == "lib/units/weapons/sentrygunweapon" then
 	local old_setup = SentryGunWeapon.init
 	local old_destroy = SentryGunWeapon.destroy
 	
@@ -34,7 +34,7 @@ if RequiredScript == "lib/units/weapons/sentrygunweapon" then
 		managers.enemy:remove_delayed_clbk("Sentry_post_init_" .. tostring(self._unit:key()))
 		old_destroy(self, ...)
 	end
-elseif RequiredScript == "lib/units/weapons/trip_mine/tripminebase" then
+elseif string.lower(RequiredScript) == "lib/units/weapons/trip_mine/tripminebase" then
 	local set_active_original = TripMineBase.set_active
 	function TripMineBase:set_active(active, owner, ...)
 		if WolfHUD:getSetting("tripmine_auto_sensor_stealth", "boolean") then
@@ -44,7 +44,7 @@ elseif RequiredScript == "lib/units/weapons/trip_mine/tripminebase" then
 		end
 		set_active_original(self, active, owner, ...)
 	end
-elseif RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
+elseif string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 	local setup_original = ECMJammerBase.setup
 	local contour_interaction_original = ECMJammerBase.contour_interaction
 	local destroy_original = ECMJammerBase.destroy
@@ -73,7 +73,7 @@ elseif RequiredScript == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 			contour_interaction_original(self)
 		end
 	end
-elseif RequiredScript == "lib/units/interactions/interactionext" then
+elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" then
 	local ECMJammerInteaction_can_interact_original = ECMJammerInteractionExt.can_interact
 	local ECMJammerInteraction_can_select_original = ECMJammerInteractionExt.can_select
 	function ECMJammerInteractionExt:can_interact(...)
@@ -89,7 +89,7 @@ elseif RequiredScript == "lib/units/interactions/interactionext" then
 		end
 		return ECMJammerInteraction_can_select_original(self, ...)
 	end
-elseif RequiredScript == "lib/managers/blackmarketmanager" then
+elseif string.lower(RequiredScript) == "lib/managers/blackmarketmanager" then
 	local equipped_armor_original = BlackMarketManager.equipped_armor
 	function BlackMarketManager:equipped_armor(chk_armor_kit, chk_player_state, ...)
 	-- Fix for secondary Armor Kit, currently non-functional...

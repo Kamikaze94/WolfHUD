@@ -153,7 +153,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	end )
 
 	function HUDManager:set_unit_health_visible( visible, shield )	
-		if self._shield ~= shield then
+		if visible and self._shield ~= shield then
 			self._shield = shield or false
 			self._bar_text_rect = self._shield and self._shield_text_rect or self._health_text_rect
 		end	

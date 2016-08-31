@@ -3630,14 +3630,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("", "boolean"),
+			ignore = not WolfHUD:getSetting("armor_break_invulnerable_buff", "boolean"),
 		},
 		berserker = {
 			atlas_new = tweak_data.skilltree.skills.wolverine.icon_xy,
 			class = "BerserkerBuffItem",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("armor_break_invulnerable_buff", "boolean"),
+			ignore = not WolfHUD:getSetting("berserker_buff", "boolean"),
 		},
 		biker = {
 			spec = {0, 0},
