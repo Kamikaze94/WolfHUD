@@ -6,15 +6,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE = 4
 
 
-	local hudhitdirection_init = HUDHitDirection.init
-	function HUDHitDirection:init(hud)
-		hudhitdirection_init(self, hud)
-		local is_visible = not WolfHUD:getSetting("show_dmg_indicator", "boolean")
-		self._hit_direction_panel:child("right"):set_visible(is_visible)
-		self._hit_direction_panel:child("left"):set_visible(is_visible)
-		self._hit_direction_panel:child("up"):set_visible(is_visible)
-		self._hit_direction_panel:child("down"):set_visible(is_visible)
+	local hudhitdirection_on_hit_direction = HUDHitDirection.on_hit_direction
+	function HUDHitDirection:on_hit_direction(...)
+		if not WolfHUD:getSetting("show_dmg_indicator", "boolean") then
+			hudhitdirection_on_hit_direction(self, ...)
+		end
 	end
+	
 	HUDHitDirection.indicator_count = 0
 	function HUDHitDirection:new_hitmarker(pos, type_hit, unit)
 		if not self._hit_direction_panel or not WolfHUD:getSetting("show_dmg_indicator", "boolean") or self.indicator_count > ( WolfHUD:getSetting("dmg_indicator_max_count", "number") * 3 ) then return end
