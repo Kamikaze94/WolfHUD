@@ -461,6 +461,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		return self._last_name or ""
 	end
 	
+	function HUDTeammateCustom:is_ai()
+		return self._ai
+	end
+	
 	function HUDTeammateCustom:alignment()
 		return self._align
 	end
@@ -542,7 +546,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function HUDTeammateCustom:set_condition(icon_data, text)
-		self:call_listeners("condition", icon_data)
+		if icon_data == "mugshot_normal" and self._ai_stopped then
+			icon_data = "ai_stopped"
+		end
+		self:call_listeners("condition", icon_data, text)
 	end
 	
 	function HUDTeammateCustom:start_timer(t)
@@ -699,6 +706,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function HUDTeammateCustom:set_ai(status)
 		self._ai = status
+	end
+	
+	function HUDTeammateCustom:set_ai_stopped(status)
+		self._ai_stopped = self:is_ai() and status or false
 	end
 	
 	function HUDTeammateCustom:set_state(state)
@@ -3643,7 +3654,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDManager:set_ai_stopped(ai_id, stopped, ...)
 		local teammate_panel = self._teammate_panels[ai_id]
 		if teammate_panel and teammate_panel._ai then
-			--teammate_panel:set_condition(stopped and "ai_stopped" or "mugshot_normal", "HOLD")
+			teammate_panel:set_ai_stopped(stopped)
+			teammate_panel:set_condition(stopped and "ai_stopped" or "mugshot_normal", "HOLD")
 			
 			local name = string.gsub(teammate_panel:name(), "%W", "")
 			for _, label in ipairs(self._hud.name_labels) do
