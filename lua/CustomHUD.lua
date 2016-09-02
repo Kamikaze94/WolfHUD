@@ -2,7 +2,7 @@
 --TODO: Clean up interaction activation/deactivation animation, probably a lot of unnecessary rearranges going on
 
 
-printf = printf or function(...) log(string.format(...)) end
+printf = printf or function(...) WolfHUD:print_log(string.format(...)) end
 
 if not WolfHUD:getSetting("use_customhud", "boolean") then
 	if RequiredScript == "lib/managers/hudmanagerpd2" then
@@ -342,7 +342,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if self._scale ~= self._settings.SCALE then
 			local scale_factor = self._settings.SCALE / self._scale
 			for i, component in ipairs(self._all_components) do
-				component:rescale(scale_factor)	--TODO: Implement rescale function for components
+				component:rescale(scale_factor)
 			end
 			self._scale = self._settings.SCALE
 		end

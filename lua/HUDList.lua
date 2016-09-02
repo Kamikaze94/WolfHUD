@@ -1,3 +1,6 @@
+--TODO:
+--	Add Drill Upgrade Icons
+
 if WolfHUD and not WolfHUD:getSetting("use_hudlist", "boolean") then return end
 printf = function(...) 
 	WolfHUD:print_log(string.format(...))
@@ -817,61 +820,36 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	
 	--General config
-	function HUDListManager:_set_right_list_scale() --TODO
+	function HUDListManager:_set_right_list_scale()
 		self:unregister_list("right_side_list", true)
 		self:_setup_right_list()
 	end
 	
-	function HUDListManager:_set_left_list_scale() --TODO
+	function HUDListManager:_set_left_list_scale()
 		self:unregister_list("left_side_list", true)
 		self:_setup_left_list()
 	end
 	
-	function HUDListManager:_set_buff_list_scale() --TODO
+	function HUDListManager:_set_buff_list_scale()
 		self:unregister_list("buff_list", true)
 		self:_setup_buff_list()
 	end
-	function HUDListManager:_set_list_color() --TODO
-		self:unregister_list("right_side_list", true)
-		self:unregister_list("left_side_list", true)
-		self:unregister_list("buff_list", true)
-		self:_setup_right_list()
-		self:_setup_left_list()
-		self:_setup_buff_list()
---[[		lists = {"right_side_list", "left_side_list"}
-		for _, list_id in pairs(lists) do
-			local list_side = self:list(list_id)
-			for id, item in pairs(list_side:items()) do
-				--for _, icon in pairs(item._icons) do
-				--	icon:set_color(HUDManager.ListOptions.list_color)
-				--end
-				for id, data in pairs(item:items()) do
-					-- change bg corner color + font color
-				end
-			end
-		end]]
-	end
-	
-	function HUDListManager:_set_list_color_bg() --TODO: Disappearing numbers?
+	function HUDListManager:_set_list_color()
 		self:unregister_list("right_side_list", true)
 		self:unregister_list("left_side_list", true)
 		self:unregister_list("buff_list", true)
 		self:_setup_right_list()
 		self:_setup_left_list()
 		self:_setup_buff_list()
---[[		lists = {"right_side_list", "left_side_list"}
-		for _, list_id in pairs(lists) do
-			local list_side = self:list(list_id)
-			for id, item in pairs(list_side:items()) do
-				for id, data in pairs(item:items()) do
-					local x, y, w, h = data._box:x(), data._box:y(), data._box:w(), data._box:h()
-					data._panel:remove(data._box) -- HUD BG Box
-					data._box = HUDBGBox_create(data._panel, {w = w, h = h}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
-					data._box:set_x(x)
-					data._box:set_y(y)
-				end
-			end
-		end]]
+	end
+	
+	function HUDListManager:_set_list_color_bg()
+		self:unregister_list("right_side_list", true)
+		self:unregister_list("left_side_list", true)
+		self:unregister_list("buff_list", true)
+		self:_setup_right_list()
+		self:_setup_left_list()
+		self:_setup_buff_list()
 	end
 	
 	function HUDListManager:_set_civilian_color(color)
@@ -2742,6 +2720,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			set_jammed = callback(self, self, "_set_jammed"),
 			set_powered = callback(self, self, "_set_powered"),
 			set_upgradable = callback(self, self, "_set_upgradable"),
+			set_upgrades = callback(self, self, "_set_upgrades"),
 		}
 		
 		for event, clbk in pairs(events) do
@@ -2785,6 +2764,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local current_color = self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
 		self._flash_color_table[2].color = current_color
 		self:_set_colors(current_color)
+	end
+	
+	function HUDList.TimerItem:_set_upgrades(data)
+		self._upgrades = data.upgrades
+		-- TODO: Set Upgrade Icons
 	end
 	
 	function HUDList.TimerItem:_check_is_running()
@@ -3382,14 +3366,39 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			align = "center",
 			vertical = "center",
 			w = self._box:w(),
-			h = self._box:h(),
-			color = Color.white,
+			h = self._box:h() * 0.7,
+			color = HUDListManager.ListOptions.list_color or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6,
 			layer = 10,
 		})
 		
-		--TODO: Pager block indicator element
+		self._upgrade_lvl3 = self._panel:bitmap({
+			name = "upgrade_level_3",
+			texture = "guis/textures/pd2/skilltree/icons_atlas",
+			texture_rect = { 3 * 64, 4 * 64, 64, 64 },
+			blend_mode = "normal",
+			w = self._panel:w() * 0.4,
+			h = self._panel:w() * 0.4,
+			layer = 11,
+			color = Color(1, 0.2, 0),
+			visible = false,
+		})
+		self._upgrade_lvl3:set_left(self._panel:left())
+		self._upgrade_lvl3:set_bottom(self._panel:bottom() - 2)
+		
+		self._level = self._box:text({
+			name = "text",
+			align = "center",
+			vertical = "bottom",
+			text = "",
+			w = self._box:w(),
+			h = self._box:h(),
+			color = HUDListManager.ListOptions.list_color or Color.white,
+			font = tweak_data.hud_corner.assault_font,
+			font_size = self._box:h() * 0.4,
+			layer = 10,
+		})
 		
 		self:_set_jammer_battery(data)
 		self:_set_upgrade_level(data)
@@ -3408,9 +3417,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDList.ECMItem:_set_upgrade_level(data)
 		if data.upgrade_level then
-			self._blocks_pager = data.upgrade_level == 3
 			self._max_duration = tweak_data.upgrades.ecm_jammer_base_battery_life * ECMJammerBase.battery_life_multiplier[data.upgrade_level]
-			--TODO: Update pager block element
+			
+			self._blocks_pager = data.upgrade_level == 3
+			self._upgrade_lvl3:set_visible(self._blocks_pager)
+			
+			self._level:set_text(string.format("Lv. %i", data.upgrade_level))
+			self._level:set_x(self._blocks_pager and (self._upgrade_lvl3:w() - 2) or 0)
+			self._level:set_w(self._box:w() * (self._blocks_pager and 0.6 or 1))
 		end
 	end
 	

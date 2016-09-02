@@ -125,7 +125,6 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/weaponflashlight" then
 			self._light:set_color(col)
 		end
 	end
-	
 elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then 
 	function NewRaycastWeaponBase:_setup_laser()
 		for id, part in pairs(self._parts) do
@@ -151,6 +150,7 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 		end
 		self:set_gadget_on(self._saved_gadget_state or self._has_laser and 1 or 0, false)
 	end
+	
 	function NewRaycastWeaponBase:toggle_gadget(...)
 		toggle_gadget_original(self, ...)
 		self._saved_gadget_state = self._gadget_on or 0
@@ -158,8 +158,7 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 elseif string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" then
 	local clbk_stance_entered_original = FPCameraPlayerBase.clbk_stance_entered
 	FPCameraPlayerBase.angled_sight_rotation    = {
-		--m95 	= Rotation(-0.4, 0, -45),
-		--wa2000	= Rotation(-0.4, 0, -45)
+		wpn_fps_upg_o_45iron = Rotation(0, 0, -45)
 	}
 	FPCameraPlayerBase.angled_sight_translation = { 
 		msr 	= Vector3(-14.8, 9, -8), 
@@ -177,7 +176,7 @@ elseif string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" th
 				rotation 		= stance_mod.rotation
 			}
 			stance_mod = {
-				rotation 	= FPCameraPlayerBase.angled_sight_rotation[self._weapon_name] 		or Rotation(0, 0, -45),
+				rotation 	= FPCameraPlayerBase.angled_sight_rotation[self._sight_id] 			or Rotation(0, 0, -45),
 				translation = FPCameraPlayerBase.angled_sight_translation[self._weapon_name] 	or Vector3(-13, 7, -12)
 			}
 		elseif self._saved_stance and self._want_restored then
@@ -196,8 +195,9 @@ elseif string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" th
 		self._want_restored = status
 	end
 	
-	function FPCameraPlayerBase:set_weapon_name(name)
+	function FPCameraPlayerBase:set_weapon_name(w_name, sight_id)
 		self._weapon_name = name
+		self._sight_id = sight_id
 	end
 elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
 	local _stance_entered_original = PlayerStandard._stance_entered
@@ -211,7 +211,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 		local rotate_weapon = WolfHUD:getSetting("show_angeled_sight", "boolean") and sight_id and PlayerStandard.ANGELED_SIGHTS[sight_id]
 		self._camera_unit:base():set_want_rotated(not self._state_data.in_steelsight and self._equipped_unit:base():is_second_sight_on() and not self:_is_reloading() and rotate_weapon)
 		self._camera_unit:base():set_want_restored(not self._state_data.in_steelsight and (not self._equipped_unit:base():is_second_sight_on() or self:_is_reloading()) and rotate_weapon)
-		self._camera_unit:base():set_weapon_name(weapon_base and weapon_base._name_id)
+		self._camera_unit:base():set_weapon_name(weapon_base and weapon_base._name_id, sight_id)
 		return _stance_entered_original(self, ...)
 	end
 end

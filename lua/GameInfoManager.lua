@@ -80,6 +80,12 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 					managers.gameinfo:_listener_callback("timer", "set_upgradable", key, timers[key])
 				end
 			end,
+			set_upgrades = function(timers, key, upgrades)
+				if timers[key] then
+					timers[key].upgrades = upgrades
+					managers.gameinfo:_listener_callback("timer", "set_upgrades", key, timers[key])
+				end
+			end,
 		},
 		overrides = {
 			--Common functions
@@ -1456,19 +1462,11 @@ if string.lower(RequiredScript) == "lib/units/props/timergui" then
 	
 	function TimerGui:set_background_icons(...)
 		local skills = self._unit:base().get_skill_upgrades and self._unit:base():get_skill_upgrades()
-		local interact_ext = self._unit:interaction()
-		local can_upgrade = false
-		local pinfo = interact_ext and interact_ext.get_player_info_id and interact_ext:get_player_info_id()
-		if skills and interact_ext and pinfo then
-			for i, _ in pairs(interact_ext:split_info_id(pinfo)) do
-				if not skills[i] then
-					can_upgrade = true
-					break
-				end
-			end
-		end
+		local player_skills = Drill.get_upgrades(self._unit, nil) or {}
+		local can_upgrade = self._unit:base():compare_skill_upgrades(player_skills)
 		
 		managers.gameinfo:event("timer", "set_upgradable", self._info_key, can_upgrade)
+		managers.gameinfo:event("timer", "set_upgrades", self._info_key, skills)
 		
 		return set_background_icons_original(self, ...)
 	end
