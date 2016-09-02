@@ -231,7 +231,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			name = "teammate_panel_" .. tostring(id),
 		})
 		
-		self._left_align = alignment == "left"
+		self._align = alignment
 		self._listeners = {}
 		self._all_components = {}
 		self._settings = HUDTeammateCustom.SETTINGS[is_player and "PLAYER" or "TEAMMATE"]
@@ -300,7 +300,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			managers.hud:arrange_teammate_panels()
 		end
 		
-		if not self._left_align then
+		if self._align == "right" then
 			for _, component in ipairs(self._all_components) do
 				component:set_right(self._panel:w() - component:left())
 			end
@@ -457,8 +457,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		return self._peer_id
 	end
 	
-	function HUDTeammateCustom:left_aligned()
-		return self._left_align
+	function HUDTeammateCustom:name()
+		return self._last_name or ""
+	end
+	
+	function HUDTeammateCustom:alignment()
+		return self._align
 	end
 	
 	function HUDTeammateCustom:panel()
@@ -1428,6 +1432,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		PlayerInfoComponent.Callsign.super.init(self, panel, owner, "callsign", size, size)
 		
 		self._settings = settings
+		self._size = size
 		
 		self._icon = self._panel:bitmap({
 			name = "icon",
@@ -1485,6 +1490,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.Callsign:rescale(factor)
 		if PlayerInfoComponent.Callsign.super.rescale(self, factor) then
+			self._size = self._size * factor
 			self._icon:set_w(self._icon:w() * factor)
 			self._icon:set_h(self._icon:h() * factor)
 			self._voice_com:set_w(self._voice_com:w() * factor)
@@ -1551,6 +1557,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if visible then
 			local icon, texture_rect = tweak_data.hud_icons:get_icon_data(icon_data)
 			self._condition_icon:set_image(icon, unpack(texture_rect))
+			self._condition_icon:set_w(self._size * math.min(texture_rect[3] / texture_rect[4], 1))
+			self._condition_icon:set_h(self._size * math.min(texture_rect[4] / texture_rect[3], 1))
+			self._condition_icon:set_center(self._panel:w() / 2, self._panel:h() / 2)
 		end
 		
 		self._condition_icon:set_visible(visible)
@@ -1563,13 +1572,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		self._settings = settings
 		
-		local size = height
+		self._size = height
 		
 		local health_bg = self._panel:bitmap({
 			name = "health_bg",
 			texture = "guis/textures/pd2/hud_radialbg",
-			h = size,
-			w = size,
+			h = self._size,
+			w = self._size,
 		})
 		
 		self._health_radial = self._panel:bitmap({
@@ -1579,8 +1588,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			render_template = "VertexColorTexturedRadial",
 			blend_mode = "add",
 			color = Color(1, 1, 1),
-			h = size,
-			w = size,
+			h = self._size,
+			w = self._size,
 			layer = health_bg:layer() + 1,
 		})
 		
@@ -1592,8 +1601,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			blend_mode = "add",
 			color = Color(0, 0, 0),
 			alpha = 0.5,
-			h = size,
-			w = size,
+			h = self._size,
+			w = self._size,
 			layer = self._health_radial:layer() - 1,
 		})
 		
@@ -1605,8 +1614,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			blend_mode = "add",
 			color = Color(1, 1, 1),
 			layer = self._stored_health_radial:layer() + 1,
-			h = size,
-			w = size,
+			h = self._size,
+			w = self._size,
 			layer = self._stored_health_radial:layer() + 1,
 		})
 		
@@ -1622,11 +1631,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			align = "center",
 			vertical = "center",
 			layer = 2,
-			w = size * 0.45,
-			h = size * 0.45,
+			w = self._size * 0.45,
+			h = self._size * 0.45,
 			layer = self._stored_health_radial:layer() + 1,
 		})
-		self._stamina_radial:set_center(size / 2, size / 2)
+		self._stamina_radial:set_center(self._size / 2, self._size / 2)
 		
 		self._damage_indicator = self._panel:bitmap({
 			name = "damage_indicator",
@@ -1634,8 +1643,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			blend_mode = "add",
 			color = Color(1, 1, 1, 1),
 			alpha = 0,
-			h = size,
-			w = size,
+			h = self._size,
+			w = self._size,
 			layer = self._armor_radial:layer() + 1,
 		})
 		
@@ -1644,15 +1653,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			color = Color.white,
 			align = "center",
 			vertical = "center",
-			h = size * 0.25,
-			w = size * 0.25,
-			font_size = size * 0.2,
+			h = self._size * 0.25,
+			w = self._size * 0.25,
+			font_size = self._size * 0.2,
 			font = "fonts/font_small_shadow_mf",
 			layer = self._health_radial:layer() + 1,
 			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean") or false,
 		})
 		
-		self._downs_counter:set_center(size / 2, size / 2)
+		self._downs_counter:set_center(self._size / 2, self._size / 2)
 		
 		self._detection_counter = self._panel:text({
 			name = "detection",
@@ -1660,15 +1669,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			color = Color.red,
 			align = "center",
 			vertical = "center",
-			h = size * 0.25,
-			w = size * 0.25,
-			font_size = size * 0.2,
+			h = self._size * 0.25,
+			w = self._size * 0.25,
+			font_size = self._size * 0.2,
 			font = "fonts/font_small_mf",
 			layer = self._health_radial:layer() + 1,
 			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean") or false,
 		})
 		
-		self._detection_counter:set_center(size / 2, size / 2)
+		self._detection_counter:set_center(self._size / 2, self._size / 2)
 		
 		local center_bg = self._panel:bitmap({
 			name = "center_bg",  
@@ -1677,8 +1686,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			blend_mode = "normal",  
 			color = Color.black,
 			alpha = 0.65,
-			w = size,  
-			h = size,  
+			w = self._size,  
+			h = self._size,  
 			layer = self._health_radial:layer() - 2,
 			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean") or false,
 		})
@@ -1687,8 +1696,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			name = "condition_icon",
 			visible = false,
 			color = Color.white,
-			h = size,
-			w = size,
+			h = self._size,
+			w = self._size,
 			layer = 10,
 		})
 		
@@ -1696,13 +1705,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			name = "condition_timer",
 			visible = false,
 			color = Color.white,
-			w = size,
-			h = size,
+			w = self._size,
+			h = self._size,
 			align = "center",
 			vertical = "center",
-			h = size,
-			w = size,
-			font_size = size * 0.5,
+			font_size = self._size * 0.5,
 			font = tweak_data.hud_players.timer_font,
 			layer = self._condition_icon:layer() + 1,
 		})
@@ -1715,8 +1722,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			blend_mode = "add",
 			color = Color(1, 0, 0, 0),
 			visible = false,
-			h = size,
-			w = size,
+			h = self._size,
+			w = self._size,
 			layer = self._condition_icon:layer(),
 		})
 		
@@ -1725,12 +1732,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_shield",
 			texture_rect = { 0, 0, 64, 64 },
 			render_template = "VertexColorTexturedRadial",
-			w = size * 0.92,
-			h = size * 0.92,
+			w = self._size * 0.92,
+			h = self._size * 0.92,
 			color = Color.black,
 			layer = self._condition_icon:layer() - 1,
 		})
-		self._maniac_absorb_radial:set_center(size / 2, size / 2)
+		self._maniac_absorb_radial:set_center(self._size / 2, self._size / 2)
 		
 		--self._maniac_stack_radial = ...
 		self._components = {health_bg, self._health_radial, self._stored_health_radial, self._armor_radial, --[[self._stamina_radial,]] self._damage_indicator, self._downs_counter, self._detection_counter, center_bg, self._condition_icon, self._custom_radial_icon, self._maniac_absorb_radial}
@@ -1791,6 +1798,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.PlayerStatus:rescale(factor)
 		if PlayerInfoComponent.PlayerStatus.super.rescale(self, factor) then
+			self._size = self._size * factor
 			for id, component in pairs(self._components) do
 				component:set_w(component:w() * factor)
 				component:set_h(component:h() * factor)
@@ -1922,6 +1930,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if visible then
 			local icon, texture_rect = tweak_data.hud_icons:get_icon_data(icon_data)
 			self._condition_icon:set_image(icon, unpack(texture_rect))
+			self._condition_icon:set_w(self._size * math.min(texture_rect[3] / texture_rect[4], 1))
+			self._condition_icon:set_h(self._size * math.min(texture_rect[4] / texture_rect[3], 1))
+			self._condition_icon:set_center(self._panel:w() / 2, self._panel:h() / 2)
 		end
 		
 		self._condition_icon:set_visible(visible)
@@ -3509,7 +3520,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			local align
 			
 			--if j < 4 or is_player or j <= math.ceil(num_panels / 2) then
-			if j <= 7 or is_player then
+			if is_player then
+				align = "center"
+			elseif j <= 7 then
 				align = "left"
 			else
 				align = "right"
@@ -3630,7 +3643,20 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDManager:set_ai_stopped(ai_id, stopped, ...)
 		local teammate_panel = self._teammate_panels[ai_id]
 		if teammate_panel and teammate_panel._ai then
-			teammate_panel:set_condition(stopped and "ai_stopped" or "mugshot_normal", "Stopped")
+			--teammate_panel:set_condition(stopped and "ai_stopped" or "mugshot_normal", "HOLD")
+			
+			local name = string.gsub(teammate_panel:name(), "%W", "")
+			for _, label in ipairs(self._hud.name_labels) do
+				if string.gsub(label.character_name, "%W", "") == name then
+					if stopped and not label.panel:child("stopped") then
+						local label_stop_icon = label.panel:bitmap({name = "stopped", texture = tweak_data.hud_icons.ai_stopped.texture, texture_rect = tweak_data.hud_icons.ai_stopped.texture_rect})
+						label_stop_icon:set_right(label.text:left())
+						label_stop_icon:set_center_y(label.text:center_y())
+					elseif not stoppend and label.panel:child("stopped") then
+						label.panel:remove(label.panel:child("stopped"))
+					end
+				end
+			end
 		end
 	end
 	
@@ -3642,24 +3668,24 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local teammate_height = 0
 		local left_height_offset = 0
 		local right_height_offset = 0
+		local center_height_offset = 0
 		
 		for i, teammate in ipairs(self._teammate_panels) do
 			local panel = teammate:panel()
 			
 			if panel:visible() then
-				if i == HUDManager.PLAYER_PANEL then
+				if teammate:alignment() == "left" then
+					panel:set_left(0)
+					panel:set_bottom(hud_panel:h() - left_height_offset)
+					left_height_offset = left_height_offset + MARGIN + panel:h()
+				elseif teammate:alignment() == "right" then
+					panel:set_right(hud_panel:w())
+					panel:set_bottom(hud_panel:h() - right_height_offset)
+					right_height_offset = right_height_offset + MARGIN + panel:h()
+				else	-- center
 					panel:set_center(hud_panel:w() / 2, 0)
-					panel:set_bottom(hud_panel:h())
-				else
-					if teammate:left_aligned() then
-						panel:set_left(0)
-						panel:set_bottom(hud_panel:h() - left_height_offset)
-						left_height_offset = left_height_offset + MARGIN + panel:h()
-					else
-						panel:set_right(hud_panel:w())
-						panel:set_bottom(hud_panel:h() - right_height_offset)
-						right_height_offset = right_height_offset + MARGIN + panel:h()
-					end
+					panel:set_bottom(hud_panel:h() - center_height_offset)
+					center_height_offset = center_height_offset + MARGIN + panel:h()
 				end
 			end
 		end
