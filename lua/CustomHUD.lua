@@ -2,7 +2,7 @@
 --TODO: Clean up interaction activation/deactivation animation, probably a lot of unnecessary rearranges going on
 
 
-printf = printf or function(...) WolfHUD:print_log(string.format(...)) end
+printf = printf or function(...) log(string.format(...)) end
 
 if not WolfHUD:getSetting("use_customhud", "boolean") then
 	if RequiredScript == "lib/managers/hudmanagerpd2" then
@@ -3617,14 +3617,22 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	--HARD OVERRIDE (4 -> HUDManager.PLAYER_PANEL)
 	function HUDManager:reset_player_hpbar()
-	local crim_entry = managers.criminals:character_static_data_by_name(managers.criminals:local_character_name())
-	if not crim_entry then
-		return
+		local crim_entry = managers.criminals:character_static_data_by_name(managers.criminals:local_character_name())
+		if not crim_entry then
+			return
+		end
+		local color_id = managers.network:session():local_peer():id()
+		self:set_teammate_callsign(HUDManager.PLAYER_PANEL, color_id)
+		self:set_teammate_name(HUDManager.PLAYER_PANEL, managers.network:session():local_peer():name())
+		
 	end
-	local color_id = managers.network:session():local_peer():id()
-	self:set_teammate_callsign(HUDManager.PLAYER_PANEL, color_id)
-	self:set_teammate_name(HUDManager.PLAYER_PANEL, managers.network:session():local_peer():name())
-end
+	
+	function HUDManager:set_ai_stopped(ai_id, stopped, ...)
+		local teammate_panel = self._teammate_panels[ai_id]
+		if teammate_panel and teammate_panel._ai then
+			teammate_panel:set_condition(stopped and "ai_stopped" or "mugshot_normal", "Stopped")
+		end
+	end
 	
 	--NEW FUNCTIONS
 	function HUDManager:arrange_teammate_panels()
