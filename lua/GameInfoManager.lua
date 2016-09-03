@@ -1462,11 +1462,20 @@ if string.lower(RequiredScript) == "lib/units/props/timergui" then
 	
 	function TimerGui:set_background_icons(...)
 		local skills = self._unit:base().get_skill_upgrades and self._unit:base():get_skill_upgrades()
-		local player_skills = Drill.get_upgrades(self._unit, nil)
-		local can_upgrade = player_skills and self._unit:base():compare_skill_upgrades(player_skills) or false
-		
-		managers.gameinfo:event("timer", "set_upgradable", self._info_key, can_upgrade)
 		managers.gameinfo:event("timer", "set_upgrades", self._info_key, skills)
+		if not self._unit:base()._disable_upgrades then
+			local player_skills = Drill.get_upgrades(self._unit, nil)
+			local function player_can_upgrade(drill_upgrades, player_upgrades)
+				local template = Drill.create_upgrades(0, 0, 0, false, false)
+				for k, v in pairs(template) do	--Force the tables to contain all data, at least in default value...
+					drill_upgrades[k] 	= drill_upgrades[k] 	or v
+					player_upgrades[k] 	= player_upgrades[k] 	or v
+				end
+				return player_upgrades.auto_repair_level_1 > drill_upgrades.auto_repair_level_1 or player_upgrades.auto_repair_level_2 > drill_upgrades.auto_repair_level_2 or player_upgrades.speed_upgrade_level > drill_upgrades.speed_upgrade_level or player_upgrades.silent_drill and not drill_upgrades.silent_drill or player_upgrades.reduced_alert and not drill_upgrades.reduced_alert
+			end
+			local can_upgrade = player_skills and player_can_upgrade(skills, player_skills) or false
+			managers.gameinfo:event("timer", "set_upgradable", self._info_key, can_upgrade)
+		end
 		
 		return set_background_icons_original(self, ...)
 	end
