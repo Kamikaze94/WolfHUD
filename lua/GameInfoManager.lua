@@ -1462,8 +1462,8 @@ if string.lower(RequiredScript) == "lib/units/props/timergui" then
 	
 	function TimerGui:set_background_icons(...)
 		local skills = self._unit:base().get_skill_upgrades and self._unit:base():get_skill_upgrades()
-		local player_skills = Drill.get_upgrades(self._unit, nil) or {}
-		local can_upgrade = self._unit:base():compare_skill_upgrades(player_skills)
+		local player_skills = Drill.get_upgrades(self._unit, nil)
+		local can_upgrade = player_skills and self._unit:base():compare_skill_upgrades(player_skills) or false
 		
 		managers.gameinfo:event("timer", "set_upgradable", self._info_key, can_upgrade)
 		managers.gameinfo:event("timer", "set_upgrades", self._info_key, skills)
