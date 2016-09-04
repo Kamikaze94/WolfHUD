@@ -2023,7 +2023,8 @@ if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase
 	end
 	
 	function ECMJammerBase:contour_interaction(...)
-		if self._owner_id == managers.network:session():local_peer():id() and managers.player:has_category_upgrade("ecm_jammer", "can_activate_feedback") then
+		local owner_unit = self:owner()
+		if owner_unit and owner_unit:key() == managers.player:player_unit():key() and managers.player:has_category_upgrade("ecm_jammer", "can_activate_feedback") then
 			self._retrigger_delay = nil
 			managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), { retrigger_active = false })
  		end
