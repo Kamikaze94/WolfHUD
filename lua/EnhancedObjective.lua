@@ -62,12 +62,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		self._panel:set_visible(true)
 		self._objective_text:set_visible(true)
 		self._amount_text:set_visible(false)
+		
+		local width, height = self:_get_wrapped_text_dimensions(utf8.to_upper(data.text))
+		
 		self._objective_text:set_text(utf8.to_upper(data.text))
-		
-		local text_width = math.ceil(self:_get_text_dimensions(self._objective_text:text()).w)
-		local width = math.min(text_width, HUDObjectives._MAX_WIDTH)
-		local height = tweak_data.hud.active_objective_title_font_size * math.ceil(text_width / width)
-		
 		self._objective_text:set_w(width)
 		self._objective_text:set_h(height)
 		self._bg_box:set_h(HUDObjectives._TEXT_MARGIN * 2 + height)
@@ -90,9 +88,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		if data.id ~= self._active_objective_id then
 			return
 		end
-		local text_width = self:_get_text_dimensions(self._objective_text:text()).w
-		local width = math.min(text_width, HUDObjectives._MAX_WIDTH)
-		local height = tweak_data.hud.active_objective_title_font_size * math.ceil(text_width / width)
 
 		self._amount_text:set_visible(true)
 		self._amount_text:set_text((data.current_amount or 0) .. "/" .. data.amount)
@@ -163,6 +158,36 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		string_width_measure_text_field:set_text(text_string)
 		local x, y, w, h = string_width_measure_text_field:text_rect()
 		return {x = x, y = y, w = w, h = h}
+	end
+	
+	function HUDObjectives:_get_wrapped_text_dimensions(text_string)
+		local layout_text_field = self._panel:child("layout") or self._panel:text({
+			name = "layout",
+			width = self._MAX_WIDTH,
+			visible = false,
+			font_size = tweak_data.hud.active_objective_title_font_size,
+			font = tweak_data.hud.medium_font_noshadow,
+			align = "left",
+			vertical = "center",
+			wrap = true,
+			word_wrap = true
+		})
+		layout_text_field:set_text(text_string)
+		local line_breaks = table.collect(layout_text_field:line_breaks(), function(index)
+			return index + 1
+		end)
+		local wrapped_lines = {}
+		for line = 1, #line_breaks do
+			local range_start = line_breaks[line]
+			local range_end = line_breaks[line + 1]
+			local string_range = utf8.sub(text_string, range_start, (range_end or 0) - 1)
+			table.insert(wrapped_lines, string.trim(string_range))
+		end
+		local w, h = 0, layout_text_field:font_size() * math.max(#wrapped_lines or 1)
+		for i, line in ipairs(wrapped_lines) do
+			w = math.max(w, self:_get_text_dimensions(line).w)
+		end
+		return math.ceil(w), math.ceil(h)
 	end	
 	
 	

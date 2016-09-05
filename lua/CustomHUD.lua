@@ -100,7 +100,15 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 end
 
 if RequiredScript == "lib/managers/hud/hudteammate" then
-
+	
+	local function ReverseTable(tbl)
+		for i=1, math.floor(#tbl / 2) do
+		local tmp = tbl[i]
+		tbl[i] = tbl[#tbl - i + 1]
+		tbl[#tbl - i + 1] = tmp
+	  end
+	end
+	
 	HUDTeammateCustom = HUDTeammateCustom or class()
 
 	--TODO: Switch to setting hierarchy with overloading for player/team instead of separate table?
@@ -303,6 +311,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if self._align == "right" then
 			for _, component in ipairs(self._all_components) do
 				component:set_right(self._panel:w() - component:left())
+				component:set_alignment(self._align)
 			end
 		end
 	end
@@ -792,6 +801,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._disable_reason = {}
 		self._is_ai = nil
 		self._is_local_player = nil
+		self._align = "left"
 		
 		self._panel = self._owner_panel:panel({
 			name = name,
@@ -827,6 +837,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.Base:update_settings()	--Override for classes with settings
 	
+	end
+	
+	function PlayerInfoComponent.Base:set_alignment(align)
+		if self._align ~= align then
+			self._align = align
+			return true
+		end
 	end
 	
 	function PlayerInfoComponent.Base:rescale(factor)
@@ -2220,6 +2237,16 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 	
+	function PlayerInfoComponent.CenterPanel:set_alignment(align)
+		if PlayerInfoComponent.CenterPanel.super.set_alignment(self, align) then
+			for _, component in ipairs(self._non_interaction_components) do
+				component:set_right(self._panel:w() - component:left())
+				component:set_alignment(align)
+			end
+			ReverseTable(self._non_interaction_components)
+		end
+	end
+	
 	function PlayerInfoComponent.CenterPanel:rescale(factor)
 		if PlayerInfoComponent.Weapon.super.rescale(self, factor) then
 			for _, component in pairs(self._components) do
@@ -2411,6 +2438,17 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		self._aggregate_ammo_panel:set_visible(self._settings.WEAPON.AMMO.TOTAL_AMMO_ONLY and true or false)
 		self:arrange()
+	end
+	
+	function PlayerInfoComponent.Weapons:set_alignment(align)
+		if PlayerInfoComponent.Weapons.super.set_alignment(self, align) then
+--			for _, component in ipairs(self._weapons) do
+--				component:set_right(self._panel:w() - component:left())
+--				component:set_alignment(align)
+--			end
+--			self._aggregate_ammo_panel:set_right(self._panel:w() - self._aggregate_ammo_panel:left())
+--			ReverseTable(self._weapons)
+		end
 	end
 	
 	function PlayerInfoComponent.Weapons:rescale(factor)
