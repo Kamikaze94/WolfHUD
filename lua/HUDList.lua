@@ -834,6 +834,28 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:unregister_list("buff_list", true)
 		self:_setup_buff_list()
 	end
+	
+	function HUDListManager:_set_right_list_height_offset()
+		local list = self:list("left_side_list")
+		if list then
+			list:move(list:panel():x(), HUDListManager.ListOptions.right_list_height_offset or 40, false)
+		end
+	end
+	
+	function HUDListManager:_set_left_list_height_offset()
+		local list = self:list("left_side_list")
+		if list then
+			list:move(list:panel():x(), HUDListManager.ListOptions.left_list_height_offset or 40, false)
+		end
+	end
+	
+	function HUDListManager:_set_buff_list_height_offset()
+		local list = self:list("buff_list")
+		if list then
+			list:move(list:panel():x(), HUDListManager.ListOptions.buff_list_height_offset or 40, false)
+		end
+	end
+	
 	function HUDListManager:_set_list_color()
 		self:unregister_list("right_side_list", true)
 		self:unregister_list("left_side_list", true)

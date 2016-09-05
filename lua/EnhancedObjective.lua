@@ -1,6 +1,8 @@
 if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 	
 	HUDObjectives._TEXT_MARGIN = 8
+	HUDObjectives._MAX_WIDTH = 300
+	HUDObjectives._BOUNCE = 12
 
 	function HUDObjectives:init(hud)
 		if hud.panel:child("objectives_panel") then
@@ -11,13 +13,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			visible = false,
 			name = "objectives_panel",
 			h = 100,
-			w = 500,
+			w = 400,
 			x = 80,
 			valign = "top"
 		})
 			
 		self._bg_box = HUDBGBox_create(self._panel, {
-			w = 500,
+			w = 400,
 			h = 38,
 		})
 		
@@ -32,7 +34,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			align = "left",
 			vertical = "center",
 			w = self._bg_box:w(),
-			x = HUDObjectives._TEXT_MARGIN
+			x = HUDObjectives._TEXT_MARGIN,
+			y = HUDObjectives._TEXT_MARGIN,
+			wrap = true,
+			word_wrap = true
 		})
 		
 		self._amount_text = self._bg_box:text({
@@ -46,46 +51,58 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			align = "left",
 			vertical = "center",
 			w = self._bg_box:w(),
-			x = HUDObjectives._TEXT_MARGIN
+			h = tweak_data.hud.active_objective_title_font_size,
+			x = HUDObjectives._TEXT_MARGIN,
+			y = HUDObjectives._TEXT_MARGIN
 		})
 	end
-
+	
 	function HUDObjectives:activate_objective(data)
 		self._active_objective_id = data.id
-		
 		self._panel:set_visible(true)
-		self._objective_text:set_text(utf8.to_upper(data.text))
 		self._objective_text:set_visible(true)
 		self._amount_text:set_visible(false)
+		self._objective_text:set_text(utf8.to_upper(data.text))
 		
-		local width = self:_get_text_width(self._objective_text)
+		local text_width = math.ceil(self:_get_text_dimensions(self._objective_text:text()).w)
+		local width = math.min(text_width, HUDObjectives._MAX_WIDTH)
+		local height = tweak_data.hud.active_objective_title_font_size * math.ceil(text_width / width)
+		
+		self._objective_text:set_w(width)
+		self._objective_text:set_h(height)
+		self._bg_box:set_h(HUDObjectives._TEXT_MARGIN * 2 + height)
 		
 		if data.amount then
-			self:update_amount_objective(data)
-			self._amount_text:set_left(width + HUDObjectives._TEXT_MARGIN)
-			width = width + self:_get_text_width(self._amount_text)
+			self:update_amount_objective(data, true)
 		else
 			self._amount_text:set_text("")
+			self._bg_box:set_w(HUDObjectives._TEXT_MARGIN * 2 + width)
 		end
-
-		self._bg_box:set_w(HUDObjectives._TEXT_MARGIN * 2 + width)
 		self._bg_box:stop()
-		--self._amount_text:animate(callback(self, self, "_animate_new_objective"))
-		--self._objective_text:animate(callback(self, self, "_animate_new_objective"))
 		self._bg_box:animate(callback(self, self, "_animate_update_objective"))
+		
+		if managers.hud and HUDListManager then 
+			managers.hud:change_list_setting("left_list_height_offset", self._bg_box:bottom() + HUDObjectives._BOUNCE + HUDObjectives._TEXT_MARGIN) 
+		end
 	end
 
-	function HUDObjectives:update_amount_objective(data)
+	function HUDObjectives:update_amount_objective(data, hide_animation)
 		if data.id ~= self._active_objective_id then
 			return
 		end
+		local text_width = self:_get_text_dimensions(self._objective_text:text()).w
+		local width = math.min(text_width, HUDObjectives._MAX_WIDTH)
+		local height = tweak_data.hud.active_objective_title_font_size * math.ceil(text_width / width)
 
 		self._amount_text:set_visible(true)
-		self._amount_text:set_text(": " .. (data.current_amount or 0) .. "/" .. data.amount)
-		self._amount_text:set_x(self:_get_text_width(self._objective_text) + HUDObjectives._TEXT_MARGIN)
-		self._bg_box:set_w(HUDObjectives._TEXT_MARGIN * 2 + self:_get_text_width(self._objective_text) + self:_get_text_width(self._amount_text))
-		self._bg_box:stop()
-		self._bg_box:animate(callback(self, self, "_animate_update_objective"))
+		self._amount_text:set_text((data.current_amount or 0) .. "/" .. data.amount)
+		self._amount_text:set_left(self._objective_text:right() + HUDObjectives._TEXT_MARGIN)
+		self._amount_text:set_bottom(self._objective_text:h() + HUDObjectives._TEXT_MARGIN)
+		self._bg_box:set_w(HUDObjectives._TEXT_MARGIN * 3 + self._objective_text:w() + self:_get_text_dimensions(self._amount_text:text()).w)
+		if not hide_animation then
+			self._amount_text:stop()
+			self._amount_text:animate(callback(self, self, "_animate_new_amount"))
+		end
 	end
 
 	function HUDObjectives:remind_objective(id)
@@ -101,21 +118,22 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		if data.id ~= self._active_objective_id then
 			return
 		end
-
+		
+		self._active_objective_id = ""
 		self._amount_text:set_visible(false)
 		self._objective_text:set_visible(false)
 		self._panel:set_visible(false)
 		self._bg_box:set_w(0)
 	end
 
-	function HUDObjectives:_animate_new_objective(object)
+	function HUDObjectives:_animate_new_amount(object)
 		local TOTAL_T = 2
 		local t = TOTAL_T
 		object:set_color(Color(1, 1, 1, 1))
 		while t > 0 do
 			local dt = coroutine.yield()
 			t = t - dt
-			object:set_color(Color(1, 1 - (0.5 * math.sin(t * 360) + 0.5), 1, 1 - (0.5 * math.sin(t * 360) + 0.5)))
+			object:set_color(Color(1, 1 , 1, 1 - (0.5 * math.sin(t * 360 * 2) + 0.5)))
 		end
 		object:set_color(Color(1, 1, 1, 1))
 	end
@@ -127,14 +145,24 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		while t > 0 do
 			local dt = coroutine.yield()
 			t = t - dt
-			object:set_y(math.round((1 + math.sin((TOTAL_T - t) * 450 * 2)) * (12 * (t / TOTAL_T))))
+			object:set_y(math.round((1 + math.sin((TOTAL_T - t) * 450 * 2)) * (HUDObjectives._BOUNCE * (t / TOTAL_T))))
 		end
 		object:set_y(0)
 	end
 
-	function HUDObjectives:_get_text_width(obj)
-		local _, _, w, _ = obj:text_rect()
-		return w
+	function HUDObjectives:_get_text_dimensions(text_string)
+		local string_width_measure_text_field = self._panel:child("string_dimensions") or self._panel:text({
+			name = "string_dimensions",
+			visible = false,
+			font_size = tweak_data.hud.active_objective_title_font_size,
+			font = tweak_data.hud.medium_font_noshadow,
+			align = "left",
+			vertical = "center",
+			wrap = false
+		})
+		string_width_measure_text_field:set_text(text_string)
+		local x, y, w, h = string_width_measure_text_field:text_rect()
+		return {x = x, y = y, w = w, h = h}
 	end	
 	
 	
