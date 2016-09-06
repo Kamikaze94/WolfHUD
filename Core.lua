@@ -500,8 +500,8 @@ if not _G.WolfHUD then
 		for k, v in pairs(LuaModManager.Mods) do
 			local info = v.definition
 			if info["name"] == "WolfHUD" then
-				self.version = info["version"]
-				updates = info["updates"]
+				self.version = info["version"] or self.version
+				updates = info["updates"] or updates
 			end
 		end
 		for k, v in pairs(updates) do

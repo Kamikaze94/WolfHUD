@@ -2407,7 +2407,7 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 				end
 			end
 		
-			if self:has_category_upgrade("player", "messiah_revive_from_bleed_out") and self._messiah_charges > 0 then
+			if self:has_category_upgrade("player", "messiah_revive_from_bleed_out") and (self._messiah_charges or 0) > 0 then
 				managers.gameinfo:event("buff", "activate", "messiah")
 				managers.gameinfo:event("buff", "set_stack_count", "messiah", { stack_count = self._messiah_charges })
  			end
