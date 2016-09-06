@@ -26,7 +26,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/sentrygunweapon" then
 				local firemode_interaction = self._fire_mode_unit:interaction()
 				if firemode_interaction and firemode_interaction:can_interact(managers.player:player_unit()) then
 					self:_switch_fire_mode()
-					managers.network:session():send_to_peers_synched("sentrygun_sync_state", self._unit)
+					managers.network:session():send_to_peers_synched("sentrygun_sync_state", self._unit)	--clone(self._unit)
 					self._unit:event_listener():call("on_switch_fire_mode", self._use_armor_piercing)
 				end
 			end
@@ -92,24 +92,5 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 			return false
 		end
 		return ECMJammerInteraction_can_select_original(self, ...)
-	end
-elseif string.lower(RequiredScript) == "lib/managers/blackmarketmanager" then
-	local equipped_armor_original = BlackMarketManager.equipped_armor
-	function BlackMarketManager:equipped_armor(chk_armor_kit, chk_player_state, ...)
-	-- Fix for secondary Armor Kit, currently non-functional...
---[[
-		if chk_player_state and managers.player:current_state() == "civilian" then
-			return self._defaults.armor
-		end
-		if chk_armor_kit then
-			local armor_kit_slot = (self:equipped_deployable(1) == "armor_kit") and 1 or (self:equipped_deployable(2) == "armor_kit") and 2
-			if armor_kit_slot then
-				if (not managers.player:has_equipment("armor_kit") or managers.player:has_deployable_left("armor_kit", armor_kit_slot)) then
-					return self._defaults.armor
-				end
-			end
-		end
-]]
-		return equipped_armor_original(self, chk_armor_kit, chk_player_state, ...)
 	end
 end

@@ -82,7 +82,6 @@ if not _G.WolfHUD then
 		["lib/setups/setup"] = { "GameInfoManager.lua", "WaypointsManager.lua" },
 		["lib/managers/menumanager"] = { "MenuTweaks.lua" },
 		["lib/managers/menumanagerdialogs"] = { "MenuTweaks.lua" },
-		["lib/managers/blackmarketmanager"] = { "EquipmentTweaks.lua" },
 		["lib/managers/chatmanager"] = { "MenuTweaks.lua" },
 		["lib/managers/localizationmanager"] = { "AdvAssault.lua" },
 		["lib/managers/experiencemanager"] = { "Scripts.lua" },
@@ -582,10 +581,10 @@ end
 
 if MenuNodeMainGui then
 	Hooks:PostHook( MenuNodeMainGui , "_setup_item_rows" , "MenuNodeMainGuiPostSetupItemRows_WolfHUD" , function( self )
+		WolfHUD:checkOverrides()
 		if alive(self._version_string) then
 			self._version_string:set_text("Payday 2 v" .. Application:version() .. " | WolfHUD v" .. WolfHUD.version)
 		end
-		WolfHUD:checkOverrides()
 	end)
 end
 
