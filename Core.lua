@@ -162,7 +162,8 @@ if not _G.WolfHUD then
 		{
 		  --CustomHUD
 			use_customhud 					= true,
-			PLAYER_SCALE 					= 1,		--Size of local Player HUD Panel
+			PLAYER_POSITION					= 0,		-- -1 to 1, moves player panel horizontally.
+			PLAYER_SCALE 					= 1,		--Size of local Player HUD Panel	TODO!
 			PLAYER_OPACITY					= 0.85,
 			PLAYER_NAME						= false,
 			PLAYER_RANK						= false,
@@ -177,6 +178,7 @@ if not _G.WolfHUD then
 			PLAYER_WEAPON_NAME				= 1,
 			PLAYER_WEAPON_AMMO				= 4,
 			PLAYER_WEAPON_FIREMODE			= 2,
+			TEAM_POSITION					= -1,		-- -1 to 1, moves Teammate panel horizontally	(mirrored for panels j>7)	TODO!
 			TEAM_SCALE 						= 0.8,		--Size of Teammates/AI's HUD Panels
 			TEAM_OPACITY					= 0.85,
 			TEAM_NAME						= true,
@@ -399,12 +401,15 @@ if not _G.WolfHUD then
 			ecm_feedback_disabled_stealth	= true,
 			
 			show_advanced_assault			= true,
+			assault_banner_position			= 0,			-- 0-1, moves banner from center to right.	TODO!
 			enable_burstmode				= true,
 			
 			replace_weapon_names 			= true,
 			inventory_tab_names				= true,
 			inventory_names					= true,
-			show_mini_icons					= true
+			show_mini_icons					= true,
+			
+			use_fed_inv						= true
 		}
 	end
 	
@@ -466,7 +471,32 @@ if not _G.WolfHUD then
 		end
 	end
 	
-	function WolfHUD:createOverrides()
+	function WolfHUD:AskOverride(data, setting)
+		local menu_options = {
+		[1] = {
+			text = managers.localization:text("dialog_yes"),
+			callback = function(self, item)
+				WolfHUD:createOverrides(data)
+			end,
+		},
+		[2] = {
+			text = managers.localization:text("dialog_no"),
+			callback = function(self, item)
+				WolfHUD.settings[setting] = false
+				WolfHUD:Save()
+			end,
+		},
+		[3] = {
+			text = "Ask me later",
+			is_cancel_button = true,
+		},
+}
+		return QuickMenu:new( "Install " .. data["display_name"], 
+								"Do you want to install " .. data["display_name"] .. "?\nIf you decide to, we will create the required folder for you.\n\nYou will be asked for the actual download by the BLT updater after your next game restart.", 
+								menu_options, true )
+	end
+	
+	function WolfHUD:checkOverrides()
 		local updates = {}
 		for k, v in pairs(LuaModManager.Mods) do
 			local info = v.definition
@@ -477,22 +507,29 @@ if not _G.WolfHUD then
 		end
 		for k, v in pairs(updates) do
 			if type(v["revision"]) == "string" and not io.file_is_readable( v["revision"] ) then
-				if v["identifier"] ~= "fed_inv" or WolfHUD.settings.use_federal_inventory then
-					self:print_log("Creating Dummy for: " .. v["display_name"])
-					if not file.DirectoryExists("./" .. v["install_dir"] .. v["install_folder"]) then
-						if SystemInfo:platform() == Idstring("WIN32") then  --Windows
-							os.execute('cmd /c mkdir "./' .. v["install_dir"] .. v["install_folder"] .. '"')
-						else --Linux
-							log("[WolfHUD] mod_override folder '" .. v["install_folder"] .. "' is missing!")
-						end
-					end
-					local file = io.open(v["revision"], "w+")
-					if file then
-						file:write("0")
-						file:close()
-					end
+				local setting = "use_" .. v["identifier"]
+				if WolfHUD:getSetting(setting, "boolean") then
+					WolfHUD:AskOverride(v, setting)
+				elseif WolfHUD.settings[setting] == nil then
+					WolfHUD:createOverrides(v)
 				end
 			end
+		end
+	end
+	
+	function WolfHUD:createOverrides(data)
+		self:print_log("Creating Dummy for: " .. data["display_name"])
+		if not file.DirectoryExists("./" .. data["install_dir"] .. data["install_folder"]) then
+			if SystemInfo:platform() == Idstring("WIN32") then  --Windows
+				os.execute('cmd /c mkdir "./' .. data["install_dir"] .. data["install_folder"] .. '"')
+			else --Linux
+				log("[WolfHUD] mod_override folder '" .. data["install_folder"] .. "' is missing!")
+			end
+		end
+		local file = io.open(data["revision"], "w+")
+		if file then
+			file:write("0")
+			file:close()
 		end
 	end
 	
@@ -532,8 +569,6 @@ if not _G.WolfHUD then
 	
 	WolfHUD:Reset()
 	WolfHUD:Load()
-	
-	WolfHUD:createOverrides()
 end
 
 if RequiredScript then
@@ -550,6 +585,7 @@ if MenuNodeMainGui then
 		if alive(self._version_string) then
 			self._version_string:set_text("Payday 2 v" .. Application:version() .. " | WolfHUD v" .. WolfHUD.version)
 		end
+		WolfHUD:checkOverrides()
 	end)
 end
 

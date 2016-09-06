@@ -5,7 +5,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/sentrygunweapon" then
 	function SentryGunWeapon:init(...)
 		old_setup(self, ...)
 		if tweak_data.blackmarket.deployables[self._unit:base():get_type()] then
-			managers.enemy:add_delayed_clbk("Sentry_post_init_" .. tostring(self._unit:key()), callback(self, self, "post_init"), Application:time() + 0.05)
+			managers.enemy:add_delayed_clbk("Sentry_post_init_" .. tostring(self._unit:key()), callback(self, self, "post_init"), Application:time() + 0.1)
 		end
 	end
 	
@@ -22,10 +22,13 @@ if string.lower(RequiredScript) == "lib/units/weapons/sentrygunweapon" then
 		self:set_laser_enabled(laser_theme)
 		
 		if WolfHUD:getSetting("senty_auto_ap", "boolean") and enable_ap then
-			if self._fire_mode_unit and alive(self._fire_mode_unit) then
-				self:_switch_fire_mode()
-				managers.network:session():send_to_peers_synched("sentrygun_sync_state", self._unit)
-				self._unit:event_listener():call("on_switch_fire_mode", self._use_armor_piercing)
+			if alive(self._fire_mode_unit) and alive(self._unit) then
+				local firemode_interaction = self._fire_mode_unit:interaction()
+				if firemode_interaction and firemode_interaction:can_interact(managers.player:player_unit()) then
+					self:_switch_fire_mode()
+					managers.network:session():send_to_peers_synched("sentrygun_sync_state", self._unit)
+					self._unit:event_listener():call("on_switch_fire_mode", self._use_armor_piercing)
+				end
 			end
 		end
 	end
@@ -51,7 +54,8 @@ elseif string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammer
 	function ECMJammerBase:setup(...)
 		setup_original(self, ...)
 		if WolfHUD:getSetting("ecm_feedback_disabled_stealth", "boolean") and managers.groupai:state():whisper_mode() then
-			if self._owner_id and self._owner_id == managers.network:session():local_peer():id() then
+			local owner_unit = self:owner()
+			if owner_unit and owner_unit:key() == managers.player:player_unit():key() then
 				managers.gameinfo:register_listener("ECMContour_whisper_mode_listener" .. tostring(self._unit:key()), "whisper_mode", "change", callback(self, self, "_whisper_mode_change"))
 			end
 		end
