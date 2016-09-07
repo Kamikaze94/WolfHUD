@@ -435,11 +435,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function HUDTeammateCustom:reset()
-		self:set_condition("mugshot_normal")
 		self:stop_timer()
 		self:set_cheater(false)
 		self:set_ai(nil)
+		self:set_ai_stopped(nil)
 		self:set_peer_id(nil)
+		self:set_condition("mugshot_normal")
 		self:clear_special_equipment(true)
 		self:teammate_progress(false, false, false, false)
 		self:remove_carry_info()
@@ -472,6 +473,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function HUDTeammateCustom:is_ai()
 		return self._ai
+	end
+	
+	function HUDTeammateCustom:is_ai_stopped()
+		return self._ai and self._ai_stopped or false
 	end
 	
 	function HUDTeammateCustom:alignment()
@@ -555,7 +560,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function HUDTeammateCustom:set_condition(icon_data, text)
-		if icon_data == "mugshot_normal" and self._ai_stopped then
+		if icon_data == "mugshot_normal" and self:is_ai_stopped() then
 			icon_data = "ai_stopped"
 		end
 		self:call_listeners("condition", icon_data, text)
@@ -718,7 +723,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function HUDTeammateCustom:set_ai_stopped(status)
-		self._ai_stopped = self:is_ai() and status or false
+		self._ai_stopped = self:is_ai() and status
 	end
 	
 	function HUDTeammateCustom:set_state(state)
@@ -3976,7 +3981,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._panel:hide()
 		managers.hud:set_player_carry_info(self._carry_id, self._carry_value)
 	end
-	
 end
 
 if RequiredScript == "lib/managers/hud/hudtemp" then
