@@ -4,7 +4,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	local init_original = HUDStatsScreen.init
 	HUDStatsScreen.CHARACTERS = {
 		female_1 = {
-			texture = "guis/textures/pd2/blackmarket/icons/characters/female_1",
+			texture = "guis/dlcs/character_pack_clover/textures/pd2/blackmarket/icons/characters/female_1",
 			color = Color(1, 0.54, 0.17, 0.89)
 		},
 		jowi = {
