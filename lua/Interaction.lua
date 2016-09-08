@@ -109,12 +109,15 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 		return val
 	end
 	
-	function PlayerStandard:_start_action_melee(...)
-		local val = _start_action_melee_original(self, ...)
-		PlayerStandard.SHOW_MELEE = WolfHUD:getSetting("SHOW_MELEE", "boolean")
-		if PlayerStandard.SHOW_MELEE and self._state_data.meleeing and not hide_int_state[managers.player:current_state()] then
-			self._state_data.show_melee = true
-			managers.hud:show_interaction_bar(0, 1)
+	function PlayerStandard:_start_action_melee(t, input, instant, ...)
+		local val = _start_action_melee_original(self, t, input, instant, ...)
+		if not instant then
+			PlayerStandard.SHOW_MELEE = WolfHUD:getSetting("SHOW_MELEE", "boolean")
+			if PlayerStandard.SHOW_MELEE and self._state_data.meleeing and not hide_int_state[managers.player:current_state()] then
+				self._state_data.show_melee = true
+				self._state_data.melee_charge_duration = tweak_data.blackmarket.melee_weapons[managers.blackmarket:equipped_melee_weapon()].stats.charge_time or 1
+				managers.hud:show_interaction_bar(0, self._state_data.melee_charge_duration)
+			end
 		end
 		return val
 	end
@@ -127,7 +130,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 				managers.hud:hide_interaction_bar(false)
 				self._state_data.show_melee = false
 			elseif melee_lerp < 1 then
-				managers.hud:set_interaction_bar_width(melee_lerp, 1)
+				managers.hud:set_interaction_bar_width(self._state_data.melee_charge_duration * melee_lerp, self._state_data.melee_charge_duration)
 			elseif self._state_data.show_melee then
 				managers.hud:hide_interaction_bar(true)
 				self._state_data.show_melee = false
