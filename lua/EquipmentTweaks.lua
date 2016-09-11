@@ -41,7 +41,8 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/trip_mine/tripminebase
 	local set_active_original = TripMineBase.set_active
 	function TripMineBase:set_active(active, owner, ...)
 		if WolfHUD:getSetting("tripmine_auto_sensor_stealth", "boolean") then
-			if owner and owner == managers.player:player_unit() and managers.groupai:state():whisper_mode() then
+			local player_unit = managers.player:player_unit()
+			if alive(owner) and alive(player_unit) and owner:key() == player_unit:key() and managers.groupai:state():whisper_mode() then
 				self._startup_armed = false
 			end
 		end
@@ -55,7 +56,8 @@ elseif string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammer
 		setup_original(self, ...)
 		if WolfHUD:getSetting("ecm_feedback_disabled_stealth", "boolean") and managers.groupai:state():whisper_mode() then
 			local owner_unit = self:owner()
-			if owner_unit and owner_unit:key() == managers.player:player_unit():key() then
+			local player_unit = managers.player:player_unit()
+			if alive(owner_unit) and alive(player_unit) and owner_unit:key() == player_unit:key() then
 				managers.gameinfo:register_listener("ECMContour_whisper_mode_listener" .. tostring(self._unit:key()), "whisper_mode", "change", callback(self, self, "_whisper_mode_change"))
 			end
 		end

@@ -2024,7 +2024,8 @@ if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase
 	
 	function ECMJammerBase:contour_interaction(...)
 		local owner_unit = self:owner()
-		if owner_unit and owner_unit:key() == managers.player:player_unit():key() and managers.player:has_category_upgrade("ecm_jammer", "can_activate_feedback") then
+		local player_unit = managers.player:player_unit()
+		if alive(owner_unit) and alive(player_unit) and owner_unit:key() == player_unit:key() and managers.player:has_category_upgrade("ecm_jammer", "can_activate_feedback") then
 			self._retrigger_delay = nil
 			managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), { retrigger_active = false })
  		end
@@ -2409,7 +2410,7 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		
 			if self:has_category_upgrade("player", "messiah_revive_from_bleed_out") and (self._messiah_charges or 0) > 0 then
 				managers.gameinfo:event("buff", "activate", "messiah")
-				managers.gameinfo:event("buff", "set_stack_count", "messiah", { stack_count = self._messiah_charges })
+				managers.gameinfo:event("buff", "set_stack_count", "messiah", { stack_count = (self._messiah_charges or 0) })
  			end
 			
 			if self:has_category_upgrade("player", "headshot_regen_armor_bonus") then

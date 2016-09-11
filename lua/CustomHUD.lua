@@ -1884,7 +1884,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			local progress = math.clamp(self:down_amount() / self._max_downs, 0, 1)
 			self._downs_counter:set_color(math.lerp(Color.white, Color(1, 1, 0.2, 0), progress))
 			local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean"))
-			self._downs_counter:set_visible(not disabled and not managers.groupai:state():whisper_mode() or self:down_amount() > 0)
+			self._downs_counter:set_visible(not disabled and (not managers.groupai:state():whisper_mode() or self:down_amount() > 0))
 			self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
 		end
 	end
