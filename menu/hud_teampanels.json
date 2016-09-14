@@ -112,6 +112,14 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "TEAM_DOWNCOUNTER",
+			"title" : "wolfhud_panels_show_downcounter_title",
+			"description" : "wolfhud_panels_show_downcounter_desc",
+			"callback" : "clbk_change_customhud_setting",
+			"value" : "TEAM_DOWNCOUNTER",
+		},
+		{
+			"type" : "toggle",
 			"id" : "TEAM_CARRY",
 			"title" : "wolfhud_panels_show_carry_title",
 			"description" : "wolfhud_panels_show_carry_desc",

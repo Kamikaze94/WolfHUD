@@ -161,255 +161,268 @@ if not _G.WolfHUD then
 		WolfHUD.settings = 
 		{
 		  --CustomHUD
-			use_customhud 					= true,
-			PLAYER_POSITION					= 0,		-- -1 to 1, moves player panel horizontally.
-			PLAYER_SCALE 					= 1,		--Size of local Player HUD Panel	TODO!
-			PLAYER_OPACITY					= 0.85,
-			PLAYER_NAME						= false,
-			PLAYER_RANK						= false,
-			PLAYER_CHARACTER				= false,
-			PLAYER_STATUS					= true,
-			PLAYER_EQUIPMENT				= true,
-			PLAYER_SPECIALEQUIPMENT			= true,
-			PLAYER_SPECIALEQUIPMENTROWS		= 3,
-			PLAYER_CALLSIGN					= false,
-			PLAYER_CARRY					= true,
-			PLAYER_WEAPON_ICON				= 4,
-			PLAYER_WEAPON_NAME				= 1,
-			PLAYER_WEAPON_AMMO				= 4,
-			PLAYER_WEAPON_FIREMODE			= 2,
-			TEAM_POSITION					= -1,		-- -1 to 1, moves Teammate panel horizontally	(mirrored for panels j>7)	TODO!
-			TEAM_SCALE 						= 0.8,		--Size of Teammates/AI's HUD Panels
-			TEAM_OPACITY					= 0.85,
-			TEAM_NAME						= true,
-			TEAM_RANK						= true,
-			TEAM_CHARACTER					= false,
-			TEAM_LATENCY					= true,
-			TEAM_STATUS						= true,
-			TEAM_EQUIPMENT					= true,
-			TEAM_SPECIALEQUIPMENT			= true,
-			TEAM_SPECIALEQUIPMENTROWS		= 3,
-			TEAM_CALLSIGN					= false,
-			TEAM_CARRY						= true,
-			TEAM_BUILD_HIDE					= true,
-			TEAM_BUILD_DURATION				= 15,
-			TEAM_WEAPON_ICON				= 4,
-			TEAM_WEAPON_NAME				= 1,
-			TEAM_WEAPON_AMMO				= 4,
-			TEAM_WEAPON_FIREMODE			= 1,
-			TEAM_INTERACTION_HIDE			= true,		-- Show Interaction
-			TEAM_INTERACTION_MINDURATION	= 1,		--Hide Interaction if shorter than X sec.
-			show_pacified_civilians			= true,
-			show_downcounter 				= true,	
-			use_realammo					= true,
+			use_customhud 							= true,
+			PLAYER_POSITION							= 0,		-- -1 to 1, moves player panel horizontally.
+			PLAYER_SCALE 							= 1,		--Size of local Player HUD Panel	TODO!
+			PLAYER_OPACITY							= 0.85,
+			PLAYER_NAME								= false,
+			PLAYER_RANK								= false,
+			PLAYER_CHARACTER						= false,
+			PLAYER_STATUS							= true,
+			PLAYER_EQUIPMENT						= true,
+			PLAYER_SPECIALEQUIPMENT					= true,
+			PLAYER_SPECIALEQUIPMENTROWS				= 3,
+			PLAYER_CALLSIGN							= false,
+			PLAYER_STAMINA							= true,
+			PLAYER_DOWNCOUNTER						= true,
+			PLAYER_CARRY							= true,
+			PLAYER_WEAPON_ICON						= 4,
+			PLAYER_WEAPON_NAME						= 1,
+			PLAYER_WEAPON_AMMO						= 4,
+			PLAYER_WEAPON_FIREMODE					= 2,
+			PLAYER_KILLCOUNTER_HIDE					= true,
+			PLAYER_KILLCOUNTER_SHOWSPECIALKILLS 	= true,
+			PLAYER_KILLCOUNTER_SHOWHEADSHOTKILLS	= true,
+			PLAYER_KILLCOUNTER_COLOR				= "yellow",
+			PLAYER_SHOWACCURACY						= true,
+			TEAM_POSITION							= -1,		-- -1 to 1, moves Teammate panel horizontally	(mirrored for panels j>7)	TODO!
+			TEAM_SCALE 								= 0.8,		--Size of Teammates/AI's HUD Panels
+			TEAM_OPACITY							= 0.85,
+			TEAM_NAME								= true,
+			TEAM_RANK								= true,
+			TEAM_CHARACTER							= false,
+			TEAM_LATENCY							= true,
+			TEAM_STATUS								= true,
+			TEAM_EQUIPMENT							= true,
+			TEAM_SPECIALEQUIPMENT					= true,
+			TEAM_SPECIALEQUIPMENTROWS				= 3,
+			TEAM_CALLSIGN							= false,
+			TEAM_DOWNCOUNTER						= true,
+			TEAM_CARRY								= true,
+			TEAM_BUILD_HIDE							= true,
+			TEAM_BUILD_DURATION						= 15,
+			TEAM_WEAPON_ICON						= 4,
+			TEAM_WEAPON_NAME						= 1,
+			TEAM_WEAPON_AMMO						= 4,
+			TEAM_WEAPON_FIREMODE					= 1,
+			TEAM_INTERACTION_HIDE					= true,		-- Show Interaction
+			TEAM_INTERACTION_MINDURATION			= 1,		--Hide Interaction if shorter than X sec.
+			TEAM_KILLCOUNTER_HIDE					= true,
+			TEAM_KILLCOUNTER_SHOWBOTKILLS			= true,
+			TEAM_KILLCOUNTER_SHOWSPECIALKILLS		= true,
+			TEAM_KILLCOUNTER_SHOWHEADSHOTKILLS		= true,
+			TEAM_KILLCOUNTER_COLOR					= "yellow",
+			show_pacified_civilians					= true,
+			show_downcounter 						= true,	
+			use_realammo							= true,
 		  --HUDChat
-			CHAT_WAIT_TIME					= 10,		--Time before chat fades out, 0 = never
-			LINE_HEIGHT						= 15,		--Chat font Size
-			MAX_OUTPUT_LINES				= 8,		--Chat Output lines
-			spam_filter						= true,		--Filter PocoHud and NGBTO Chat Spam messages.
+			CHAT_WAIT_TIME							= 10,		--Time before chat fades out, 0 = never
+			LINE_HEIGHT								= 15,		--Chat font Size
+			MAX_OUTPUT_LINES						= 8,		--Chat Output lines
+			spam_filter								= true,		--Filter PocoHud and NGBTO Chat Spam messages.
 		  --KillCounter
-			use_killcounter 				= true,
-			killcounter_color				= "yellow",
-			SHOW_SPECIAL_KILLS 				= true,		--KillCounter shows special kills
-			SHOW_HEADSHOT_KILLS 			= true,		--KillCounter shows headshot kills
-			SHOW_AI_KILLS 					= true,		--Show KillCounter for Bots
-			SHOW_ACCURACY					= true,
-			max_corpses 					= 100,		--Maximum number of laying around corpses
+			use_killcounter 						= true,
+			killcounter_color						= "yellow",
+			SHOW_SPECIAL_KILLS 						= true,		--KillCounter shows special kills
+			SHOW_HEADSHOT_KILLS 					= true,		--KillCounter shows headshot kills
+			SHOW_AI_KILLS 							= true,		--Show KillCounter for Bots
+			SHOW_ACCURACY							= true,
+			max_corpses 							= 100,		--Maximum number of laying around corpses
 		  --Enemy Healthbar
-			show_enemy_healthbar 			= true,		--Show healthbars
-			show_civilian_healthbar 		= false,	--Show Healthbars for Civilians and TeamAI
-			show_car_healthbar				= true,		--Show Healthbar for vehicles
-			show_healthbar_pointer 			= false,	--Show pointer near the Healthbar, pointing at Healthbar owner
+			show_enemy_healthbar 					= true,		--Show healthbars
+			show_civilian_healthbar 				= false,	--Show Healthbars for Civilians and TeamAI
+			show_car_healthbar						= true,		--Show Healthbar for vehicles
+			show_healthbar_pointer 					= false,	--Show pointer near the Healthbar, pointing at Healthbar owner
 		  --Dynamic Damage Indicator
-			show_dmg_indicator				= true,
-			dmg_ind_size					= 150,
-			dmg_ind_time					= 2,
-			dmg_indicator_max_count			= 10,
-			dmg_shield_color				= "gray",
-			dmg_health_color				= "red",
-			dmg_crit_color					= "purple",
-			dmg_vehicle_color				= "yellow",
-			dmg_friendlyfire_color			= "orange",
+			show_dmg_indicator						= true,
+			dmg_ind_size							= 150,
+			dmg_ind_time							= 2,
+			dmg_indicator_max_count					= 10,
+			dmg_shield_color						= "gray",
+			dmg_health_color						= "red",
+			dmg_crit_color							= "purple",
+			dmg_vehicle_color						= "yellow",
+			dmg_friendlyfire_color					= "orange",
 		  --Damage Popup
-			show_dmg_popup					= true,
-			dmg_popup_time	 				= 3,
-			dmg_popup_color					= "yellow",
-			dmg_popup_headshot_color		= "red",
+			show_dmg_popup							= true,
+			dmg_popup_time	 						= 3,
+			dmg_popup_color							= "yellow",
+			dmg_popup_headshot_color				= "red",
 		  --Suspicion
-			suspicion_scale					= 0.8,
-			numberic_suspicion				= true,
-			show_susp_eye					= true,
+			suspicion_scale							= 0.8,
+			numberic_suspicion						= true,
+			show_susp_eye							= true,
 		  --Driving HUD
-			use_drivinghud					= true,		--Show DrivingHUD Panel
-			show_vehicle 					= true,		--Show Vehicle and Teammate Mask Images
-			speed_in_mph 					= false,	--Display Speed in mph
+			use_drivinghud							= true,		--Show DrivingHUD Panel
+			show_vehicle 							= true,		--Show Vehicle and Teammate Mask Images
+			speed_in_mph 							= false,	--Display Speed in mph
 		  --TabStats
-			use_tabstats					= true,
-			clock_mode						= 3,		-- 1 = disabled, 2 = 12h, 3 = 24h
-			tabstats_color 					= "rainbow",
-			tabstats_font_size 				= 18,
-			use_actual_mask					= true,
-			numberic_loot					= true,
+			use_tabstats							= true,
+			clock_mode								= 3,		-- 1 = disabled, 2 = 12h, 3 = 24h
+			tabstats_color 							= "rainbow",
+			tabstats_font_size 						= 18,
+			use_actual_mask							= true,
+			numberic_loot							= true,
 		  --Scripts
-			skip_blackscreen 				= true,		--Skip the blackscreen on mission start
-			stat_screen_delay 				= 5,		--Skip the experience screen after X seconds
-			autopick_card 					= true,		--Automatically pick a card on lootscreen
-			loot_screen_delay 				= 3,		--Skip the loot screen after X seconds
-			no_slowmotion 					= true,		--Disable mask-up and downed slow motion
+			skip_blackscreen 						= true,		--Skip the blackscreen on mission start
+			stat_screen_delay 						= 5,		--Skip the experience screen after X seconds
+			autopick_card 							= true,		--Automatically pick a card on lootscreen
+			loot_screen_delay 						= 3,		--Skip the loot screen after X seconds
+			no_slowmotion 							= true,		--Disable mask-up and downed slow motion
 		  --HUDList
-			use_hudlist 					= true,
-			right_list_scale				= 1,
-			left_list_scale					= 1,
-			buff_list_scale					= 1,
-			list_color	 					= "white",		--Left and Right List font color
-			list_color_bg	 				= "black",		--Left and Right List BG color
-			civilian_color 					= "white", 		--EnemyCounter Civillian and Hostage icon color
-			thug_color 						= "white",		--EnemyCounter Thug and Mobster icon color
-			enemy_color 					= "white",		--EnemyCounter Cop and Specials icon color
-			special_color 					= "white",
+			use_hudlist 							= true,
+			right_list_scale						= 1,
+			left_list_scale							= 1,
+			buff_list_scale							= 1,
+			list_color	 							= "white",		--Left and Right List font color
+			list_color_bg	 						= "black",		--Left and Right List BG color
+			civilian_color 							= "white", 		--EnemyCounter Civillian and Hostage icon color
+			thug_color 								= "white",		--EnemyCounter Thug and Mobster icon color
+			enemy_color 							= "white",		--EnemyCounter Cop and Specials icon color
+			special_color 							= "white",
 			
-			show_timers 					= true,     --Drills, time locks, hacking etc.
-			show_ammo_bags					= true,  	--Deployables (ammo)
-			show_doc_bags					= true,  	--Deployables (doc bags)
-			show_body_bags					= true,  	--Deployables (body bags)
-			show_grenade_crates				= true,  	--Deployables (grenades)
-			show_sentries 					= true,   	--Deployable sentries
-			show_ecms 						= true,		--Active ECMs
-			show_ecm_retrigger 				= true,  	--Countdown for players own ECM feedback retrigger delay
-			show_minions 					= true,  	--Converted enemies, type and health
-			show_pagers 					= true,  	--Show currently active pagers
-			show_tape_loop 					= true,  	--Show active tape loop duration
-			remove_answered_pager_contour 	= true,  	--Removes the interaction contour on answered pagers
+			show_timers 							= true,     --Drills, time locks, hacking etc.
+			show_ammo_bags							= true,  	--Deployables (ammo)
+			show_doc_bags							= true,  	--Deployables (doc bags)
+			show_body_bags							= true,  	--Deployables (body bags)
+			show_grenade_crates						= true,  	--Deployables (grenades)
+			show_sentries 							= true,   	--Deployable sentries
+			show_ecms 								= true,		--Active ECMs
+			show_ecm_retrigger 						= true,  	--Countdown for players own ECM feedback retrigger delay
+			show_minions 							= true,  	--Converted enemies, type and health
+			show_pagers 							= true,  	--Show currently active pagers
+			show_tape_loop 							= true,  	--Show active tape loop duration
+			remove_answered_pager_contour 			= true,  	--Removes the interaction contour on answered pagers
 
-			show_enemies 					= true,		--Currently spawned enemies
-				aggregate_enemies 			= false,  	--Don't split enemies on type; use a single entry for all
-			show_turrets 					= true,    	--Show active SWAT turrets
-			show_civilians 					= true,  	--Currently spawned, untied civs
-			show_hostages 					= true,   	--Currently tied civilian and dominated cops
-				aggregate_hostages			= false,
-			show_minion_count 				= true,     --Current number of jokered enemies
-			show_pager_count 				= true,		--Show number of triggered pagers (only counts pagers triggered while you were present)
-			show_cam_count					= true,
-			show_bodybags_count				= true,
-			show_corpse_count				= false,
-			show_loot 						= true,     --Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
-				aggregate_loot 				= false, 	--Don't split loot on type; use a single entry for all
-				separate_bagged_loot 		= true,     --Show bagged loot as a separate value
-				show_potential_loot			= false,
-			show_special_pickups 			= true,    	--Show number of special equipment/items
+			show_enemies 							= true,		--Currently spawned enemies
+				aggregate_enemies 					= false,  	--Don't split enemies on type; use a single entry for all
+			show_turrets 							= true,    	--Show active SWAT turrets
+			show_civilians 							= true,  	--Currently spawned, untied civs
+			show_hostages 							= true,   	--Currently tied civilian and dominated cops
+				aggregate_hostages					= false,
+			show_minion_count 						= true,     --Current number of jokered enemies
+			show_pager_count 						= true,		--Show number of triggered pagers (only counts pagers triggered while you were present)
+			show_cam_count							= true,
+			show_bodybags_count						= true,
+			show_corpse_count						= false,
+			show_loot 								= true,     --Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
+				aggregate_loot		 				= false, 	--Don't split loot on type; use a single entry for all
+				separate_bagged_loot		 		= true,     --Show bagged loot as a separate value
+				show_potential_loot					= false,
+			show_special_pickups 					= true,    	--Show number of special equipment/items
 
-			show_buffs 						= true,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
-			aggressive_reload_aced_buff		= true,
-			ammo_efficiency_buff			= true,
-			armor_break_invulnerable_buff	= true,
-			berserker_buff					= true,
-			biker_buff						= true,
-			bloodthirst_basic_buff			= false,
-			bloodthirst_aced_buff			= true,
-			bullet_storm_buff				= true,
-			close_contact_buff				= true,
-			combat_medic_buff				= true,
-			combat_medic_passive_buff		= false,
-			desperado_buff					= true,
-			die_hard_buff					= false,
-			dire_need_buff					= true,
-			grinder_buff					= true,
-			hostage_situation_buff			= false,
-			hostage_taker_buff				= false,
-			inspire_buff					= true,
-			lock_n_load_buff				= true,
-			melee_stack_damage_buff			= false,
-			maniac_buff						= false,
-			messiah_buff					= true,
-			overdog_buff					= false,
-			overkill_buff					= false,
-			painkiller_buff					= false,
-			partner_in_crime_buff			= false,
-			running_from_death_buff			= true,
-			quick_fix_buff					= false,
-			second_wind_buff				= true,
-			sixth_sense_buff				= true,
-			swan_song_buff					= false,
-			tooth_and_claw_buff				= true,
-			trigger_happy_buff				= false,
-			underdog_buff					= false,
-			unseen_strike_buff				= true,
-			up_you_go_buff					= false,
-			uppers_buff						= true,
-			yakuza_buff						= false,
-			anarchist_armor_recovery_debuff	= true,
-			ammo_give_out_debuff			= true,
-			armor_break_invulnerable_debuff	= false,
-			bullseye_debuff					= true,
-			grinder_debuff					= false,
-			inspire_debuff					= true,
-			inspire_revive_debuff			= true,
-			life_drain_debuff				= true,
-			medical_supplies_debuff			= true,
-			sociopath_debuff				= true,
-			unseen_strike_debuff			= false,
-			uppers_debuff					= false,
-			armorer_teambuff				= true,
-			bulletproof_teambuff			= true,
-			crew_chief_teambuff				= true,
-			forced_friendship_teambuff		= true,
-			damage_increase_compbuff		= true,
-			damage_reduction_compbuff		= true,
-			melee_damage_increase_compbuff	= true,
+			show_buffs 								= true,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+			aggressive_reload_aced_buff				= true,
+			ammo_efficiency_buff					= true,
+			armor_break_invulnerable_buff			= true,
+			berserker_buff							= true,
+			biker_buff								= true,
+			bloodthirst_basic_buff					= false,
+			bloodthirst_aced_buff					= true,
+			bullet_storm_buff						= true,
+			close_contact_buff						= true,
+			combat_medic_buff						= true,
+			combat_medic_passive_buff				= false,
+			desperado_buff							= true,
+			die_hard_buff							= false,
+			dire_need_buff							= true,
+			grinder_buff							= true,
+			hostage_situation_buff					= false,
+			hostage_taker_buff						= false,
+			inspire_buff							= true,
+			lock_n_load_buff						= true,
+			melee_stack_damage_buff					= false,
+			maniac_buff								= false,
+			messiah_buff							= true,
+			overdog_buff							= false,
+			overkill_buff							= false,
+			painkiller_buff							= false,
+			partner_in_crime_buff					= false,
+			running_from_death_buff					= true,
+			quick_fix_buff							= false,
+			second_wind_buff						= true,
+			sixth_sense_buff						= true,
+			swan_song_buff							= false,
+			tooth_and_claw_buff						= true,
+			trigger_happy_buff						= false,
+			underdog_buff							= false,
+			unseen_strike_buff						= true,
+			up_you_go_buff							= false,
+			uppers_buff								= true,
+			yakuza_buff								= false,
+			anarchist_armor_recovery_debuff			= true,
+			ammo_give_out_debuff					= true,
+			armor_break_invulnerable_debuff			= false,
+			bullseye_debuff							= true,
+			grinder_debuff							= false,
+			inspire_debuff							= true,
+			inspire_revive_debuff					= true,
+			life_drain_debuff						= true,
+			medical_supplies_debuff					= true,
+			sociopath_debuff						= true,
+			unseen_strike_debuff					= false,
+			uppers_debuff							= false,
+			armorer_teambuff						= true,
+			bulletproof_teambuff					= true,
+			crew_chief_teambuff						= true,
+			forced_friendship_teambuff				= true,
+			damage_increase_compbuff				= true,
+			damage_reduction_compbuff				= true,
+			melee_damage_increase_compbuff			= true,
 		  --Interaction
-			LOCK_MODE 						= 3,			--Disabled (1, Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time (2), or current interaction time(3)
-			MIN_TIMER_DURATION 				= 5, 			--Min interaction duration (in seconds) for the toggle behavior to activate
-			EQUIPMENT_PRESS_INTERRUPT 		= true, 		--Use the equipment key ('G') to toggle off active interactions
-			SHOW_LOCK_INDICATOR				= true,
-			SHOW_CIRCLE						= true,
-			CIRCLE_SCALE					= 0.8,
-			TEXT_SCALE						= 0.8,
-			SHOW_INTERRUPT_HINT				= true,
-			SHOW_TIME_REMAINING 			= true,			--Show remaining Time in the Interaction-Circle
-			GRADIENT_COLOR 					= "light_green",--Color, which the timer reaches on completition
-			SHOW_RELOAD						= true,
-			SHOW_MELEE						= false,
-			SUPRESS_NADES_STEALTH			= true,
-			HOLD2PICK						= true,
-		  --Laser-Colors
-			laser_autoon					= true,
-			use_weaponlasers 				= true,
-		    laser_light 					= 10,			--Multiplier for laser dot
-			laser_glow 						= 5,			--Divider for laser beam
-			laser_player 					= "light_blue",	--Player laser color id
-			laser_player_alpha 				= 0.3,			--Player laser alpha
-			laser_player_sentry				= "light_blue",	--Player sentry laser color id
-			laser_player_sentry_alpha 		= 0.1,			--Player sentry laser alpha
-			laser_teammates 				= "light_blue",	--Teammates laser color id
-			laser_teammates_alpha 			= 0.15,			--Teammates laser alpha
-			laser_teammates_sentry 			= "light_blue",	--Teammates sentry laser color id
-			laser_teammates_sentry_alpha 	= 0.1,			--Teammates sentry laser alpha
-			laser_sniper 					= "red",		--Sniper laser color id
-			laser_sniper_alpha 				= 0.5,			--Sniper laser alpha
-			laser_turret_active 			= "red",		--Active turret laser color id
-			laser_turret_reloading 			= "yellow",		--Reloading turret laser color id
-			laser_turret_jammed 			= "green",		--Jammed turret laser color id
-			laser_turret_alpha 				= 0.15,			--Turret laser alpha
-			flashlight_angle 				= 100,			--Flashlight angle
-			flashlight_range 				= 20,			--Flashlight range (in m)
-			flashlight_mult					= 2,
-			flashlight_color				= "white",
-			show_angeled_sight				= true,
+			LOCK_MODE 								= 3,			--Disabled (1, Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time (2), or current interaction time(3)
+			MIN_TIMER_DURATION 						= 5, 			--Min interaction duration (in seconds) for the toggle behavior to activate
+			EQUIPMENT_PRESS_INTERRUPT 				= true, 		--Use the equipment key ('G') to toggle off active interactions
+			SHOW_LOCK_INDICATOR						= true,
+			SHOW_CIRCLE								= true,
+			CIRCLE_SCALE							= 0.8,
+			TEXT_SCALE								= 0.8,
+			SHOW_INTERRUPT_HINT						= true,
+			SHOW_TIME_REMAINING 					= true,			--Show remaining Time in the Interaction-Circle
+			GRADIENT_COLOR 							= "light_green",--Color, which the timer reaches on completition
+			SHOW_RELOAD								= true,
+			SHOW_MELEE								= false,
+			SUPRESS_NADES_STEALTH					= true,
+			HOLD2PICK								= true,
+		  --Laser-Colors		
+			laser_autoon							= true,
+			use_weaponlasers 						= true,
+		    laser_light 							= 10,			--Multiplier for laser dot
+			laser_glow 								= 5,			--Divider for laser beam
+			laser_player 							= "light_blue",	--Player laser color id
+			laser_player_alpha 						= 0.3,			--Player laser alpha
+			laser_player_sentry						= "light_blue",	--Player sentry laser color id
+			laser_player_sentry_alpha 				= 0.1,			--Player sentry laser alpha
+			laser_teammates 						= "light_blue",	--Teammates laser color id
+			laser_teammates_alpha 					= 0.15,			--Teammates laser alpha
+			laser_teammates_sentry 					= "light_blue",	--Teammates sentry laser color id
+			laser_teammates_sentry_alpha 			= 0.1,			--Teammates sentry laser alpha
+			laser_sniper 							= "red",		--Sniper laser color id
+			laser_sniper_alpha 						= 0.5,			--Sniper laser alpha
+			laser_turret_active 					= "red",		--Active turret laser color id
+			laser_turret_reloading 					= "yellow",		--Reloading turret laser color id
+			laser_turret_jammed 					= "green",		--Jammed turret laser color id
+			laser_turret_alpha 						= 0.15,			--Turret laser alpha
+			flashlight_angle 						= 100,			--Flashlight angle
+			flashlight_range 						= 20,			--Flashlight range (in m)
+			flashlight_mult							= 2,
+			flashlight_color						= "white",
+			show_angeled_sight						= true,
 		  --Equipment Tweaks
-			senty_auto_ap 					= true,
-			tripmine_auto_sensor_stealth	= true,
-			ecm_feedback_disabled_stealth	= true,
+			senty_auto_ap 							= true,
+			tripmine_auto_sensor_stealth			= true,
+			ecm_feedback_disabled_stealth			= true,
 			
-			show_advanced_assault			= true,
-			assault_banner_position			= 0,			-- 0-1, moves banner from center to right.	TODO!
-			enable_burstmode				= true,
+			show_advanced_assault					= true,
+			assault_banner_position					= 0,			-- 0-1, moves banner from center to right.	TODO!
+			enable_burstmode						= true,
 			
-			replace_weapon_names 			= true,
-			inventory_tab_names				= true,
-			inventory_names					= true,
-			show_mini_icons					= true,
+			replace_weapon_names 					= true,
+			inventory_tab_names						= true,
+			inventory_names							= true,
+			show_mini_icons							= true,
 			
-			use_fed_inv						= true
+			use_fed_inv								= true
 		}
 	end
 	
@@ -765,7 +778,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 				table.insert(setting, word)
 			end
 			local type = table.remove(setting, 1)
-			managers.hud:change_hud_setting(type, setting, WolfHUD:getSetting(name)) 
+			managers.hud:change_hud_setting(type, setting, WolfHUD:getSetting(name, "color", WolfHUD:getSetting(name))) 
 		end
 	end
 	
@@ -812,17 +825,19 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 			local menu = MenuHelper:GetMenu(menu_id)
 			if menu then
 				for __, menu_item in ipairs(menu._items) do
-					if menu_item and menu_item._type == "multi_choice" and #menu_item._options < 1 then
+					if menu_item and menu_item._type == "multi_choice" and #menu_item._options <= 1 then
 						menu_item:clear_options()
 						for k, v in ipairs(WolfHUD.color_table) do
-							local color_name = managers.localization:text("wolfhud_colors_" .. v.name)
-							color_name = not color_name:lower():find("error") and color_name or string.upper(v.name)
-							menu_item:add_option(CoreMenuItemOption.ItemOption:new({
-								_meta = "option",
-								text_id = color_name,
-								value = v.name,
-								localize = false
-							}))
+							if #menu_item._options == 1 or v.name ~= "rainbow" then
+								local color_name = managers.localization:text("wolfhud_colors_" .. v.name)
+								color_name = not color_name:lower():find("error") and color_name or string.upper(v.name)
+								menu_item:add_option(CoreMenuItemOption.ItemOption:new({
+									_meta = "option",
+									text_id = color_name,
+									value = v.name,
+									localize = false
+								}))
+							end
 						end
 						menu_item:_show_options(nil)
 						local item_id = menu_item:parameters().name

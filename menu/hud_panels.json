@@ -50,14 +50,6 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "show_downcounter",
-			"title" : "wolfhud_show_downcounter_title",
-			"description" : "wolfhud_show_downcounter_desc",
-			"callback" : "clbk_change_setting",
-			"value" : "show_downcounter",
-		},
-		{
-			"type" : "toggle",
 			"id" : "remove_answered_pager_contour",
 			"title" : "wolfhud_hudlist_remove_answered_pagers_title",
 			"description" : "wolfhud_hudlist_remove_answered_pagers_desc",

@@ -49,7 +49,7 @@
 			"title" : "wolfhud_tabstats_color_title",
 			"description" : "wolfhud_tabstats_color_desc",
 			"callback" : "clbk_change_tabstats_color_setting",
-			"items" : { },
+			"items" : [ "enable_rainbow" ],
 			"value" : "tabstats_color",
 		},
 		{

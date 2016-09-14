@@ -65,7 +65,8 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 				alpha = 1,
 				w = radial_health_panel:w() * 0.37,--53,
 				h = radial_health_panel:h() * 0.37,--53,
-				layer = 2
+				layer = 2, 
+				visible = WolfHUD:getSetting("PLAYER_SHOWSTAMINA", "boolean")
 			})
 			self._stamina_bar:set_color(Color(1, 1, 0, 0))
 			self._stamina_bar:set_center(radial_health_panel:child("radial_health"):center())
@@ -74,7 +75,8 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 				color = Color.red:with_alpha(0.4),
 				w = radial_health_panel:w() * 0.05,
 				h = 2,
-				layer = 10,
+				layer = 10, 
+				visible = WolfHUD:getSetting("PLAYER_SHOWSTAMINA", "boolean")
 			})
 			self._stamina_line:set_center(radial_health_panel:child("radial_health"):center())
 		end
@@ -94,6 +96,11 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 
 		function HUDTeammate:set_current_stamina(value)
 			self._stamina_bar:set_color(Color(1, value/self._max_stamina, 0, 0))
+			local visible = WolfHUD:getSetting("PLAYER_SHOWSTAMINA", "boolean") 
+			if self._stamina_bar:visible() ~= visible then
+				self._stamina_bar:set_visible(visible)
+				self._stamina_line:set_visible(visible)
+			end
 		end
 	end
 	return
@@ -128,6 +135,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			SPECIALEQUIPMENT = WolfHUD:getSetting("PLAYER_SPECIALEQUIPMENT", "boolean"),	--Show special equipment/tools (keycards etc.)
 			SPECIALEQUIPMENTROWS = WolfHUD:getSetting("PLAYER_SPECIALEQUIPMENTROWS", "number"),
 			CALLSIGN = WolfHUD:getSetting("PLAYER_CALLSIGN", "boolean"),	--Show the callsign and voice chat icon
+			STAMINA = WolfHUD:getSetting("PLAYER_STAMINA", "boolean"),
+			DOWNCOUNTER = WolfHUD:getSetting("PLAYER_DOWNCOUNTER", "boolean"),
 			CARRY = WolfHUD:getSetting("PLAYER_CARRY", "boolean"),	--Show currently carried bag
 			BUILD = {	--Show perk deck and number of skills acquired in each tree (not used by player)
 				--Pick max one
@@ -164,14 +173,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 				HIDE = true,	--Hides the interaction activity/time/progress
 				MINDURATION = 1,	--Shows the interaction display only if interaction duration in seconds exceeds this threshold
 			},
-			KILL_COUNTER = {
+			KILLCOUNTER = {
 				--Requires external plugin to be loaded, else will be disabled no matter what
-				HIDE = not WolfHUD:getSetting("use_killcounter", "boolean"),	--Hides the kill counter
-				SHOW_BOT_KILLS = WolfHUD:getSetting("SHOW_AI_KILLS", "boolean"),	--Show the kill counter for criminal bots
-				SHOW_SPECIAL_KILLS = WolfHUD:getSetting("SHOW_SPECIAL_KILLS", "boolean"),	--Separate counter for specials
-				SHOW_HEADSHOT_KILLS = WolfHUD:getSetting("SHOW_HEADSHOT_KILLS", "boolean"),	--Separate counter, of how many kills were due to headshots
+				HIDE = not WolfHUD:getSetting("PLAYER_KILLCOUNTER_HIDE", "boolean"),	--Hides the kill counter
+				SHOWBOTKILLS = false,	--Show the kill counter for criminal bots
+				SHOWSPECIALKILLS = WolfHUD:getSetting("PLAYER_KILLCOUNTER_SHOWSPECIALKILLS", "boolean"),	--Separate counter for specials
+				SHOWHEADSHOTKILLS = WolfHUD:getSetting("PLAYER_KILLCOUNTER_SHOWHEADSHOTKILLS", "boolean"),	--Separate counter, of how many kills were due to headshots
+				COLOR = WolfHUD:getSetting("PLAYER_KILLCOUNTER_COLOR", "color")
 			},
-			ACCURACY = WolfHUD:getSetting("SHOW_ACCURACY", "boolean"),	--Show accuracy information
+			SHOWACCURACY = WolfHUD:getSetting("PLAYER_SHOWACCURACY", "boolean"),	--Show accuracy information
 		},
 		
 		TEAMMATE = {
@@ -187,6 +197,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			SPECIALEQUIPMENT = WolfHUD:getSetting("TEAM_SPECIALEQUIPMENT", "boolean"),	--Show special equipment/tools (keycards etc.)
 			SPECIALEQUIPMENTROWS = WolfHUD:getSetting("TEAM_SPECIALEQUIPMENTROWS", "number"),
 			CALLSIGN = WolfHUD:getSetting("TEAM_CALLSIGN", "boolean"),	--Show the callsign and voice chat icon
+			STAMINA = false,
+			DOWNCOUNTER = WolfHUD:getSetting("TEAM_DOWNCOUNTER", "boolean"),
 			CARRY = WolfHUD:getSetting("TEAM_CARRY", "boolean"),	--Show currently carried bag
 			BUILD = {	--Show perk deck and number of skills acquired in each tree (not used by player)
 				--Pick max one
@@ -223,14 +235,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 				HIDE = not WolfHUD:getSetting("TEAM_INTERACTION_HIDE", "boolean"),	--Hides the interaction activity/time/progress
 				MINDURATION = WolfHUD:getSetting("TEAM_INTERACTION_MINDURATION", "number"),	--Shows the interaction display only if interaction duration in seconds exceeds this threshold
 			},
-			KILL_COUNTER = {
+			KILLCOUNTER = {
 				--Requires external plugin to be loaded, else will be disabled no matter what
-				HIDE = not WolfHUD:getSetting("use_killcounter", "boolean"),	--Hides the kill counter
-				SHOW_BOT_KILLS = WolfHUD:getSetting("SHOW_AI_KILLS", "boolean"),	--Show the kill counter for criminal bots
-				SHOW_SPECIAL_KILLS = WolfHUD:getSetting("SHOW_SPECIAL_KILLS", "boolean"),	--Separate counter for specials
-				SHOW_HEADSHOT_KILLS = WolfHUD:getSetting("SHOW_HEADSHOT_KILLS", "boolean"),	--Separate counter, of how many kills were due to headshots
+				HIDE = not WolfHUD:getSetting("TEAM_KILLCOUNTER_HIDE", "boolean"),	--Hides the kill counter
+				SHOWBOTKILLS = WolfHUD:getSetting("TEAM_KILLCOUNTER_SHOWBOTKILLS", "boolean"),	--Show the kill counter for criminal bots
+				SHOWSPECIALKILLS = WolfHUD:getSetting("TEAM_KILLCOUNTER_SHOWSPECIALKILLS", "boolean"),	--Separate counter for specials
+				SHOWHEADSHOTKILLS = WolfHUD:getSetting("TEAM_KILLCOUNTER_SHOWHEADSHOTKILLS", "boolean"),	--Separate counter, of how many kills were due to headshots
+				COLOR = WolfHUD:getSetting("TEAM_KILLCOUNTER_COLOR", "color")
 			},
-			ACCURACY = WolfHUD:getSetting("SHOW_ACCURACY", "boolean"),	--Show accuracy information
+			SHOWACCURACY = false,	--Show accuracy information
 		},
 	}
 	
@@ -1318,9 +1331,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.KillCounter:update_settings()
-		local setting = self:set_enabled("setting", not self._settings.KILL_COUNTER.HIDE)
+		local setting = self:set_enabled("setting", not self._settings.KILLCOUNTER.HIDE)
 		local plugin = self:set_enabled("plugin", HUDManager.KILL_COUNTER_PLUGIN)
-		local ai = self:set_enabled("ai", self._settings.KILL_COUNTER.SHOW_BOT_KILLS or not self._is_ai)
+		local ai = self:set_enabled("ai", self._settings.KILLCOUNTER.SHOWBOTKILLS or not self._is_ai)
+		
+		local color = self._settings.KILLCOUNTER.COLOR
+		self._icon:set_color(color)
+		self._text:set_color(color)
 		
 		if setting or plugin or ai then
 			self:_update_text()
@@ -1339,7 +1356,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.KillCounter:set_is_ai(state)
-		if PlayerInfoComponent.KillCounter.super.set_is_ai(self, state) and self:set_enabled("ai", self._settings.KILL_COUNTER.SHOW_BOT_KILLS or not self._is_ai) then
+		if PlayerInfoComponent.KillCounter.super.set_is_ai(self, state) and self:set_enabled("ai", self._settings.KILLCOUNTER.SHOWBOTKILLS or not self._is_ai) then
 			self._owner:arrange()
 		end
 	end
@@ -1359,11 +1376,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.KillCounter:_update_text()
-		if self._settings.KILL_COUNTER.SHOW_SPECIAL_KILLS and self._settings.KILL_COUNTER.SHOW_HEADSHOT_KILLS then
+		if self._settings.KILLCOUNTER.SHOWSPECIALKILLS and self._settings.KILLCOUNTER.SHOWHEADSHOTKILLS then
 			self._text:set_text(string.format("%d/%d (%d)", self._kills, self._special_kills, self._headshot_kills))
-		elseif self._settings.KILL_COUNTER.SHOW_SPECIAL_KILLS then
+		elseif self._settings.KILLCOUNTER.SHOWSPECIALKILLS then
 			self._text:set_text(string.format("%d/%d", self._kills, self._special_kills))
-		elseif self._settings.KILL_COUNTER.SHOW_HEADSHOT_KILLS then
+		elseif self._settings.KILLCOUNTER.SHOWHEADSHOTKILLS then
 			self._text:set_text(string.format("%d (%d)", self._kills, self._headshot_kills))
 		else
 			self._text:set_text(string.format("%d", self._kills))
@@ -1371,14 +1388,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		local _, _, w, _ = self._text:text_rect()
 		self._text:set_w(w)
-		
-		if WolfHUD:getSetting("killcounter_color", "string") == "rainbow" then
-			color = WolfHUD.color_table[(self._kills % (#WolfHUD.color_table - 1)) + 1].color
-		else
-			color = WolfHUD:getSetting("killcounter_color", "color")
-		end
-		self._icon:set_color(color)
-		self._text:set_color(color)
 		
 		if self:set_size(self._text:right(), self._panel:h()) then
 			self._owner:arrange()
@@ -1424,7 +1433,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.AccuracyCounter:update_settings()
-		local setting = self:set_enabled("setting", self._settings.ACCURACY)
+		local setting = self:set_enabled("setting", self._settings.SHOWACCURACY)
 		local plugin = self:set_enabled("plugin", HUDManager.ACCURACY_PLUGIN)
 		
 		if setting or plugin then
@@ -1691,7 +1700,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			font_size = self._size * 0.2,
 			font = "fonts/font_small_shadow_mf",
 			layer = self._health_radial:layer() + 1,
-			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean") or false,
+			visible = HUDManager.DOWNS_COUNTER_PLUGIN and self._settings.DOWNCOUNTER or false,
 		})
 		
 		self._downs_counter:set_center(self._size / 2, self._size / 2)
@@ -1707,7 +1716,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			font_size = self._size * 0.2,
 			font = "fonts/font_small_mf",
 			layer = self._health_radial:layer() + 1,
-			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean") or false,
+			visible = HUDManager.DOWNS_COUNTER_PLUGIN and self._settings.DOWNCOUNTER or false,
 		})
 		
 		self._detection_counter:set_center(self._size / 2, self._size / 2)
@@ -1722,7 +1731,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			w = self._size,  
 			h = self._size,  
 			layer = self._health_radial:layer() - 2,
-			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean") or false,
+			visible = true,
 		})
 		
 		self._condition_icon = self._panel:bitmap({
@@ -1824,6 +1833,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:update_settings()
+		self._stamina_radial:set_visible(self._is_local_player and self._settings.STAMINA)
+		
+		local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and self._settings.DOWNCOUNTER)
+		self._downs_counter:set_visible(not disabled and (not managers.groupai:state():whisper_mode() or self:down_amount() > 0))
+		self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
+		
 		if self:set_enabled("setting", self._settings.STATUS) then
 			self._owner:arrange()
 		end
@@ -1845,7 +1860,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.PlayerStatus:set_is_local_player(state)
 		if PlayerInfoComponent.PlayerStatus.super.set_is_local_player(self, state) then
-			self._stamina_radial:set_visible(self._is_local_player)
+			self._stamina_radial:set_visible(self._is_local_player and self._settings.STAMINA)
 			self._max_downs = self._max_downs + (self._is_local_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
 			self._downs = self._max_downs
 			self:set_revives(self._downs)
@@ -1883,7 +1898,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			self._downs_counter:set_text(tostring(self._downs))
 			local progress = math.clamp(self:down_amount() / self._max_downs, 0, 1)
 			self._downs_counter:set_color(math.lerp(Color.white, Color(1, 1, 0.2, 0), progress))
-			local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean"))
+			local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and self._settings.DOWNCOUNTER)
 			self._downs_counter:set_visible(not disabled and (not managers.groupai:state():whisper_mode() or self:down_amount() > 0))
 			self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
 		end
@@ -1919,14 +1934,14 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 				self._detection_counter:set_text(utf8.char(57363) .. tostring(self._risk))
 				self._detection_counter:set_color(color)
 			end
-			local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean"))
+			local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and self._settings.DOWNCOUNTER)
 			self._downs_counter:set_visible(not disabled and not managers.groupai:state():whisper_mode() or self:down_amount() > 0)
 			self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
 		end
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:_whisper_mode_change(event, key, status)
-		local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting("show_downcounter", "boolean"))
+		local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and self._settings.DOWNCOUNTER)
 		self._downs_counter:set_visible(not disabled and (not status or self:down_amount() > 0))
 		self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
 	end

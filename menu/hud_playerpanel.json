@@ -104,6 +104,22 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "PLAYER_STAMINA",
+			"title" : "wolfhud_panels_show_stamina_title",
+			"description" : "wolfhud_panels_show_stamina_desc",
+			"callback" : "clbk_change_customhud_setting",
+			"value" : "PLAYER_STAMINA",
+		},
+		{
+			"type" : "toggle",
+			"id" : "PLAYER_DOWNCOUNTER",
+			"title" : "wolfhud_panels_show_downcounter_title",
+			"description" : "wolfhud_panels_show_downcounter_desc",
+			"callback" : "clbk_change_customhud_setting",
+			"value" : "PLAYER_DOWNCOUNTER",
+		},
+		{
+			"type" : "toggle",
 			"id" : "PLAYER_CARRY",
 			"title" : "wolfhud_panels_show_carry_title",
 			"description" : "wolfhud_panels_show_carry_desc",

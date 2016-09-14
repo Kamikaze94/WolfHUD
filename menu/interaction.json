@@ -105,7 +105,7 @@
 			"title" : "wolfhud_press2hold_timer_color_title",
 			"description" : "wolfhud_press2hold_timer_color_desc",
 			"callback" : "clbk_change_setting",
-			"items" : { },
+			"items" : [ "enable_rainbow" ],
 			"value" : "GRADIENT_COLOR",
 		},
 		{

@@ -2111,13 +2111,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		enemies =		{ atlas = {6, 1}, 	color = HUDListManager.ListOptions.enemy_color, subtract = { "cop_hostage", "sec_hostage", "minions" } },	--Aggregated enemies
 		cop =			{ atlas = {0, 5}, 	color = HUDListManager.ListOptions.enemy_color, 	priority = 5, subtract = { "cop_hostage", "cop_minion" } },	--Non-special police
 		security =		{ spec = {1, 4}, 	color = HUDListManager.ListOptions.guard_color, 	priority = 4, subtract = { "sec_hostage", "sec_minion" }  },
-		thug =			{ atlas = {4, 12}, 	color = HUDListManager.ListOptions.thug_color, 	priority = 4 },
+		thug =			{ atlas = {4, 12}, 	color = HUDListManager.ListOptions.thug_color, 		priority = 4 },
 		tank =			{ atlas = {3, 1}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
 		spooc =			{ atlas = {1, 3}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
 		taser =			{ atlas = {3, 5}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
 		shield =		{ texture = "guis/textures/pd2/hud_buff_shield", color = HUDListManager.ListOptions.special_color, priority = 6 },
 		sniper =		{ atlas = {6, 5}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
-		thug_boss =		{ atlas = {1, 1}, 	color = HUDListManager.ListOptions.thug_color, 	priority = 4 },
+		thug_boss =		{ atlas = {1, 1}, 	color = HUDListManager.ListOptions.thug_color, 		priority = 4 },
 		phalanx =		{ texture = "guis/textures/pd2/hud_buff_shield", color = HUDListManager.ListOptions.special_color, priority = 7 },
 		
 		turret =		{ atlas = {7, 5}, 	color = HUDListManager.ListOptions.turret_color, 	priority = 5 },
@@ -2126,7 +2126,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		civ_hostage =	{ atlas = {4, 7}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 1 },
 		hostages =		{ atlas = {4, 7}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 1 },
 		minion =		{ atlas = {6, 8}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 0 },
-		civ =			{ atlas = {6, 7}, 	color = HUDListManager.ListOptions.civilian_color, priority = 3, subtract = { "civ_hostage" } },
+		civ =			{ atlas = {6, 7}, 	color = HUDListManager.ListOptions.civilian_color, 	priority = 3, subtract = { "civ_hostage" } },
 	}
 	function HUDList.UnitCountItem:init(parent, name, id, unit_types)
 		local unit_data = HUDList.UnitCountItem.MAP[id]

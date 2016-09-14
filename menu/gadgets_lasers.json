@@ -48,7 +48,7 @@
 			"title" : "wolfhud_lasercolor_player_title",
 			"description" : "wolfhud_lasercolor_player_desc",
 			"callback" : "clbk_change_setting",
-			"items" : { },
+			"items" : [ "enable_rainbow" ],
 			"value" : "laser_player"
 		},
 		{
@@ -73,7 +73,7 @@
 			"title" : "wolfhud_lasercolor_player_sentry_title",
 			"description" : "wolfhud_lasercolor_player_sentry_desc",
 			"callback" : "clbk_change_setting",
-			"items" : { },
+			"items" : [ "enable_rainbow" ],
 			"value" : "laser_player_sentry"
 		},
 		{
@@ -98,7 +98,7 @@
 			"title" : "wolfhud_lasercolor_teammates_title",
 			"description" : "wolfhud_lasercolor_teammates_desc",
 			"callback" : "clbk_change_setting",
-			"items" : { },
+			"items" : [ "enable_rainbow" ],
 			"value" : "laser_teammates"
 		},
 		{
@@ -123,7 +123,7 @@
 			"title" : "wolfhud_lasercolor_teammates_sentry_title",
 			"description" : "wolfhud_lasercolor_teammates_sentry_desc",
 			"callback" : "clbk_change_setting",
-			"items" : { },
+			"items" : [ "enable_rainbow" ],
 			"value" : "laser_teammates_sentry"
 		},
 		{
@@ -148,7 +148,7 @@
 			"title" : "wolfhud_lasercolor_sniper_title",
 			"description" : "wolfhud_lasercolor_sniper_desc",
 			"callback" : "clbk_change_setting",
-			"items" : { },
+			"items" : [ "enable_rainbow" ],
 			"value" : "laser_sniper"
 		},
 		{
@@ -173,7 +173,7 @@
 			"title" : "wolfhud_lasercolor_turret_active_title",
 			"description" : "wolfhud_lasercolor_turret_active_desc",
 			"callback" : "clbk_change_setting",
-			"items" : { },
+			"items" : [ "enable_rainbow" ],
 			"value" : "laser_turret_active"
 		},
 		{
@@ -182,7 +182,7 @@
 			"title" : "wolfhud_lasercolor_turret_reloading_title",
 			"description" : "wolfhud_lasercolor_player_desc",
 			"callback" : "clbk_change_setting",
-			"items" : { },
+			"items" : [ "enable_rainbow" ],
 			"value" : "laser_turret_reloading"
 		},
 		{
@@ -191,7 +191,7 @@
 			"title" : "wolfhud_lasercolor_turret_jammed_title",
 			"description" : "wolfhud_lasercolor_turret_jammed_desc",
 			"callback" : "clbk_change_setting",
-			"items" : { },
+			"items" : [ "enable_rainbow" ],
 			"value" : "laser_turret_jammed"
 		},
 		{
