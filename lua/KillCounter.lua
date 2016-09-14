@@ -345,13 +345,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 	
 		function HUDTeammate:set_state(...)
 			set_state_original(self, ...)
-		
-			if WolfHUD:getSetting("use_killcounter", "boolean") then
-				self._kills_panel:set_visible(false)
-			elseif not WolfHUD:getSetting("SHOW_AI_KILLS", "boolean") then
-				self._kills_panel:set_visible(not self._ai and true or false)
-			end
 			
+			local visible = WolfHUD:getSetting("use_killcounter", "boolean") and (not self._ai or WolfHUD:getSetting("SHOW_AI_KILLS", "boolean"))
+			self._kills_panel:set_visible(visible)
+
 			if self._ai then
 				self._kills_panel:set_bottom(self._panel:child("player"):bottom())
 			else

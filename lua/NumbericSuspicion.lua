@@ -3,8 +3,8 @@ local hudsuspicions_animate_eye_original = HUDSuspicion.animate_eye
 local hudsuspicion_hide_original = HUDSuspicion.hide
 local feed_value_original = HUDSuspicion.feed_value
  
-function HUDSuspicion:init(hud, sound_source)
-	hudsuspicion_init_original(self, hud, sound_source)
+function HUDSuspicion:init(...)
+	hudsuspicion_init_original(self, ...)
 	self._scale = 1
 	local _suspicion_text_panel = self._suspicion_panel:panel({
 		name = "suspicion_text_panel",
@@ -31,45 +31,35 @@ function HUDSuspicion:init(hud, sound_source)
 	_suspicion_text:set_y((math.round(_suspicion_text_panel:h() / 4)))
 end
 	 
-function HUDSuspicion:ColorGradient(perc, ...)
-	if perc >= 1 then
-		local r, g, b = select(select('#', ...) - 2, ...)
-		return r, g, b
-	elseif perc <= 0 then
-		local r, g, b = ...
-		return r, g, b
-	end
-	  
-	local num = select('#', ...) / 3
- 
-	local segment, relperc = math.modf(perc*(num-1))
-	local r1, g1, b1, r2, g2, b2 = select((segment*3)+1, ...)
-	local r_ret = r1 + (r2-r1)*relperc
-	local g_ret = g1 + (g2-g1)*relperc
-	local b_ret = b1 + (b2-b1)*relperc
-	return math.round(r_ret*100)/100, math.round(g_ret*100)/100, math.round(b_ret*100)/100
+function HUDSuspicion:_is_detected()
+	local detected_text = self._suspicion_panel and self._suspicion_panel:child("suspicion_detected")
+	return self._discovered or self._suspicion_value and self._suspicion_value >= 1 or detected_text and detected_text:alpha() > 0
 end
  
 function HUDSuspicion:_animate_detection_text(_suspicion_panel)
+	local suspicion_text = _suspicion_panel:child("suspicion_text")
+	local t = Application:time()
+	local dt = 0
 	while self._animating_text do
-		local t = 0
-		while t <= 0.01 do
-			t = t + coroutine.yield()
-			if -1 ~= self._suspicion_value then
-				local r,g,b = self:ColorGradient(math.round(self._suspicion_value*100)/100, 0, 0.71, 1, 0.99, 0.08, 0)
-				local alpha = WolfHUD:getSetting("numberic_suspicion", "boolean") and 1 or 0
-				_suspicion_panel:child("suspicion_text"):set_color(Color(alpha, r, g, b))
-				_suspicion_panel:child("suspicion_text"):set_text(math.round(self._suspicion_value*100) .. "%")
+		dt = dt + coroutine.yield()
+		if dt > 0.01 then
+			t = t + dt
+			local detection = self:_is_detected() and 1 or math.clamp(math.round(self._suspicion_value*100)/100, 0, 1)
+			local color = math.lerp(Color(0, 0.71, 1), Color(0.99, 0.08, 0), detection)
+			local alpha = WolfHUD:getSetting("numberic_suspicion", "boolean") and 1 or 0
+			suspicion_text:set_color(color)
+			suspicion_text:set_alpha(alpha)
+			suspicion_text:set_text(math.round(detection*100) .. "%")
+			if detection < 1 and detection > 0 and self._last_value_feed + 4.1 < t then
+				self:hide()
 			end
-		end
-		if not self._discovered and self._suspicion_value > 0 and self._last_value_feed + 2.5 < TimerManager:game():time() then
-			self:hide()
+			dt = 0
 		end
 	end
 end
  
-function HUDSuspicion:animate_eye()
-	hudsuspicions_animate_eye_original(self)
+function HUDSuspicion:animate_eye(...)
+	hudsuspicions_animate_eye_original(self, ...)
 	self:rescale()
 	local visibile = WolfHUD:getSetting("show_susp_eye", "boolean")
 	self._suspicion_panel:child("suspicion_left"):set_visible(visibile)
@@ -81,22 +71,22 @@ function HUDSuspicion:animate_eye()
 	self._text_animation = self._suspicion_panel:child("suspicion_text_panel"):animate(callback(self, self, "_animate_detection_text"))
 end
  
-function HUDSuspicion:hide()
+function HUDSuspicion:hide(...)
 	if self._suspicion_panel then
 		self._suspicion_panel:set_visible(false)
 	end
 	self._animating_text = false
-	hudsuspicion_hide_original(self)
+	hudsuspicion_hide_original(self, ...)
 	if self._text_animation then
 		self._text_animation = nil
 	end
 end
 
-function HUDSuspicion:feed_value(value)
+function HUDSuspicion:feed_value(value, ...)
 	if self._suspicion_value ~= math.min(value, 1) then
-		self._last_value_feed = TimerManager:game():time()
+		self._last_value_feed = Application:time()
 	end
-	feed_value_original(self, value)
+	feed_value_original(self, value, ...)
 end
 
 function HUDSuspicion:rescale()
