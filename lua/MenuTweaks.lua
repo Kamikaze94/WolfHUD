@@ -87,11 +87,68 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	local orig_blackmarket_gui_slot_item_init = BlackMarketGuiSlotItem.init
 	function BlackMarketGuiSlotItem:init(main_panel, data, ...)
 		if WolfHUD:getSetting("inventory_names", "boolean") then
-			data.custom_name_text = data.custom_name_text or (data.unlocked and not data.empty_slot) and data.name_localized
+			data.custom_name_text = data.custom_name_text or not data.empty_slot and data.name_localized
 		end
 		return orig_blackmarket_gui_slot_item_init(self, main_panel, data, ...)
 	end
 	
+	local orig_blackmarket_gui_slot_item_select = BlackMarketGuiItem.select
+	function BlackMarketGuiItem:select(instant, ...)
+		self._is_selected = true
+		self:set_highlight(true, instant)
+		
+		return orig_blackmarket_gui_slot_item_select(self, instant, ...)
+	end
+	
+	local orig_blackmarket_gui_slot_item_deselect = BlackMarketGuiItem.deselect
+	function BlackMarketGuiItem:deselect(instant, ...)
+		self._is_selected = false
+		self:set_highlight(false, instant)
+		
+		return orig_blackmarket_gui_slot_item_deselect(self, instant, ...)
+	end
+	
+	local orig_blackmarket_gui_slot_item_set_highlight = BlackMarketGuiSlotItem.set_highlight
+	function BlackMarketGuiSlotItem:set_highlight(highlight, ...)
+		if highlight or self._is_selected or self._data.equipped then
+			local name_text = self._panel:child("custom_name_text")
+			if name_text then
+				name_text:set_alpha(1)
+			end
+			if self._mini_panel then
+				self._mini_panel:set_alpha(1)
+			end
+		else
+			local name_text = self._panel:child("custom_name_text")
+			if name_text then
+				name_text:set_alpha(0.5)
+			end
+			if self._mini_panel then
+				self._mini_panel:set_alpha(0.4)
+			end
+		end
+		
+		return orig_blackmarket_gui_slot_item_set_highlight(self, highlight, ...)
+	end
+
+	local orig_blackmarket_gui_set_selected_tab = BlackMarketGui.set_selected_tab
+	function BlackMarketGui:set_selected_tab(...)	
+		local value = orig_blackmarket_gui_set_selected_tab(self, ...)
+		
+		local current_tab = self._tabs[self._selected]
+		local selected_slot = current_tab and current_tab._slots[current_tab._slot_selected]
+		local highlighted_slot 	= current_tab and current_tab._slots[current_tab._slot_highlighted]
+		
+		if selected_slot then
+			selected_slot:select(true, true)
+			if highlighted_slot and selected_slot ~= highlighted_slot then
+				highlighted_slot:set_highlight(false, true)
+			end
+		end
+		
+		return value
+	end
+
 	--Replace Tab Names with custom ones...
 	local BlackMarketGuiTabItem_init_original = BlackMarketGuiTabItem.init
 	function BlackMarketGuiTabItem:init(main_panel, data, ...)
@@ -100,6 +157,58 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 			data.name_localized = WolfHUD.inventory_names[data.category][id] or nil
 		end
 		return BlackMarketGuiTabItem_init_original(self, main_panel, data, ...)
+	end
+elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
+	local orig_newskilltreeskillitem_refresh = NewSkillTreeSkillItem.refresh
+	function NewSkillTreeSkillItem:refresh(...)
+		local value = orig_newskilltreeskillitem_refresh(self, ...)
+		
+		--Always show Skill names
+		if alive(self._skill_panel) then
+			local skill_name = self._skill_panel:child("SkillName")
+			if skill_name then
+				local unlocked = self._skill_id and self._tree and managers.skilltree and managers.skilltree:skill_unlocked(self._tree, self._skill_id) or false
+				local step = (self._skilltree:next_skill_step(self._skill_id) or 0)
+				local skilled = unlocked and step > 0
+				skill_name:set_visible(true)
+				skill_name:set_alpha(self._selected and 1 or skilled and 0.6 or 0.4)
+			end
+		end
+		
+		return value
+	end
+	
+	--Fix mouse pointer for locked skills
+	local orig_newskilltreeskillitem_is_active = NewSkillTreeSkillItem.is_active
+	function NewSkillTreeSkillItem:is_active(...)
+		local unlocked = self._skill_id and self._tree and managers.skilltree and managers.skilltree:skill_unlocked(self._tree, self._skill_id) or false		
+		return orig_newskilltreeskillitem_is_active(self, ...) or not unlocked
+	end
+	
+	--Resize and move total points label
+	local orig_newskilltreetieritem_init = NewSkillTreeTierItem.init
+	local orig_newskilltreetieritem_refresh_points = NewSkillTreeTierItem.refresh_points
+	function NewSkillTreeTierItem:init(...)
+		local val = orig_newskilltreetieritem_init(self, ...)
+		if self._tier_points_total and self._tier_points_total_zero and self._tier_points_total_curr then
+			local font_size = tweak_data.menu.pd2_small_font_size * 0.75
+			self._tier_points_total:set_font_size(font_size)
+			local _, _, w, h = self._tier_points_total:text_rect()
+			self._tier_points_total:set_size(w, h)
+			self._tier_points_total_zero:set_font_size(font_size)
+			self._tier_points_total_curr:set_font_size(font_size)
+			self._tier_points_total:set_alpha(0.9)
+			self._tier_points_total_curr:set_alpha(0.9)
+		end
+		return val
+	end
+	function NewSkillTreeTierItem:refresh_points(...)
+		orig_newskilltreetieritem_refresh_points(self, ...)
+		if alive(self._tier_points_total) and alive(self._tier_points_total_zero) and alive(self._tier_points_total_curr) then
+			self._tier_points_total:set_y(self._text_space or 10)
+			self._tier_points_total_zero:set_y(self._text_space or 10)
+			self._tier_points_total_curr:set_y(self._text_space or 10)
+		end
 	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/tweakdata" then
 	if tweak_data then

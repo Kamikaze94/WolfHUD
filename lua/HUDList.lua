@@ -878,7 +878,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
 			for id, data in pairs(list:items()) do
-				if data._unit_category == "civilians" and data._icon then
+				if data._id == "civ" and data._icon then
 					data._icon:set_color(color or HUDListManager.ListOptions.civilian_color)
 				end
 			end
@@ -890,7 +890,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
 			for id, data in pairs(list:items()) do
-				if data._unit_type:find("hostage") and data._icon then
+				if data._id:find("hostage") and data._icon then
 					data._icon:set_color(color or HUDListManager.ListOptions.hostage_color)
 				end
 			end
@@ -901,7 +901,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
 			for id, data in pairs(list:items()) do
-				if data._unit_type:find("thug") and data._icon then
+				if data._id:find("thug") and data._icon then
 					data._icon:set_color(color or HUDListManager.ListOptions.thug_color)
 				end
 			end
@@ -912,7 +912,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
 			for id, data in pairs(list:items()) do
-				if data._unit_type:find("cop") and data._icon then
+				if data._id:find("cop") and data._icon then
 					data._icon:set_color(color or HUDListManager.ListOptions.enemy_color)
 					if data._shield_filler then
 						data._shield_filler:set_color(HUDListManager.ListOptions.enemy_color)
@@ -927,7 +927,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
 			for id, data in pairs(list:items()) do
-				if data._unit_type:find("security") and data._icon then
+				if data._id:find("security") and data._icon then
 					data._icon:set_color(color or HUDListManager.ListOptions.guard_color)
 				end
 			end
@@ -939,7 +939,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
 			for id, data in pairs(list:items()) do
-				if data._unit_category == "enemies" and not (data._unit_type:find("cop") or data._unit_type:find("security")) and data._icon then
+				if not(data._id:find("security") or data._id:find("cop") or data._id:find("thug") or data._id:find("hostage") or data._id == "civ") and data._icon then
 					data._icon:set_color(color or HUDListManager.ListOptions.special_color)
 				end
 			end
@@ -950,7 +950,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
 			for id, data in pairs(list:items()) do
-				if data._unit_type == "turret" and data._icon then
+				if data._id == "turret" and data._icon then
 					data._icon:set_color(color  or HUDListManager.ListOptions.turret_color)
 				end
 			end
@@ -3082,11 +3082,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.SentryEquipmentItem:_set_ammo_ratio(data)
 		if data.ammo_ratio then
-			self._ammo_ratio = data.ammo_ratio
+			self._ammo_ratio = data.ammo_ratio or 0
 			self._ammo_bar:set_w(self._bar_bg:w() * self._ammo_ratio)
 			
 			if self._ammo_ratio <= 0 then
-				self:_set_inactive()
+				self:_set_inactive(nil)
 			end
 		end
 	end
@@ -3097,7 +3097,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._health_bar:set_w(self._bar_bg:w() * self._health_ratio)
 			
 			if self._health_ratio <= 0 then
-				self:_set_inactive()
+				self:_set_inactive(nil)
 			end
 		end
 	end
@@ -3109,22 +3109,22 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._kills:set_text(tostring(data.kills))
 	end
 	
-	function HUDList.SentryEquipmentItem:_set_inactive()
+	function HUDList.SentryEquipmentItem:_set_inactive(duration)
 		if self:is_player_owner() then
  			if not self._animating then
-				self._icon:animate(callback(self, self, "_animate_inactive"), Color.red)
+				self._icon:animate(callback(self, self, "_animate_inactive"), Color.red, duration)
  			end
 		else
 			self:deactivate()
  		end
  	end
 	
-	function HUDList.SentryEquipmentItem:_animate_inactive(icon, flash_color)
+	function HUDList.SentryEquipmentItem:_animate_inactive(icon, flash_color, duration)
 		self._animating = true
 		local base_color = icon:color()
 		local t = 0
 
-		while self._animating do
+		while self._animating and (not duration or duration > t) do
  			local s = math.sin(t*720) * 0.5 + 0.5
  			local r = math.lerp(base_color.r, flash_color.r, s)
  			local g = math.lerp(base_color.g, flash_color.g, s)

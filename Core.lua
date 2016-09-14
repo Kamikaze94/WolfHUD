@@ -1,11 +1,11 @@
---		TODO: Add Ingame Options for DMG Popup
---		TODO: Add Ingame Options for Buffs
+--		TODO: Add descriptions for Ingame Options for Buffs
 
 if not _G.WolfHUD then
 	_G.WolfHUD = {}
 	WolfHUD.mod_path = ModPath
 	WolfHUD.save_path = SavePath
 	WolfHUD.settings_path = WolfHUD.save_path .. "WolfHUD.txt"
+	WolfHUD.colors_file = "WolfHUD_Colors.txt"
 	WolfHUD.inv_names_file = "WolfHUD_InventoryNames.txt"
 	WolfHUD.DEBUG_MODE = false
 	WolfHUD.version = "1.0"
@@ -36,24 +36,24 @@ if not _G.WolfHUD then
 	WolfHUD.settings = {}
 	
 	if not WolfHUD.color_table then
-		WolfHUD.color_table = { -- namestring is always 'wolfhud_color_<name>'
-			{ color = Color('FFFFFF'), name = "white" },
-			{ color = Color('F2F250'), name = "light_yellow" },
-			{ color = Color('F2C24E'), name = "light_orange" },
-			{ color = Color('E55858'), name = "light_red" },
-			{ color = Color('CC55CC'), name = "light_purple" },
-			{ color = Color('00FF00'), name = "light_green" },
-			{ color = Color('00FFFF'), name = "light_blue" },
-			{ color = Color('BABABA'), name = "light_gray" },
-			{ color = Color('FFFF00'), name = "yellow" },
-			{ color = Color('FFA500'), name = "orange" },
-			{ color = Color('FF0000'), name = "red" },
-			{ color = Color('800080'), name = "purple" },
-			{ color = Color('008000'), name = "green" },
-			{ color = Color('0000FF'), name = "blue" },
-			{ color = Color('808080'), name = "gray" },
-			{ color = Color('000000'), name = "black" },
-			{ color = Color('000000'), name = "rainbow" },
+		WolfHUD.color_table = { -- namestring is always 'wolfhud_colors_<name>'
+			{ color = 'FFFFFF', name = "white" },
+			{ color = 'F2F250', name = "light_yellow" },
+			{ color = 'F2C24E', name = "light_orange" },
+			{ color = 'E55858', name = "light_red" },
+			{ color = 'CC55CC', name = "light_purple" },
+			{ color = '00FF00', name = "light_green" },
+			{ color = '00FFFF', name = "light_blue" },
+			{ color = 'BABABA', name = "light_gray" },
+			{ color = 'FFFF00', name = "yellow" },
+			{ color = 'FFA500', name = "orange" },
+			{ color = 'FF0000', name = "red" },
+			{ color = '800080', name = "purple" },
+			{ color = '008000', name = "green" },
+			{ color = '0000FF', name = "blue" },
+			{ color = '808080', name = "gray" },
+			{ color = '000000', name = "black" },
+			{ color = '000000', name = "rainbow" },
 		}
 	end
 	if not WolfHUD.inventory_names then		
@@ -107,6 +107,7 @@ if not _G.WolfHUD then
 		["lib/managers/menu/blackmarketgui"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/stageendscreengui"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/lootdropscreengui"] = { "MenuTweaks.lua" },
+		["lib/managers/menu/skilltreeguinew"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/renderers/menunodeskillswitchgui"] = { "MenuTweaks.lua" },
 		["lib/managers/objectinteractionmanager"] = { "GameInfoManager.lua", "HUDList.lua", "Interaction.lua" },
 		["lib/network/handlers/unitnetworkhandler"] = { "DownCounter.lua", "GameInfoManager.lua" },
@@ -504,6 +505,7 @@ if not _G.WolfHUD then
 				updates = info["updates"] or updates
 			end
 		end
+		if SystemInfo:platform() ~= Idstring("WIN32") then return end	--Abort here while Linux doesn't support 'mod_overrides'
 		for k, v in pairs(updates) do
 			if type(v["revision"]) == "string" and not io.file_is_readable( v["revision"] ) then
 				local setting = "use_" .. v["identifier"]
@@ -532,27 +534,53 @@ if not _G.WolfHUD then
 		end
 	end
 	
-	function WolfHUD:getSetting(id, val_type)
+	function WolfHUD:getSetting(id, val_type, default)
 		local value = self.settings[id]
 		if value ~= nil and (not val_type or type(value) == val_type or val_type == "color" and type(value) == "string") then
 			local value = self.settings[id]
 			if val_type == "color" then
-				local id = self:getColorID(value) or 1
-				return self.color_table[id].color
+				local id = self:getColorID(value)
+				if id then
+					return Color(self.color_table[id].color)
+				end
 			else
 				return value
 			end
 		else
 			self:print_log("Requested setting doesn't exists!  (id='" .. id .. "', type='" .. tostring(val_type) .. "') ")
-			if val_type == "number" then -- Try to prevent crash by giving default value
-				return 1
-			elseif val_type == "boolean" then 
-				return false
-			elseif val_type == "string" then 
-				return ""
-			elseif val_type == "color" then
-				return Color.white
+			if default == nil then
+				if val_type == "number" then -- Try to prevent crash by giving default value
+					default = 1
+				elseif val_type == "boolean" then 
+					default = false
+				elseif val_type == "string" then 
+					default = ""
+				elseif val_type == "color" then
+					default = Color.white
+				end
+			end			
+			return default
+		end
+	end
+	
+	
+	function WolfHUD:populate_colors()
+		if io.file_is_readable(self.save_path .. self.colors_file) then
+			local file = io.open(self.save_path .. self.colors_file, "r")
+			if file then
+				local colors = json.decode(file:read("*all"))
+				for k, v in ipairs(colors) do
+					if not self:getColorID(v.name) then
+						table.insert(self.color_table, v)
+					end
+				end
+				file:close()
 			end
+		end
+		local file = io.open(self.save_path .. self.colors_file, "w+")
+		if file then
+			file:write(json.encode(self.color_table))
+			file:close()
 		end
 	end
 	
@@ -566,6 +594,7 @@ if not _G.WolfHUD then
 		end
 	end
 	
+	WolfHUD:populate_colors()
 	WolfHUD:Reset()
 	WolfHUD:Load()
 end
@@ -680,7 +709,6 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 								local item_id = menu_item:parameters().name
 								local value = WolfHUD:getSetting(tostring(item_id))
 								if value ~= nil and menu_item.set_value then
-									value = WolfHUD:getColorID(value) or value
 									if menu_item._type == "toggle" then
 										value = (value and "on" or "off")
 									end
@@ -722,24 +750,10 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		end
 	end
 	
-	MenuCallbackHandler.clbk_change_color_setting = function(self, item)
-		local value = item:value()
-		local name = item:parameters().name
-		if name and type(value) == "number" then
-			WolfHUD.settings[name] = WolfHUD.color_table[value].name
-		end
-	end
-	
 	MenuCallbackHandler.clbk_change_hudlist_setting = function(self, item)
 		self:clbk_change_setting(item)
 		local name = item:parameters().name
-		if managers.hud and HUDListManager then managers.hud:change_list_setting(tostring(name), WolfHUD:getSetting(name)) end
-	end
-	
-	MenuCallbackHandler.clbk_change_hudlist_color_setting = function(self, item)
-		self:clbk_change_color_setting(item)
-		local name = item:parameters().name
-		if managers.hud and HUDListManager then managers.hud:change_list_setting(tostring(name), WolfHUD:getSetting(name, "color")) end
+		if managers.hud and HUDListManager then managers.hud:change_list_setting(tostring(name), WolfHUD:getSetting(name, "color", WolfHUD:getSetting(name))) end
 	end
 	
 	MenuCallbackHandler.clbk_change_customhud_setting = function(self, item)
@@ -762,39 +776,64 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	end
 	
 	MenuCallbackHandler.clbk_change_tabstats_color_setting = function(self, item)
-		self:clbk_change_color_setting(item)
+		self:clbk_change_setting(item)
 		local name = item:parameters().name
 		if managers.hud and managers.hud.change_tabstats_setting then managers.hud:change_tabstats_setting(tostring(name), WolfHUD:getSetting(name)) end
 	end
 		
 	WolfHUD:Load()
-	local settings = clone(WolfHUD.settings)
-	for k, v in pairs(settings) do
-		if type(v) == "string" then
-			settings[k] = WolfHUD:getColorID(v) or v
+	
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.json", 					WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets.json", 					WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets_lasers.json", 			WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/equipment.json", 					WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.json", 				WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_tabstats.json", 				WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info.json", 					WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff.json", 				WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff_buffs.json", 		WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff_debuffs.json", 		WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff_teambuffs.json", 	WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_right.json", 			WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_left.json", 				WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_panels.json", 				WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_teampanels.json", 			WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_playerpanel.json", 			WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_chat.json", 					WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_suspicion.json", 				WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_killcounter.json", 			WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_indicator.json", 		WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_popup.json", 			WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_enemy_healthbar.json", 		WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", 			WolfHUD, WolfHUD.settings)
+	
+	Hooks:Add( "MenuManagerPostInitialize", "MenuManagerPostInitialize_WolfHUD", function( menu_manager )
+		for __, menu_id in ipairs(WolfHUD.menu_ids) do
+			local menu = MenuHelper:GetMenu(menu_id)
+			if menu then
+				for __, menu_item in ipairs(menu._items) do
+					if menu_item and menu_item._type == "multi_choice" and #menu_item._options < 1 then
+						menu_item:clear_options()
+						for k, v in ipairs(WolfHUD.color_table) do
+							local color_name = managers.localization:text("wolfhud_colors_" .. v.name)
+							color_name = not color_name:lower():find("error") and color_name or string.upper(v.name)
+							menu_item:add_option(CoreMenuItemOption.ItemOption:new({
+								_meta = "option",
+								text_id = color_name,
+								value = v.name,
+								localize = false
+							}))
+						end
+						menu_item:_show_options(nil)
+						local item_id = menu_item:parameters().name
+						local value = WolfHUD:getSetting(tostring(item_id), "string")
+						menu_item:set_value(value)
+						for __, clbk in pairs( menu_item:parameters().callback ) do
+							clbk(menu_item)
+						end
+					end
+				end
+			end
 		end
-	end
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets_lasers.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/equipment.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_tabstats.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff_buffs.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff_debuffs.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff_teambuffs.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_right.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_left.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_panels.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_teampanels.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_playerpanel.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_chat.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_suspicion.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_killcounter.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_indicator.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_popup.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_enemy_healthbar.json", WolfHUD, settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", WolfHUD, settings)
+	end)
 end)

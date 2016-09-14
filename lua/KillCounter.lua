@@ -219,7 +219,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		function HUDTeammate:_init_killcount()
 			self._kills_panel = self._panel:panel({
 				name = "kills_panel",
-				visible = true,
+				visible = WolfHUD:getSetting("use_killcounter", "boolean"),
 				w = 100,
 				h = 20,
 				x = 0,
@@ -262,7 +262,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			if not (self._id == HUDManager.PLAYER_PANEL) then return end
 			self._accuracy_panel = self._panel:panel({
 				name = "accuracy_panel",
-				visible = true,
+				visible = WolfHUD:getSetting("SHOW_ACCURACY", "boolean"),
 				w = 100,
 				h = 20,
 				x = 0,
@@ -317,10 +317,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			self._kills_text:set_text(kill_string)
 			local _, _, w, _ = self._kills_text:text_rect()
 			self._kill_icon:set_right(self._kills_panel:w() - w - self._kill_icon:w() * 0.15)
-			
-			local vis = WolfHUD:getSetting("use_killcounter", "boolean")
-			self._kills_panel:set_visible(vis)
-			
+						
 			if WolfHUD:getSetting("killcounter_color", "string") == "rainbow" then
 				color = WolfHUD.color_table[(self._kill_count % (#WolfHUD.color_table - 1)) + 1].color
 			else
@@ -349,7 +346,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		function HUDTeammate:set_state(...)
 			set_state_original(self, ...)
 		
-			if not WolfHUD:getSetting("SHOW_AI_KILLS", "boolean") then
+			if WolfHUD:getSetting("use_killcounter", "boolean") then
+				self._kills_panel:set_visible(false)
+			elseif not WolfHUD:getSetting("SHOW_AI_KILLS", "boolean") then
 				self._kills_panel:set_visible(not self._ai and true or false)
 			end
 			
@@ -365,9 +364,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			self._accuracy_text:set_text(tostring(value) .. "%")
 			local _, _, w, _ = self._accuracy_text:text_rect()
 			self._accuracy_icon:set_right(self._accuracy_panel:w() - w - self._accuracy_icon:w() * 0.15)
-			
-			local vis = WolfHUD:getSetting("SHOW_ACCURACY", "boolean")
-			self._accuracy_panel:set_visible(vis)
 		end
 	end
 end
