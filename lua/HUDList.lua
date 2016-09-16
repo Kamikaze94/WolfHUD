@@ -2827,14 +2827,16 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.TemperatureGaugeItem:_update_timer(data)
-		local dv = math.max(data.timer_value - self._last_value, 0)
-		if dv > 0 then
-			self._time_left = math.max(self._goal - data.timer_value, 0) / dv
-			self._last_update_t = Application:time()
+		if data.timer_value then
+			local dv = math.max(data.timer_value - self._last_value, 0)
+			if dv > 0 then
+				self._time_left = math.max(self._goal - data.timer_value, 0) / dv
+				self._last_update_t = Application:time()
+			end
+		
+			self._distance_text:set_text(string.format("%d / %d", data.timer_value, self._goal))
+			self._last_value = data.timer_value
 		end
-	
-		self._distance_text:set_text(string.format("%d / %d", data.timer_value, self._goal))
-		self._last_value = data.timer_value
 	end
 	
 	
