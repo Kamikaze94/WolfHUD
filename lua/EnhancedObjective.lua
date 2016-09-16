@@ -88,15 +88,17 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		if data.id ~= self._active_objective_id then
 			return
 		end
-
-		self._amount_text:set_visible(true)
-		self._amount_text:set_text((data.current_amount or 0) .. "/" .. data.amount)
+		local amount = (data.current_amount or 0)
+		self._amount_text:set_text(amount .. "/" .. data.amount)
 		self._amount_text:set_left(self._objective_text:right() + HUDObjectives._TEXT_MARGIN)
 		self._amount_text:set_bottom(self._objective_text:h() + HUDObjectives._TEXT_MARGIN)
 		self._bg_box:set_w(HUDObjectives._TEXT_MARGIN * 3 + self._objective_text:w() + self:_get_text_dimensions(self._amount_text:text()).w)
-		if not hide_animation then
-			self._amount_text:stop()
+		self._amount_text:set_visible(true)
+		self._amount_text:stop()
+		if not hide_animation and amount > 0 then
 			self._amount_text:animate(callback(self, self, "_animate_new_amount"))
+		else
+			self._amount_text:set_color(Color(1, 1, 1, 1))
 		end
 	end
 

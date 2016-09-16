@@ -3590,11 +3590,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			
 			--if j < 4 or is_player or j <= math.ceil(num_panels / 2) then
 			if is_player then
-				align = "center"
+				align = WolfHUD:getSetting("PLAYER_POSITION", "number", 0) > 0 and "right" or "left"
 			elseif j <= 7 then
-				align = "left"
+				align = WolfHUD:getSetting("TEAM_POSITION", "number", 0) > 0 and "right" or "left"
 			else
-				align = "right"
+				align = WolfHUD:getSetting("TEAM_POSITION", "number", 0) > 0 and "left" or "right"
 			end
 			
 			local teammate = HUDTeammateCustom:new(i, teammates_panel, is_player, align)
@@ -3713,7 +3713,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local teammate_panel = self._teammate_panels[ai_id]
 		if teammate_panel and teammate_panel._ai then
 			teammate_panel:set_ai_stopped(stopped)
-			teammate_panel:set_condition(stopped and "ai_stopped" or "mugshot_normal", "HOLD")
+			teammate_panel:set_condition(stopped and "ai_stopped" or "mugshot_normal", stopped and "HOLD" or "NORMAL")
 			
 			local name = string.gsub(teammate_panel:name(), "%W", "")
 			for _, label in ipairs(self._hud.name_labels) do
@@ -3735,54 +3735,72 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local MARGIN = 5
 		local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
 		local hud_panel = hud.panel
-		local teammate_height = 0
-		local left_height_offset = 0
-		local right_height_offset = 0
-		local center_height_offset = 0
 		
-		for i, teammate in ipairs(self._teammate_panels) do
-			local panel = teammate:panel()
+		local player_panel = self._teammate_panels[HUDManager.PLAYER_PANEL]
+		player_panel = player_panel and player_panel:panel() or nil
+		if player_panel then
+			local function getW(hud_w, panel_w, scale_factor)
+				local hud_w2, panel_w2 = hud_w / 2, panel_w / 2
+				return hud_w2 + (hud_w2 - panel_w2) * scale_factor
+			end
+			--Seperate Player Panel setup, so its always the most bottom one
+			local hud_w, hud_h = hud_panel:w() or 0, hud_panel:h() or 0
+			local player_w, player_h = player_panel:w() or 0, player_panel:h() or 0
+			player_panel:set_center_x(getW(hud_w, player_w, WolfHUD:getSetting("PLAYER_POSITION", "number", 0)))
+			player_panel:set_bottom(hud_h)
 			
-			if panel:visible() then
-				if teammate:alignment() == "left" then
-					panel:set_left(0)
-					panel:set_bottom(hud_panel:h() - left_height_offset)
-					left_height_offset = left_height_offset + MARGIN + panel:h()
-				elseif teammate:alignment() == "right" then
-					panel:set_right(hud_panel:w())
-					panel:set_bottom(hud_panel:h() - right_height_offset)
-					right_height_offset = right_height_offset + MARGIN + panel:h()
-				else	-- center
-					panel:set_center(hud_panel:w() / 2, 0)
-					panel:set_bottom(hud_panel:h() - center_height_offset)
-					center_height_offset = center_height_offset + MARGIN + panel:h()
+			local j = 1
+			local teammate_offset = { 0, 0 }
+			for i, teammate in ipairs(self._teammate_panels) do
+				local panel = teammate:panel()
+				
+				if i ~= HUDManager.PLAYER_PANEL and panel:visible() then
+					local team_stack = j < 7 and 1 or 2
+					
+					panel:set_center_x(getW(hud_w, panel:w(), WolfHUD:getSetting("TEAM_POSITION", "number", 0)))
+					panel:set_bottom(hud_h - teammate_offset[team_stack])
+					if j > 7 then
+						panel:set_right(hud_w - panel:left())
+					end
+					
+					--On collision with player_panel, increase the offset.
+					if player_panel:inside(panel:right(), panel:bottom()) or player_panel:inside(panel:left(), panel:bottom()) then
+						local offset = player_h + MARGIN
+						panel:move(0, -offset)
+						teammate_offset[team_stack] = teammate_offset[team_stack] + offset
+					end
+					teammate_offset[team_stack] = teammate_offset[team_stack] + panel:h() + MARGIN
+				end
+				j = j + 1
+			end
+			
+			local y = hud_h - (player_h or 0) - 10
+			if managers.hudlist then
+				local list_panel = managers.hudlist:list("buff_list"):panel()
+				list_panel:set_bottom(y)
+				y = list_panel:top()
+			end
+			if managers.subtitle then
+				local sub_presenter = managers.subtitle:presenter()
+				if sub_presenter and sub_presenter.set_bottom then
+					sub_presenter:set_bottom(y)
 				end
 			end
-		end
-		local player_panel = self._teammate_panels[HUDManager.PLAYER_PANEL]
-		local y = hud_panel:h() - (player_panel and player_panel:panel():h() or 0) - 10
-		if managers.hudlist then
-			local list_panel = managers.hudlist:list("buff_list"):panel()
-			list_panel:set_bottom(y)
-			y = list_panel:top()
-		end
-		if managers.subtitle then
-			local sub_presenter = managers.subtitle:presenter()
-			if sub_presenter and sub_presenter.set_bottom then
-				sub_presenter:set_bottom(y)
+			if self._hud_chat_ingame and self._set_custom_hud_chat_offset then	--TODO: Adapt to new dynamic placement of TeamPanels, (+DrivingHUD)
+				local offset = (player_panel:x() + player_w > hud_w - HUDChat.WIDTH) and (player_h + HUDChat.LINE_HEIGHT) or 0
+				self:_set_custom_hud_chat_offset(offset)
 			end
-		end
-		if self._hud_chat_ingame and self._set_custom_hud_chat_offset then
-			local player_panel = self._teammate_panels[HUDManager.PLAYER_PANEL]:panel()
-			local offset = (player_panel:x() + player_panel:w() > hud_panel:w() - HUDChat.WIDTH) and (player_panel:h() + HUDChat.LINE_HEIGHT) or 0
-			self:_set_custom_hud_chat_offset(offset)
 		end
 	end
 	
 	function HUDManager:change_hud_setting(type, setting, value)
-		for i, panel in ipairs(self._teammate_panels) do
-			if panel._is_player and type == "PLAYER" or not panel._is_player and type == "TEAM" then
-				panel:change_setting(setting, value)
+		if setting[1] == "POSITION" then
+			self:arrange_teammate_panels()
+		else
+			for i, panel in ipairs(self._teammate_panels) do
+				if panel._is_player and type == "PLAYER" or not panel._is_player and type == "TEAM" then
+					panel:change_setting(setting, value)
+				end
 			end
 		end
 	end

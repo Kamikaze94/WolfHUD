@@ -2,20 +2,61 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	local init_original = HUDAssaultCorner.init
 	local _start_assault_original = HUDAssaultCorner._start_assault
 	local sync_set_assault_mode_original = HUDAssaultCorner.sync_set_assault_mode
+	local _set_hostage_offseted_original = HUDAssaultCorner._set_hostage_offseted
 	 
 	function HUDAssaultCorner:init(...)
 		init_original(self, ...)
 		
+		self:update_vertical_pos()
+	end
+	
+	function HUDAssaultCorner:update_vertical_pos()
+		if not alive(self._hud_panel) then return end
+		local width = self._hud_panel:w()
+		local max_offset = width / 2 - 150
+		local banner_scale = math.clamp(WolfHUD:getSetting("assault_banner_position", "number"), 0, 1)
+		
 		local assault_panel = self._hud_panel:child("assault_panel")
-		assault_panel:set_right(self._hud_panel:w() / 2 + 133)
-		local buffs_panel = self._hud_panel:child("buffs_panel")
-		buffs_panel:set_x(assault_panel:left() + self._bg_box:left() - 3 - 200)
+		if alive(assault_panel) then
+			max_offset = width / 2 - assault_panel:w() / 2
+			assault_panel:set_center_x(width / 2 + max_offset * banner_scale)
+			local buffs_panel = self._hud_panel:child("buffs_panel")
+			if alive(buffs_panel) then
+				buffs_panel:set_right(assault_panel:x() + 20)
+			end
+		end
 		
 		local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
-		point_of_no_return_panel:set_right(self._hud_panel:w() / 2 + 133)
+		if alive(point_of_no_return_panel) then
+			max_offset = width / 2 - point_of_no_return_panel:w() / 2
+			point_of_no_return_panel:set_center_x(width / 2 + max_offset * banner_scale)
+		end
 		
 		local casing_panel = self._hud_panel:child("casing_panel")
-		casing_panel:set_right(self._hud_panel:w() / 2 + 133)
+		if alive(casing_panel) then
+			max_offset = width / 2 - casing_panel:w() / 2
+			casing_panel:set_center_x(width / 2 + max_offset * banner_scale)
+		end
+		
+		self:update_hudlist_offset()
+	end
+	
+	function HUDAssaultCorner:update_hudlist_offset(banner_visible)
+		banner_visible = banner_visible or banner_visible == nil and (self._assault or self._point_of_no_return or self._casing)
+		local banner_scale = math.clamp(WolfHUD:getSetting("assault_banner_position", "number"), 0, 1)
+		if managers.hud and HUDListManager and math.abs(banner_scale) > 0.4 then
+			local offset = banner_visible and ((self._bg_box and self._bg_box:h() or 30) + 12) or 0
+			if banner_scale > 0 then
+				managers.hud:change_list_setting("right_list_height_offset", offset)
+			elseif banner_scale < 0 then
+				managers.hud:change_list_setting("left_list_height_offset", offset + 40)
+			end
+		end
+	end
+	
+	function HUDAssaultCorner:_set_hostage_offseted(is_offseted, ...)
+		_set_hostage_offseted_original(self, is_offseted, ...)
+		self:update_hudlist_offset(is_offseted)
 	end
 
 	function HUDAssaultCorner:show_point_of_no_return_timer()
@@ -25,12 +66,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		point_of_no_return_panel:stop()
 		point_of_no_return_panel:animate(callback(self, self, "_animate_show_noreturn"), delay_time)
 		self._point_of_no_return = true
+		self:update_hudlist_offset(true)
 	end
 
 	function HUDAssaultCorner:hide_point_of_no_return_timer()
 		self._noreturn_bg_box:stop()
 		self._hud_panel:child("point_of_no_return_panel"):set_visible(false)
 		self._point_of_no_return = false
+		self:update_hudlist_offset(false)
 	end
 
 	function HUDAssaultCorner:set_control_info(...) end
@@ -38,22 +81,18 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	function HUDAssaultCorner:hide_casing(...) end
 	
 	function HUDAssaultCorner:_start_assault(text_list, ...)
-		if Network:is_server() then
-			for i, string_id in ipairs(text_list) do
-				if string_id == "hud_assault_assault" then
-					text_list[i] = "hud_adv_assault"
-				end
+		for i, string_id in ipairs(text_list) do
+			if string_id == "hud_assault_assault" then
+				text_list[i] = "hud_adv_assault"
 			end
 		end
 		return _start_assault_original(self, text_list, ...)
 	end
 	
 	function HUDAssaultCorner:locked_assault(status)
-		if self._assault_locked == status then return end
 		local assault_panel = self._hud_panel:child("assault_panel")
 		local icon_assaultbox = assault_panel and assault_panel:child("icon_assaultbox")
 		local image
-		self._assault_locked = status
 		if status then
 			image = "guis/textures/pd2/hud_icon_padlockbox"
 		else
@@ -65,8 +104,25 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDManager:_locked_assault(status)
+		status = status or Network:is_server() and managers.groupai:state():get_hunt_mode() or false
+		self._assault_locked = self._assault_locked or false
+		if self._assault_locked ~= status then
+			if self._hud_assault_corner then
+				self._hud_assault_corner:locked_assault(status)
+			end
+			if Network:is_server() and WolfHUD.Sync then
+				local data = { event = "assault_lock_state", data = status}
+				WolfHUD.Sync.send("WolfHUD_Sync", data)
+			end
+			self._assault_locked = status
+		end
+		return self._assault_locked
+	end
+	function HUDManager:_update_assault_setting(setting)
 		if self._hud_assault_corner then
-			self._hud_assault_corner:locked_assault(status)
+			if setting == "assault_banner_position" then
+				self._hud_assault_corner:update_vertical_pos()
+			end
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/localizationmanager" then
@@ -80,11 +136,9 @@ elseif string.lower(RequiredScript) == "lib/managers/localizationmanager" then
 	end
 
 	function LocalizationManager:hud_adv_assault()
-		if managers.groupai:state():get_hunt_mode() then
-			managers.hud:_locked_assault(true)
+		if managers.hud and managers.hud:_locked_assault() then
 			return self:text("wolfhud_locked_assault")
-		else
-			managers.hud:_locked_assault(false)
+		elseif Network:is_server() then
 			if not WolfHUD:getSetting("show_advanced_assault", "boolean") then
 				return self:text("hud_assault_assault")
 			else
@@ -101,6 +155,8 @@ elseif string.lower(RequiredScript) == "lib/managers/localizationmanager" then
 				local text = phase .. sep .. spawns_left .. sep .. time_left
 				return text
 			end
+		else
+			return self:text("hud_assault_assault")
 		end
 	end
 end

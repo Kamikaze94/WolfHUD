@@ -110,7 +110,7 @@ if not _G.WolfHUD then
 		["lib/managers/menu/skilltreeguinew"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/renderers/menunodeskillswitchgui"] = { "MenuTweaks.lua" },
 		["lib/managers/objectinteractionmanager"] = { "GameInfoManager.lua", "HUDList.lua", "Interaction.lua" },
-		["lib/network/handlers/unitnetworkhandler"] = { "DownCounter.lua", "GameInfoManager.lua" },
+		["lib/network/handlers/unitnetworkhandler"] = { "NetworkHandler.lua", "DownCounter.lua", "GameInfoManager.lua" },
 		["lib/units/props/timergui"] = { "GameInfoManager.lua" },
 		["lib/units/props/digitalgui"] = { "GameInfoManager.lua" },
 		["lib/units/props/securitylockgui"] = { "GameInfoManager.lua" },
@@ -162,8 +162,8 @@ if not _G.WolfHUD then
 		{
 		  --CustomHUD
 			use_customhud 							= true,
-			PLAYER_POSITION							= 0,		-- -1 to 1, moves player panel horizontally.
-			PLAYER_SCALE 							= 1,		--Size of local Player HUD Panel	TODO!
+			PLAYER_POSITION							= 0,		-- -1 to 1, moves player panel horizontally.	TODO!
+			PLAYER_SCALE 							= 1,		--Size of local Player HUD Panel
 			PLAYER_OPACITY							= 0.85,
 			PLAYER_NAME								= false,
 			PLAYER_RANK								= false,

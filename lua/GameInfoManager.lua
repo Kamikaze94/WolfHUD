@@ -1624,8 +1624,8 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 	end
 	
 	function GroupAIStateBase:update(t, ...)
-		if self._client_hostage_count_expire_t and t < self._client_hostage_count_expire_t then
-			self:_client_hostage_count_cbk()
+		if self._hostage_count_expire_t and t < self._hostage_count_expire_t then
+			self:_update_hostage_count()
 		end
 		
 		return update_original(self, t, ...)
@@ -1633,17 +1633,13 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 	
 	function GroupAIStateBase:on_hostage_state(...)
 		on_hostage_state_original(self, ...)
-		self:_update_hostage_count()
+		managers.enemy:add_delayed_clbk("hostage_count_update", callback(self, self, "_update_hostage_count"), Application:time() + 0.05)
 	end
 	
 	function GroupAIStateBase:sync_hostage_headcount(...)
 		sync_hostage_headcount_original(self, ...)
 		
-		if Network:is_server() then
-			self:_update_hostage_count()
-		else
-			self._client_hostage_count_expire_t = self._t + 10
-		end
+		self._hostage_count_expire_t = self._t + 10
 	end
 	
 	function GroupAIStateBase:convert_hostage_to_criminal(unit, peer_unit, ...)
@@ -1674,14 +1670,14 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 	end
 	
 	
-	function GroupAIStateBase:_client_hostage_count_cbk()
+	function GroupAIStateBase:_update_hostage_count()
 		local police_hostages = 0
 		local security_hostages = 0
 		local civilian_hostages = self._hostage_headcount
 	
 		for u_key, u_data in pairs(managers.enemy:all_enemies()) do
-			if u_data and u_data.unit and u_data.unit.anim_data and u_data.unit:anim_data() then
-				if u_data.unit:anim_data().surrender then
+			if u_data and u_data.unit and alive(u_data.unit) and u_data.unit.anim_data and u_data.unit:anim_data() and u_data.unit.base and u_data.unit:base() then
+				if u_data.unit:anim_data().surrender or u_data.unit:base().mic_is_being_moved then
 					if u_data.unit:base()._tweak_table:find("security") or u_data.unit:base()._tweak_table:find("gensec") then
 						security_hostages = security_hostages + 1
 					else
@@ -1695,15 +1691,6 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 		managers.gameinfo:event("unit_count", "set", "civ_hostage", civilian_hostages)
 		managers.gameinfo:event("unit_count", "set", "cop_hostage", police_hostages)
 		managers.gameinfo:event("unit_count", "set", "sec_hostage", security_hostages)
-	end
-	
-	function GroupAIStateBase:_update_hostage_count()
-		if Network:is_server() then
-			managers.enemy:add_delayed_clbk("hostage_count_update", callback(self, self, "_client_hostage_count_cbk"), Application:time() + 0.01)
-		else
-			managers.enemy:add_delayed_clbk("hostage_count_update", callback(self, self, "_client_hostage_count_cbk"), Application:time() + 0.01)
-			--self:_client_hostage_count_cbk()
-		end
 	end
 	
 end

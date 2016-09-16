@@ -53,13 +53,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	HUDListManager = HUDListManager or class()
 	HUDListManager.ListOptions = {
-		--General settings
-        right_list_height_offset = HUDManager.CUSTOM_TEAMMATE_PANELS and 0 or 50,   --Margin from top for the right list
-        right_list_scale = WolfHUD:getSetting("right_list_scale", "number"),   --Size scale of right list
-        left_list_height_offset = HUDManager.CUSTOM_TEAMMATE_PANELS and 40 or 70,   --Margin from top for the left list
-        left_list_scale = WolfHUD:getSetting("left_list_scale", "number"),    --Size scale of left list
-        buff_list_height_offset = 80,   --Margin from bottom for the buff list
-        buff_list_scale = WolfHUD:getSetting("buff_list_scale", "number"),    --Size scale of buff list
+		--General settings (Offsets get updated by Objective/Assault or CustomHUD)
+        right_list_height_offset = 0,   										--Margin from top for the right list
+        right_list_scale = WolfHUD:getSetting("right_list_scale", "number"),   	--Size scale of right list
+        left_list_height_offset = 40,   										--Margin from top for the left list
+        left_list_scale = WolfHUD:getSetting("left_list_scale", "number"),    	--Size scale of left list
+        buff_list_height_offset = 80,   										--Margin from bottom for the buff list
+        buff_list_scale = WolfHUD:getSetting("buff_list_scale", "number"),    	--Size scale of buff list
         
         --Left side list
         show_timers 					= WolfHUD:getSetting("show_timers", "boolean"),     				--Drills, time locks, hacking etc.
@@ -836,7 +836,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDListManager:_set_right_list_height_offset()
-		local list = self:list("left_side_list")
+		local list = self:list("right_side_list")
 		if list then
 			list:move(list:panel():x(), HUDListManager.ListOptions.right_list_height_offset or 40, false)
 		end
@@ -2108,7 +2108,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	HUDList.UnitCountItem = HUDList.UnitCountItem or class(HUDList.RightListItem)
 	HUDList.UnitCountItem.MAP = {
-		enemies =		{ atlas = {6, 1}, 	color = HUDListManager.ListOptions.enemy_color, subtract = { "cop_hostage", "sec_hostage", "minions" } },	--Aggregated enemies
+		enemies =		{ atlas = {6, 1}, 	color = HUDListManager.ListOptions.enemy_color, 	priority = 1, subtract = { "cop_hostage", "sec_hostage", "minions" } },	--Aggregated enemies
 		cop =			{ atlas = {0, 5}, 	color = HUDListManager.ListOptions.enemy_color, 	priority = 5, subtract = { "cop_hostage", "cop_minion" } },	--Non-special police
 		security =		{ spec = {1, 4}, 	color = HUDListManager.ListOptions.guard_color, 	priority = 4, subtract = { "sec_hostage", "sec_minion" }  },
 		thug =			{ atlas = {4, 12}, 	color = HUDListManager.ListOptions.thug_color, 		priority = 4 },
