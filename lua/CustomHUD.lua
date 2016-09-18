@@ -76,7 +76,7 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 				w = radial_health_panel:w() * 0.05,
 				h = 2,
 				layer = 10, 
-				visible = WolfHUD:getSetting("PLAYER_SHOWSTAMINA", "boolean")
+				visible = WolfHUD:getSetting("PLAYER_STAMINA", "boolean")
 			})
 			self._stamina_line:set_center(radial_health_panel:child("radial_health"):center())
 		end
@@ -96,7 +96,7 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 
 		function HUDTeammate:set_current_stamina(value)
 			self._stamina_bar:set_color(Color(1, value/self._max_stamina, 0, 0))
-			local visible = WolfHUD:getSetting("PLAYER_SHOWSTAMINA", "boolean") 
+			local visible = WolfHUD:getSetting("PLAYER_STAMINA", "boolean") 
 			if self._stamina_bar:visible() ~= visible then
 				self._stamina_bar:set_visible(visible)
 				self._stamina_line:set_visible(visible)
@@ -444,6 +444,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		table.insert(self._component_layout, { self._kills, self._accuracy })	--5th row
 		
+		self:arrange()
+	end
+	
+	function HUDTeammateCustom:set_alignment(align)
+		self._align = align
 		self:arrange()
 	end
 	
@@ -3736,9 +3741,9 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
 		local hud_panel = hud.panel
 		
-		local player_panel = self._teammate_panels[HUDManager.PLAYER_PANEL]
-		player_panel = player_panel and player_panel:panel() or nil
-		if player_panel then
+		local player_hud = self._teammate_panels[HUDManager.PLAYER_PANEL]
+		player_panel = player_hud and player_hud:panel() or nil
+		if player_hud and player_panel then
 			local function getW(hud_w, panel_w, scale_factor)
 				local hud_w2, panel_w2 = hud_w / 2, panel_w / 2
 				return hud_w2 + (hud_w2 - panel_w2) * scale_factor
@@ -3748,6 +3753,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			local player_w, player_h = player_panel:w() or 0, player_panel:h() or 0
 			player_panel:set_center_x(getW(hud_w, player_w, WolfHUD:getSetting("PLAYER_POSITION", "number", 0)))
 			player_panel:set_bottom(hud_h)
+			player_hud:set_alignment((player_panel:center_x() > hud_w / 2) and "right" or "left")
 			
 			local j = 1
 			local teammate_offset = { 0, 0 }
@@ -3758,10 +3764,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 					local team_stack = j < 7 and 1 or 2
 					
 					panel:set_center_x(getW(hud_w, panel:w(), WolfHUD:getSetting("TEAM_POSITION", "number", 0)))
-					panel:set_bottom(hud_h - teammate_offset[team_stack])
-					if j > 7 then
+					if team_stack == 2 then
 						panel:set_right(hud_w - panel:left())
 					end
+					panel:set_bottom(hud_h - teammate_offset[team_stack])
+					teammate:set_alignment((panel:center_x() > hud_w / 2) and "right" or "left")
 					
 					--On collision with player_panel, increase the offset.
 					if player_panel:inside(panel:right(), panel:bottom()) or player_panel:inside(panel:left(), panel:bottom()) then

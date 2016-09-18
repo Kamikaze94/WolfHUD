@@ -414,7 +414,7 @@ if not _G.WolfHUD then
 			ecm_feedback_disabled_stealth			= true,
 			
 			show_advanced_assault					= true,
-			assault_banner_position					= 0,			-- 0-1, moves banner from center to right.	TODO!
+			assault_banner_position					= 0,			-- -1-1, moves banner from left to right.	TODO!
 			enable_burstmode						= true,
 			
 			replace_weapon_names 					= true,

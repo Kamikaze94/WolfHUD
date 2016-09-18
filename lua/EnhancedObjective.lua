@@ -12,7 +12,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		self._panel = hud.panel:panel({
 			visible = false,
 			name = "objectives_panel",
-			h = 100,
+			h = 130,
 			w = 400,
 			x = 80,
 			valign = "top"
@@ -55,6 +55,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			x = HUDObjectives._TEXT_MARGIN,
 			y = HUDObjectives._TEXT_MARGIN
 		})
+		
+		self:apply_offset()
 	end
 	
 	function HUDObjectives:activate_objective(data)
@@ -76,11 +78,9 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			self._amount_text:set_text("")
 			self._bg_box:set_w(HUDObjectives._TEXT_MARGIN * 2 + width)
 		end
-		self._bg_box:stop()
-		self._bg_box:animate(callback(self, self, "_animate_update_objective"))
-		
-		if managers.hud and HUDListManager then 
-			managers.hud:change_list_setting("left_list_height_offset", self._bg_box:bottom() + HUDObjectives._BOUNCE + HUDObjectives._TEXT_MARGIN) 
+		if not self._active_move then
+			self._bg_box:stop()
+			self._bg_box:animate(callback(self, self, "_animate_update_objective"))
 		end
 	end
 
@@ -106,9 +106,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		if id ~= self._active_objective_id then
 			return
 		end
-		
-		self._bg_box:stop()
-		self._bg_box:animate(callback(self, self, "_animate_update_objective"))
+		if not self._active_move then
+			self._bg_box:stop()
+			self._bg_box:animate(callback(self, self, "_animate_update_objective"))
+		end
 	end
 
 	function HUDObjectives:complete_objective(data)
@@ -138,13 +139,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 	function HUDObjectives:_animate_update_objective(object)
 		local TOTAL_T = 2
 		local t = TOTAL_T
-		object:set_y(0)
+		object:set_y(self._offset_y or 0)
 		while t > 0 do
 			local dt = coroutine.yield()
 			t = t - dt
-			object:set_y(math.round((1 + math.sin((TOTAL_T - t) * 450 * 2)) * (HUDObjectives._BOUNCE * (t / TOTAL_T))))
+			object:set_y((self._offset_y or 0) + math.round((1 + math.sin((TOTAL_T - t) * 450 * 2)) * (HUDObjectives._BOUNCE * (t / TOTAL_T))))
 		end
-		object:set_y(0)
+		object:set_y(self._offset_y or 0)
 	end
 
 	function HUDObjectives:_get_text_dimensions(text_string)
@@ -185,13 +186,54 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			local string_range = utf8.sub(text_string, range_start, (range_end or 0) - 1)
 			table.insert(wrapped_lines, string.trim(string_range))
 		end
-		local w, h = 0, layout_text_field:font_size() * math.max(#wrapped_lines or 1)
+		local w, h = 0, layout_text_field:font_size() * math.max(#wrapped_lines, 1)
 		for i, line in ipairs(wrapped_lines) do
 			w = math.max(w, self:_get_text_dimensions(line).w)
 		end
 		return math.ceil(w), math.ceil(h)
-	end	
+	end
 	
+	function HUDObjectives:apply_offset(offset)
+		if offset and offset ~= self._offset_y then
+			self._offset_y = offset
+			if alive(self._bg_box) then
+				self._bg_box:stop()
+				self._bg_box:animate(callback(self, self, "_animate_move"), self._bg_box:x(), self._offset_y, false)
+			end
+		end
+		if managers.hud and HUDListManager then 
+			managers.hud:change_list_setting("left_list_height_offset", self._bg_box:bottom() + HUDObjectives._BOUNCE + HUDObjectives._TEXT_MARGIN) 
+		end
+	end
+	
+	function HUDObjectives:_animate_move(panel, x, y, instant)
+		self._active_move = true
+		if not instant then
+			local move_speed = 150
+			local init_x = panel:x()
+			local init_y = panel:y()
+			local x_change = x > init_x and 1 or x < init_x and -1
+			local y_change = y > init_y and 1 or y < init_y and -1
+			local T = math.max(math.abs(x - init_x) / move_speed, math.abs(y - init_y) / move_speed)
+			local t = 0
+			
+			while alive(panel) and t < T do
+				if x_change then
+					panel:set_x(init_x  + t * x_change * move_speed)
+				end
+				if y_change then
+					panel:set_y(init_y  + t * y_change * move_speed)
+				end
+				t = t + coroutine.yield()
+			end
+		end
+		
+		if alive(panel) then
+			panel:set_x(x)
+			panel:set_y(y)
+		end
+		self._active_move = nil
+	end
 	
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudheisttimer" then
 	
@@ -212,7 +254,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudheisttimer" then
 		self._timer_text = self._heist_timer_panel:text({
 			name = "timer_text",
 			text = "00:00:00",
-			font_size = 28,
+			font_size = tweak_data.hud.medium_deafult_font_size,
 			font = tweak_data.hud.medium_font_noshadow,
 			color = Color.white,
 			align = "center",

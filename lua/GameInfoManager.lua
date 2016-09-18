@@ -1676,8 +1676,8 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 		local civilian_hostages = self._hostage_headcount
 	
 		for u_key, u_data in pairs(managers.enemy:all_enemies()) do
-			if u_data and u_data.unit and alive(u_data.unit) and u_data.unit.anim_data and u_data.unit:anim_data() and u_data.unit.base and u_data.unit:base() then
-				if u_data.unit:anim_data().surrender or u_data.unit:base().mic_is_being_moved then
+			if u_data and u_data.unit and alive(u_data.unit) then
+				if u_data.unit:anim_data() and u_data.unit:anim_data().surrender or u_data.unit:base() and u_data.unit:base().mic_is_being_moved then
 					if u_data.unit:base()._tweak_table:find("security") or u_data.unit:base()._tweak_table:find("gensec") then
 						security_hostages = security_hostages + 1
 					else

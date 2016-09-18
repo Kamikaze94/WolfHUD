@@ -64,7 +64,7 @@ end)
 
 Hooks:Add("BaseNetworkSessionOnPeerRemoved", "BaseNetworkSessionOnPeerRemoved_WolfHUD", function(self, peer, peer_id, reason)
 	if WolfHUD.Sync.peers[peer_id] then
-		WolfHUD.Sync.peers[peer_id] == nil
+		WolfHUD.Sync.peers[peer_id] = nil
 	end
 end)
 

@@ -14,7 +14,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		if not alive(self._hud_panel) then return end
 		local width = self._hud_panel:w()
 		local max_offset = width / 2 - 150
-		local banner_scale = math.clamp(WolfHUD:getSetting("assault_banner_position", "number"), 0, 1)
+		local banner_scale = math.clamp(WolfHUD:getSetting("assault_banner_position", "number"), -1, 1)
 		
 		local assault_panel = self._hud_panel:child("assault_panel")
 		if alive(assault_panel) then
@@ -43,13 +43,15 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	
 	function HUDAssaultCorner:update_hudlist_offset(banner_visible)
 		banner_visible = banner_visible or banner_visible == nil and (self._assault or self._point_of_no_return or self._casing)
-		local banner_scale = math.clamp(WolfHUD:getSetting("assault_banner_position", "number"), 0, 1)
-		if managers.hud and HUDListManager and math.abs(banner_scale) > 0.4 then
+		local banner_scale = math.clamp(WolfHUD:getSetting("assault_banner_position", "number"), -1, 1)
+		if managers.hud and math.abs(banner_scale) > 0.4 then
 			local offset = banner_visible and ((self._bg_box and self._bg_box:h() or 30) + 12) or 0
-			if banner_scale > 0 then
+			if banner_scale > 0 and HUDListManager then
 				managers.hud:change_list_setting("right_list_height_offset", offset)
 			elseif banner_scale < 0 then
-				managers.hud:change_list_setting("left_list_height_offset", offset + 40)
+				if managers.hud._hud_objectives and managers.hud._hud_objectives.apply_offset then
+					managers.hud._hud_objectives:apply_offset(offset)
+				end
 			end
 		end
 	end
