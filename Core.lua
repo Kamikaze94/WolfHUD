@@ -1,4 +1,8 @@
---		TODO: Add descriptions for Ingame Options for Buffs
+-- TODO: 
+-- 	Add descriptions for Ingame Options for Buffs
+--	Add positioning option for CustomChat
+-- 	Add positioning option for DrivingHUD
+
 
 if not _G.WolfHUD then
 	_G.WolfHUD = {}
@@ -162,7 +166,7 @@ if not _G.WolfHUD then
 		{
 		  --CustomHUD
 			use_customhud 							= true,
-			PLAYER_POSITION							= 0,		-- -1 to 1, moves player panel horizontally.	TODO!
+			PLAYER_POSITION							= 2,		-- Place Player HUD in left (1), center (2) or right(3)
 			PLAYER_SCALE 							= 1,		--Size of local Player HUD Panel
 			PLAYER_OPACITY							= 0.85,
 			PLAYER_NAME								= false,
@@ -185,7 +189,7 @@ if not _G.WolfHUD then
 			PLAYER_KILLCOUNTER_SHOWHEADSHOTKILLS	= true,
 			PLAYER_KILLCOUNTER_COLOR				= "yellow",
 			PLAYER_SHOWACCURACY						= true,
-			TEAM_POSITION							= -1,		-- -1 to 1, moves Teammate panel horizontally	(mirrored for panels j>7)	TODO!
+			TEAM_POSITION							= 1,		-- Place Teammate HUDs in left (1), center (2) or right(3)
 			TEAM_SCALE 								= 0.8,		--Size of Teammates/AI's HUD Panels
 			TEAM_OPACITY							= 0.85,
 			TEAM_NAME								= true,
@@ -414,7 +418,7 @@ if not _G.WolfHUD then
 			ecm_feedback_disabled_stealth			= true,
 			
 			show_advanced_assault					= true,
-			assault_banner_position					= 0,			-- -1-1, moves banner from left to right.	TODO!
+			assault_banner_position					= 2,			-- Place Assault Banner in left (1), center (2) or right(3)
 			enable_burstmode						= true,
 			
 			replace_weapon_names 					= true,

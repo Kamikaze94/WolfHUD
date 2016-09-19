@@ -302,11 +302,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		blank2:set_y(math.round(spending_cash_text:bottom()))
 		
 		local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
-		local mask_color = Color(1, 0.8, 0.5, 0.2)
+		local mask_color = WolfHUD:getSetting("tabstats_color", "color")
 		local char_data = HUDStatsScreen.CHARACTERS[managers.criminals:local_character_name()]
 		if char_data then
 			mask_icon = char_data.texture or mask_icon
-			mask_color = char_data.color or mask_color
+			mask_color = WolfHUD:getSetting("tabstats_color", "string") == "rainbow" and char_data.color or mask_color
 		end
 		self._actual_mask = WolfHUD:getSetting("use_actual_mask", "boolean")
 		if self._actual_mask then
@@ -505,20 +505,33 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			local color_name = (setting == "tabstats_color" and value) or self._tabstats_color
 			local actual_mask = (setting == "use_actual_mask" and value) or setting ~= "use_actual_mask" and self._actual_mask
 			local dwp = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel"):child("day_wrapper_panel")
-			if self._tabstats_font_size ~= font_size or self._tabstats_color ~= color_name then
-				local color = color_name ~= "rainbow" and WolfHUD:getSetting("tabstats_color", "color") or false
+			if self._tabstats_font_size ~= font_size then
 				local sub_items = {"_title", "_text", "_alltime_title", "_alltime_text"}
 				for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
 					for j, suffix in ipairs(sub_items) do
 						local item = dwp:child(data.name .. suffix)
 						if item then
 							item:set_font_size(font_size)
+						end
+					end
+				end
+			end
+			if self._tabstats_color ~= color_name then
+				local color = color_name ~= "rainbow" and WolfHUD:getSetting("tabstats_color", "color") or false
+				local sub_items = {"_title", "_text", "_alltime_title", "_alltime_text"}
+				for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
+					for j, suffix in ipairs(sub_items) do
+						local item = dwp:child(data.name .. suffix)
+						if item then
 							item:set_color(color or data.color)
 						end
 					end
 				end
-				self._tabstats_font_size = font_size
-				self._tabstats_color = color_name
+				local item = dwp:parent():child("character_icon")
+				if item then 
+					local char_table = HUDStatsScreen.CHARACTERS[managers.criminals:local_character_name()]
+					item:set_color(color or char_table.color or Color.white) 
+				end
 			end
 			if actual_mask ~= self._actual_mask then
 				local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
@@ -530,8 +543,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 				end
 				local item = dwp:parent():child("character_icon")
 				if item then item:set_image(mask_icon) end
-				self._actual_mask = actual_mask
 			end
+			self._tabstats_font_size = font_size
+			self._tabstats_color = color_name
+			self._actual_mask = actual_mask
 		end
 	end
 		
@@ -765,21 +780,17 @@ elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 elseif string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	local HUDManager_update_original = HUDManager.update
 	local next_time_t = 0
-	function HUDManager:update(...)
-		HUDManager_update_original(self, ...)
-		if self._hud_statsscreen and self._hud_statsscreen.stats_visible then
-			if self._hud_statsscreen:stats_visible() and next_time_t < Application:time() then
-				self._hud_statsscreen:update_time()
-				next_time_t = Application:time() + 1
-			end
+	function HUDManager:update(t, ...)
+		HUDManager_update_original(self, t, ...)
+		if self:showing_stats_screen() and next_time_t < t then
+			self._hud_statsscreen:update_time()
+			next_time_t = t + 1
 		end
 	end
 	
 	function HUDManager:update_stats_screen(item)
-		if self._hud_statsscreen and self._hud_statsscreen.stats_visible then
-			if self._hud_statsscreen:stats_visible() then
-				self._hud_statsscreen:update_stats(item)
-			end
+		if self:showing_stats_screen() then
+			self._hud_statsscreen:update_stats(item)
 		end
 	end
 	

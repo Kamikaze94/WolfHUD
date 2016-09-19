@@ -56,7 +56,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			y = HUDObjectives._TEXT_MARGIN
 		})
 		
-		self:apply_offset()
+		self:apply_offset(0)
 	end
 	
 	function HUDObjectives:activate_objective(data)
@@ -198,11 +198,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			self._offset_y = offset
 			if alive(self._bg_box) then
 				self._bg_box:stop()
-				self._bg_box:animate(callback(self, self, "_animate_move"), self._bg_box:x(), self._offset_y, false)
+				self._bg_box:animate(callback(self, self, "_animate_move"), self._bg_box:x(), self._offset_y, true)
+				self._panel:animate(callback(self, self, "_animate_move"), self._offset_y > 40 and 0 or 80, self._panel:y(), true)
 			end
-		end
-		if managers.hud and HUDListManager then 
-			managers.hud:change_list_setting("left_list_height_offset", self._bg_box:bottom() + HUDObjectives._BOUNCE + HUDObjectives._TEXT_MARGIN) 
+			if managers.hud then
+				if HUDListManager then 
+					managers.hud:change_list_setting("left_list_height_offset", self._offset_y + self._bg_box:h() + HUDObjectives._BOUNCE + HUDObjectives._TEXT_MARGIN) 
+				end
+			end
 		end
 	end
 	

@@ -91,6 +91,9 @@
 	"wolfhud_multiselect_all" : "Alle",
 	"wolfhud_multiselect_none" : "Keine",
 	"wolfhud_multiselect_disabled" : "Deaktiviert",
+	"wolfhud_multiselect_left" : "Links",
+	"wolfhud_multiselect_center" : "Zentriert",
+	"wolfhud_multiselect_right" : "Rechts",
 	
 	"wolfhud_colors_white"  : "Weiß",
 	"wolfhud_colors_light_yellow"  : "Hell Gelb",

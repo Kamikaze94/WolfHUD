@@ -3,52 +3,58 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	local _start_assault_original = HUDAssaultCorner._start_assault
 	local sync_set_assault_mode_original = HUDAssaultCorner.sync_set_assault_mode
 	local _set_hostage_offseted_original = HUDAssaultCorner._set_hostage_offseted
+	local set_buff_enabled_original = HUDAssaultCorner.set_buff_enabled
+	local show_casing_original = HUDAssaultCorner.show_casing
+	local hide_casing_original = HUDAssaultCorner.hide_casing
 	 
 	function HUDAssaultCorner:init(...)
 		init_original(self, ...)
 		
-		self:update_vertical_pos()
+		self:update_banner_pos()
+		self:update_hudlist_offset()
 	end
 	
-	function HUDAssaultCorner:update_vertical_pos()
+	function HUDAssaultCorner:update_banner_pos()
 		if not alive(self._hud_panel) then return end
-		local width = self._hud_panel:w()
-		local max_offset = width / 2 - 150
-		local banner_scale = math.clamp(WolfHUD:getSetting("assault_banner_position", "number"), -1, 1)
-		
+		local hud_w = self._hud_panel:w()
+		local banner_pos = math.abs(WolfHUD:getSetting("assault_banner_position", "number"))
 		local assault_panel = self._hud_panel:child("assault_panel")
-		if alive(assault_panel) then
-			max_offset = width / 2 - assault_panel:w() / 2
-			assault_panel:set_center_x(width / 2 + max_offset * banner_scale)
-			local buffs_panel = self._hud_panel:child("buffs_panel")
-			if alive(buffs_panel) then
-				buffs_panel:set_right(assault_panel:x() + 20)
+		local buffs_panel = self._hud_panel:child("buffs_panel")
+		local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
+		local casing_panel = self._hud_panel:child("casing_panel")
+		if alive(assault_panel) and alive(buffs_panel) and alive(point_of_no_return_panel) and alive(casing_panel) then
+			if banner_pos < 2 then	--Quite messy, but all the panels in this class are far wider than they would need to be, giving "false information" on their w() function...
+				buffs_panel:set_right(self._vip_bg_box:w())
+				assault_panel:set_right((buffs_panel:visible() and buffs_panel:right() or 80) + self._bg_box:w() + 6 + assault_panel:child("icon_assaultbox"):w())
+				point_of_no_return_panel:set_right(80 + self._bg_box:w() + 3 + point_of_no_return_panel:child("icon_noreturnbox"):w())
+				casing_panel:set_right(80 + self._bg_box:w() + 3 + casing_panel:child("icon_casingbox"):w())
+			elseif banner_pos == 2 then
+				assault_panel:set_right(hud_w / 2 + (self._bg_box:w() + assault_panel:child("icon_assaultbox"):w()) / 2 + (buffs_panel:visible() and (self._vip_bg_box:w() + 3) / 2 or 0))
+				buffs_panel:set_x(assault_panel:left() + self._bg_box:left() - 3 - buffs_panel:w())
+				point_of_no_return_panel:set_right(hud_w / 2 + (self._bg_box:w() + point_of_no_return_panel:child("icon_noreturnbox"):w()) / 2)
+				casing_panel:set_right(hud_w / 2 + (self._bg_box:w() + casing_panel:child("icon_casingbox"):w()) / 2)
+			else
+				assault_panel:set_right(hud_w)
+				buffs_panel:set_x(assault_panel:left() + self._bg_box:left() - 3 - buffs_panel:w())
+				point_of_no_return_panel:set_right(hud_w)
+				casing_panel:set_right(hud_w)
 			end
 		end
-		
-		local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
-		if alive(point_of_no_return_panel) then
-			max_offset = width / 2 - point_of_no_return_panel:w() / 2
-			point_of_no_return_panel:set_center_x(width / 2 + max_offset * banner_scale)
-		end
-		
-		local casing_panel = self._hud_panel:child("casing_panel")
-		if alive(casing_panel) then
-			max_offset = width / 2 - casing_panel:w() / 2
-			casing_panel:set_center_x(width / 2 + max_offset * banner_scale)
-		end
-		
-		self:update_hudlist_offset()
+	end
+	
+	function HUDAssaultCorner:set_buff_enabled(...)
+		self:update_banner_pos()
+		return set_buff_enabled_original(self, ...)
 	end
 	
 	function HUDAssaultCorner:update_hudlist_offset(banner_visible)
 		banner_visible = banner_visible or banner_visible == nil and (self._assault or self._point_of_no_return or self._casing)
-		local banner_scale = math.clamp(WolfHUD:getSetting("assault_banner_position", "number"), -1, 1)
-		if managers.hud and math.abs(banner_scale) > 0.4 then
-			local offset = banner_visible and ((self._bg_box and self._bg_box:h() or 30) + 12) or 0
-			if banner_scale > 0 and HUDListManager then
+		local banner_pos = math.abs(WolfHUD:getSetting("assault_banner_position", "number"))
+		if managers.hud and banner_pos ~= 2 then
+			local offset = banner_visible and ((self._bg_box and self._bg_box:bottom() or 0) + 12) or 0
+			if banner_pos > 2 and HUDListManager then
 				managers.hud:change_list_setting("right_list_height_offset", offset)
-			elseif banner_scale < 0 then
+			elseif banner_pos < 2 then
 				if managers.hud._hud_objectives and managers.hud._hud_objectives.apply_offset then
 					managers.hud._hud_objectives:apply_offset(offset)
 				end
@@ -79,8 +85,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	end
 
 	function HUDAssaultCorner:set_control_info(...) end
-	function HUDAssaultCorner:show_casing(...) end
-	function HUDAssaultCorner:hide_casing(...) end
+	function HUDAssaultCorner:show_casing(...) 
+--		show_casing_original(self, ...)
+--		self:update_hudlist_offset(true)
+	end
+	function HUDAssaultCorner:hide_casing(...) 
+--		hide_casing_original(self, ...)
+--		self:update_hudlist_offset(false)
+	end
 	
 	function HUDAssaultCorner:_start_assault(text_list, ...)
 		for i, string_id in ipairs(text_list) do

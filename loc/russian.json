@@ -89,6 +89,9 @@
     "wolfhud_multiselect_all" : "Все",
     "wolfhud_multiselect_none" : "Нет",
     "wolfhud_multiselect_disabled" : "Отключен",
+	"wolfhud_multiselect_left" : "Left",
+	"wolfhud_multiselect_center" : "Center",
+	"wolfhud_multiselect_right" : "Right",
      
     "wolfhud_colors_white"  : "Белый",
     "wolfhud_colors_light_yellow"  : "Светло-желтый",

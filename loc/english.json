@@ -89,6 +89,9 @@
 	"wolfhud_multiselect_all" : "All",
 	"wolfhud_multiselect_none" : "None",
 	"wolfhud_multiselect_disabled" : "Disabled",
+	"wolfhud_multiselect_left" : "Left",
+	"wolfhud_multiselect_center" : "Center",
+	"wolfhud_multiselect_right" : "Right",
 	
 	"wolfhud_colors_white"  : "White",
 	"wolfhud_colors_light_yellow"  : "Light Yellow",

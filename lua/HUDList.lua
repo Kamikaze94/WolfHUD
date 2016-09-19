@@ -25,6 +25,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	local _setup_player_info_hud_pd2_original = HUDManager._setup_player_info_hud_pd2
 	local update_original = HUDManager.update
+	local show_stats_screen_original = HUDManager.show_stats_screen
+	local hide_stats_screen_original = HUDManager.hide_stats_screen
 	
 	function HUDManager:_setup_player_info_hud_pd2(...)
 		_setup_player_info_hud_pd2_original(self, ...)
@@ -48,6 +50,20 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			HUDListManager.ListOptions[setting] = value
 			return true
 		end
+	end
+	
+	function HUDManager:show_stats_screen(...)
+		if managers.hudlist then
+			managers.hudlist:fade_lists(0.4)
+		end
+		return show_stats_screen_original(self, ...)
+	end
+	
+	function HUDManager:hide_stats_screen(...)
+		if managers.hudlist then
+			managers.hudlist:fade_lists(1)
+		end
+		return hide_stats_screen_original(self, ...)
 	end
 	
 	
@@ -384,6 +400,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			HUDListManager.ListOptions[setting] = value
 			self[clbk](self)
 			return true
+		end
+	end
+	
+	function HUDListManager:fade_lists(alpha)
+		for _, list in pairs(self._lists) do
+			if list:is_active() then
+				list:_fade(alpha)
+			end
 		end
 	end
 	

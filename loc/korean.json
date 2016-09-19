@@ -89,6 +89,9 @@
 	"wolfhud_multiselect_all" : "모두",
 	"wolfhud_multiselect_none" : "없음",
 	"wolfhud_multiselect_disabled" : "비활성화",
+	"wolfhud_multiselect_left" : "Left",
+	"wolfhud_multiselect_center" : "Center",
+	"wolfhud_multiselect_right" : "Right",
 	
 	"wolfhud_colors_white"  : "하얀색",
 	"wolfhud_colors_light_yellow"  : "연한 노란색",
