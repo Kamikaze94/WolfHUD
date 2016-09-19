@@ -2,8 +2,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 
 	local setup_endscreen_hud_original = HUDManager.setup_endscreen_hud
 	
-	function HUDManager:_set_custom_hud_chat_offset(offset)
-		self._hud_chat_ingame:set_offset(offset)
+	function HUDManager:_set_custom_hud_chat_offset(offset, align)
+		self._hud_chat_ingame:set_offset(offset, align)
 	end
 	
 	function HUDManager:setup_endscreen_hud(...)
@@ -44,6 +44,7 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 		self._ws = ws
 		self._parent = hud.panel
 		self:set_channel_id(ChatManager.GAME)
+		self._align = "right"
 		
 		self._panel = self._parent:panel({
 			name = "chat_panel",
@@ -417,8 +418,16 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 		end
 	end
 	
-	function HUDChat:set_offset(offset)
+	function HUDChat:set_offset(offset, align)
 		self._panel:set_bottom(self._parent:h() - offset)
+		if align and self._align ~= align then
+			if align == "left" then
+				self._panel:set_left(0)
+			else
+				self._panel:set_right(self._parent:w())
+			end
+			self._align = align
+		end
 	end
 	
 	function HUDChat:update_key_down(o, k)

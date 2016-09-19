@@ -203,7 +203,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			end
 			if managers.hud then
 				if HUDListManager then 
-					managers.hud:change_list_setting("left_list_height_offset", self._offset_y + self._bg_box:h() + HUDObjectives._BOUNCE + HUDObjectives._TEXT_MARGIN) 
+					managers.hud:change_list_setting("left_list_height_offset", self._offset_y + (self._bg_box:w() > 0 and self._bg_box:h() or 0) + HUDObjectives._BOUNCE + HUDObjectives._TEXT_MARGIN) 
 				end
 			end
 		end

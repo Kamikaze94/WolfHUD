@@ -450,8 +450,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function HUDTeammateCustom:set_alignment(align)
-		self._align = align
-		self:arrange()
+		if self._align ~= align then
+			self._align = align
+			self:arrange()
+		end
 	end
 	
 	function HUDTeammateCustom:reset()
@@ -3097,6 +3099,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:arrange()
 	end
 	
+	function PlayerInfoComponent.SpecialEquipment:set_alignment(align)
+		if PlayerInfoComponent.SpecialEquipment.super.set_alignment(self, align) then
+			self:arrange()
+		end
+	end
+	
 	function PlayerInfoComponent.SpecialEquipment:rescale(factor)
 		if PlayerInfoComponent.SpecialEquipment.super.rescale(self, factor) then
 			for i, panel in ipairs(self._special_equipment) do
@@ -3123,6 +3131,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			panel:set_left(column * panel:w())
 			panel:set_top(row * panel:h())
 			w = (column+1) * panel:w()
+		end
+		
+		if self._align == "right" then
+			for i, panel in ipairs(self._special_equipment) do
+				panel:set_right(w - panel:left())
+			end
 		end
 		
 		if self:set_size(w, h) then
@@ -3794,7 +3808,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				end
 			end
 			if self._hud_chat_ingame and self._set_custom_hud_chat_offset then
-				self:_set_custom_hud_chat_offset(teammate_offset[3] + HUDChat.LINE_HEIGHT)
+				local offset, align = teammate_offset[1] < teammate_offset[3] and teammate_offset[1] or teammate_offset[3], teammate_offset[1] < teammate_offset[3] and "left" or "right"
+				self:_set_custom_hud_chat_offset(offset + HUDChat.LINE_HEIGHT, align)
 			end
 		end
 	end
