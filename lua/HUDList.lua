@@ -664,7 +664,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	--Event handlers
 	function HUDListManager:_timer_event(event, key, data)
-		local settings = HUDListManager.TIMER_SETTINGS[data.id] or {}
+		local settings = HUDListManager.TIMER_SETTINGS[data.id] or HUDListManager.TIMER_SETTINGS[data.device_type] or {}
 		
 		if not settings.ignore then
 			local timer_list = self:list("left_side_list"):item("timers")
@@ -2682,7 +2682,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
-	HUDList.TimerItem = HUDList.TimerItem or class(HUDList.ItemBase)
+	HUDList.TimerItem = HUDList.TimerItem or class(HUDList.ItemBase)	--TODO: Make inheriting UpgradableTimerItem?
 	HUDList.TimerItem.DEVICE_TYPES = {
 		digital = "wolfhud_hudlist_device_timer", 
 		drill = "wolfhud_hudlist_device_drill",
@@ -2692,11 +2692,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		securitylock = "wolfhud_hudlist_device_hack",
 	}
 	function HUDList.TimerItem:init(parent, name, data)
-		HUDList.ItemBase.init(self, parent, name, { align = "left", w = parent:panel():h() * 4/5, h = parent:panel():h() })
-		
 		self.STANDARD_COLOR = HUDListManager.ListOptions.list_color or Color(1, 1, 1, 1)
 		self.UPGRADE_COLOR = Color(1, 0.0, 0.8, 1.0)
 		self.DISABLED_COLOR = Color(1, 1, 0, 0)
+		self.UPGRADE_LVL_COLORS = { Color(0.3, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)}
 		self.FLASH_SPEED = 2
 		
 		self._show_distance = true
@@ -2705,7 +2704,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._jammed = data.jammed
 		self._powered = data.powered
 		self._upgradable = data.upgradable
+		self._upgrades = data.upgrades or {}
+		self._show_upgrade_icons = data.can_have_upgrades
 		
+		HUDList.ItemBase.init(self, parent, name, { align = "left", w = parent:panel():h() * (self._show_upgrade_icons and 1 or 4/5), h = parent:panel():h() })
+				
 		local txt = self.DEVICE_TYPES[self._device_type] and managers.localization:text(self.DEVICE_TYPES[self._device_type]) or "Timer"
 		self._type_text = self._panel:text({
 			name = "type_text",
@@ -2725,11 +2728,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 		self._box:set_bottom(self._panel:bottom())
 		
+		local w_mult = self._show_upgrade_icons and 4/5 or 1
+		
 		self._distance_text = self._box:text({
 			name = "distance",
 			align = "center",
 			vertical = "top",
-			w = self._box:w(),
+			w = self._box:w() * w_mult,
 			h = self._box:h(),
             color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
@@ -2740,11 +2745,47 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			name = "time",
 			align = "center",
 			vertical = "bottom",
-			w = self._box:w(),
+			w = self._box:w() * w_mult,
 			h = self._box:h(),
             color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6
+		})
+		
+		self._speed_upgrade = self._box:bitmap({
+			name = "icon_speed",
+			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
+			x = self._time_text:right() * 0.95,
+			y = self._box:h() * (0.03),
+			h = self._box:h() * 0.3,
+			w = self._box:w() * (1/5),
+			blend_mode = "add",
+			color = self.UPGRADE_LVL_COLORS[1],
+			visible = self._show_upgrade_icons
+		})
+		
+		self._noise_upgrade = self._box:bitmap({
+			name = "icon_noise",
+			texture = "guis/textures/pd2/skilltree/drillgui_icon_silent",
+			x = self._time_text:right() * 0.95,
+			y = self._box:h() * (0.33),
+			h = self._box:h() * 0.3,
+			w = self._box:w() * (1/5),
+			blend_mode = "add",
+			color = self.UPGRADE_LVL_COLORS[1],
+			visible = self._show_upgrade_icons
+		})
+		
+		self._restart_upgrade = self._box:bitmap({
+			name = "icon_restart",
+			texture = "guis/textures/pd2/skilltree/drillgui_icon_restarter",
+			x = self._time_text:right() * 0.95,
+			y = self._box:h() * 0.66,
+			h = self._box:h() * 0.3,
+			w = self._box:w() * (1/5),
+			blend_mode = "add",
+			color = self.UPGRADE_LVL_COLORS[1],
+			visible = self._show_upgrade_icons
 		})
 		
 		local current_color = self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
@@ -2757,6 +2798,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:_set_jammed(data)
 		self:_set_powered(data)
 		self:_set_upgradable(data)
+		self:_set_upgrades(data)
 		self:_update_timer(data)
 		
 		local key = tostring(self._unit:key())
@@ -2813,8 +2855,17 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.TimerItem:_set_upgrades(data)
-		self._upgrades = data.upgrades
-		-- TODO: Set Upgrade Icons
+		if data.upgrades then
+			self._upgrades = data.upgrades
+		end
+		if self._show_upgrade_icons then
+			local speed_color = 1 + math.clamp(self._upgrades.speed_upgrade_level or 0, 0, 2)
+			local noise_color = 1 + (self._upgrades.silent_drill and 1 or 0) + (self._upgrades.reduced_alert and 1 or 0)
+			local restart_color = 1 + ((self._upgrades.auto_repair_level_2 and self._upgrades.auto_repair_level_2 > 0) and 2 or (self._upgrades.auto_repair_level_1 and self._upgrades.auto_repair_level_1 > 0) and 1 or 0)
+			self._speed_upgrade:set_color(self.UPGRADE_LVL_COLORS[speed_color])
+			self._noise_upgrade:set_color(self.UPGRADE_LVL_COLORS[noise_color])
+			self._restart_upgrade:set_color(self.UPGRADE_LVL_COLORS[restart_color])
+		end
 	end
 	
 	function HUDList.TimerItem:_check_is_running()

@@ -594,9 +594,9 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	function GameInfoManager:_timer_event(event, key, ...)
 		if event == "create" then
 			if not self._timers[key] then	
-				local unit, ext, device_type = ...
+				local unit, ext, device_type, can_have_upgrades = ...
 				local id = unit:editor_id()		
-				self._timers[key] = { unit = unit, ext = ext, device_type = device_type, id = id, jammed = false, powered = true, upgradable = false }
+				self._timers[key] = { unit = unit, ext = ext, device_type = device_type, id = id, jammed = false, powered = true, upgradable = false, can_have_upgrades = can_have_upgrades }
 				self:_listener_callback("timer", "create", key, self._timers[key])
 			end
 		elseif event == "destroy" then
@@ -1456,7 +1456,8 @@ if string.lower(RequiredScript) == "lib/units/props/timergui" then
 	function TimerGui:init(unit, ...)
 		self._info_key = tostring(unit:key())
 		local device_type = unit:base().is_drill and "drill" or unit:base().is_hacking_device and "hack" or unit:base().is_saw and "saw" or "timer"
-		managers.gameinfo:event("timer", "create", self._info_key, unit, self, device_type)
+		local can_have_upgrades = (unit:base().is_drill or unit:base().is_saw) and not unit:base()._disable_upgrades
+		managers.gameinfo:event("timer", "create", self._info_key, unit, self, device_type, can_have_upgrades)
 		init_original(self, unit, ...)
 	end
 	
@@ -1531,7 +1532,7 @@ if string.lower(RequiredScript) == "lib/units/props/securitylockgui" then
 	
 	function SecurityLockGui:init(unit, ...)
 		self._info_key = tostring(unit:key())
-		managers.gameinfo:event("timer", "create", self._info_key, unit, self, "securitylock")
+		managers.gameinfo:event("timer", "create", self._info_key, unit, self, "securitylock", false)
 		init_original(self, unit, ...)
 	end
 	
