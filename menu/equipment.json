@@ -16,14 +16,6 @@
 		},
 		{
 			"type" : "toggle",
-			"id" : "tripmine_auto_sensor_stealth",
-			"title" : "wolfhud_equipment_tripmine_auto_sensor_stealth_title",
-			"description" : "wolfhud_equipment_tripmine_auto_sensor_stealth_desc",
-			"callback" : "clbk_change_setting",
-			"value" : "tripmine_auto_sensor_stealth",
-		},
-		{
-			"type" : "toggle",
 			"id" : "ecm_feedback_disabled_stealth",
 			"title" : "wolfhud_equipment_ecm_feedback_disabled_stealth_title",
 			"description" : "wolfhud_equipment_ecm_feedback_disabled_stealth_desc",

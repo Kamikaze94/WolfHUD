@@ -3807,9 +3807,15 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 					sub_presenter:set_bottom(y)
 				end
 			end
-			if self._hud_chat_ingame and self._set_custom_hud_chat_offset then
-				local offset, align = teammate_offset[1] < teammate_offset[3] and teammate_offset[1] or teammate_offset[3], teammate_offset[1] < teammate_offset[3] and "left" or "right"
-				self:_set_custom_hud_chat_offset(offset + HUDChat.LINE_HEIGHT, align)
+			local align_id = teammate_offset[1] < teammate_offset[3] and 1 or 3
+			if self._hud_driving and self._hud_driving.set_offset and self._hud_driving:active() then
+				self._hud_driving:set_offset(teammate_offset[align_id] + HUDDriving._MARGIN, align_id < 2 and "left" or "right")
+				teammate_offset[align_id] = self._hud_driving:panel():top()
+				align_id = teammate_offset[1] < teammate_offset[3] and 1 or 3
+			end
+			if self._hud_chat_ingame and self._hud_chat_ingame.set_offset then
+				self._hud_chat_ingame:set_offset(teammate_offset[align_id] + HUDChat.LINE_HEIGHT, align_id < 2 and "left" or "right")
+				
 			end
 		end
 	end

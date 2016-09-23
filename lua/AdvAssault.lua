@@ -118,7 +118,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDManager:_locked_assault(status)
-		status = status or Network:is_server() and managers.groupai:state():get_hunt_mode() or false
+		status = Network:is_server() and (managers.groupai:state():get_hunt_mode() or false) or status
 		self._assault_locked = self._assault_locked or false
 		if self._assault_locked ~= status then
 			if self._hud_assault_corner then

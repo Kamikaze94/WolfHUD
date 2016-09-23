@@ -94,10 +94,6 @@
 			"callback" : "clbk_change_customhud_setting",
 			"items" : { },
 			"value" : "TEAM_KILLCOUNTER_COLOR",
-		},
-		{
-			"type" : "divider",
-			"size" : 16,
 		}
 	]
 }

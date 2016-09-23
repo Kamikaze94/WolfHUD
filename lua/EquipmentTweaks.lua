@@ -37,17 +37,6 @@ if string.lower(RequiredScript) == "lib/units/weapons/sentrygunweapon" then
 		managers.enemy:remove_delayed_clbk("Sentry_post_init_" .. tostring(self._unit:key()))
 		old_destroy(self, ...)
 	end
-elseif string.lower(RequiredScript) == "lib/units/weapons/trip_mine/tripminebase" then
-	local set_active_original = TripMineBase.set_active
-	function TripMineBase:set_active(active, owner, ...)
-		if WolfHUD:getSetting("tripmine_auto_sensor_stealth", "boolean") then
-			local player_unit = managers.player:player_unit()
-			if alive(owner) and alive(player_unit) and owner:key() == player_unit:key() and managers.groupai:state():whisper_mode() then
-				self._startup_armed = false
-			end
-		end
-		set_active_original(self, active, owner, ...)
-	end
 elseif string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
 	local setup_original = ECMJammerBase.setup
 	local contour_interaction_original = ECMJammerBase.contour_interaction

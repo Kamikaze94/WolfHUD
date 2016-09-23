@@ -26,7 +26,7 @@
 			"id" : "show_car_healthbar",
 			"title" : "wolfhud_show_carhealthbar_title",
 			"description" : "wolfhud_show_carhealthbar_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_drivinghud_setting",
 			"value" : "show_car_healthbar"
 		},
 		{

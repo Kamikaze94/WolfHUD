@@ -97,6 +97,15 @@
 			"priority" : 7,
 		},
 		{
+			"type" : "toggle",
+			"id" : "skill_names",
+			"title" : "wolfhud_skill_names_title",
+			"description" : "wolfhud_skill_names_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "skill_names",
+			"priority" : 8,
+		},
+		{
 			"type" : "divider",
 			"size" : 8,
 			"priority" : 6,

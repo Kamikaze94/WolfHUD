@@ -3,7 +3,7 @@
 	"description" : "This is a Mod Collection of HUD altering scripts. \nIt uses CustomHUD, HUDPanelList, KillCounter, Press2Hold and WeaponLaserColor, made by Seven \n as well as TabStats, NumericSuspicion by friendlyfire, FlashlightExtender by Seven, Enemy Healthbar by Undeadsewer, and many more.\n\nFor a full list of included mods, go to the GitHUB repository, linked as contact.\nSome scripts are created or modified by me.\n\nLocalizations: \nRussian, made by chrom[K]a \nKorean, made by Я!zu \nChinese, made by 小熊饼干\n-",
 	"author" : "Kamikaze94",
 	"contact" : "https://github.com/Kamikaze94/WolfHUD",
-	"version" : "2.33",
+	"version" : "2.35",
 	"priority" : 1,
 	"hooks" : [
 		{ "hook_id" : "lib/setups/setup", 										"script_path" : "Core.lua" },
@@ -59,7 +59,6 @@
 		{ "hook_id" : "lib/units/weapons/weaponflashlight", 					"script_path" : "Core.lua" },
         { "hook_id" : "lib/units/weapons/raycastweaponbase", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/weapons/newraycastweaponbase", 				"script_path" : "Core.lua" },
-		{ "hook_id" : "lib/units/weapons/trip_mine/tripminebase", 				"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/beings/player/playerdamage", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/beings/player/playermovement", 				"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/beings/player/huskplayermovement", 			"script_path" : "Core.lua" },

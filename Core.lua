@@ -135,7 +135,6 @@ if not _G.WolfHUD then
 		["lib/units/weapons/weaponflashlight"] = { "WeaponGadgets.lua" },
 		["lib/units/weapons/raycastweaponbase"] = { "GameInfoManager.lua", "Scripts.lua" },
 		["lib/units/weapons/newraycastweaponbase"] = { "WeaponGadgets.lua", "BurstFire.lua" },
-		["lib/units/weapons/trip_mine/tripminebase"] = { "EquipmentTweaks.lua" },
 		["lib/units/props/securitycamera"] = { "GameInfoManager.lua" },
 		["lib/units/beings/player/playerdamage"] = { "GameInfoManager.lua", "DamageIndicator.lua" },
 		["lib/units/beings/player/playermovement"] = { "GameInfoManager.lua" },
@@ -414,7 +413,6 @@ if not _G.WolfHUD then
 			show_angeled_sight						= true,
 		  --Equipment Tweaks
 			senty_auto_ap 							= true,
-			tripmine_auto_sensor_stealth			= true,
 			ecm_feedback_disabled_stealth			= true,
 			
 			show_advanced_assault					= true,
@@ -425,6 +423,7 @@ if not _G.WolfHUD then
 			inventory_tab_names						= true,
 			inventory_names							= true,
 			show_mini_icons							= true,
+			skill_names								= true,			-- TODO!
 			
 			use_fed_inv								= true
 		}
@@ -792,10 +791,10 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		if managers.hud and managers.hud.change_tabstats_setting then managers.hud:change_tabstats_setting(tostring(name), WolfHUD:getSetting(name)) end
 	end
 	
-	MenuCallbackHandler.clbk_change_tabstats_color_setting = function(self, item)
+	MenuCallbackHandler.clbk_change_drivinghud_setting = function(self, item)
 		self:clbk_change_setting(item)
 		local name = item:parameters().name
-		if managers.hud and managers.hud.change_tabstats_setting then managers.hud:change_tabstats_setting(tostring(name), WolfHUD:getSetting(name)) end
+		if managers.hud and managers.hud.change_drivinghud_setting then managers.hud:change_drivinghud_setting(tostring(name), WolfHUD:getSetting(name, "color", WolfHUD:getSetting(name))) end
 	end
 		
 	WolfHUD:Load()

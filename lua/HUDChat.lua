@@ -2,10 +2,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 
 	local setup_endscreen_hud_original = HUDManager.setup_endscreen_hud
 	
-	function HUDManager:_set_custom_hud_chat_offset(offset, align)
-		self._hud_chat_ingame:set_offset(offset, align)
-	end
-	
 	function HUDManager:setup_endscreen_hud(...)
 		if HUDChat.MOUSE_SUPPORT then
 			self._hud_chat_ingame:disconnect_mouse()

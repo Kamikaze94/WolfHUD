@@ -142,7 +142,8 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 		if selected_slot then
 			selected_slot:select(true, true)
 			if highlighted_slot and selected_slot ~= highlighted_slot then
-				highlighted_slot:set_highlight(false, true)
+				selected_slot:set_highlight(false, true)
+				highlighted_slot:set_highlight(true, false)
 			end
 		end
 		
@@ -164,7 +165,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 		local value = orig_newskilltreeskillitem_refresh(self, ...)
 		
 		--Always show Skill names
-		if alive(self._skill_panel) then
+		if alive(self._skill_panel) and WolfHUD:getSetting("skill_names", "boolean") then
 			local skill_name = self._skill_panel:child("SkillName")
 			if skill_name then
 				local unlocked = self._skill_id and self._tree and managers.skilltree and managers.skilltree:skill_unlocked(self._tree, self._skill_id) or false
@@ -188,26 +189,52 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 	--Resize and move total points label
 	local orig_newskilltreetieritem_init = NewSkillTreeTierItem.init
 	local orig_newskilltreetieritem_refresh_points = NewSkillTreeTierItem.refresh_points
+	local orig_newskilltreetieritem_refresh_tier_text = NewSkillTreeTierItem._refresh_tier_text
 	function NewSkillTreeTierItem:init(...)
 		local val = orig_newskilltreetieritem_init(self, ...)
-		if self._tier_points_total and self._tier_points_total_zero and self._tier_points_total_curr then
-			local font_size = tweak_data.menu.pd2_small_font_size * 0.75
-			self._tier_points_total:set_font_size(font_size)
-			local _, _, w, h = self._tier_points_total:text_rect()
-			self._tier_points_total:set_size(w, h)
-			self._tier_points_total_zero:set_font_size(font_size)
-			self._tier_points_total_curr:set_font_size(font_size)
-			self._tier_points_total:set_alpha(0.9)
-			self._tier_points_total_curr:set_alpha(0.9)
+		if WolfHUD:getSetting("skill_names", "boolean") then
+			if self._tier_points_needed and self._tier_points_needed_curr and self._tier_points_needed_zero then
+				--self._tier_points_needed_zero:set_left(self._text_space)
+				--self._tier_points_needed_curr:set_left(self._tier_points_needed_zero:right())
+				--self._tier_points_needed:set_left(self._tier_points_needed_curr:right())	
+			end	
+			
+			if self._tier_points_total and self._tier_points_total_zero and self._tier_points_total_curr then
+				local font_size = tweak_data.menu.pd2_small_font_size * 0.75
+				self._tier_points_total:set_font_size(font_size)
+				local _, _, w, h = self._tier_points_total:text_rect()
+				self._tier_points_total:set_size(w, h)
+				self._tier_points_total_zero:set_font_size(font_size)
+				self._tier_points_total_curr:set_font_size(font_size)
+				self._tier_points_total:set_alpha(0.9)
+				self._tier_points_total_curr:set_alpha(0.9)
+				self._tier_points_total_zero:set_alpha(0.6)
+			end
 		end
 		return val
 	end
-	function NewSkillTreeTierItem:refresh_points(...)
-		orig_newskilltreetieritem_refresh_points(self, ...)
-		if alive(self._tier_points_total) and alive(self._tier_points_total_zero) and alive(self._tier_points_total_curr) then
-			self._tier_points_total:set_y(self._text_space or 10)
-			self._tier_points_total_zero:set_y(self._text_space or 10)
-			self._tier_points_total_curr:set_y(self._text_space or 10)
+	function NewSkillTreeTierItem:refresh_points(selected, ...)
+		orig_newskilltreetieritem_refresh_points(self, selected, ...)
+		if WolfHUD:getSetting("skill_names", "boolean") then
+			if alive(self._tier_points_total) and alive(self._tier_points_total_zero) and alive(self._tier_points_total_curr) then
+				self._tier_points_total:set_y(self._text_space or 10)
+				self._tier_points_total_zero:set_y(self._text_space or 10)
+				self._tier_points_total_curr:set_y(self._text_space or 10)
+			end
+		end
+	end
+	function NewSkillTreeTierItem:_refresh_tier_text(selected, ...)
+		orig_newskilltreetieritem_refresh_tier_text(self, selected, ...)
+		if WolfHUD:getSetting("skill_names", "boolean") then
+			if selected and alive(self._tier_points_needed) and alive(self._tier_points_needed_curr) and alive(self._tier_points_needed_zero) then
+				self._tier_points_needed_zero:set_left(self._tier_points_0:left())
+				self._tier_points_needed_curr:set_left(self._tier_points_needed_zero:right())
+				self._tier_points_needed:set_left(self._tier_points_needed_curr:right() + self._text_space)
+			end			
+			if alive(self._tier_points_0) and alive(self._tier_points) then
+				self._tier_points:set_visible(not self._tier_points_needed:visible())
+				self._tier_points_0:set_visible(not self._tier_points_needed:visible())
+			end
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/tweakdata" then
