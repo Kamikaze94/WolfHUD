@@ -23,7 +23,7 @@ function GroupAIStateBase:_upd_criminal_suspicion_progress(...)
 							color = Color.white
 							arrow_color = tweak_data.hud.detected_color
 							waypoint.bitmap:set_image("guis/textures/hud_icons")
-							waypoint.bitmap:set_texture_rect(479, 433, 32, 32,)
+							waypoint.bitmap:set_texture_rect(479, 433, 32, 32)
 						end
 					end
 					if color and arrow_color then
