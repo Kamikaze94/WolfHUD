@@ -3808,7 +3808,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				end
 			end
 			local align_id = teammate_offset[1] < teammate_offset[3] and 1 or 3
-			if self._hud_driving and self._hud_driving.set_offset and self._hud_driving:active() then
+			if self._hud_driving and self._hud_driving.set_offset and self._hud_driving:panel():visible() then
 				self._hud_driving:set_offset(teammate_offset[align_id] + HUDDriving._MARGIN, align_id < 2 and "left" or "right")
 				teammate_offset[align_id] = self._hud_driving:panel():top()
 				align_id = teammate_offset[1] < teammate_offset[3] and 1 or 3

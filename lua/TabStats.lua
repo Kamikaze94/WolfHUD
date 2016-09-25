@@ -89,6 +89,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		local player = managers.player:player_unit()
 		local char_data = player and managers.criminals:character_data_by_unit(player)
 		local mask_id = char_data and char_data.mask_id
+		local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/alienware"
 		if mask_id then
 			local guis_catalog = "guis/"
 			local bundle_folder = tweak_data.blackmarket.masks[mask_id] and tweak_data.blackmarket.masks[mask_id].texture_bundle_folder
@@ -481,13 +482,16 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	end
 
 	function HUDStatsScreen:clean_up(right_panel)
-		--right_panel:child("ghost_icon"):set_visible(false)
-		right_panel:child("day_wrapper_panel"):child("ghostable_text"):set_visible(false)
-		right_panel:child("day_wrapper_panel"):child("paygrade_title"):set_visible(false)
-		right_panel:child("day_wrapper_panel"):child("risk_text"):set_visible(false)
-		right_panel:child("day_wrapper_panel"):child("day_payout"):set_visible(false)
-		right_panel:child("day_wrapper_panel"):child("day_description"):set_visible(false)
-		right_panel:child("day_wrapper_panel"):child("bains_plan"):set_visible(false)
+		local dwp = right_panel:child("day_wrapper_panel")
+		if alive(dwp) then
+			local panels = {"ghostable_text", "paygrade_title", "risk_text", "day_payout", "day_description", "bains_plan"}
+			for i, p_name in ipairs(panels) do
+				local item = dwp:child(p_name)
+				if alive(item) then
+					item:set_visible(false)
+				end
+			end
+		end
 	end
 
 	function HUDStatsScreen:_update_stats_screen_day(right_panel)

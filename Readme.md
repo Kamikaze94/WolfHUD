@@ -60,7 +60,7 @@ __Included Mods:__
 - __[BurstFire](https://bitbucket.org/pjal3urb/burstfire/src)__, made by _Seven_
 - __[Real Ammo](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15108)__, made by _FishTaco_, modified by _me_
 - __[No Spam](http://steamcommunity.com/app/218620/discussions/15/618457398976607330/)__, made by _Ahab_, _Seven_, _AmEyeBlind_ & _money123451_, updated by _me_
-- __[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by _ViciousWalrus_ and _Great Big Bushy Beard_, updated by _me_
+- __[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by _ViciousWalrus_ and _Great Big Bushy Beard_, rewritten by _me_
 - __[Real Weapon Names](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15433)__, made by _(AD) Jaqueto_, updated by _Terminator01_
 - __[Buy all Assets](http://steamcommunity.com/app/218620/discussions/15/618458030689719683/)__, made by _=TBM= BangL_
 - __Equipment Tweaks__, made by _me_
@@ -68,6 +68,7 @@ __Included Mods:__
   - __[Always show Mod Icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13975)__, made by _Slippai~_, updated by _me_
   - __[Slider Values](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14800)__, made by _Snh20_, modified by _me_
   - __Show Weapon Names__, made by _me_
+  - __Show Skill Names__, made by _me_
   - __[Skillset Info](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15294)__, made by _Fooksie_
   - Increased the maximum chars of custom Weapon/Mask/Skillset names
   - __Federal Inventory__ (Mod Override), made by _Nervatel Hanging Closet Monster_ and _Luffy_, updated by _me_
@@ -78,7 +79,7 @@ __Localizations:__
 --
 - __English__, made by _me_
 - __German__, made by _me_
-- __Russian__, made by _chrom[K]a_
+- __Russian__, made by _chrom[K]a_ & _Magic3000_
 - __Korean__, made by _Я!zu_
 - __Chinese__, made by _小熊饼干_
 
