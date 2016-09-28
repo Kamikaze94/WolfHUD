@@ -126,18 +126,30 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	
 	function HUDDriving:apply_settings()
 		self._panel:set_enabled("setting", WolfHUD:getSetting("use_drivinghud", "boolean"))
-		self._legend_speed:set_text_suffix(WolfHUD:getSetting("speed_in_mph", "boolean") and "mph" or "km/h")
-		self._legend_health:set_enabled("setting", WolfHUD:getSetting("show_car_healthbar", "boolean"))
-		self._vehicle_image:set_enabled("setting", WolfHUD:getSetting("show_vehicle", "boolean"))
+		self._legend_speed:set_text_suffix(WolfHUD:getSetting("drivinghud_speed_in_mph", "boolean") and "mph" or "km/h")
+		self._vehicle_image:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_vehicle", "boolean"))
+		self._legend_health:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_health", "boolean"))
+		self._legend_loot:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_loot", "boolean"))
+		self._legend_passengers:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_passengers", "boolean"))
+		self._legend_gear:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_gear", "boolean"))
+		self._legend_speed:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_speed", "boolean"))
+		self._legend_rpm:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_rpm", "boolean"))
+		
+		
+		local scale = WolfHUD:getSetting("drivinghud_scale", "number")
+		if scale ~= HUDDriving._SCALE then
+			self._panel:rescale(scale / HUDDriving._SCALE)
+			HUDDriving._SCALE = scale
+		end
 	end
 	
 	function HUDDriving:set_offset(offset, align)
 		self._bottom_pos = self._hud_panel:h() - offset
 		if align and self._align ~= align then
-			self._align = align
-			self._panel:set_align(self._align)
+			self._panel:set_align(align)
 		end
-		if self._panel:bottom() ~= self._bottom_pos then
+		if self._panel:bottom() ~= self._bottom_pos or self._align ~= align then
+			self._align = align
 			self:arrange()
 		end
 	end
@@ -254,13 +266,19 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		
 		if self._panel:w() ~= w or self._panel:h() ~= h then
 			self._panel:set_size(w, h)
-			self:arrange()
 			return true
 		end
 	end
 	
 	function HUDDriving.BasicItem:arrange()
 	
+	end
+	
+	function HUDDriving.BasicItem:rescale(factor)
+		if factor and factor ~= 1 then
+			self:set_size(self:w() * factor, self:h() * factor)
+			return true
+		end
 	end
 	
 	function HUDDriving.BasicItem:panel() return self._panel end
@@ -278,6 +296,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	function HUDDriving.BasicItem:center_y() return self._panel:center_y() end
 	function HUDDriving.BasicItem:visible() return self._panel:visible() end
 	function HUDDriving.BasicItem:layer() return self._panel:layer() end
+	function HUDDriving.BasicItem:text_rect() return self:x(), self:y(), self:w(), self:h() end
 	
 	function HUDDriving.BasicItem:set_alpha(v) self._panel:set_alpha(v) end
 	function HUDDriving.BasicItem:set_x(v) self._panel:set_x(v) end
@@ -326,6 +345,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			for i, component in ipairs(self._components) do
 				component:set_align(align)
 			end
+			self:arrange()
 		end
 	end
 	
@@ -339,6 +359,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 				component:set_y(self._margin)
 				if component:resizable_h() then
 					table.insert(resize_components, component)
+					local _, _, comp_w, comp_h = component:text_rect()
+					h = math.max(h, comp_h or 0)
 				else
 					h = math.max(h, component:h())
 				end
@@ -350,6 +372,15 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		end
 		if self:set_size(w - self._margin, h) then
 			self._owner:arrange()
+		end
+	end
+	
+	function HUDDriving.HorizontalListItem:rescale(factor)
+		if HUDDriving.HorizontalListItem.super.rescale(self, factor) then
+			for i, component in ipairs(self._components) do
+				component:rescale(factor)
+			end
+			self:arrange()
 		end
 	end
 	
@@ -386,6 +417,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			for i, component in ipairs(self._components) do
 				component:set_align(align)
 			end
+			self:arrange()
 		end
 	end
 	
@@ -399,6 +431,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 				component:set_y(h)
 				if component:resizable_w() then
 					table.insert(resize_components, component)
+					local _, _, comp_w, comp_h = component:text_rect()
+					w = math.max(w, comp_w or 0)
 				else
 					w = math.max(w, component:w())
 				end
@@ -410,6 +444,15 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		end
 		if self:set_size(w, h - self._margin) then
 			self._owner:arrange()
+		end
+	end
+	
+	function HUDDriving.VerticalListItem:rescale(factor)
+		if HUDDriving.VerticalListItem.super.rescale(self, factor) then
+			for i, component in ipairs(self._components) do
+				component:rescale(factor)
+			end
+			self:arrange()
 		end
 	end
 	
@@ -470,12 +513,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			self:set_enabled("vehicle_table", true)
 			for seat_name, seat in pairs(self._vehicle_table) do
 				if seat.is_seat then
-					self._passengers[seat_name] = self._passengers[seat_name] or HUDDriving.VehiclePassengerItem:new(self._panel, self, seat_name, 35, 35, {})
+					self._passengers[seat_name] = self._passengers[seat_name] or HUDDriving.VehiclePassengerItem:new(self._panel, self, seat_name, 35 * HUDDriving._SCALE, 35 * HUDDriving._SCALE, {})
 					local passenger = self._passengers[seat_name]
-					local panel_center_x, panel_center_y = self._panel:w() / 2, self._panel:h() / 2
 					local scale_x = math.clamp(seat.scale_x, -1, 1)
 					local scale_y = math.clamp(seat.scale_y, -1, 1)
-					passenger:set_position(panel_center_x * (scale_x + 1), panel_center_y * (scale_y + 1))
+					passenger:set_position(scale_x, scale_y)
 				end
 			end
 			for name, passenger in pairs(self._passengers) do
@@ -500,6 +542,25 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		end
 	end
 	
+	function HUDDriving.VehicleImageItem:set_size(w, h)
+		if HUDDriving.VehicleImageItem.super.set_size(self, w, h) then
+			self._image:set_w(self:w())
+			self._image:set_h(self:h())
+			
+			self:arrange()
+		end
+	end
+	
+	function HUDDriving.VehicleImageItem:rescale(factor)
+		if HUDDriving.VehicleImageItem.super.rescale(self, factor) then
+			for name, passenger in pairs(self._passengers) do
+				if passenger then
+					passenger:rescale(factor)
+				end
+			end
+		end
+	end
+	
 	HUDDriving.VehiclePassengerItem = HUDDriving.VehiclePassengerItem or class(HUDDriving.BasicItem)
 	function HUDDriving.VehiclePassengerItem:init(base_panel, owner, name, width, height, params)
 		
@@ -508,6 +569,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		self._unit = params.unit or nil
 		self._mask_id = params.mask_id or "alienware"
 		self._color = params.color or tweak_data.chat_colors[5]
+		self._scale_x = 0
+		self._scale_y = 0
 				
 		self._image = self._panel:bitmap({
 			name 			= "vehicle_image",
@@ -519,6 +582,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		self._image:set_center(self._panel:center())
 		
 		self:_set_passenger()
+		self:arrange()
 	end
 	
 	function HUDDriving.VehiclePassengerItem:set_passenger(unit)
@@ -554,19 +618,36 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		end
 	end
 	
-	function HUDDriving.VehiclePassengerItem:set_position(x, y)
-		local parent_w, parent_h = self._owner_panel:w(), self._owner_panel:h()
-		local w2, h2 = self._panel:w() / 2, self._panel:h() / 2
-		self._panel:set_center(math.min(math.max(w2, x), parent_w - w2), math.min(math.max(h2, y), parent_h - h2))
+	function HUDDriving.VehiclePassengerItem:set_position(scale_x, scale_y)
+		self._scale_x = scale_x
+		self._scale_y = scale_y
+		self:arrange()
 	end
 	
+	function HUDDriving.VehiclePassengerItem:set_size(w, h)
+		if HUDDriving.VehiclePassengerItem.super.set_size(self, w, h) then
+			self._image:set_w(w)
+			self._image:set_h(h)
+			self._image:set_center(w / 2, h / 2)
+			
+			self:arrange()
+		end
+	end
+	
+	function HUDDriving.VehiclePassengerItem:arrange()
+		local parent_w, parent_h = self._owner:w(), self._owner:h()
+		local w2, h2 = self:w() / 2, self:h() / 2
+		local x, y = (parent_w / 2) * (self._scale_x + 1), (parent_h / 2) * (self._scale_y + 1)
+		
+		self._panel:set_center(math.min(math.max(w2, x), parent_w - w2), math.min(math.max(h2, y), parent_h - h2))
+	end
 	
 	HUDDriving.LegendItem = HUDDriving.LegendItem or class(HUDDriving.BasicItem)
 	function HUDDriving.LegendItem:init(base_panel, owner, name, width, height, params)
 		
 		HUDDriving.LegendItem.super.init(self, base_panel, owner, name, width, height, params)
 		
-		self._text_suffix = tostring(params.suffix) or ""
+		self._text_suffix = params.suffix and tostring(params.suffix) or ""
 		self._show_max_value = params.show_max or false
 		self._max_value = params.max_value or 1
 		self._value = params.value or 0
@@ -581,8 +662,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			font = "fonts/font_medium_shadow_mf",
 		})
 		
-		HUDDriving.LegendItem._set_value(self)
+		self:_set_value()
 	end
+	
+	function HUDDriving.LegendItem:text_rect() return self._text:text_rect() end
 	
 	function HUDDriving.LegendItem:set_value(value)
 		if value and value ~= self._value then
@@ -610,12 +693,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	function HUDDriving.LegendItem:set_max_value(value)
 		if value and value ~= self._max_value then
 			self._max_value = value
+			self:_set_value()
 		end
 	end
 	
 	function HUDDriving.LegendItem:set_text_suffix(suffix)
 		if suffix then
-			self._text_suffix = tostring(suffix)
+			self._text_suffix = suffix and tostring(suffix) or ""
 			self:_set_value()
 		end
 	end
@@ -624,16 +708,20 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		if HUDDriving.LegendItem.super.set_size(self, w, h) then
 			self._text:set_w(w or self._text:w())
 			self._text:set_h(h or self._text:h())
+			self._text:set_font_size((h or self._text:h()) * 0.95)
+			self:arrange()
 			return true
 		end
 	end
-	
+		
 	
 	HUDDriving.LegendHealthItem = HUDDriving.LegendHealthItem or class(HUDDriving.LegendItem)
 	function HUDDriving.LegendHealthItem:init(base_panel, owner, name, width, height, params)
 		HUDDriving.LegendHealthItem.super.init(self, base_panel, owner, name, width, height, params)
 		
 		self._health_texture_rect = { 2, 18, 232,	11 }
+		self._value_ratio = 1
+		self._health_offset = 1
 		
 		self._health_bar = self._panel:bitmap({
 			name 			= "health_bar",
@@ -641,10 +729,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			texture_rect 	= self._health_texture_rect,
 			blend_mode 		= "normal",
 			layer			= 1,
-			x 				= 0 + 1,
-			y				= 0 + 1,
-			w 				= self._panel:w() * 0.95 - 2,
-			h 				= self._panel:h() * 0.95 - 2
+			x 				= self._health_offset,
+			y				= self._health_offset,
+			w 				= self._panel:w() * 0.95 - (2 * self._health_offset),
+			h 				= self._panel:h() * 0.95 - (2 * self._health_offset)
 		})
 		self._health_shield = self._panel:bitmap({
 			name 			= "unit_shield",
@@ -664,29 +752,43 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		self:_set_value()
 	end
 	
-	function HUDDriving.LegendHealthItem:set_size()
-		if HUDDriving.LegendHealthItem.super.set_size(self, w, h) then
-			self._health_bar:set_w((w * 0.95 - 2) * (self._value_ratio or 1))
-			self._health_bar:set_h(h * 0.95 - 2)
+	function HUDDriving.LegendHealthItem:set_size(w, h)
+		if HUDDriving.LegendHealthItem.super.set_size(self, w, h) then			
+			self._health_shield:set_w(self:w() * 0.95)
+			self._health_shield:set_h(self:h() * 0.95)
 			
-			self._health_shield:set_w(w * 0.95)
-			self._health_shield:set_h(h * 0.95)
+			self._health_bar:set_w((self._health_shield:w() - (2 * self._health_offset)) * math.clamp(self._value_ratio, 0, 1))
+			self._health_bar:set_h(self._health_shield:h() - (2 * self._health_offset))
+			
+			self:arrange()
 		end
 	end
 	
 	function HUDDriving.LegendHealthItem:arrange()
+		HUDDriving.LegendHealthItem.super.arrange(self)
 		if alive(self._health_bar) and alive(self._health_shield) then
-			self._health_bar:set_center(self._panel:center())
 			self._health_shield:set_center(self._panel:center())
+			self._health_bar:set_left(self._health_shield:left() + self._health_offset)
+			self._health_bar:set_center_y(self._health_shield:center_y())
 		end
 	end
 	
-	function HUDDriving.LegendHealthItem:_set_value(value)
-		HUDDriving.LegendHealthItem.super._set_value(self, value)
+	function HUDDriving.LegendHealthItem:rescale(factor)
+		if factor and factor ~= 1 then
+			self._health_offset = self._health_offset * factor
+		end
+		
+		HUDDriving.LegendHealthItem.super.rescale(self, factor)
+	end
+	
+	function HUDDriving.LegendHealthItem:_set_value()
+		HUDDriving.LegendHealthItem.super._set_value(self)
 		if self._value and self._max_value then
-			self._value_ratio = self._value / self._max_value
-			self._health_bar:set_w(self._value_ratio * (self._health_shield:w() - 2))
-			self._health_bar:set_texture_rect(self._health_texture_rect[1], self._health_texture_rect[2], self._health_texture_rect[3] * self._value_ratio, self._health_texture_rect[4])
+			self._value_ratio = math.clamp(self._value / self._max_value, 0, 1)
+			if alive(self._health_bar) then
+				self._health_bar:set_w(self._value_ratio * (self._health_shield:w() - (2 * self._health_offset)))
+				self._health_bar:set_texture_rect(self._health_texture_rect[1], self._health_texture_rect[2], self._health_texture_rect[3] * self._value_ratio, self._health_texture_rect[4])
+			end
 			
 			local color
 			if self._value_ratio < 0.05 then 
@@ -724,28 +826,29 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	
 	function HUDDriving.LegendImageItem:set_size(w, h)
 		if HUDDriving.LegendImageItem.super.set_size(self, w, h) then
-			self._icon:set_size(h * 0.75, h * 0.75)
+			self._icon:set_size(self:h() * 0.75, self:h() * 0.75)
+			
+			self:arrange()
 		end
 	end
 	
 	function HUDDriving.LegendImageItem:set_align(align)
 		if HUDDriving.LegendImageItem.super.set_align(self, align) then
-			if self._align == "left" then
-				self._icon:set_left(self._panel:left())
-			else
-				self._icon:set_right(self._panel:right())
-			end
+			self:arrange()
 		end
 	end
 	
 	function HUDDriving.LegendImageItem:arrange()
+		HUDDriving.LegendImageItem.super.arrange(self)
 		if alive(self._icon) then
 			if self._align == "left" then
-				self._icon:set_left(self._panel:left())
+				self._icon:set_left(0)
 			else
-				self._icon:set_right(self._panel:right())
+				self._icon:set_right(self:w())
 			end
-			self._icon:set_center_y(self._panel:center_y())
+			if alive(self._text) then
+				self._icon:set_center_y(self:h() / 2)
+			end
 		end
 	end
 	

@@ -2,6 +2,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 	
 	HUDObjectives._TEXT_MARGIN = 8
 	HUDObjectives._MAX_WIDTH = 300
+	HUDObjectives._FONT_SIZE = tweak_data.hud.active_objective_title_font_size
 	HUDObjectives._BOUNCE = 12
 
 	function HUDObjectives:init(hud)
@@ -29,7 +30,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			layer = 2,
 			color = Color.white,
 			text = "",
-			font_size = tweak_data.hud.active_objective_title_font_size,
+			font_size = HUDObjectives._FONT_SIZE,
 			font = tweak_data.hud.medium_font_noshadow,
 			align = "left",
 			vertical = "center",
@@ -46,12 +47,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			layer = 2,
 			color = Color.white,
 			text = "",
-			font_size = tweak_data.hud.active_objective_title_font_size,
+			font_size = HUDObjectives._FONT_SIZE,
 			font = tweak_data.hud.medium_font_noshadow,
 			align = "left",
 			vertical = "center",
 			w = self._bg_box:w(),
-			h = tweak_data.hud.active_objective_title_font_size,
+			h = HUDObjectives._FONT_SIZE,
 			x = HUDObjectives._TEXT_MARGIN,
 			y = HUDObjectives._TEXT_MARGIN
 		})
@@ -82,6 +83,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			self._bg_box:stop()
 			self._bg_box:animate(callback(self, self, "_animate_update_objective"))
 		end
+		
+		self:apply_offset(self._offset_y)
 	end
 
 	function HUDObjectives:update_amount_objective(data, hide_animation)
@@ -122,6 +125,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		self._objective_text:set_visible(false)
 		self._panel:set_visible(false)
 		self._bg_box:set_w(0)
+		
+		self:apply_offset(self._offset_y)
 	end
 
 	function HUDObjectives:_animate_new_amount(object)
@@ -152,7 +157,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		local string_width_measure_text_field = self._panel:child("string_dimensions") or self._panel:text({
 			name = "string_dimensions",
 			visible = false,
-			font_size = tweak_data.hud.active_objective_title_font_size,
+			font_size = HUDObjectives._FONT_SIZE,
 			font = tweak_data.hud.medium_font_noshadow,
 			align = "left",
 			vertical = "center",
@@ -168,7 +173,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			name = "layout",
 			width = self._MAX_WIDTH,
 			visible = false,
-			font_size = tweak_data.hud.active_objective_title_font_size,
+			font_size = HUDObjectives._FONT_SIZE,
 			font = tweak_data.hud.medium_font_noshadow,
 			align = "left",
 			vertical = "center",
@@ -201,10 +206,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 				self._bg_box:animate(callback(self, self, "_animate_move"), self._bg_box:x(), self._offset_y, true)
 				self._panel:animate(callback(self, self, "_animate_move"), self._offset_y > 40 and 0 or 80, self._panel:y(), true)
 			end
-			if managers.hud then
-				if HUDListManager then 
-					managers.hud:change_list_setting("left_list_height_offset", self._offset_y + (self._bg_box:w() > 0 and self._bg_box:h() or 0) + HUDObjectives._BOUNCE + HUDObjectives._TEXT_MARGIN) 
-				end
+		end
+		if managers.hud then
+			if HUDListManager then 
+				managers.hud:change_list_setting("left_list_height_offset", self._offset_y + (self._bg_box:w() > 0 and (self._bg_box:h() + HUDObjectives._BOUNCE) or 40) + HUDObjectives._TEXT_MARGIN) 
 			end
 		end
 	end

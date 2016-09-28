@@ -90,7 +90,7 @@ if not _G.WolfHUD then
 		["lib/managers/localizationmanager"] = { "AdvAssault.lua" },
 		["lib/managers/experiencemanager"] = { "Scripts.lua" },
 		["lib/managers/moneymanager"] = { "Scripts.lua" },
-		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua", "TabStats.lua" },
+		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua", "TabStats.lua", "WaypointsManager.lua" },
 		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "WaypointsManager.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
 		["lib/managers/statisticsmanager"] = { "KillCounter.lua", "TabStats.lua" },
 		["lib/managers/playermanager"] = { "GameInfoManager.lua" },
@@ -257,8 +257,15 @@ if not _G.WolfHUD then
 			show_susp_eye							= true,
 		  --Driving HUD
 			use_drivinghud							= true,		--Show DrivingHUD Panel
-			show_vehicle 							= true,		--Show Vehicle and Teammate Mask Images
-			speed_in_mph 							= false,	--Display Speed in mph
+			drivinghud_scale						= 1,
+			drivinghud_show_vehicle 				= true,		--Show Vehicle and Teammate Mask Images
+			drivinghud_show_health					= true,
+			drivinghud_show_loot					= true,
+			drivinghud_show_passengers				= true,
+			drivinghud_show_gear					= true,
+			drivinghud_show_speed					= true,
+			drivinghud_show_rpm						= true,
+			drivinghud_speed_in_mph 				= false,	--Display Speed in mph
 		  --TabStats
 			use_tabstats							= true,
 			clock_mode								= 3,		-- 1 = disabled, 2 = 12h, 3 = 24h
@@ -383,7 +390,7 @@ if not _G.WolfHUD then
 			SHOW_INTERRUPT_HINT						= true,
 			SHOW_TIME_REMAINING 					= true,			--Show remaining Time in the Interaction-Circle
 			GRADIENT_COLOR 							= "light_green",--Color, which the timer reaches on completition
-			SHOW_RELOAD								= true,
+			SHOW_RELOAD								= false,
 			SHOW_MELEE								= false,
 			SUPRESS_NADES_STEALTH					= true,
 			HOLD2PICK								= true,
@@ -805,14 +812,14 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/equipment.json", 					WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.json", 				WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_tabstats.json", 				WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info.json", 					WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff.json", 				WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff_buffs.json", 		WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff_debuffs.json", 		WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_buff_teambuffs.json", 	WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_right.json", 			WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_info_left.json", 				WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_panels.json", 				WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo.json", 					WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff.json", 				WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_buffs.json", 		WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_debuffs.json", 		WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_teambuffs.json", 	WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_right.json", 				WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_left.json", 				WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud.json", 						WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_teampanels.json", 			WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_playerpanel.json", 			WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_chat.json", 					WolfHUD, WolfHUD.settings)
