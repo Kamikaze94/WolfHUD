@@ -1,3 +1,4 @@
+-- Delete this, if WaypointCustom is ready...
 local _upd_criminal_suspicion_progress_original = GroupAIStateBase._upd_criminal_suspicion_progress
 function GroupAIStateBase:_upd_criminal_suspicion_progress(...)
 	if self._ai_enabled then

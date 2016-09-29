@@ -107,6 +107,7 @@ if RequiredScript == "lib/setups/setup" then
 			for id, wp in pairs(self._waypoints) do
 				if wp:is_deleted() then
 					wp:_clear()
+					self._waypoints[id] = nil
 				else
 					wp:update(t, dt, cam, cam_forward, self._hud_panel, workspace)
 				end
@@ -195,9 +196,9 @@ if RequiredScript == "lib/setups/setup" then
 		end
 	end
 	
-	function WaypointManager:set_waypoint_timer_paused(id, value)
+	function WaypointManager:set_waypoint_timer_pause(id, value)
 		if self._waypoints[id] then
-			self._waypoints[id]:update_timer_pause(value)
+			self._waypoints[id]:set_timer_pause(value)
 		end
 	end
 	
@@ -383,9 +384,19 @@ if RequiredScript == "lib/setups/setup" then
 		end
 	end
 	
-	function CustomWaypoint:set_icon(name, texture, texture_rect)
+	function CustomWaypoint:set_icon(name, texture, texture_rect, w_multiplier)
 		if self._components[name] then
-			self._components[name]:set_image(texture, texture_rect)
+			if texture then				
+				self._components[name]:set_image(texture)
+				local w_ratio
+				if texture_rect then
+					self._components[name]:set_texture_rect(unpack(texture_rect))
+					w_ratio = w_multiplier or (texture_rect[3] / texture_rect[4])
+				else
+					w_ratio = w_multiplier or 1
+				end
+				self._settings[name].base_values.w_ratio = w_ratio
+			end
 		end
 	end
 	
@@ -431,9 +442,7 @@ if RequiredScript == "lib/setups/setup" then
 		end
 		
 		if self._settings.timer and self._settings.timer.auto_update ~= 0 and self._settings.timer.value then
-			if self._settings.timer.pause > 0 then
-				self:update_timer_pause(self._settings.timer.pause - math.abs(self._settings.timer.auto_update) * dt)
-			else
+			if not self._settings.timer.pause then
 				self:update_timer(self._settings.timer.value + self._settings.timer.auto_update * dt)
 			end
 		end
@@ -463,7 +472,6 @@ if RequiredScript == "lib/setups/setup" then
 			mvector3.set(dir_normalized, dir)
 			mvector3.normalize(dir_normalized)
 			dot = mvector3.dot(cam_fwd, dir_normalized)
-			local angle = math.acos(dot)
 		
 			self:_update_distance(dir:length())
 		
@@ -480,7 +488,7 @@ if RequiredScript == "lib/setups/setup" then
 		end
 		
 		if is_enabled and self._state == (on_screen and "on_screen" or "off_screen") then
-				self:_update_visuals(mvector3.x(screen_pos), mvector3.y(screen_pos), angle, dir_normalized)
+				self:_update_visuals(mvector3.x(screen_pos), mvector3.y(screen_pos), math.acos(dot), dir_normalized)
 		elseif is_enabled and self._settings.show_offscreen then
 			if self._state == "on_screen" then
 				self._state = "transition_off_screen"
@@ -493,7 +501,7 @@ if RequiredScript == "lib/setups/setup" then
 			local x_diff, y_diff = mvector3.x(screen_pos) - x, mvector3.y(screen_pos) - y
 			local x_move, y_move = x_diff / self._transition_time * dt + x, y_diff / self._transition_time * dt + y
 			self._transition_time = self._transition_time - dt
-			self:_update_visuals(x_move, y_move, angle, dir_normalized)
+			self:_update_visuals(x_move, y_move, math.acos(dot), dir_normalized)
 			
 			if self._transition_time <= 0 then
 				self._transition_time = nil
@@ -524,7 +532,7 @@ if RequiredScript == "lib/setups/setup" then
 		end
 	end
 	
-	function CustomWaypoint:update_timer_pause(value)
+	function CustomWaypoint:set_timer_pause(value)
 		self._settings.timer.pause = value
 	end
 	
@@ -642,7 +650,7 @@ if RequiredScript == "lib/setups/setup" then
 							if data.base_values.font_size then
 								component:set_font_size(data.base_values.font_size * scale)
 							else
-								component:set_w(new_size)
+								component:set_w(new_size * data.base_values.w_ratio)
 							end
 						end
 					end
@@ -683,11 +691,12 @@ if RequiredScript == "lib/setups/setup" then
 			texture = data[name].texture
 			texture_rect = data[name].texture_rect
 		end
+		local w_ratio = data.w_ratio or texture_rect and (texture_rect[3] / texture_rect[4]) or 1
 		
 		self._settings[name] = {
 			show = show,
 			show_offscreen = data[name].show_offscreen and true or false,
-			base_values = { size = size, alpha = alpha },
+			base_values = { size = size, alpha = alpha, w_ratio = w_ratio },
 			visible_angle = data[name].visible_angle or {},
 			visible_distance = data[name].visible_distance or {},
 			fade_angle = data[name].fade_angle or {},
@@ -699,21 +708,23 @@ if RequiredScript == "lib/setups/setup" then
 			texture = texture,
 			texture_rect = texture_rect,
 			color = color,
-			w = size,
+			w = size * w_ratio,
 			h = size,
 			alpha = alpha,
 			visible = show,
+			blend_mode = "add",
 		})
 	end
 	
 	function CustomWaypoint:_setup_arrow(data, base_size, base_scale)
 		data.arrow = data.arrow or {}
 		data.arrow.std_wp = "wp_arrow"
+		data.arrow.alpha = 0.5
 		data.arrow.show_offscreen = (data.arrow.show_offscreen ~= false)
+		data.arrow.w_ratio = 2
 		
 		self:_setup_image_component("arrow", data, base_size, base_scale, self._panel:parent())
 		
-		self._components.arrow:set_w(self._components.arrow:w() * 2)
 		self._components.arrow:set_rotation(270)
 	end
 	
@@ -783,7 +794,7 @@ if RequiredScript == "lib/setups/setup" then
 		self:_setup_text_component("timer", data, base_size, base_scale, self._panel)
 		self._settings.timer.value = data.timer and (data.timer.initial_value or 0)
 		self._settings.timer.auto_update = data.timer and data.timer.auto_update or 0
-		self._settings.timer.pause = data.timer and data.timer.pause or 0
+		self._settings.timer.pause = data.timer and data.timer.pause or false
 	end
 	
 	function CustomWaypoint:_setup_duration_component(data, base_size, base_scale)
@@ -862,5 +873,5 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDManager:get_fullscreen_workspace()
 		return self._fullscreen_workspace
 	end
-	
+
 end

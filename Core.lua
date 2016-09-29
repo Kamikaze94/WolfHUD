@@ -90,7 +90,7 @@ if not _G.WolfHUD then
 		["lib/managers/localizationmanager"] = { "AdvAssault.lua" },
 		["lib/managers/experiencemanager"] = { "Scripts.lua" },
 		["lib/managers/moneymanager"] = { "Scripts.lua" },
-		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua", "TabStats.lua", "WaypointsManager.lua" },
+		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua", "TabStats.lua", "CustomWaypoints.lua" },
 		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "WaypointsManager.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
 		["lib/managers/statisticsmanager"] = { "KillCounter.lua", "TabStats.lua" },
 		["lib/managers/playermanager"] = { "GameInfoManager.lua" },
@@ -106,7 +106,7 @@ if not _G.WolfHUD then
 		["lib/managers/hud/hudsuspicion"] = { "NumbericSuspicion.lua" },
 		["lib/managers/hud/hudhitdirection"] = { "DamageIndicator.lua" },
 		["lib/managers/enemymanager"] = { "GameInfoManager.lua", "KillCounter.lua" },
-		["lib/managers/group_ai_states/groupaistatebase"] = { "GameInfoManager.lua", "PacifiedCivs.lua" },
+		["lib/managers/group_ai_states/groupaistatebase"] = { "GameInfoManager.lua", "PacifiedCivs.lua", "CustomWaypoints.lua" },
 		["lib/managers/missionassetsmanager"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/blackmarketgui"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/stageendscreengui"] = { "MenuTweaks.lua" },
@@ -143,6 +143,7 @@ if not _G.WolfHUD then
 		["lib/units/beings/player/states/playerstandard"] = { "GameInfoManager.lua", "EnemyHealthbar.lua", "Interaction.lua", "BurstFire.lua", "WeaponGadgets.lua" },
 		["lib/units/beings/player/states/playerbleedout"] = { "DownCounter.lua" },
 		["lib/units/vehicles/vehicledamage"] = { "DamageIndicator.lua" },
+		["lib/units/vehicles/vehicledrivingext"] = { "CustomWaypoints.lua" },
 		["lib/utils/temporarypropertymanager"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractionbloodthirstbase"] = { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractionexperthandling"] = { "GameInfoManager.lua" },
@@ -825,9 +826,9 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_chat.json", 					WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_suspicion.json", 				WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_killcounter.json", 			WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_indicator.json", 		WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damage_popup.json", 			WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_enemy_healthbar.json", 		WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damageindicator.json", 		WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_damagepopup.json", 			WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_enemyhealthbar.json", 		WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", 			WolfHUD, WolfHUD.settings)
 	
 	Hooks:Add( "MenuManagerPostInitialize", "MenuManagerPostInitialize_WolfHUD", function( menu_manager )
