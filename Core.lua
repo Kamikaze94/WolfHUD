@@ -761,6 +761,34 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		end
 	end
 	
+	MenuCallbackHandler.WolfHUD_GeneralHUD_Focus = function(node, focus)
+		if managers.menu:active_menu().name ~= "menu_main" then
+			if managers.hud then
+				managers.hud:force_unit_health_visible( focus )
+				if managers.hud._hud_driving then
+					if focus then
+						managers.hud._hud_driving:start()	
+					else
+						managers.hud._hud_driving:stop()
+					end
+				end
+			end
+		end
+	end
+	
+	MenuCallbackHandler.WolfHUD_TabStats_Focus = function(node, focus)
+		log("TabStats Focus Callback here.")
+		if managers.menu:active_menu().name ~= "menu_main" then
+			if managers.hud then
+				if focus then
+					managers.hud:show_stats_screen()
+				else
+					managers.hud:hide_stats_screen()
+				end
+			end
+		end
+	end
+	
 	MenuCallbackHandler.clbk_change_setting = function(self, item)
 		local value
 		if item._type == "toggle" then
@@ -838,16 +866,29 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 				for __, menu_item in ipairs(menu._items) do
 					if menu_item and menu_item._type == "multi_choice" and #menu_item._options <= 1 then
 						menu_item:clear_options()
+						local add_rainbow = #menu_item._options > 0
 						for k, v in ipairs(WolfHUD.color_table) do
-							if #menu_item._options == 1 or v.name ~= "rainbow" then
+							if add_rainbow or v.name ~= "rainbow" then
 								local color_name = managers.localization:text("wolfhud_colors_" .. v.name)
 								color_name = not color_name:lower():find("error") and color_name or string.upper(v.name)
-								menu_item:add_option(CoreMenuItemOption.ItemOption:new({
+								local params = {
 									_meta = "option",
 									text_id = color_name,
 									value = v.name,
-									localize = false
-								}))
+									localize = false,
+									color = Color(v.color),
+								}
+								if v.name == "rainbow" then
+									local rainbow_colors = { Color('FE0E31'), Color('FB9413'), Color('F7F90F'), Color('3BC529'), Color('00FFFF'), Color('475DE7'), Color('B444E4'), Color('F46FE6') }
+									params.color = rainbow_colors[1]
+									for i = 0, color_name:len() do
+										params["color" .. i] = rainbow_colors[(i % #rainbow_colors) + 1]
+										params["color_start" .. i] = i
+										params["color_stop" .. i] = i + 1
+									end
+								end
+								
+								menu_item:add_option(CoreMenuItemOption.ItemOption:new(params))
 							end
 						end
 						menu_item:_show_options(nil)
@@ -863,3 +904,11 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		end
 	end)
 end)
+
+if MenuItemMultiChoice then
+	Hooks:PostHook( MenuItemMultiChoice , "setup_gui" , "MenuItemMultiChoicePostSetupGui_WolfHUD" , function( self, node, row_item )
+		if self:selected_option():parameters().color and row_item.choice_text then
+			row_item.choice_text:set_blend_mode("normal")
+		end
+	end)
+end

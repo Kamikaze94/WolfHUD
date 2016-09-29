@@ -3,6 +3,7 @@
 	"parent_menu_id" : "wolfhud_panels_options_menu",
 	"title" : "wolfhud_dmgindicator_options_name",
 	"description" : "wolfhud_dmgindicator_options_help",
+	"focus_changed_callback" : "WolfHUD_GeneralHUD_Focus",
 	"back_callback" : "",
 	"items" : [
 		{

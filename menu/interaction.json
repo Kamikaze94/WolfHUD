@@ -3,6 +3,7 @@
 	"parent_menu_id" : "wolfhud_options_menu",
 	"title" : "wolfhud_interaction_options_name",
 	"description" : "wolfhud_interaction_options_help",
+	"focus_changed_callback" : "",
 	"back_callback" : "",
 	"priority" : 100,
 	"items" : [

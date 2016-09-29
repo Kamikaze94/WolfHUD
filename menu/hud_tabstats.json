@@ -3,6 +3,7 @@
 	"parent_menu_id" : "wolfhud_options_menu",
 	"title" : "wolfhud_tabstats_options_name",
 	"description" : "wolfhud_tabstats_options_help",
+	"focus_changed_callback" : "WolfHUD_TabStats_Focus",
 	"back_callback" : "",
 	"priority" : 100,
 	"items" : [

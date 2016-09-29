@@ -108,7 +108,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	
 	function HUDDriving:stop()
 		self._active = false
-		if self._panel:set_enabled("in_vehicle", false) and managers.hud and managers.hud.arrange_teammate_panels then
+		if self._panel:set_enabled("in_vehicle", managers.player:get_vehicle()) and managers.hud and managers.hud.arrange_teammate_panels then
 			managers.hud:arrange_teammate_panels()
 		end
 	end
@@ -167,7 +167,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		self._legend_loot:set_max_value(loot_total)
 		self._legend_health:set_max_value(health_total)
 		
-		self._legend_health:set_value(health_current)
+		self._legend_health:set_value(math.round(health_current))
 		self._legend_loot:set_value(loot_current)
 		self._legend_passengers:set_value(people)
 		self._legend_gear:set_value(gear)
@@ -720,6 +720,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		HUDDriving.LegendHealthItem.super.init(self, base_panel, owner, name, width, height, params)
 		
 		self._health_texture_rect = { 2, 18, 232,	11 }
+		self._value = 1
 		self._value_ratio = 1
 		self._health_offset = 1
 		

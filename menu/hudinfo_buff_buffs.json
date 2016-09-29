@@ -3,6 +3,7 @@
 	"parent_menu_id" : "wolfhud_infopanels_buff_options_menu",
 	"title" : "wolfhud_infopanels_buff_buffs_options_name",
 	"description" : "wolfhud_infopanels_buff_buffs_options_help",
+	"focus_changed_callback" : "",
 	"back_callback" : "",
 	"items" : [
 		{
