@@ -18,11 +18,11 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	
 	function CopDamage:show_popup(damage, dead, headshot)
 		if managers.waypoints then
-			local id = tostring(self._unit:key())
+			local id = "damage_wp_" .. tostring(self._unit:key())
 			local waypoint = managers.waypoints:get_waypoint(id)
 			if waypoint and not waypoint:is_deleted() then
 				self._dmg_value = self._dmg_value + (damage * 10)
-				managers.waypoints:set_waypoint_duration(id, CopDamage._popup_fade_t)
+				managers.waypoints:set_waypoint_duration(id, "duration", CopDamage._popup_fade_t)
 				managers.waypoints:set_waypoint_label(id, "label", math.ceil(self._dmg_value))
 				managers.waypoints:set_waypoint_setting(id, "color", headshot and CopDamage._popup_headshot_color or CopDamage._popup_color)
 				managers.waypoints:set_waypoint_component_setting(id, "icon", "show", dead)
@@ -32,10 +32,22 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 				local params = {
 					unit = self._unit,
 					offset = CopDamage._popup_offset,
-					fade_position = CopDamage._popup_fade_distance,
-					fade_alpha = false,
 					scale = 2,
 					color = (headshot and CopDamage._popup_headshot_color or CopDamage._popup_color),
+					visible_distance = { 
+						min = 30, 
+						max = 10000 
+					},
+					rescale_distance = { 
+						start_distance = 500, 
+						end_distance = 3000, 
+						final_scale = 0.5 
+					},
+					fade_duration = {
+						start = 0.5,
+						stop = 1,
+						alpha = true,
+					},
 					icon = {
 						type = "icon",
 						show = dead, 
@@ -47,31 +59,21 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 					label = {
 						type = "label",
 						show = true, 
-						show_offscreen = true,
 						text = math.ceil(self._dmg_value) 
 					},
-					visible_distance = { 
-						min = 30, 
-						max = 10000 
-					},
-					rescale_distance = { 
-						start_distance = 500, 
-						end_distance = 3000, 
-						final_scale = 0.5 
-					},
-					duration = { 
+					duration = {
+						type = "duration",
+						show = false,
 						initial_value = CopDamage._popup_fade_t,
-						fade_progress = {
+						fade_duration = {
 							start = 0,
 							stop = 1,
-							alpha = true,
-							position = CopDamage._popup_fade_distance
-						}
+							position = CopDamage._popup_fade_distance,
+						},
 					},
-					component_order = { { "icon", "label" } }
+					component_order = { { "icon", "label" } , { "duration" } }
 				}
-				
-				local wp = managers.waypoints:add_waypoint(id, "CustomWaypoint", params)
+				managers.waypoints:add_waypoint(id, "CustomWaypoint", params)
 			end
 		end
 	end

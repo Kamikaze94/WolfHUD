@@ -1,7 +1,5 @@
 -- TODO: 
--- 	Add descriptions for Ingame Options for Buffs
---	Add positioning option for CustomChat
--- 	Add positioning option for DrivingHUD
+-- 	Add Options for CustomWaypoints
 
 
 if not _G.WolfHUD then
@@ -28,6 +26,7 @@ if not _G.WolfHUD then
 		"wolfhud_infopanels_buff_buffs_options_menu",
 		"wolfhud_infopanels_buff_debuffs_options_menu",
 		"wolfhud_infopanels_buff_teambuffs_options_menu",
+		"wolfhud_waypoints_options_menu",
 		"wolfhud_tabstats_options_menu",
 		"wolfhud_dmgindicator_options_menu", 
 		"wolfhud_dmgpopup_options_menu",
@@ -380,6 +379,18 @@ if not _G.WolfHUD then
 			damage_increase_compbuff				= true,
 			damage_reduction_compbuff				= true,
 			melee_damage_increase_compbuff			= true,
+		  --CustomWaypoints	
+			waypoints_show_ammo_bag 				= true,
+			waypoints_show_doc_bag 					= true,
+			waypoints_show_body_bag 				= true,
+			waypoints_show_grenade_crate 			= true,
+			waypoints_show_sentries 				= true,
+			waypoints_show_ecms						= true,
+			waypoints_show_timers 					= true,
+			waypoints_show_minions					= true,
+			waypoints_show_loot						= true,
+			waypoints_show_pager					= true,
+			waypoints_show_special_equipment		= true,
 		  --Interaction
 			LOCK_MODE 								= 3,			--Disabled (1, Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time (2), or current interaction time(3)
 			MIN_TIMER_DURATION 						= 5, 			--Min interaction duration (in seconds) for the toggle behavior to activate
@@ -431,7 +442,7 @@ if not _G.WolfHUD then
 			inventory_tab_names						= true,
 			inventory_names							= true,
 			show_mini_icons							= true,
-			skill_names								= true,			-- TODO!
+			skill_names								= true,	
 			
 			use_fed_inv								= true
 		}
@@ -841,6 +852,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/equipment.json", 					WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/interaction.json", 				WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_tabstats.json", 				WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudwaypoints.json", 				WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo.json", 					WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff.json", 				WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_buffs.json", 		WolfHUD, WolfHUD.settings)

@@ -509,6 +509,31 @@
 	"wolfhud_hudlist_forced_friendship_teambuff_desc" : "",
 	
 	
+	"wolfhud_waypoints_options_name" : "Custom Waypoints Optionen",
+	"wolfhud_waypoints_options_help" : "Wähle die Waypoints die du angezeigt bekommen möchtest.",
+	
+	"wolfhud_waypoints_show_ammo_bag_title" : "Zeige Munitionstaschen",
+	"wolfhud_waypoints_show_ammo_bag_desc" : "Zeige einen Wegpunkt für Munitionstaschen, der dir verrät wieviel Munition übrig ist.",
+	"wolfhud_waypoints_show_doc_bag_title" : "Zeige Arzttaschen",
+	"wolfhud_waypoints_show_doc_bag_desc" : "Zeige einen Wegpunkt für Arzttaschen, der dir verrät wieviele Ladungen übrig sind.",
+	"wolfhud_waypoints_show_body_bag_title" : "Zeige Leichensack-Taschen",
+	"wolfhud_waypoints_show_body_bag_desc" : "Zeige einen Wegpunkt für Leichensack-Taschen, der dir verrät wieviele Leichensäcke übrig sind.",
+	"wolfhud_waypoints_show_grenade_crate_title" : "Zeige Granatenkoffer",
+	"wolfhud_waypoints_show_grenade_crate_desc" : "Zeige einen Wegpunkt für Granatenkoffer, der dir verrät wieviele Granaten übrig sind.",
+	"wolfhud_waypoints_show_sentries_title" : "Zeige Sentries",
+	"wolfhud_waypoints_show_sentries_desc" : "Zeige einen Wegpunkt für Sentries, der dir ihr verbleibenden Lebenspunkte und Munition anzeigt.",
+	"wolfhud_waypoints_show_timers_title" : "Zeige Timer",
+	"wolfhud_waypoints_show_timers_desc" : "Zeige einen Wegpunkt für Timer, der dir die verbleibende Zeit und die aktiven Upgrades anzeigt.",
+	"wolfhud_waypoints_show_loot_title" : "Zeige Beute",
+	"wolfhud_waypoints_show_loot_desc" : "Zeige den Namen über der Beute, wenn du in seine Richtung schaust.",
+	"wolfhud_waypoints_show_special_equipment_title" : "Zeige Spezielles Equipment",
+	"wolfhud_waypoints_show_special_equipment_desc" : "Zeige wegpunkte für verschiedenes spezielles Equipment. Gut um die verschiedenen Fundorte zu lernen.",
+	"wolfhud_waypoints_show_minions_title" : "Zeige Minions",
+	"wolfhud_waypoints_show_minions_desc" : "Zeige den namen und das Leben von konvertierten Polizisten über ihrem Kopf.\nZählt auch dessen Tötungen.",
+	"wolfhud_waypoints_show_pager_title" : "Zeige Pager",
+	"wolfhud_waypoints_show_pager_desc" : "Zeige einen Wegpunkt für aktivierte Pager. Ändert die Farbe falls er von jemandem beantwortet wird.",
+	
+	
 	"wolfhud_tabstats_options_name" : "TabStats Optionen",
 	"wolfhud_tabstats_options_help" : "Konfiguriere das Aussehen des Tab-Panels.",
 	

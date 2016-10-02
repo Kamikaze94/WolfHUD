@@ -495,6 +495,31 @@
     "wolfhud_hudlist_crew_chief_teambuff_desc" : "Part of Composite Buffs.",
     "wolfhud_hudlist_forced_friendship_teambuff_title" : "Навязанная дружба командный бафф",
     "wolfhud_hudlist_forced_friendship_teambuff_desc" : "",
+	
+	
+	"wolfhud_waypoints_options_name" : "Custom Waypoints Options",
+	"wolfhud_waypoints_options_help" : "Options to control Custom Waypoints.",
+	
+	"wolfhud_waypoints_show_ammo_bag_title" : "Show Ammo Bags",
+	"wolfhud_waypoints_show_ammo_bag_desc" : "Show Waypoints for Ammo bags, telling you the Percentage left.",
+	"wolfhud_waypoints_show_doc_bag_title" : "Show Doctor Bags",
+	"wolfhud_waypoints_show_doc_bag_desc" : "Show Waypoints for Doctor Bags, stating the number of charges left.",
+	"wolfhud_waypoints_show_body_bag_title" : "Show Bodybag Case",
+	"wolfhud_waypoints_show_body_bag_desc" : "Show Waypoints for bodybag cases, telling you the amount of Bodybags left.",
+	"wolfhud_waypoints_show_grenade_crate_title" : "Show Grenade Case",
+	"wolfhud_waypoints_show_grenade_crate_desc" : "Show Waypoints for Grenade Cases, telling you the amount of Grenades left.",
+	"wolfhud_waypoints_show_sentries_title" : "Show Sentries",
+	"wolfhud_waypoints_show_sentries_desc" : "Show Waypoints for Sentries, telling you the amount of ammo left.",
+	"wolfhud_waypoints_show_timers_title" : "Show Timers",
+	"wolfhud_waypoints_show_timers_desc" : "Show Waypoints for timers, telling you the time left and their active Upgrades.",
+	"wolfhud_waypoints_show_loot_title" : "Show Loot",
+	"wolfhud_waypoints_show_loot_desc" : "Show the name of the loot above it, when looking near it.",
+	"wolfhud_waypoints_show_special_equipment_title" : "Show Special Equipment",
+	"wolfhud_waypoints_show_special_equipment_desc" : "Show waypoints for various different equipments. Good to learn all the differen locations.",
+	"wolfhud_waypoints_show_minions_title" : "Show Minions",
+	"wolfhud_waypoints_show_minions_desc" : "Show a Minions Name above its head, in the color of the player who converted him.\nAlso shows his Killcount.",
+	"wolfhud_waypoints_show_pager_title" : "Show Pager",
+	"wolfhud_waypoints_show_pager_desc" : "Show a waypoint for activated pagers. Changes its color, when someone is answering it.",
      
      
     "wolfhud_tabstats_options_name" : "TabStats Настройки",

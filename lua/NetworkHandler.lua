@@ -9,6 +9,7 @@ function WolfHUD.Sync.send(id, data)
 	if managers.network and managers.network:session() and WolfHUD.Sync.peers and data then
 		for i, peer in ipairs(managers.network:session():peers()) do
 			if WolfHUD.Sync.peers[peer:id()] then
+				managers.chat:feed_system_message(ChatManager.GAME, string.format("[%s] Syncing event %s to peer %s", id, data.event or "N/A", peer:name()))	--TEST
 				LuaNetworking:SendToPeer(peer:id(), id, json.encode(data))
 			end
 		end
@@ -21,7 +22,7 @@ function WolfHUD.Sync.gameinfo_ecm_event_sender(event, key, data)
 			source = "ecm",
 			event = event,
 			key = key,
-			data = data
+			data = {feedback_duration = data.feedback_duration, feedback_expire_t = data.feedback_expire_t}
 		}
 		WolfHUD.Sync.send("WolfHUD_Sync_GameInfo", send_data)
 	end
@@ -77,10 +78,16 @@ Hooks:Add("NetworkReceivedData", "NetworkReceivedData_WolfHUD", function(sender,
 			WolfHUD.Sync.peers[sender] = true		--Sync other peers, that new peer is using WolfHUD?
 			managers.chat:feed_system_message(ChatManager.GAME, "The Host is using WolfHUD ;)")	--TEST
 		elseif messageType == "WolfHUD_Sync_GameInfo" then		-- receive and call gameinfo event
+			managers.chat:feed_system_message(ChatManager.GAME, "GameInfo event received!")	--TEST
+			log("GameInfo event received!")
 			WolfHUD.Sync.receive_gameinfo_event(json.decode(data))
 		elseif messageType == "WolfHUD_Sync_Cache" then			-- Add data to cache
+			managers.chat:feed_system_message(ChatManager.GAME, "Sync Cache event received!")	--TEST
+			log("Sync Cache event received!")
 			WolfHUD.Sync.receive_cache_event(json.decode(data))
 		elseif messageType == "WolfHUD_Sync" then				-- Receive data that needs to be handled by data.event
+			managers.chat:feed_system_message(ChatManager.GAME, "Sync event received!")	--TEST
+			log("Sync event received!")
 			WolfHUD.Sync.receive(json.decode(data))
 		end
 	end

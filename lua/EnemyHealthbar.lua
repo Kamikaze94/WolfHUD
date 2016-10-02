@@ -1,5 +1,5 @@
 if string.lower(RequiredScript) == "lib/managers/hudmanager" then
-	local CharacterData = {
+	HUDManager.CharacterData = {
 		[ "civilian" ] 					= "wolfhud_enemy_civilian",
 		[ "civilian_female" ] 			= "wolfhud_enemy_civilian",
 		[ "gangster" ] 					= "wolfhud_enemy_gangster",
@@ -194,7 +194,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 
 		if not current or not total then return end
 		
-		local enemy = CharacterData[ tweak_table ]
+		local enemy = self.CharacterData[ tweak_table ]
 		if enemy then
 			enemy = managers.localization:to_upper_text(enemy)
 		else
