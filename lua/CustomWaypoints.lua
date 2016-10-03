@@ -294,7 +294,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 						if self._settings[name] then
 							self._settings[name].value = value
 							if self._components[name] and self._settings[name].show then
-								self._components[name]:set_text(string.format("%d/50", math.floor(tonumber(value) or 0)))
+								self:set_label(name, string.format("%d/50", math.floor(value)))
 							end
 						end
 					end
