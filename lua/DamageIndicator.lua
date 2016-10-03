@@ -11,6 +11,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	
 	local init_original = HUDHitDirection.init
 	local _add_hit_indicator_original = HUDHitDirection._add_hit_indicator
+	local _remove_original = HUDHitDirection._remove
 	
 	function HUDHitDirection:init(...)
 		init_original(self, ...)
@@ -32,16 +33,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	function HUDHitDirection:_animate(indicator, data, remove_func)
 		data.duration = WolfHUD:getSetting("dmg_ind_time", "number")
 		data.t = 0
-		data.col_start = 0.7
-		data.col = 0.4
 		while data.t < data.duration do
 			local dt = coroutine.yield()
 			data.t = data.t + dt
-			data.col = math.clamp(data.col - dt, 0, 1)
 			if alive(indicator) then
 				local o = data.t / data.duration
-				indicator:set_color(self:_get_indicator_color(data.damage_type, data.col / data.col_start))
-				indicator:set_alpha( (-3 * math.pow(o - 0.5 , 2) + 0.7) * 0.8 )--math.clamp(math.sin(o * 3.15) * 0.8, 0, 1) )
+				indicator:set_color(self:_get_indicator_color(data.damage_type, o))
+				indicator:set_alpha( math.clamp(math.sin(math.deg(o * math.pi)), 0, 1) )
 				if managers.player:player_unit() then
 					local ply_camera = managers.player:player_unit():camera()
 					if ply_camera then
@@ -58,6 +56,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 			end
 		end
 		remove_func(indicator, data)
+	end
+	
+	function HUDHitDirection:_remove(...)
+		_remove_original(self, ...)
 		self.indicator_count = self.indicator_count - 1
 	end
 	
@@ -80,16 +82,16 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 	local PlayerDamage_damage_explosion = PlayerDamage.damage_explosion
 	local PlayerDamage_damage_fire = PlayerDamage.damage_fire
 	
-	function PlayerDamage:damage_explosion(attack_data)
-		PlayerDamage_damage_explosion(self, attack_data)
+	function PlayerDamage:damage_explosion(attack_data, ...)
+		PlayerDamage_damage_explosion(self, attack_data, ...)
 		local distance = mvector3.distance(attack_data.position, self._unit:position())
 		if self:_chk_can_take_dmg() and distance <= attack_data.range and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated() or self._bleed_out) then
 			self:_hit_direction(attack_data.position, HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE)
 		end
 	end
 	
-	function PlayerDamage:damage_fire(attack_data)
-		PlayerDamage_damage_fire(self, attack_data)
+	function PlayerDamage:damage_fire(attack_data, ...)
+		PlayerDamage_damage_fire(self, attack_data, ...)
 		local distance = mvector3.distance(attack_data.position, self._unit:position())
 		if self:_chk_can_take_dmg() and distance <= attack_data.range and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated() or self._bleed_out) then
 			self:_hit_direction(attack_data.position, HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE)
