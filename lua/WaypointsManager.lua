@@ -87,7 +87,7 @@ if RequiredScript == "lib/setups/setup" then
 	
 	function WaypointManager:_check_pending_waypoints()
 		for id, data in pairs(self._pending_waypoints) do
-			self:add_waypoint(id, data.data, data.overwrite)
+			self:add_waypoint(id, data.class, data.data, data.overwrite)
 		end
 		
 		self._pending_waypoints = {}

@@ -1,5 +1,5 @@
--- TODO: 	Loot: some loot looses his waypoint after beeing bagged.
---			Keycards and Chemicals seem to never be successfully raycasted... disabled for now.
+-- TODO: 	Loot: Forklifts showing as loot 'Falcogini'... wtf?
+--			Keycards and Chemicals seem to never be successfully raycasted... shown through walls with small radius for now.
 if RequiredScript == "lib/managers/hudmanager" then
 	local init_original = HUDManager.init
 
@@ -134,8 +134,11 @@ if RequiredScript == "lib/managers/hudmanager" then
 		
 		if event == "set_active" then
 			if data.active then
-				local text = string.format("%.0f%%", (data.ammo_ratio or 0) * 100)
-				self:add_custom_equip_waypoint(id, data.unit, data.position, "guis/textures/pd2/skilltree/icons_atlas", {7*64, 5*64, 64, 64}, text, Color.green, { max = 20 }, { max = 2000 }, {start_angle = 20, end_angle = 12.5, final_scale = 10})
+				local peer = managers.network and managers.network:session() and managers.network:session():local_peer()
+				if peer and data.owner and data.owner == peer:id() then
+					local text = string.format("%.0f%%", (data.ammo_ratio or 0) * 100)
+					self:add_custom_equip_waypoint(id, data.unit, data.position, "guis/textures/pd2/skilltree/icons_atlas", {7*64, 5*64, 64, 64}, text, Color.green, { max = 20 }, { max = 2000 }, {start_angle = 20, end_angle = 12.5, final_scale = 10})
+				end
 			else
 				managers.waypoints:remove_waypoint(id)
 			end
@@ -397,16 +400,15 @@ if RequiredScript == "lib/managers/hudmanager" then
 		local id = "loot_wp_" .. key
 		
 		if event == "add" then
-			if data.carry_id ~= "person" or managers.job:current_level_id() == "mad" and (data.bagged or data.unit:editor_id() ~= -1) then
-				local id = data.carry_id
-				local name_id = id and tweak_data.carry[id] and tweak_data.carry[id].name_id
+			if not data.unit:in_slot( 39 ) and (data.carry_id ~= "person" or managers.job:current_level_id() == "mad" and (data.bagged or data.unit:editor_id() ~= -1)) then
+				local name_id = data.carry_id and tweak_data.carry[data.carry_id] and tweak_data.carry[data.carry_id].name_id
 				local bag_name = name_id and managers.localization:to_upper_text(name_id)
+				local count = data.count or 1
 				if bag_name then
 					local params = {
 						unit = data.unit,
 						offset = data.bagged and Vector3(0, 0, 30) or Vector3(0, 0, 15),
-						hide_on_uninteractable = true,
-						penetrate_walls = false,
+						penetrate_walls = data.bagged,
 						alpha = 0.1,
 						visible_angle = { max = 25 },
 						visible_distance = { max = 1200 },
@@ -418,12 +420,17 @@ if RequiredScript == "lib/managers/hudmanager" then
 							std_wp = "wp_bag",
 							alpha = 0.5,
 						},
+						amount = { 
+							type = "label", 
+							show = (count > 1), 
+							text = string.format("%dx", count),
+						},
 						label = { 
 							type = "label", 
 							show = true, 
 							text = bag_name,
 						},
-						component_order = { { "icon", "label" } },
+						component_order = { { "icon", "amount", "label" } },
 					}
 					
 					managers.waypoints:add_waypoint(id, "CustomWaypoint", params)
@@ -519,7 +526,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 					alpha = 0.1,
 					fade_angle = { start_angle = 35, end_angle = 25, final_scale = 8 },
 					visible_angle = { max = 35 },
-					visible_distance = { max = (icon_data.x_ray and 8000 or 3000) },
+					visible_distance = { max = (icon_data.x_ray and 800 or 3000) },
 					icon = { 
 						type = "icon", 
 						show = true,

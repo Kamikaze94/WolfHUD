@@ -41,7 +41,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 			if alive(indicator) then
 				local o = data.t / data.duration
 				indicator:set_color(self:_get_indicator_color(data.damage_type, data.col / data.col_start))
-				indicator:set_alpha((-3 * math.pow(o - 0.5 , 2) + 0.7) * 0.6 )
+				indicator:set_alpha( (-3 * math.pow(o - 0.5 , 2) + 0.7) * 0.8 )--math.clamp(math.sin(o * 3.15) * 0.8, 0, 1) )
 				if managers.player:player_unit() then
 					local ply_camera = managers.player:player_unit():camera()
 					if ply_camera then
