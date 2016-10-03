@@ -160,6 +160,7 @@ if not _G.WolfHUD then
 		["core/lib/managers/subtitle/coresubtitlepresenter"] = { "EnhancedObjective.lua" },
 		["lib/setups/menusetup"] = { "Scripts.lua" },
 		["lib/states/menutitlescreenstate"] = { "Scripts.lua" },
+		["lib/managers/challengemanager"] = { "Scripts.lua" },
 	}
 	
 	

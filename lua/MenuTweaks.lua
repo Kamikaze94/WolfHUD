@@ -243,6 +243,48 @@ if WolfHUD:getSetting("inventory_drag_and_drop", "boolean") then
 
 		return ddi_original_blackmarketgui_mousereleased(self, button, x, y)
 	end
+
+	-- Side Jobs in Lobby
+	Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_SideJobsInLobbyMenu", function(menu_manager, nodes)
+		if nodes.lobby then
+			MenuHelper:AddMenuItem(nodes.lobby, "crimenet_contract_challenge", "menu_cn_challenge", "menu_cn_challenge_desc", "options", "before")
+			
+			nodes["crimenet_contract_challenge"]:parameters().sync_state = "payday"
+			nodes["choose_weapon_reward"]:parameters().sync_state = "payday"
+
+			for _, v in ipairs(nodes.lobby._items) do
+				if v._parameters.name == "crimenet_contract_challenge" then
+					v._parameters.icon = "guis/textures/pd2/icon_reward"
+					v._parameters.icon_visible_callback = { "got_challenge_reward" }
+					v._icon_visible_callback_name_list  = { "got_challenge_reward" }
+					v:set_callback_handler(v._callback_handler)
+					break
+				end
+			end
+		end
+	end)
+
+	function MenuCallbackHandler:got_challenge_reward()
+		if not managers.challenge then
+			return
+		end
+		for key, challenge in pairs(managers.challenge._global.active_challenges) do
+			if challenge.completed and not challenge.rewarded then
+				return true
+			end
+		end
+	end
+
+	local sjil_original_menucallbackhandler_rollchallengegiveweaponmod = MenuCallbackHandler.roll_challenge_give_weapon_mod
+	function MenuCallbackHandler:roll_challenge_give_weapon_mod(weapon_id, global_value)
+		if managers.challenge.sjil_reward_in_progress then
+			managers.challenge.sjil_reward_in_progress.rewarded = true
+			managers.challenge.sjil_reward_in_progress = nil
+			managers.challenge:sjil_finalize_all_challenges()
+		end
+		return sjil_original_menucallbackhandler_rollchallengegiveweaponmod(self, weapon_id, global_value)
+	end
+
 end
 
 elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then

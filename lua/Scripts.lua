@@ -130,4 +130,43 @@ elseif string.lower(RequiredScript) == "lib/states/menutitlescreenstate" then
 				_load_savegames_done_actual(self, ...)
 			end
 		end
+
+elseif string.lower(RequiredScript) == "lib/managers/challengemanager" then
+	local sjil_original_challengemanager_ongivereward = ChallengeManager.on_give_reward
+	function ChallengeManager:on_give_reward(id, key, reward_index)
+		local reward = sjil_original_challengemanager_ongivereward(self, id, key, reward_index)
+		self.sjil_reward_in_progress = reward and reward.choose_weapon_reward and reward or nil
+		return reward
+	end
+
+	local sjil_original_challengemanager_givereward = ChallengeManager._give_reward
+	function ChallengeManager:_give_reward(challenge, reward)
+		local result = sjil_original_challengemanager_givereward(self, challenge, reward)
+
+		if result.choose_weapon_reward then
+			-- No! It's not done yet!
+			result.rewarded = false
+		end
+
+		return result
+	end
+
+	function ChallengeManager:sjil_finalize_all_challenges()
+		if not self._global.validated then
+			return
+		end
+
+		for _, challenge in pairs(self:get_all_active_challenges() or {}) do
+			local all_rewarded = true
+			for _, reward in pairs(challenge.rewards) do
+				if not reward.rewarded then
+					all_rewarded = false
+				end
+			end
+			if all_rewarded then
+				challenge.rewarded = all_rewarded
+				self._any_challenge_rewarded = true
+			end
+		end
+	end
 end
