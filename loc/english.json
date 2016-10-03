@@ -129,6 +129,8 @@
 	"wolfhud_replace_weapon_names_desc" : "Replace the Weapon Names with their Real-World counterparts.\n(A Map change is needed to apply...)",
 	"wolfhud_inventory_tab_names_title" : "Use Inventory Tab Names",
 	"wolfhud_inventory_tab_names_desc" : "Customize your Inventory Tab Names.\n(Change names by editing '/mods/saves/WolfHUD_InventoryNames.txt')",
+	"wolfhud_inventory_drag_and_drop_title" : "Inventory Drag and Drop"
+	"wolfhud_inventory_drag_and_drop_desc" : "Enable Drag and Drop for the Inventory",
 	"wolfhud_inventory_names_title" : "Show Inventory Box Names",
 	"wolfhud_inventory_names_desc" : "Show the names of your weapons, armor, deployables, etc. inside its box in the inventory.",
 	"wolfhud_skill_names_title" : "Show Skill Names",

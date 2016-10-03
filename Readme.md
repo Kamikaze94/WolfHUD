@@ -71,6 +71,7 @@ __Included Mods:__
   - __Show Weapon Names__, made by _me_
   - __Show Skill Names__, made by _me_
   - __[Skillset Info](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15294)__, made by _Fooksie_
+  - __[Drag and Drop Inventory](http://paydaymods.com/mods/129/DDI)__, made by _TdlQ_
   - Increased the maximum chars of custom Weapon/Mask/Skillset names
   - __Federal Inventory__ (Mod Override), made by _Nervatel Hanging Closet Monster_ and _Luffy_, updated by _me_
     - [weapon icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14240), [melee icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13910) and [mask icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13911) made by _Nervatel Hanging Closet Monster_

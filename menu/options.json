@@ -9,7 +9,7 @@
 		{
 			"type" : "divider",
 			"size" : 16,
-			"priority" : 17,
+			"priority" : 18,
 		},
 		{
 			"type" : "toggle",
@@ -18,7 +18,7 @@
 			"description" : "wolfhud_skip_to_main_menu_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "skip_to_main_menu",
-			"priority" : 16,
+			"priority" : 17,
 		},
 		{
 			"type" : "toggle",
@@ -27,7 +27,7 @@
 			"description" : "wolfhud_skip_blackscreen_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "skip_blackscreen",
-			"priority" : 15,
+			"priority" : 16,
 		},
 		{
 			"type" : "slider",
@@ -40,7 +40,7 @@
 			"min" : 0,
 			"max" : 20,
 			"step" : 0.1,
-			"priority" : 14,
+			"priority" : 15,
 		},
 		{
 			"type" : "toggle",
@@ -49,7 +49,7 @@
 			"description" : "wolfhud_loot_screen_pick_card_desc",
 			"callback" : "clbk_change_setting",
 			"value" : "autopick_card",
-			"priority" : 13,
+			"priority" : 14,
 		},
 		{
 			"type" : "slider",
@@ -62,11 +62,20 @@
 			"min" : 0,
 			"max" : 20,
 			"step" : 0.1,
-			"priority" : 12,
+			"priority" : 13,
 		},
 		{
 			"type" : "divider",
 			"size" : 16,
+			"priority" : 12,
+		},
+		{
+			"type" : "toggle",
+			"id" : "inventory_drag_and_drop",
+			"title" : "wolfhud_inventory_drag_and_drop_title",
+			"description" : "wolfhud_inventory_drag_and_drop_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "inventory_drag_and_drop",
 			"priority" : 11,
 		},
 		{

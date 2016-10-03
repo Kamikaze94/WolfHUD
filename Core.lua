@@ -433,6 +433,7 @@ if not _G.WolfHUD then
 			replace_weapon_names 					= true,
 			inventory_tab_names						= true,
 			inventory_names							= true,
+			inventory_drag_and_drop					= true,
 			show_mini_icons							= true,
 			skill_names								= true,			-- TODO!
 			
