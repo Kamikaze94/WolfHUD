@@ -3,8 +3,8 @@ Waypoint settings:
     unit: 					(unit) 		A game unit to tie the waypoint to. If the unit is deleted from the game, the waypoint will be removed. Preference as follows: unit head position, unit interaction positions, unit position
     position: 				(vector)	A fixed 3D vector position to place the waypoint at
 	offset: 				(vector) 	Offset vector from the Unit/position
-	penetrate_walls:		(boolean)	Option to show/hide Waypoints, if the unit is not visible from the palyers position.
-	mask					(various)	Slot mask for the penetrate_walls raycast. Can be a default slot_mask name string or a slotmask directly.
+	visible_through_walls:		(boolean)	Option to show/hide Waypoints, if the unit is not visible from the palyers position.
+	mask					(various)	Slot mask for the visible_through_walls raycast. Can be a default slot_mask name string or a slotmask directly.
 	show_offscreen: 		(boolean) 	Show this waypoint if it's outside your FOV (default: false)
 	radius_offscreen: 		(number) 	Radius of the circle the waypoint is orbiting on while moving (default: 200)
 	transition_duration: 	(number) 	Duration of the animation when a waypoint changes its state between on- and off-screen. (default: 0.3)
@@ -48,7 +48,8 @@ Icon exclusive settings:
     texture: 				(string) 	Path to texture to use for icon
     texture_rect: 			(table) 	Bounding box to use for the icon texture. Containing {x, y, w, h}
     std_wp: 				(string) 	As an alternative to texture/texture_rect, an ID to one of the predefined waypoint icons in the game tweak data (e.g. "wp_crowbar")
-	on_minimap				(boolean)	Show that icon on the Minimap (if that mod is installed)
+	on_minimap:				(boolean)	Show that icon on the Minimap (if that mod is installed)
+	all_elevations:			(boolean)	Show icon on the Minimap, regardless of your elevation
 
 Label exclusive settings:
     text: 					(string) 	Label text
@@ -257,7 +258,7 @@ if RequiredScript == "lib/setups/setup" then
 		self._id = id
 		self._unit = data.unit
 		self._position = data.position
-		self._penetrate_walls = (data.penetrate_walls ~= false)
+		self._visible_through_walls = (data.visible_through_walls ~= false)
 		self._slot_mask = data.mask and (type(data.mask) == "string" and managers.slot:get_mask(data.mask) or data.mask) or (managers.slot:get_mask( 'bullet_impact_targets', 'pickups' ) - managers.slot:get_mask( 'criminals' ))
 		self._hide_on_uninteractable = data.hide_on_uninteractable
 		self._offset = data.offset or Vector3(0, 0, 0)
@@ -290,7 +291,7 @@ if RequiredScript == "lib/setups/setup" then
 		for component_name, component_data in pairs(data) do
 			if type(component_data) == "table" and component_data.type then
 				if not self:add_component(component_name, data, nil) then
-					WolfHUD:print_log(string.format("Error while creating waypoint: %s", self._id))
+					WolfHUD:print_log(string.format("Error while creating waypoint: %s", self._id), "error")
 				end
 			end
 		end
@@ -465,6 +466,8 @@ if RequiredScript == "lib/setups/setup" then
 			return self:delete()
 		end
 		
+		self._position = self._unit and (self._unit:movement() and self._unit:movement():m_head_pos() or self._unit:interaction() and self._unit:interaction():interact_position() or self._unit:position()) or self._position
+		
 		for name, _ in pairs(self._duration_components) do
 			if self._settings[name] and self._settings[name].value then
 				self:update_duration(name, math.max(self._settings[name].value - dt, 0))
@@ -496,11 +499,10 @@ if RequiredScript == "lib/setups/setup" then
 		local is_enabled = true
 		local dot = 0
 		
-		if self._unit and not self._penetrate_walls then
-			local ply_cam_pos = cam and cam:position()
-			local unit_pos = self._unit:position()
-			local r = World:raycast( "ray", ply_cam_pos, unit_pos, "slot_mask", self._slot_mask or managers.slot:get_mask( 'explosion_targets'))
-			is_enabled = (r and (not r.unit or (self._unit:key() == r.unit:key())))
+		if not self._visible_through_walls then
+			local raycast_position = self._position + self._offset / 2
+			local r = World:raycast( "ray", cam:position(), raycast_position, "slot_mask", self._slot_mask or managers.slot:get_mask( 'explosion_targets'))
+			is_enabled = (not r or not r.unit or self._unit and (self._unit:key() == r.unit:key()))
 		end
 		
 		if is_enabled and self._hide_on_uninteractable and self._unit:interaction() then
@@ -514,8 +516,6 @@ if RequiredScript == "lib/setups/setup" then
 		end
 		
 		if is_enabled then
-			self._position = self._unit and (self._unit:movement() and self._unit:movement():m_head_pos() or self._unit:interaction() and self._unit:interaction():interact_position() or self._unit:position()) or self._position
-			
 			mvector3.set(world_pos, self._position)
 			mvector3.add(world_pos, offset)
 			mvector3.set(screen_pos, workspace:world_to_screen(cam, world_pos))
@@ -807,7 +807,7 @@ if RequiredScript == "lib/setups/setup" then
 				texture = texture, 
 				texture_rect = texture_rect, 
 				color = color,
-				same_elevation_only = not data.all_elevations,
+				same_elevation_only = not data[name].all_elevations,
 			})
 		end
 	end

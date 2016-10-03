@@ -2,7 +2,7 @@
 --TODO: Clean up interaction activation/deactivation animation, probably a lot of unnecessary rearranges going on
 
 
-printf = printf or function(...) WolfHUD:print_log(string.format(...)) end
+printf = printf or function(...) WolfHUD:print_log(string.format(...), "info") end
 
 if not WolfHUD:getSetting("use_customhud", "boolean") then
 	if RequiredScript == "lib/managers/hudmanagerpd2" then

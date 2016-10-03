@@ -3,7 +3,7 @@
 
 if WolfHUD and not WolfHUD:getSetting("use_hudlist", "boolean") then return end
 printf = function(...) 
-	WolfHUD:print_log(string.format(...))
+	WolfHUD:print_log(string.format(...), "info")
 end
 if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	

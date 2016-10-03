@@ -1,6 +1,6 @@
 
 printf = function(...) 
-	WolfHUD:print_log(string.format(...))
+	WolfHUD:print_log(string.format(...), "info")
 end
 
 if string.lower(RequiredScript) == "lib/setups/setup" then

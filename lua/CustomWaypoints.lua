@@ -1,5 +1,3 @@
--- TODO: 	Loot: Forklifts showing as loot 'Falcogini'... wtf?
---			Keycards and Chemicals seem to never be successfully raycasted... shown through walls with small radius for now.
 if RequiredScript == "lib/managers/hudmanager" then
 	local init_original = HUDManager.init
 
@@ -241,14 +239,14 @@ if RequiredScript == "lib/managers/hudmanager" then
 				local params = {
 					unit = data.unit,
 					offset = Vector3(0, 0, 30),
-					on_minimap = true,
 					show_offscreen = false,
 					radius_offscreen = 300,
 					icon = { 
 						type = "icon", 
 						show = true, 
 						show_offscreen = true,
-						std_wp = icon_table[data.device_type or "timer"] 
+						std_wp = icon_table[data.device_type or "timer"],
+						on_minimap = true,
 					},
 					timer = { 
 						type = "timer",
@@ -408,7 +406,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 					local params = {
 						unit = data.unit,
 						offset = data.bagged and Vector3(0, 0, 30) or Vector3(0, 0, 15),
-						penetrate_walls = data.bagged,
+						visible_through_walls = data.bagged,
 						alpha = 0.1,
 						visible_angle = { max = 25 },
 						visible_distance = { max = 1200 },
@@ -419,6 +417,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 							show = data.bagged, 
 							std_wp = "wp_bag",
 							alpha = 0.5,
+							on_minimap = true,
 						},
 						amount = { 
 							type = "label", 
@@ -459,6 +458,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 						texture = "guis/textures/pd2/specialization/icons_atlas",
 						texture_rect = { 1 * 64, 4 * 64, 64, 64 },
 						scale = 1.4,
+						on_minimap = true,
 					},
 					duration = { 
 						type = "duration", 
@@ -496,14 +496,14 @@ if RequiredScript == "lib/managers/hudmanager" then
 		if event == "add" then
 			local icon_table = {
 				gen_pku_crowbar =					{ std_icon = "wp_crowbar"},
-				pickup_keycard =					{ std_icon = "equipment_bank_manager_key", x_ray = true }, 	-- Won't show up in raycast...  :/
-				pickup_hotel_room_keycard =			{ std_icon = "equipment_bank_manager_key", x_ray = true },
+				pickup_keycard =					{ std_icon = "equipment_bank_manager_key", },
+				pickup_hotel_room_keycard =			{ std_icon = "equipment_bank_manager_key", },
 				--gage_assignment =					"equipment_money_bag",
 				pickup_boards =						{ std_icon = "wp_planks"},
 				stash_planks_pickup =				{ std_icon = "wp_planks"},
-				muriatic_acid =						{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {1 * 32, 1 * 32, 32, 32}, x_ray = true }, 	-- Won't show up in raycast...  :/
-				hydrogen_chloride =					{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {2 * 32, 1 * 32, 32, 32}, x_ray = true }, 	-- Won't show up in raycast...  :/
-				caustic_soda =						{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {3 * 32, 1 * 32, 32, 32}, x_ray = true }, 	-- Won't show up in raycast...  :/
+				muriatic_acid =						{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {1 * 32, 1 * 32, 32, 32}, offset = Vector3(0, 0, 45) }, 
+				hydrogen_chloride =					{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {2 * 32, 1 * 32, 32, 32}, offset = Vector3(0, 0, 85) }, 
+				caustic_soda =						{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {3 * 32, 1 * 32, 32, 32}, offset = Vector3(0, 0, 50) }, 
 				gen_pku_blow_torch =				{ std_icon = "equipment_blow_torch"},
 				drk_pku_blow_torch = 				{ std_icon = "equipment_blow_torch"},
 				hold_born_receive_item_blow_torch = { std_icon = "equipment_blow_torch"},
@@ -518,21 +518,21 @@ if RequiredScript == "lib/managers/hudmanager" then
 			if icon_data then
 				local params = {
 					unit = data.unit,
-					offset = Vector3(0, 0, 15),
+					offset = icon_data.offset or Vector3(0, 0, 15),
 					hide_on_uninteractable = true,
-					penetrate_walls = icon_data.x_ray or false, 	-- Keycards and chemicals seem to not work with raycasts...  :/
-					on_minimap = true,
+					visible_through_walls = false, 	-- Keycards and chemicals seem to not work with raycasts...  :/
 					scale = 1,
 					alpha = 0.1,
 					fade_angle = { start_angle = 35, end_angle = 25, final_scale = 8 },
 					visible_angle = { max = 35 },
-					visible_distance = { max = (icon_data.x_ray and 800 or 3000) },
+					visible_distance = { max = 3000 },
 					icon = { 
 						type = "icon", 
 						show = true,
 						std_wp = icon_data.std_icon,
 						texture = icon_data.texture,
 						texture_rect = icon_data.texture_rect,
+						on_minimap = true,
 					},
 					component_order = { { "icon" } },
 				}

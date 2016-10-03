@@ -1,7 +1,3 @@
--- TODO: 
--- 	Add Options for CustomWaypoints
-
-
 if not _G.WolfHUD then
 	_G.WolfHUD = {}
 	WolfHUD.mod_path = ModPath
@@ -9,7 +5,7 @@ if not _G.WolfHUD then
 	WolfHUD.settings_path = WolfHUD.save_path .. "WolfHUD.txt"
 	WolfHUD.colors_file = "WolfHUD_Colors.txt"
 	WolfHUD.inv_names_file = "WolfHUD_InventoryNames.txt"
-	WolfHUD.DEBUG_MODE = false
+	WolfHUD.LOG_MODE = { "error" }		-- error, info, warning or all
 	WolfHUD.version = "1.0"
 	WolfHUD.menu_ids = { 
 		"wolfhud_options_menu", 
@@ -448,8 +444,8 @@ if not _G.WolfHUD then
 		}
 	end
 	
-	function WolfHUD:print_log(text)
-		if self.DEBUG_MODE then
+	function WolfHUD:print_log(text, msg_type)
+		if table.contains(self.LOG_MODE, "all") or msg_type and table.contains(self.LOG_MODE, msg_type) then
 			local function log_table(userdata)
 				local text = ""
 				for id, data in pairs(userdata) do
@@ -483,16 +479,16 @@ if not _G.WolfHUD then
 					self.settings[k] = v
 				else
 					corrupt = true
-					self:print_log("Error loading setting: " .. tostring(k) .. " (Wrong type)")
+					self:print_log("Error loading setting: " .. tostring(k) .. " (Wrong type)", "error")
 				end
 			end
 			file:close()
 		else
-			self:print_log("Error while loading, settings file could not be opened (" .. self.settings_path .. ")")
+			self:print_log("Error while loading, settings file could not be opened (" .. self.settings_path .. ")", "error")
 		end
 		if corrupt then 
 			self:Save()
-			self:print_log("Invalid settings stored in savefile, resaving...")
+			self:print_log("Invalid settings stored in savefile, resaving...", "warning")
 		end
 	end
 
@@ -502,7 +498,7 @@ if not _G.WolfHUD then
 			file:write(json.encode(self.settings))
 			file:close()
 		else
-			self:print_log("Error while saving, settings file could not be opened (" .. self.settings_path .. ")")
+			self:print_log("Error while saving, settings file could not be opened (" .. self.settings_path .. ")", "error")
 		end
 	end
 	
@@ -554,12 +550,12 @@ if not _G.WolfHUD then
 	end
 	
 	function WolfHUD:createOverrides(data)
-		self:print_log("Creating Dummy for: " .. data["display_name"])
+		self:print_log("Creating Dummy for: " .. data["display_name"], "info")
 		if not file.DirectoryExists("./" .. data["install_dir"] .. data["install_folder"]) then
 			if SystemInfo:platform() == Idstring("WIN32") then  --Windows
 				os.execute('cmd /c mkdir "./' .. data["install_dir"] .. data["install_folder"] .. '"')
 			else --Linux
-				log("[WolfHUD] mod_override folder '" .. data["install_folder"] .. "' is missing!")
+				WolfHUD:print_log("[WolfHUD] mod_override folder '" .. data["install_folder"] .. "' is missing!", "warning")
 			end
 		end
 		local file = io.open(data["revision"], "w+")
@@ -582,7 +578,7 @@ if not _G.WolfHUD then
 				return value
 			end
 		else
-			self:print_log("Requested setting doesn't exists!  (id='" .. id .. "', type='" .. tostring(val_type) .. "') ")
+			self:print_log("Requested setting doesn't exists!  (id='" .. id .. "', type='" .. tostring(val_type) .. "') ", "error")
 			if default == nil then
 				if val_type == "number" then -- Try to prevent crash by giving default value
 					default = 1
