@@ -9,6 +9,15 @@
 		{
 			"type" : "divider",
 			"size" : 16,
+			"priority" : 17,
+		},
+		{
+			"type" : "toggle",
+			"id" : "skip_to_main_menu",
+			"title" : "wolfhud_skip_to_main_menu_title",
+			"description" : "wolfhud_skip_to_main_menu_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "skip_to_main_menu",
 			"priority" : 16,
 		},
 		{

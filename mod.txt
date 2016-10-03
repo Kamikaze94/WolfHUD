@@ -80,7 +80,9 @@
 		{ "hook_id" : "lib/tweak_data/guitweakdata", 							"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/tweak_data/timespeedeffecttweakdata", 				"script_path" : "Core.lua" },
 		{ "hook_id" : "core/lib/managers/menu/items/coremenuitemslider", 		"script_path" : "Core.lua" },
-		{ "hook_id" : "core/lib/managers/subtitle/coresubtitlepresenter", 		"script_path" : "Core.lua" }
+		{ "hook_id" : "core/lib/managers/subtitle/coresubtitlepresenter", 		"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/setups/menusetup",							 		"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/states/menutitlescreenstate",				 		"script_path" : "Core.lua" }
 	],
 	"updates" : [
 		{

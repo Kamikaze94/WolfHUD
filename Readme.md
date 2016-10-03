@@ -64,6 +64,7 @@ __Included Mods:__
 - __[Real Weapon Names](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15433)__, made by _(AD) Jaqueto_, updated by _Terminator01_
 - __[Buy all Assets](http://steamcommunity.com/app/218620/discussions/15/618458030689719683/)__, made by _=TBM= BangL_
 - __Equipment Tweaks__, made by _me_
+- __[StraightToMainMenu](http://paydaymods.com/mods/215/straighttomainmenu)__, made by _Snh20_
 - __Smaller Menu Tweaks__
   - __[Always show Mod Icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13975)__, made by _Slippai~_, updated by _me_
   - __[Slider Values](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14800)__, made by _Snh20_, modified by _me_
@@ -74,7 +75,7 @@ __Included Mods:__
   - __Federal Inventory__ (Mod Override), made by _Nervatel Hanging Closet Monster_ and _Luffy_, updated by _me_
     - [weapon icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14240), [melee icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13910) and [mask icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13911) made by _Nervatel Hanging Closet Monster_
     - [throwables, equipment, armor and heister portraits](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13916) made by _Luffy_
-	
+
 __Localizations:__
 --
 - __English__, made by _me_
