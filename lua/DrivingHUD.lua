@@ -893,7 +893,7 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 				speed = -speed
 			end
 			
-			if WolfHUD:getSetting("speed_in_mph", "boolean") then
+			if WolfHUD:getSetting("drivinghud_speed_in_mph", "boolean") then
 				speed = speed / 1.60934
 			end
 			managers.hud:set_driving_vehicle_state(speed, rpm, gear, no_used_seats, no_total_seats, vehicle_name, seats_table, loot_current, loot_total, health_current, health_total)

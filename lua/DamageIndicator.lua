@@ -1,166 +1,115 @@
+if not WolfHUD:getSetting("show_dmg_indicator", "boolean") then return end
+
 if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
-	HUDHitDirection.UNIT_TYPE_HIT_ARMOR = 0
-	HUDHitDirection.UNIT_TYPE_HIT_PLAYER = 1
-	HUDHitDirection.UNIT_TYPE_HIT_CRIT = 2
-	HUDHitDirection.UNIT_TYPE_HIT_VEHICLE = 3
-	HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE = 4
-
-
-	local hudhitdirection_on_hit_direction = HUDHitDirection.on_hit_direction
-	function HUDHitDirection:on_hit_direction(...)
-		if not WolfHUD:getSetting("show_dmg_indicator", "boolean") then
-			hudhitdirection_on_hit_direction(self, ...)
+	HUDHitDirection.indicator_count = 0
+	HUDHitDirection.DAMAGE_TYPES = {}
+	HUDHitDirection.DAMAGE_TYPES.HEALTH = 1
+	HUDHitDirection.DAMAGE_TYPES.ARMOUR = 2
+	HUDHitDirection.DAMAGE_TYPES.VEHICLE = 3
+	HUDHitDirection.DAMAGE_TYPES.CRIT = 4
+	HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE = 5
+	
+	local init_original = HUDHitDirection.init
+	local _add_hit_indicator_original = HUDHitDirection._add_hit_indicator
+	local _remove_original = HUDHitDirection._remove
+	
+	function HUDHitDirection:init(...)
+		init_original(self, ...)
+		if alive(self._hud_panel) and alive(self._hit_direction_panel) then
+			self._hit_direction_panel:set_w(self._hud_panel:w())
+			self._hit_direction_panel:set_h(self._hud_panel:h())
+			self._hit_direction_panel:set_center(self._hit_direction_panel:parent():w() * 0.5, self._hit_direction_panel:parent():h() * 0.5)
 		end
 	end
 	
-	HUDHitDirection.indicator_count = 0
-	function HUDHitDirection:new_hitmarker(pos, type_hit, unit)
-		if not self._hit_direction_panel or not WolfHUD:getSetting("show_dmg_indicator", "boolean") or self.indicator_count > ( WolfHUD:getSetting("dmg_indicator_max_count", "number") * 3 ) then return end
-		self.indicator_count = self.indicator_count + 1
-		local unit_alive = unit and alive(unit) and not unit:character_damage()._dead or not unit
-		local color = type_hit == self.UNIT_TYPE_HIT_ARMOR and WolfHUD:getSetting("dmg_shield_color", "color") or type_hit == self.UNIT_TYPE_HIT_PLAYER and WolfHUD:getSetting("dmg_health_color", "color") or type_hit == HUDHitDirection.UNIT_TYPE_HIT_CRIT and WolfHUD:getSetting("dmg_crit_color", "color") or type_hit == self.UNIT_TYPE_HIT_VEHICLE and WolfHUD:getSetting("dmg_vehicle_color", "color") or type_hit == HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE and WolfHUD:getSetting("dmg_friendlyfire_color", "color")
-		local hitmarker = self._hit_direction_panel:panel({
-			x = "center",
-			y = "center",
-			w = HUDHitDirection.sizeEnd,
-			h = HUDHitDirection.sizeEnd
-		})
-		local hitmarker_icon = hitmarker:bitmap({
-			name = "marker",
-			rotation = 270,
-			visible = unit_alive,
-			texture = "guis/textures/pd2/hitdirection",
-			color = color,
-			blend_mode = "add",
-			alpha = 0,
-			halign = "right"
-		})
-		hitmarker:stop()
-		hitmarker:animate( callback(self, self, "_animate_hitmarker"), hitmarker_icon, pos, unit )
+	function HUDHitDirection:_add_hit_indicator(...)
+		HUDHitDirection.PANEL_SIZE = WolfHUD:getSetting("dmg_ind_size", "number")
+		if self.indicator_count < WolfHUD:getSetting("dmg_indicator_max_count", "number") then
+			self.indicator_count = self.indicator_count + 1
+			_add_hit_indicator_original(self, ...)
+		end
 	end
 	
-	function HUDHitDirection:_animate_hitmarker(hitmarker, hitmarker_icon, pos, unit)
-		if self._hit_direction_panel and hitmarker and hitmarker_icon then
-			local t = 0
-			local tt = WolfHUD:getSetting("dmg_ind_time", "number")
-			local size = WolfHUD:getSetting("dmg_ind_size", "number")
-			while alive(hitmarker) and t < tt do
-				t = t + coroutine.yield()
-				local o = t / tt
-				local angle = self:getRotation(pos) or 180
-				local r = size + (1-math.pow(o,0.5)) * (100)
-				hitmarker_icon:set_alpha((-3 * math.pow(o - 0.5 , 2) + 0.7) * 0.6 )
-				hitmarker_icon:set_rotation(-(angle+90))
-				hitmarker:set_center(self._hit_direction_panel:w()/2-math.sin(angle)*r + 70, self._hit_direction_panel:h()/2-math.cos(angle)*r - 30)
-				if unit and (not alive(unit) or unit:character_damage()._dead) then
-					break
+	function HUDHitDirection:_animate(indicator, data, remove_func)
+		data.duration = WolfHUD:getSetting("dmg_ind_time", "number")
+		data.t = 0
+		while data.t < data.duration do
+			local dt = coroutine.yield()
+			data.t = data.t + dt
+			if alive(indicator) then
+				local o = data.t / data.duration
+				indicator:set_color(self:_get_indicator_color(data.damage_type, o))
+				indicator:set_alpha( math.clamp(math.sin(math.deg(o * math.pi)), 0, 1) )
+				if managers.player:player_unit() then
+					local ply_camera = managers.player:player_unit():camera()
+					if ply_camera then
+						local target_vec = ply_camera:position() - data.origin
+						local angle = target_vec:to_polar_with_reference(ply_camera:forward(), math.UP).spin
+						local r = HUDHitDirection.PANEL_SIZE + (1-math.pow(o,0.5)) * (100)
+						if data.fixed_angle ~= nil then
+							angle = data.fixed_angle
+						end
+						indicator:set_rotation(90 - angle)
+						indicator:set_center(self._hit_direction_panel:w() * 0.5 - math.sin(angle + 180) * r, self._hit_direction_panel:h() * 0.5 - math.cos(angle + 180) * r)
+					end
 				end
 			end
-			hitmarker:set_visible(false)
-			self._hit_direction_panel:remove(hitmarker)
-			self.indicator_count = self.indicator_count - 1
 		end
+		remove_func(indicator, data)
 	end
 	
-	function HUDHitDirection:getRotation( pos )
-		
-		local target_vec = pos - managers.player:player_unit():camera():position()
-		local fwd = managers.player:player_unit():camera():rotation():y()
-		local angle = target_vec:to_polar_with_reference( fwd, math.UP ).spin
-		
-		return angle
+	function HUDHitDirection:_remove(...)
+		_remove_original(self, ...)
+		self.indicator_count = self.indicator_count - 1
 	end
 	
-	local HUDManager_set_mugshot_custody = HUDManager.set_mugshot_custody
-	function HUDManager:set_mugshot_custody(id)
-		HUDManager_set_mugshot_custody(self, id)
-		if self._hud_hit_direction then -- ReInit HUDHitDirection, when you go into custody. No clean soulution, but it seems to work...
-			hud = hud or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
-			self._hud_hit_direction = HUDHitDirection:new(hud)
+	function HUDHitDirection:_get_indicator_color(damage_type, t)
+		if damage_type == HUDHitDirection.DAMAGE_TYPES.HEALTH then
+			return WolfHUD:getSetting("dmg_health_color", "color")
+		elseif damage_type == HUDHitDirection.DAMAGE_TYPES.ARMOUR then
+			return WolfHUD:getSetting("dmg_shield_color", "color")
+		elseif damage_type == HUDHitDirection.DAMAGE_TYPES.VEHICLE then
+			return WolfHUD:getSetting("dmg_vehicle_color", "color")
+		elseif damage_type == HUDHitDirection.DAMAGE_TYPES.CRIT then
+			return WolfHUD:getSetting("dmg_crit_color", "color")
+		elseif damage_type == HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE then
+			return WolfHUD:getSetting("dmg_friendlyfire_color", "color")
+		else
+			return Color(1, t, t)
 		end
-	end
-elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
-	function HUDManager:new_hitmarker(data, damage_type)
-		local col_ray = data.col_ray
-		if col_ray and col_ray.position and col_ray.distance then
-			mobPos = col_ray.position - (col_ray.ray*(col_ray.distance or 0))
-		end
-		if not mobPos then
-			local mobUnit = data.weapon_unit or data.attacker_unit
-			if mobUnit and alive(mobUnit) then
-				mobPos = mobUnit:position()
-			else
-				mobPos = data.hit_pos or data.position
-			end
-		end
-		if not mobPos then
-			mobPos = managers.player:player_unit():position()
-		end
-		self._hud_hit_direction:new_hitmarker(mobPos, damage_type, data.attacker_unit)
 	end
 elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
-	local PlayerDamage_damage_bullet = PlayerDamage.damage_bullet
-	local PlayerDamage_damage_killzone = PlayerDamage.damage_killzone
-	local PlayerDamage_damge_fall = PlayerDamage.damage_fall
 	local PlayerDamage_damage_explosion = PlayerDamage.damage_explosion
 	local PlayerDamage_damage_fire = PlayerDamage.damage_fire
 	
-	--Triggers 3x when hit once, like all the damage functions here...
-	function PlayerDamage:damage_bullet(attack_data)
-		PlayerDamage_damage_bullet(self, attack_data)
-		if self:_chk_dmg_too_soon(attack_data.damage) and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated()) then
-			self:showHitmarker(attack_data, self:is_friendly_fire(attack_data.attacker_unit) and HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE )
-		end
-	end
-
-	function PlayerDamage:damage_killzone(attack_data)
-		PlayerDamage_damage_killzone(self, attack_data)
-		if not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated()) then
-			self:showHitmarker(attack_data)
-		end
-	end
-
-	function PlayerDamage:damage_fall(data)
-		local val = PlayerDamage_damge_fall(self, data)
-		if val or (self._bleed_out and self._unit:movement():current_state_name() ~= "jerry1") then 
-			self:showHitmarker(data)
-		end
-		return val
-	end
-	
-	function PlayerDamage:damage_explosion(attack_data)
-		PlayerDamage_damage_explosion(self, attack_data)
+	function PlayerDamage:damage_explosion(attack_data, ...)
+		PlayerDamage_damage_explosion(self, attack_data, ...)
 		local distance = mvector3.distance(attack_data.position, self._unit:position())
 		if self:_chk_can_take_dmg() and distance <= attack_data.range and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated() or self._bleed_out) then
-			self:showHitmarker(attack_data, HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE)
+			self:_hit_direction(attack_data.position, HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE)
 		end
 	end
 	
-	function PlayerDamage:damage_fire(attack_data)
-		PlayerDamage_damage_fire(self, attack_data)
+	function PlayerDamage:damage_fire(attack_data, ...)
+		PlayerDamage_damage_fire(self, attack_data, ...)
 		local distance = mvector3.distance(attack_data.position, self._unit:position())
 		if self:_chk_can_take_dmg() and distance <= attack_data.range and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated() or self._bleed_out) then
-			self:showHitmarker(attack_data, HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE)
+			self:_hit_direction(attack_data.position, HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE)
 		end
 	end
 	
-	function PlayerDamage:showHitmarker(attack_data, damage_type)
-		local dmg_type = damage_type or HUDHitDirection.UNIT_TYPE_HIT_PLAYER
-		if not damage_type and self:get_real_armor() > 0 then
-			dmg_type = HUDHitDirection.UNIT_TYPE_HIT_ARMOR
-		elseif (self:get_real_health() / self:_max_health()) <= 0.20 then
-			dmg_type = HUDHitDirection.UNIT_TYPE_HIT_CRIT
+	function PlayerDamage:_hit_direction(position_vector, damage_type)
+		if position_vector then
+			local armor_left, low_health = (self:get_real_armor() > 0), ((self:get_real_health() / self:_max_health()) <= 0.20)
+			local dmg_type = low_health and HUDHitDirection.DAMAGE_TYPES.CRIT or damage_type or armor_left and HUDHitDirection.DAMAGE_TYPES.ARMOUR or HUDHitDirection.DAMAGE_TYPES.HEALTH
+			managers.hud:on_hit_direction(position_vector, dmg_type)
 		end
-		managers.hud:new_hitmarker(attack_data, dmg_type)
 	end
-elseif string.lower(RequiredScript) == "lib/units/vehicles/vehicledamage" then
-	local VehicleDamage_damage_bullet = VehicleDamage.damage_bullet
-	function VehicleDamage:damage_bullet(attack_data)
-		local val = VehicleDamage_damage_bullet(self, attack_data)
-		local local_player_vehicle = managers.player:get_vehicle()
-		if val and local_player_vehicle and self._unit == local_player_vehicle.vehicle_unit then
-			managers.hud:new_hitmarker(attack_data, val ~= "friendly_fire" and HUDHitDirection.UNIT_TYPE_HIT_VEHICLE or HUDHitDirection.UNIT_TYPE_HIT_FRIENDLY_FIRE)
+elseif false and string.lower(RequiredScript) == "lib/units/vehicles/vehicledamage" then	
+	function VehicleDamage:_hit_direction(position_vector, damage_type)
+		if position_vector then
+			local dmg_type = damage_type or HUDHitDirection.DAMAGE_TYPES.VEHICLE
+			managers.hud:on_hit_direction(position_vector, dmg_type)
 		end
-		return val
 	end
 end

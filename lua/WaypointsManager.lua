@@ -3,6 +3,8 @@ Waypoint settings:
     unit: 					(unit) 		A game unit to tie the waypoint to. If the unit is deleted from the game, the waypoint will be removed. Preference as follows: unit head position, unit interaction positions, unit position
     position: 				(vector)	A fixed 3D vector position to place the waypoint at
 	offset: 				(vector) 	Offset vector from the Unit/position
+	visible_through_walls:		(boolean)	Option to show/hide Waypoints, if the unit is not visible from the palyers position.
+	mask					(various)	Slot mask for the visible_through_walls raycast. Can be a default slot_mask name string or a slotmask directly.
 	show_offscreen: 		(boolean) 	Show this waypoint if it's outside your FOV (default: false)
 	radius_offscreen: 		(number) 	Radius of the circle the waypoint is orbiting on while moving (default: 200)
 	transition_duration: 	(number) 	Duration of the animation when a waypoint changes its state between on- and off-screen. (default: 0.3)
@@ -16,11 +18,15 @@ Waypoint settings:
 										"final_scale" 	(number)	alpha to reach on maximum angle
     rescale_distance: 		(table) 	"min"/"max"		(number)	distance and final scale values for waypoint rescaling based on distance
 										"final_scale" 	(number)	multiplier to reach on maximum distance
+    fade_duration: 			(table) 	"min"/"max" 	(number)	values to start fade (0-1),
+										"alpha" 		(boolean)	for it to affect alpha of the whole waypoint,
+										"color"			(table)		"start"/"stop"	(color)	Color for the whole waypoint on 0/100% progress. (Component color settings have higher priority)
+										"position" 		(vector)	to change the position offset of the whole waypoint
 	component_order: 		(table) 	row tables		(table)		Row definition of components (top-2-bottom). 
 																	column tables 		(table) 	Column definition of coponents by names (left-2-right).
 
-Component settings:			(table)		Component definition as subtabe of the Waypoint settings. the key will be that components name.
-	type: 					(string)	Determines the component type (label/icon), if its name is not one of the default components names. (You'll need the name again, if you want to update its text/image.)
+Component settings:			(table)		Component definition as subtable of the Waypoint settings. the key will be that components name.
+	type: 					(string)	Determines the component type (label/icon/distance/timer/duration)
 	show: 					(boolean) 	Determines whether the component should be shown at all
 	show_offscreen: 		(boolean) 	Show this waypoint if it's outside your FOV. (default: true, only active if waypoint is visible too)
 	scale: 					(number) 	Size scale of the waypoint component, gets multiplied on default scale. (default 1)
@@ -33,12 +39,19 @@ Component settings:			(table)		Component definition as subtabe of the Waypoint s
 										"final_scale" 	(number)	alpha to reach on maximum angle
     rescale_distance: 		(table) 	"min"/"max" 	(number)	distance and final scale values for waypoint rescaling based on distance
 										"final_scale" 	(number)	multiplier to reach on maximum distance
+    fade_duration: 			(table) 	"min"/"max" 	(number)	values to start fade (0-1),
+										"alpha" 		(boolean)	for it to affect the components alpha,
+										"color"			(table)		"start"/"stop"	(color)	Color for the Component on 0/100% progress.
+										"position" 		(vector)	to change the position offset of the whole waypoint
 
 Icon exclusive settings:
     texture: 				(string) 	Path to texture to use for icon
     texture_rect: 			(table) 	Bounding box to use for the icon texture. Containing {x, y, w, h}
+	radial_image			(boolean)	Handle the Image as Radial Image (Red value of color determines how much of an angle of the image is visible)
+	blend_mode				(string)	Determines the image blend mode, e.g. "normal", "add", "sub" (default: "add")
     std_wp: 				(string) 	As an alternative to texture/texture_rect, an ID to one of the predefined waypoint icons in the game tweak data (e.g. "wp_crowbar")
-	on_minimap				(boolean)	Show that icon on the Minimap (if that mod is installed)
+	on_minimap:				(boolean)	Show that icon on the Minimap (if that mod is installed)
+	all_elevations:			(boolean)	Show icon on the Minimap, regardless of your elevation
 
 Label exclusive settings:
     text: 					(string) 	Label text
@@ -50,19 +63,7 @@ Timer exclusive settings:
 	
 Duration exclusive settings:
 	initial_value: 			(number) 	Start value of the component (e.g. 30 for a waypoint duration of 30 seconds)
-    fade_progress: 			(table) 	"min"/"max" 	(number)	values to start fade (0-1),
-										"alpha" 		(boolean)	for it to affect alpha of the whole waypoint,
-										"position" 		(vector)	to change the position offset of the whole waypoint
 
-
-Default component names: (Those need to have that name and are limited to 1 of each per waypoint.)
-	distance	-- Can show your distance to the waypoint.
-	timer		-- Can display a time value, and automatically update it increasing/decresing. Can also be paused.
-	duration	-- Counts downwards the initial value since creation (or last set) of the waypoint. Waypoint will be deleted, once it reaches 0.
-	
-Other components: (You can create as many of those as you want. Just give them unique names. Define its type in the type field of the components settings.)
-	label		-- Text label. (component type)
-	icon		-- Icon panel. (component type)
 
 Special components:
 	arrow		-- This component gets always created. It represents the small arrows shown for off-screen waypoints. It has all settings a general component has, no exclusive ones.
@@ -89,7 +90,7 @@ if RequiredScript == "lib/setups/setup" then
 	
 	function WaypointManager:_check_pending_waypoints()
 		for id, data in pairs(self._pending_waypoints) do
-			self:add_waypoint(id, data.data, data.overwrite)
+			self:add_waypoint(id, data.class, data.data, data.overwrite)
 		end
 		
 		self._pending_waypoints = {}
@@ -144,6 +145,13 @@ if RequiredScript == "lib/setups/setup" then
 		end
 	end
 	
+	function WaypointManager:clear_waypoints()
+		self._pending_waypoints = {}
+		for id, wp in pairs(self._waypoints) do
+			wp:delete()
+		end
+	end
+	
 	function WaypointManager:add_waypoint_component(id, name, data, order, overwrite)
 		if self._pending_waypoints[id] then
 			local pending_data = self._pending_waypoints[id].data
@@ -184,21 +192,21 @@ if RequiredScript == "lib/setups/setup" then
 		end
 	end
 	
-	function WaypointManager:set_waypoint_duration(id, value)
+	function WaypointManager:set_waypoint_duration(id, name, value)
 		if self._waypoints[id] then
-			self._waypoints[id]:update_duration(value)
+			self._waypoints[id]:set_duration(name, value)
 		end
 	end
 	
-	function WaypointManager:set_waypoint_timer(id, value)
+	function WaypointManager:set_waypoint_timer(id, name, value, auto_update)
 		if self._waypoints[id] then
-			self._waypoints[id]:update_timer(value)
+			self._waypoints[id]:set_timer(name, value, auto_update)
 		end
 	end
 	
-	function WaypointManager:set_waypoint_timer_pause(id, value)
+	function WaypointManager:set_waypoint_timer_pause(id, name, value)
 		if self._waypoints[id] then
-			self._waypoints[id]:set_timer_pause(value)
+			self._waypoints[id]:set_timer_pause(name, value)
 		end
 	end
 	
@@ -245,29 +253,35 @@ if RequiredScript == "lib/setups/setup" then
 		self._panel = parent:panel({
 			name = "wp_panel_" .. id,
 			visible = false,
-			w = 100,
+			w = 300,
 			alpha = data.alpha or 1,
 		})
 		
 		self._id = id
 		self._unit = data.unit
 		self._position = data.position
+		self._visible_through_walls = (data.visible_through_walls ~= false)
+		self._slot_mask = data.mask and (type(data.mask) == "string" and managers.slot:get_mask(data.mask) or data.mask) or (managers.slot:get_mask( 'bullet_impact_targets', 'pickups' ) - managers.slot:get_mask( 'criminals' ))
+		self._hide_on_uninteractable = data.hide_on_uninteractable
 		self._offset = data.offset or Vector3(0, 0, 0)
 		self._base_size = 16
 		self._base_scale = data.scale or 1
 		self._deleted = false
 		self._is_enabled = true	--For Minimap
 		self._state = "on_screen"
-		self._hide_on_uninteractable = data.hide_on_uninteractable
 		
 		self._components = {}
-		self._component_order = data.component_order or { { "label" }, { "icon" }, { "distance" }, { "timer" }, { "duration" } }		--Top to bottom, left to right (Don't add "arrow" to the component list...)
+		self._timer_components = {}
+		self._duration_components = {}
+		self._distance_components = {}
+		self._component_order = data.component_order or {}		--Top to bottom, left to right (Don't add "arrow" to the component list...)
 		self._settings = {
 			show = true,
 			show_offscreen = data.show_offscreen and true or false,
 			radius_offscreen = data.radius_offscreen or 200,
 			transition_duration = data.transition_duration or 0.3,
 			color = data.color or Color.white,
+			fade_duration = data.fade_duration or {},
 			visible_angle = data.visible_angle or {},
 			visible_distance = data.visible_distance or {},
 			fade_angle = data.fade_angle or {},
@@ -277,8 +291,10 @@ if RequiredScript == "lib/setups/setup" then
 		
 		
 		for component_name, component_data in pairs(data) do
-			if not self:add_component(component_name, data, nil) then
-				WolfHUD:print_log(string.format("Error while creating waypoint: %s", self._id))
+			if type(component_data) == "table" and component_data.type then
+				if not self:add_component(component_name, data, nil) then
+					WolfHUD:print_log(string.format("Error while creating waypoint: %s", self._id), "error")
+				end
 			end
 		end
 		
@@ -318,7 +334,7 @@ if RequiredScript == "lib/setups/setup" then
 			data[name] = component_data
 		end
 
-		if type(data[name]) == "table" and (table.contains({"distance", "duration", "timer"}, name) or data[name].type) then
+		if type(data[name]) == "table" and data[name].type then
 			if self._components[name] or self._settings[name] then
 				if overwrite then
 					self:remove_component(name)
@@ -326,13 +342,12 @@ if RequiredScript == "lib/setups/setup" then
 					return false
 				end
 			end
-		
-			if name == "distance" then
-				self:_setup_distance_component(data, self._base_size, self._base_scale)
-			elseif name == "timer" then
-				self:_setup_timer_component(data, self._base_size, self._base_scale)
-			elseif name == "duration" then
-				self:_setup_duration_component(data, self._base_size, self._base_scale)
+			if data[name].type == "distance" then
+				self:_setup_distance_component(name, data, self._base_size, self._base_scale)
+			elseif data[name].type == "timer" then
+				self:_setup_timer_component(name, data, self._base_size, self._base_scale)
+			elseif data[name].type == "duration" then
+				self:_setup_duration_component(name, data, self._base_size, self._base_scale)
 			elseif data[name].type == "icon" then
 				self:_setup_icon_component(name, data, self._base_size, self._base_scale)
 			elseif data[name].type == "label" then
@@ -354,13 +369,17 @@ if RequiredScript == "lib/setups/setup" then
 	end
 	
 	function CustomWaypoint:remove_component(name)
+		self._distance_components[name] = nil
+		self._timer_components[name] = nil
+		self._duration_components[name] = nil
+		
 		local component = self._components[name]
 		if component then
 			self._panel:remove(component)
 		end
 		
 		self._settings[name] = nil
-		
+				
 		for i, vertical_order in ipairs(self._component_order) do
 			for j, component_name in ipairs(vertical_order) do
 				if name == component_name then
@@ -378,9 +397,12 @@ if RequiredScript == "lib/setups/setup" then
 	
 	function CustomWaypoint:set_label(name, text)
 		if self._components[name] then
-			self._components[name]:set_text(text)
+			self._components[name]:set_text(tostring(text))
 			local _, _, w, _ = self._components[name]:text_rect()
-			self._components[name]:set_w(w)
+			if w ~= self._components[name]:w() then
+				self._components[name]:set_w(w)
+				self:_arrange()
+			end
 		end
 	end
 	
@@ -397,6 +419,28 @@ if RequiredScript == "lib/setups/setup" then
 				end
 				self._settings[name].base_values.w_ratio = w_ratio
 			end
+		end
+	end
+	
+	function CustomWaypoint:set_timer(name, value, auto_update)
+		if self._settings[name] then
+			if auto_update then
+				self._settings[name].auto_update = auto_update
+			end
+			self:update_timer(name, value)
+		end
+	end
+	
+	function CustomWaypoint:set_timer_pause(name, value)
+		if self._settings[name] then
+			self._settings[name].pause = value
+		end
+	end
+	
+	function CustomWaypoint:set_duration(name, value)
+		if self._settings[name] then
+			self._settings[name].start_value = value
+			self:update_duration(name, value)
 		end
 	end
 	
@@ -424,26 +468,32 @@ if RequiredScript == "lib/setups/setup" then
 			return self:delete()
 		end
 		
-		if self._settings.duration and self._settings.duration.value then
-			self:update_duration(math.max(self._settings.duration.value - dt, 0))
-			
-			if self._settings.duration and self._settings.duration.fade_progress then
-				local start, stop = self._settings.duration.fade_progress.start or 0, self._settings.duration.fade_progress.stop or 1
-				local progress = math.clamp(1 - (self._settings.duration.value / self._settings.duration.start_value), 0, 1)
-				progress = math.min(math.max(progress - start, 0) / (stop - start), 1)
-				local fade_offset = self._settings.duration.fade_progress.position or Vector3(0, 0, 0)
-				mvector3.add(offset, fade_offset * progress)
-				self._settings.duration.fade_progress.progress = progress
-			end
-			
-			if self._settings.duration.value <= 0 then
-				return self:delete()
+		self._position = self._unit and (self._unit:movement() and self._unit:movement():m_head_pos() or self._unit:interaction() and self._unit:interaction():interact_position() or self._unit:position()) or self._position
+		
+		for name, _ in pairs(self._duration_components) do
+			if self._settings[name] and self._settings[name].value then
+				self:update_duration(name, math.max(self._settings[name].value - dt, 0))
+				
+				if self._settings[name].fade_duration then
+					local start, stop = self._settings[name].fade_duration.start or 0, self._settings[name].fade_duration.stop or 1
+					local progress = math.clamp(1 - (self._settings[name].value / self._settings[name].start_value), 0, 1)
+					progress = math.min(math.max(progress - start, 0) / (stop - start), 1)
+					local fade_offset = self._settings[name].fade_duration.position or Vector3(0, 0, 0)
+					mvector3.add(offset, fade_offset * progress)
+					self._settings[name].progress = progress
+				end
+				
+				if self._settings[name].value <= 0 then
+					return self:delete()
+				end
 			end
 		end
 		
-		if self._settings.timer and self._settings.timer.auto_update ~= 0 and self._settings.timer.value then
-			if not self._settings.timer.pause then
-				self:update_timer(self._settings.timer.value + self._settings.timer.auto_update * dt)
+		for name, _ in pairs(self._timer_components) do
+			if self._settings[name] and self._settings[name].auto_update ~= 0 and self._settings[name].value then
+				if not self._settings[name].pause then
+					self:update_timer(name, self._settings[name].value + self._settings[name].auto_update * dt)
+				end
 			end
 		end
 		
@@ -451,9 +501,15 @@ if RequiredScript == "lib/setups/setup" then
 		local is_enabled = true
 		local dot = 0
 		
-		if self._hide_on_uninteractable and self._unit:interaction() then
+		if not self._visible_through_walls then
+			local raycast_position = self._position + self._offset / 2
+			local r = World:raycast( "ray", cam:position(), raycast_position, "slot_mask", self._slot_mask or managers.slot:get_mask( 'explosion_targets'))
+			is_enabled = (not r or not r.unit or self._unit and (self._unit:key() == r.unit:key()))
+		end
+		
+		if is_enabled and self._hide_on_uninteractable and self._unit:interaction() then
 			local player = managers.player:player_unit()
-			is_enabled = alive(player) and self._unit:interaction():can_interact(player)
+			is_enabled = alive(player) and self._unit:interaction()._active and self._unit:interaction():can_interact(player)
 		end
 		
 		if HUDManager.HAS_MINIMAP and is_enabled ~= self._is_enabled then
@@ -462,8 +518,6 @@ if RequiredScript == "lib/setups/setup" then
 		end
 		
 		if is_enabled then
-			self._position = self._unit and (self._unit:movement() and self._unit:movement():m_head_pos() or self._unit:interaction() and self._unit:interaction():interact_position() or self._unit:position()) or self._position
-			
 			mvector3.set(world_pos, self._position)
 			mvector3.add(world_pos, offset)
 			mvector3.set(screen_pos, workspace:world_to_screen(cam, world_pos))
@@ -489,7 +543,7 @@ if RequiredScript == "lib/setups/setup" then
 		
 		if is_enabled and self._state == (on_screen and "on_screen" or "off_screen") then
 				self:_update_visuals(mvector3.x(screen_pos), mvector3.y(screen_pos), math.acos(dot), dir_normalized)
-		elseif is_enabled and self._settings.show_offscreen then
+		elseif is_enabled and ( on_screen or self._settings.show_offscreen ) then
 			if self._state == "on_screen" then
 				self._state = "transition_off_screen"
 				self._transition_time = self._settings.transition_duration
@@ -513,54 +567,38 @@ if RequiredScript == "lib/setups/setup" then
 			end
 		elseif self._panel:visible() then
 			self._panel:hide()
+			self._components.arrow:hide()
 		end
 
 	end
 	
-	function CustomWaypoint:update_timer(value)
-		if self._settings.timer then
-			self._settings.timer.value = value
-			if self._components.timer and self._settings.timer.show then
+	function CustomWaypoint:update_timer(name, value)
+		if self._settings[name] then
+			self._settings[name].value = math.max(value, 0)
+			if self._components[name] and self._settings[name].show then
 				local frmt = value >= 9.95 and "%.0fs" or "%.1fs"
-				self._components.timer:set_text(string.format(frmt, value))
-				local _, _, w, _ = self._components.timer:text_rect()
-				if w ~= self._components.timer:w() then
-					self._components.timer:set_w(w)
-					self:_arrange()
-				end
+				self:set_label(name, string.format(frmt, value))
 			end
 		end
 	end
 	
-	function CustomWaypoint:set_timer_pause(value)
-		self._settings.timer.pause = value
-	end
-	
-	function CustomWaypoint:update_duration(value)
-		if self._settings.duration then
-			self._settings.duration.value = value
-			if self._components.duration and self._settings.duration.show then
+	function CustomWaypoint:update_duration(name, value)
+		if self._settings[name] then
+			self._settings[name].value = math.max(value, 0)
+			if self._components[name] and self._settings[name].show then
 				local frmt = value >= 9.95 and "%.0fs" or "%.1fs"
-				self._components.duration:set_text(string.format(frmt, value))
-				local _, _, w, _ = self._components.duration:text_rect()
-				if w ~= self._components.duration:w() then
-					self._components.duration:set_w(w)
-					self:_arrange()
-				end
+				self:set_label(name, string.format(frmt, value))
 			end
 		end
 	end
 	
 	function CustomWaypoint:_update_distance(value)
 		self._distance = value
-		if self._components.distance then
-			if self._settings.distance and self._settings.distance.show then
-				local frmt = value >= 995 and "%.0fm" or "%.1fm"
-				self._components.distance:set_text(string.format(frmt, value / 100))
-				local _, _, w, _ = self._components.distance:text_rect()
-				if w ~= self._components.distance:w() then
-					self._components.distance:set_w(w)
-					self:_arrange()
+		for name, _ in pairs(self._distance_components) do
+			if self._components[name] then
+				if self._settings[name] and self._settings[name].show then
+					local frmt = value >= 995 and "%.0fm" or "%.1fm"
+					self:set_label(name, string.format(frmt, value / 100))
 				end
 			end
 		end
@@ -580,11 +618,6 @@ if RequiredScript == "lib/setups/setup" then
 				end
 			end
 			
-			if self._settings.duration and self._settings.duration.fade_progress.alpha then
-				local alpha = 1 - (self._settings.duration.fade_progress.progress or 0)
-				self._panel:set_alpha(alpha * self._settings.base_values.alpha)
-			end
-			
 			if rearrange then
 				self:_arrange()
 			end
@@ -596,6 +629,9 @@ if RequiredScript == "lib/setups/setup" then
 				self._components.arrow:set_rotation(angle)
 				self._components.arrow:set_center(x + arrow_direction.x * (self._panel:w() + 3), y + arrow_direction.y * (self._panel:h() + 3))
 			end
+		elseif not self._settings.show_offscreen then
+			self._state = "on_screen"
+			self._components.arrow:hide()
 		end
 		
 	end
@@ -620,20 +656,32 @@ if RequiredScript == "lib/setups/setup" then
 					(not data.visible_angle.max or data.visible_angle.max >= angle)
 			end
 			
-			local color = data.color or self._settings.color or Color.white
-			if component.color and color ~= component:color() then
-				component:set_color(color)
-			end
-						
 			is_visible = is_visible and in_range and in_view
 			
-			if is_visible ~= component:visible() then
-				component:set_visible(is_visible)
-				component:set_alpha(data.base_values.alpha)
-				rearrange = true
-			end
-			
 			if is_visible then
+				if data.fade_duration then
+					local progress = data.progress
+					if not progress then
+						progress = 0
+						local component_count = 0
+						for name, _ in pairs(self._duration_components) do
+							if self._settings[name] and self._settings[name].progress then
+								progress = progress + self._settings[name].progress
+								component_count = component_count + 1
+							end
+						end
+						progress = progress / component_count
+					end
+					if data.fade_duration.alpha then
+						local alpha_mult = 1 - (progress or 0)
+						data.alpha = alpha_mult * data.base_values.alpha
+					end
+					if data.fade_duration.color and data.fade_duration.color.start and data.fade_duration.color.stop then
+						local color = math.lerp(data.fade_duration.color.start, data.fade_duration.color.stop, progress)
+						data.color = color
+					end
+				end
+				
 				if data.rescale_distance and data.rescale_distance.start_distance and data.rescale_distance.end_distance then
 					local start = data.rescale_distance.start_distance
 					local stop = data.rescale_distance.end_distance
@@ -649,6 +697,11 @@ if RequiredScript == "lib/setups/setup" then
 							
 							if data.base_values.font_size then
 								component:set_font_size(data.base_values.font_size * scale)
+								local _, _, w, _ = component:text_rect()
+								if w ~= component:w() then
+									component:set_w(w)
+									rearrange = true
+								end
 							else
 								component:set_w(new_size * data.base_values.w_ratio)
 							end
@@ -663,9 +716,25 @@ if RequiredScript == "lib/setups/setup" then
 					if start > angle then
 						local final_scale = data.fade_angle.final_scale or 0
 						local scale = (stop >= angle) and final_scale or math.lerp(final_scale, 1, (angle - stop) / (start - stop))
-						component:set_alpha(data.base_values.alpha * scale)
+						data.alpha = data.base_values.alpha * scale
 					end
 				end
+				
+				local color = data.color or self._settings.color
+				if color and component.color and color ~= component:color() then
+					component:set_color(color)
+				end
+							
+				local alpha = data.alpha or data.base_values.alpha
+				if alpha and component.alpha and component:alpha() ~= alpha then
+					component:set_alpha(alpha)
+				end
+			end
+			
+			
+			if is_visible ~= component:visible() then
+				component:set_visible(is_visible)
+				rearrange = true
 			end
 			
 			return is_visible, rearrange
@@ -695,8 +764,10 @@ if RequiredScript == "lib/setups/setup" then
 		
 		self._settings[name] = {
 			show = show,
-			show_offscreen = data[name].show_offscreen and true or false,
+			show_offscreen = (data[name].show_offscreen ~= false) or false,
 			base_values = { size = size, alpha = alpha, w_ratio = w_ratio },
+			color = data[name].color,
+			fade_duration = data[name].fade_duration or {},
 			visible_angle = data[name].visible_angle or {},
 			visible_distance = data[name].visible_distance or {},
 			fade_angle = data[name].fade_angle or {},
@@ -707,12 +778,13 @@ if RequiredScript == "lib/setups/setup" then
 			name = name,
 			texture = texture,
 			texture_rect = texture_rect,
+			render_template = data[name].radial_image and "VertexColorTexturedRadial",
 			color = color,
 			w = size * w_ratio,
 			h = size,
 			alpha = alpha,
 			visible = show,
-			blend_mode = "add",
+			blend_mode = data[name].blend_mode or "add",
 		})
 	end
 	
@@ -738,7 +810,7 @@ if RequiredScript == "lib/setups/setup" then
 				texture = texture, 
 				texture_rect = texture_rect, 
 				color = color,
-				same_elevation_only = not data.all_elevations,
+				same_elevation_only = not data[name].all_elevations,
 			})
 		end
 	end
@@ -755,53 +827,56 @@ if RequiredScript == "lib/setups/setup" then
 			show = show,
 			show_offscreen = component_data.show_offscreen and true or false,
 			base_values = { size = size, alpha = alpha, font_size = size * 0.95 },
+			color = component_data.color,
+			fade_duration = component_data.fade_duration or {},
 			visible_angle = component_data.visible_angle or {},
 			visible_distance = component_data.visible_distance or {},
 			fade_angle = component_data.fade_angle or {},
 			rescale_distance = component_data.rescale_distance or {},
 		}
-		
 		self._components[name] = base_panel:text({
 			name = name,
-			text = component_data.text or "",
+			text = component_data.text and tostring(component_data.text) or "",
 			color = color,
 			font = component_data.font or data.text_font or tweak_data.hud.medium_font_noshadow,
 			font_size = size * 0.95,
-			align = "center",
+			align = "left",
 			vertical = "center",
-			w = self._panel:w(),
+			w = size * 3,
 			h = size,
 			alpha = alpha,
 			visible = show,
 		})
 		
 		local _, _, w, _ = self._components[name]:text_rect()
-		self._components[name]:set_w(w)
+		if w ~= self._components[name]:w() then
+			self._components[name]:set_w(w)
+			self:_arrange()
+		end
 	end
 	
 	function CustomWaypoint:_setup_label_component(name, data, base_size, base_scale)
 		self:_setup_text_component(name, data, base_size, base_scale, self._panel)
-		self._components[name]:set_text(tostring(data[name] and data[name].text or ""))
-		local _, _, w, _ = self._components[name]:text_rect()
-		self._components[name]:set_w(w)
 	end
 	
-	function CustomWaypoint:_setup_distance_component(data, base_size, base_scale)
-		self:_setup_text_component("distance", data, base_size, base_scale, self._panel)
+	function CustomWaypoint:_setup_distance_component(name, data, base_size, base_scale)
+		self:_setup_text_component(name, data, base_size, base_scale, self._panel)
+		self._distance_components[name] = true
 	end
 	
-	function CustomWaypoint:_setup_timer_component(data, base_size, base_scale)
-		self:_setup_text_component("timer", data, base_size, base_scale, self._panel)
-		self._settings.timer.value = data.timer and (data.timer.initial_value or 0)
-		self._settings.timer.auto_update = data.timer and data.timer.auto_update or 0
-		self._settings.timer.pause = data.timer and data.timer.pause or false
+	function CustomWaypoint:_setup_timer_component(name, data, base_size, base_scale)
+		self:_setup_text_component(name, data, base_size, base_scale, self._panel)
+		self._settings[name].value = data[name] and (data[name].initial_value or 0)
+		self._settings[name].auto_update = data[name] and data[name].auto_update or 0
+		self._settings[name].pause = data[name] and data[name].pause or false
+		self._timer_components[name] = true
 	end
 	
-	function CustomWaypoint:_setup_duration_component(data, base_size, base_scale)
-		self:_setup_text_component("duration", data, base_size, base_scale, self._panel)
-		self._settings.duration.fade_progress = data.duration and data.duration.fade_progress or {}
-		self._settings.duration.start_value = data.duration and data.duration.initial_value
-		self._settings.duration.value = self._settings.duration.start_value
+	function CustomWaypoint:_setup_duration_component(name, data, base_size, base_scale)
+		self:_setup_text_component(name, data, base_size, base_scale, self._panel)
+		self._settings[name].start_value = data[name] and data[name].initial_value
+		self._settings[name].value = self._settings[name].start_value
+		self._duration_components[name] = true
 	end
 	
 	function CustomWaypoint:_arrange()

@@ -1,0 +1,66 @@
+{
+	"menu_id" : "wolfhud_infopanels_buff_enforcer_options_menu",
+	"parent_menu_id" : "wolfhud_infopanels_buff_options_menu",
+	"title" : "wolfhud_infopanels_buff_enforcer_options_name",
+	"description" : "wolfhud_infopanels_buff_enforcer_options_help",
+	"focus_changed_callback" : "",
+	"back_callback" : "",
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "bulletproof_teambuff",
+			"title" : "wolfhud_hudlist_bulletproof_teambuff_title",
+			"description" : "wolfhud_hudlist_bulletproof_teambuff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "bulletproof_teambuff",
+		},
+		{
+			"type" : "divider",
+			"size" : 8,
+		},
+		{
+			"type" : "toggle",
+			"id" : "bullet_storm_buff",
+			"title" : "wolfhud_hudlist_bullet_storm_buff_title",
+			"description" : "wolfhud_hudlist_bullet_storm_buff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "bullet_storm_buff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "die_hard_buff",
+			"title" : "wolfhud_hudlist_die_hard_buff_title",
+			"description" : "wolfhud_hudlist_die_hard_buff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "die_hard_buff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "overkill_buff",
+			"title" : "wolfhud_hudlist_overkill_buff_title",
+			"description" : "wolfhud_hudlist_overkill_buff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "overkill_buff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "underdog_buff",
+			"title" : "wolfhud_hudlist_underdog_buff_title",
+			"description" : "wolfhud_hudlist_underdog_buff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "underdog_buff",
+		},
+		{
+			"type" : "divider",
+			"size" : 8,
+		},
+		{
+			"type" : "toggle",
+			"id" : "bullseye_debuff",
+			"title" : "wolfhud_hudlist_bullseye_debuff_title",
+			"description" : "wolfhud_hudlist_bullseye_debuff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "bullseye_debuff",
+		}
+	]
+}

@@ -3,7 +3,7 @@
 
 if WolfHUD and not WolfHUD:getSetting("use_hudlist", "boolean") then return end
 printf = function(...) 
-	WolfHUD:print_log(string.format(...))
+	WolfHUD:print_log(string.format(...), "info")
 end
 if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
@@ -318,6 +318,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		medical_supplies_debuff = { "medical_supplies_debuff" },
 		melee_stack_damage = { "melee_stack_damage", "melee_damage_increase" },
 		messiah = { "messiah" },
+		muscle_regen = { "muscle_regen" },
 		overdog = { "overdog", "damage_reduction" },
 		overkill = { "overkill", "damage_increase" },
 		overkill_aced = { "overkill", "damage_increase" },
@@ -3864,13 +3865,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting("lock_n_load_buff", "boolean"),
 		},
-		melee_stack_damage = {
-			spec = {5, 4},
-			class = "TimedBuffItem",
-			priority = 4,
-			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("melee_stack_damage_buff", "boolean"),
-		},
 		maniac = {
 			spec = {0, 0},
 			texture_bundle_folder = "coco",
@@ -3885,6 +3879,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting("messiah_buff", "boolean")
+		},
+		melee_stack_damage = {
+			spec = {5, 4},
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = not WolfHUD:getSetting("melee_stack_damage_buff", "boolean"),
+		},
+		muscle_regen = {
+			spec = { 4, 1 },
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			invert_timers = true,
+			ignore = not WolfHUD:getSetting("muscle_regen_buff", "boolean"),
 		},
 		overdog = {
 			spec = {6, 4},
@@ -4511,7 +4520,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if self._debuff_active and self._debuff_expire_t then
 			self:_update_debuff(t, dt)
 			
-			if self._debuff_expire_t then
+			if self._debuff_expire_t and self._debuff_expire_t > t then
 				table.insert(time_str, { 
 					str = string.format("%.1fs", self._debuff_expire_t - t), 
 					color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF
@@ -4519,7 +4528,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
-		if self._buff_active and self._expire_t then
+		if self._buff_active and self._expire_t and self._expire_t > t then
 			self:_set_progress((t - self._start_t) / (self._expire_t - self._start_t))
 			
 			if t > self._expire_t then
@@ -4536,24 +4545,28 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
-		if not self._has_text and #time_str > 0 then
-			local color_ranges = {}
-			local str = ""
-			local offset = 0
-			
-			for i, data in ipairs(time_str) do
-				str = str .. data.str
-				table.insert(color_ranges, { offset, string.len(str), data.color or HUDList.BuffItemBase.ICON_COLOR.STANDARD })
-				if i < #time_str then
-					str = str .. " "
+		if not self._has_text then
+			if #time_str > 0 then
+				local color_ranges = {}
+				local str = ""
+				local offset = 0
+				
+				for i, data in ipairs(time_str) do
+					str = str .. data.str
+					table.insert(color_ranges, { offset, string.len(str), data.color or HUDList.BuffItemBase.ICON_COLOR.STANDARD })
+					if i < #time_str then
+						str = str .. " "
+					end
+					offset = offset + string.len(str)
 				end
-				offset = offset + string.len(str)
-			end
-			
-			self._value:set_text(str)
-			
-			for _, data in ipairs(color_ranges) do
-				self._value:set_range_color(data[1], data[2], data[3])
+				
+				self._value:set_text(str)
+				
+				for _, data in ipairs(color_ranges) do
+					self._value:set_range_color(data[1], data[2], data[3])
+				end
+			else
+				self._value:set_text("")
 			end
 		end
 	end
@@ -4570,7 +4583,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if self._debuff_active and self._debuff_expire_t then
 			self:_update_debuff(t, dt)
 			
-			if self._debuff_expire_t then
+			if self._debuff_expire_t and self._debuff_expire_t > t then
 				table.insert(time_str, { 
 					str = string.format("%.1fs", self._debuff_expire_t - t), 
 					color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF
@@ -4592,24 +4605,28 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self:_set_progress_inner(0)
 		end
 		
-		if not self._has_text and #time_str > 0 then
-			local color_ranges = {}
-			local str = ""
-			local offset = 0
-			
-			for i, data in ipairs(time_str) do
-				str = str .. data.str
-				table.insert(color_ranges, { offset, string.len(str), data.color or self._default_icon_color or HUDList.BuffItemBase.ICON_COLOR.STANDARD })
-				if i < #time_str then
-					str = str .. " "
+		if not self._has_text then
+			if #time_str > 0 then
+				local color_ranges = {}
+				local str = ""
+				local offset = 0
+				
+				for i, data in ipairs(time_str) do
+					str = str .. data.str
+					table.insert(color_ranges, { offset, string.len(str), data.color or self._default_icon_color or HUDList.BuffItemBase.ICON_COLOR.STANDARD })
+					if i < #time_str then
+						str = str .. " "
+					end
+					offset = offset + string.len(str)
 				end
-				offset = offset + string.len(str)
-			end
-			
-			self._value:set_text(str)
-			
-			for _, data in ipairs(color_ranges) do
-				self._value:set_range_color(data[1], data[2], data[3])
+				
+				self._value:set_text(str)
+				
+				for _, data in ipairs(color_ranges) do
+					self._value:set_range_color(data[1], data[2], data[3])
+				end
+			else
+				self._value:set_text("")
 			end
 		end
 	end

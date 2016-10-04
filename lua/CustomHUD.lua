@@ -2,7 +2,8 @@
 --TODO: Clean up interaction activation/deactivation animation, probably a lot of unnecessary rearranges going on
 
 
-printf = printf or function(...) WolfHUD:print_log(string.format(...)) end
+print_info = print_info or function(...) WolfHUD:print_log(string.format(...), "info") end
+print_warning = print_warning or function(...) WolfHUD:print_log(string.format(...), "warning") end
 
 if not WolfHUD:getSetting("use_customhud", "boolean") then
 	if RequiredScript == "lib/managers/hudmanagerpd2" then
@@ -202,7 +203,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			CARRY = WolfHUD:getSetting("TEAM_CARRY", "boolean"),	--Show currently carried bag
 			BUILD = {	--Show perk deck and number of skills acquired in each tree (not used by player)
 				--Pick max one
-				HIDE = not WolfHUD:getSetting("TEAM_BUILD_HIDE", "number"),	--Don't show build at all
+				HIDE = not WolfHUD:getSetting("TEAM_BUILD_HIDE", "boolean"),	--Don't show build at all
 				DURATION = WolfHUD:getSetting("TEAM_BUILD_DURATION", "number") > 0 and WolfHUD:getSetting("TEAM_BUILD_DURATION", "number") or nil,	--Time in seconds to show the build from when player joins. Information is hidden when duration has expired, or never removed if value is nil/undefined
 			},
 			WEAPON = {
@@ -573,7 +574,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function HUDTeammateCustom:set_info_meter(data)
-		--printf("(DEBUG) set_info_meter: c: %s, t: %s, m: %s\n", tostring(data.current), tostring(data.total), tostring(data.max))
+		--print_info("(DEBUG) set_info_meter: c: %s, t: %s, m: %s\n", tostring(data.current), tostring(data.total), tostring(data.max))
 		--Used to set hysteria stacks. Unused in this HUD at the moment
 	end
 	
@@ -809,7 +810,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	for id, ptr in pairs(HUDTeammate) do
 		if type(ptr) == "function" then
 			HUDTeammateCustom[id] = HUDTeammateCustom[id] or function(self, ...)
-				printf("(WARNING) HUDTeammateCustom: Unoverridden function call: %s\n", id)
+				print_warning("HUDTeammateCustom: Unoverridden function call: %s", id)
 			end
 		end
 	end

@@ -1,0 +1,42 @@
+{
+	"menu_id" : "wolfhud_infopanels_buff_ghost_options_menu",
+	"parent_menu_id" : "wolfhud_infopanels_buff_options_menu",
+	"title" : "wolfhud_infopanels_buff_ghost_options_name",
+	"description" : "wolfhud_infopanels_buff_ghost_options_help",
+	"focus_changed_callback" : "",
+	"back_callback" : "",
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "dire_need_buff",
+			"title" : "wolfhud_hudlist_dire_need_buff_title",
+			"description" : "wolfhud_hudlist_dire_need_buff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "dire_need_buff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "second_wind_buff",
+			"title" : "wolfhud_hudlist_second_wind_buff_title",
+			"description" : "wolfhud_hudlist_second_wind_buff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "second_wind_buff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "sixth_sense_buff",
+			"title" : "wolfhud_hudlist_sixth_sense_buff_title",
+			"description" : "wolfhud_hudlist_sixth_sense_buff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "sixth_sense_buff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "unseen_strike_buff",
+			"title" : "wolfhud_hudlist_unseen_strike_buff_title",
+			"description" : "wolfhud_hudlist_unseen_strike_buff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "unseen_strike_buff",
+		}
+	]
+}
