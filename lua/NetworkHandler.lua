@@ -14,6 +14,9 @@ function WolfHUD.Sync.send(id, data)
 			end
 		end
 	end
+	if id == "WolfHUD_Sync_Cache" then
+		WolfHUD.Sync.receive_cache_event(data)
+	end
 end
 
 function WolfHUD.Sync.gameinfo_ecm_event_sender(event, key, data)
@@ -70,25 +73,29 @@ end
 -- Manage Networking and list of peers to sync to...
 Hooks:Add("NetworkReceivedData", "NetworkReceivedData_WolfHUD", function(sender, messageType, data)
 	if WolfHUD.Sync then
-		if messageType == "Using_WolfHUD?" then
-			LuaNetworking:SendToPeer(sender, "Using_WolfHUD!", "")
-			WolfHUD.Sync.peers[sender] = true		--Sync to peer, IDs of other peers using WolfHUD?
-			managers.chat:feed_system_message(ChatManager.GAME, "A Client is using WolfHUD ;)")	--TEST
-		elseif messageType == "Using_WolfHUD!" then
-			WolfHUD.Sync.peers[sender] = true		--Sync other peers, that new peer is using WolfHUD?
-			managers.chat:feed_system_message(ChatManager.GAME, "The Host is using WolfHUD ;)")	--TEST
-		elseif messageType == "WolfHUD_Sync_GameInfo" then		-- receive and call gameinfo event
-			managers.chat:feed_system_message(ChatManager.GAME, "GameInfo event received!")	--TEST
-			log("GameInfo event received!")
-			WolfHUD.Sync.receive_gameinfo_event(json.decode(data))
-		elseif messageType == "WolfHUD_Sync_Cache" then			-- Add data to cache
-			managers.chat:feed_system_message(ChatManager.GAME, "Sync Cache event received!")	--TEST
-			log("Sync Cache event received!")
-			WolfHUD.Sync.receive_cache_event(json.decode(data))
-		elseif messageType == "WolfHUD_Sync" then				-- Receive data that needs to be handled by data.event
-			managers.chat:feed_system_message(ChatManager.GAME, "Sync event received!")	--TEST
-			log("Sync event received!")
-			WolfHUD.Sync.receive(json.decode(data))
+		log(json.encode(sender))
+		local peer = BaseNetworkHandler._verify_sender(sender)
+		if peer then
+			if messageType == "Using_WolfHUD?" then
+				LuaNetworking:SendToPeer(sender, "Using_WolfHUD!", "")
+				WolfHUD.Sync.peers[peer:id()] = true		--Sync to peer, IDs of other peers using WolfHUD?
+				managers.chat:feed_system_message(ChatManager.GAME, peer:name() .. " is using WolfHUD ;)")	--TEST
+			elseif messageType == "Using_WolfHUD!" then
+				WolfHUD.Sync.peers[peer:id()] = true		--Sync other peers, that new peer is using WolfHUD?
+				managers.chat:feed_system_message(ChatManager.GAME, peer:name() .. " is using WolfHUD ;)")	--TEST
+			elseif messageType == "WolfHUD_Sync_GameInfo" then		-- receive and call gameinfo event
+				managers.chat:feed_system_message(ChatManager.GAME, "GameInfo event received!")	--TEST
+				log("GameInfo event received!")
+				WolfHUD.Sync.receive_gameinfo_event(json.decode(data))
+			elseif messageType == "WolfHUD_Sync_Cache" then			-- Add data to cache
+				managers.chat:feed_system_message(ChatManager.GAME, "Sync Cache event received!")	--TEST
+				log("Sync Cache event received!")
+				WolfHUD.Sync.receive_cache_event(json.decode(data))
+			elseif messageType == "WolfHUD_Sync" then				-- Receive data that needs to be handled by data.event
+				managers.chat:feed_system_message(ChatManager.GAME, "Sync event received!")	--TEST
+				log("Sync event received!")
+				WolfHUD.Sync.receive(json.decode(data))
+			end
 		end
 	end
 end)

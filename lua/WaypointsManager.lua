@@ -47,6 +47,8 @@ Component settings:			(table)		Component definition as subtable of the Waypoint 
 Icon exclusive settings:
     texture: 				(string) 	Path to texture to use for icon
     texture_rect: 			(table) 	Bounding box to use for the icon texture. Containing {x, y, w, h}
+	radial_image			(boolean)	Handle the Image as Radial Image (Red value of color determines how much of an angle of the image is visible)
+	blend_mode				(string)	Determines the image blend mode, e.g. "normal", "add", "sub" (default: "add")
     std_wp: 				(string) 	As an alternative to texture/texture_rect, an ID to one of the predefined waypoint icons in the game tweak data (e.g. "wp_crowbar")
 	on_minimap:				(boolean)	Show that icon on the Minimap (if that mod is installed)
 	all_elevations:			(boolean)	Show icon on the Minimap, regardless of your elevation
@@ -776,12 +778,13 @@ if RequiredScript == "lib/setups/setup" then
 			name = name,
 			texture = texture,
 			texture_rect = texture_rect,
+			render_template = data[name].radial_image and "VertexColorTexturedRadial",
 			color = color,
 			w = size * w_ratio,
 			h = size,
 			alpha = alpha,
 			visible = show,
-			blend_mode = "add",
+			blend_mode = data[name].blend_mode or "add",
 		})
 	end
 	

@@ -409,7 +409,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 						visible_through_walls = data.bagged,
 						alpha = 0.1,
 						visible_angle = { max = 25 },
-						visible_distance = { max = 1200 },
+						visible_distance = { max = 2000 },
 						fade_angle = { start_angle = 25, end_angle = 20, final_scale = 8 },
 						scale = 1.25,
 						icon = { 

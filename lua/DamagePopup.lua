@@ -23,7 +23,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 			if waypoint and not waypoint:is_deleted() then
 				self._dmg_value = self._dmg_value + (damage * 10)
 				managers.waypoints:set_waypoint_duration(id, "duration", CopDamage._popup_fade_t)
-				managers.waypoints:set_waypoint_label(id, "label", math.ceil(self._dmg_value))
+				managers.waypoints:set_waypoint_label(id, "label", math.floor(self._dmg_value))
 				managers.waypoints:set_waypoint_setting(id, "color", headshot and CopDamage._popup_headshot_color or CopDamage._popup_color)
 				managers.waypoints:set_waypoint_component_setting(id, "icon", "show", dead)
 			else
@@ -54,12 +54,13 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 						scale = 1.2, 
 						texture = "guis/textures/pd2/risklevel_blackscreen", 
 						texture_rect = {0, 0, 64, 64},
+						blend_mode = "normal",
 						on_minimap = false
 					},
 					label = {
 						type = "label",
 						show = true, 
-						text = math.ceil(self._dmg_value) 
+						text = math.floor(self._dmg_value) 
 					},
 					duration = {
 						type = "duration",
