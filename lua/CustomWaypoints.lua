@@ -173,6 +173,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 						type = "timer",
 						show = false, 
 						initial_value = 0,
+						text = "Active",
 						color = Color(0.0, 0.8, 1.0),
 						font = "fonts/font_medium_shadow_mf",
 					},

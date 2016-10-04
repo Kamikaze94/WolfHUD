@@ -105,19 +105,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 			managers.hud:on_hit_direction(position_vector, dmg_type)
 		end
 	end
-elseif false and string.lower(RequiredScript) == "lib/units/vehicles/vehicledamage" then
-	local VehicleDamage_damage_bullet = VehicleDamage.damage_bullet
-	function VehicleDamage:damage_bullet(attack_data, ...)
-		local value = VehicleDamage_damage_bullet(self, attack_data, ...)
-		if value and value == "friendly_fire" then
-			local local_player_vehicle = managers.player:get_vehicle()
-			if local_player_vehicle and self._unit:key() == local_player_vehicle.vehicle_unit:key() then
-				self:_hit_direction(attack_data.attacker_unit:position(), HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE)
-			end
-		end
-		return value
-	end
-	
+elseif false and string.lower(RequiredScript) == "lib/units/vehicles/vehicledamage" then	
 	function VehicleDamage:_hit_direction(position_vector, damage_type)
 		if position_vector then
 			local dmg_type = damage_type or HUDHitDirection.DAMAGE_TYPES.VEHICLE

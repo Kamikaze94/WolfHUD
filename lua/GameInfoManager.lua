@@ -2508,7 +2508,18 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 				managers.gameinfo:event("buff", "deactivate", "hostage_situation")
 			end
 		end
-		
+--[[
+		if self:has_team_category_upgrade("damage", "hostage_absorption") then
+			local count = math.min(self:team_upgrade_value("damage", "hostage_absorption_limit", 8), stack_count)
+			local value = (self:team_upgrade_value("damage", "hostage_absorption", 0) * 10) * count
+			managers.gameinfo:event("buff", "set_stack_count", "forced_friendship", { stack_count = count })
+			if value ~= 0 then
+				managers.gameinfo:event("buff", "set_value", "forced_friendship", { value = value, show_value = false })
+			else
+				managers.gameinfo:event("buff", "set_value", "forced_friendship", { value = value, show_value = false })
+			end
+		end
+]]	
 		if self:has_category_upgrade("player", "hostage_health_regen_addend") then
 			if stack_count > 0 then
 				managers.gameinfo:event("buff", "activate", "hostage_taker")
@@ -3067,6 +3078,14 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 				managers.gameinfo:event("buff", "set_value", "crew_chief_1", { value = value })
 			end
 		end
+		
+		if health_ratio < 1 then
+			if managers.player:has_category_upgrade("player", "passive_health_regen") then
+				managers.gameinfo:event("buff", "activate", "muscle_regen")
+			end
+		else
+			managers.gameinfo:event("buff", "deactivate", "muscle_regen")
+		end
 	end
 	
 	function PlayerDamage:_upd_health_regen(t, ...)
@@ -3076,7 +3095,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 		
 		if self._health_regen_update_timer then
 			if self._health_regen_update_timer > (old_timer or 0) and self:health_ratio() < 1 then
-				--TODO: Muscle regen?
+				managers.gameinfo:event("buff", "set_duration", "muscle_regen", { duration = self._health_regen_update_timer })
 				managers.gameinfo:event("buff", "set_duration", "hostage_taker", { duration = self._health_regen_update_timer })
 			end
 		end

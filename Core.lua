@@ -19,9 +19,12 @@ if not _G.WolfHUD then
 		"wolfhud_infopanels_left_options_menu",
 		"wolfhud_infopanels_right_options_menu",
 		"wolfhud_infopanels_buff_options_menu",
-		"wolfhud_infopanels_buff_buffs_options_menu",
-		"wolfhud_infopanels_buff_debuffs_options_menu",
-		"wolfhud_infopanels_buff_teambuffs_options_menu",
+		"wolfhud_infopanels_buff_mastermind_options_menu",
+		"wolfhud_infopanels_buff_enforcer_options_menu",
+		"wolfhud_infopanels_buff_technician_options_menu",
+		"wolfhud_infopanels_buff_ghost_options_menu",
+		"wolfhud_infopanels_buff_fugitive_options_menu",
+		"wolfhud_infopanels_buff_perkdecks_options_menu",
 		"wolfhud_waypoints_options_menu",
 		"wolfhud_tabstats_options_menu",
 		"wolfhud_dmgindicator_options_menu", 
@@ -340,6 +343,7 @@ if not _G.WolfHUD then
 			melee_stack_damage_buff					= false,
 			maniac_buff								= false,
 			messiah_buff							= true,
+			muscle_regen_buff						= false,
 			overdog_buff							= false,
 			overkill_buff							= false,
 			painkiller_buff							= false,
@@ -737,15 +741,17 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 						local menu = MenuHelper:GetMenu(menu_id)
 						if menu then
 							for __, menu_item in ipairs(menu._items) do
-								local item_id = menu_item:parameters().name
-								local value = WolfHUD:getSetting(tostring(item_id))
-								if value ~= nil and menu_item.set_value then
-									if menu_item._type == "toggle" then
-										value = (value and "on" or "off")
-									end
-									menu_item:set_value(value)
-									for __, clbk in pairs( menu_item:parameters().callback ) do
-										clbk(menu_item)
+								if menu_item.set_value then
+									local item_id = menu_item:parameters().name
+									local value = WolfHUD:getSetting(tostring(item_id))
+									if value ~= nil then
+										if menu_item._type == "toggle" then
+											value = (value and "on" or "off")
+										end
+										menu_item:set_value(value)
+										for __, clbk in pairs( menu_item:parameters().callback ) do
+											clbk(menu_item)
+										end
 									end
 								end
 							end
@@ -851,9 +857,12 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudwaypoints.json", 				WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo.json", 					WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff.json", 				WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_buffs.json", 		WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_debuffs.json", 		WolfHUD, WolfHUD.settings)
-	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_teambuffs.json", 	WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_mastermind.json", 	WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_enforcer.json", 		WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_technician.json", 	WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_ghost.json", 		WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_fugitive.json", 		WolfHUD, WolfHUD.settings)
+	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_buff_perkdecks.json", 	WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_right.json", 				WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hudinfo_left.json", 				WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud.json", 						WolfHUD, WolfHUD.settings)
