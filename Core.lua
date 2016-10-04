@@ -5,7 +5,7 @@ if not _G.WolfHUD then
 	WolfHUD.settings_path = WolfHUD.save_path .. "WolfHUD.txt"
 	WolfHUD.colors_file = "WolfHUD_Colors.txt"
 	WolfHUD.inv_names_file = "WolfHUD_InventoryNames.txt"
-	WolfHUD.LOG_MODE = { "error" }		-- error, info, warning or all
+	WolfHUD.LOG_MODE = { error = true, warning = false, info = false }		-- error, info, warning or all
 	WolfHUD.version = "1.0"
 	WolfHUD.menu_ids = { 
 		"wolfhud_options_menu", 
@@ -449,7 +449,7 @@ if not _G.WolfHUD then
 	end
 	
 	function WolfHUD:print_log(text, msg_type)
-		if table.contains(self.LOG_MODE, "all") or msg_type and table.contains(self.LOG_MODE, msg_type) then
+		if msg_type and self.LOG_MODE[msg_type] then
 			local function log_table(userdata)
 				local text = ""
 				for id, data in pairs(userdata) do
