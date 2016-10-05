@@ -5,6 +5,15 @@
 	"cash_sign" : "\194\128",
 	"hud_int_hold_grab_the_bag" : "Halte $BTN_INTERACT um $BAG zu nehmen",
 	
+	"wolfhud_dialog_install_title" : "Installiere: $NAME",
+	"wolfhud_dialog_install_desc" : "Möchtest du, dass wir '$NAME' installieren?\nWir werden die notwendigen Ordner erstellen, sodass BLT dich nach dem Neustart des Spiels auf ein Update hinweisen wird.\n(Das Erstellen der Ordner kann zur Minimierung des Spiels führen.)",
+	"wolfhud_dialog_remind_later" : "Erinnere mich später",
+	"wolfhud_dialog_install_fed_inv_desc" : "Federal Inventory ist ein override mod für bunte Waffen-, Masken- und Equipment-Bilder.\nEs passt hevorragend zu CustomHUD und unterstützt automatische Updates durch BLT.",
+	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME ist zurzeit deaktiviert.",
+	"woldhud_notification_disabled_override_desc" : "Wenn du es dir anders überlegt hast, klicke hier.",
+	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME ist bereit zur Installation.",
+	"woldhud_notification_restart_override_desc" : "Bitte starte dein Spiel neu, um den Download zu starten.",
+	
 	"wolfhud_int_locked" : "DRÜCKE $BTN_CANCEL UM ABZUBRECHEN",
 	"wolfhud_buy_all_assets" : "Kaufe Alles",
 	"wolfhud_buy_all_assets_desc" : "Kaufe alle Vorteile, die du erwerben kannst.",

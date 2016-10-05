@@ -272,17 +272,9 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 	end
 	
 	function ItemSlider:set_value(value, ...)
-		if (value - self._min) % self._step > 0 then
-			local pre_value, post_value = self._min, self._min + self._step
-			while post_value <= self._max do
-				if pre_value < value and post_value > value then
-					value = (value - pre_value) < (post_value - value) and pre_value or post_value
-					break
-				end
-				pre_value = pre_value + self._step
-				post_value = post_value + self._step
-			end
-		end
+		local times = math.round((value - self._min) / self._step)
+		value = self._min + self._step * times
+		
 		set_value_original(self, value, ...)
 	end
 elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then

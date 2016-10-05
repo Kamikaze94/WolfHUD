@@ -2,6 +2,15 @@
 	"menu_jowi" : "윅",
 	"hud_int_hold_grab_the_bag" : "$BTN_INTERACT 키 를 눌러서 $BAG 를(을) 들기",
 	
+	"wolfhud_dialog_install_title" : "Install: $NAME",
+	"wolfhud_dialog_install_desc" : "Do you want to install '$NAME'?",
+	"wolfhud_dialog_remind_later" : "Ask me later",
+	"wolfhud_dialog_install_fed_inv_desc" : "Federal Inventory is an override mod, that gives you colorized icons for your weapons masks and deployables.\nIt looks great in when used with CustomHUD and will use BLTs Updater.",
+	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME is currently disabled.",
+	"woldhud_notification_disabled_override_desc" : "If you changed your mind, click here to get asked again.",
+	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME is ready to install.",
+	"woldhud_notification_restart_override_desc" : "Please restart your game to start the download.",
+	
 	"wolfhud_int_locked" : "$BTN_CANCEL 키 를 눌러서 취소하기",
 	"wolfhud_buy_all_assets" : "모두 구매",
 	"wolfhud_buy_all_assets_desc" : "모든 에셋을 구입합니다.",

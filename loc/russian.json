@@ -2,6 +2,15 @@
     "menu_jowi" : "Уик",
     "hud_int_hold_grab_the_bag" : "Удерживайте $BTN_INTERACT, чтобы взять $BAG",
      
+	"wolfhud_dialog_install_title" : "Install: $NAME",
+	"wolfhud_dialog_install_desc" : "Do you want to install '$NAME'?",
+	"wolfhud_dialog_remind_later" : "Ask me later",
+	"wolfhud_dialog_install_fed_inv_desc" : "Federal Inventory is an override mod, that gives you colorized icons for your weapons masks and deployables.\nIt looks great in when used with CustomHUD and will use BLTs Updater.",
+	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME is currently disabled.",
+	"woldhud_notification_disabled_override_desc" : "If you changed your mind, click here to get asked again.",
+	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME is ready to install.",
+	"woldhud_notification_restart_override_desc" : "Please restart your game to start the download.",
+	
     "wolfhud_int_locked" : "НАЖМИТЕ $BTN_CANCEL ДЛЯ ОТМЕНЫ ВЗАИМОДЕЙСТВИЯ",
     "wolfhud_buy_all_assets" : "Купить все",
     "wolfhud_buy_all_assets_desc" : "Купить все активы которые вам доступны",

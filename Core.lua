@@ -384,13 +384,13 @@ if not _G.WolfHUD then
 			waypoints_show_doc_bag 					= true,
 			waypoints_show_body_bag 				= true,
 			waypoints_show_grenade_crate 			= true,
-			waypoints_show_sentries 				= true,
-			waypoints_show_ecms						= true,
-			waypoints_show_timers 					= true,
+			waypoints_show_sentries 				= false,
+			waypoints_show_ecms						= false,
+			waypoints_show_timers 					= false,
 			waypoints_show_minions					= true,
 			waypoints_show_loot						= true,
-			waypoints_show_pager					= true,
-			waypoints_show_special_equipment		= true,
+			waypoints_show_pager					= false,
+			waypoints_show_special_equipment		= false,
 		  --Interaction
 			LOCK_MODE 								= 3,			--Disabled (1, Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time (2), or current interaction time(3)
 			MIN_TIMER_DURATION 						= 5, 			--Min interaction duration (in seconds) for the toggle behavior to activate
@@ -506,12 +506,20 @@ if not _G.WolfHUD then
 		end
 	end
 	
-	function WolfHUD:AskOverride(data, setting)
+	function WolfHUD:AskOverride(data, setting, notif_id)
 		local menu_options = {
 		[1] = {
 			text = managers.localization:text("dialog_yes"),
 			callback = function(self, item)
+				WolfHUD.settings[setting] = true
+				WolfHUD:Save()
 				WolfHUD:createOverrides(data)
+				if notif_id and NotificationsManager:NotificationExists( notif_id ) then
+					NotificationsManager:UpdateNotification( notif_id, 
+						managers.localization:text("woldhud_notification_restart_override_title", { NAME = data.display_name }), 
+						managers.localization:text("woldhud_notification_restart_override_desc"), 20, function() end	
+					)
+				end
 			end,
 		},
 		[2] = {
@@ -519,15 +527,16 @@ if not _G.WolfHUD then
 			callback = function(self, item)
 				WolfHUD.settings[setting] = false
 				WolfHUD:Save()
+				WolfHUD:createOverrideNotification(data, setting)
 			end,
 		},
 		[3] = {
-			text = "Ask me later",
+			text = managers.localization:text("wolfhud_dialog_remind_later"),
 			is_cancel_button = true,
 		},
 }
-		return QuickMenu:new( "Install " .. data["display_name"], 
-								"Do you want to install " .. data["display_name"] .. "?\nIf you decide to, we will create the required folder for you.\n\nYou will be asked for the actual download by the BLT updater after your next game restart.", 
+		return QuickMenu:new( managers.localization:text("wolfhud_dialog_install_title", { NAME = data["display_name"] }), 
+								string.format("%s\n\n%s", managers.localization:text(string.format("wolfhud_dialog_install_%s_desc", data["identifier"])), managers.localization:text("wolfhud_dialog_install_desc", { NAME = data["display_name"]})) ,
 								menu_options, true )
 	end
 	
@@ -548,6 +557,8 @@ if not _G.WolfHUD then
 					WolfHUD:AskOverride(v, setting)
 				elseif WolfHUD.settings[setting] == nil then
 					WolfHUD:createOverrides(v)
+				else
+					WolfHUD:createOverrideNotification(v, setting)
 				end
 			end
 		end
@@ -566,6 +577,19 @@ if not _G.WolfHUD then
 		if file then
 			file:write("0")
 			file:close()
+		end
+	end
+	
+	function WolfHUD:createOverrideNotification(data, setting)
+		local id = string.format("wolfhud_disabled_override_%s", data.identifier)
+		if not NotificationsManager:NotificationExists( id ) then
+				NotificationsManager:AddNotification( id, 
+				managers.localization:text("woldhud_notification_disabled_override_title", { NAME = data.display_name }), 
+				managers.localization:text("woldhud_notification_disabled_override_desc"), 
+				20, function() 
+					WolfHUD:AskOverride(data, setting, id)
+				end
+			)
 		end
 	end
 	
