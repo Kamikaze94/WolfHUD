@@ -11,7 +11,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		init_original(self, ...)
 		
 		self:update_banner_pos()
-		self:update_hudlist_offset()
 	end
 	
 	function HUDAssaultCorner:update_banner_pos()
@@ -40,6 +39,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 				casing_panel:set_right(hud_w)
 			end
 		end
+		
+		self:update_hudlist_offset()
 	end
 	
 	function HUDAssaultCorner:set_buff_enabled(...)
@@ -135,7 +136,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDManager:_update_assault_setting(setting)
 		if self._hud_assault_corner then
 			if setting == "assault_banner_position" then
-				self._hud_assault_corner:update_vertical_pos()
+				self._hud_assault_corner:update_banner_pos()
 			end
 		end
 	end

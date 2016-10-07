@@ -397,9 +397,10 @@ if RequiredScript == "lib/managers/hudmanager" then
 	
 	function HUDManager:custom_waypoint_loot_clbk(event, key, data)
 		local id = "loot_wp_" .. key
+		local tweak_entry = data.carry_id and tweak_data.carry[data.carry_id]
 		
 		if event == "add" then
-			if not data.unit:in_slot( 39 ) and (data.carry_id ~= "person" or managers.job:current_level_id() == "mad" and (data.bagged or data.unit:editor_id() ~= -1)) then
+			if tweak_entry and not tweak_entry.is_vehicle and not tweak_entry.skip_exit_secure and (data.carry_id ~= "person" or managers.job:current_level_id() == "mad" and (data.bagged or data.unit:editor_id() ~= -1)) then
 				local name_id = data.carry_id and tweak_data.carry[data.carry_id] and tweak_data.carry[data.carry_id].name_id
 				local bag_name = name_id and managers.localization:to_upper_text(name_id)
 				local count = data.count or 1

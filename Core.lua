@@ -112,7 +112,7 @@ if not _G.WolfHUD then
 		["lib/managers/menu/skilltreeguinew"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/renderers/menunodeskillswitchgui"] = { "MenuTweaks.lua" },
 		["lib/managers/objectinteractionmanager"] = { "GameInfoManager.lua", "HUDList.lua", "Interaction.lua" },
-		["lib/network/handlers/unitnetworkhandler"] = { "NetworkHandler.lua", "DownCounter.lua", "GameInfoManager.lua" },
+		["lib/network/handlers/unitnetworkhandler"] = { "DownCounter.lua", "GameInfoManager.lua" },
 		["lib/units/props/timergui"] = { "GameInfoManager.lua" },
 		["lib/units/props/digitalgui"] = { "GameInfoManager.lua" },
 		["lib/units/props/securitylockgui"] = { "GameInfoManager.lua" },

@@ -401,6 +401,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			y = killed_text:bottom()
 		end
 		
+		day_wrapper_panel:set_h(y)
 		self:update(day_wrapper_panel)
 	end
 	
@@ -495,12 +496,17 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	end
 
 	function HUDStatsScreen:_update_stats_screen_day(right_panel)
+		local dwp = right_panel:child("day_wrapper_panel")
+		local h = dwp and dwp:h()
 		update_stats_screen_day_original(self, right_panel)
 		
 		if not self._use_tab_stats then return end
 		
-		self:clean_up(right_panel)		
-		self:update(right_panel:child("day_wrapper_panel"))
+		self:clean_up(right_panel)
+		if dwp then
+			dwp:set_h(h)
+			self:update(dwp)
+		end
 	end
 	
 	function HUDStatsScreen:update_setting(setting, value)

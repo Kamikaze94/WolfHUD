@@ -2022,10 +2022,11 @@ if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase
  	end
 	
 	function ECMJammerBase:destroy(...)
+		local key = tostring(self._unit:key())
+		managers.gameinfo:event("ecm", "set_feedback_active", key, { feedback_active = false })
+		managers.gameinfo:event("ecm", "destroy", key)
 		destroy_original(self, ...)
-		managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), { retrigger_active = false })
-		managers.gameinfo:event("ecm", "set_feedback_active", tostring(self._unit:key()), { feedback_active = false })
-		managers.gameinfo:event("ecm", "destroy", tostring(self._unit:key()))
+		managers.gameinfo:event("ecm", "set_retrigger_active", key, { retrigger_active = false })
 	end
 	
 end
