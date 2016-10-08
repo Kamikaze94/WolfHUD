@@ -154,7 +154,7 @@ elseif string.lower(RequiredScript) == "lib/managers/localizationmanager" then
 		if managers.hud and managers.hud:_locked_assault() then
 			return self:text("wolfhud_locked_assault")
 		elseif WolfHUD:getSetting("show_advanced_assault", "boolean") then
-			local assault_task_data = Network:is_server() and managers.groupai:state()._task_data.assault or WolfHUD.Sync:getCache("assault_task_data")
+			local assault_task_data = Network:is_server() and managers.groupai:state()._task_data.assault or WolfHUD.Sync and WolfHUD.Sync:getCache("assault_task_data")
 			if assault_task_data then
 				if WolfHUD.Sync and Network:is_server() then
 					WolfHUD.Sync:send("WolfHUD_Sync_Cache", { event = "assault_task_data", data = { phase = assault_task_data.phase, force_spawned = assault_task_data.force_spawned, phase_end_t = assault_task_data.phase_end_t } })
