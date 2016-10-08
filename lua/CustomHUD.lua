@@ -3770,7 +3770,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 			
 			--Seperate Player Panel setup, so its always the most bottom one
-			local player_pos = math.abs(WolfHUD:getSetting("PLAYER_POSITION", "number", 2))
+			local player_pos = math.clamp(WolfHUD:getSetting("PLAYER_POSITION", "number", 2), 1, 3)
 			local player_w, player_h = player_panel:w() or 0, player_panel:h() or 0
 			player_panel:set_center_x(getW(hud_w, player_w, player_pos))
 			player_panel:set_bottom(hud_h - teammate_offset[player_pos])
@@ -3778,7 +3778,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			teammate_offset[player_pos] = teammate_offset[player_pos] + player_panel:h() + MARGIN
 			
 			local j = 1
-			local teammate_pos = { math.abs(WolfHUD:getSetting("TEAM_POSITION", "number", 1)) }
+			local teammate_pos = { math.clamp(WolfHUD:getSetting("TEAM_POSITION", "number", 1), 1, 3) }
 			table.insert(teammate_pos, (teammate_pos[1] > 1 and 1 or 3))
 			
 			for i, teammate in ipairs(self._teammate_panels) do

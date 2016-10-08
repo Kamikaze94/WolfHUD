@@ -72,6 +72,22 @@ Last Note: Don't call any functions starting with "_" (or the update-functions) 
 ]]
 if RequiredScript == "lib/setups/setup" then
 	
+	local function format_time_string(value)
+		local frmt_string
+	
+		if math.floor(value) > 60 then
+			frmt_string = string.format("%d:%02d", math.floor(value / 60), math.floor(value % 60))
+		elseif math.floor(value) > 9.9 then
+			frmt_string = string.format("%d", math.floor(value))
+		elseif value > 0 then
+			frmt_string = string.format("%.1f", value)
+		else
+			frmt_string = string.format("%.1f", 0)
+		end
+		
+		return frmt_string
+	end
+	
 	local init_managers_original = Setup.init_managers
 
 	function Setup:init_managers(managers, ...)
@@ -575,8 +591,7 @@ if RequiredScript == "lib/setups/setup" then
 		if self._settings[name] then
 			self._settings[name].value = math.max(value, 0)
 			if self._components[name] and self._settings[name].show then
-				local frmt = value >= 9.95 and "%.0fs" or "%.1fs"
-				self:set_label(name, string.format(frmt, value))
+				self:set_label(name, format_time_string(value))
 			end
 		end
 	end
@@ -585,8 +600,7 @@ if RequiredScript == "lib/setups/setup" then
 		if self._settings[name] then
 			self._settings[name].value = math.max(value, 0)
 			if self._components[name] and self._settings[name].show then
-				local frmt = value >= 9.95 and "%.0fs" or "%.1fs"
-				self:set_label(name, string.format(frmt, value))
+				self:set_label(name, format_time_string(value))
 			end
 		end
 	end

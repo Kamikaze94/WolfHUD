@@ -1,6 +1,3 @@
---TODO:
---	Add Drill Upgrade Icons
-
 if WolfHUD and not WolfHUD:getSetting("use_hudlist", "boolean") then return end
 printf = function(...) 
 	WolfHUD:print_log(string.format(...), "info")
