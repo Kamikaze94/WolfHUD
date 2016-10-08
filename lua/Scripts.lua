@@ -49,9 +49,9 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata"
 elseif string.lower(RequiredScript) == "lib/managers/experiencemanager" then
 	local cash_string_original = ExperienceManager.cash_string
 	
-	function ExperienceManager:cash_string(cash)
-		local val = cash_string_original(self, cash)
-		if self._cash_sign == "\194\128" then
+	function ExperienceManager:cash_string(...)
+		local val = cash_string_original(self, ...)
+		if self._cash_sign == "\194\128" and val:find(self._cash_sign) then
 			val = val:gsub(self._cash_sign, "") .. self._cash_sign
 		end
 		return val
