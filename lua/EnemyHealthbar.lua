@@ -21,6 +21,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "spooc" ] 					= "wolfhud_enemy_spook",
 		[ "taser" ] 					= "wolfhud_enemy_taser",
 		[ "sniper" ] 					= "wolfhud_enemy_sniper",
+		[ "medic" ]						= "wolfhud_enemy_medic",
 		[ "tank" ] 						= "wolfhud_enemy_tank",
 		[ "tank_hw" ]					= "wolfhud_enemy_tank_hw",
 		[ "phalanx_minion" ] 			= "wolfhud_enemy_phalanx_minion",

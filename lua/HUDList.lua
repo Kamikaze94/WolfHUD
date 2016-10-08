@@ -156,6 +156,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		taser = 					{ type_id = "taser",		category = "enemies",	long_name = "wolfhud_enemy_taser" 					},
 		shield = 					{ type_id = "shield",		category = "enemies",	long_name = "wolfhud_enemy_shield" 					},
 		sniper = 					{ type_id = "sniper",		category = "enemies",	long_name = "wolfhud_enemy_sniper" 					},
+		medic = 					{ type_id = "medic",		category = "enemies",	long_name = "wolfhud_enemy_medic" 					},
 		mobster_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_mobster_boss" 			},
 		biker_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_biker_boss" 				},
 		hector_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_hector_boss" 			},
@@ -2142,6 +2143,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		taser =			{ atlas = {3, 5}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
 		shield =		{ texture = "guis/textures/pd2/hud_buff_shield", color = HUDListManager.ListOptions.special_color, priority = 6 },
 		sniper =		{ atlas = {6, 5}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
+		medic = 		{ atlas = {5, 8}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
 		thug_boss =		{ atlas = {1, 1}, 	color = HUDListManager.ListOptions.thug_color, 		priority = 4 },
 		phalanx =		{ texture = "guis/textures/pd2/hud_buff_shield", color = HUDListManager.ListOptions.special_color, priority = 7 },
 		
@@ -4528,7 +4530,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
-		if self._buff_active and self._expire_t and self._expire_t > t then
+		if self._buff_active and self._expire_t then
 			self:_set_progress((t - self._start_t) / (self._expire_t - self._start_t))
 			
 			if t > self._expire_t then
@@ -4537,7 +4539,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				self._progress_bar:panel():set_visible(false)
 			end
 			
-			if self._expire_t then
+			if self._expire_t and self._expire_t > t then
 				table.insert(time_str, { 
 					str = string.format("%.1fs", self._expire_t - t), 
 					color = self._default_icon_color

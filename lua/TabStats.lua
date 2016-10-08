@@ -78,6 +78,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		{ name = "snipers_killed", 		text_id = "wolfhud_tabstats_snipers_killed", 	color = Color(1, 0.67, 0.84, 0.90),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"sniper", "count"}		}, 	},
 		{ name = "tasers_killed", 		text_id = "wolfhud_tabstats_tasers_killed", 	color = Color(1, 0, 0.55, 0.55), 	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"taser", "count"}			}, 	},
 		{ name = "gensec_killed", 		text_id = "wolfhud_tabstats_gensec_killed", 	color = Color(1, 0.75, 1, 0.24),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"gensec", "count"}		}, 	},
+		{ name = "medic_killed", 		text_id = "wolfhud_tabstats_medic_killed", 		color = Color(1, 1, 0.55, 0.24),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"medic", "count"}			}, 	},
 		{ name = "melee_killed", 		text_id = "wolfhud_tabstats_melee_kills", 		color = Color(1, 0.54, 0.02, 0.02),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"total", "melee"}			}, 	},
 		{ name = "explosion_killed", 	text_id = "wolfhud_tabstats_explosion_kills", 	color = Color(1, 1, 0.5, 0),		update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"total", "explosion"}		}, 	},
 		{ name = "total_killed", 		text_id = "wolfhud_tabstats_nonspecial_kills", 	color = Color(1, 0.78, 0.15, 0.21),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"non_special", "count"}	}, 	},
@@ -721,6 +722,7 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 					+ self:session_enemy_killed_by_type("spooc", "count") 
 					+ self:session_enemy_killed_by_type("tank", "count") 
 					+ self:session_enemy_killed_by_type("taser", "count")
+					+ self:session_enemy_killed_by_type("medic", "count")
 	end
 	
 	--New Functions
@@ -747,6 +749,7 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 					+ self:enemy_killed_by_type("spooc", "count") 
 					+ self:enemy_killed_by_type("tank", "count") 
 					+ self:enemy_killed_by_type("taser", "count")
+					+ self:enemy_killed_by_type("medic", "count")
 	end
 	
 	function StatisticsManager:total_downed_alltime()

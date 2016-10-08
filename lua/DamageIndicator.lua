@@ -100,7 +100,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 	function PlayerDamage:_hit_direction(position_vector, damage_type)
 		if position_vector then
 			local armor_left, low_health = (self:get_real_armor() > 0), ((self:get_real_health() / self:_max_health()) <= 0.20)
-			local dmg_type = low_health and HUDHitDirection.DAMAGE_TYPES.CRIT or damage_type or armor_left and HUDHitDirection.DAMAGE_TYPES.ARMOUR or HUDHitDirection.DAMAGE_TYPES.HEALTH
+			local dmg_type = damage_type or armor_left and HUDHitDirection.DAMAGE_TYPES.ARMOUR or low_health and HUDHitDirection.DAMAGE_TYPES.CRIT or HUDHitDirection.DAMAGE_TYPES.HEALTH
 			managers.hud:on_hit_direction(position_vector, dmg_type)
 		end
 	end
