@@ -122,6 +122,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			[130322] = { pause = function(...) GameInfoManager._TIMER_CALLBACKS.overrides.stop_on_loud_pause(...) end },	--Train heist vaults
 			[130422] = { pause = function(...) GameInfoManager._TIMER_CALLBACKS.overrides.stop_on_loud_pause(...) end },	--Train heist vaults
 			[130522] = { pause = function(...) GameInfoManager._TIMER_CALLBACKS.overrides.stop_on_loud_pause(...) end },	--Train heist vaults
+			[145557] = { pause = function(...) GameInfoManager._TIMER_CALLBACKS.overrides.stop_on_pause(...) end } -- Safehouse Killhouse Timer
 			--[130320] = { },	--The Diamond outer time lock
 			--[130395] = { },	--The Diamond inner time lock
 			--[101457] = { },	--Big Bank time lock door #1
@@ -595,7 +596,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		if event == "create" then
 			if not self._timers[key] then	
 				local unit, ext, device_type, can_have_upgrades = ...
-				local id = unit:editor_id()		
+				local id = unit:editor_id()	
 				self._timers[key] = { unit = unit, ext = ext, device_type = device_type, id = id, jammed = false, powered = true, upgradable = false, can_have_upgrades = can_have_upgrades }
 				self:_listener_callback("timer", "create", key, self._timers[key])
 			end

@@ -1,0 +1,57 @@
+{
+	"menu_id" : "wolfhud_infopanels_buff_debuffs_options_menu",
+	"parent_menu_id" : "wolfhud_infopanels_buff_options_menu",
+	"title" : "wolfhud_infopanels_buff_debuffs_options_name",
+	"description" : "wolfhud_infopanels_buff_debuffs_options_help",
+	"back_callback" : "",
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "ammo_give_out_debuff",
+			"title" : "wolfhud_hudlist_ammo_give_out_debuff_title",
+			"description" : "wolfhud_hudlist_ammo_give_out_debuff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "ammo_give_out_debuff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "bullseye_debuff",
+			"title" : "wolfhud_hudlist_bullseye_debuff_title",
+			"description" : "wolfhud_hudlist_bullseye_debuff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "bullseye_debuff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "inspire_debuff",
+			"title" : "wolfhud_hudlist_inspire_debuff_title",
+			"description" : "wolfhud_hudlist_inspire_debuff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "inspire_debuff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "inspire_revive_debuff",
+			"title" : "wolfhud_hudlist_inspire_revive_debuff_title",
+			"description" : "wolfhud_hudlist_inspire_revive_debuff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "inspire_revive_debuff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "life_drain_debuff",
+			"title" : "wolfhud_hudlist_life_drain_debuff_title",
+			"description" : "wolfhud_hudlist_life_drain_debuff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "life_drain_debuff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "medical_supplies_debuff",
+			"title" : "wolfhud_hudlist_medical_supplies_debuff_title",
+			"description" : "wolfhud_hudlist_medical_supplies_debuff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "medical_supplies_debuff",
+		}
+	]
+}

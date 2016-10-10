@@ -1,0 +1,41 @@
+{
+	"menu_id" : "wolfhud_enemyhealthbar_options_menu",
+	"parent_menu_id" : "wolfhud_panels_options_menu",
+	"title" : "wolfhud_enemyhealthbar_options_name",
+	"description" : "wolfhud_enemyhealthbar_options_help",
+	"back_callback" : "",
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "show_enemy_healthbar",
+			"title" : "wolfhud_show_enemyhealthbar_title",
+			"description" : "wolfhud_show_enemyhealthbar_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_enemy_healthbar"
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_civilian_healthbar",
+			"title" : "wolfhud_show_civhealthbar_title",
+			"description" : "wolfhud_show_civhealthbar_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_civilian_healthbar"
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_car_healthbar",
+			"title" : "wolfhud_show_carhealthbar_title",
+			"description" : "wolfhud_show_carhealthbar_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_car_healthbar"
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_healthbar_pointer",
+			"title" : "wolfhud_show_healthbar_pointer_title",
+			"description" : "wolfhud_show_healthbar_pointer_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_healthbar_pointer"
+		}
+	]
+}

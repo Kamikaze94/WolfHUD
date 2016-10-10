@@ -1,6 +1,12 @@
 if RequiredScript == "lib/managers/hudmanager" then
 	local init_original = HUDManager.init
 
+	HUDManager.CUSTOM_WAYPOINTS = {
+		IGNORE_TIMER = {
+			[145557] = true,
+		},
+	}
+	
 	function HUDManager:init(...)
 		init_original(self, ...)
 		
@@ -226,9 +232,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 	
 	function HUDManager:custom_waypoint_timer_clbk(event, key, data)
 		local id = "timer_wp_" .. key
-
 		if event == "set_active" then
-			if data.active then
+			if data.active and not HUDManager.CUSTOM_WAYPOINTS.IGNORE_TIMER[data.id] then
 				local icon_table = {
 					drill = "pd2_drill",
 					hack = "pd2_computer",
@@ -283,7 +288,12 @@ if RequiredScript == "lib/managers/hudmanager" then
 						scale = 0.5,
 						visible_distance = { max = 1500 },
 					},
-					component_order = { { "icon" }, { "timer" }, { "speed_upgrade", "noise_upgrade", "restart_upgrade" } },
+					debug_txt = {
+						type = "label",
+						show = false,
+						text = string.format("Editor ID: %s", (data.unit:editor_id() or "")),
+					},
+					component_order = { { "icon" }, { "timer" }, { "speed_upgrade", "noise_upgrade", "restart_upgrade" }, { "debug_txt" } },
 				}
 				
 				if data.id == 132864 then --Meltdown timer

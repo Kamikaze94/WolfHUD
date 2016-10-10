@@ -1,0 +1,72 @@
+{
+	"menu_id" : "wolfhud_panels_options_menu",
+	"parent_menu_id" : "wolfhud_options_menu",
+	"title" : "wolfhud_panels_options_name",
+	"description" : "wolfhud_panels_options_help",
+	"back_callback" : "",
+	"priority" : 100,
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "use_customhud",
+			"title" : "wolfhud_use_customhud_title",
+			"description" : "wolfhud_use_customhud_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "use_customhud",
+			"priority" : 110,
+		},
+		{
+			"type" : "divider",
+			"size" : 8,
+			"priority" : 109,
+		},
+		{
+			"type" : "divider",
+			"size" : 32,
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_advanced_assault",
+			"title" : "wolfhud_adv_assault_title",
+			"description" : "wolfhud_adv_assault_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_advanced_assault",
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_pacified_civilians",
+			"title" : "wolfhud_pacified_civs_title",
+			"description" : "wolfhud_pacified_civs_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_pacified_civilians",
+		},
+		{
+			"type" : "toggle",
+			"id" : "use_realammo",
+			"title" : "wolfhud_use_realammo_title",
+			"description" : "wolfhud_use_realammo_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "use_realammo",
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_downcounter",
+			"title" : "wolfhud_show_downcounter_title",
+			"description" : "wolfhud_show_downcounter_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "show_downcounter",
+		},
+		{
+			"type" : "toggle",
+			"id" : "remove_answered_pager_contour",
+			"title" : "wolfhud_hudlist_remove_answered_pagers_title",
+			"description" : "wolfhud_hudlist_remove_answered_pagers_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "remove_answered_pager_contour",
+		},
+		{
+			"type" : "divider",
+			"size" : 16,
+		}
+	]
+}

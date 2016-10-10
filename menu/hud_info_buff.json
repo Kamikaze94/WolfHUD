@@ -1,0 +1,50 @@
+{
+	"menu_id" : "wolfhud_infopanels_buff_options_menu",
+	"parent_menu_id" : "wolfhud_infopanels_options_menu",
+	"title" : "wolfhud_infopanels_buff_options_name",
+	"description" : "wolfhud_infopanels_buff_options_help",
+	"back_callback" : "",
+	"priority" : 3,
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "show_buffs",
+			"title" : "wolfhud_hudlist_show_buffs_title",
+			"description" : "wolfhud_hudlist_show_buffs_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "show_buffs",
+		},
+		{
+			"type" : "divider",
+			"size" : 16,
+		},
+		{
+			"type" : "toggle",
+			"id" : "damage_increase_compbuff",
+			"title" : "wolfhud_hudlist_damage_increase_compbuff_title",
+			"description" : "wolfhud_hudlist_damage_increase_compbuff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "damage_increase_compbuff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "damage_reduction_compbuff",
+			"title" : "wolfhud_hudlist_damage_reduction_compbuff_title",
+			"description" : "wolfhud_hudlist_damage_reduction_compbuff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "damage_reduction_compbuff",
+		},
+		{
+			"type" : "toggle",
+			"id" : "melee_damage_increase_compbuff",
+			"title" : "wolfhud_hudlist_melee_damage_increase_compbuff_title",
+			"description" : "wolfhud_hudlist_melee_damage_increase_compbuff_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "melee_damage_increase_compbuff",
+		},
+		{
+			"type" : "divider",
+			"size" : 16,
+		}
+	]
+}
