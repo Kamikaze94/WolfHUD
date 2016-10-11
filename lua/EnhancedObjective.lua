@@ -247,7 +247,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudheisttimer" then
 	
 	function HUDHeistTimer:init(hud, tweak_hud)
 		self._hud_panel = hud.panel
-		self._enabled = not tweak_hud.no_timer
+		self._enabled = not tweak_hud or not tweak_hud.no_timer
 		if self._hud_panel:child("heist_timer_panel") then
 			self._hud_panel:remove(self._hud_panel:child("heist_timer_panel"))
 		end

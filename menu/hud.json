@@ -38,7 +38,7 @@
 			"id" : "assault_banner_position",
 			"title" : "wolfhud_assault_position_title",
 			"description" : "wolfhud_assault_position_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_vanillahud_setting",
 			"items" : [
 				"wolfhud_multiselect_left",
 				"wolfhud_multiselect_center",

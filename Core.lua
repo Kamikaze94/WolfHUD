@@ -869,6 +869,12 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		local name = item:parameters().name
 		if managers.hud and managers.hud.change_drivinghud_setting then managers.hud:change_drivinghud_setting(tostring(name), WolfHUD:getSetting(name, "color", WolfHUD:getSetting(name))) end
 	end
+	
+	MenuCallbackHandler.clbk_change_vanillahud_setting = function(self, item)
+		self:clbk_change_setting(item)
+		local name = item:parameters().name
+		if managers.hud and managers.hud._change_vanillahud_setting then managers.hud:_change_vanillahud_setting(tostring(name)) end
+	end
 		
 	WolfHUD:Load()
 	
