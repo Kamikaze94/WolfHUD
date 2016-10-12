@@ -280,6 +280,10 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				[102052] = true,
 				[102402] = true,
 			},
+			chill_combat = { -- Ammo shelves
+				[100751] = true,
+				[101242] = true,
+			},
 		},
 	}
 	GameInfoManager._INTERACTIONS.IGNORE_IDS.watchdogs_2_day = table.deep_map_copy(GameInfoManager._INTERACTIONS.IGNORE_IDS.watchdogs_2)
@@ -954,7 +958,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			end
 			
 			local aggregate_key = GameInfoManager._EQUIPMENT.AGGREAGATE_ITEMS[self._deployables[type][key].unit:editor_id()]
-			--log(self._deployables[key].type .. " | " .. self._deployables[key].unit:editor_id())
+			WolfHUD:print_log(type .. " | " .. self._deployables[type][key].unit:editor_id(), "info")
 			if event == "destroy" then
 				self:_listener_callback(type, "destroy", key, self._deployables[type][key])
 				self._deployables[type][key] = nil
