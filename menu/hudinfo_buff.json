@@ -24,7 +24,7 @@
 			"id" : "damage_increase_compbuff",
 			"title" : "wolfhud_hudlist_damage_increase_compbuff_title",
 			"description" : "wolfhud_hudlist_damage_increase_compbuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "damage_increase_compbuff",
 		},
 		{
@@ -32,7 +32,7 @@
 			"id" : "damage_reduction_compbuff",
 			"title" : "wolfhud_hudlist_damage_reduction_compbuff_title",
 			"description" : "wolfhud_hudlist_damage_reduction_compbuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "damage_reduction_compbuff",
 		},
 		{
@@ -40,7 +40,7 @@
 			"id" : "melee_damage_increase_compbuff",
 			"title" : "wolfhud_hudlist_melee_damage_increase_compbuff_title",
 			"description" : "wolfhud_hudlist_melee_damage_increase_compbuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "melee_damage_increase_compbuff",
 		},
 		{

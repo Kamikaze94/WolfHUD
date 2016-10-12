@@ -11,7 +11,7 @@
 			"id" : "bulletproof_teambuff",
 			"title" : "wolfhud_hudlist_bulletproof_teambuff_title",
 			"description" : "wolfhud_hudlist_bulletproof_teambuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "bulletproof_teambuff",
 		},
 		{
@@ -23,7 +23,7 @@
 			"id" : "bullet_storm_buff",
 			"title" : "wolfhud_hudlist_bullet_storm_buff_title",
 			"description" : "wolfhud_hudlist_bullet_storm_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "bullet_storm_buff",
 		},
 		{
@@ -31,7 +31,7 @@
 			"id" : "die_hard_buff",
 			"title" : "wolfhud_hudlist_die_hard_buff_title",
 			"description" : "wolfhud_hudlist_die_hard_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "die_hard_buff",
 		},
 		{
@@ -39,7 +39,7 @@
 			"id" : "overkill_buff",
 			"title" : "wolfhud_hudlist_overkill_buff_title",
 			"description" : "wolfhud_hudlist_overkill_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "overkill_buff",
 		},
 		{
@@ -47,7 +47,7 @@
 			"id" : "underdog_buff",
 			"title" : "wolfhud_hudlist_underdog_buff_title",
 			"description" : "wolfhud_hudlist_underdog_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "underdog_buff",
 		},
 		{
@@ -59,7 +59,7 @@
 			"id" : "bullseye_debuff",
 			"title" : "wolfhud_hudlist_bullseye_debuff_title",
 			"description" : "wolfhud_hudlist_bullseye_debuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "bullseye_debuff",
 		}
 	]

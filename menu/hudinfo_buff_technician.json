@@ -11,7 +11,7 @@
 			"id" : "lock_n_load_buff",
 			"title" : "wolfhud_hudlist_lock_n_load_buff_title",
 			"description" : "wolfhud_hudlist_lock_n_load_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "lock_n_load_buff",
 		}
 	]

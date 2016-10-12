@@ -11,7 +11,7 @@
 			"id" : "berserker_buff",
 			"title" : "wolfhud_hudlist_berserker_buff_title",
 			"description" : "wolfhud_hudlist_berserker_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "berserker_buff",
 		},
 		{
@@ -19,7 +19,7 @@
 			"id" : "bloodthirst_basic_buff",
 			"title" : "wolfhud_hudlist_bloodthirst_basic_buff_title",
 			"description" : "wolfhud_hudlist_bloodthirst_basic_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "bloodthirst_basic_buff",
 		},
 		{
@@ -27,7 +27,7 @@
 			"id" : "bloodthirst_aced_buff",
 			"title" : "wolfhud_hudlist_bloodthirst_aced_buff_title",
 			"description" : "wolfhud_hudlist_bloodthirst_aced_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "bloodthirst_aced_buff",
 		},
 		{
@@ -35,7 +35,7 @@
 			"id" : "desperado_buff",
 			"title" : "wolfhud_hudlist_desperado_buff_title",
 			"description" : "wolfhud_hudlist_desperado_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "desperado_buff",
 		},
 		{
@@ -43,7 +43,7 @@
 			"id" : "messiah_buff",
 			"title" : "wolfhud_hudlist_messiah_buff_title",
 			"description" : "wolfhud_hudlist_messiah_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "messiah_buff",
 		},
 		{
@@ -51,7 +51,7 @@
 			"id" : "running_from_death_buff",
 			"title" : "wolfhud_hudlist_running_from_death_buff_title",
 			"description" : "wolfhud_hudlist_running_from_death_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "running_from_death_buff",
 		},
 		{
@@ -59,7 +59,7 @@
 			"id" : "swan_song_buff",
 			"title" : "wolfhud_hudlist_swan_song_buff_title",
 			"description" : "wolfhud_hudlist_swan_song_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "swan_song_buff",
 		},
 		{
@@ -67,7 +67,7 @@
 			"id" : "trigger_happy_buff",
 			"title" : "wolfhud_hudlist_trigger_happy_buff_title",
 			"description" : "wolfhud_hudlist_trigger_happy_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "trigger_happy_buff",
 		},
 		{
@@ -75,7 +75,7 @@
 			"id" : "up_you_go_buff",
 			"title" : "wolfhud_hudlist_up_you_go_buff_title",
 			"description" : "wolfhud_hudlist_up_you_go_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "up_you_go_buff",
 		}
 	]

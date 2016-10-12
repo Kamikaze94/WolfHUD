@@ -49,6 +49,16 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
+	function HUDManager:change_bufflist_setting(name, show)
+		local suffixes = { "_buff", "_debuff", "_teambuff", "_compbuff" }
+		local buff_id = name
+		for i, suffix in ipairs(suffixes) do
+			buff_id = buff_id:gsub(suffix, "")
+		end
+		
+		--TODO: enable/disable buff
+	end
+	
 	function HUDManager:show_stats_screen(...)
 		if managers.hudlist then
 			managers.hudlist:fade_lists(0.4)

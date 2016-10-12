@@ -11,7 +11,7 @@
 			"id" : "dire_need_buff",
 			"title" : "wolfhud_hudlist_dire_need_buff_title",
 			"description" : "wolfhud_hudlist_dire_need_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "dire_need_buff",
 		},
 		{
@@ -19,7 +19,7 @@
 			"id" : "second_wind_buff",
 			"title" : "wolfhud_hudlist_second_wind_buff_title",
 			"description" : "wolfhud_hudlist_second_wind_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "second_wind_buff",
 		},
 		{
@@ -27,7 +27,7 @@
 			"id" : "sixth_sense_buff",
 			"title" : "wolfhud_hudlist_sixth_sense_buff_title",
 			"description" : "wolfhud_hudlist_sixth_sense_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "sixth_sense_buff",
 		},
 		{
@@ -35,7 +35,7 @@
 			"id" : "unseen_strike_buff",
 			"title" : "wolfhud_hudlist_unseen_strike_buff_title",
 			"description" : "wolfhud_hudlist_unseen_strike_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "unseen_strike_buff",
 		}
 	]

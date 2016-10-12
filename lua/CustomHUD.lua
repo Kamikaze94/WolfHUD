@@ -1,4 +1,5 @@
 --TODO: Setting update for interaction, but probably not necessary as they are temporary anyway
+--TODO: Setting update for interaction, but probably not necessary as they are temporary anyway
 --TODO: Clean up interaction activation/deactivation animation, probably a lot of unnecessary rearranges going on
 
 
@@ -2948,6 +2949,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 	
+	function PlayerInfoComponent.Equipment:set_is_local_player(state)
+		if PlayerInfoComponent.Equipment.super.set_is_local_player(self, state) then
+
+		end
+	end
+	
 	function PlayerInfoComponent.Equipment:set_is_ai(state)
 		if PlayerInfoComponent.Equipment.super.set_is_ai(self, state) and self:set_enabled("ai", not self._is_ai) then
 			self._owner:arrange()
@@ -3062,6 +3069,20 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 		
 		panel:set_visible(text_str:len() > 0)
+		self:arrange()
+	end
+	
+	function PlayerInfoComponent.Equipment:set_bodybag(icon)	-- equipment_body_bag
+		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon)
+		self._panel:child("body_bags"):child("icon"):set_image(texture, unpack(texture_rect))
+	end
+	
+	function PlayerInfoComponent.Equipment:set_bodybag_amount(amount)
+		local panel = self._panel:child("body_bags")
+		local text = panel:child("amount")
+		text:set_text(string.format("%02.0f", amount))
+		text:set_range_color(0, amount < 10 and 1 or 0, Color.white:with_alpha(0.5))
+		panel:set_visible(amount > 0)
 		self:arrange()
 	end
 	

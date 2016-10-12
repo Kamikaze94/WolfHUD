@@ -845,6 +845,12 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		if managers.hud and HUDListManager then managers.hud:change_list_setting(tostring(name), WolfHUD:getSetting(name, "color", WolfHUD:getSetting(name))) end
 	end
 	
+	MenuCallbackHandler.clbk_change_hudlist_buff_setting = function(self, item)
+		self:clbk_change_setting(item)
+		local name = item:parameters().name
+		if managers.hud and HUDListManager then managers.hud:change_bufflist_setting(tostring(name), WolfHUD:getSetting(name, "boolean")) end
+	end
+	
 	MenuCallbackHandler.clbk_change_customhud_setting = function(self, item)
 		self:clbk_change_setting(item)
 		if managers.hud and HUDManager.CUSTOM_TEAMMATE_PANELS and managers.hud.change_hud_setting then 

@@ -341,32 +341,64 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/renderers/menunodeskil
 		end
 	end
 elseif RequiredScript == "lib/managers/missionassetsmanager" then
-	function MissionAssetsManager:mission_has_preplanning()
-		if not self._has_locked_asset then
-			for _, asset in ipairs(self._global.assets) do
-				if self:asset_is_buyable(asset) then
-					self._has_locked_asset = true
-					break
-				end
-			end
-		end
-		return tweak_data.preplanning.locations[Global.game_settings and Global.game_settings.level_id] ~= nil and not self._has_locked_asset
-	end
-
-	function MissionAssetsManager:asset_is_buyable(asset)
-		return asset.id ~= "buy_all_assets" and asset.show and not asset.unlocked and ((Network:is_server() and asset.can_unlock) or (Network:is_client() and self:get_asset_can_unlock_by_id(asset.id)))
-	end
 
 	local MissionAssetsManager__setup_mission_assets_orig = MissionAssetsManager._setup_mission_assets
-	function MissionAssetsManager._setup_mission_assets(self, ...)
+	local MissionAssetsManager_unlock_asset_orig = MissionAssetsManager.unlock_asset
+	local MissionAssetsManager_sync_unlock_asset_orig = MissionAssetsManager.sync_unlock_asset
+	local MissionAssetsManager_sync_save_orig = MissionAssetsManager.sync_save
+	local MissionAssetsManager_sync_load_orig = MissionAssetsManager.sync_load
+	
+	function MissionAssetsManager:_setup_mission_assets(...)
 		MissionAssetsManager__setup_mission_assets_orig(self, ...)
 		if not self:mission_has_preplanning() then
 			self:insert_buy_all_assets_asset()
 			self:check_all_assets()
 		end
 	end
+	
+	function MissionAssetsManager:sync_unlock_asset(...)
+		MissionAssetsManager_sync_unlock_asset_orig(self, ...)
+		if not self:mission_has_preplanning() then
+			self:update_buy_all_assets_asset_cost()
+			self:check_all_assets()
+		end
+	end
 
-	function MissionAssetsManager.update_buy_all_assets_asset_cost(self)
+	function MissionAssetsManager:unlock_asset(asset_id, ...)
+		if asset_id ~= "buy_all_assets" or not game_state_machine or not self:is_unlock_asset_allowed() then
+			return MissionAssetsManager_unlock_asset_orig(self, asset_id, ...)
+		end
+		for _, asset in ipairs(self._global.assets) do
+			if self:asset_is_buyable(asset) then
+				MissionAssetsManager_unlock_asset_orig(self, asset.id)
+			end
+		end
+		self:check_all_assets()
+	end
+
+	function MissionAssetsManager:sync_save(data, ...)
+		if not self:mission_has_preplanning() then
+			for id, asset in ipairs(self._global.assets) do
+				if asset.id == "buy_all_assets" then
+					self._global.assets[id] = self._gage_saved
+					break
+				end
+			end
+		end
+		return MissionAssetsManager_sync_save_orig(self, data, ...)
+	end
+
+	function MissionAssetsManager:sync_load(data, ...)
+		if not self:mission_has_preplanning() then
+			self._global = data.MissionAssetsManager
+			self:insert_buy_all_assets_asset()
+			self:check_all_assets()
+		end
+		MissionAssetsManager_sync_load_orig(self, data, ...)
+	end
+	
+	-- Custom functions
+	function MissionAssetsManager:update_buy_all_assets_asset_cost()
 		if not self:mission_has_preplanning() and self._tweak_data.buy_all_assets then
 			self._tweak_data.buy_all_assets.money_lock = 0
 			for _, asset in ipairs(self._global.assets) do
@@ -377,7 +409,7 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 		end
 	end
 
-	function MissionAssetsManager.insert_buy_all_assets_asset(self)
+	function MissionAssetsManager:insert_buy_all_assets_asset()
 		if not self._tweak_data.gage_assignment then
 			return
 		end
@@ -388,20 +420,18 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 		self._tweak_data.buy_all_assets.visible_if_locked = true
 		self._tweak_data.buy_all_assets.no_mystery = true
 		self:update_buy_all_assets_asset_cost()
-		for _, asset in ipairs(self._global.assets) do
-			if asset.id == "gage_assignment" then
-				self._gage_saved = deep_clone(asset)
-				asset.id = "buy_all_assets"
-				asset.unlocked = false
-				asset.can_unlock = true
-				asset.no_mystery = true
-				break
-			end
+		local asset = self:_get_asset_by_id("gage_assignment")
+		if asset then
+			self._gage_saved = deep_clone(asset)
+			asset.id = "buy_all_assets"
+			asset.unlocked = false
+			asset.can_unlock = true
+			asset.no_mystery = true
 		end
 		self:check_all_assets()
 	end
 
-	function MissionAssetsManager.check_all_assets(self)
+	function MissionAssetsManager:check_all_assets()
 		if game_state_machine then
 			for _, asset in ipairs(self._global.assets) do
 				if self:asset_is_buyable(asset) then
@@ -415,52 +445,22 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 			end
 		end
 	end
-	local MissionAssetsManager_sync_unlock_asset_orig = MissionAssetsManager.sync_unlock_asset
-	function MissionAssetsManager.sync_unlock_asset(self, ...)
-		MissionAssetsManager_sync_unlock_asset_orig(self, ...)
-		if not self:mission_has_preplanning() then
-			self:update_buy_all_assets_asset_cost()
-			self:check_all_assets()
-		end
-	end
-
-	if not MissionAssetsManager_unlock_asset_orig then MissionAssetsManager_unlock_asset_orig = MissionAssetsManager.unlock_asset end
-	function MissionAssetsManager.unlock_asset(self, asset_id)
-		if asset_id ~= "buy_all_assets" or not game_state_machine or not self:is_unlock_asset_allowed() then
-			return MissionAssetsManager_unlock_asset_orig(self, asset_id)
-		end
-		for _, asset in ipairs(self._global.assets) do
-			if self:asset_is_buyable(asset) then
-				MissionAssetsManager_unlock_asset_orig(self, asset.id)
+	
+	function MissionAssetsManager:mission_has_preplanning()
+		if not self._has_locked_asset then
+			for _, asset in ipairs(self._global.assets) do
+				if self:asset_is_buyable(asset) then
+					self._has_locked_asset = true
+					break
+				end
 			end
 		end
-		self:check_all_assets()
+		local current_level = managers.job:current_level_id()
+		return current_level and tweak_data.preplanning.locations[current_level] ~= nil and not self._has_locked_asset
 	end
 
-	local MissionAssetsManager_sync_save_orig = MissionAssetsManager.sync_save
-	function MissionAssetsManager.sync_save(self, data)
-		if self:mission_has_preplanning() then
-			return MissionAssetsManager_sync_save_orig(self, data)
-		end
-		local _global = clone(self._global)
-		_global.assets = clone(_global.assets)
-		for id, asset in ipairs(_global.assets) do
-			if asset.id == "buy_all_assets" then
-				_global.assets[id] = self._gage_saved
-				break
-			end
-		end
-		data.MissionAssetsManager = _global
-	end
-
-	local MissionAssetsManager_sync_load_orig = MissionAssetsManager.sync_load
-	function MissionAssetsManager.sync_load(self, data, ...)
-		if not self:mission_has_preplanning() then
-			self._global = data.MissionAssetsManager
-			self:insert_buy_all_assets_asset()
-			self:check_all_assets()
-		end
-		MissionAssetsManager_sync_load_orig(self, data, ...)
+	function MissionAssetsManager:asset_is_buyable(asset)
+		return asset.id ~= "buy_all_assets" and asset.show and not asset.unlocked and ((Network:is_server() and asset.can_unlock) or (Network:is_client() and self:get_asset_can_unlock_by_id(asset.id)))
 	end
 elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	if not WolfHUD:getSetting("spam_filter", "boolean") then return end

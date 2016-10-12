@@ -6,14 +6,40 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	local set_buff_enabled_original = HUDAssaultCorner.set_buff_enabled
 	local show_casing_original = HUDAssaultCorner.show_casing
 	local hide_casing_original = HUDAssaultCorner.hide_casing
+	local _animate_wave_started_original = HUDAssaultCorner._animate_wave_started
+	local _animate_wave_completed_original = HUDAssaultCorner._animate_wave_completed
 	 
 	function HUDAssaultCorner:init(...)
 		init_original(self, ...)
 		
 		-- Waves completed are visible in Objective and overlapping with HUDList.
-		local wave_panel = self._hud_panel:child("wave_panel")
-		if alive(wave_panel) then
-			wave_panel:set_alpha(0)
+		if self:is_safehouse_raid() then
+			local wave_panel = self._hud_panel:child("wave_panel")
+			if alive(wave_panel) then
+				wave_panel:set_alpha(0)
+			end
+			local assault_panel = self._hud_panel:child("assault_panel")
+			if alive(assault_panel) then
+				self._wave_text = assault_panel:text({
+					name = "num_waves",
+					text = self:get_completed_waves_string(),
+					valign = "center",
+					vertical = "center",
+					align = "center",
+					halign = "right",
+					w = self._bg_box and self._bg_box:w() or 100,
+					h = tweak_data.hud.active_objective_title_font_size,
+					layer = 1,
+					x = 0,
+					y = 0,
+					color = Color.white,
+					alpha = 0.8,
+					font = "fonts/font_medium_shadow_mf",
+					font_size = tweak_data.hud.active_objective_title_font_size * 0.9,
+				})
+				self._wave_text:set_top(self._bg_box and self._bg_box:bottom() or 40)
+				self._wave_text:set_right(self._bg_box and self._bg_box:right() or 575)
+			end
 		end
 		
 		self:update_banner_pos()
@@ -58,7 +84,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		banner_visible = banner_visible or banner_visible == nil and (self._assault or self._point_of_no_return or self._casing)
 		local banner_pos = math.clamp(WolfHUD:getSetting("assault_banner_position", "number"), 1, 3)
 		if managers.hud and banner_pos ~= 2 then
-			local offset = banner_visible and ((self._bg_box and self._bg_box:bottom() or 0) + 12) or 0
+			local offset = banner_visible and ((self._bg_box and self._bg_box:bottom() or 0) + (self:is_safehouse_raid() and self._wave_text:h() or 0)+ 12) or 0
 			if banner_pos > 2 and HUDListManager then
 				managers.hud:change_list_setting("right_list_height_offset", offset)
 			elseif banner_pos < 2 then
@@ -108,6 +134,17 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 			end
 		end
 		return _start_assault_original(self, text_list, ...)
+	end
+	
+	function HUDAssaultCorner:_animate_wave_started(...)
+		self._wave_text:set_text(self:get_completed_waves_string())
+		
+		return _animate_wave_started_original(self, ...)
+	end
+	function HUDAssaultCorner:_animate_wave_completed(...)
+		self._wave_text:set_text(self:get_completed_waves_string())
+		
+		return _animate_wave_completed_original(self, ...)
 	end
 	
 	function HUDAssaultCorner:locked_assault(status)

@@ -11,7 +11,7 @@
 			"id" : "armor_break_invulnerable_buff",
 			"title" : "wolfhud_hudlist_armor_break_invulnerable_buff_title",
 			"description" : "wolfhud_hudlist_armor_break_invulnerable_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "armor_break_invulnerable_buff",
 		},
 		{
@@ -19,7 +19,7 @@
 			"id" : "anarchist_armor_recovery_debuff",
 			"title" : "wolfhud_hudlist_anarchist_armor_recovery_debuff_title",
 			"description" : "wolfhud_hudlist_anarchist_armor_recovery_debuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "anarchist_armor_recovery_debuff",
 		},
 		{
@@ -27,7 +27,7 @@
 			"id" : "armorer_teambuff",
 			"title" : "wolfhud_hudlist_armorer_teambuff_title",
 			"description" : "wolfhud_hudlist_armorer_teambuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "armorer_teambuff",
 		},
 		{
@@ -35,7 +35,7 @@
 			"id" : "biker_buff",
 			"title" : "wolfhud_hudlist_biker_buff_title",
 			"description" : "wolfhud_hudlist_biker_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "biker_buff",
 		},
 		{
@@ -43,7 +43,7 @@
 			"id" : "crew_chief_teambuff",
 			"title" : "wolfhud_hudlist_crew_chief_teambuff_title",
 			"description" : "wolfhud_hudlist_crew_chief_teambuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "crew_chief_teambuff",
 		},
 		{
@@ -51,7 +51,7 @@
 			"id" : "hostage_situation_buff",
 			"title" : "wolfhud_hudlist_hostage_situation_buff_title",
 			"description" : "wolfhud_hudlist_hostage_situation_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "hostage_situation_buff",
 		},
 		{
@@ -59,7 +59,7 @@
 			"id" : "ammo_give_out_debuff",
 			"title" : "wolfhud_hudlist_ammo_give_out_debuff_title",
 			"description" : "wolfhud_hudlist_ammo_give_out_debuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "ammo_give_out_debuff",
 		},
 		{
@@ -67,7 +67,7 @@
 			"id" : "medical_supplies_debuff",
 			"title" : "wolfhud_hudlist_medical_supplies_debuff_title",
 			"description" : "wolfhud_hudlist_medical_supplies_debuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "medical_supplies_debuff",
 		},
 		{
@@ -75,7 +75,7 @@
 			"id" : "grinder_buff",
 			"title" : "wolfhud_hudlist_grinder_buff_title",
 			"description" : "wolfhud_hudlist_grinder_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "grinder_buff",
 		},
 		{
@@ -83,7 +83,7 @@
 			"id" : "tooth_and_claw_buff",
 			"title" : "wolfhud_hudlist_tooth_and_claw_buff_title",
 			"description" : "wolfhud_hudlist_tooth_and_claw_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "tooth_and_claw_buff",
 		},
 		{
@@ -91,7 +91,7 @@
 			"id" : "close_contact_buff",
 			"title" : "wolfhud_hudlist_close_contact_buff_title",
 			"description" : "wolfhud_hudlist_close_contact_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "close_contact_buff",
 		},
 		{
@@ -99,7 +99,7 @@
 			"id" : "life_drain_debuff",
 			"title" : "wolfhud_hudlist_life_drain_debuff_title",
 			"description" : "wolfhud_hudlist_life_drain_debuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "life_drain_debuff",
 		},
 		{
@@ -107,7 +107,7 @@
 			"id" : "melee_stack_damage_buff",
 			"title" : "wolfhud_hudlist_melee_stack_damage_buff_title",
 			"description" : "wolfhud_hudlist_melee_stack_damage_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "melee_stack_damage_buff",
 		},
 		{
@@ -115,7 +115,7 @@
 			"id" : "overdog_buff",
 			"title" : "wolfhud_hudlist_overdog_buff_title",
 			"description" : "wolfhud_hudlist_overdog_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "overdog_buff",
 		},
 		{
@@ -123,7 +123,7 @@
 			"id" : "maniac_buff",
 			"title" : "wolfhud_hudlist_maniac_buff_title",
 			"description" : "wolfhud_hudlist_maniac_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "maniac_buff",
 		},
 		{
@@ -131,7 +131,7 @@
 			"id" : "muscle_regen_buff",
 			"title" : "wolfhud_hudlist_muscle_regen_buff_title",
 			"description" : "wolfhud_hudlist_muscle_regen_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "muscle_regen_buff",
 		},
 		{
@@ -139,7 +139,7 @@
 			"id" : "sociopath_debuff",
 			"title" : "wolfhud_hudlist_sociopath_debuff_title",
 			"description" : "wolfhud_hudlist_sociopath_debuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "sociopath_debuff",
 		},
 		{
@@ -147,7 +147,7 @@
 			"id" : "yakuza_buff",
 			"title" : "wolfhud_hudlist_yakuza_buff_title",
 			"description" : "wolfhud_hudlist_yakuza_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "yakuza_buff",
 		}
 	]

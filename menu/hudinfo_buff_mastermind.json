@@ -11,7 +11,7 @@
 			"id" : "forced_friendship_teambuff",
 			"title" : "wolfhud_hudlist_forced_friendship_teambuff_title",
 			"description" : "wolfhud_hudlist_forced_friendship_teambuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "forced_friendship_teambuff",
 		},
 		{
@@ -23,7 +23,7 @@
 			"id" : "aggressive_reload_aced_buff",
 			"title" : "wolfhud_hudlist_aggressive_reload_aced_buff_title",
 			"description" : "wolfhud_hudlist_aggressive_reload_aced_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "aggressive_reload_aced_buff",
 		},
 		{
@@ -31,7 +31,7 @@
 			"id" : "ammo_efficiency_buff",
 			"title" : "wolfhud_hudlist_ammo_efficiency_buff_title",
 			"description" : "wolfhud_hudlist_ammo_efficiency_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "ammo_efficiency_buff",
 		},
 		{
@@ -39,7 +39,7 @@
 			"id" : "combat_medic_buff",
 			"title" : "wolfhud_hudlist_combat_medic_buff_title",
 			"description" : "wolfhud_hudlist_combat_medic_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "combat_medic_buff",
 		},
 		{
@@ -47,7 +47,7 @@
 			"id" : "combat_medic_passive_buff",
 			"title" : "wolfhud_hudlist_combat_medic_passive_buff_title",
 			"description" : "wolfhud_hudlist_combat_medic_passive_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "combat_medic_passive_buff",
 		},
 		{
@@ -55,7 +55,7 @@
 			"id" : "hostage_taker_buff",
 			"title" : "wolfhud_hudlist_hostage_taker_buff_title",
 			"description" : "wolfhud_hudlist_hostage_taker_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "hostage_taker_buff",
 		},
 		{
@@ -63,7 +63,7 @@
 			"id" : "inspire_buff",
 			"title" : "wolfhud_hudlist_inspire_buff_title",
 			"description" : "wolfhud_hudlist_inspire_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "inspire_buff",
 		},
 		{
@@ -71,7 +71,7 @@
 			"id" : "painkiller_buff",
 			"title" : "wolfhud_hudlist_painkiller_buff_title",
 			"description" : "wolfhud_hudlist_painkiller_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "painkiller_buff",
 		},
 		{
@@ -79,7 +79,7 @@
 			"id" : "partner_in_crime_buff",
 			"title" : "wolfhud_hudlist_partner_in_crime_buff_title",
 			"description" : "wolfhud_hudlist_partner_in_crime_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "partner_in_crime_buff",
 		},
 		{
@@ -87,7 +87,7 @@
 			"id" : "quick_fix_buff",
 			"title" : "wolfhud_hudlist_quick_fix_buff_title",
 			"description" : "wolfhud_hudlist_quick_fix_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "quick_fix_buff",
 		},
 		{
@@ -95,7 +95,7 @@
 			"id" : "uppers_buff",
 			"title" : "wolfhud_hudlist_uppers_buff_title",
 			"description" : "wolfhud_hudlist_uppers_buff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "uppers_buff",
 		},
 		{
@@ -107,7 +107,7 @@
 			"id" : "inspire_debuff",
 			"title" : "wolfhud_hudlist_inspire_debuff_title",
 			"description" : "wolfhud_hudlist_inspire_debuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "inspire_debuff",
 		},
 		{
@@ -115,7 +115,7 @@
 			"id" : "inspire_revive_debuff",
 			"title" : "wolfhud_hudlist_inspire_revive_debuff_title",
 			"description" : "wolfhud_hudlist_inspire_revive_debuff_desc",
-			"callback" : "clbk_change_setting",
+			"callback" : "clbk_change_hudlist_buff_setting",
 			"value" : "inspire_revive_debuff",
 		}
 	]
