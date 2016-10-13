@@ -37,8 +37,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			w = self._bg_box:w(),
 			x = HUDObjectives._TEXT_MARGIN,
 			y = HUDObjectives._TEXT_MARGIN,
-			wrap = true,
-			word_wrap = true
+			wrap = false,
+			word_wrap = false
 		})
 		
 		self._amount_text = self._bg_box:text({
@@ -66,9 +66,9 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		self._objective_text:set_visible(true)
 		self._amount_text:set_visible(false)
 		
-		local width, height = self:_get_wrapped_text_dimensions(utf8.to_upper(data.text))
+		local width, height, wrapped_text = self:_get_wrapped_text_dimensions(utf8.to_upper(data.text))
 		
-		self._objective_text:set_text(utf8.to_upper(data.text))
+		self._objective_text:set_text(wrapped_text)
 		self._objective_text:set_w(width)
 		self._objective_text:set_h(height)
 		self._bg_box:set_h(HUDObjectives._TEXT_MARGIN * 2 + height)
@@ -191,11 +191,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			local string_range = utf8.sub(text_string, range_start, (range_end or 0) - 1)
 			table.insert(wrapped_lines, string.trim(string_range))
 		end
+		local wrapped_text = ""
 		local w, h = 0, layout_text_field:font_size() * math.max(#wrapped_lines, 1)
 		for i, line in ipairs(wrapped_lines) do
 			w = math.max(w, self:_get_text_dimensions(line).w)
+			wrapped_text = string.format("%s%s\n", wrapped_text, line)
 		end
-		return math.ceil(w), math.ceil(h)
+		return math.ceil(w), math.ceil(h), wrapped_text
 	end
 	
 	function HUDObjectives:apply_offset(offset)
@@ -207,10 +209,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 				self._panel:animate(callback(self, self, "_animate_move"), self._offset_y > 40 and 0 or 80, self._panel:y(), true)
 			end
 		end
-		if managers.hud then
-			if HUDListManager then 
-				managers.hud:change_list_setting("left_list_height_offset", self._offset_y + (self._bg_box:w() > 0 and (self._bg_box:h() + HUDObjectives._BOUNCE) or 40) + HUDObjectives._TEXT_MARGIN) 
-			end
+		if managers.hud and HUDListManager then 
+			managers.hud:change_list_setting("left_list_height_offset", self._offset_y + (self._bg_box:w() > 0 and (self._bg_box:h() + HUDObjectives._BOUNCE) or 40) + HUDObjectives._TEXT_MARGIN) 
 		end
 	end
 	

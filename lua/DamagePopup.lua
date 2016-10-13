@@ -8,7 +8,8 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	local _on_damage_received_original = CopDamage._on_damage_received
 	function CopDamage:_on_damage_received(data, ...)
 		if WolfHUD:getSetting("show_dmg_popup", "boolean") then
-			if data.damage > 0.09 and data.attacker_unit and alive(managers.player:player_unit()) and (data.attacker_unit == managers.player:player_unit() or data.attacker_unit:base()._thrower_unit == managers.player:player_unit()) then
+			local player = managers.player:player_unit()
+			if data.damage > 0.09 and alive(data.attacker_unit) and alive(player) and (data.attacker_unit == player or data.attacker_unit:base()._thrower_unit == player) then
 				local headshot = self._head_body_name and data.col_ray and data.col_ray.body and data.col_ray.body:name() == self._ids_head_body_name
 				self:show_popup(data.damage, self._dead, headshot)
 			end
@@ -82,7 +83,8 @@ elseif RequiredScript == "lib/units/civilians/civiliandamage" then
 	local _on_damage_received_original = CivilianDamage._on_damage_received
 	function CivilianDamage:_on_damage_received(data, ...)
 		if WolfHUD:getSetting("show_dmg_popup", "boolean") then
-			if data.damage > 0.09 and data.attacker_unit and alive(managers.player:player_unit()) and (data.attacker_unit == managers.player:player_unit() or data.attacker_unit:base()._thrower_unit == managers.player:player_unit()) then
+			local player = managers.player:player_unit()
+			if data.damage > 0.09 and alive(data.attacker_unit) and alive(player) and (data.attacker_unit == player or data.attacker_unit:base()._thrower_unit == player) then
 				local headshot = data.col_ray and data.col_ray.body and data.col_ray.body:name() == Idstring("head")
 				self:show_popup(data.damage, self._dead, headshot)
 			end
