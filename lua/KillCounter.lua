@@ -1,7 +1,3 @@
-if string.lower(RequiredScript) == "lib/managers/enemymanager" then
-	EnemyManager._MAX_NR_CORPSES = WolfHUD:getSetting("max_corpses", "number")
-end
-
 if RequiredScript == "lib/units/enemies/cop/copdamage" then
 
 --This needs fixing for DoT kills (then again, so does the games own kill counter) as client somehow and a lot of testing

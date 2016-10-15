@@ -103,7 +103,7 @@ if not _G.WolfHUD then
 		["lib/managers/hud/hudinteraction"] = { "Interaction.lua" },
 		["lib/managers/hud/hudsuspicion"] = { "NumbericSuspicion.lua" },
 		["lib/managers/hud/hudhitdirection"] = { "DamageIndicator.lua" },
-		["lib/managers/enemymanager"] = { "GameInfoManager.lua", "KillCounter.lua" },
+		["lib/managers/enemymanager"] = { "GameInfoManager.lua" },
 		["lib/managers/group_ai_states/groupaistatebase"] = { "GameInfoManager.lua", "PacifiedCivs.lua", "CustomWaypoints.lua" },
 		["lib/managers/missionassetsmanager"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/blackmarketgui"] = { "MenuTweaks.lua" },
@@ -153,6 +153,7 @@ if not _G.WolfHUD then
 		["lib/states/ingamewaitingforplayers"] = { "MenuTweaks.lua" },
 		["lib/tweak_data/tweakdata"] = { "MenuTweaks.lua" },	
 		["lib/tweak_data/guitweakdata"] = { "MenuTweaks.lua" },	
+		["lib/tweak_data/assetstweakdata"] = { "MenuTweaks.lua" },
 		["lib/tweak_data/timespeedeffecttweakdata"] = { "Scripts.lua" },
 		["core/lib/managers/menu/items/coremenuitemslider"] = { "MenuTweaks.lua" },
 		["core/lib/managers/subtitle/coresubtitlepresenter"] = { "EnhancedObjective.lua" },
@@ -229,7 +230,6 @@ if not _G.WolfHUD then
 			SHOW_HEADSHOT_KILLS 					= true,		--KillCounter shows headshot kills
 			SHOW_AI_KILLS 							= true,		--Show KillCounter for Bots
 			SHOW_ACCURACY							= true,
-			max_corpses 							= 100,		--Maximum number of laying around corpses
 		  --Enemy Healthbar
 			show_enemy_healthbar 					= true,		--Show healthbars
 			show_civilian_healthbar 				= false,	--Show Healthbars for Civilians and TeamAI

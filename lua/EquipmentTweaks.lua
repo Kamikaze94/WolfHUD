@@ -11,12 +11,10 @@ if string.lower(RequiredScript) == "lib/units/weapons/sentrygunweapon" then
 	
 	function SentryGunWeapon:post_init()
 		local enable_ap = false
-		local laser_theme = ""
+		local laser_theme = "default_sentry"
 		if self._unit:base():is_owner() then
 			laser_theme = "player_sentry"
 			enable_ap = managers.player:has_category_upgrade("sentry_gun", "ap_bullets")
-		else
-			laser_theme = "default_sentry"
 		end
 		self._laser_align = self._unit:get_object(Idstring("fire"))
 		self:set_laser_enabled(laser_theme)
