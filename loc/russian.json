@@ -85,6 +85,7 @@
 	"wolfhud_enemy_ceiling_turret" : "ТУРЕЛЬ",
 	"wolfhud_enemy_sentry_gun" : "ТУРЕЛЬ",
     "wolfhud_enemy_mobster_boss" : "Комиссар",
+	"wolfhud_enemy_chavez_boss" : "Chavez",
     "wolfhud_enemy_biker_boss" : "Босс байкеров",
     "wolfhud_enemy_bank_manager" : "Менеджер банка",
     "wolfhud_enemy_inside_man" : "Крот",

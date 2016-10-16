@@ -177,10 +177,12 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			weapon_case_axis_z =		"weapon",
 			samurai_armor =				"samurai_suit",
 			gen_pku_warhead_box =		"warhead",
+			pku_toothbrush = 			"toothbrush",
 			corpse_dispose =			"person",
 			crate_loot = 				"crate",
 			crate_loot_crowbar = 		"crate",
 			crate_weapon_crowbar = 		"crate",
+			hold_open_xmas_present = 	"xmas_present",
 			hold_open_case =			"drone_control_helmet",	--May be reused in future heists for other loot
 		},
 		BAGGED_IDS = {
@@ -283,6 +285,9 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			chill_combat = { -- Ammo shelves
 				[100751] = true,
 				[101242] = true,
+			},
+			short2_stage1 = {	-- Keycard
+				[104102] = true,
 			},
 		},
 	}

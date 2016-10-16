@@ -345,17 +345,15 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 	local MissionAssetsManager_unlock_asset_orig = MissionAssetsManager.unlock_asset
 	local MissionAssetsManager_sync_unlock_asset_orig = MissionAssetsManager.sync_unlock_asset
 	local MissionAssetsManager_get_unlocked_asset_ids = MissionAssetsManager.get_unlocked_asset_ids
---	local MissionAssetsManager_sync_save_orig = MissionAssetsManager.sync_save
---	local MissionAssetsManager_sync_load_orig = MissionAssetsManager.sync_load
---	local MissionAssetsManager_reload_locks = MissionAssetsManager.reload_locks
 	
 	function MissionAssetsManager:_setup_mission_assets(...)
 		MissionAssetsManager__setup_mission_assets_orig(self, ...)
 		if self:mission_has_assets() then
+			--self:create_buy_all_asset()
 			self:update_buy_all_asset_cost()
 			self:check_all_assets()
 		else
-			self._tweak_data.buy_all_assets = nil
+			--self._tweak_data.buy_all_assets = nil
 		end
 	end
 	
@@ -394,6 +392,23 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 	end
 
 	-- Custom functions
+	
+	function MissionAssetsManager:create_buy_all_asset()
+		local asset_id = "buy_all_assets"
+		local asset = self:_get_asset_by_id(asset_id)
+		local asset_tweak = self._tweak_data[asset_id]
+		if not asset and asset_tweak then 
+			asset = {
+				id = asset_id,
+				unlocked = false,
+				can_unlock = true,
+				show = asset_tweak.visible_if_locked,
+				no_mystery = asset_tweak.no_mystery,
+				local_only = asset_tweak.local_only
+			}
+			table.insert(self._global.assets, 1, asset)
+		end
+	end
 
 	function MissionAssetsManager:update_buy_all_asset_cost()
 		if self._tweak_data.buy_all_assets then
@@ -437,29 +452,35 @@ elseif RequiredScript == "lib/managers/missionassetsmanager" then
 			end
 			self._mission_has_assets = self._mission_has_assets or false
 		end
-		return self._mission_has_assets
+		return self._mission_has_assets and self:_get_asset_by_id("buy_all_assets")
 	end
 
 	function MissionAssetsManager:asset_is_buyable(asset)
 		return asset.id ~= "buy_all_assets" and asset.show and not asset.unlocked and ((Network:is_server() and asset.can_unlock) or (Network:is_client() and self:get_asset_can_unlock_by_id(asset.id)))
 	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/assetstweakdata" then
-	local _init_gage_assets_original = AssetsTweakData._init_gage_assets
-	function AssetsTweakData:_init_gage_assets(...)
-		_init_gage_assets_original(self, ...)
-		self.buy_all_assets = self.buy_all_assets or {} --clone(self.gage_assignment)
+	local _init_original = AssetsTweakData.init
+	function AssetsTweakData:init(...)
+		_init_original(self, ...)
+		
+		self.buy_all_assets = self.buy_all_assets or {}
 		self.buy_all_assets.name_id = "wolfhud_buy_all_assets"
 		self.buy_all_assets.unlock_desc_id = "wolfhud_buy_all_assets_desc"
 		self.buy_all_assets.texture = "guis/textures/pd2/feature_crimenet_heat"
 		self.buy_all_assets.money_lock = 0
 		self.buy_all_assets.visible_if_locked = true
 		self.buy_all_assets.no_mystery = true
-		self.buy_all_assets.local_only = true
-		self.buy_all_assets.stages = "all"
-		self.buy_all_assets.exclude_stages = {
-			"",
-			""
-		}
+		self.buy_all_assets.local_only = true	-- Trick sorting to put this asset first
+		self.buy_all_assets.stages = {}
+		
+		for id, data in pairs(self) do	-- Determine all levels that have unlockable assets
+			if data.visible_if_locked and data.money_lock and data.money_lock > 0 then
+				local stages = data.stages
+				for i, name in ipairs(stages) do
+					table.insert(self.buy_all_assets.stages, name)
+				end
+			end
+		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	if not WolfHUD:getSetting("spam_filter", "boolean") then return end
@@ -488,7 +509,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	}
 	
 	ChatManager._BLOCK_PATTERNS = {
-	  ".-%[NGBTO%].+",
+	  ".-%[NGBT(%w)+%].+",
 	  --NGBTO info blocker Should work since its mass spam.
 	  "[%d:]+%d:%d%d.-<DIV>.+"
 	  --Blocks anything, that starts with numbers and ':' and then has a divider (Might block other mods, not only Poco...)

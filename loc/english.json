@@ -85,6 +85,7 @@
 	"wolfhud_enemy_ceiling_turret" : "TURRET",
 	"wolfhud_enemy_sentry_gun" : "SENTRY GUN",
 	"wolfhud_enemy_mobster_boss" : "The Comissar",
+	"wolfhud_enemy_chavez_boss" : "Chavez",
 	"wolfhud_enemy_biker_boss" : "Biker Boss",
 	"wolfhud_enemy_bank_manager" : "Bank Manager",
 	"wolfhud_enemy_inside_man" : "Inside Man",

@@ -165,6 +165,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		sniper = 					{ type_id = "sniper",		category = "enemies",	long_name = "wolfhud_enemy_sniper" 					},
 		medic = 					{ type_id = "medic",		category = "enemies",	long_name = "wolfhud_enemy_medic" 					},
 		mobster_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_mobster_boss" 			},
+		chavez_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_chavez_boss" 			},
 		biker_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_biker_boss" 				},
 		hector_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_hector_boss" 			},
 		hector_boss_no_armor = 		{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_hector_boss_no_armor" 	},
@@ -268,10 +269,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		weapon =					"weapon",
 		weapon_glock =				"weapon",
 		weapon_scar =				"weapon",
+		toothbrush = 				"toothbrush",
 	}
 	
 	HUDListManager.POTENTIAL_LOOT_TYPES = {
 		crate = 					"crate",
+		xmas_present = 				"xmas_present",
 	}
 	
 	HUDListManager.LOOT_TYPES_CONDITIONS = {
@@ -2510,31 +2513,33 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		
 		armor =			{ text = "wolfhud_hudlist_loot_armor", 		priority = 1 }, 
 		artifact =		{ text = "hud_carry_artifact", 				priority = 1 },
-		bike = 			{ text = "hud_carry_bike_part", 			priority = 1 },
-		bomb =			{ text = "wolfhud_hudlist_loot_bomb", 		priority = 1 },	
+		bike = 			{ text = "hud_carry_bike_part", 			priority = 1 },	-- Biker Heist
+		bomb =			{ text = "wolfhud_hudlist_loot_bomb", 		priority = 1 },	-- Bomb Forest & Dockyard, Murky Station EMP
 		coke =			{ text = "hud_carry_coke", 					priority = 1 },
-		dentist =		{ text = "???", no_localize = true, 		priority = 1 },
-		diamond =		{ text = "wolfhud_hudlist_loot_diamond", 	priority = 1 },
-		drone_ctrl = 	{ text = "hud_carry_helmet", 				priority = 1 },
-		evidence =		{ text = "wolfhud_hudlist_loot_evidence", 	priority = 1 },
-		goat =			{ text = "hud_carry_goat", 					priority = 1 },
+		dentist =		{ text = "???", no_localize = true, 		priority = 1 },	-- Golden Grin
+		diamond =		{ text = "wolfhud_hudlist_loot_diamond", 	priority = 1 },	-- The Diamond
+		drone_ctrl = 	{ text = "hud_carry_helmet", 				priority = 1 },	-- Biker Heist
+		evidence =		{ text = "wolfhud_hudlist_loot_evidence", 	priority = 1 },	-- Hoxton revenge
+		goat =			{ text = "hud_carry_goat", 					priority = 1 },	-- Goat Simulator
 		gold =			{ text = "hud_carry_gold", 					priority = 1 },
 		jewelry =		{ text = "hud_carry_diamonds", 				priority = 1 },
 		meth =			{ text = "hud_carry_meth", 					priority = 1 },
 		money =			{ text = "hud_carry_money", 				priority = 1 },
 		painting =		{ text = "hud_carry_painting", 				priority = 1 },
-		pig =			{ text = "hud_carry_pig", 					priority = 1 },
-		present =		{ text = "hud_carry_present", 				priority = 1 },
+		pig =			{ text = "hud_carry_pig", 					priority = 1 },	-- Slaugtherhouse
+		present =		{ text = "hud_carry_present", 				priority = 1 },	-- Santa's Workshop
 		prototype =		{ text = "hud_carry_prototype", 			priority = 1 },
-		safe =			{ text = "hud_carry_safe", 					priority = 1 },
+		safe =			{ text = "hud_carry_safe", 					priority = 1 },	-- Aftershock
 		server =		{ text = "hud_carry_circuit", 				priority = 1 },
-		shell =			{ text = "hud_carry_ammo", 					priority = 1 },
-		toast =			{ text = "wolfhud_hudlist_loot_toast", 		priority = 1 },
-		turret =		{ text = "hud_carry_turret", 				priority = 1 },
-		warhead =		{ text = "hud_carry_warhead", 				priority = 1 },
+		shell =			{ text = "hud_carry_ammo", 					priority = 1 },	-- Transport: Train
+		toast =			{ text = "wolfhud_hudlist_loot_toast", 		priority = 1 },	-- White Xmas
+		turret =		{ text = "hud_carry_turret", 				priority = 1 },	-- Transport: Train
+		warhead =		{ text = "hud_carry_warhead", 				priority = 1 },	-- Meltdown
 		weapon =		{ text = "wolfhud_hudlist_loot_weapon", 	priority = 1 },
-		body = 			{ text = "hud_carry_person", 				priority = 1 },
-		crate = 		{ text = "wolfhud_hudlist_loot_crate", 		priority = 2, no_separate = true }
+		toothbrush = 	{ text = "hud_carry_giant_toothbrush", 		priority = 1 },	-- Panic Room
+		body = 			{ text = "hud_carry_person", 				priority = 1 },	-- Boiling point
+		crate = 		{ text = "wolfhud_hudlist_loot_crate", 		priority = 2, no_separate = true },
+		xmas_present = 	{ text = "hud_carry_present", 				priority = 2, no_separate = true },	-- White Xmas
 	}
 	function HUDList.LootItem:init(parent, name, id, members)
 		local loot_data = HUDList.LootItem.MAP[id]

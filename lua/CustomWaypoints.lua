@@ -4,6 +4,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 	HUDManager.CUSTOM_WAYPOINTS = {
 		IGNORE_TIMER = {
 			[145557] = true,
+			[145676] = true,
 		},
 	}
 	
