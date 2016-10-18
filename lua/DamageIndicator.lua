@@ -112,5 +112,5 @@ elseif string.lower(RequiredScript) == "lib/units/vehicles/vehicledamage" then
 			managers.hud:on_hit_direction(position_vector, dmg_type)
 		end
 	end
-]]
+--]]
 end

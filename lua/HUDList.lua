@@ -205,13 +205,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		drk_pku_blow_torch = 				"blowtorch",
 		hold_born_receive_item_blow_torch = "blowtorch",
 		thermite = 							"thermite",
-		gasoline = 							"thermite",
 		gasoline_engine = 					"thermite",
 		gen_pku_thermite = 					"thermite",
 		gen_pku_thermite_paste = 			"thermite",
 		gen_int_thermite_rig = 				"thermite",
 		hold_take_gas_can = 				"thermite",
 		gen_pku_thermite_paste_z_axis = 	"thermite",
+		c4_bag = 							"c4",
 		money_wrap_single_bundle = 			"small_loot",
 		money_wrap_single_bundle_active = 	"small_loot",
 		money_wrap_single_bundle_dyn = 		"small_loot",
@@ -2465,6 +2465,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		meth_ingredients =			{ waypoints  = { 192, 32, 32, 32 }, priority = 2 },
 		blowtorch = 				{ hudpickups = { 96, 192, 32, 32 }, priority = 1 },
 		thermite = 					{ hudpickups = { 64, 64, 32, 32 }, 	priority = 1 },
+		c4 = 						{ hudicons	 = { 36, 242, 32, 32 }, priority = 1 },
 		secret_item =				{ waypoints  = { 96, 64, 32, 32 }, 	priority = 4 },
 	}
 	

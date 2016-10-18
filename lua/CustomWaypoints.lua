@@ -543,6 +543,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 				gen_pku_thermite_paste = 			{ std_icon = "equipment_thermite"},
 				hold_take_gas_can = 				{ std_icon = "equipment_thermite"},
 				gen_pku_thermite_paste_z_axis = 	{ std_icon = "equipment_thermite"},
+				c4_consume = 						{ std_icon = "equipment_c4", 		x_ray = true, offset = Vector3(0, 0, 0) }
+				--gasoline = 							{ std_icon = "equipment_thermite", 	x_ray = true, offset = Vector3(0, 0, 0) }
 			}
 			local icon_data = icon_table[data.interact_id]
 			if icon_data then
@@ -550,7 +552,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 					unit = data.unit,
 					offset = icon_data.offset or Vector3(0, 0, 15),
 					hide_on_uninteractable = true,
-					visible_through_walls = false, 	-- Keycards and chemicals seem to not work with raycasts...  :/
+					visible_through_walls = icon_data.x_ray or false,
 					scale = 1,
 					alpha = 0.1,
 					fade_angle = { start_angle = 35, end_angle = 25, final_scale = 8 },
