@@ -185,7 +185,9 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/assetstweakdata" then
 			if data.visible_if_locked and data.money_lock and data.money_lock > 0 then
 				local stages = data.stages
 				for i, name in ipairs(stages) do
-					table.insert(self.wolfhud_buy_all_assets.stages, name)
+					if not table.contains(self.wolfhud_buy_all_assets.stages, name) then
+						table.insert(self.wolfhud_buy_all_assets.stages, name)
+					end
 				end
 			end
 		end

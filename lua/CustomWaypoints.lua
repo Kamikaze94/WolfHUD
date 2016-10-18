@@ -23,6 +23,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 					managers.gameinfo:register_listener(equip .. "_waypoint_listener", equip, "set_active", callback(self, self, "custom_waypoint_bag_clbk", equip))
 					managers.gameinfo:register_listener(equip .. "_waypoint_listener", equip, "set_amount", callback(self, self, "custom_waypoint_bag_clbk", equip))
 					managers.gameinfo:register_listener(equip .. "_waypoint_listener", equip, "set_amount_offset", callback(self, self, "custom_waypoint_bag_clbk", equip))
+					managers.gameinfo:register_listener(equip .. "_waypoint_listener", equip, "set_owner", callback(self, self, "custom_waypoint_bag_clbk", equip))
 				end
 			end
 			
@@ -59,6 +60,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 			if WolfHUD:getSetting("waypoints_show_loot", "boolean") then
 				managers.gameinfo:register_listener("loot_waypoint_listener", "loot", "add", callback(self, self, "custom_waypoint_loot_clbk"))
 				managers.gameinfo:register_listener("loot_waypoint_listener", "loot", "remove", callback(self, self, "custom_waypoint_loot_clbk"))
+				managers.gameinfo:register_listener("loot_waypoint_listener", "loot", "interact", callback(self, self, "custom_waypoint_loot_clbk"))
 			end
 			
 			if WolfHUD:getSetting("waypoints_show_pager", "boolean") then
@@ -120,17 +122,28 @@ if RequiredScript == "lib/managers/hudmanager" then
 					amount = string.format("%.0f%%", amount * 100)
 				end
 				self:add_custom_equip_waypoint(id, data.unit, data.position, icon_map[type].texture, icon_map[type].texture_rect, tostring(amount), Color.white, { max = 32.5 }, { max = 1000 }, {start_angle = 32.5, end_angle = 25, final_scale = 10}, Vector3(0, 0, 15))
+				
+				if data.owner then
+					self:custom_waypoint_bag_clbk(type, "set_owner", key, data)
+				end
 			else
 				managers.waypoints:remove_waypoint(id)
 			end
 		elseif event == "set_amount" or event == "set_amount_offset" then
-			local amount = (data.amount or 0) + (data.amount_offset or 0)
-			if type == "ammo_bag" then
-				amount = string.format("%.0f%%", amount * 100)
-			else
-				amount = math.round(amount)
+			if data.amount or data.amount_offset then
+				local amount = (data.amount or 0) + (data.amount_offset or 0)
+				if type == "ammo_bag" then
+					amount = string.format("%.0f%%", amount * 100)
+				else
+					amount = math.round(amount)
+				end
+				managers.waypoints:set_waypoint_label(id, "label", tostring(amount))
 			end
-			managers.waypoints:set_waypoint_label(id, "label", tostring(amount))
+		elseif event == "set_owner" then
+			if data.owner then
+				local peer_color = data.owner > 0 and tweak_data.chat_colors[data.owner]:with_alpha(1) or Color.white
+				managers.waypoints:set_waypoint_component_setting(id, "icon", "color", peer_color)
+			end
 		end
 	end
 
@@ -400,7 +413,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 			end
 		elseif event == "set_owner" then
 			if data.owner then
-				local peer_color = tweak_data.chat_colors[data.owner or 5]
+				local peer_color = data.owner > 0 and tweak_data.chat_colors[data.owner or 5]
 				managers.waypoints:set_waypoint_setting(id, "color", peer_color)
 			end
 		end
@@ -448,6 +461,10 @@ if RequiredScript == "lib/managers/hudmanager" then
 					managers.waypoints:add_waypoint(id, "CustomWaypoint", params)
 				end
 			end
+		elseif event == "interact" then
+			local count = data.count or 1
+			managers.waypoints:set_waypoint_label(id, "amount", string.format("%dx", count))
+			managers.waypoints:set_waypoint_component_setting(id, "amount", "show", (count > 1))
 		elseif event == "remove" then
 			managers.waypoints:remove_waypoint(id)
 		end

@@ -91,14 +91,15 @@ if RequiredScript == "lib/setups/setup" then
 	local init_managers_original = Setup.init_managers
 
 	function Setup:init_managers(managers, ...)
-		managers.waypoints = managers.waypoints or WaypointManager:new()
 		init_managers_original(self, managers, ...)
+		managers.waypoints = managers.waypoints or WaypointManager:new()
 	end
 
 
 	WaypointManager = WaypointManager or class()
 	
 	function WaypointManager:init()
+		self._workspace = managers.gui_data and managers.gui_data:create_fullscreen_workspace()
 		self._waypoints = {}
 		self._pending_waypoints = {}
 	end
@@ -113,9 +114,8 @@ if RequiredScript == "lib/setups/setup" then
 	
 	function WaypointManager:update(t, dt)
 		local cam = managers.viewport:get_current_camera()
-		local workspace = managers.hud:get_fullscreen_workspace()
 		
-		if self._hud_panel and cam then
+		if alive(self._hud_panel) and alive(self._workspace) and cam then
 			local cam_forward = Vector3()
 
 			mrotation.y(managers.viewport:get_current_camera_rotation(), cam_forward)
@@ -125,7 +125,7 @@ if RequiredScript == "lib/setups/setup" then
 					wp:_clear()
 					self._waypoints[id] = nil
 				else
-					wp:update(t, dt, cam, cam_forward, self._hud_panel, workspace)
+					wp:update(t, dt, cam, cam_forward, self._hud_panel, self._workspace)
 				end
 				
 			end
@@ -537,7 +537,7 @@ if RequiredScript == "lib/setups/setup" then
 			mvector3.add(world_pos, offset)
 			mvector3.set(screen_pos, workspace:world_to_screen(cam, world_pos))
 			mvector3.set(dir, world_pos)
-			mvector3.subtract(dir, managers.viewport:get_current_camera_position())
+			mvector3.subtract(dir, cam:position())
 			mvector3.set(dir_normalized, dir)
 			mvector3.normalize(dir_normalized)
 			dot = mvector3.dot(cam_fwd, dir_normalized)
@@ -956,10 +956,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDManager:update(t, dt, ...)
 		managers.waypoints:update(t, dt)
 		return update_original(self, t, dt, ...)
-	end
-	
-	function HUDManager:get_fullscreen_workspace()
-		return self._fullscreen_workspace
 	end
 
 end

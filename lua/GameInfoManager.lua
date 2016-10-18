@@ -199,6 +199,11 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			[105025] = 10, [105026] = 9, [104515] = 8, [104518] = 7, [104517] = 6, [104522] = 5, [104521] = 4, [104520] = 3, [104519] = 2, [104523] = 1, --Slaughterhouse alt 1.
 			[105027] = 10, [105028] = 9, [104525] = 8, [104524] = 7, [104490] = 6, [100779] = 5, [100778] = 4, [100777] = 3, [100773] = 2, [100771] = 1, --Slaughterhouse alt 2.
 		},
+		CONDITIONAL_COMPOSITE_LOOT_UNITS = {
+			disassemble_turret = function(unit)
+				return unit:body("body_01") and unit:body("body_01"):enabled() and 3 or unit:body("body_02") and unit:body("body_02"):enabled() and 2 or unit:body("body_03") and unit:body("body_03"):enabled() and 1 or 0
+			end,
+		},
 		CONDITIONAL_IGNORE_IDS = {
 			ff3_vault = function(wall_id)
 				if managers.job:current_level_id() == "framing_frame_3" then
@@ -834,7 +839,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		local type = GameInfoManager._EQUIPMENT.INTERACTION_ID_TO_TYPE[data.interact_id]
 		
 		if self._deployables[type][key] then
- 			local active = event == "add"
+ 			local active = event == "add" or event == "interact"
 			local offset = GameInfoManager._EQUIPMENT.AMOUNT_OFFSETS[data.unit:editor_id()] or GameInfoManager._EQUIPMENT.AMOUNT_OFFSETS[data.interact_id]
 			
 			self:_bag_deployable_event("set_active", key, { active = active }, type)
@@ -849,18 +854,32 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		if event == "add" then
  			if not self._loot[key] then
  				local composite_lookup = GameInfoManager._INTERACTIONS.COMPOSITE_LOOT_UNITS
-				local count = composite_lookup[data.editor_id] or composite_lookup[data.interact_id] or 1
+				local conditional_lookup = GameInfoManager._INTERACTIONS.CONDITIONAL_COMPOSITE_LOOT_UNITS
+				local count_clbk = conditional_lookup[data.editor_id] or conditional_lookup[data.interact_id]
+				local count = count_clbk and count_clbk(data.unit) or composite_lookup[data.editor_id] or composite_lookup[data.interact_id] or 1
 				local bagged = GameInfoManager._INTERACTIONS.BAGGED_IDS[data.interact_id] and true or false
 
 				self._loot[key] = { unit = data.unit, carry_id = data.carry_id, count = count, bagged = bagged }
  				self:_listener_callback("loot", "add", key, self._loot[key])
 				self:_loot_count_event("change", data.carry_id, bagged, count, self._loot[key])
  			end
- 		elseif event == "remove" then
- 			if self._loot[key] then
+ 		elseif self._loot[key] then
+ 			if event == "remove"then
  				self:_listener_callback("loot", "remove", key, self._loot[key])
 				self:_loot_count_event("change", data.carry_id, self._loot[key].bagged, -self._loot[key].count, self._loot[key])
  				self._loot[key] = nil
+			elseif event == "interact" then
+ 				local composite_lookup = GameInfoManager._INTERACTIONS.COMPOSITE_LOOT_UNITS
+				local conditional_lookup = GameInfoManager._INTERACTIONS.CONDITIONAL_COMPOSITE_LOOT_UNITS
+				local count_clbk = conditional_lookup[data.editor_id] or conditional_lookup[data.interact_id]
+				local count = count_clbk and count_clbk(data.unit) or composite_lookup[data.editor_id] or composite_lookup[data.interact_id] or 1
+				local bagged = GameInfoManager._INTERACTIONS.BAGGED_IDS[data.interact_id] and true or false
+				local change = count - self._loot[key].count
+				
+				self._loot[key].count = count
+				self._loot[key].bagged = bagged
+ 				self:_listener_callback("loot", "interact", key, self._loot[key])
+				self:_loot_count_event("change", data.carry_id, bagged, change, self._loot[key])
  			end
  		end
  	end
@@ -1019,6 +1038,9 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				--	self._deployables[type][aggregate_key].owner = owner
 				--	self:_listener_callback(type, "set_owner", aggregate_key, self._deployables[type][aggregate_key])
 				--end
+			elseif event == "set_upgrades" then
+				self._deployables[type][key].upgrades = data.upgrades
+				self:_listener_callback(type, "set_upgrades", key, self._deployables[type][key])
 			elseif event == "set_max_amount" then
 				self._deployables[type][key].max_amount = data.max_amount
 				self:_listener_callback(type, "set_max_amount", key, self._deployables[type][key])
@@ -1835,7 +1857,7 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 	local add_unit_original = ObjectInteractionManager.add_unit
 	local remove_unit_original = ObjectInteractionManager.remove_unit
 	local interact_original = ObjectInteractionManager.interact
-	--local interupt_action_interact_original = ObjectInteractionManager.interupt_action_interact
+	local end_action_interact_original = ObjectInteractionManager.end_action_interact
 	
 	function ObjectInteractionManager:init(...)
 		init_original(self, ...)
@@ -1858,21 +1880,26 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 	end
 	
 	function ObjectInteractionManager:interact(...)
-		if alive(self._active_unit) and self._active_unit:interaction().tweak_data == "corpse_alarm_pager" then
-			managers.gameinfo:event("pager", "set_answered", tostring(self._active_unit:key()))
+		if alive(self._active_unit) and self._active_unit:interaction() then
+			if self._active_unit:interaction().tweak_data == "corpse_alarm_pager" then
+				managers.gameinfo:event("pager", "set_answered", tostring(self._active_unit:key()))
+			end
 		end
 		
 		return interact_original(self, ...)
 	end
---[[	
-	function ObjectInteractionManager:interupt_action_interact(...)
-		if alive(self._active_unit) and self._active_unit:interaction() and self._active_unit:interaction().tweak_data == "corpse_alarm_pager" then
-			managers.gameinfo:event("pager", "remove", tostring(self._active_unit:key()))
+	
+	function ObjectInteractionManager:end_action_interact(...)
+		local value = end_action_interact_original(self, ...)
+		
+		if alive(self._active_unit) and self._active_unit:interaction() then
+			local id = self._active_unit:interaction().tweak_data
+			local editor_id = self._active_unit:editor_id()
+			managers.gameinfo:event("interactive_unit", "interact", tostring(self._active_unit:key()), { unit = self._active_unit, editor_id = editor_id, interact_id = id })
 		end
 		
-		return interupt_action_interact_original(self, ...)
+		return value
 	end
-]]
 	
 	function ObjectInteractionManager:add_unit_clbk(unit)
 		self._queued_units[tostring(unit:key())] = unit
@@ -2108,9 +2135,10 @@ if string.lower(RequiredScript) == "lib/units/equipment/ammo_bag/ammobagbase" th
 		managers.gameinfo:event("ammo_bag", "set_max_amount", key, { max_amount = self._max_ammo_amount })
 	end
 	
-	function AmmoBagBase:sync_setup(ammo_upgrade_lvl, peer_id, ...)
+	function AmmoBagBase:sync_setup(ammo_upgrade_lvl, peer_id, bullet_storm_level, ...)
 		managers.gameinfo:event("ammo_bag", "set_owner", tostring(self._unit:key()), { owner = peer_id })
-		return sync_setup_original(self, ammo_upgrade_lvl, peer_id, ...)
+		managers.gameinfo:event("ammo_bag", "set_upgrades", tostring(self._unit:key()), { upgrades = {bullet_storm_level = bullet_storm_level} })
+		return sync_setup_original(self, ammo_upgrade_lvl, peer_id, bullet_storm_level, ...)
 	end
 	
 	function AmmoBagBase:_set_visual_stage(...)
