@@ -2537,7 +2537,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		turret =		{ text = "hud_carry_turret", 				priority = 1 },	-- Transport: Train
 		warhead =		{ text = "hud_carry_warhead", 				priority = 1 },	-- Meltdown
 		weapon =		{ text = "wolfhud_hudlist_loot_weapon", 	priority = 1 },
-		toothbrush = 	{ text = "hud_carry_giant_toothbrush", 		priority = 1 },	-- Panic Room
+		toothbrush = 	{ text = "wolfhud_hudlist_loot_toothbrush", priority = 1 },	-- Panic Room
 		body = 			{ text = "hud_carry_person", 				priority = 1 },	-- Boiling point
 		crate = 		{ text = "wolfhud_hudlist_loot_crate", 		priority = 2, no_separate = true },
 		xmas_present = 	{ text = "hud_carry_present", 				priority = 2, no_separate = true },	-- White Xmas
