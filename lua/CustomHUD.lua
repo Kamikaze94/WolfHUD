@@ -68,7 +68,7 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 				w = radial_health_panel:w() * 0.37,--53,
 				h = radial_health_panel:h() * 0.37,--53,
 				layer = 2, 
-				visible = WolfHUD:getSetting("PLAYER_SHOWSTAMINA", "boolean")
+				visible = WolfHUD:getSetting("PLAYER_STAMINA", "boolean")
 			})
 			self._stamina_bar:set_color(Color(1, 1, 0, 0))
 			self._stamina_bar:set_center(radial_health_panel:child("radial_health"):center())

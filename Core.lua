@@ -814,9 +814,8 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	end
 	
 	MenuCallbackHandler.WolfHUD_TabStats_Focus = function(node, focus)
-		log("TabStats Focus Callback here.")
 		if managers.menu:active_menu().name ~= "menu_main" then
-			if managers.hud then
+			if managers.hud and managers.hud._hud_statsscreen then
 				if focus then
 					managers.hud:show_stats_screen()
 				else
