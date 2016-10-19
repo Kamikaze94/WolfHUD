@@ -2196,7 +2196,7 @@ if string.lower(RequiredScript) == "lib/units/equipment/ammo_bag/ammobagbase" th
 	end
 	
 	function AmmoBagBase:sync_setup(ammo_upgrade_lvl, peer_id, bullet_storm_level, ...)
-		local key = tostring(unit:key())
+		local key = tostring(self._unit:key())
 		managers.gameinfo:event("ammo_bag", "set_owner", key, { owner = peer_id })
 		managers.gameinfo:event("ammo_bag", "set_upgrades", key, { upgrades = { bullet_storm_level = bullet_storm_level } })
 		return sync_setup_original(self, ammo_upgrade_lvl, peer_id, bullet_storm_level, ...)
