@@ -25,6 +25,14 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "waypoints_show_first_aid_kit",
+			"title" : "wolfhud_waypoints_show_first_aid_kit_title",
+			"description" : "wolfhud_waypoints_show_first_aid_kit_desc",
+			"callback" : "clbk_change_setting",
+			"value" : "waypoints_show_first_aid_kit",
+		},
+		{
+			"type" : "toggle",
 			"id" : "waypoints_show_body_bag",
 			"title" : "wolfhud_waypoints_show_body_bag_title",
 			"description" : "wolfhud_waypoints_show_body_bag_desc",

@@ -533,6 +533,8 @@
 	"wolfhud_waypoints_show_ammo_bag_desc" : "Показать вэйпоинты для сумок с боеприпасами с остатком в процентах.",
 	"wolfhud_waypoints_show_doc_bag_title" : "Показать медицинские сумки",
 	"wolfhud_waypoints_show_doc_bag_desc" : "Показать вэйпоинты медицинских сумок с кол-вом оставшихся использований.",
+	"wolfhud_waypoints_show_first_aid_kit_title" : "Show First Aid Kits",
+	"wolfhud_waypoints_show_first_aid_kit_desc" : "Show Waypoints for First Aid Kits, showing its skill effects.",
 	"wolfhud_waypoints_show_body_bag_title" : "Показать кейсы с мешками для трупов",
 	"wolfhud_waypoints_show_body_bag_desc" : "Показать вэйпоинты кейсов с мешками для трупов с кол-вом оставшихся мешков.",
 	"wolfhud_waypoints_show_grenade_crate_title" : "Показать кейсы с гранатами",

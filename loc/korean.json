@@ -531,6 +531,8 @@
 	"wolfhud_waypoints_show_ammo_bag_desc" : "탄약 가방 웨이 포인트를 표시합니다.\n(얼마나 남았는지 퍼센트로 표시됩니다.)",
 	"wolfhud_waypoints_show_doc_bag_title" : "의료 가방 표시",
 	"wolfhud_waypoints_show_doc_bag_desc" : "의료 가방 웨이 포인트를 표시합니다.\n(얼마나 남았는지 숫자로 표시됩니다.)",
+	"wolfhud_waypoints_show_first_aid_kit_title" : "Show First Aid Kits",
+	"wolfhud_waypoints_show_first_aid_kit_desc" : "Show Waypoints for First Aid Kits, showing its skill effects.",
 	"wolfhud_waypoints_show_body_bag_title" : "시체 가방 표시",
 	"wolfhud_waypoints_show_body_bag_desc" : "시체 가방 웨이 포인트를 표시합니다.\n(얼마나 남았는지 숫자로 표시됩니다.)",
 	"wolfhud_waypoints_show_grenade_crate_title" : "수류탄 상자 표시",

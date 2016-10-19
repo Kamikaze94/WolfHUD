@@ -171,6 +171,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			firstaid_box =						"_deployable_interaction_handler",
 			ammo_bag =							"_deployable_interaction_handler",
 			doctor_bag =						"_deployable_interaction_handler",
+			first_aid_kit = 					"_deployable_interaction_handler",
 			bodybags_bag =						"_deployable_interaction_handler",
 			grenade_crate =						"_deployable_interaction_handler",
 		},
@@ -312,6 +313,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			firstaid_box =						"doc_bag",
 			ammo_bag =							"ammo_bag",
 			doctor_bag =						"doc_bag",
+			first_aid_kit = 					"first_aid_kit",
 			bodybags_bag =						"body_bag",
 			grenade_crate =					"grenade_crate",
 		},
@@ -458,6 +460,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		self._deployables = {
 			ammo_bag = {},
 			doc_bag = {},
+			first_aid_kit = {},
 			body_bag = {},
 			grenade_crate = {},
 		}
@@ -947,6 +950,10 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	
 	function GameInfoManager:_doc_bag_event(event, key, data)
 		self:_bag_deployable_event(event, key, data, "doc_bag")
+	end
+	
+	function GameInfoManager:_first_aid_kit_event(event, key, data)
+		self:_bag_deployable_event(event, key, data, "first_aid_kit")
 	end
 	
 	function GameInfoManager:_ammo_bag_event(event, key, data)
@@ -2076,6 +2083,7 @@ if string.lower(RequiredScript) == "lib/units/equipment/doctor_bag/doctorbagbase
 	local init_original = DoctorBagBase.init
 	local sync_setup_original = DoctorBagBase.sync_setup
 	local _set_visual_stage_original = DoctorBagBase._set_visual_stage
+	local _get_upgrade_levels_original = DoctorBagBase._get_upgrade_levels
 	local destroy_original = DoctorBagBase.destroy
 	
 	function DoctorBagBase.spawn(pos, rot, amount_upgrade_lvl, peer_id, ...)
@@ -2105,8 +2113,57 @@ if string.lower(RequiredScript) == "lib/units/equipment/doctor_bag/doctorbagbase
 		return _set_visual_stage_original(self, ...)
 	end
 	
+	function DoctorBagBase:_get_upgrade_levels(...)
+		local upgrade_values = { _get_upgrade_levels_original(self, ...) }
+		managers.gameinfo:event("doc_bag", "set_upgrades", tostring(self._unit:key()), { upgrades = { damage_reduction = upgrade_values[2] } })
+		return unpack(upgrade_values)
+	end
+	
 	function DoctorBagBase:destroy(...)
 		managers.gameinfo:event("doc_bag", "destroy", tostring(self._unit:key()))
+		return destroy_original(self, ...)
+	end
+	
+end
+
+if string.lower(RequiredScript) == "lib/units/equipment/first_aid_kit/firstaidkitbase" then
+	
+	local spawn_original = FirstAidKitBase.spawn
+	local init_original = FirstAidKitBase.init
+	local sync_setup_original = FirstAidKitBase.sync_setup
+	local _get_upgrade_levels_original = FirstAidKitBase._get_upgrade_levels
+	local destroy_original = FirstAidKitBase.destroy
+	
+	function FirstAidKitBase.spawn(pos, rot, bits, peer_id, ...)
+		local unit = spawn_original(pos, rot, bits, peer_id, ...)
+		if alive(unit) then
+			local key = tostring(unit:key())
+			managers.gameinfo:event("first_aid_kit", "create", key, { unit = unit })
+			managers.gameinfo:event("first_aid_kit", "set_owner", key, { owner = peer_id })
+		end
+		return unit
+	end
+	
+	function FirstAidKitBase:init(unit, ...)
+		local key = tostring(unit:key())
+		managers.gameinfo:event("first_aid_kit", "create", key, { unit = unit })
+		init_original(self, unit, ...)
+		managers.gameinfo:event("first_aid_kit", "set_max_amount", key, { max_amount = 1 })
+	end
+	
+	function FirstAidKitBase:sync_setup(bits, peer_id, ...)
+		managers.gameinfo:event("first_aid_kit", "set_owner", tostring(self._unit:key()), { owner = peer_id })
+		return sync_setup_original(self, bits, peer_id, ...)
+	end
+	
+	function FirstAidKitBase:_get_upgrade_levels(...)
+		local upgrade_values = { _get_upgrade_levels_original(self, ...) }
+		managers.gameinfo:event("first_aid_kit", "set_upgrades", tostring(self._unit:key()), { upgrades = { damage_reduction = upgrade_values[1], auto_recovery = upgrade_values[2] } })
+		return unpack(upgrade_values)
+	end
+	
+	function FirstAidKitBase:destroy(...)
+		managers.gameinfo:event("first_aid_kit", "destroy", tostring(self._unit:key()))
 		return destroy_original(self, ...)
 	end
 	
@@ -2120,12 +2177,13 @@ if string.lower(RequiredScript) == "lib/units/equipment/ammo_bag/ammobagbase" th
 	local _set_visual_stage_original = AmmoBagBase._set_visual_stage
 	local destroy_original = AmmoBagBase.destroy
 	
-	function AmmoBagBase.spawn(pos, rot, ammo_upgrade_lvl, peer_id, ...)
-		local unit = spawn_original(pos, rot, ammo_upgrade_lvl, peer_id, ...)
+	function AmmoBagBase.spawn(pos, rot, ammo_upgrade_lvl, peer_id, bullet_storm_level, ...)
+		local unit = spawn_original(pos, rot, ammo_upgrade_lvl, peer_id, bullet_storm_level, ...)
 		if alive(unit) then
 			local key = tostring(unit:key())
 			managers.gameinfo:event("ammo_bag", "create", key, { unit = unit })
 			managers.gameinfo:event("ammo_bag", "set_owner", key, { owner = peer_id })
+			managers.gameinfo:event("ammo_bag", "set_upgrades", key, { upgrades = { bullet_storm = bullet_storm_level } })
 		end
 		return unit
 	end
@@ -2138,8 +2196,9 @@ if string.lower(RequiredScript) == "lib/units/equipment/ammo_bag/ammobagbase" th
 	end
 	
 	function AmmoBagBase:sync_setup(ammo_upgrade_lvl, peer_id, bullet_storm_level, ...)
-		managers.gameinfo:event("ammo_bag", "set_owner", tostring(self._unit:key()), { owner = peer_id })
-		managers.gameinfo:event("ammo_bag", "set_upgrades", tostring(self._unit:key()), { upgrades = {bullet_storm_level = bullet_storm_level} })
+		local key = tostring(unit:key())
+		managers.gameinfo:event("ammo_bag", "set_owner", key, { owner = peer_id })
+		managers.gameinfo:event("ammo_bag", "set_upgrades", key, { upgrades = { bullet_storm_level = bullet_storm_level } })
 		return sync_setup_original(self, ammo_upgrade_lvl, peer_id, bullet_storm_level, ...)
 	end
 	

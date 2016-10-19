@@ -539,6 +539,8 @@
 	"wolfhud_waypoints_show_ammo_bag_desc" : "Zeige einen Wegpunkt für Munitionstaschen, der dir verrät wieviel Munition übrig ist.",
 	"wolfhud_waypoints_show_doc_bag_title" : "Zeige Arzttaschen",
 	"wolfhud_waypoints_show_doc_bag_desc" : "Zeige einen Wegpunkt für Arzttaschen, der dir verrät wieviele Ladungen übrig sind.",
+	"wolfhud_waypoints_show_first_aid_kit_title" : "Zeige Erste Hilfe Kits",
+	"wolfhud_waypoints_show_first_aid_kit_desc" : "Zeige einen Wegpunkt für Erste Hilfe Kits, der dir ihre geskillten Effekte verrät.",
 	"wolfhud_waypoints_show_body_bag_title" : "Zeige Leichensack-Taschen",
 	"wolfhud_waypoints_show_body_bag_desc" : "Zeige einen Wegpunkt für Leichensack-Taschen, der dir verrät wieviele Leichensäcke übrig sind.",
 	"wolfhud_waypoints_show_grenade_crate_title" : "Zeige Granatenkoffer",

@@ -533,6 +533,8 @@
 	"wolfhud_waypoints_show_ammo_bag_desc" : "Show Waypoints for Ammo bags, telling you the Percentage left.",
 	"wolfhud_waypoints_show_doc_bag_title" : "Show Doctor Bags",
 	"wolfhud_waypoints_show_doc_bag_desc" : "Show Waypoints for Doctor Bags, stating the number of charges left.",
+	"wolfhud_waypoints_show_first_aid_kit_title" : "Show First Aid Kits",
+	"wolfhud_waypoints_show_first_aid_kit_desc" : "Show Waypoints for First Aid Kits, showing its skill effects.",
 	"wolfhud_waypoints_show_body_bag_title" : "Show Bodybag Case",
 	"wolfhud_waypoints_show_body_bag_desc" : "Show Waypoints for bodybag cases, telling you the amount of Bodybags left.",
 	"wolfhud_waypoints_show_grenade_crate_title" : "Show Grenade Case",

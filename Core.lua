@@ -122,6 +122,7 @@ if not _G.WolfHUD then
 		["lib/units/equipment/ammo_bag/ammobagbase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/bodybags_bag/bodybagsbagbase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/doctor_bag/doctorbagbase"] = { "DownCounter.lua", "GameInfoManager.lua" },
+		["lib/units/equipment/first_aid_kit/firstaidkitbase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/ecm_jammer/ecmjammerbase"] = { "GameInfoManager.lua", "EquipmentTweaks.lua" },
 		["lib/units/equipment/grenade_crate/grenadecratebase"] = { "GameInfoManager.lua" },
 		["lib/units/equipment/sentry_gun/sentrygunbase"] = { "GameInfoManager.lua", "KillCounter.lua" },
@@ -382,6 +383,7 @@ if not _G.WolfHUD then
 		  --CustomWaypoints	
 			waypoints_show_ammo_bag 				= true,
 			waypoints_show_doc_bag 					= true,
+			waypoints_show_first_aid_kit			= false,
 			waypoints_show_body_bag 				= true,
 			waypoints_show_grenade_crate 			= true,
 			waypoints_show_sentries 				= false,

@@ -2,9 +2,69 @@ if RequiredScript == "lib/managers/hudmanager" then
 	local init_original = HUDManager.init
 
 	HUDManager.CUSTOM_WAYPOINTS = {
-		IGNORE_TIMER = {
-			[145557] = true,
-			[145676] = true,
+		UPGRADE_COLORS = {
+			[0] = Color.white:with_alpha(0),
+			[1] = Color.white,
+			[2] = Color.yellow,
+			[3] = Color.red,
+			[4] = Color.black,
+		},
+		TIMER = {
+			ICON_MAP = {
+				drill = "pd2_drill",
+				hack = "pd2_computer",
+				saw = "wp_saw",
+				timer = "pd2_computer",
+				securitylock = "pd2_computer",
+				digital = "pd2_computer",
+			},
+			IGNORE = {
+				[145557] = true,
+				[145676] = true,
+			},
+		},
+		EQUIPMENT = {
+			ammo_bag 		= { texture = "guis/textures/pd2/skilltree/icons_atlas", texture_rect = { 1*64, 0, 64, 64 }, 						 offset = Vector3(0, 0, 15)  },
+			doc_bag 		= { texture = "guis/textures/pd2/skilltree/icons_atlas", texture_rect = { 2*64, 7*64, 64, 64 }, 					 offset = Vector3(0, 0, 25)  },
+			first_aid_kit 	= { texture = "guis/textures/pd2/skilltree/icons_atlas", texture_rect = { 2*64, 11*64, 64, 48 }, 					 offset = Vector3(0, 0, 20)  },
+			body_bag 		= { texture = "guis/textures/pd2/skilltree/icons_atlas", texture_rect = { 5*64, 11*64, 64, 64 }, 					 offset = Vector3(0, 0, 25)  },
+			grenade_crate 	= { texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_icon_types", texture_rect = { 1*48, 0, 48, 48 }, offset = Vector3(0, 0, 20)  },
+			UPGRADES = {
+				ammo_bag = {
+					bullet_storm 		= { texture = "guis/textures/pd2/skilltree_2/icons_atlas_2", texture_rect = {4 * 80, 5 * 80, 80, 80} },
+				},
+				doc_bag = {
+					damage_reduction 	= { texture = "guis/textures/pd2/skilltree_2/icons_atlas_2", texture_rect = {0 * 80, 10 * 80, 80, 80} },
+				},
+				first_aid_kit = {
+					damage_reduction 	= { texture = "guis/textures/pd2/skilltree_2/icons_atlas_2", texture_rect = {1 * 80, 11 * 80, 80, 80} },
+					auto_recovery 		= { texture = "guis/textures/pd2/skilltree_2/icons_atlas_2", texture_rect = {2 * 80, 11 * 80, 80, 80} },
+				},
+			},
+		},
+		SPECIAL_EQUIPMENT = {
+			ICON_MAP = {
+				gen_pku_crowbar =					{ std_icon = "wp_crowbar"},
+				pickup_keycard =					{ std_icon = "equipment_bank_manager_key", },
+				pickup_hotel_room_keycard =			{ std_icon = "equipment_bank_manager_key", },
+				--gage_assignment =					"equipment_money_bag",
+				pickup_boards =						{ std_icon = "wp_planks"},
+				stash_planks_pickup =				{ std_icon = "wp_planks"},
+				muriatic_acid =						{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {1 * 32, 1 * 32, 32, 32}, offset = Vector3(0, 0, 45) }, 
+				hydrogen_chloride =					{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {2 * 32, 1 * 32, 32, 32}, offset = Vector3(0, 0, 85) }, 
+				caustic_soda =						{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {3 * 32, 1 * 32, 32, 32}, offset = Vector3(0, 0, 50) }, 
+				gen_pku_blow_torch =				{ std_icon = "equipment_blow_torch"},
+				drk_pku_blow_torch = 				{ std_icon = "equipment_blow_torch"},
+				hold_born_receive_item_blow_torch = { std_icon = "equipment_blow_torch"},
+				thermite = 							{ std_icon = "equipment_thermite"},
+				gasoline_engine = 					{ std_icon = "equipment_thermite"},
+				gen_pku_thermite = 					{ std_icon = "equipment_thermite"},
+				gen_pku_thermite_paste = 			{ std_icon = "equipment_thermite"},
+				hold_take_gas_can = 				{ std_icon = "equipment_thermite"},
+				gen_pku_thermite_paste_z_axis = 	{ std_icon = "equipment_thermite"},
+				c4_consume = 						{ std_icon = "equipment_c4", 		x_ray = true, offset = Vector3(0, 0, 0) }
+				--gasoline = 							{ std_icon = "equipment_thermite", 	x_ray = true, offset = Vector3(0, 0, 0) }
+			},
 		},
 	}
 	
@@ -17,6 +77,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				["doc_bag"] 		= WolfHUD:getSetting("waypoints_show_doc_bag", "boolean"),
 				["body_bag"] 		= WolfHUD:getSetting("waypoints_show_body_bag", "boolean"),
 				["grenade_crate"] 	= WolfHUD:getSetting("waypoints_show_grenade_crate", "boolean"),
+				["first_aid_kit"] 	= WolfHUD:getSetting("waypoints_show_first_aid_kit", "boolean"),
 			}
 			for equip, enabled in pairs(bag_equip_settings) do
 				if enabled then
@@ -24,6 +85,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 					managers.gameinfo:register_listener(equip .. "_waypoint_listener", equip, "set_amount", callback(self, self, "custom_waypoint_bag_clbk", equip))
 					managers.gameinfo:register_listener(equip .. "_waypoint_listener", equip, "set_amount_offset", callback(self, self, "custom_waypoint_bag_clbk", equip))
 					managers.gameinfo:register_listener(equip .. "_waypoint_listener", equip, "set_owner", callback(self, self, "custom_waypoint_bag_clbk", equip))
+					managers.gameinfo:register_listener(equip .. "_waypoint_listener", equip, "set_upgrades", callback(self, self, "custom_waypoint_bag_clbk", equip))
 				end
 			end
 			
@@ -31,6 +93,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				managers.gameinfo:register_listener("sentry_waypoint_listener", "sentry", "set_active", callback(self, self, "custom_waypoint_sentry_clbk"))
 				managers.gameinfo:register_listener("sentry_waypoint_listener", "sentry", "set_ammo_ratio", callback(self, self, "custom_waypoint_sentry_clbk"))
 				managers.gameinfo:register_listener("sentry_waypoint_listener", "sentry", "set_health_ratio", callback(self, self, "custom_waypoint_sentry_clbk"))
+				managers.gameinfo:register_listener("sentry_waypoint_listener", "sentry", "set_owner", callback(self, self, "custom_waypoint_sentry_clbk"))
 			end
 			
 			if WolfHUD:getSetting("waypoints_show_ecms", "boolean") then
@@ -110,21 +173,24 @@ if RequiredScript == "lib/managers/hudmanager" then
 		
 		if event == "set_active" then
 			if data.active then
-				local icon_map = {
-					ammo_bag = { texture = "guis/textures/pd2/skilltree/icons_atlas", texture_rect = { 1*64, 0, 64, 64 } },
-					doc_bag = { texture = "guis/textures/pd2/skilltree/icons_atlas", texture_rect = { 2*64, 7*64, 64, 64 } },
-					body_bag = { texture = "guis/textures/pd2/skilltree/icons_atlas", texture_rect = { 5*64, 11*64, 64, 64 } },
-					grenade_crate = { texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_icon_types", texture_rect = { 1*48, 0, 48, 48 } },
-				}
+				local equipment_table = HUDManager.CUSTOM_WAYPOINTS.EQUIPMENT
+				local icon_map = equipment_table and equipment_table[type]
 				
-				local amount = (data.amount or 0) + (data.amount_offset or 0)
-				if type == "ammo_bag" then
-					amount = string.format("%.0f%%", amount * 100)
-				end
-				self:add_custom_equip_waypoint(id, data.unit, data.position, icon_map[type].texture, icon_map[type].texture_rect, tostring(amount), Color.white, { max = 32.5 }, { max = 1000 }, {start_angle = 32.5, end_angle = 25, final_scale = 10}, Vector3(0, 0, 15))
-				
-				if data.owner then
-					self:custom_waypoint_bag_clbk(type, "set_owner", key, data)
+				if icon_map then
+					local amount = (data.amount or 0) + (data.amount_offset or 0)
+					if type == "ammo_bag" then
+						amount = string.format("%.0f%%", amount * 100)
+					else
+						amount = amount > 0 and tostring(amount) or ""
+					end
+					self:add_custom_equip_waypoint(id, data.unit, data.position, icon_map.texture, icon_map.texture_rect, amount, Color.white, { max = 32.5 }, { max = 1000 }, {start_angle = 32.5, end_angle = 25, final_scale = 10}, icon_map.offset)
+					
+					if data.owner then
+						self:custom_waypoint_bag_clbk(type, "set_owner", key, data)
+					end
+					if data.upgrades then
+						self:custom_waypoint_bag_clbk(type, "set_upgrades", key, data)
+					end
 				end
 			else
 				managers.waypoints:remove_waypoint(id)
@@ -144,13 +210,36 @@ if RequiredScript == "lib/managers/hudmanager" then
 				local peer_color = data.owner > 0 and tweak_data.chat_colors[data.owner]:with_alpha(1) or Color.white
 				managers.waypoints:set_waypoint_component_setting(id, "icon", "color", peer_color)
 			end
+		elseif event == "set_upgrades" then
+			if data.upgrades then
+				for name, level in pairs(data.upgrades) do
+					if not managers.waypoints:get_waypoint_component(id, name) then
+						local upgrade_table = HUDManager.CUSTOM_WAYPOINTS.EQUIPMENT.UPGRADES
+						local upgrade_data = upgrade_table and upgrade_table[type] and upgrade_table[type][name]
+						if upgrade_data then
+							local component = {
+								type = "icon",
+								show = (level > 0),
+								texture = upgrade_data.texture,
+								texture_rect = upgrade_data.texture_rect,
+								color = HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[level] or Color.white,
+								visible_distance = { max = 200 }
+							}
+							managers.waypoints:add_waypoint_component(id, name, component, { 2, 1 })
+						end
+					else
+						managers.waypoints:set_waypoint_component_setting(id, name, "show", level > 0)
+						managers.waypoints:set_waypoint_component_setting(id, name, "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[level] or Color.white)
+					end
+				end
+			end
 		end
 	end
 
 	function HUDManager:custom_waypoint_sentry_clbk(event, key, data)
 		local id = "sentry_wp_" .. key
 		
-		if event == "set_active" then
+		if event == "set_active" or event == "set_owner" then
 			if data.active then
 				local peer = managers.network and managers.network:session() and managers.network:session():local_peer()
 				if peer and data.owner and data.owner == peer:id() then
@@ -247,15 +336,9 @@ if RequiredScript == "lib/managers/hudmanager" then
 	function HUDManager:custom_waypoint_timer_clbk(event, key, data)
 		local id = "timer_wp_" .. key
 		if event == "set_active" then
-			if data.active and not HUDManager.CUSTOM_WAYPOINTS.IGNORE_TIMER[data.id] then
-				local icon_table = {
-					drill = "pd2_drill",
-					hack = "pd2_computer",
-					saw = "wp_saw",
-					timer = "pd2_computer",
-					securitylock = "pd2_computer",
-					digital = "pd2_computer",
-				}
+			if data.active and not HUDManager.CUSTOM_WAYPOINTS.TIMER.IGNORE[data.id] then
+				local icon_table = HUDManager.CUSTOM_WAYPOINTS.TIMER.ICON_MAP
+				
 				local params = {
 					unit = data.unit,
 					offset = Vector3(0, 0, 30),
@@ -358,9 +441,9 @@ if RequiredScript == "lib/managers/hudmanager" then
 			managers.waypoints:set_waypoint_component_setting(id, "speed_upgrade", "show", (speed_upgrade > 0))
 			managers.waypoints:set_waypoint_component_setting(id, "noise_upgrade", "show", (noise_upgrade > 0))
 			managers.waypoints:set_waypoint_component_setting(id, "restart_upgrade", "show", (restart_upgrade > 0))
-			managers.waypoints:set_waypoint_component_setting(id, "speed_upgrade", "color", (speed_upgrade > 1) and Color.yellow or Color.white)
-			managers.waypoints:set_waypoint_component_setting(id, "noise_upgrade", "color", (noise_upgrade > 1) and Color.yellow or Color.white)
-			managers.waypoints:set_waypoint_component_setting(id, "restart_upgrade", "color", (restart_upgrade > 1) and Color.yellow or Color.white)
+			managers.waypoints:set_waypoint_component_setting(id, "speed_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[speed_upgrade] or Color.white)
+			managers.waypoints:set_waypoint_component_setting(id, "noise_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[noise_upgrade] or Color.white)
+			managers.waypoints:set_waypoint_component_setting(id, "restart_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[restart_upgrade] or Color.white)
 		end
 	end
 	
@@ -524,28 +607,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 		local id = "equipment_wp_" .. key
 		
 		if event == "add" then
-			local icon_table = {
-				gen_pku_crowbar =					{ std_icon = "wp_crowbar"},
-				pickup_keycard =					{ std_icon = "equipment_bank_manager_key", },
-				pickup_hotel_room_keycard =			{ std_icon = "equipment_bank_manager_key", },
-				--gage_assignment =					"equipment_money_bag",
-				pickup_boards =						{ std_icon = "wp_planks"},
-				stash_planks_pickup =				{ std_icon = "wp_planks"},
-				muriatic_acid =						{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {1 * 32, 1 * 32, 32, 32}, offset = Vector3(0, 0, 45) }, 
-				hydrogen_chloride =					{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {2 * 32, 1 * 32, 32, 32}, offset = Vector3(0, 0, 85) }, 
-				caustic_soda =						{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {3 * 32, 1 * 32, 32, 32}, offset = Vector3(0, 0, 50) }, 
-				gen_pku_blow_torch =				{ std_icon = "equipment_blow_torch"},
-				drk_pku_blow_torch = 				{ std_icon = "equipment_blow_torch"},
-				hold_born_receive_item_blow_torch = { std_icon = "equipment_blow_torch"},
-				thermite = 							{ std_icon = "equipment_thermite"},
-				gasoline_engine = 					{ std_icon = "equipment_thermite"},
-				gen_pku_thermite = 					{ std_icon = "equipment_thermite"},
-				gen_pku_thermite_paste = 			{ std_icon = "equipment_thermite"},
-				hold_take_gas_can = 				{ std_icon = "equipment_thermite"},
-				gen_pku_thermite_paste_z_axis = 	{ std_icon = "equipment_thermite"},
-				c4_consume = 						{ std_icon = "equipment_c4", 		x_ray = true, offset = Vector3(0, 0, 0) }
-				--gasoline = 							{ std_icon = "equipment_thermite", 	x_ray = true, offset = Vector3(0, 0, 0) }
-			}
+			local icon_table = HUDManager.CUSTOM_WAYPOINTS.SPECIAL_EQUIPMENT.ICON_MAP
 			local icon_data = icon_table[data.interact_id]
 			if icon_data then
 				local params = {

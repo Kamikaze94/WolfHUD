@@ -48,6 +48,7 @@
 		{ "hook_id" : "lib/units/equipment/ammo_bag/ammobagbase", 				"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/equipment/bodybags_bag/bodybagsbagbase", 		"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/equipment/doctor_bag/doctorbagbase", 			"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/units/equipment/first_aid_kit/firstaidkitbase", 		"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/equipment/ecm_jammer/ecmjammerbase", 			"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/equipment/grenade_crate/grenadecratebase", 	"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/equipment/sentry_gun/sentrygunbase", 			"script_path" : "Core.lua" },
