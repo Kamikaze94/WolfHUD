@@ -3257,7 +3257,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._health_bar:set_bottom(self._panel:bottom())
 		
 		self._hit_indicator = self._panel:bitmap({
-			name = "radial_health",
+			name = "hit_indicator",
 			texture = "guis/textures/pd2/hud_radial_rim",
 			blend_mode = "add",
 			layer = 1,
@@ -3282,7 +3282,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._outline:set_center(self._health_bar:center())
 		
 		self._damage_upgrade_text = self._panel:text({
-			name = "type",
+			name = "dmg_upgrade",
 			text = utf8.char(57364),
 			align = "center",
 			vertical = "center",

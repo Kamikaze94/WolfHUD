@@ -66,11 +66,78 @@ if RequiredScript == "lib/managers/hudmanager" then
 				--gasoline = 							{ std_icon = "equipment_thermite", 	x_ray = true, offset = Vector3(0, 0, 0) }
 			},
 		},
+		MINIONS = {
+			CHARACTER_NAMES = {
+				[ "civilian" ] 					= "wolfhud_enemy_civilian",
+				[ "civilian_female" ] 			= "wolfhud_enemy_civilian",
+				[ "gangster" ] 					= "wolfhud_enemy_gangster",
+				[ "biker" ] 					= "wolfhud_enemy_biker",
+				[ "biker_escape" ] 				= "wolfhud_enemy_biker",
+				[ "mobster" ] 					= "wolfhud_enemy_mobster",
+				[ "security" ] 					= "wolfhud_enemy_security",
+				[ "security_undominatable" ] 	= "wolfhud_enemy_security",
+				[ "gensec" ] 					= "wolfhud_enemy_gensec",
+				[ "cop" ] 						= "wolfhud_enemy_cop",
+				[ "cop_female" ]				= "wolfhud_enemy_cop",
+				[ "cop_scared" ]				= "wolfhud_enemy_cop",
+				[ "fbi" ] 						= "wolfhud_enemy_fbi",
+				[ "swat" ] 						= "wolfhud_enemy_swat",
+				[ "heavy_swat" ] 				= "wolfhud_enemy_heavy_swat",
+				[ "fbi_swat" ] 					= "wolfhud_enemy_swat",
+				[ "fbi_heavy_swat" ] 			= "wolfhud_enemy_heavy_swat",
+				[ "city_swat" ] 				= "wolfhud_enemy_city_swat",
+				[ "shield" ] 					= "wolfhud_enemy_shield",
+				[ "spooc" ] 					= "wolfhud_enemy_spook",
+				[ "taser" ] 					= "wolfhud_enemy_taser",
+				[ "sniper" ] 					= "wolfhud_enemy_sniper",
+				[ "medic" ]						= "wolfhud_enemy_medic",
+				[ "tank" ] 						= "wolfhud_enemy_tank",
+				[ "tank_hw" ]					= "wolfhud_enemy_tank_hw",
+				[ "phalanx_minion" ] 			= "wolfhud_enemy_phalanx_minion",
+				[ "phalanx_vip" ] 				= "wolfhud_enemy_phalanx_vip",
+				[ "swat_van_turret_module" ] 	= "wolfhud_enemy_swat_van",
+				[ "ceiling_turret_module" ] 	= "wolfhud_enemy_ceiling_turret",
+				[ "sentry_gun" ]				= "wolfhud_enemy_sentry_gun",
+				[ "mobster_boss" ] 				= "wolfhud_enemy_mobster_boss",
+				[ "chavez_boss" ]				= "wolfhud_enemy_chavez_boss",
+				[ "biker_boss" ] 				= "wolfhud_enemy_biker_boss",
+				[ "bank_manager" ] 				= "wolfhud_enemy_bank_manager",
+				[ "inside_man" ] 				= "wolfhud_enemy_inside_man",
+				[ "escort_undercover" ] 		= "wolfhud_enemy_escort_undercover",
+				[ "drunk_pilot" ] 				= "wolfhud_enemy_drunk_pilot",
+				[ "escort" ] 					= "wolfhud_enemy_escort",
+				[ "boris" ]						= "wolfhud_enemy_boris",
+				[ "old_hoxton_mission" ] 		= "wolfhud_enemy_old_hoxton_mission",
+				[ "hector_boss" ] 				= "wolfhud_enemy_hector_boss",
+				[ "hector_boss_no_armor" ] 		= "wolfhud_enemy_hector_boss_no_armor",
+				[ "robbers_safehouse" ]			= "wolfhud_enemy_crew",
+				[ "russian" ] 					= "menu_russian",
+				[ "german" ] 					= "menu_german",
+				[ "spanish" ] 					= "menu_spanish",
+				[ "american" ] 					= "menu_american",
+				[ "jowi" ] 						= "menu_jowi",
+				[ "old_hoxton" ] 				= "menu_old_hoxton",
+				[ "female_1" ] 					= "menu_female_1",
+				[ "dragan" ] 					= "menu_dragan",
+				[ "jacket" ] 					= "menu_jacket",
+				[ "bonnie" ] 					= "menu_bonnie",
+				[ "sokol" ] 					= "menu_sokol",
+				[ "dragon" ] 					= "menu_dragon",
+				[ "bodhi" ] 					= "menu_bodhi",
+				[ "jimmy" ] 					= "menu_jimmy",
+				[ "sydney" ] 					= "menu_sydney",
+				[ "wild" ]						= "menu_wild",
+			},
+		},
 	}
 	
 	function HUDManager:init(...)
 		init_original(self, ...)
 		
+		self:setup_custom_waypoints()
+	end
+
+	function HUDManager:setup_custom_waypoints()
 		if managers.gameinfo and managers.waypoints then
 			local bag_equip_settings = {
 				["ammo_bag"] 		= WolfHUD:getSetting("waypoints_show_ammo_bag", "boolean"),
@@ -118,6 +185,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				managers.gameinfo:register_listener("minion_waypoint_listener", "minion", "set_health_ratio", callback(self, self, "custom_waypoint_minion_clbk"))
 				managers.gameinfo:register_listener("minion_waypoint_listener", "minion", "set_owner", callback(self, self, "custom_waypoint_minion_clbk"))
 				managers.gameinfo:register_listener("minion_waypoint_listener", "minion", "set_kills", callback(self, self, "custom_waypoint_minion_clbk"))
+				managers.gameinfo:register_listener("minion_waypoint_listener", "minion", "set_damage_resistance", callback(self, self, "custom_waypoint_minion_clbk"))
 			end
 			
 			if WolfHUD:getSetting("waypoints_show_loot", "boolean") then
@@ -138,7 +206,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 			end
 		end
 	end
-
+	
 	function HUDManager:add_custom_equip_waypoint(id, unit, position, texture, texture_rect, text, color, visible_angle, visible_distance, fade_angle, offset_position)
 		local params = {
 			unit = unit,
@@ -195,41 +263,43 @@ if RequiredScript == "lib/managers/hudmanager" then
 			else
 				managers.waypoints:remove_waypoint(id)
 			end
-		elseif event == "set_amount" or event == "set_amount_offset" then
-			if data.amount or data.amount_offset then
-				local amount = (data.amount or 0) + (data.amount_offset or 0)
-				if type == "ammo_bag" then
-					amount = string.format("%.0f%%", amount * 100)
-				else
-					amount = math.round(amount)
-				end
-				managers.waypoints:set_waypoint_label(id, "label", tostring(amount))
-			end
-		elseif event == "set_owner" then
-			if data.owner then
-				local peer_color = data.owner > 0 and tweak_data.chat_colors[data.owner]:with_alpha(1) or Color.white
-				managers.waypoints:set_waypoint_component_setting(id, "icon", "color", peer_color)
-			end
-		elseif event == "set_upgrades" then
-			if data.upgrades then
-				for name, level in pairs(data.upgrades) do
-					if not managers.waypoints:get_waypoint_component(id, name) then
-						local upgrade_table = HUDManager.CUSTOM_WAYPOINTS.EQUIPMENT.UPGRADES
-						local upgrade_data = upgrade_table and upgrade_table[type] and upgrade_table[type][name]
-						if upgrade_data then
-							local component = {
-								type = "icon",
-								show = (level > 0),
-								texture = upgrade_data.texture,
-								texture_rect = upgrade_data.texture_rect,
-								color = HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[level] or Color.white,
-								visible_distance = { max = 200 }
-							}
-							managers.waypoints:add_waypoint_component(id, name, component, { 2, 1 })
-						end
+		elseif managers.waypoints:get_waypoint(id) then
+			if event == "set_amount" or event == "set_amount_offset" then
+				if data.amount or data.amount_offset then
+					local amount = (data.amount or 0) + (data.amount_offset or 0)
+					if type == "ammo_bag" then
+						amount = string.format("%.0f%%", amount * 100)
 					else
-						managers.waypoints:set_waypoint_component_setting(id, name, "show", level > 0)
-						managers.waypoints:set_waypoint_component_setting(id, name, "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[level] or Color.white)
+						amount = math.round(amount)
+					end
+					managers.waypoints:set_waypoint_label(id, "label", tostring(amount))
+				end
+			elseif event == "set_owner" then
+				if data.owner then
+					local peer_color = data.owner > 0 and tweak_data.chat_colors[data.owner]:with_alpha(1) or Color.white
+					managers.waypoints:set_waypoint_component_setting(id, "icon", "color", peer_color)
+				end
+			elseif event == "set_upgrades" then
+				if data.upgrades then
+					for name, level in pairs(data.upgrades) do
+						if not managers.waypoints:get_waypoint_component(id, name) then
+							local upgrade_table = HUDManager.CUSTOM_WAYPOINTS.EQUIPMENT.UPGRADES
+							local upgrade_data = upgrade_table and upgrade_table[type] and upgrade_table[type][name]
+							if upgrade_data then
+								local component = {
+									type = "icon",
+									show = (level > 0),
+									texture = upgrade_data.texture,
+									texture_rect = upgrade_data.texture_rect,
+									color = HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[level] or Color.white,
+									visible_distance = { max = 200 }
+								}
+								managers.waypoints:add_waypoint_component(id, name, component, { 2, 1 })
+							end
+						else
+							managers.waypoints:set_waypoint_component_setting(id, name, "show", level > 0)
+							managers.waypoints:set_waypoint_component_setting(id, name, "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[level] or Color.white)
+						end
 					end
 				end
 			end
@@ -310,24 +380,26 @@ if RequiredScript == "lib/managers/hudmanager" then
 			else
 				managers.waypoints:remove_waypoint(id, "jammer_time", "show", false)
 			end
-		elseif event == "set_jammer_battery" then
-			if data.jammer_battery then
-				managers.waypoints:set_waypoint_timer(id, "jammer_time", math.max(data.jammer_battery, 0))
-				local max_duration = tweak_data.upgrades.ecm_jammer_base_battery_life * (data.upgrade_level and ECMJammerBase.battery_life_multiplier[data.upgrade_level] or 1)
-				local color = math.lerp(Color.red, Color.green, data.jammer_battery / max_duration)
-				managers.waypoints:set_waypoint_component_setting(id, "jammer_time", "color", color)
-			end
-		elseif event == "set_feedback_duration" then
-			if data.feedback_duration or data.feedback_expire_t then
-				local duration = data.feedback_expire_t and (data.feedback_expire_t - Application:time()) or data.feedback_duration
-				managers.waypoints:set_waypoint_timer(id, "feedback_time", duration, -1)
-			end
-		elseif event == "set_upgrade_level" then
-			if data.upgrade_level then
-				if data.upgrade_level >= 3 then
-					managers.waypoints:set_waypoint_component_setting(id, "icon", "color", Color.yellow)
-				else
-					managers.waypoints:set_waypoint_component_setting(id, "icon", "color", Color.white)
+		elseif managers.waypoints:get_waypoint(id) then
+			if event == "set_jammer_battery" then
+				if data.jammer_battery then
+					managers.waypoints:set_waypoint_timer(id, "jammer_time", math.max(data.jammer_battery, 0))
+					local max_duration = tweak_data.upgrades.ecm_jammer_base_battery_life * (data.upgrade_level and ECMJammerBase.battery_life_multiplier[data.upgrade_level] or 1)
+					local color = math.lerp(Color.red, Color.green, data.jammer_battery / max_duration)
+					managers.waypoints:set_waypoint_component_setting(id, "jammer_time", "color", color)
+				end
+			elseif event == "set_feedback_duration" then
+				if data.feedback_duration or data.feedback_expire_t then
+					local duration = data.feedback_expire_t and (data.feedback_expire_t - Application:time()) or data.feedback_duration
+					managers.waypoints:set_waypoint_timer(id, "feedback_time", duration, -1)
+				end
+			elseif event == "set_upgrade_level" then
+				if data.upgrade_level then
+					if data.upgrade_level >= 3 then
+						managers.waypoints:set_waypoint_component_setting(id, "icon", "color", Color.yellow)
+					else
+						managers.waypoints:set_waypoint_component_setting(id, "icon", "color", Color.white)
+					end
 				end
 			end
 		end
@@ -413,37 +485,45 @@ if RequiredScript == "lib/managers/hudmanager" then
 				if data.upgrades then
 					self:custom_waypoint_timer_clbk("set_upgrades", key, data)
 				end
+				if data.jammed then
+					self:custom_waypoint_timer_clbk("set_jammed", key, data)
+				end
+				if data.powered then
+					self:custom_waypoint_timer_clbk("set_powered", key, data)
+				end
 			else
 				managers.waypoints:remove_waypoint(id)
 			end
-		elseif event == "update" then
-			managers.waypoints:set_waypoint_timer(id, "timer", data.timer_value)
-		elseif event == "set_jammed" then
-			if data.jammed then
-				managers.waypoints:set_waypoint_setting(id, "color", Color('FF7575'))
-				managers.waypoints:set_waypoint_setting(id, "show_offscreen", true)
-			else
-				managers.waypoints:set_waypoint_setting(id, "color", Color('FFFFFF'))
-				managers.waypoints:set_waypoint_setting(id, "show_offscreen", false)
+		elseif managers.waypoints:get_waypoint(id) then
+			if event == "update" then
+				managers.waypoints:set_waypoint_timer(id, "timer", data.timer_value)
+			elseif event == "set_jammed" then
+				if data.jammed then
+					managers.waypoints:set_waypoint_setting(id, "color", Color('FF7575'))
+					managers.waypoints:set_waypoint_setting(id, "show_offscreen", true)
+				else
+					managers.waypoints:set_waypoint_setting(id, "color", Color('FFFFFF'))
+					managers.waypoints:set_waypoint_setting(id, "show_offscreen", false)
+				end
+			elseif event == "set_powered" then
+				if data.powered then
+					managers.waypoints:set_waypoint_setting(id, "color", Color('FFFFFF'))
+					managers.waypoints:set_waypoint_setting(id, "show_offscreen", false)
+				else
+					managers.waypoints:set_waypoint_setting(id, "color", Color('FF7575'))
+					managers.waypoints:set_waypoint_setting(id, "show_offscreen", true)
+				end
+			elseif event == "set_upgrades" then
+				local speed_upgrade 	= math.clamp(data.upgrades.speed_upgrade_level or 0, 0, 2)
+				local noise_upgrade 	= (data.upgrades.silent_drill and 1 or 0) + (data.upgrades.reduced_alert and 1 or 0)
+				local restart_upgrade 	= ((data.upgrades.auto_repair_level_2 and data.upgrades.auto_repair_level_2 > 0) and 2 or (data.upgrades.auto_repair_level_1 and data.upgrades.auto_repair_level_1 > 0) and 1 or 0)
+				managers.waypoints:set_waypoint_component_setting(id, "speed_upgrade", "show", (speed_upgrade > 0))
+				managers.waypoints:set_waypoint_component_setting(id, "noise_upgrade", "show", (noise_upgrade > 0))
+				managers.waypoints:set_waypoint_component_setting(id, "restart_upgrade", "show", (restart_upgrade > 0))
+				managers.waypoints:set_waypoint_component_setting(id, "speed_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[speed_upgrade] or Color.white)
+				managers.waypoints:set_waypoint_component_setting(id, "noise_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[noise_upgrade] or Color.white)
+				managers.waypoints:set_waypoint_component_setting(id, "restart_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[restart_upgrade] or Color.white)
 			end
-		elseif event == "set_powered" then
-			if data.powered then
-				managers.waypoints:set_waypoint_setting(id, "color", Color('FFFFFF'))
-				managers.waypoints:set_waypoint_setting(id, "show_offscreen", false)
-			else
-				managers.waypoints:set_waypoint_setting(id, "color", Color('FF7575'))
-				managers.waypoints:set_waypoint_setting(id, "show_offscreen", true)
-			end
-		elseif event == "set_upgrades" then
-			local speed_upgrade 	= math.clamp(data.upgrades.speed_upgrade_level or 0, 0, 2)
-			local noise_upgrade 	= (data.upgrades.silent_drill and 1 or 0) + (data.upgrades.reduced_alert and 1 or 0)
-			local restart_upgrade 	= ((data.upgrades.auto_repair_level_2 and data.upgrades.auto_repair_level_2 > 0) and 2 or (data.upgrades.auto_repair_level_1 and data.upgrades.auto_repair_level_1 > 0) and 1 or 0)
-			managers.waypoints:set_waypoint_component_setting(id, "speed_upgrade", "show", (speed_upgrade > 0))
-			managers.waypoints:set_waypoint_component_setting(id, "noise_upgrade", "show", (noise_upgrade > 0))
-			managers.waypoints:set_waypoint_component_setting(id, "restart_upgrade", "show", (restart_upgrade > 0))
-			managers.waypoints:set_waypoint_component_setting(id, "speed_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[speed_upgrade] or Color.white)
-			managers.waypoints:set_waypoint_component_setting(id, "noise_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[noise_upgrade] or Color.white)
-			managers.waypoints:set_waypoint_component_setting(id, "restart_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[restart_upgrade] or Color.white)
 		end
 	end
 	
@@ -452,21 +532,50 @@ if RequiredScript == "lib/managers/hudmanager" then
 		
 		if event == "add" then
 			local unit_tweak = data.unit:base() and data.unit:base()._tweak_table
-			local name_id = unit_tweak and self.CharacterData[unit_tweak]
+			local name_id = unit_tweak and HUDManager.CUSTOM_WAYPOINTS.MINIONS.CHARACTER_NAMES[unit_tweak]
 			local params = {
 				unit = data.unit,
-				offset = Vector3(0, 0, 25),
+				offset = Vector3(0, 0, 30),
 				fade_angle = { start_angle = 10, end_angle = 1, final_scale = 0.4 },
 				scale = 1.25,
+				health_bar = {
+					type = "icon", 
+					show = true,
+					scale = 1.65,
+					texture = "guis/textures/pd2/hud_health",
+					texture_rect = {0, 0, 64, 64},
+					radial_image = true,
+					color = Color(data.health_ratio or 1, 1, 1),
+				},
+				health_shield = {
+					type = "icon", 
+					show = true,
+					scale = 1.65,
+					texture = "guis/textures/pd2/hud_shield",
+					texture_rect = {0, 0, 64, 64},
+					color = Color.white,
+					alpha = 0.2,
+				},
+				health_bg = {
+					type = "icon", 
+					show = true,
+					scale = 1.65,
+					texture = "guis/textures/pd2/hud_radialbg",
+					texture_rect = {0, 0, 64, 64},
+				},
+				health_dmg = {
+					type = "icon", 
+					show = true,
+					scale = 1.65,
+					texture = "guis/textures/pd2/hud_radial_rim",
+					texture_rect = {0, 0, 64, 64},
+					color = Color.red,
+					alpha = 0,
+				},
 				name = { 
 					type = "label", 
 					show = true, 
 					text = managers.localization:to_upper_text(name_id),
-				},
-				health = { 
-					type = "label", 
-					show = true, 
-					text = string.format(" (%.0f%%)", (data.health_ratio or 1) * 100),
 				},
 				kills = { 
 					type = "label", 
@@ -476,30 +585,57 @@ if RequiredScript == "lib/managers/hudmanager" then
 					alpha = 0.8,
 					scale = 0.7,
 				},
-				component_order = { { "name", "health" }, { "kills" } },
+				component_order = { { "health_bar", "name" }, { "kills" } },
 			}
 			
 			managers.waypoints:add_waypoint(id, "CustomWaypoint", params)
 			
+			if data.kills then
+				self:custom_waypoint_minion_clbk("set_kills", key, data)
+			end
 			if data.owner then
 				self:custom_waypoint_minion_clbk("set_owner", key, data)
 			end
-		elseif event == "remove" then
-			managers.waypoints:remove_waypoint(id)
-		elseif event == "set_health_ratio" then
-			if data.health_ratio then
-				managers.waypoints:set_waypoint_label(id, "health", string.format(" (%.0f%%)", data.health_ratio * 100))
+			if data.damage_resistance then
+				self:custom_waypoint_minion_clbk("set_damage_resistance", key, data)
 			end
-		elseif event == "set_kills" then
-			if data.kills then
-				managers.waypoints:set_waypoint_label(id, "kills", string.format("%s %d", utf8.char(57364), data.kills))
-			end
-		elseif event == "set_owner" then
-			if data.owner then
-				local peer_color = data.owner > 0 and tweak_data.chat_colors[data.owner or 5]
-				managers.waypoints:set_waypoint_setting(id, "color", peer_color)
+		elseif managers.waypoints:get_waypoint(id) then
+			if event == "remove" then
+				managers.waypoints:remove_waypoint(id)
+			elseif event == "set_health_ratio" then
+				if data.health_ratio then
+					managers.waypoints:set_waypoint_component_setting(id, "health_bar", "color", Color(data.health_ratio, 1, 1))
+					local health_dmg = managers.waypoints:get_waypoint_component(id, "health_dmg")
+					if alive(health_dmg) and data.health_ratio < 1 then
+						health_dmg:stop()
+						health_dmg:animate(callback(self, self, "_animate_custom_waypoint_minion_damage"))
+					end
+				end
+			elseif event == "set_kills" then
+				if data.kills then
+					managers.waypoints:set_waypoint_label(id, "kills", string.format("%s %d", utf8.char(57364), data.kills))
+				end
+			elseif event == "set_owner" then
+				if data.owner then
+					local peer_color = data.owner > 0 and tweak_data.chat_colors[data.owner or 5]
+					managers.waypoints:set_waypoint_setting(id, "color", peer_color)
+				end
+			elseif event == "set_damage_resistance" then
+				local max_mult = tweak_data.upgrades.values.player.convert_enemies_health_multiplier[1] * tweak_data.upgrades.values.player.passive_convert_enemies_health_multiplier[2]
+				local alpha = math.clamp(1 - (data.damage_resistance - max_mult) / (1 - max_mult), 0, 1) * 0.8 + 0.2
+				managers.waypoints:set_waypoint_component_setting(id, "health_shield", "alpha", alpha)
 			end
 		end
+	end
+	
+	function HUDManager:_animate_custom_waypoint_minion_damage(panel)
+		local t = 1
+		panel:set_alpha(1)
+		while t > 0 do
+			t = t - coroutine.yield()
+			panel:set_alpha( math.clamp(t, 0, 1) )
+		end
+		panel:set_alpha(0)
 	end
 	
 	function HUDManager:custom_waypoint_loot_clbk(event, key, data)
@@ -544,12 +680,14 @@ if RequiredScript == "lib/managers/hudmanager" then
 					managers.waypoints:add_waypoint(id, "CustomWaypoint", params)
 				end
 			end
-		elseif event == "interact" then
-			local count = data.count or 1
-			managers.waypoints:set_waypoint_label(id, "amount", string.format("%dx", count))
-			managers.waypoints:set_waypoint_component_setting(id, "amount", "show", (count > 1))
-		elseif event == "remove" then
-			managers.waypoints:remove_waypoint(id)
+		elseif managers.waypoints:get_waypoint(id) then
+			if event == "interact" then
+				local count = data.count or 1
+				managers.waypoints:set_waypoint_label(id, "amount", string.format("%dx", count))
+				managers.waypoints:set_waypoint_component_setting(id, "amount", "show", (count > 1))
+			elseif event == "remove" then
+				managers.waypoints:remove_waypoint(id)
+			end
 		end
 	end
 	
@@ -589,16 +727,22 @@ if RequiredScript == "lib/managers/hudmanager" then
 				}
 					
 				managers.waypoints:add_waypoint(id, "CustomWaypoint", params)
+				
+				if data.answered then
+					self:custom_waypoint_pager_clbk("set_answered", key, data)
+				end
 			end
-		elseif event == "remove" then
-			if not data.active then
-				managers.waypoints:remove_waypoint(id)
-			end
-		elseif event == "set_answered" then
-			if data.active and data.answered then
-				managers.waypoints:set_waypoint_setting(id, "show_offscreen", false)
-				managers.waypoints:remove_waypoint_component(id, "duration")
-				managers.waypoints:set_waypoint_setting(id, "color", Color('008000'))
+		elseif managers.waypoints:get_waypoint(id) then
+			if event == "remove" then
+				if not data.active then
+					managers.waypoints:remove_waypoint(id)
+				end
+			elseif event == "set_answered" then
+				if data.active and data.answered then
+					managers.waypoints:set_waypoint_setting(id, "show_offscreen", false)
+					managers.waypoints:remove_waypoint_component(id, "duration")
+					managers.waypoints:set_waypoint_setting(id, "color", Color('008000'))
+				end
 			end
 		end
 	end
