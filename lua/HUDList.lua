@@ -372,7 +372,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		melee_charge = { "melee_charge" },
 		reload = {"reload" }, 
 		interact = { "interact"},
-		place_equipment = { "place_equipment" },
+		interact_debuff = { "interact_debuff" },
 		
 		--Debuffs that are merged into the buff itself
 		composite_debuffs = {
@@ -380,6 +380,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			grinder_debuff = "grinder",
 			unseen_strike_debuff = "unseen_strike",
 			uppers_debuff = "uppers",
+			interact_debuff = "interact",
 		},
 	}
 	
@@ -1411,6 +1412,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				"activate", 
 				"deactivate", 
 				"set_duration",
+				"set_data",
 				clbk = callback(self, self, "_player_action_event"),
 			},
 		}
@@ -3962,6 +3964,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		sixth_sense = {
 			atlas_new = tweak_data.skilltree.skills.chameleon.icon_xy,
 			class = "TimedBuffItem",
+			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting("sixth_sense_buff", "boolean"),
 		},
@@ -3996,6 +3999,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		unseen_strike = {
 			atlas_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
 			class = "TimedBuffItem",
+			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting("unseen_strike_buff", "boolean"),
 		},
@@ -4225,18 +4229,19 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		interact = {
 			--atlas_new = tweak_data.skilltree.skills.second_chances.icon_xy,
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
-			class = "TimedBuffItem",
+			class = "TimedInteractionItem",
 			priority = 10,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = (WolfHUD:getSetting("SHOW_CIRCLE", "boolean") or WolfHUD:getSetting("SHOW_TIME_REMAINING", "boolean"))
 		},
-		place_equipment = {
+		interact_debuff = {
+			--atlas_new = tweak_data.skilltree.skills.second_chances.icon_xy,
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
-			class = "TimedBuffItem",
+			class = "TimedInteractionItem",
 			priority = 10,
-			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = (WolfHUD:getSetting("SHOW_CIRCLE", "boolean") or WolfHUD:getSetting("SHOW_TIME_REMAINING", "boolean"))
-		},
+			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = true	--Composite debuff
+		}
 	}
 	
 	function HUDList.BuffItemBase:init(parent, name, icon, w, h)
@@ -4473,6 +4478,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if data.show_value then
 			self:_set_text(tostring(data.value))
 		end
+	end
+	
+	function HUDList.BuffItemBase:set_data(id, data)
+		-- Unused, only called for interact Item...
 	end
 	
 	function HUDList.BuffItemBase:_update_debuff(t, dt)
@@ -4908,6 +4917,62 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:_set_text(string.format("-%.0f%%", (1-value)*100))
 	end
 	
+	HUDList.TimedInteractionItem = HUDList.TimedInteractionItem or class(HUDList.TimedBuffItem)
+	HUDList.TimedInteractionItem.INTERACT_ID_TO_ICON = {
+		default 					= { texture = "guis/textures/pd2/skilltree/drillgui_icon_faster" 														},
+		ammo_bag 					= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 1*64, 0, 64, 64 } 	},
+		doc_bag 					= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 2*64, 7*64, 64, 64 } 	},
+		first_aid_kit 				= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 3*64, 10*64, 64, 64 } },
+		body_bag 					= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 5*64, 11*64, 64, 64 } },
+		grenade_crate 				= { texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_icon_types", texture_rect = { 1*48, 0, 48, 48 } 	},
+		ecm_jammer 					= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 1*64, 4*64, 64, 64 } 	},
+		corpse_alarm_pager			= { texture = "guis/textures/pd2/specialization/icons_atlas", 					 texture_rect = { 1*64, 4*64, 64, 64 }	},
+		pick_lock_easy_no_skill 	= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 5*64, 4*64, 64, 64 } 	},
+		intimidate					= "equipment_cable_ties",
+		c4_consume 					= "equipment_c4",
+		drill 						= "pd2_drill",
+		hack 						= "pd2_computer",
+		saw 						= "wp_saw",
+		timer 						= "pd2_computer",
+		securitylock 				= "pd2_computer",
+		digital 					= "pd2_computer",
+	}
+	function HUDList.TimedInteractionItem:init(...)
+		HUDList.TimedInteractionItem.super.init(self, ...)
+	end
+	
+	function HUDList.TimedInteractionItem:activate_debuff()
+		if not self._debuff_active then
+			HUDList.TimedInteractionItem.super.activate_debuff(self)
+			self:_set_icon("default")
+		end
+	end
+	
+	function HUDList.TimedInteractionItem:set_data(id, data)
+		HUDList.TimedInteractionItem.super.set_data(self, id, data)
+		if data.data then
+			self:_set_icon(data.data.interact_id)
+		end
+	end
+	
+	function HUDList.TimedInteractionItem:_set_icon(interact_id)
+		--log(interact_id)
+		local lookup = HUDList.TimedInteractionItem.INTERACT_ID_TO_ICON
+		local icon_data = lookup[interact_id] or lookup["default"]
+		if icon_data and alive(self._icon) then
+			local texture, texture_rect
+			if type(icon_data) == "string" then
+				texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon_data)
+			else
+				texture, texture_rect = icon_data.texture, icon_data.texture_rect
+			end
+			
+			self._icon:set_image(texture)
+			if icon_data.texture_rect then
+				self._icon:set_texture_rect(unpack(texture_rect))
+			end
+		end
+	end
 	
 	PanelFrame = PanelFrame or class()
 	

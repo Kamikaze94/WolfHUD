@@ -2885,6 +2885,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	local _interupt_action_reload_original = PlayerStandard._interupt_action_reload
 	local _start_action_charging_weapon_original = PlayerStandard._start_action_charging_weapon
 	local _end_action_charging_weapon_original = PlayerStandard._end_action_charging_weapon
+	local _update_equip_weapon_timers_original = PlayerStandard._update_equip_weapon_timers
 	
 	function PlayerStandard:_do_action_intimidate(t, interact_type, ...)
 		if interact_type == "cmd_gogo" or interact_type == "cmd_get_up" then
@@ -2946,29 +2947,45 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 				managers.gameinfo:event("buff", "deactivate", "die_hard")
 			end
 			
-			managers.gameinfo:event("player_action", "set_data", "interact", { completed = complete and true or false })
 			managers.gameinfo:event("player_action", "deactivate", "interact")
 		end
 		
-		return _interupt_action_interact_original(self, t, input, complete, ...)
+		local previous_weapon_exire_t = self._equip_weapon_expire_t
+		local value = _interupt_action_interact_original(self, t, input, complete, ...)
+		
+		if self._equip_weapon_expire_t and not previous_weapon_exire_t then
+			local t = managers.player:player_timer():time()
+			local duration = self._equip_weapon_expire_t - t
+			managers.gameinfo:event("player_action", "activate", "interact_debuff", { t = t, duration = duration })
+		end
+		
+		return value
 	end
 	
-	function PlayerStandard._start_action_use_item(self, t, ...)
+	function PlayerStandard:_start_action_use_item(t, ...)
 		local equipment_id = managers.player:selected_equipment_id()
 		local timer = managers.player:selected_equipment_deploy_timer()
-		managers.gameinfo:event("player_action", "activate", "place_equipment", { t = t, duration = timer })
-		managers.gameinfo:event("player_action", "set_data", "place_equipment", { interact_id = equipment_id })
+		managers.gameinfo:event("player_action", "activate", "interact", { t = t, duration = timer })
+		managers.gameinfo:event("player_action", "set_data", "interact", { interact_id = equipment_id })
 		
 		return _start_action_use_item_original(self, t, ...)
 	end
 	
-	function PlayerStandard._interupt_action_use_item(self, t, input, complete, ...)
+	function PlayerStandard:_interupt_action_use_item(t, input, complete, ...)
 		if self._use_item_expire_t then
-			managers.gameinfo:event("player_action", "set_data", "place_equipment", { completed = complete and true or false })
-			managers.gameinfo:event("player_action", "deactivate", "place_equipment")
+			managers.gameinfo:event("player_action", "deactivate", "interact")
 		end
 		
-		return _interupt_action_use_item_original(self, t, input, complete, ...)
+		local previous_weapon_exire_t = self._equip_weapon_expire_t
+		local value = _interupt_action_use_item_original(self, t, input, complete, ...)
+		
+		if self._equip_weapon_expire_t and not previous_weapon_exire_t then
+			local t = managers.player:player_timer():time()
+			local duration = self._equip_weapon_expire_t - t
+			managers.gameinfo:event("player_action", "activate", "interact_debuff", { t = t, duration = duration })
+		end
+		
+		return value
 	end
 	
 	function PlayerStandard:_start_action_reload(t, ...)
@@ -3007,6 +3024,16 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 			managers.gameinfo:event("player_action", "deactivate", "weapon_charge")
 		end
 		return _end_action_charging_weapon_original(self, ...)
+	end
+	
+	function PlayerStandard:_update_equip_weapon_timers(...)
+		local value = _update_equip_weapon_timers_original(self, ...)
+		
+		if not self._equip_weapon_expire_t then
+			managers.gameinfo:event("player_action", "deactivate", "interact_debuff")
+		end
+		
+		return value
 	end
 	
 	--OVERRIDE
