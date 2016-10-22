@@ -142,7 +142,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		self._use_tab_stats = WolfHUD:getSetting("use_tabstats", "boolean")
 		if not self._use_tab_stats then return end
 		
-		self:clean_up(right_panel)
 		local blank1 = day_wrapper_panel:text({
 			layer = 0,
 			x =  0,
@@ -402,8 +401,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			y = killed_text:bottom()
 		end
 		
-		day_wrapper_panel:set_h(y)
-		self:update(day_wrapper_panel)
+		self:_update_stats_screen_day(right_panel)
 	end
 	
 	function HUDStatsScreen:stats_visible()
@@ -493,19 +491,24 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 					item:set_visible(false)
 				end
 			end
+			
+			local day_description = dwp:child("day_description")
+			local last_stat_name = HUDStatsScreen.STAT_ITEMS[#HUDStatsScreen.STAT_ITEMS].name
+			local last_stat_item = dwp:child(last_stat_name .. "_title")
+			if day_description and last_stat_item then
+				day_description:set_bottom(last_stat_item:bottom() + 20)
+			end
 		end
 	end
 
 	function HUDStatsScreen:_update_stats_screen_day(right_panel)
 		local dwp = right_panel:child("day_wrapper_panel")
-		local h = dwp and dwp:h()
 		update_stats_screen_day_original(self, right_panel)
 		
 		if not self._use_tab_stats then return end
 		
 		self:clean_up(right_panel)
 		if dwp then
-			dwp:set_h(h)
 			self:update(dwp)
 		end
 	end
