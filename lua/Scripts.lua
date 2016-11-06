@@ -121,4 +121,105 @@ elseif string.lower(RequiredScript) == "lib/managers/moneymanager" then
 		local total = math.round(self:total_collected())
 		return managers.experience:cash_string(total)
 	end
+elseif string.lower(RequiredScript) == "lib/setups/menusetup" then
+	------------
+	-- Purpose: Hooks MenuSetup:init_game() to force the game to skip the intro videos and go straight to the attract screen (as though -skip_intro had been specified on the command line)
+	------------
+	local SKIP_TO_MAIN_MENU = WolfHUD:getSetting("skip_to_main_menu", "boolean")
+	local init_game_actual = MenuSetup.init_game
+	function MenuSetup:init_game(...)
+			local result = init_game_actual(self, ...)
+		if SKIP_TO_MAIN_MENU then
+			game_state_machine:set_boot_intro_done(true)
+			-- WARNING: Do not go straight to "menu_main" as that bypasses loading of the savefile and is likely to cause data loss (not extensively tested)
+			game_state_machine:change_state_by_name("menu_titlescreen")
+		end
+
+			return result
+		end
+
+elseif string.lower(RequiredScript) == "lib/states/menutitlescreenstate" then
+	------------
+	-- Purpose: Hooks MenuTitlescreenState:get_start_pressed_controller_index() to trigger the game to proceed straight to the main menu with keyboard input instead of waiting on the attract screen, and also hooks MenuTitlescreenState:_load_savegames_done() to suppress the menu entry sound that is played when the main menu is entered (but only for automatic entries)
+	------------
+
+	local silenced = false
+
+	local SKIP_TO_MAIN_MENU = WolfHUD:getSetting("skip_to_main_menu", "boolean")
+	local get_start_pressed_controller_index_actual = MenuTitlescreenState.get_start_pressed_controller_index
+	function MenuTitlescreenState:get_start_pressed_controller_index(...)
+
+		if SKIP_TO_MAIN_MENU then
+
+			local num_connected = 0
+			local keyboard_index = nil
+
+			for index, controller in ipairs(self._controller_list) do
+				if controller._was_connected then
+					num_connected = num_connected + 1
+				end
+				if controller._default_controller_id == "keyboard" then
+					keyboard_index = index
+				end
+			end
+
+			if num_connected == 1 and keyboard_index ~= nil then
+				silenced = true
+				return keyboard_index
+			else
+				return get_start_pressed_controller_index_actual(self, ...)
+			end
+		else
+			return get_start_pressed_controller_index_actual(self, ...)
+		end
+	end
+
+	local _load_savegames_done_actual = MenuTitlescreenState._load_savegames_done
+	function MenuTitlescreenState:_load_savegames_done(...)
+			if silenced and SKIP_TO_MAIN_SCREEN then
+				-- Shush. Don't play that sound if this is an automatic entry
+				self:gsm():change_state_by_name("menu_main")
+			else
+				_load_savegames_done_actual(self, ...)
+			end
+		end
+
+elseif string.lower(RequiredScript) == "lib/managers/challengemanager" then
+	local sjil_original_challengemanager_ongivereward = ChallengeManager.on_give_reward
+	function ChallengeManager:on_give_reward(id, key, reward_index)
+		local reward = sjil_original_challengemanager_ongivereward(self, id, key, reward_index)
+		self.sjil_reward_in_progress = reward and reward.choose_weapon_reward and reward or nil
+		return reward
+	end
+
+	local sjil_original_challengemanager_givereward = ChallengeManager._give_reward
+	function ChallengeManager:_give_reward(challenge, reward)
+		local result = sjil_original_challengemanager_givereward(self, challenge, reward)
+
+		if result.choose_weapon_reward then
+			-- No! It's not done yet!
+			result.rewarded = false
+		end
+
+		return result
+	end
+
+	function ChallengeManager:sjil_finalize_all_challenges()
+		if not self._global.validated then
+			return
+		end
+
+		for _, challenge in pairs(self:get_all_active_challenges() or {}) do
+			local all_rewarded = true
+			for _, reward in pairs(challenge.rewards) do
+				if not reward.rewarded then
+					all_rewarded = false
+				end
+			end
+			if all_rewarded then
+				challenge.rewarded = all_rewarded
+				self._any_challenge_rewarded = true
+			end
+		end
+	end
 end

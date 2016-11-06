@@ -128,6 +128,9 @@ if not _G.WolfHUD then
 		["lib/tweak_data/timespeedeffecttweakdata"] = { "Scripts.lua" },
 		["core/lib/managers/menu/items/coremenuitemslider"] = { "MenuTweaks.lua" },
 		["core/lib/managers/subtitle/coresubtitlepresenter"] = { "EnhancedObjective.lua" },
+		["lib/setups/menusetup"] = { "Scripts.lua" },
+		["lib/states/menutitlescreenstate"] = { "Scripts.lua" },
+		["lib/managers/challengemanager"] = { "Scripts.lua" },
 	}
 	
 	
@@ -244,6 +247,7 @@ if not _G.WolfHUD then
 			use_actual_mask							= true,
 			numberic_loot							= true,
 		  --Scripts
+		    skip_to_main_menu						= true,		--Skip intro and splash screen
 			skip_blackscreen 						= true,		--Skip the blackscreen on mission start
 			stat_screen_delay 						= 5,		--Skip the experience screen after X seconds
 			autopick_card 							= true,		--Automatically pick a card on lootscreen
@@ -414,6 +418,7 @@ if not _G.WolfHUD then
 			replace_weapon_names 					= true,
 			inventory_tab_names						= true,
 			inventory_names							= true,
+			inventory_drag_and_drop					= true,
 			show_mini_icons							= true,
 			skill_names								= true,	
 			

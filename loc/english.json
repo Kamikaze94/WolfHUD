@@ -131,6 +131,8 @@
 	"wolfhud_options_name" : "WolfHUD Settings",
 	"wolfhud_options_help" : "Customize WolfHUD with your personal preferences.",
 	
+	"wolfhud_skip_to_main_menu_title" : "Skip to Main Menu",
+	"wolfhud_skip_to_main_menu_desc" : "Skip intro and splash screen",
 	"wolfhud_skip_blackscreen_title" : "Skip Blackscreen",
 	"wolfhud_skip_blackscreen_desc" : "Automatically skips the Blackscreen on Mission start.\n(Host only)",
 	"wolfhud_stat_screen_delay_title" : "Stat Screen delay",
@@ -143,6 +145,8 @@
 	"wolfhud_replace_weapon_names_desc" : "Replace the Weapon Names with their Real-World counterparts.\n(A Map change is needed to apply...)",
 	"wolfhud_inventory_tab_names_title" : "Use Inventory Tab Names",
 	"wolfhud_inventory_tab_names_desc" : "Customize your Inventory Tab Names.\n(Change names by editing '/mods/saves/WolfHUD_InventoryNames.txt')",
+	"wolfhud_inventory_drag_and_drop_title" : "Inventory Drag and Drop"
+	"wolfhud_inventory_drag_and_drop_desc" : "Enable Drag and Drop for the Inventory",
 	"wolfhud_inventory_names_title" : "Show Inventory Box Names",
 	"wolfhud_inventory_names_desc" : "Show the names of your weapons, armor, deployables, etc. inside its box in the inventory.",
 	"wolfhud_skill_names_title" : "Show Skill Names",
