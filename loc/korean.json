@@ -2,6 +2,8 @@
 	"menu_jowi" : "윅",
 	"hud_int_hold_grab_the_bag" : "$BTN_INTERACT 키 를 눌러서 $BAG 를(을) 들기",
 	
+	"wolfhud_dialog_force_start_title" : "Force start game?",
+	"wolfhud_dialog_force_start_desc" : "Are you sure you want to force the game to start?\n\nPlease only use this for bugged lobbies, or if a player is afk.\nMake sure everyone had enough time to choose his loadout.\n\nThanks :)",
 	"wolfhud_dialog_install_title" : "설치: $NAME",
 	"wolfhud_dialog_install_desc" : "'$NAME' 를(을) 설치하고 싶습니까?",
 	"wolfhud_dialog_remind_later" : "다중에 다시 물어보기",
@@ -339,6 +341,7 @@
 	"wolfhud_hudlist_show_equipment_desc" : "어떤 장비가 당신의 화면 오른쪽에 표시될지 설정합니다.",
 	"wolfhud_hudlist_show_ammo_bags_title" : "탄약가방 표시",
 	"wolfhud_hudlist_show_doc_bags_title" : "의료가방 표시",
+	"wolfhud_hudlist_show_first_aid_kits_title" : "Show First Aid Kits",
 	"wolfhud_hudlist_show_body_bags_title" : "시체가방 표시",
 	"wolfhud_hudlist_show_grenade_crates_title" : "수류탄 상자 표시",
 	"wolfhud_hudlist_sentries_title" : "센트리 표시",

@@ -76,13 +76,13 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" and WolfHUD:g
 		update_original(self, unit, t, ...)
 		local theme = self._theme_type
 		local suffix = self._suffix_map[theme]
-		local col = Color.white
-		if suffix then 
+		local color = Color.white
+		if suffix and self._themes[theme] then 
 			if WolfHUD:getSetting("laser_" .. suffix, "string") == "rainbow" then
 				local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
-				col = Color(r, g, b)
+				color = Color(r, g, b)
 			else
-				col = WolfHUD:getSetting("laser_" .. suffix, "color")
+				color = WolfHUD:getSetting("laser_" .. suffix, "color")
 			end
 			local alpha = 1
 			if suffix == "turret_active" or suffix == "turret_reloading" or suffix == "turret_jammed" then
@@ -90,8 +90,8 @@ if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" and WolfHUD:g
 			else
 				alpha = WolfHUD:getSetting("laser_" .. suffix .. "_alpha", "number")
 			end
-			if self._themes[theme].brush ~= col:with_alpha(alpha) then 
-				self:update_theme(theme, col, alpha)
+			if self._themes[theme].brush ~= color:with_alpha(alpha) then 
+				self:update_theme(theme, color, alpha)
 				self:set_color_by_theme(theme)
 			end
 		else

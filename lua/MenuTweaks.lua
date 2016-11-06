@@ -1,6 +1,6 @@
 if string.lower(RequiredScript) == "lib/managers/menumanager" then
-	function MenuCallbackHandler:is_dlc_latest_locked(check_dlc) return false end
-elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then 
+	function MenuCallbackHandler:is_dlc_latest_locked(...) return false end
+elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	--Always enable mod mini icons, put ghost icon behind silent weapon names
 	local populate_weapon_category_new_original = BlackMarketGui.populate_weapon_category_new
 	function BlackMarketGui:populate_weapon_category_new(data, ...)
@@ -153,9 +153,10 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	--Replace Tab Names with custom ones...
 	local BlackMarketGuiTabItem_init_original = BlackMarketGuiTabItem.init
 	function BlackMarketGuiTabItem:init(main_panel, data, ...)
-		if WolfHUD:getSetting("inventory_tab_names", "boolean") and WolfHUD.inventory_names and WolfHUD.inventory_names[data.category] and type(data.on_create_data[1]) == "number" then
+		local inv_name_tweak = WolfHUD:getTweakEntry("inventory_names", "table")
+		if WolfHUD:getSetting("inventory_tab_names", "boolean") and inv_name_tweak and inv_name_tweak[data.category] and type(data.on_create_data[1]) == "number" then
 			local id = math.floor((data.on_create_data[1] / #data.on_create_data) + 1)
-			data.name_localized = WolfHUD.inventory_names[data.category][id] or nil
+			data.name_localized = inv_name_tweak[data.category][id] or nil
 		end
 		return BlackMarketGuiTabItem_init_original(self, main_panel, data, ...)
 	end

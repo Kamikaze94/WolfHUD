@@ -5,6 +5,8 @@
 	"cash_sign" : "\194\128",
 	"hud_int_hold_grab_the_bag" : "Halte $BTN_INTERACT um $BAG zu nehmen",
 	
+	"wolfhud_dialog_force_start_title" : "Erzwinge Spielstart?",
+	"wolfhud_dialog_force_start_desc" : "Bist du sicher, das du den Spielstart erzwingen möchtest?\n\nBitte nutze diese Funktion nur für verbuggte Lobbies oder wenn Spieler afk sind.\nLasse deinen Mitspielern genügend Zeit, ihr Loadout zu wählen.\n\nDankeschön :)",
 	"wolfhud_dialog_install_title" : "Installiere: $NAME",
 	"wolfhud_dialog_install_desc" : "Möchtest du, dass wir '$NAME' installieren?\nWir werden die notwendigen Ordner erstellen, sodass BLT dich nach dem Neustart des Spiels auf ein Update hinweisen wird.\n(Das Erstellen der Ordner kann zur Minimierung des Spiels führen.)",
 	"wolfhud_dialog_remind_later" : "Erinnere mich später",
@@ -347,6 +349,7 @@
 	"wolfhud_hudlist_show_equipment_desc" : "Zeige das Equipment in der Liste.",
 	"wolfhud_hudlist_show_ammo_bags_title" : "Zeige Munitions Taschen",
 	"wolfhud_hudlist_show_doc_bags_title" : "Zeige Arzt Taschen",
+	"wolfhud_hudlist_show_first_aid_kits_title" : "Zeige Erste-Hilfe-Sets",
 	"wolfhud_hudlist_show_body_bags_title" : "Zeige Leichensack Koffer",
 	"wolfhud_hudlist_show_grenade_crates_title" : "Zeige Granaten",
 	"wolfhud_hudlist_sentries_title" : "Zeige Sentries",

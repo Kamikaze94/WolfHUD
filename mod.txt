@@ -65,6 +65,7 @@
 		{ "hook_id" : "lib/units/beings/player/huskplayermovement", 			"script_path" : "Core.lua" },
         { "hook_id" : "lib/units/beings/player/states/playercivilian", 			"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/beings/player/states/playerstandard", 			"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/units/beings/player/states/playermaskoff", 			"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/beings/player/states/playerbleedout", 			"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/vehicles/vehicledamage", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/vehicles/vehicledrivingext", 					"script_path" : "Core.lua" },

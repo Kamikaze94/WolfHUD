@@ -33,6 +33,14 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "show_first_aid_kits",
+			"title" : "wolfhud_hudlist_show_first_aid_kits_title",
+			"description" : "wolfhud_hudlist_show_equipment_desc",
+			"callback" : "clbk_change_hudlist_setting",
+			"value" : "show_first_aid_kits",
+		},
+		{
+			"type" : "toggle",
 			"id" : "show_body_bags",
 			"title" : "wolfhud_hudlist_show_body_bags_title",
 			"description" : "wolfhud_hudlist_show_equipment_desc",

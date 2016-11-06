@@ -72,7 +72,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	HUDStatsScreen.STAT_ITEMS = {
 		{ name = "accuracy", 			text_id = "victory_hit_accuracy", 				color = Color.white, 				update = {func = "session_hit_accuracy", 			func_alltime = "", 	params = {}, suffix = "%"	},		no_alltime = true		},
 		{ name = "total_damage", 		text_id = "wolfhud_tabstats_total_damage", 		color = Color(1, 0.69, 0.19, 0.38), update = {func = "session_damage", 					func_alltime = "", 	params = {}					},		no_alltime = true		},
-		{ name = "tanks_killed", 		text_id = "wolfhud_tabstats_tanks_killed", 		color = Color.red, 					update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"tank", "count"}			}, 	},
+		{ name = "tanks_killed", 		text_id = "wolfhud_tabstats_tanks_killed", 		color = Color.red, 					update = {func = "session_total_tanks_killed", 		func_alltime = "total_tanks_killed", 	params = {}							}, 	},
 		{ name = "cloakers_killed", 	text_id = "wolfhud_tabstats_cloakers_killed", 	color = Color.green,				update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"spooc", "count"}			}, 	},
 		{ name = "shields_killed", 		text_id = "wolfhud_tabstats_shields_killed", 	color = Color.yellow,				update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"shield", "count"}		}, 	},
 		{ name = "snipers_killed", 		text_id = "wolfhud_tabstats_snipers_killed", 	color = Color(1, 0.67, 0.84, 0.90),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"sniper", "count"}		}, 	},
@@ -709,57 +709,44 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 	end
 	
 	function StatisticsManager:session_enemy_killed_by_type(enemy, type)
-		if enemy == "tank" then	--Fixed dozer count
-			return self:session_enemy_killed_by_type("tank_green", type)
-						+ self:session_enemy_killed_by_type("tank_black", type)
-						+ self:session_enemy_killed_by_type("tank_skull", type)
-						+ self:session_enemy_killed_by_type("tank_hw", type)
-		elseif enemy == "non_special" then	--added new "enemy"
+		if enemy == "non_special" then	--added new "enemy"
 			return self:session_enemy_killed_by_type("total", type)
 						- self:session_total_specials_kills()
-						- self:session_enemy_killed_by_type("sniper", type)
-						- self:session_enemy_killed_by_type("mobster_boss", type)
-						- self:session_enemy_killed_by_type("biker_boss", type)
-						- self:session_enemy_killed_by_type("hector_boss", type)
-						- self:session_enemy_killed_by_type("hector_boss_no_armor", type)
 		end
 		return session_enemy_killed_by_type_original(self, enemy, type)
 	end
 	
-	--Fixed dozers not beeing counted (HARD OVERWRITE)
-	function StatisticsManager:session_total_specials_kills()
-		return self:session_enemy_killed_by_type("shield", "count") 
-					+ self:session_enemy_killed_by_type("spooc", "count") 
-					+ self:session_enemy_killed_by_type("tank", "count") 
-					+ self:session_enemy_killed_by_type("taser", "count")
-					+ self:session_enemy_killed_by_type("medic", "count")
-	end
-	
 	--New Functions
 	function StatisticsManager:enemy_killed_by_type(enemy, type)
-		if enemy == "tank" then
-			return self:enemy_killed_by_type("tank_green", type)
-						+ self:enemy_killed_by_type("tank_black", type)
-						+ self:enemy_killed_by_type("tank_skull", type)
-						+ self:enemy_killed_by_type("tank_hw", type)
-		elseif enemy == "non_special" then	--added new "enemy"
+		if enemy == "non_special" then	--added new "enemy"
 			return self:enemy_killed_by_type("total", type)
 						- self:total_specials_kills()
-						- self:enemy_killed_by_type("sniper", type)
-						- self:enemy_killed_by_type("mobster_boss", type)
-						- self:enemy_killed_by_type("biker_boss", type)
-						- self:enemy_killed_by_type("hector_boss", type)
-						- self:enemy_killed_by_type("hector_boss_no_armor", type)
 		end
 		return self._global.killed and self._global.killed[enemy] and self._global.killed[enemy][type] or 0
 	end
 	
 	function StatisticsManager:total_specials_kills()
-		return self:enemy_killed_by_type("shield", "count") 
-					+ self:enemy_killed_by_type("spooc", "count") 
-					+ self:enemy_killed_by_type("tank", "count") 
-					+ self:enemy_killed_by_type("taser", "count")
-					+ self:enemy_killed_by_type("medic", "count")
+		local count = 0
+		for _, id in ipairs(self.special_unit_ids) do
+			count = count + self:enemy_killed_by_type(id, "count") 
+		end
+		return count
+	end
+	
+	function StatisticsManager:session_total_tanks_killed()
+		return self:session_enemy_killed_by_type("tank", "count") 
+			+ self:session_enemy_killed_by_type("tank_green", "count")
+			+ self:session_enemy_killed_by_type("tank_black", "count")
+			+ self:session_enemy_killed_by_type("tank_skull", "count")
+			+ self:session_enemy_killed_by_type("tank_hw", "count")
+	end
+	
+	function StatisticsManager:total_tanks_killed()
+		return self:enemy_killed_by_type("tank", "count") 
+			+ self:enemy_killed_by_type("tank_green", "count")
+			+ self:enemy_killed_by_type("tank_black", "count")
+			+ self:enemy_killed_by_type("tank_skull", "count")
+			+ self:enemy_killed_by_type("tank_hw", "count")
 	end
 	
 	function StatisticsManager:total_downed_alltime()

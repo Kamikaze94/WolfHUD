@@ -2,9 +2,8 @@ if not _G.WolfHUD then
 	_G.WolfHUD = {}
 	WolfHUD.mod_path = ModPath
 	WolfHUD.save_path = SavePath
-	WolfHUD.settings_path = WolfHUD.save_path .. "WolfHUD.txt"
-	WolfHUD.colors_file = "WolfHUD_Colors.txt"
-	WolfHUD.inv_names_file = "WolfHUD_InventoryNames.txt"
+	WolfHUD.settings_path = WolfHUD.save_path .. "WolfHUD.json"
+	WolfHUD.tweak_file = "WolfHUDTweakData.lua"
 	WolfHUD.LOG_MODE = { error = true, warning = false, info = false }		-- error, info, warning or all
 	WolfHUD.version = "1.0"
 	WolfHUD.menu_ids = { 
@@ -35,50 +34,20 @@ if not _G.WolfHUD then
 		"wolfhud_gadget_options_menu",
 		"wolfhud_gadget_laser_options_menu"
 	}
-	WolfHUD.settings = {}
 	
-	if not WolfHUD.color_table then
-		WolfHUD.color_table = { -- namestring is always 'wolfhud_colors_<name>'
-			{ color = 'FFFFFF', name = "white" },
-			{ color = 'F2F250', name = "light_yellow" },
-			{ color = 'F2C24E', name = "light_orange" },
-			{ color = 'E55858', name = "light_red" },
-			{ color = 'CC55CC', name = "light_purple" },
-			{ color = '00FF00', name = "light_green" },
-			{ color = '00FFFF', name = "light_blue" },
-			{ color = 'BABABA', name = "light_gray" },
-			{ color = 'FFFF00', name = "yellow" },
-			{ color = 'FFA500', name = "orange" },
-			{ color = 'FF0000', name = "red" },
-			{ color = '800080', name = "purple" },
-			{ color = '008000', name = "green" },
-			{ color = '0000FF', name = "blue" },
-			{ color = '808080', name = "gray" },
-			{ color = '000000', name = "black" },
-			{ color = '000000', name = "rainbow" },
-		}
-	end
-	if not WolfHUD.inventory_names then		
-		
-		if io.file_is_readable(WolfHUD.mod_path .. WolfHUD.inv_names_file) then
-			if not io.file_is_readable(WolfHUD.save_path ..WolfHUD.inv_names_file) then
-				local source = io.open(WolfHUD.mod_path .. WolfHUD.inv_names_file, "r")
-				local dest = io.open(WolfHUD.save_path ..WolfHUD.inv_names_file, "w+")
-				if source and dest then
-					dest:write(source:read("*all"))
-					source:close()
-					dest:close()
-				end
-			end
-			os.remove(WolfHUD.mod_path .. WolfHUD.inv_names_file)
+	if not WolfHUD.tweak_path then		-- Populate tweak data
+		local tweak_path = string.format("%s%s", WolfHUD.save_path, WolfHUD.tweak_file)
+		if not io.file_is_readable(tweak_path) then
+			tweak_path = string.format("%s%s", WolfHUD.mod_path, WolfHUD.tweak_file)
 		end
-		
-		local file = io.open(WolfHUD.save_path .. WolfHUD.inv_names_file, "r")
-		if file then
-			WolfHUD.inventory_names = json.decode(file:read("*all"))
-			file:close()
+		if io.file_is_readable(tweak_path) then
+			dofile(tweak_path)
+			WolfHUD.tweak_data = WolfHUDTweakData:new()
+		else
+			WolfHUD:print_log(string.format("Tweak Data file couldn't be found! (%s)", tweak_path), "error")
 		end
 	end
+	WolfHUD.settings = {}
 	
 	WolfHUD.hook_files = WolfHUD.hook_files or {
 		["lib/setups/setup"] = { "GameInfoManager.lua", "WaypointsManager.lua" },
@@ -104,7 +73,7 @@ if not _G.WolfHUD then
 		["lib/managers/hud/hudsuspicion"] = { "NumbericSuspicion.lua" },
 		["lib/managers/hud/hudhitdirection"] = { "DamageIndicator.lua" },
 		["lib/managers/enemymanager"] = { "GameInfoManager.lua" },
-		["lib/managers/group_ai_states/groupaistatebase"] = { "GameInfoManager.lua", "PacifiedCivs.lua", "CustomWaypoints.lua" },
+		["lib/managers/group_ai_states/groupaistatebase"] = { "GameInfoManager.lua", "PacifiedCivs.lua" },
 		["lib/managers/missionassetsmanager"] = { "BuyAllAsset.lua" },
 		["lib/managers/menu/blackmarketgui"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/stageendscreengui"] = { "MenuTweaks.lua" },
@@ -112,7 +81,7 @@ if not _G.WolfHUD then
 		["lib/managers/menu/skilltreeguinew"] = { "MenuTweaks.lua" },
 		["lib/managers/menu/renderers/menunodeskillswitchgui"] = { "MenuTweaks.lua" },
 		["lib/managers/objectinteractionmanager"] = { "GameInfoManager.lua", "HUDList.lua", "Interaction.lua" },
-		["lib/network/handlers/unitnetworkhandler"] = { "DownCounter.lua", "GameInfoManager.lua" },
+		["lib/network/handlers/unitnetworkhandler"] = { "DownCounter.lua", "GameInfoManager.lua", "NetworkHandler.lua" },
 		["lib/units/props/timergui"] = { "GameInfoManager.lua" },
 		["lib/units/props/digitalgui"] = { "GameInfoManager.lua" },
 		["lib/units/props/securitylockgui"] = { "GameInfoManager.lua" },
@@ -140,6 +109,7 @@ if not _G.WolfHUD then
 		["lib/units/beings/player/huskplayermovement"] = { "DownCounter.lua" },
 		["lib/units/beings/player/states/playercivilian"] = { "Interaction.lua" },
 		["lib/units/beings/player/states/playerstandard"] = { "GameInfoManager.lua", "EnemyHealthbar.lua", "Interaction.lua", "BurstFire.lua", "WeaponGadgets.lua" },
+		["lib/units/beings/player/states/playermaskoff"] = { "GameInfoManager.lua" },
 		["lib/units/beings/player/states/playerbleedout"] = { "DownCounter.lua" },
 		["lib/units/vehicles/vehicledamage"] = { "DamageIndicator.lua" },
 		["lib/units/vehicles/vehicledrivingext"] = { "CustomWaypoints.lua" },
@@ -294,6 +264,7 @@ if not _G.WolfHUD then
 			show_timers 							= true,     --Drills, time locks, hacking etc.
 			show_ammo_bags							= true,  	--Deployables (ammo)
 			show_doc_bags							= true,  	--Deployables (doc bags)
+			show_first_aid_kits						= false,	--Deployables (first_aid_kits)
 			show_body_bags							= true,  	--Deployables (body bags)
 			show_grenade_crates						= true,  	--Deployables (grenades)
 			show_sentries 							= true,   	--Deployable sentries
@@ -470,9 +441,10 @@ if not _G.WolfHUD then
 				log_table(text)
 				return
 			elseif type(text) == "function" then
-				text = "Error, cannot log function... " 
+				msg_type = "error"
+				text = "Cannot log function... " 
 			end
-			log("[WolfHUD] " .. tostring(text))
+			log(string.format("[WolfHUD] %s: %s", string.upper(msg_type), text))
 		end
 	end
 	
@@ -510,33 +482,33 @@ if not _G.WolfHUD then
 	
 	function WolfHUD:AskOverride(data, setting, notif_id)
 		local menu_options = {
-		[1] = {
-			text = managers.localization:text("dialog_yes"),
-			callback = function(self, item)
-				WolfHUD.settings[setting] = true
-				WolfHUD:Save()
-				WolfHUD:createOverrides(data)
-				if notif_id and NotificationsManager:NotificationExists( notif_id ) then
-					NotificationsManager:UpdateNotification( notif_id, 
-						managers.localization:text("woldhud_notification_restart_override_title", { NAME = data.display_name }), 
-						managers.localization:text("woldhud_notification_restart_override_desc"), 20, function() end	
-					)
-				end
-			end,
-		},
-		[2] = {
-			text = managers.localization:text("dialog_no"),
-			callback = function(self, item)
-				WolfHUD.settings[setting] = false
-				WolfHUD:Save()
-				WolfHUD:createOverrideNotification(data, setting)
-			end,
-		},
-		[3] = {
-			text = managers.localization:text("wolfhud_dialog_remind_later"),
-			is_cancel_button = true,
-		},
-}
+			[1] = {
+				text = managers.localization:text("dialog_yes"),
+				callback = function(self, item)
+					WolfHUD.settings[setting] = true
+					WolfHUD:Save()
+					WolfHUD:createOverrides(data)
+					if notif_id and NotificationsManager:NotificationExists( notif_id ) then
+						NotificationsManager:UpdateNotification( notif_id, 
+							managers.localization:text("woldhud_notification_restart_override_title", { NAME = data.display_name }), 
+							managers.localization:text("woldhud_notification_restart_override_desc"), 20, function() end	
+						)
+					end
+				end,
+			},
+			[2] = {
+				text = managers.localization:text("dialog_no"),
+				callback = function(self, item)
+					WolfHUD.settings[setting] = false
+					WolfHUD:Save()
+					WolfHUD:createOverrideNotification(data, setting)
+				end,
+			},
+			[3] = {
+				text = managers.localization:text("wolfhud_dialog_remind_later"),
+				is_cancel_button = true,
+			},
+		}
 		return QuickMenu:new( managers.localization:text("wolfhud_dialog_install_title", { NAME = data["display_name"] }), 
 								string.format("%s\n\n%s", managers.localization:text(string.format("wolfhud_dialog_install_%s_desc", data["identifier"])), managers.localization:text("wolfhud_dialog_install_desc", { NAME = data["display_name"]})) ,
 								menu_options, true )
@@ -598,11 +570,11 @@ if not _G.WolfHUD then
 	function WolfHUD:getSetting(id, val_type, default)
 		local value = self.settings[id]
 		if value ~= nil and (not val_type or type(value) == val_type or val_type == "color" and type(value) == "string") then
-			local value = self.settings[id]
 			if val_type == "color" then
 				local id = self:getColorID(value)
-				if id then
-					return Color(self.color_table[id].color)
+				local color_table = self:getTweakEntry("color_table", "table")
+				if id and color_table then
+					return Color(color_table[id].color)
 				end
 			else
 				return value
@@ -624,30 +596,30 @@ if not _G.WolfHUD then
 		end
 	end
 	
-	
-	function WolfHUD:populate_colors()
-		if io.file_is_readable(self.save_path .. self.colors_file) then
-			local file = io.open(self.save_path .. self.colors_file, "r")
-			if file then
-				local colors = json.decode(file:read("*all"))
-				for k, v in ipairs(colors) do
-					if not self:getColorID(v.name) then
-						table.insert(self.color_table, v)
-					end
+	function WolfHUD:getTweakEntry(id, val_type, default)
+		local value = self.tweak_data[id]
+		if value ~= nil and (not val_type or type(value) == val_type) then
+			return value
+		else
+			self:print_log("Requested tweak_entry doesn't exists!  (id='" .. id .. "', type='" .. tostring(val_type) .. "') ", "error")
+			if default == nil then
+				if val_type == "number" then -- Try to prevent crash by giving default value
+					default = 1
+				elseif val_type == "boolean" then 
+					default = false
+				elseif val_type == "string" then 
+					default = ""
+				elseif val_type == "table" then
+					default = {}
 				end
-				file:close()
-			end
-		end
-		local file = io.open(self.save_path .. self.colors_file, "w+")
-		if file then
-			file:write(json.encode(self.color_table))
-			file:close()
+			end			
+			return default
 		end
 	end
 	
 	function WolfHUD:getColorID(name)
-		if type(name) == "string" then
-			for i, data in ipairs(WolfHUD.color_table) do
+		if tweak_data and type(name) == "string" then
+			for i, data in ipairs(self:getTweakEntry("color_table", "table")) do
 				if name == data.name then
 					return i
 				end
@@ -655,13 +627,13 @@ if not _G.WolfHUD then
 		end
 	end
 	
-	WolfHUD:populate_colors()
 	WolfHUD:Reset()
 	WolfHUD:Load()
 end
 
 if RequiredScript then
 	local requiredScript = RequiredScript:lower()
+	
 	if WolfHUD.hook_files[requiredScript] then
 		for __, file in ipairs(WolfHUD.hook_files[requiredScript]) do
 			dofile( WolfHUD.mod_path .. "lua/" .. file )
@@ -679,31 +651,36 @@ if MenuNodeMainGui then
 end
 
 Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", function(loc)
-	local chinese = false
-	for k, v in pairs(LuaModManager.Mods) do
-		local info = v.definition
-		if info["name"] == "ChnMod" then
-			chinese = true
-			break
-		end
-	end
-	if chinese then
-		loc:load_localization_file(WolfHUD.mod_path .. "loc/chinese.json")
-	elseif _G.PD2KR then
-		loc:load_localization_file(WolfHUD.mod_path .. "loc/korean.json")
-	else
-		for _, filename in pairs(file.GetFiles(WolfHUD.mod_path .. "loc/")) do
-			local str = filename:match('^(.*).json$')
-			if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
-				loc:load_localization_file(WolfHUD.mod_path .. "loc/" .. filename)
+	local loc_path = WolfHUD.mod_path .. "loc/"
+	if file.DirectoryExists( loc_path ) then
+		local chinese = false
+		for k, v in pairs(LuaModManager.Mods) do
+			local info = v.definition
+			if info["name"] == "ChnMod" then
+				chinese = true
 				break
 			end
 		end
-	end
-	loc:load_localization_file(WolfHUD.mod_path .. "loc/english.json", false)
-	
-	if WolfHUD:getSetting("replace_weapon_names", "boolean") then
-		loc:load_localization_file(WolfHUD.mod_path .. "loc/RealWeaponNames.json")
+		if chinese then
+			loc:load_localization_file(loc_path .. "chinese.json")
+		elseif _G.PD2KR then
+			loc:load_localization_file(loc_path .. "korean.json")
+		else
+			for _, filename in pairs(file.GetFiles(loc_path)) do
+				local str = filename:match('^(.*).json$')
+				if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
+					loc:load_localization_file(WolfHUD.mod_path .. "loc/" .. filename)
+					break
+				end
+			end
+		end
+		loc:load_localization_file(WolfHUD.mod_path .. "loc/english.json", false)
+		
+		if WolfHUD:getSetting("replace_weapon_names", "boolean") then
+			loc:load_localization_file(WolfHUD.mod_path .. "loc/RealWeaponNames.json")
+		end
+	else
+		WolfHUD:print_log("Localization folder seems to be missing!", "error")
 	end
 	
 	if WolfHUD:getSetting("skip_blackscreen", "boolean") then
@@ -914,47 +891,52 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/hud_drivinghud.json", 			WolfHUD, WolfHUD.settings)
 	
 	Hooks:Add( "MenuManagerPostInitialize", "MenuManagerPostInitialize_WolfHUD", function( menu_manager )
-		for __, menu_id in ipairs(WolfHUD.menu_ids) do
-			local menu = MenuHelper:GetMenu(menu_id)
-			if menu then
-				for __, menu_item in ipairs(menu._items) do
-					if menu_item and menu_item._type == "multi_choice" and #menu_item._options <= 1 then
-						menu_item:clear_options()
-						local add_rainbow = #menu_item._options > 0
-						for k, v in ipairs(WolfHUD.color_table) do
-							if add_rainbow or v.name ~= "rainbow" then
-								local color_name = managers.localization:text("wolfhud_colors_" .. v.name)
-								color_name = not color_name:lower():find("error") and color_name or string.upper(v.name)
-								local params = {
-									_meta = "option",
-									text_id = color_name,
-									value = v.name,
-									localize = false,
-									color = Color(v.color),
-								}
-								if v.name == "rainbow" then
-									local rainbow_colors = { Color('FE0E31'), Color('FB9413'), Color('F7F90F'), Color('3BC529'), Color('00FFFF'), Color('475DE7'), Color('B444E4'), Color('F46FE6') }
-									params.color = rainbow_colors[1]
-									for i = 0, color_name:len() do
-										params["color" .. i] = rainbow_colors[(i % #rainbow_colors) + 1]
-										params["color_start" .. i] = i
-										params["color_stop" .. i] = i + 1
+		local color_table = WolfHUD:getTweakEntry("color_table", "table")
+		if color_table then 
+			for __, menu_id in ipairs(WolfHUD.menu_ids) do
+				local menu = MenuHelper:GetMenu(menu_id)
+				if menu then
+					for __, menu_item in ipairs(menu._items) do
+						if menu_item and menu_item._type == "multi_choice" and #menu_item._options <= 1 then
+							menu_item:clear_options()
+							local add_rainbow = #menu_item._options > 0
+							for k, v in ipairs(color_table or {}) do
+								if add_rainbow or v.name ~= "rainbow" then
+									local color_name = managers.localization:text("wolfhud_colors_" .. v.name)
+									color_name = not color_name:lower():find("error") and color_name or string.upper(v.name)
+									local params = {
+										_meta = "option",
+										text_id = color_name,
+										value = v.name,
+										localize = false,
+										color = Color(v.color),
+									}
+									if v.name == "rainbow" then
+										local rainbow_colors = { Color('FE0E31'), Color('FB9413'), Color('F7F90F'), Color('3BC529'), Color('00FFFF'), Color('475DE7'), Color('B444E4'), Color('F46FE6') }
+										params.color = rainbow_colors[1]
+										for i = 0, color_name:len() do
+											params["color" .. i] = rainbow_colors[(i % #rainbow_colors) + 1]
+											params["color_start" .. i] = i
+											params["color_stop" .. i] = i + 1
+										end
 									end
+									
+									menu_item:add_option(CoreMenuItemOption.ItemOption:new(params))
 								end
-								
-								menu_item:add_option(CoreMenuItemOption.ItemOption:new(params))
 							end
-						end
-						menu_item:_show_options(nil)
-						local item_id = menu_item:parameters().name
-						local value = WolfHUD:getSetting(tostring(item_id), "string")
-						menu_item:set_value(value)
-						for __, clbk in pairs( menu_item:parameters().callback ) do
-							clbk(menu_item)
+							menu_item:_show_options(nil)
+							local item_id = menu_item:parameters().name
+							local value = WolfHUD:getSetting(tostring(item_id), "string")
+							menu_item:set_value(value)
+							for __, clbk in pairs( menu_item:parameters().callback ) do
+								clbk(menu_item)
+							end
 						end
 					end
 				end
 			end
+		else
+			WolfHUD:print_log("Tweak_Data not found!", "error")
 		end
 	end)
 end)

@@ -6,6 +6,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	local set_buff_enabled_original = HUDAssaultCorner.set_buff_enabled
 	local show_casing_original = HUDAssaultCorner.show_casing
 	local hide_casing_original = HUDAssaultCorner.hide_casing
+	local set_assault_wave_number_original = HUDAssaultCorner.set_assault_wave_number
 	local _animate_wave_started_original = HUDAssaultCorner._animate_wave_started
 	local _animate_wave_completed_original = HUDAssaultCorner._animate_wave_completed
 	 
@@ -117,7 +118,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		self:update_hudlist_offset(false)
 	end
 
-	function HUDAssaultCorner:set_control_info(...) end
 	function HUDAssaultCorner:show_casing(...) 
 --		show_casing_original(self, ...)
 --		self:update_hudlist_offset(true)
@@ -145,6 +145,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		self._wave_text:set_text(self:get_completed_waves_string())
 		
 		return _animate_wave_completed_original(self, ...)
+	end
+	
+	function HUDAssaultCorner:set_assault_wave_number(...)
+		self._wave_text:set_text(self:get_completed_waves_string())
+		
+		return set_assault_wave_number_original(self, ...)
 	end
 	
 	function HUDAssaultCorner:locked_assault(status)

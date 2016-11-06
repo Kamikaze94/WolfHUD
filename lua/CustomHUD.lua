@@ -754,11 +754,17 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:_set_layout(state == "player" and true or false)
 	end
 	
-	function HUDTeammateCustom:teammate_progress(enabled, tweak_data_id, timer, success)
+	function HUDTeammateCustom:teammate_progress(enabled, tweak_data, timer, success)
 		if enabled then
-			self:call_listeners("interaction_start", tweak_data_id, timer)
+			self:call_listeners("interaction_start", tweak_data, timer)
 		else
 			self:call_listeners("interaction_stop", success)
+		end
+	end
+	
+	function HUDTeammateCustom:set_interaction_tweak(enabled, tweak_data)
+		if enabled then
+			self:call_listeners("interaction_tweak", tweak_data)
 		end
 	end
 	
@@ -1261,7 +1267,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			local skill_string = ""
 			
 			for sub_tree = 1, 3, 1 do
-				local skills = data[(tree-1) * 3 + sub_tree]
+				local skills = data[(tree-1) * 3 + sub_tree] or 0
 				skill_string = string.format("%s%02d%s", skill_string, tonumber(skills), sub_tree < 3 and "|" or "")
 				if tonumber(skills) > 0 then
 					tree_has_points = true
@@ -1916,6 +1922,14 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.PlayerStatus:set_revives(value)
 		self:set_downs(value)
+		
+		if value == 0 then
+			self._downs_counter:stop()
+			self._downs_counter:animate(callback(self, self, "_animate_low_life"), self._downs_counter:h() * 0.65, self._downs_counter:h() * 0.95)
+		else
+			self._downs_counter:stop()
+			self._downs_counter:set_font_size(self._size * 0.2)
+		end
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:increment_downs()
@@ -2058,6 +2072,16 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			stamina_radial:set_alpha(math.sin(360 * t * 2) * 0.3 + 0.6)
 		end
 		stamina_radial:set_alpha(1)
+	end
+	
+	function PlayerInfoComponent.PlayerStatus:_animate_low_life(text, min_size, max_size)
+		local t = 0
+		
+		while alive(text) do
+			local r = math.sin(t * 360) * 0.5 + 0.5
+			text:set_font_size(math.lerp(min_size, max_size, r))
+			t = t + coroutine.yield()
+		end
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:_animate_timer(timer, initial)
@@ -3278,6 +3302,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		self._settings = settings
 		self._min_width = 0
+		self._tweak_data = tweak_data.interaction
 		
 		self._bg = self._panel:rect({
 			name = "bg",
@@ -3341,11 +3366,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:set_alpha(0)
 
 		self._owner:register_listener("Interaction", { "interaction_start" }, callback(self, self, "start"), false)
+		self._owner:register_listener("Interaction", { "interaction_tweak" }, callback(self, self, "set_tweak_data"), false)
 		self._owner:register_listener("Interaction", { "interaction_stop" }, callback(self, self, "stop"), false)
 	end
 	
 	function PlayerInfoComponent.Interaction:destroy()
-		self._owner:unregister_listener("Interaction", { "interaction_start", "interaction_stop" })
+		self._owner:unregister_listener("Interaction", { "interaction_start", "interaction_stop", "interaction_tweak" })
 		PlayerInfoComponent.Interaction.super.destroy(self)
 	end
 	
@@ -3376,14 +3402,25 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._panel:stop()
 		
 		if not self._settings.INTERACTION.HIDE and (self._settings.INTERACTION.MIN_DURATION or 0) <= timer then
-			local action_text_id = tweak_data.interaction[id] and tweak_data.interaction[id].action_text_id or "hud_action_generic"
-			local text = action_text_id and managers.localization:text(action_text_id) or ""
+			local tweak_entry = self._tweak_data[id]
+			local text_id, macros = "hud_action_generic", {}
+			if tweak_entry then
+				text_id = tweak_entry.action_text_id or "hud_deploying_equipment"
+				macros = { EQUIPMENT = (tweak_entry.text_id and managers.localization:text(tweak_entry.text_id) or ""), BTN_INTERACT = managers.localization:get_default_macro("BTN_INTERACT") }
+			end
+			local text = managers.localization:to_upper_text(text_id, macros) or ""
 			
 			self:set_enabled("active", true)
 			self._text:set_color(Color.white)
-			self._text:set_text(string.format("%s (%.1fs)", utf8.to_upper(text), timer))
+			self._text:set_text(string.format("%s (%.1fs)", text, timer))
 			self:arrange()
 			self._panel:animate(callback(self, self, "_animate"), timer)
+		end
+	end
+	
+	function PlayerInfoComponent.Interaction:set_tweak_data(tweak_data)
+		if tweak_data then
+			self._tweak_data = tweak_data
 		end
 	end
 	
@@ -3596,6 +3633,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	local set_stamina_value_original = HUDManager.set_stamina_value
 	local set_max_stamina_original = HUDManager.set_max_stamina
 	local set_mugshot_voice_original = HUDManager.set_mugshot_voice
+	local teammate_progress_original = HUDManager.teammate_progress
 	local set_teammate_carry_info_original = HUDManager.set_teammate_carry_info
 	local remove_teammate_carry_info_original = HUDManager.remove_teammate_carry_info
 	
@@ -3722,6 +3760,24 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		return set_mugshot_voice_original(self, id, active, ...)
 	end
 	
+	function HUDManager:teammate_progress(peer_id, type_index, enabled, tweak_data_id, timer, success, ...)		
+		local interact_tweak
+		if type_index == 1 then
+			interact_tweak = tweak_data.interaction
+		elseif type_index == 2 then
+			interact_tweak = tweak_data.equipments
+		elseif type_index == 3 then
+			interact_tweak = { [tweak_data_id] = { action_text_id = "hud_starting_heist" } }
+		end
+		
+		local character_data = managers.criminals:character_data_by_peer_id(peer_id)
+		if character_data and interact_tweak then
+			self._teammate_panels[character_data.panel_id]:set_interaction_tweak(enabled, interact_tweak)
+		end
+		
+		teammate_progress_original(self, peer_id, type_index, enabled, tweak_data_id, timer, success, ...)
+	end
+	
 	function HUDManager:set_teammate_carry_info(i, ...)
 		if i == HUDManager.PLAYER_PANEL then
 			self._bag_presenter:set_carry(...)
@@ -3797,7 +3853,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			player_hud:set_alignment((player_pos < 3) and "left" or "right")
 			teammate_offset[player_pos] = teammate_offset[player_pos] + player_panel:h() + MARGIN
 			
-			local j = 1
+			local j = 0
+			local MAX_STACK_SIZE = math.max(math.ceil(#self._teammate_panels / 2), 7)
 			local teammate_pos = { math.clamp(WolfHUD:getSetting("TEAM_POSITION", "number", 1), 1, 3) }
 			table.insert(teammate_pos, (teammate_pos[1] > 1 and 1 or 3))
 			
@@ -3805,7 +3862,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				local panel = teammate:panel()
 				
 				if i ~= HUDManager.PLAYER_PANEL and panel:visible() then
-					local team_stack = j < 7 and 1 or 2
+					local team_stack = j < MAX_STACK_SIZE and 1 or 2
 					
 					panel:set_center_x(getW(hud_w, panel:w(), teammate_pos[team_stack]))
 					panel:set_bottom(hud_h - teammate_offset[teammate_pos[team_stack]])

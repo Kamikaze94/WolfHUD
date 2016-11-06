@@ -1,6 +1,14 @@
 
-printf = function(...) 
+print_info = function(...) 
 	WolfHUD:print_log(string.format(...), "info")
+end
+
+print_warning = function(...) 
+	WolfHUD:print_log(string.format(...), "warning")
+end
+
+print_error = function(...) 
+	WolfHUD:print_log(string.format(...), "error")
 end
 
 if string.lower(RequiredScript) == "lib/setups/setup" then
@@ -153,6 +161,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			thermite = 							"_special_equipment_interaction_handler",
 			gasoline = 							"_special_equipment_interaction_handler",	--Spots to place gas canister
 			c4_consume = 						"_special_equipment_interaction_handler",	-- Spots to place mission c4
+			c4_consume_x1 = 					"_special_equipment_interaction_handler",
 			--c4_bag = 							"_special_equipment_interaction_handler", 	-- Yellow bag, pickup c4
 			gasoline_engine = 					"_special_equipment_interaction_handler",
 			gen_pku_thermite = 					"_special_equipment_interaction_handler",
@@ -302,6 +311,11 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	GameInfoManager._INTERACTIONS.IGNORE_IDS.watchdogs_2_day = table.deep_map_copy(GameInfoManager._INTERACTIONS.IGNORE_IDS.watchdogs_2)
 	GameInfoManager._INTERACTIONS.IGNORE_IDS.welcome_to_the_jungle_1_night = table.deep_map_copy(GameInfoManager._INTERACTIONS.IGNORE_IDS.welcome_to_the_jungle_1)
 	
+	GameInfoManager._CAMERAS = {
+		["6c5d032fe7e08d01"] = "standard",
+		["490a9313f945cccf"] = "drone",
+	}
+	
 	GameInfoManager._EQUIPMENT = {
 		SENTRY_KEYS = {
 			--unit:name():key() for friendly sentries
@@ -315,13 +329,14 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			doctor_bag =						"doc_bag",
 			first_aid_kit = 					"first_aid_kit",
 			bodybags_bag =						"body_bag",
-			grenade_crate =					"grenade_crate",
+			grenade_crate =						"grenade_crate",
 		},
 		AMOUNT_OFFSETS = {
 			--interaction_id or editor_id
 			firstaid_box = -1,	--GGC drill asset, HB infirmary
 		},
 		AGGREAGATE_ITEMS = {
+			["first_aid_kit"] = "first_aid_kits",
 			[136859] = "hb_armory_grenade",
 			[136870] = "hb_armory_grenade",
 			[136869] = "hb_armory_grenade",
@@ -444,6 +459,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	
 	function GameInfoManager:init()
 		self._t = 0
+		self._scheduled_callbacks = {}
 		self._listeners = {}
 		
 		self._timers = {}
@@ -452,7 +468,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		self._minions = {}
 		self._turrets = {}
 		self._pagers = {}
-		self._cams = {}
+		self._cameras = {}
 		self._bodybag_amount = 0
 		self._loot = {}
 		self._special_equipment = {}
@@ -467,7 +483,6 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		self._sentries = {}
 		self._buffs = {}
 		self._player_actions = {}
-		self._tape_loop = {}
 		
 		self._auto_expire_timers = {
 			on_expire = {},
@@ -477,10 +492,37 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		self._timed_stack_expire_clbk = callback(self, self, "_on_timed_stack_expired")
 		self._player_actions_expire_clbk = callback(self, self, "_on_player_action_expired")
 	end
-	
+
 	function GameInfoManager:update(t, dt)
-		self:_update_player_timer_expiration(t, dt)
+		self._t = t
+ 		self:_update_player_timer_expiration(t, dt)
+		
+		while self._scheduled_callbacks[1] and self._scheduled_callbacks[1].t <= t do
+			local data = table.remove(self._scheduled_callbacks, 1)
+			data.clbk(unpack(data.args))
+		end
 	end
+	
+	function GameInfoManager:add_scheduled_callback(id, delay, clbk, ...)
+		local t = self._t + delay
+		local pos = 1
+		
+		for i, data in ipairs(self._scheduled_callbacks) do
+			if data.t >= t then break end
+			pos = pos + 1
+		end
+		
+		table.insert(self._scheduled_callbacks, pos, { id = id, t = t, clbk = clbk, args = { ... } })
+	end
+	
+	function GameInfoManager:remove_scheduled_callback(id)
+		for i = 1, #self._scheduled_callbacks, 1 do
+			if data.id == id then
+				table.remove(self._scheduled_callbacks, i)
+				i = i - 1
+			end
+		end
+ 	end
 	
 	function GameInfoManager:event(source, ...)
 		local target = "_" .. source .. "_event"
@@ -488,7 +530,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		if self[target] then
 			self[target](self, ...)
 		else
-			printf("Error: No event handler for %s", target)
+			print_warning("(GameInfo) No event handler for %s", target)
 		end
 	end
 	
@@ -532,14 +574,6 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		end
 	end
 	
-	function GameInfoManager:get_cams(key)
-		if key then
-			return self._cams[key]
-		else
-			return self._cams
-		end
-	end
-	
 	function GameInfoManager:get_bodybag_amount()
 		return self._bodybag_amount
 	end
@@ -568,11 +602,11 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		end
 	end
 	
-	function GameInfoManager:get_tape_loop(key)
+	function GameInfoManager:get_cameras(key)
 		if key then
-			return self._tape_loop[key]
+			return self._cameras[key]
 		else
-			return self._tape_loop
+			return self._cameras
 		end
 	end
 	
@@ -744,7 +778,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			local carry_id = data.unit:carry_data() and data.unit:carry_data():carry_id() or lookup.INTERACTION_TO_CARRY[data.interact_id] or (self._loot[key] and self._loot[key].carry_id)
 			
 			if carry_id then
-				printf("%s - %s: %d", event, carry_id, data.editor_id)
+				print_info("(GameInfo) %s - %s: %d", event, carry_id, data.editor_id)
 				data.carry_id = carry_id
 				self:_loot_interaction_handler(event, key, data)
 			else
@@ -782,37 +816,51 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	end
 	
 	function GameInfoManager:_camera_event(event, key, data)
-		if event == "add" then
-			if not self._cams[key] then
-				self._cams[key] = { unit = data.unit, active = true, destroyed = false }
-				self:_listener_callback("camera", "add", key, self._cams[key])
-			else
-				self._cams[key].active = true
+		if event == "create" then
+			if not self._cameras[key] then
+				local type = GameInfoManager._CAMERAS[tostring(data.unit:name():key())]
+				local is_drone = type == "drone"
+				self._cameras[key] = { unit = data.unit, type = type, is_drone = is_drone }
+				if is_drone then
+					self._cameras[key].enabled = true
+				end
+				--self._cameras[key].enabled = data.enabled or false
+				self:_listener_callback("camera", event, key, self._cameras[key])
+				
+				if not type then
+					print_warning("\tUNKNOWN CAMERA UNIT TYPE: %s\n", tostring(data.unit:name():key()))
+				end
 			end
-		elseif event == "enable" then
-			if self._cams[key] and not self._cams[key].active and not self._cams[key].destroyed then
-				self._cams[key].active = true
-				self:_listener_callback("camera", "enable", key, self._cams[key])
+		elseif self._cameras[key] then
+			if event == "set_active" then
+				self._cameras[key].active = data.active
+			elseif event == "set_enabled" then
+				self._cameras[key].enabled = self._cameras[key].is_drone or data.enabled
+			elseif event == "start_tape_loop" then
+				self._cameras[key].tape_loop_expire_t = data.tape_loop_expire_t
+			elseif event == "stop_tape_loop" then
+				self._cameras[key].tape_loopexpire_t = nil
+			elseif event == "set_broken" then
+				self._cameras[key].broken = data.broken
+			elseif event == "destroy" then
+				self._cameras[key] = nil
 			end
-		
-		elseif event == "disable" then
-			if self._cams[key] and self._cams[key].active and not self._cams[key].destroyed then
-				self._cams[key].active = false
-				self:_listener_callback("camera", "disable", key, self._cams[key])
-			end
-		elseif event == "destroy" then
-			if self._cams[key] and not self._cams[key].destroyed then
-				self._cams[key].active = false
-				self._cams[key].destroyed = true
-				self:_listener_callback("camera", "destroy", key, self._cams[key])
+			
+			self:_listener_callback("camera", event, key, self._cameras[key])
+			
+			if not self._upd_camera_count then
+				self._upd_camera_count = true
+				self:add_scheduled_callback("camera_count", 0.1, callback(self, self, "_recount_active_cameras"))
 			end
 		end
 	end
 	
 	function GameInfoManager:_bodybags_event(event, key, amount)
 		if event == "set" then
+			local change = amount - self._bodybag_amount
 			self._bodybag_amount = amount
 			self:_listener_callback("bodybags", "set", key, self._bodybag_amount)
+			self:_listener_callback("bodybags", "change", key, change)
 		end
 	end
 	
@@ -987,11 +1035,12 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				
 				self._deployables[type][aggregate_key][attr] = total
 				self:_listener_callback(type, "set_" .. attr, aggregate_key, self._deployables[type][aggregate_key])
-				printf("UPDATE AGGREGATE %s: %s", tostring(attr), tostring(total))
+				print_info("(GameInfo) UPDATE AGGREGATE %s: %s", tostring(attr), tostring(total))
 			end
 			
-			local aggregate_key = GameInfoManager._EQUIPMENT.AGGREAGATE_ITEMS[self._deployables[type][key].unit:editor_id()]
-			WolfHUD:print_log(type .. " | " .. self._deployables[type][key].unit:editor_id(), "info")
+			local lookup = GameInfoManager._EQUIPMENT.AGGREAGATE_ITEMS
+			local aggregate_key = lookup[type] or lookup[self._deployables[type][key].unit:editor_id()]
+			print_info("(GameInfo) %s | %s", type, self._deployables[type][key].unit:editor_id())
 			if event == "destroy" then
 				self:_listener_callback(type, "destroy", key, self._deployables[type][key])
 				self._deployables[type][key] = nil
@@ -1075,25 +1124,8 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		end
 	end
 	
-	function GameInfoManager:_tape_loop_event(event, key, data)
-		if event == "start" then
-			if not self._tape_loop[key] then
-				self._tape_loop[key] = { unit = data.unit }
-				self:_listener_callback("tape_loop", "start", key, data)
-			end
-		elseif self._tape_loop[key] then
-			if event == "set_expire_t" then
-				self._tape_loop[key].expire_t = data.expire_t
-				self:_listener_callback("tape_loop", "set_expire_t", key, data)
-			elseif event == "stop" then
-				self:_listener_callback("tape_loop", "stop", key, self._tape_loop[key])
-				self._tape_loop[key] = nil
-			end
- 		end
-	end
-	
 	function GameInfoManager:_sentry_event(event, key, data)
-		printf("GameInfoManager:_sentry_event(%s, %s)", event, key)
+		print_info("GameInfoManager:_sentry_event(%s, %s)", event, key)
 		
 		if event == "create" then
 			if not self._sentries[key] and GameInfoManager._EQUIPMENT.SENTRY_KEYS[tostring(data.unit:name():key())] then
@@ -1135,7 +1167,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				self:_buff_event("set_value", id, { value = data.value })
 			end
 		else
-			printf("Unknown temporary buff event: %s, %s, %s", event, data.category, data.upgrade)
+			print_warning("Unknown temporary buff event: %s, %s, %s", event, data.category, data.upgrade)
 		end
 	end
 	
@@ -1151,7 +1183,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	end
 	
 	function GameInfoManager:_timed_stack_buff_event(event, id, data)
-		printf("GameInfoManager:_timed_stack_buff_event(%s, %s, %s)", tostring(event), tostring(id), tostring(data))
+		print_info("GameInfoManager:_timed_stack_buff_event(%s, %s, %s)", tostring(event), tostring(id), tostring(data))
 	
 		if event == "add_stack" then
 			if not self._buffs[id] then
@@ -1175,7 +1207,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	end
 	
 	function GameInfoManager:_buff_event(event, id, data)
-		printf("GameInfoManager:_buff_event(%s, %s)", event, id)
+		print_info("GameInfoManager:_buff_event(%s, %s)", event, id)
 		
 		if event == "activate" then
 			if not self._buffs[id] then
@@ -1248,12 +1280,12 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				end
 			end
 		else
-			printf("Unknown team buff event: %s, %s, %s", event, data.category, data.upgrade)
+			print_warning("Unknown team buff event: %s, %s, %s", event, data.category, data.upgrade)
 		end
 	end
 	
 	function GameInfoManager:_player_action_event(event, id, data)
-		printf("GameInfoManager:_player_action_event(%s, %s)", event, id)
+		print_info("GameInfoManager:_player_action_event(%s, %s)", event, id)
 	
 		if event == "activate" then
 			if not self._player_actions[id] then
@@ -1275,7 +1307,10 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				self._player_actions[id].t = t
 				self._player_actions[id].expire_t = expire_t
 			elseif event == "set_data" then
-				self._player_actions[id].data = data
+				self._player_actions[id].data = self._player_actions[id].data or {}
+				for k, v in pairs(data) do
+					self._player_actions[id].data[k] = v
+				end
 			end
 			
 			self:_listener_callback("player_action", event, id, self._player_actions[id])
@@ -1358,7 +1393,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		local dt = t - self._t
 		self._t = t
 		
-		printf("_update_player_timer_expiration: %f - %f / %f - %f\n", ut, udt, t, dt)
+		print_info("_update_player_timer_expiration: %f - %f / %f - %f\n", ut, udt, t, dt)
 	
 		while self._auto_expire_timers.expire_t[1] and self._auto_expire_timers.expire_t[1].expire_t < t do
 			local data = self._auto_expire_timers.expire_t[1]
@@ -1386,6 +1421,25 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	
 	function GameInfoManager:_on_player_action_expired(t, key, id)
 		self:_player_action_event("deactivate", id)
+	end
+	
+	function GameInfoManager:_recount_active_cameras()
+		local count = 0
+		
+		for key, cam_data in pairs(self._cameras) do
+			if cam_data.enabled then
+				print_info("Camera (%s): D:%s E:%s A:%s B:%s T:%s", key, tostring(cam_data.is_drone and true or false), tostring(cam_data.enabled and true or false), tostring(cam_data.active and true or false), tostring(cam_data.broken and true or false), tostring(cam_data.tape_loop_expire_t and true or false))
+			end
+			
+			if cam_data.enabled and not cam_data.broken and (cam_data.active or cam_data.tape_loop_expire_t) then
+				count = count + 1
+			end
+		end
+		
+		self._upd_camera_count = nil
+		self:_listener_callback("camera_count", "set_count", nil, count)
+		
+		return count
 	end
 	
 end
@@ -1702,8 +1756,10 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 	end
 	
 	function GroupAIStateBase:sync_converted_enemy(converted_enemy, ...)
-		sync_converted_enemy_original(self, converted_enemy, ...)
-		managers.gameinfo:event("minion", "add", tostring(converted_enemy:key()), { unit = converted_enemy })
+		if self._police[converted_enemy:key()] then
+			managers.gameinfo:event("minion", "add", tostring(converted_enemy:key()), { unit = converted_enemy })
+		end
+		return sync_converted_enemy_original(self, converted_enemy, ...)
 	end
 	
 	function GroupAIStateBase:set_whisper_mode(enabled, ...)
@@ -1750,7 +1806,7 @@ if string.lower(RequiredScript) == "lib/network/handlers/unitnetworkhandler" the
 		
 		if self._verify_character(unit) then
 			local key = tostring(unit:key())
-			local damage_mult = joker_level > 0 and tweak_data.upgrades.values.player.convert_enemies_damage_multiplier[joker_level] or 1
+			local damage_mult = managers.player:upgrade_value_by_level("player", "convert_enemies_damage_multiplier", joker_level, 1)
  			
 			managers.gameinfo:event("minion", "add", key, { unit = unit })
 			managers.gameinfo:event("minion", "set_owner", key, { owner = owner_id })
@@ -1768,12 +1824,12 @@ if string.lower(RequiredScript) == "lib/network/handlers/unitnetworkhandler" the
 		return hostage_trade_original(self, unit, ...)
 	end
 	
-	function UnitNetworkHandler:unit_traded(unit, trader, ...)
+	function UnitNetworkHandler:unit_traded(unit, ...)
 		if self._verify_gamestate(self._gamestate_filter.any_ingame) and self._verify_character(unit) then
 			managers.gameinfo:event("minion", "remove", tostring(unit:key()))
 		end
 		
-		return unit_traded_original(self, unit, trader, ...)
+		return unit_traded_original(self, unit, ...)
 	end
 	
 	function UnitNetworkHandler:interaction_set_active(unit, u_id, active, tweak_data, flash, sender, ...)
@@ -1954,33 +2010,16 @@ if string.lower(RequiredScript) == "lib/units/interactions/interactionext" then
 			managers.interaction:remove_unit_clbk(self._unit, old_tweak)
 			managers.interaction:add_unit_clbk(self._unit)
 		end
-
-	--[[
-		if self:active() then
-			managers.interaction:remove_unit_clbk(self._unit)
-		end
-		
-		set_tweak_data_original(self, ...)
-		
-		if self:active() then
-			managers.interaction:add_unit_clbk(self._unit)
-		end
-	]]
 	end
-	
 --[[
-
-	function SecurityCameraInteractionExt:set_active(active, sync, ...)
-		if self._unit:enabled() then
-			if self:active() ~= active then
-				--printf("(%.2f) SecurityCameraInteractionExt:set_active(%s, %s) - %s\n", Application:time(), tostring(active), tostring(sync), tostring(self:active()))
-				SecurityCamera.set_camera_value(tostring(self._unit:key()), active and true or nil)
-			end
-		end
-		SecurityCameraInteractionExt.super.set_active(self, active, sync, ...)
-	end
+	function SecurityCameraInteractionExt:set_active(active, ...)
+		if self:active() ~= active then
+			managers.gameinfo:event("camera", "set_active", tostring(self._unit:key()), { active = active and true or false } )
+ 		end
+		
+		return SecurityCameraInteractionExt_set_active_original(self, active, ...)
+ 	end
 ]]
-	
 end
 
 if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
@@ -1995,25 +2034,26 @@ if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase
 	local destroy_original = ECMJammerBase.destroy
 	
 	function ECMJammerBase:init(unit, ...)
-		managers.gameinfo:event("ecm", "create", tostring(unit:key()), { unit = unit })
+		self._ecm_unit_key = tostring(unit:key())
+		managers.gameinfo:event("ecm", "create", self._ecm_unit_key, { unit = unit })
 		return init_original(self, unit, ...)
 	end
 	
 	function ECMJammerBase:setup(upgrade_lvl, owner, ...)
-		managers.gameinfo:event("ecm", "set_owner", tostring(self._unit:key()), { owner = owner })
-		managers.gameinfo:event("ecm", "set_upgrade_level", tostring(self._unit:key()), { upgrade_level = upgrade_lvl })
+		managers.gameinfo:event("ecm", "set_owner", self._ecm_unit_key, { owner = owner })
+		managers.gameinfo:event("ecm", "set_upgrade_level", self._ecm_unit_key, { upgrade_level = upgrade_lvl })
 		return setup_original(self, upgrade_lvl, owner, ...)
 	end
 	
 	function ECMJammerBase:sync_setup(upgrade_lvl, peer_id, ...)
-		managers.gameinfo:event("ecm", "set_owner", tostring(self._unit:key()), { owner = peer_id })
-		managers.gameinfo:event("ecm", "set_upgrade_level", tostring(self._unit:key()), { upgrade_level = upgrade_lvl })
+		managers.gameinfo:event("ecm", "set_owner", self._ecm_unit_key, { owner = peer_id })
+		managers.gameinfo:event("ecm", "set_upgrade_level", self._ecm_unit_key, { upgrade_level = upgrade_lvl })
 		return sync_setup_original(self, upgrade_lvl, peer_id, ...)
  	end
 	
 	function ECMJammerBase:set_active(active, ...)
 		if self._jammer_active ~= active then
-			managers.gameinfo:event("ecm", "set_jammer_active", tostring(self._unit:key()), { jammer_active = active })
+			managers.gameinfo:event("ecm", "set_jammer_active", self._ecm_unit_key, { jammer_active = active })
 		end
 
 		return set_active_original(self, active, ...)
@@ -2025,13 +2065,13 @@ if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase
 			
 			if self._owner_id == peer_id and managers.player:has_category_upgrade("ecm_jammer", "can_retrigger") then
 				self._retrigger_delay = tweak_data.upgrades.ecm_feedback_retrigger_interval or 60
-				managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), { retrigger_active = true })
+				managers.gameinfo:event("ecm", "set_retrigger_active", self._ecm_unit_key, { retrigger_active = true })
  			end
  		end
-		managers.gameinfo:event("ecm", "set_feedback_active", tostring(self._unit:key()), { feedback_active = state })
+		managers.gameinfo:event("ecm", "set_feedback_active", self._ecm_unit_key, { feedback_active = state })
 		local val = _set_feedback_active_original(self, state, ...)
 		if Network:is_server() then
-			managers.gameinfo:event("ecm", "set_feedback_duration", tostring(self._unit:key()), { feedback_duration = self._feedback_duration, feedback_expire_t = self._feedback_expire_t })
+			managers.gameinfo:event("ecm", "set_feedback_duration", self._ecm_unit_key, { feedback_duration = self._feedback_duration, feedback_expire_t = self._feedback_expire_t })
 		end	
 		return val
 	end
@@ -2040,19 +2080,19 @@ if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase
 		update_original(self, unit, t, dt, ...)
 		
 		if not self._battery_empty then
-			managers.gameinfo:event("ecm", "set_jammer_battery", tostring(self._unit:key()), { jammer_battery = self._battery_life })
+			managers.gameinfo:event("ecm", "set_jammer_battery", self._ecm_unit_key, { jammer_battery = self._battery_life })
  		end
 				
 		if self._retrigger_delay then
 			self._retrigger_delay = self._retrigger_delay - dt
-			managers.gameinfo:event("ecm", "set_retrigger_delay", tostring(self._unit:key()), { retrigger_delay = self._retrigger_delay })
+			managers.gameinfo:event("ecm", "set_retrigger_delay", self._ecm_unit_key, { retrigger_delay = self._retrigger_delay })
 			if self._retrigger_delay <= 0 then
 				self._retrigger_delay = tweak_data.upgrades.ecm_feedback_retrigger_interval or 60
 			end
 		end
 		
 		if self._feedback_active and self._feedback_expire_t and self._feedback_expire_t < t then
-			managers.gameinfo:event("ecm", "set_feedback_active", tostring(self._unit:key()), { feedback_active = false })
+			managers.gameinfo:event("ecm", "set_feedback_active", self._ecm_unit_key, { feedback_active = false })
 		end
 	end
 	
@@ -2061,18 +2101,17 @@ if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase
 		local player_unit = managers.player:player_unit()
 		if alive(owner_unit) and alive(player_unit) and owner_unit:key() == player_unit:key() and managers.player:has_category_upgrade("ecm_jammer", "can_activate_feedback") then
 			self._retrigger_delay = nil
-			managers.gameinfo:event("ecm", "set_retrigger_active", tostring(self._unit:key()), { retrigger_active = false })
+			managers.gameinfo:event("ecm", "set_retrigger_active", self._ecm_unit_key, { retrigger_active = false })
  		end
  		
 		return contour_interaction_original(self, ...)
  	end
 	
 	function ECMJammerBase:destroy(...)
-		local key = tostring(self._unit:key())
-		managers.gameinfo:event("ecm", "set_feedback_active", key, { feedback_active = false })
-		managers.gameinfo:event("ecm", "destroy", key)
+		managers.gameinfo:event("ecm", "set_feedback_active", self._ecm_unit_key, { feedback_active = false })
+		managers.gameinfo:event("ecm", "set_retrigger_active", self._ecm_unit_key, { retrigger_active = false })
+		managers.gameinfo:event("ecm", "destroy", self._ecm_unit_key)
 		destroy_original(self, ...)
-		managers.gameinfo:event("ecm", "set_retrigger_active", key, { retrigger_active = false })
 	end
 	
 end
@@ -2148,7 +2187,7 @@ if string.lower(RequiredScript) == "lib/units/equipment/first_aid_kit/firstaidki
 		local key = tostring(unit:key())
 		managers.gameinfo:event("first_aid_kit", "create", key, { unit = unit })
 		init_original(self, unit, ...)
-		managers.gameinfo:event("first_aid_kit", "set_max_amount", key, { max_amount = 1 })
+		managers.gameinfo:event("first_aid_kit", "set_amount", key, { amount = 1 })
 	end
 	
 	function FirstAidKitBase:sync_setup(bits, peer_id, ...)
@@ -2291,55 +2330,52 @@ end
 
 if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 	
+	local init_original = SecurityCamera.init
 	local _start_tape_loop_original = SecurityCamera._start_tape_loop
 	local _deactivate_tape_loop_restart_original = SecurityCamera._deactivate_tape_loop_restart
 	local _deactivate_tape_loop_original = SecurityCamera._deactivate_tape_loop
 	local on_unit_set_enabled_original = SecurityCamera.on_unit_set_enabled
-	local generate_cooldown_original = SecurityCamera.generate_cooldown
-	
-	local init_original = SecurityCamera.init
 	local set_update_enabled_original = SecurityCamera.set_update_enabled
+	local generate_cooldown_original = SecurityCamera.generate_cooldown
 	local destroy_original = SecurityCamera.destroy
+	
+	function SecurityCamera:init(unit)
+		managers.gameinfo:event("camera", "create", tostring(unit:key()), { unit = unit })
+		return init_original(self, unit)
+	end
 	
 	function SecurityCamera:_start_tape_loop(...)
 		_start_tape_loop_original(self, ...)
-		managers.gameinfo:event("tape_loop", "start", tostring(self._unit:key()), { unit = self._unit })
-		managers.gameinfo:event("tape_loop", "set_expire_t", tostring(self._unit:key()), { expire_t = self._tape_loop_end_t + 6 })
+		managers.gameinfo:event("camera", "start_tape_loop", tostring(self._unit:key()), { tape_loop_expire_t = self._tape_loop_end_t + 5 })
 	end
 	
 	function SecurityCamera:_deactivate_tape_loop_restart(...)
-		managers.gameinfo:event("tape_loop", "stop", tostring(self._unit:key()))
+		managers.gameinfo:event("camera", "stop_tape_loop", tostring(self._unit:key()))
 		return _deactivate_tape_loop_restart_original(self, ...)
  	end
 	
 	function SecurityCamera:_deactivate_tape_loop(...)
-		managers.gameinfo:event("tape_loop", "stop", tostring(self._unit:key()))
-		managers.gameinfo:event("camera", "disable", tostring(self._unit:key()))
+		managers.gameinfo:event("camera", "stop_tape_loop", tostring(self._unit:key()))
 		return _deactivate_tape_loop_original(self, ...)
 	end
 	
-	function SecurityCamera:init(unit)
-		managers.gameinfo:event("camera", "add", tostring(unit:key()), { unit })
-		return init_original(self, unit)
-	end
-	
 
-	function SecurityCamera:on_unit_set_enabled(enabled)
-		if enabled then
-			managers.gameinfo:event("camera", "enable", tostring(self._unit:key()))
-		else
-			managers.gameinfo:event("camera", "disable", tostring(self._unit:key()))
-		end
+	function SecurityCamera:on_unit_set_enabled(enabled, ...)
+		managers.gameinfo:event("camera", "set_enabled", tostring(self._unit:key()), {enabled = enabled})
+		
+		on_unit_set_enabled_original(self, enabled, ...)
 	end
 	
-	function SecurityCamera:set_update_enabled(state)
-		if state then
-			managers.gameinfo:event("camera", "enable", tostring(self._unit:key()))
-		else
-			managers.gameinfo:event("camera", "disable", tostring(self._unit:key()))
-		end
-		return set_update_enabled_original(self, state)
+	function SecurityCamera:set_update_enabled(state, ...)
+		managers.gameinfo:event("camera", "set_active", tostring(self._unit:key()), {active = state})
+		
+		return set_update_enabled_original(self, state, ...)
 	end
+	
+	function SecurityCamera:generate_cooldown(...)
+		managers.gameinfo:event("camera", "set_broken", tostring(self._unit:key()), { broken = true } )
+		return generate_cooldown_original(self, ...)
+ 	end
 	
 	function SecurityCamera:destroy(unit)
 		managers.gameinfo:event("camera", "destroy", tostring(self._unit:key()))
@@ -2880,6 +2916,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	local _interupt_action_interact_original = PlayerStandard._interupt_action_interact
 	local _start_action_use_item_original = PlayerStandard._start_action_use_item
 	local _interupt_action_use_item_original = PlayerStandard._interupt_action_use_item
+	local _update_use_item_timers_original = PlayerStandard._update_use_item_timers
 	local _start_action_reload_original = PlayerStandard._start_action_reload
 	local _update_reload_timers_original = PlayerStandard._update_reload_timers
 	local _interupt_action_reload_original = PlayerStandard._interupt_action_reload
@@ -2935,7 +2972,8 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 			managers.gameinfo:event("buff", "set_value", "die_hard", { value = value })
 		end
 		
-		managers.gameinfo:event("player_action", "activate", "interact", { duration = timer })
+		local t = Application:time()
+		managers.gameinfo:event("player_action", "activate", "interact", { t = t, duration = timer })
 		managers.gameinfo:event("player_action", "set_data", "interact", { interact_id = interact_object:interaction().tweak_data })
 		
 		return _start_action_interact_original(self, t, input, timer, interact_object, ...)
@@ -2954,9 +2992,8 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 		local value = _interupt_action_interact_original(self, t, input, complete, ...)
 		
 		if self._equip_weapon_expire_t and not previous_weapon_exire_t then
-			local t = managers.player:player_timer():time()
-			local duration = self._equip_weapon_expire_t - t
-			managers.gameinfo:event("player_action", "activate", "interact_debuff", { t = t, duration = duration })
+			local t = Application:time()
+			managers.gameinfo:event("player_action", "activate", "interact_debuff", { t = t, expire_t = self._equip_weapon_expire_t })
 		end
 		
 		return value
@@ -2980,12 +3017,20 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 		local value = _interupt_action_use_item_original(self, t, input, complete, ...)
 		
 		if self._equip_weapon_expire_t and not previous_weapon_exire_t then
-			local t = managers.player:player_timer():time()
-			local duration = self._equip_weapon_expire_t - t
-			managers.gameinfo:event("player_action", "activate", "interact_debuff", { t = t, duration = duration })
+			local t = Application:time()
+			managers.gameinfo:event("player_action", "activate", "interact_debuff", { t = t, expire_t = self._equip_weapon_expire_t })
 		end
 		
 		return value
+	end
+	
+	function PlayerStandard:_update_use_item_timers(...)
+		_update_use_item_timers_original(self, ...)
+		
+		if self._use_item_expire_t then
+			local valid = managers.player:check_selected_equipment_placement_valid(self._unit)
+			managers.gameinfo:event("player_action", "set_data", "interact", { invalid = not valid })
+		end
 	end
 	
 	function PlayerStandard:_start_action_reload(t, ...)
@@ -3117,6 +3162,27 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	
 end
 
+if string.lower(RequiredScript) == "lib/units/beings/player/states/playermaskoff" then
+	local _start_action_state_standard_original = PlayerMaskOff._start_action_state_standard
+	local _interupt_action_start_standard_original = PlayerMaskOff._interupt_action_start_standard
+	
+	function PlayerMaskOff:_start_action_state_standard(...)
+		local timer = tweak_data.player.put_on_mask_time or 2
+		managers.gameinfo:event("player_action", "activate", "interact", { duration = timer })
+		managers.gameinfo:event("player_action", "set_data", "interact", { interact_id = "mask_up" })
+		
+		return _start_action_state_standard_original(self, ...)
+	end
+	
+	function PlayerMaskOff:_interupt_action_start_standard(t, input, complete, ...)
+		if self._start_standard_expire_t then
+			managers.gameinfo:event("player_action", "deactivate", "interact")
+		end
+		
+		return _interupt_action_start_standard_original(self, t, input, complete, ...)
+	end
+end
+
 if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 	
 	local init_original = PlayerDamage.init
@@ -3160,6 +3226,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 		end
 		
 		self._listener_holder:add("custom_on_damage", { "on_damage" }, callback(self, self, "_custom_on_damage_clbk"))
+		self._listener_holder:add("custom_on_enter_bleedout", { "on_enter_bleedout" }, callback(self, self, "_custom_on_enter_bleedout_clbk"))
 	end
 	
 	function PlayerDamage:add_damage_to_hot(...)
@@ -3311,7 +3378,11 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 		end
 	end
 	
-	
+	function PlayerDamage:_custom_on_enter_bleedout_clbk()
+		if self:is_downed() then
+			managers.gameinfo:event("player_action", "deactivate", "standard_armor_regeneration")
+		end
+	end
 end
 
 if string.lower(RequiredScript) == "lib/units/weapons/raycastweaponbase" then
@@ -3473,6 +3544,11 @@ if string.lower(RequiredScript) == "lib/player_actions/skills/playeractionammoef
 				managers.gameinfo:event("buff", "set_stack_count", "ammo_efficiency", { stack_count = target_headshots - headshots })
  			end
 		end
+		
+		--local duration = math.max(target_time - Application:time(), 0)
+		--player_manager:register_message(Message.OnHeadShot, "ammo_efficiency_buff_listener", on_headshot)
+		--managers.gameinfo:event("buff", "activate", "ammo_efficiency")
+		--managers.gameinfo:event("buff", "set_duration", "ammo_efficiency", { duration = duration })
 		
 		ammo_efficieny_original(player_manager, target_headshots, bullet_refund, target_time, ...)
 		

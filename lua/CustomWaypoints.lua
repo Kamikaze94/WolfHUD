@@ -18,9 +18,14 @@ if RequiredScript == "lib/managers/hudmanager" then
 				securitylock = "pd2_computer",
 				digital = "pd2_computer",
 			},
-			IGNORE = {
-				[145557] = true,
-				[145676] = true,
+			OVERRIDE_DATA = {
+				[132864] = { class = "MeltdownTemperatureWaypoint" }, 	-- Meltdown Vault Timer
+				[135076] = { ignore = true },							-- Lab rats cloaker safe 2
+				[135246] = { ignore = true },							-- Lab rats cloaker safe 3
+				[135247] = { ignore = true },							-- Lab rats cloaker safe 4
+				[145557] = { ignore = true },							-- Safehouse Killhouse Timer
+				[145676] = { ignore = true },							-- Safehouse Hockeygame Timer
+				[400003] = { ignore = true },							-- Prison Nightmare Big Loot timer
 			},
 		},
 		EQUIPMENT = {
@@ -34,7 +39,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 					bullet_storm 		= { texture = "guis/textures/pd2/skilltree_2/icons_atlas_2", texture_rect = {4 * 80, 5 * 80, 80, 80} },
 				},
 				doc_bag = {
-					damage_reduction 	= { texture = "guis/textures/pd2/skilltree_2/icons_atlas_2", texture_rect = {0 * 80, 10 * 80, 80, 80} },
+					damage_reduction 	= { texture = "guis/textures/pd2/skilltree_2/icons_atlas_2", texture_rect = {1 * 80, 11 * 80, 80, 80} },
 				},
 				first_aid_kit = {
 					damage_reduction 	= { texture = "guis/textures/pd2/skilltree_2/icons_atlas_2", texture_rect = {1 * 80, 11 * 80, 80, 80} },
@@ -47,23 +52,24 @@ if RequiredScript == "lib/managers/hudmanager" then
 				gen_pku_crowbar =					{ std_icon = "wp_crowbar"},
 				pickup_keycard =					{ std_icon = "equipment_bank_manager_key", },
 				pickup_hotel_room_keycard =			{ std_icon = "equipment_bank_manager_key", },
-				--gage_assignment =					"equipment_money_bag",
+				--gage_assignment =					{ std_icon = "equipment_money_bag", },
 				pickup_boards =						{ std_icon = "wp_planks"},
 				stash_planks_pickup =				{ std_icon = "wp_planks"},
 				muriatic_acid =						{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {1 * 32, 1 * 32, 32, 32}, offset = Vector3(0, 0, 45) }, 
 				hydrogen_chloride =					{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {2 * 32, 1 * 32, 32, 32}, offset = Vector3(0, 0, 85) }, 
 				caustic_soda =						{ texture = "guis/textures/pd2/hud_pickups", texture_rect = {3 * 32, 1 * 32, 32, 32}, offset = Vector3(0, 0, 50) }, 
-				gen_pku_blow_torch =				{ std_icon = "equipment_blow_torch"},
-				drk_pku_blow_torch = 				{ std_icon = "equipment_blow_torch"},
-				hold_born_receive_item_blow_torch = { std_icon = "equipment_blow_torch"},
-				thermite = 							{ std_icon = "equipment_thermite"},
-				gasoline_engine = 					{ std_icon = "equipment_thermite"},
-				gen_pku_thermite = 					{ std_icon = "equipment_thermite"},
-				gen_pku_thermite_paste = 			{ std_icon = "equipment_thermite"},
-				hold_take_gas_can = 				{ std_icon = "equipment_thermite"},
-				gen_pku_thermite_paste_z_axis = 	{ std_icon = "equipment_thermite"},
-				c4_consume = 						{ std_icon = "equipment_c4", 		x_ray = true, offset = Vector3(0, 0, 0) }
-				--gasoline = 							{ std_icon = "equipment_thermite", 	x_ray = true, offset = Vector3(0, 0, 0) }
+				gen_pku_blow_torch =				{ std_icon = "equipment_blow_torch" },
+				drk_pku_blow_torch = 				{ std_icon = "equipment_blow_torch" },
+				hold_born_receive_item_blow_torch = { std_icon = "equipment_blow_torch" },
+				thermite = 							{ std_icon = "equipment_thermite" },
+				gasoline_engine = 					{ std_icon = "equipment_thermite" },
+				gen_pku_thermite = 					{ std_icon = "equipment_thermite" },
+				gen_pku_thermite_paste = 			{ std_icon = "equipment_thermite" },
+				hold_take_gas_can = 				{ std_icon = "equipment_thermite" },
+				gen_pku_thermite_paste_z_axis = 	{ std_icon = "equipment_thermite" },
+				c4_consume = 						{ std_icon = "equipment_c4", 		x_ray = true, offset = Vector3(0, 0, 0) },
+				c4_consume_x1 = 					{ std_icon = "equipment_c4", 		x_ray = true, offset = Vector3(0, 0, 0) },
+				--gasoline = 							{ std_icon = "equipment_thermite", 	x_ray = true, offset = Vector3(0, 0, 0) },
 			},
 		},
 		MINIONS = {
@@ -248,6 +254,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 					local amount = (data.amount or 0) + (data.amount_offset or 0)
 					if type == "ammo_bag" then
 						amount = string.format("%.0f%%", amount * 100)
+					elseif type == "first_aid_kit" then
+						amount = ""
 					else
 						amount = amount > 0 and tostring(amount) or ""
 					end
@@ -408,7 +416,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 	function HUDManager:custom_waypoint_timer_clbk(event, key, data)
 		local id = "timer_wp_" .. key
 		if event == "set_active" then
-			if data.active and not HUDManager.CUSTOM_WAYPOINTS.TIMER.IGNORE[data.id] then
+			local timer_data = HUDManager.CUSTOM_WAYPOINTS.TIMER.OVERRIDE_DATA[data.id] or {}
+			if data.active and not timer_data.ignore then
 				local icon_table = HUDManager.CUSTOM_WAYPOINTS.TIMER.ICON_MAP
 				
 				local params = {
@@ -460,27 +469,12 @@ if RequiredScript == "lib/managers/hudmanager" then
 					debug_txt = {
 						type = "label",
 						show = false,
-						text = string.format("Editor ID: %s", (data.unit:editor_id() or "")),
+						text = string.format("Editor ID: %s", (data.unit:editor_id() or "N/A")),
 					},
 					component_order = { { "icon" }, { "timer" }, { "speed_upgrade", "noise_upgrade", "restart_upgrade" }, { "debug_txt" } },
 				}
 				
-				if data.id == 132864 then --Meltdown timer
-					MeltdownTemperatureWaypoint = MeltdownTemperatureWaypoint or class(CustomWaypoint)
-					
-					MeltdownTemperatureWaypoint.update_timer = function(self, name, value, t, dt)
-						if self._settings[name] then
-							self._settings[name].value = value
-							if self._components[name] and self._settings[name].show then
-								self:set_label(name, string.format("%d/50", math.floor(value)))
-							end
-						end
-					end
-				
-					managers.waypoints:add_waypoint(id, "MeltdownTemperatureWaypoint", params)
-				else
-					managers.waypoints:add_waypoint(id, "CustomWaypoint", params)
-				end
+				managers.waypoints:add_waypoint(id, timer_data.class or "CustomWaypoint", params)
 				
 				if data.upgrades then
 					self:custom_waypoint_timer_clbk("set_upgrades", key, data)
@@ -779,6 +773,21 @@ if RequiredScript == "lib/managers/hudmanager" then
 			end
 		elseif event == "remove" then
 			managers.waypoints:remove_waypoint(id)
+		end
+	end
+	
+	-- Custom Waypoint Class Extensions
+	
+	if CustomWaypoint and not MeltdownTemperatureWaypoint then
+		MeltdownTemperatureWaypoint = MeltdownTemperatureWaypoint or class(CustomWaypoint)
+			
+		MeltdownTemperatureWaypoint.update_timer = function(self, name, value, t, dt)
+			if self._settings[name] then
+				self._settings[name].value = value
+				if self._components[name] and self._settings[name].show then
+					self:set_label(name, string.format("%d/50", math.floor(value)))
+				end
+			end
 		end
 	end
 end

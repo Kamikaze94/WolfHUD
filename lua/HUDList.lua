@@ -1,6 +1,14 @@
 if WolfHUD and not WolfHUD:getSetting("use_hudlist", "boolean") then return end
-printf = function(...) 
+print_info = function(...) 
 	WolfHUD:print_log(string.format(...), "info")
+end
+
+print_warning = function(...) 
+	WolfHUD:print_log(string.format(...), "warning")
+end
+
+print_error = function(...) 
+	WolfHUD:print_log(string.format(...), "error")
 end
 if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
@@ -20,6 +28,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		return frmt_string
 	end
 	
+	local function get_distance_to_player(unit)
+		local cam = managers.viewport:get_current_camera()
+		local distance = alive(cam) and alive(unit) and (mvector3.normalize(cam:position() - unit:position()) / 100) or 0
+		return string.format("%.0fm", distance)
+	end
+	
 	local _setup_player_info_hud_pd2_original = HUDManager._setup_player_info_hud_pd2
 	local update_original = HUDManager.update
 	local show_stats_screen_original = HUDManager.show_stats_screen
@@ -29,6 +43,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		_setup_player_info_hud_pd2_original(self, ...)
 		if managers.gameinfo then
 			managers.hudlist = HUDListManager:new()
+		else
+			print_error("HUDList: GameInfoManager not present!")
 		end
 	end
 	
@@ -86,9 +102,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
         
         --Left side list
         show_timers 					= WolfHUD:getSetting("show_timers", "boolean"),     				--Drills, time locks, hacking etc.
---      show_equipment 					= WolfHUD:getSetting("show_equipment", "boolean"),  				--Deployables (ammo, doc bags, body bags)
 		show_ammo_bags 					= WolfHUD:getSetting("show_ammo_bags", "boolean"),
 		show_doc_bags 					= WolfHUD:getSetting("show_doc_bags", "boolean"),
+		show_first_aid_kits				= WolfHUD:getSetting("show_first_aid_kits", "boolean"),
 		show_body_bags 					= WolfHUD:getSetting("show_body_bags", "boolean"),
 		show_grenade_crates 			= WolfHUD:getSetting("show_grenade_crates", "boolean"),
         show_sentries 					= WolfHUD:getSetting("show_sentries", "boolean"),   				--Deployable sentries
@@ -139,6 +155,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		[135076] = { ignore = true },	--Lab rats cloaker safe 2
 		[135246] = { ignore = true },	--Lab rats cloaker safe 3
 		[135247] = { ignore = true },	--Lab rats cloaker safe 4
+		[400003] = { ignore = true },	--Prison Nightmare Big Loot timer
 	}
 	
 	HUDListManager.UNIT_TYPES = {
@@ -229,6 +246,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		bike_part_light = 			"bike",
 		bike_part_heavy = 			"bike",
 		circuit =					"server",
+		cloaker_cocaine = 			"coke",
+		cloaker_gold = 				"gold",
+		cloaker_money = 			"money",
 		coke =						"coke",
 		coke_pure =					"coke",
 		counterfeit_money =			"money",
@@ -279,16 +299,18 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	HUDListManager.LOOT_TYPES_CONDITIONS = {
 		body = function(id, data)
-			if managers.job:current_level_id() == "mad" then
+			if managers.job:current_level_id() == "mad" then	-- Boiling Point
 				return data.bagged or data.unit:editor_id() ~= -1
 			end
 		end,
 		crate = function(id, data)
 			local level_id = managers.job:current_level_id() or ""
-			local disabled_lvls = { election_day = true, election_day_prof = true, mia = true, mia_prof = true,	pal = true }
-			if not disabled_lvls[level_id] then
-				return true
-			end
+			local disabled_lvls = { 
+				"election_day", "election_day_prof", 	-- Election Day
+				"mia", "mia_prof", 						-- Hotline Miami
+				"pal" 									-- Counterfeit
+			}
+			return not table.contains(disabled_lvls, level_id)
 		end,
 	}
 	
@@ -370,7 +392,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		standard_armor_regeneration = { "standard_armor_regeneration" },
 		weapon_charge = { "weapon_charge" },
 		melee_charge = { "melee_charge" },
-		reload = {"reload" }, 
+		reload = { "reload" }, 
 		interact = { "interact"},
 		interact_debuff = { "interact_debuff" },
 		
@@ -742,7 +764,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			item:change_count(1)
 		end
 	end
-	
+--[[	
 	function HUDListManager:_cam_count_event(event, key, data)
 		local item = self:list("right_side_list"):item("stealth_list"):item("CamCount")
 		if event == "add" or event == "enable" then
@@ -751,7 +773,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			item:change_count(-1)
 		end	
 	end
-	
+]]
 	function HUDListManager:_bodybag_count_event(event, key, data)
 		local item = self:list("right_side_list"):item("stealth_list"):item("BodyBagInv")
 		local whisper_mode = managers.groupai:state():whisper_mode()
@@ -794,9 +816,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_tape_loop_event(event, key, data)
 		local list = self:list("left_side_list"):item("tape_loop")
 		
-		if event == "start" then
+		if event == "start_tape_loop" then
 			list:register_item(key, HUDList.TapeLoopItem, data):activate()
-		elseif event == "stop" then
+		elseif event == "stop_tape_loop" then
 			list:unregister_item(key)
 		end
 	end
@@ -814,14 +836,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDListManager:_buff_event(event, id, data)
-		printf("(%.3f) HUDListManager:_buff_event(%s, %s)", Application:time(), tostring(event), tostring(id))
+		print_info("(%.3f) HUDListManager:_buff_event(%s, %s)", Application:time(), tostring(event), tostring(id))
 		local items = self:_get_buff_items(id)
 		
 		for _, item in ipairs(items) do
 			if item[event] then
 				item[event](item, id, data)
 			else
-				printf("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s", Application:time(), event, id)
+				print_info("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s", Application:time(), event, id)
 			end
 		end
 		
@@ -845,6 +867,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDListManager:_doc_bag_event(event, key, data)
 		self:_bag_deployable_event(event, key, data, HUDList.BagEquipmentItem, "doc_bag")
+	end
+	
+	function HUDListManager:_first_aid_kit_event(event, key, data)
+		self:_bag_deployable_event(event, key, data, HUDList.BagEquipmentItem, "first_aid_kit")
 	end
 	
 	function HUDListManager:_body_bag_event(event, key, data)
@@ -1117,6 +1143,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:_update_deployable_list_items("doc_bag", HUDListManager.ListOptions.show_doc_bags)
 	end
 	
+	function HUDListManager:_set_show_first_aid_kits()
+		self:_update_deployable_list_items("first_aid_kit", HUDListManager.ListOptions.show_first_aid_kits)
+	end
+	
 	function HUDListManager:_set_show_body_bags()
 		self:_update_deployable_list_items("body_bag", HUDListManager.ListOptions.show_body_bags)
 	end
@@ -1128,23 +1158,23 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_set_show_tape_loop()
 		local list = self:list("left_side_list"):item("tape_loop")
 		local listener_id = "HUDListManager_tape_loop_listener"
-		local events = { "start", "stop" }
+		local events = { "start_tape_loop", "stop_tape_loop" }
 		local clbk = callback(self, self, "_tape_loop_event")
 		
 		for _, event in pairs(events) do
 			if HUDListManager.ListOptions.show_tape_loop then
-				managers.gameinfo:register_listener(listener_id, "tape_loop", event, clbk)
+				managers.gameinfo:register_listener(listener_id, "camera", event, clbk)
 			else
-				managers.gameinfo:unregister_listener(listener_id, "tape_loop", event)
+				managers.gameinfo:unregister_listener(listener_id, "camera", event)
 			end
 		end
 		
-		for key, data in pairs(managers.gameinfo:get_tape_loop()) do
-			if HUDListManager.ListOptions.show_tape_loop then
-				clbk("start", key, data)
-			else
-				list:unregister_item(key)
-			end
+		for key, data in pairs(managers.gameinfo:get_cameras()) do
+			if data.tape_loop_expire_t and HUDListManager.ListOptions.show_tape_loop then
+				clbk("start_tape_loop", key, data)
+ 			else
+ 				list:unregister_item(key)
+ 			end
 		end
 	end
 	
@@ -2089,6 +2119,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		params.w = params.w or parent:panel():h() / 2
 		params.h = params.h or parent:panel():h()
 		HUDList.RightListItem.super.init(self, parent, name, params)
+		
+		self._default_text_color = HUDListManager.ListOptions.list_color or Color.white
+		self._default_icon_color = icon.color or self._default_text_color
+		self._change_increase_color = Color.green
+		self._change_decrease_color = Color.red
 	
 		local x, y = unpack((icon.atlas or icon.spec) or { 0, 0 })
 		local texture = icon.texture
@@ -2108,7 +2143,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			w = self._panel:w() * (icon.w_ratio or 1),
 			alpha = icon.alpha or 1,
 			blend_mode = icon.blend_mode or "normal",
-			color = icon.color or HUDListManager.ListOptions.list_color or Color.white,
+			color = self._default_icon_color,
 		})
 		
 		self._box = HUDBGBox_create(self._panel, { w = self._panel:w(),	h = self._panel:w() }, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
@@ -2121,7 +2156,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			vertical = "center",
 			w = self._box:w(),
 			h = self._box:h(),
-			color = HUDListManager.ListOptions.list_color or Color.white,
+			color = self._default_text_color,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6
 		})
@@ -2131,6 +2166,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.RightListItem:change_count(diff)
 		self:set_count(self._count + diff)
+		
+		if diff ~= 0 then
+			self._text:stop()
+			self._text:animate(callback(self, self, "_animate_change"), diff)
+		end
 	end
 	
 	function HUDList.RightListItem:set_count(num)
@@ -2142,6 +2182,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.RightListItem:get_count()
 		return self._count or 0
  	end
+	
+	function HUDList.RightListItem:_animate_change(item, diff)
+		if alive(item) and diff ~= 0 then
+			local duration = 0.5
+			local t = duration
+			local color = diff > 0 and self._change_increase_color or self._change_decrease_color
+			
+			item:set_color(color)
+			while t > 0 do
+				t = t - coroutine.yield()
+				item:set_color(math.lerp(self._default_text_color, color, t / duration))
+			end
+			item:set_color(self._default_text_color)
+		end
+	end
 	
 	
 	HUDList.UnitCountItem = HUDList.UnitCountItem or class(HUDList.RightListItem)
@@ -2236,6 +2291,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.UsedPagersItem:init(...)
 		HUDList.UsedPagersItem.super.init(self, ...)
 		
+		self._change_increase_color = Color.red
+		
 		self._listener_clbks = {
 			{
 				name = "HUDList_pager_count_listener",
@@ -2268,7 +2325,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			HUDList.UsedPagersItem.super.set_count(self, num)
 			
 			if self._count >= 4 then
-				self._text:set_color(Color(1, 0.2, 0))
+				self._default_text_color = Color(1, 0.2, 0)
 			end
 		end
 	end
@@ -2282,9 +2339,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._listener_clbks = {
 			{
 				name = "HUDList_cam_count_listener",
-				source = "camera",
-				event = { "add", "enable", "disable", "destroy" },
+				source = "camera_count",
+				event = { "set_count" },
 				clbk = callback(self, self, "_change_camera_count"),
+				data_only = true,
 			},
 			{
 				name = "HUDList_cam_count_listener",
@@ -2294,23 +2352,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				data_only = true,
 			}
 		}
-				
-		local cams = managers.gameinfo:get_cams() or {}
-		local cam_count = 0
-		for uid, data in pairs(cams) do
-			if data.active then
-				cam_count = cam_count + 1
-			end
-		end
-		self:set_count(cam_count)
+		
+		self:set_count(managers.gameinfo:_recount_active_cameras())
 	end
 	
-	function HUDList.CamCountItem:_change_camera_count(event, ...)
-		if event == "add" or event == "enable" then
-			self:change_count(1)
-		elseif event == "disable" or event == "destroy" then
-			self:change_count(-1)
-		end	
+	function HUDList.CamCountItem:_change_camera_count(count)
+		local diff = count and (count - self._count) or 0
+		if diff ~= 0 then
+			self:change_count(diff)
+		end
 	end
 	
 	function HUDList.CamCountItem:_whisper_mode_change(status)
@@ -2333,8 +2383,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			{
 				name = "HUDList_bodybags_count_listener",
 				source = "bodybags",
-				event = { "set" },
-				clbk = callback(self, self, "_change_bodybag_count"),
+				event = { "change" },
+				clbk = callback(self, self, "change_count"),
 				data_only = true,
 			},
 			{
@@ -2349,25 +2399,23 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:set_count(managers.gameinfo:get_bodybag_amount())
 	end
 	
-	function HUDList.BodyBagsInvItem:_change_bodybag_count(amount)
-		self:set_count(amount)
-	end
-	
 	function HUDList.BodyBagsInvItem:_whisper_mode_change(status)
 		self:set_active(self._count > 0 and status)
 	end
 	
-	function HUDList.BodyBagsInvItem:set_count(num)
+	function HUDList.BodyBagsInvItem:change_count(diff)
 		if managers.groupai:state():whisper_mode() then
-			HUDList.BodyBagsInvItem.super.set_count(self, num)
+			HUDList.BodyBagsInvItem.super.change_count(self, diff)
 		end
 	end
 	
 	HUDList.CorpseCountItem = HUDList.CorpseCountItem or class(HUDList.RightListItem)
 	function HUDList.CorpseCountItem:init(...)
 		HUDList.CorpseCountItem.super.init(self, ...)
-		
+				
 		self._keys = {"person", "special_person"}
+		self._change_increase_color = Color.red
+		self._change_decrease_color = Color.green
 		self._total_count = 0
 		self._bagged_count = 0
 		self._unbagged_count = 0
@@ -2425,6 +2473,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 			
 		self:set_count(unbagged_count, bagged_count)
+		
+		if value ~= 0 then
+			self._text:stop()
+			self._text:animate(callback(self, self, "_animate_change"), value)
+		end
  	end
 	
 	function HUDList.CorpseCountItem:_pager_event(event, key, data)
@@ -2438,6 +2491,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 			
 		self:set_count(unbagged_count, bagged_count)
+		
+		self._text:stop()
+		self._text:animate(callback(self, self, "_animate_change"), value)
  	end
 	
 	function HUDList.CorpseCountItem:_whisper_mode_change(status)
@@ -2514,8 +2570,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDList.LootItem.MAP = {
 		aggregate =		{ text = "", no_localize = true },	--Aggregated loot
 		
-		armor =			{ text = "wolfhud_hudlist_loot_armor", 		priority = 1 }, 
-		artifact =		{ text = "hud_carry_artifact", 				priority = 1 },
+		armor =			{ text = "wolfhud_hudlist_loot_armor", 		priority = 1 }, -- Shaddow Raid
+		artifact =		{ text = "hud_carry_artifact", 				priority = 1 },	-- Schaddow Raid, The Diamond
 		bike = 			{ text = "hud_carry_bike_part", 			priority = 1 },	-- Biker Heist
 		bomb =			{ text = "wolfhud_hudlist_loot_bomb", 		priority = 1 },	-- Bomb Forest & Dockyard, Murky Station EMP
 		coke =			{ text = "hud_carry_coke", 					priority = 1 },
@@ -2655,6 +2711,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 			
 			self:set_count(unbagged_count, bagged_count)
+			
+			if value ~= 0 then
+				self._text:stop()
+				self._text:animate(callback(self, self, "_animate_change"), value)
+			end
 		end
  	end
 	
@@ -2840,9 +2901,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			return
 		end
 		
-		local player = managers.player:player_unit()
-		local distance = alive(player) and (mvector3.normalize(player:position() - self._unit:position()) / 100) or 0
-		self._distance_text:set_text(string.format("%.0fm", distance))
+		self._distance_text:set_text(get_distance_to_player(self._unit))
 		
 		if self._jammed or not self._powered then
 			local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
@@ -2938,6 +2997,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		sentry 			= {	atlas 		= { 7,  5 }, priority = 1 },
 		ammo_bag 		= {	atlas 		= { 1,  0 }, priority = 3 },
 		doc_bag 		= {	atlas 		= { 2,  7 }, priority = 4 },
+		first_aid_kit	= {	atlas 		= { 3, 10 }, priority = 4 },
 		body_bag 		= {	atlas 		= { 5, 11 }, priority = 5 },
 		grenade_crate 	= {	preplanning = { 1,  0 }, priority = 2 },
 	}
@@ -2958,6 +3018,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local texture_rect = (icon_data.atlas or icon_data.preplanning) and { x * w, y * w, w, w }
 		
 		self._box = HUDBGBox_create(self._panel, {
+				name = "bg_box",
 				w = self._panel:w(),
 				h = self._panel:h(),
 			}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
@@ -3457,12 +3518,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._timer_text:set_text(format_time_string(self._remaining))
 			self._timer_text:set_color(self:_get_color_from_table(self._remaining, self._duration))
 		end
-
-		local distance = 0
-		if alive(self._unit) and alive(managers.player:player_unit()) then
-			distance = mvector3.distance(managers.player:player_unit():position(), self._unit:position()) / 100
-		end
-		self._distance_text:set_text(string.format("%.0fm", distance))
+		
+		self._distance_text:set_text(get_distance_to_player(self._unit))
 	end	
 	
 	
@@ -3661,9 +3718,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._text:set_text(format_time_string(duration))
 		end
 		
-		local player = managers.player:player_unit()
-		local distance = alive(player) and (mvector3.normalize(player:position() - self._unit:position()) / 100) or 0
-		self._distance_text:set_text(string.format("%.0fm", distance))
+		self._distance_text:set_text(get_distance_to_player(self._unit))
 	end
 	
 	
@@ -3676,7 +3731,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self.FLASH_SPEED = 0.8
 		
 		self._unit = data.unit
-		self._expire_t = 0
+		self._expire_t = data.tape_loop_expire_t
 		self._flash_color_table = {
 			{ ratio = 0.0, color = self.DISABLED_COLOR },
 			{ ratio = 1.0, color = self.STANDARD_COLOR }
@@ -3697,24 +3752,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6,
 		})
-		
-		self:_set_expire_t(data)
-		
-		local key = tostring(data.unit:key())
-		table.insert(self._listener_clbks, { 
-			name = string.format("HUDList_tape_loop_listener_%s", key), 
-			source = "tape_loop", 
-			event = { "set_expire_t" }, 
-			clbk = callback(self, self, "_set_expire_t"), 
-			keys = { key }, 
-			data_only = true
-		})
-	end
-	
-	function HUDList.TapeLoopItem:_set_expire_t(data)
-		if data.expire_t then
-			self._expire_t = data.expire_t
-		end
 	end
 	
 	function HUDList.TapeLoopItem:update(t, dt)
@@ -4436,6 +4473,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.BuffItemBase:deactivate_debuff(id)
 		if self._debuff_active then
 			self._debuff_active = false
+			
+			if self._debuff_expire_t and not self._has_text then
+				self._value:set_text("")
+			end
+			
 			self._debuff_expire_t = nil
 			self._debuff_start_t = nil
 			self._progress_bar_debuff:panel():set_visible(false)
@@ -4763,7 +4805,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.CompositeBuff:set_value(id, data)
 		if self._member_buffs[id] and self._member_buffs[id].value ~= data.value then
-			printf("HUDList.CompositeBuff:set_value(%s, %s)", id, tostring(data.value))
+			print_info("HUDList.CompositeBuff:set_value(%s, %s)", id, tostring(data.value))
 			self._member_buffs[id].value = data.value
 			self:_check_buffs()
 		end
@@ -4920,6 +4962,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDList.TimedInteractionItem = HUDList.TimedInteractionItem or class(HUDList.TimedBuffItem)
 	HUDList.TimedInteractionItem.INTERACT_ID_TO_ICON = {
 		default 					= { texture = "guis/textures/pd2/skilltree/drillgui_icon_faster" 														},
+		mask_up 					= { texture = "guis/textures/contact_vlad", 									 texture_rect = {1920, 256, 128, 130}	},
 		ammo_bag 					= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 1*64, 0, 64, 64 } 	},
 		doc_bag 					= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 2*64, 7*64, 64, 64 } 	},
 		first_aid_kit 				= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 3*64, 10*64, 64, 64 } },
@@ -4952,6 +4995,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		HUDList.TimedInteractionItem.super.set_data(self, id, data)
 		if data.data then
 			self:_set_icon(data.data.interact_id)
+			
+			local color = self._default_icon_color
+			if data.data.invalid then
+				color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF
+			end
+			self._icon:set_color(color)
+			self._ace_icon:set_color(color)
 		end
 	end
 	
@@ -4962,7 +5012,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if icon_data and alive(self._icon) then
 			local texture, texture_rect
 			if type(icon_data) == "string" then
-				texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon_data)
+				texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon_data, {0, 0, 32, 32})
 			else
 				texture, texture_rect = icon_data.texture, icon_data.texture_rect
 			end

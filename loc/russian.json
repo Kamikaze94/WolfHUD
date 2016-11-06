@@ -1,7 +1,9 @@
 {
     "menu_jowi" : "Уик",
     "hud_int_hold_grab_the_bag" : "Удерживайте $BTN_INTERACT, чтобы взять $BAG",
-     
+    
+	"wolfhud_dialog_force_start_title" : "Force start game?",
+	"wolfhud_dialog_force_start_desc" : "Are you sure you want to force the game to start?\n\nPlease only use this for bugged lobbies, or if a player is afk.\nMake sure everyone had enough time to choose his loadout.\n\nThanks :)",
 	"wolfhud_dialog_install_title" : "Установка: $NAME",
 	"wolfhud_dialog_install_desc" : "Вы действительно хотите установить '$NAME'?",
 	"wolfhud_dialog_remind_later" : "Спросить позже",
@@ -339,6 +341,7 @@
 	"wolfhud_hudlist_show_equipment_desc" : "Определяет следует ли нам отображать снаряжение в правой части экрана.",
 	"wolfhud_hudlist_show_ammo_bags_title" : "Показать боеприпасы",
 	"wolfhud_hudlist_show_doc_bags_title" : "Показать медицинские сумки",
+	"wolfhud_hudlist_show_first_aid_kits_title" : "Show First Aid Kits",
 	"wolfhud_hudlist_show_body_bags_title" : "Показать мешки для трупов",
 	"wolfhud_hudlist_show_grenade_crates_title" : "Показать гранаты",
     "wolfhud_hudlist_sentries_title" : "Показать турели",
