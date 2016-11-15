@@ -10,6 +10,17 @@ function WolfHUDTweakData:init()
 	-- If you encounter problems, make sure the contents of this file matches the contents of your customized version.	--
 	----------------------------------------------------------------------------------------------------------------------
 	
+	-- Maximum amount of Plans, that can be saved per level/map.
+	self.MAX_PRE_PLANS = 10
+	-- Maximum Length of custom weapon names.
+	self.MAX_WEAPON_NAME_LENGTH = 30
+	-- Maximum Length of custom Skill set names.
+	self.MAX_SKILLSET_NAME_LENGTH = 25
+	
+	-- Time within 2 presses of the nade button, to throw a nade in stealth.
+	self.STEALTH_NADE_TIMEOUT = 0.25
+	-- Time between 2 automatical pickups, when the interaction button remains pressed.
+	self.AUTO_PICKUP_DELAY = 0.2
 	
 	-- Color table
 	-- 		Add or remove any color you want
@@ -33,57 +44,6 @@ function WolfHUDTweakData:init()
 		{ color = '808080', name = "gray" 			},
 		{ color = '000000', name = "black" 			},
 		{ color = '000000', name = "rainbow" 		},
-	}
-	
-	-- Inventory names
-	-- 		Change the name of your Inventory Tabs. 
-	--		You can also enter more, if you have mods that allow for more pages.
-	--		'<skull>' will be replaced by the skull icon. (without quotations)
-	-- 		'<ghost>' will be replaced by the ghost icon. (without quotations)
-	self.inventory_names = {	
-		primaries = {
-			"Page 1",
-			"Page 2",
-			"Page 3",
-			"Page 4",
-			"Page 5",
-			"Page 6",
-			"Page 7",
-			"Page 8",
-			"Page 9",
-			"Page 10",
-		},
-		secondaries = {
-			"Page 1",
-			"Page 2",
-			"Page 3",
-			"Page 4",
-			"Page 5",
-			"Page 6",
-			"Page 7",
-			"Page 8",
-			"Page 9",
-			"Page 10",
-		},
-		masks = {
-			"Page 1",
-			"Page 2",
-			"Page 3",
-			"Page 4",
-			"Page 5",
-			"Page 6",
-			"Page 7",
-			"Page 8",
-			"Page 9",
-			"Page 10",
-		},
-		melee_weapons = {
-			"Page 1",
-			"Page 2",
-			"Page 3",
-			"Page 4",
-			"Page 5"
-		},
 	}
 	
 	self:post_init()

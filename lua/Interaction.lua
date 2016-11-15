@@ -1,5 +1,5 @@
 if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
-	PlayerStandard.NADE_TIMEOUT = 0.25																	--Timeout for 2 NadeKey pushes, to prevent accidents in stealth
+	PlayerStandard.NADE_TIMEOUT = WolfHUD:getTweakEntry("STEALTH_NADE_TIMEOUT", "number", 0.25)		--Timeout for 2 NadeKey pushes, to prevent accidents in stealth
 
 	local enter_original = PlayerStandard.enter
 	local _update_interaction_timers_original = PlayerStandard._update_interaction_timers
@@ -409,7 +409,7 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 	end
 
 elseif string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
-	ObjectInteractionManager.AUTO_PICKUP_DELAY = 0.3 --Delay in seconds between auto-pickup procs (0 -> as fast as possible)
+	ObjectInteractionManager.AUTO_PICKUP_DELAY = WolfHUD:getTweakEntry("AUTO_PICKUP_DELAY", "number", 0.2)	 --Delay in seconds between auto-pickup procs (0 -> as fast as possible)
 	local _update_targeted_original = ObjectInteractionManager._update_targeted
 	function ObjectInteractionManager:_update_targeted(...)
 		_update_targeted_original(self, ...)

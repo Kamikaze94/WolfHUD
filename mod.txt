@@ -19,6 +19,7 @@
 		{ "hook_id" : "lib/managers/objectinteractionmanager", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/missionassetsmanager", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/playermanager", 							"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/managers/preplanningmanager", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/enemymanager", 								"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/hud/huddriving", 							"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/hud/hudteammate", 							"script_path" : "Core.lua" },
@@ -83,7 +84,12 @@
 		{ "hook_id" : "lib/tweak_data/assetstweakdata", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/tweak_data/timespeedeffecttweakdata", 				"script_path" : "Core.lua" },
 		{ "hook_id" : "core/lib/managers/menu/items/coremenuitemslider", 		"script_path" : "Core.lua" },
-		{ "hook_id" : "core/lib/managers/subtitle/coresubtitlepresenter", 		"script_path" : "Core.lua" }
+		{ "hook_id" : "core/lib/managers/subtitle/coresubtitlepresenter", 		"script_path" : "Core.lua" },
+		
+		{ "hook_id" : "lib/entry", 												"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/managers/systemmenumanager", 						"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/managers/dialogs/specializationdialog", 				"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/managers/menu/specializationboxgui", 				"script_path" : "Core.lua" }
 	],
 	"updates" : [
 		{

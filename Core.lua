@@ -35,99 +35,95 @@ if not _G.WolfHUD then
 		"wolfhud_gadget_laser_options_menu"
 	}
 	
-	if not WolfHUD.tweak_path then		-- Populate tweak data
-		local tweak_path = string.format("%s%s", WolfHUD.save_path, WolfHUD.tweak_file)
-		if not io.file_is_readable(tweak_path) then
-			tweak_path = string.format("%s%s", WolfHUD.mod_path, WolfHUD.tweak_file)
-		end
-		if io.file_is_readable(tweak_path) then
-			dofile(tweak_path)
-			WolfHUD.tweak_data = WolfHUDTweakData:new()
-		else
-			WolfHUD:print_log(string.format("Tweak Data file couldn't be found! (%s)", tweak_path), "error")
-		end
-	end
 	WolfHUD.settings = {}
+	WolfHUD.tweak_data = {}
 	
 	WolfHUD.hook_files = WolfHUD.hook_files or {
-		["lib/setups/setup"] = { "GameInfoManager.lua", "WaypointsManager.lua" },
-		["lib/managers/menumanager"] = { "MenuTweaks.lua" },
-		["lib/managers/menumanagerdialogs"] = { "MenuTweaks.lua" },
-		["lib/managers/chatmanager"] = { "MenuTweaks.lua" },
-		["lib/managers/localizationmanager"] = { "AdvAssault.lua" },
-		["lib/managers/experiencemanager"] = { "Scripts.lua" },
-		["lib/managers/moneymanager"] = { "Scripts.lua" },
-		["lib/managers/hudmanager"] = { "EnemyHealthbar.lua", "TabStats.lua", "CustomWaypoints.lua" },
-		["lib/managers/hudmanagerpd2"] = { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "WaypointsManager.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
-		["lib/managers/statisticsmanager"] = { "KillCounter.lua", "TabStats.lua" },
-		["lib/managers/playermanager"] = { "GameInfoManager.lua" },
-		["lib/managers/hud/huddriving"] = { "DrivingHUD.lua" },
-		["lib/managers/hud/hudteammate"] = { "CustomHUD.lua", "KillCounter.lua", "DownCounter.lua", "BurstFire.lua" },
-		["lib/managers/hud/hudtemp"] = { "CustomHUD.lua" },
-		["lib/managers/hud/hudassaultcorner"] = { "HUDList.lua", "AdvAssault.lua" },
-		["lib/managers/hud/hudobjectives"] = { "EnhancedObjective.lua" },
-		["lib/managers/hud/hudheisttimer"] = { "EnhancedObjective.lua" },
-		["lib/managers/hud/hudchat"] = { "HUDChat.lua" },
-		["lib/managers/hud/hudstatsscreen"] = { "TabStats.lua" },
-		["lib/managers/hud/hudinteraction"] = { "Interaction.lua" },
-		["lib/managers/hud/hudsuspicion"] = { "NumbericSuspicion.lua" },
-		["lib/managers/hud/hudhitdirection"] = { "DamageIndicator.lua" },
-		["lib/managers/enemymanager"] = { "GameInfoManager.lua" },
-		["lib/managers/group_ai_states/groupaistatebase"] = { "GameInfoManager.lua", "PacifiedCivs.lua" },
-		["lib/managers/missionassetsmanager"] = { "BuyAllAsset.lua" },
-		["lib/managers/menu/blackmarketgui"] = { "MenuTweaks.lua" },
-		["lib/managers/menu/stageendscreengui"] = { "MenuTweaks.lua" },
-		["lib/managers/menu/lootdropscreengui"] = { "MenuTweaks.lua" },
-		["lib/managers/menu/skilltreeguinew"] = { "MenuTweaks.lua" },
-		["lib/managers/menu/renderers/menunodeskillswitchgui"] = { "MenuTweaks.lua" },
-		["lib/managers/objectinteractionmanager"] = { "GameInfoManager.lua", "HUDList.lua", "Interaction.lua" },
-		["lib/network/handlers/unitnetworkhandler"] = { "DownCounter.lua", "GameInfoManager.lua", "NetworkHandler.lua" },
-		["lib/units/props/timergui"] = { "GameInfoManager.lua" },
-		["lib/units/props/digitalgui"] = { "GameInfoManager.lua" },
-		["lib/units/props/securitylockgui"] = { "GameInfoManager.lua" },
-		["lib/units/civilians/civiliandamage"] = { "DamagePopup.lua" },
-		["lib/units/enemies/cop/copdamage"] = { "GameInfoManager.lua", "KillCounter.lua", "DamagePopup.lua", "TabStats.lua" },
-		["lib/units/cameras/fpcameraplayerbase"] = { "WeaponGadgets.lua" },
-		["lib/units/equipment/ammo_bag/ammobagbase"] = { "GameInfoManager.lua" },
-		["lib/units/equipment/bodybags_bag/bodybagsbagbase"] = { "GameInfoManager.lua" },
-		["lib/units/equipment/doctor_bag/doctorbagbase"] = { "DownCounter.lua", "GameInfoManager.lua" },
-		["lib/units/equipment/first_aid_kit/firstaidkitbase"] = { "GameInfoManager.lua" },
-		["lib/units/equipment/ecm_jammer/ecmjammerbase"] = { "GameInfoManager.lua", "EquipmentTweaks.lua" },
-		["lib/units/equipment/grenade_crate/grenadecratebase"] = { "GameInfoManager.lua" },
-		["lib/units/equipment/sentry_gun/sentrygunbase"] = { "GameInfoManager.lua", "KillCounter.lua" },
-		["lib/units/equipment/sentry_gun/sentrygundamage"] = { "GameInfoManager.lua" },
-		["lib/units/interactions/interactionext"] = { "GameInfoManager.lua", "Interaction.lua", "EquipmentTweaks.lua" },
-		["lib/units/weapons/akimboweaponbase"] = { "BurstFire.lua" },
-		["lib/units/weapons/sentrygunweapon"] = { "GameInfoManager.lua", "EquipmentTweaks.lua" },
-		["lib/units/weapons/weaponlaser"] = { "WeaponGadgets.lua" },
-		["lib/units/weapons/weaponflashlight"] = { "WeaponGadgets.lua" },
-		["lib/units/weapons/raycastweaponbase"] = { "GameInfoManager.lua", "Scripts.lua" },
-		["lib/units/weapons/newraycastweaponbase"] = { "WeaponGadgets.lua", "BurstFire.lua" },
-		["lib/units/props/securitycamera"] = { "GameInfoManager.lua" },
-		["lib/units/beings/player/playerdamage"] = { "GameInfoManager.lua", "DamageIndicator.lua" },
-		["lib/units/beings/player/playermovement"] = { "GameInfoManager.lua" },
-		["lib/units/beings/player/huskplayermovement"] = { "DownCounter.lua" },
-		["lib/units/beings/player/states/playercivilian"] = { "Interaction.lua" },
-		["lib/units/beings/player/states/playerstandard"] = { "GameInfoManager.lua", "EnemyHealthbar.lua", "Interaction.lua", "BurstFire.lua", "WeaponGadgets.lua" },
-		["lib/units/beings/player/states/playermaskoff"] = { "GameInfoManager.lua" },
-		["lib/units/beings/player/states/playerbleedout"] = { "DownCounter.lua" },
-		["lib/units/vehicles/vehicledamage"] = { "DamageIndicator.lua" },
-		["lib/units/vehicles/vehicledrivingext"] = { "CustomWaypoints.lua" },
-		["lib/utils/temporarypropertymanager"] = { "GameInfoManager.lua" },
-		["lib/player_actions/skills/playeractionbloodthirstbase"] = { "GameInfoManager.lua" },
-		["lib/player_actions/skills/playeractionexperthandling"] = { "GameInfoManager.lua" },
-		["lib/player_actions/skills/playeractionshockandawe"] = { "GameInfoManager.lua" },
-		["lib/player_actions/skills/playeractiondireneed"] = { "GameInfoManager.lua" },
-		["lib/player_actions/skills/playeractionunseenstrike"] = { "GameInfoManager.lua" },
-		["lib/player_actions/skills/playeractiontriggerhappy"] = { "GameInfoManager.lua" },
-		["lib/states/ingamedriving"] = { "DrivingHUD.lua" },
-		["lib/states/ingamewaitingforplayers"] = { "MenuTweaks.lua" },
-		["lib/tweak_data/tweakdata"] = { "MenuTweaks.lua" },	
-		["lib/tweak_data/guitweakdata"] = { "MenuTweaks.lua" },	
-		["lib/tweak_data/assetstweakdata"] = { "BuyAllAsset.lua" },
-		["lib/tweak_data/timespeedeffecttweakdata"] = { "Scripts.lua" },
-		["core/lib/managers/menu/items/coremenuitemslider"] = { "MenuTweaks.lua" },
-		["core/lib/managers/subtitle/coresubtitlepresenter"] = { "EnhancedObjective.lua" },
+		["lib/setups/setup"] 										= { "GameInfoManager.lua", "WaypointsManager.lua" },
+		["lib/managers/menumanager"] 								= { "PrePlanManager.lua", "MenuTweaks.lua" },
+		["lib/managers/menumanagerdialogs"] 						= { "MenuTweaks.lua" },
+		["lib/managers/chatmanager"] 								= { "MenuTweaks.lua" },
+		["lib/managers/localizationmanager"] 						= { "AdvAssault.lua" },
+		["lib/managers/experiencemanager"] 							= { "Scripts.lua" },
+		["lib/managers/moneymanager"] 								= { "Scripts.lua" },
+		["lib/managers/hudmanager"] 								= { "EnemyHealthbar.lua", "TabStats.lua", "CustomWaypoints.lua" },
+		["lib/managers/hudmanagerpd2"] 								= { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "WaypointsManager.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
+		["lib/managers/statisticsmanager"] 							= { "KillCounter.lua", "TabStats.lua" },
+		["lib/managers/playermanager"] 								= { "GameInfoManager.lua" },
+		["lib/managers/preplanningmanager"] 						= { "PrePlanManager.lua" },
+		["lib/managers/hud/huddriving"] 							= { "DrivingHUD.lua" },
+		["lib/managers/hud/hudteammate"] 							= { "CustomHUD.lua", "KillCounter.lua", "DownCounter.lua", "BurstFire.lua" },
+		["lib/managers/hud/hudtemp"] 								= { "CustomHUD.lua" },
+		["lib/managers/hud/hudassaultcorner"] 						= { "HUDList.lua", "AdvAssault.lua" },
+		["lib/managers/hud/hudobjectives"] 							= { "EnhancedObjective.lua" },
+		["lib/managers/hud/hudheisttimer"] 							= { "EnhancedObjective.lua" },
+		["lib/managers/hud/hudchat"] 								= { "HUDChat.lua" },
+		["lib/managers/hud/hudstatsscreen"] 						= { "TabStats.lua" },
+		["lib/managers/hud/hudinteraction"] 						= { "Interaction.lua" },
+		["lib/managers/hud/hudsuspicion"] 							= { "NumbericSuspicion.lua" },
+		["lib/managers/hud/hudhitdirection"] 						= { "DamageIndicator.lua" },
+		["lib/managers/enemymanager"] 								= { "GameInfoManager.lua" },
+		["lib/managers/group_ai_states/groupaistatebase"] 			= { "GameInfoManager.lua", "PacifiedCivs.lua" },
+		["lib/managers/missionassetsmanager"] 						= { "BuyAllAsset.lua" },
+		["lib/managers/menu/blackmarketgui"] 						= { "MenuTweaks.lua" },
+		["lib/managers/menu/stageendscreengui"] 					= { "MenuTweaks.lua" },
+		["lib/managers/menu/lootdropscreengui"] 					= { "MenuTweaks.lua" },
+		["lib/managers/menu/skilltreeguinew"] 						= { "MenuTweaks.lua" },
+		["lib/managers/menu/renderers/menunodeskillswitchgui"] 		= { "MenuTweaks.lua" },
+		["lib/managers/objectinteractionmanager"] 					= { "GameInfoManager.lua", "HUDList.lua", "Interaction.lua" },
+		["lib/network/handlers/unitnetworkhandler"] 				= { "GameInfoManager.lua", "NetworkHandler.lua", "DownCounter.lua" },
+		["lib/units/props/timergui"] 								= { "GameInfoManager.lua" },
+		["lib/units/props/digitalgui"] 								= { "GameInfoManager.lua" },
+		["lib/units/props/securitylockgui"] 						= { "GameInfoManager.lua" },
+		["lib/units/civilians/civiliandamage"] 						= { "DamagePopup.lua" },
+		["lib/units/enemies/cop/copdamage"] 						= { "GameInfoManager.lua", "KillCounter.lua", "DamagePopup.lua", "TabStats.lua" },
+		["lib/units/cameras/fpcameraplayerbase"] 					= { "WeaponGadgets.lua" },
+		["lib/units/equipment/ammo_bag/ammobagbase"] 				= { "GameInfoManager.lua" },
+		["lib/units/equipment/bodybags_bag/bodybagsbagbase"] 		= { "GameInfoManager.lua" },
+		["lib/units/equipment/doctor_bag/doctorbagbase"] 			= { "DownCounter.lua", "GameInfoManager.lua" },
+		["lib/units/equipment/first_aid_kit/firstaidkitbase"] 		= { "GameInfoManager.lua" },
+		["lib/units/equipment/ecm_jammer/ecmjammerbase"] 			= { "GameInfoManager.lua", "EquipmentTweaks.lua" },
+		["lib/units/equipment/grenade_crate/grenadecratebase"] 		= { "GameInfoManager.lua" },
+		["lib/units/equipment/sentry_gun/sentrygunbase"] 			= { "GameInfoManager.lua", "KillCounter.lua" },
+		["lib/units/equipment/sentry_gun/sentrygundamage"] 			= { "GameInfoManager.lua" },
+		["lib/units/interactions/interactionext"] 					= { "GameInfoManager.lua", "Interaction.lua", "EquipmentTweaks.lua" },
+		["lib/units/weapons/akimboweaponbase"] 						= { "BurstFire.lua" },
+		["lib/units/weapons/sentrygunweapon"] 						= { "GameInfoManager.lua", "EquipmentTweaks.lua" },
+		["lib/units/weapons/weaponlaser"] 							= { "WeaponGadgets.lua" },
+		["lib/units/weapons/weaponflashlight"] 						= { "WeaponGadgets.lua" },
+		["lib/units/weapons/raycastweaponbase"] 					= { "GameInfoManager.lua", "Scripts.lua" },
+		["lib/units/weapons/newraycastweaponbase"] 					= { "WeaponGadgets.lua", "BurstFire.lua" },
+		["lib/units/props/securitycamera"] 							= { "GameInfoManager.lua" },
+		["lib/units/beings/player/playerdamage"] 					= { "GameInfoManager.lua", "DamageIndicator.lua" },
+		["lib/units/beings/player/playermovement"] 					= { "GameInfoManager.lua" },
+		["lib/units/beings/player/huskplayermovement"] 				= { "DownCounter.lua" },
+		["lib/units/beings/player/states/playercivilian"] 			= { "Interaction.lua" },
+		["lib/units/beings/player/states/playerstandard"] 			= { "GameInfoManager.lua", "EnemyHealthbar.lua", "Interaction.lua", "BurstFire.lua", "WeaponGadgets.lua" },
+		["lib/units/beings/player/states/playermaskoff"] 			= { "GameInfoManager.lua" },
+		["lib/units/beings/player/states/playerbleedout"] 			= { "DownCounter.lua" },
+		["lib/units/vehicles/vehicledamage"] 						= { "DamageIndicator.lua" },
+		["lib/units/vehicles/vehicledrivingext"] 					= { "CustomWaypoints.lua" },
+		["lib/utils/temporarypropertymanager"] 						= { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractionbloodthirstbase"] 	= { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractionexperthandling"] 	= { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractionshockandawe"] 		= { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractiondireneed"] 			= { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractionunseenstrike"] 		= { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractiontriggerhappy"] 		= { "GameInfoManager.lua" },
+		["lib/states/ingamedriving"] 								= { "DrivingHUD.lua" },
+		["lib/states/ingamewaitingforplayers"] 						= { "MenuTweaks.lua" },
+		["lib/tweak_data/tweakdata"] 								= { "MenuTweaks.lua" },	
+		["lib/tweak_data/guitweakdata"] 							= { "MenuTweaks.lua" },	
+		["lib/tweak_data/assetstweakdata"] 							= { "BuyAllAsset.lua" },
+		["lib/tweak_data/timespeedeffecttweakdata"] 				= { "Scripts.lua" },
+		["core/lib/managers/menu/items/coremenuitemslider"] 		= { "MenuTweaks.lua" },
+		["core/lib/managers/subtitle/coresubtitlepresenter"] 		= { "EnhancedObjective.lua" },
+		
+		--Utils and custom classes...
+		["lib/entry"]												= { "Utils/QuickInputMenu.lua" },
+		["lib/managers/systemmenumanager"] 							= { "Utils/InputDialog.lua" },
+		["lib/managers/dialogs/specializationdialog"] 				= { "Utils/InputDialog.lua" },
+		["lib/managers/menu/specializationboxgui"] 					= { "Utils/InputDialog.lua" },
 	}
 	
 	
@@ -413,6 +409,7 @@ if not _G.WolfHUD then
 			
 			replace_weapon_names 					= true,
 			inventory_tab_names						= true,
+			custom_inv_tab_names 					= {},
 			inventory_names							= true,
 			show_mini_icons							= true,
 			skill_names								= true,	
@@ -540,12 +537,9 @@ if not _G.WolfHUD then
 	
 	function WolfHUD:createOverrides(data)
 		self:print_log("Creating Dummy for: " .. data["display_name"], "info")
-		if not file.DirectoryExists("./" .. data["install_dir"] .. data["install_folder"]) then
-			if SystemInfo:platform() == Idstring("WIN32") then  --Windows
-				os.execute('cmd /c mkdir "./' .. data["install_dir"] .. data["install_folder"] .. '"')
-			else --Linux
-				WolfHUD:print_log("[WolfHUD] mod_override folder '" .. data["install_folder"] .. "' is missing!", "warning")
-			end
+		if not SystemFS:exists("./" .. data["install_dir"] .. data["install_folder"]) then
+			WolfHUD:print_log("[WolfHUD] mod_override folder '" .. data["install_folder"] .. "' is missing!", "warning")
+			SystemFS:make_dir("./" .. data["install_dir"] .. data["install_folder"])
 		end
 		local file = io.open(data["revision"], "w+")
 		if file then
@@ -627,8 +621,21 @@ if not _G.WolfHUD then
 		end
 	end
 	
-	WolfHUD:Reset()
-	WolfHUD:Load()
+	if not WolfHUD.tweak_path then		-- Populate tweak data
+		local tweak_path = string.format("%s%s", WolfHUD.save_path, WolfHUD.tweak_file)
+		if not io.file_is_readable(tweak_path) then
+			tweak_path = string.format("%s%s", WolfHUD.mod_path, WolfHUD.tweak_file)
+		end
+		if io.file_is_readable(tweak_path) then
+			dofile(tweak_path)
+			WolfHUD.tweak_data = WolfHUDTweakData:new()
+		else
+			WolfHUD:print_log(string.format("Tweak Data file couldn't be found! (%s)", tweak_path), "error")
+		end
+	end
+	
+	WolfHUD:Reset()	-- Populate settings table
+	WolfHUD:Load()	-- Load user settings
 end
 
 if RequiredScript then
@@ -861,7 +868,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 	end
 		
 	WolfHUD:Load()
-	
+
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.json", 					WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets.json", 					WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets_lasers.json", 			WolfHUD, WolfHUD.settings)
@@ -939,6 +946,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 			WolfHUD:print_log("Tweak_Data not found!", "error")
 		end
 	end)
+
 end)
 
 if MenuItemMultiChoice then

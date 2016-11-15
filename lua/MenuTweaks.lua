@@ -151,14 +151,136 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	end
 
 	--Replace Tab Names with custom ones...
-	local BlackMarketGuiTabItem_init_original = BlackMarketGuiTabItem.init
-	function BlackMarketGuiTabItem:init(main_panel, data, ...)
-		local inv_name_tweak = WolfHUD:getTweakEntry("inventory_names", "table")
-		if WolfHUD:getSetting("inventory_tab_names", "boolean") and inv_name_tweak and inv_name_tweak[data.category] and type(data.on_create_data[1]) == "number" then
-			local id = math.floor((data.on_create_data[1] / #data.on_create_data) + 1)
-			data.name_localized = inv_name_tweak[data.category][id] or nil
+	local BlackMarketGui__setup_original = BlackMarketGui._setup
+	function BlackMarketGui:_setup(is_start_page, component_data)
+		component_data = component_data or self:_start_page_data()
+		if WolfHUD:getSetting("inventory_tab_names", "boolean") and component_data then
+			local inv_name_tweak = WolfHUD:getSetting("custom_inv_tab_names", "table")
+			if inv_name_tweak then
+				for i, tab_data in ipairs(component_data) do
+					tab_data.name_localized = inv_name_tweak[string.format("%s_%d", tab_data.category, i)] or tab_data.name_localized
+				end
+			end
 		end
-		return BlackMarketGuiTabItem_init_original(self, main_panel, data, ...)
+		
+		BlackMarketGui__setup_original(self, is_start_page, component_data)
+		
+		if alive(self._panel) then
+			-- create rename tab info text
+			local legends_panel = self._panel:panel({
+				name = "LegendsPanel",
+				w = self._panel:w() * 0.75,
+				h = tweak_data.menu.pd2_medium_font_size
+			})
+			legends_panel:set_righttop(self._panel:w(), 0)
+			legends_panel:text({
+				name = "LegendText",
+				text = managers.localization:text("wolfhud_inv_tab_rename_hint"),
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				color = tweak_data.screen_colors.text,
+				alpha = 0.8,
+				blend_mode = "add",
+				align = "right",
+				vertical = "top"
+			})
+		end
+	end
+	
+	-- Input Dialog on double click selected tab
+	local BlackMarketGui_mouse_clicked_original = BlackMarketGui.mouse_clicked
+	function BlackMarketGui:mouse_clicked(...)
+		BlackMarketGui_mouse_clicked_original(self, ...)
+		
+		if not self._enabled then
+			return
+		end
+		
+		self._mouse_click[self._mouse_click_index].selected_tab = self._selected
+	end
+	
+	local BlackMarketGui_mouse_double_click_original = BlackMarketGui.mouse_double_click
+	function BlackMarketGui:mouse_double_click(o, button, x, y)
+		if self._enabled and not self._data.is_loadout and self._mouse_click and self._mouse_click[0] and self._mouse_click[1] then
+			if self._tabs and self._mouse_click[0].selected_tab == self._mouse_click[1].selected_tab then
+				local current_tab = self._tabs[self._selected]
+				if current_tab and button == Idstring("0") then
+					if self._tab_scroll_panel:inside(x, y) and current_tab:inside(x, y) ~= 1 then
+						self:rename_tab_clbk(current_tab)
+						return
+					end
+				end
+			end
+		end
+		
+		BlackMarketGui_mouse_double_click_original(self, o, button, x, y)
+	end
+	
+	function BlackMarketGui:rename_tab_clbk(tab)
+		local current_tab = tab or self._tabs[self._selected]
+		if current_tab and not self:in_setup()then
+			local prev_name = current_tab._tab_text_string or ""
+			local menu_options = {
+				[1] = {
+					text = managers.localization:text("wolfhud_dialog_save"),
+					callback = function(cb_data, button_id, button, text)
+						if self._data and text and text ~= "" then
+							local tab_data = self._data[self._selected]
+							local inv_name_tweak = WolfHUD:getSetting("custom_inv_tab_names", "table")
+							if tab_data and inv_name_tweak then
+								inv_name_tweak[string.format("%s_%d", tab_data.category, self._selected)] = text
+								WolfHUD:Save()
+								
+								current_tab._tab_text_string = text
+								local name = current_tab._tab_panel:child("tab_text")
+								if alive(name) then
+									name:set_text(text)
+								end
+								self:rearrange_tab_width(true)
+								self:_round_everything()
+							end
+						end
+					end,
+				},
+				[2] = {
+					text = managers.localization:text("dialog_cancel"),
+					is_cancel_button = true,
+				}
+			}
+			QuickInputMenu:new(managers.localization:text("wolfhud_dialog_rename_inv_tab"), managers.localization:text("wolfhud_dialog_rename_inv_tab_desc"), prev_name, menu_options, true, {w = 420, to_upper = true, max_len = 15})
+			
+			return
+		end
+	end
+	
+	function BlackMarketGui:rearrange_tab_width(start_with_selected)
+		local current = start_with_selected and self._selected or 1
+		local start = current + 1
+		local stop = #self._tabs
+		
+		local current_tab = self._tabs[current]
+		if current_tab then 
+			local current_panel = current_tab._tab_panel
+			local current_text = current_panel and current_panel:child("tab_text")
+			local current_selection = current_panel and current_panel:child("tab_select_rect")
+			if alive(current_panel) and alive(current_text) and alive(current_selection) then
+				local _, _, w, _ = current_text:text_rect()
+				current_panel:set_w(w + 15)
+				current_selection:set_w(w + 15)
+				current_text:set_w(w + 15)
+				current_text:set_center_x(current_panel:w() / 2)
+			end
+		end
+		
+		local offset = alive(self._tabs[current]._tab_panel) and self._tabs[current]._tab_panel:right() or 0
+		for i = start, stop do
+			local tab = self._tabs[i]
+			local tab_panel = tab._tab_panel
+			if alive(tab._tab_panel) then
+				offset = tab:set_tab_position(offset)
+			end
+			
+		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 	local orig_newskilltreeskillitem_refresh = NewSkillTreeSkillItem.refresh
@@ -249,8 +371,8 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/guitweakdata" then
 	local GuiTweakData_init_orig = GuiTweakData.init
 	function GuiTweakData:init(...)
 		GuiTweakData_init_orig(self, ...)
-		self.rename_max_letters = 30
-		self.rename_skill_set_max_letters = 25
+		self.rename_max_letters = WolfHUD:getTweakEntry("MAX_WEAPON_NAME_LENGTH", "number", 30)
+		self.rename_skill_set_max_letters = WolfHUD:getTweakEntry("MAX_SKILLSET_NAME_LENGTH", "number", 25)
 	end
 elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuitemslider" then
 	core:module("CoreMenuItemSlider")
@@ -370,14 +492,15 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	ChatManager._BLOCK_PATTERNS = {
 	  ".-%[NGBT%w+%].+",
 	  --NGBTO info blocker Should work since its mass spam.
-	  "[%d:]+%d:%d%d.-<DIV>.+"
+	  "[%d:]+%d:%d%d.-<DIV>.+",
 	  --Blocks anything, that starts with numbers and ':' and then has a divider (Might block other mods, not only Poco...)
+	  "Replenished: .+",
 	}
 
 	local _receive_message_original = ChatManager._receive_message
 
 	function ChatManager:_receive_message(channel_id, name, message, ...)
-		local message2 = message
+		local message2 = message or ""
 		for key, subst in pairs(ChatManager._SUB_TABLE) do
 				message2 = message2:gsub(key, subst)
 		end

@@ -12,7 +12,7 @@ print_error = function(...)
 end
 if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
-	local function format_time_string(value)
+	local format_time_string = function(value)
 		local frmt_string
 	
 		if math.floor(value) > 60 then
@@ -2784,7 +2784,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._powered = data.powered
 		self._upgradable = data.upgradable
 		self._upgrades = data.upgrades or {}
-		self._show_upgrade_icons = data.can_have_upgrades
+		self._show_upgrade_icons = data.can_have_upgrades or false
 		
 		HUDList.ItemBase.init(self, parent, name, { align = "left", w = parent:panel():h() * (self._show_upgrade_icons and 1 or 4/5), h = parent:panel():h() })
 				

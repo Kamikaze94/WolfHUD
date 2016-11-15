@@ -108,8 +108,8 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 end
 
 if RequiredScript == "lib/managers/hud/hudteammate" then
-	
-	local function ReverseTable(tbl)
+
+	local ReverseTable = function(tbl)
 		for i=1, math.floor(#tbl / 2) do
 		local tmp = tbl[i]
 		tbl[i] = tbl[#tbl - i + 1]
@@ -561,6 +561,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:call_listeners("reset_downs")
 	end
 	
+	function HUDTeammateCustom:set_detection(value)
+		self:call_listeners("detection", value)
+	end
+	
 	function HUDTeammateCustom:set_armor(data)
 		self:call_listeners("armor", data.current, data.total)
 	end
@@ -701,6 +705,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			local local_peer = managers.network:session():local_peer()
 			self:set_character(managers.criminals:character_name_by_peer_id(local_peer:id()))
 			self:set_rank(managers.experience:current_rank(), managers.experience:current_level())
+			local detection = managers.blackmarket:get_suspicion_offset_of_local(tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
+			self:set_detection(tonumber(string.format("%.0f", detection * 100)))
 		end
 	
 		self:call_listeners("callsign", id)
@@ -1807,6 +1813,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._downs = 0
 		self._max_downs = (Global.game_settings.difficulty == "sm_wish" and 2 or tweak_data.player.damage.LIVES_INIT) - 1
 		self._reviver_count = 0
+		self._risk = 0
 		
 		self._owner:register_listener("PlayerStatus", { "health" }, callback(self, self, "set_health"), false)
 		self._owner:register_listener("PlayerStatus", { "stored_health" }, callback(self, self, "set_stored_health"), false)
@@ -1814,6 +1821,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._owner:register_listener("PlayerStatus", { "set_revives" }, callback(self, self, "set_revives"), false)
 		self._owner:register_listener("PlayerStatus", { "increment_downs" }, callback(self, self, "increment_downs"), false)
 		self._owner:register_listener("PlayerStatus", { "reset_downs" }, callback(self, self, "reset_downs"), false)
+		self._owner:register_listener("PlayerStatus", { "detection" }, callback(self, self, "set_detection"), false)
 		self._owner:register_listener("PlayerStatus", { "armor" }, callback(self, self, "set_armor"), false)
 		self._owner:register_listener("PlayerStatus", { "stamina" }, callback(self, self, "set_stamina"), false)
 		self._owner:register_listener("PlayerStatus", { "stamina_max" }, callback(self, self, "set_stamina_max"), false)
@@ -1832,7 +1840,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.PlayerStatus:destroy()
 		self._owner:unregister_listener("PlayerStatus", { 
-			"health", "stored_health", "stored_health_max", "set_revives", "increment_downs", "reset_downs",
+			"health", "stored_health", "stored_health_max", "set_revives", "increment_downs", "reset_downs", "detection", 
 			"armor",
 			"stamina", "stamina_max",
 			"damage_taken",
@@ -1895,7 +1903,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:set_stored_health_max(1-ratio)
 		self._health_radial:set_color(Color(ratio, 1, 1))
 		self._stored_health_radial:set_rotation(-ratio * 360)
-		self:set_detection()
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:set_stored_health(amount)
@@ -1945,19 +1952,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:set_detection(risk)
-		if risk or not self._risk then
-			if risk then
-				self._risk = risk
-			elseif self._is_local_player then
-				self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_local(tweak_data.player.SUSPICION_OFFSET_LERP or 0.75) * 100))
-			elseif self._owner:peer_id() then
-				self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_peer(managers.network:session():peer(self._owner:peer_id()), tweak_data.player.SUSPICION_OFFSET_LERP or 0.75) * 100))
-			end
-			if self._risk then
-				local color = self._risk < 50 and Color(1, 0, 0.8, 1) or Color(1, 1, 0.2, 0)
-				self._detection_counter:set_text(utf8.char(57363) .. tostring(self._risk))
-				self._detection_counter:set_color(color)
-			end
+		if risk and self._risk ~= risk then
+			self._risk = risk
+			
+			local color = self._risk < 50 and Color(1, 0, 0.8, 1) or Color(1, 1, 0.2, 0)
+			self._detection_counter:set_text(utf8.char(57363) .. tostring(self._risk))
+			self._detection_counter:set_color(color)
+			
 			local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and self._settings.DOWNCOUNTER)
 			self._downs_counter:set_visible(not disabled and not managers.groupai:state():whisper_mode() or self:down_amount() > 0)
 			self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
@@ -3302,7 +3303,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		
 		self._settings = settings
 		self._min_width = 0
-		self._tweak_data = tweak_data.interaction
+		self._tweak_data = {}
 		
 		self._bg = self._panel:rect({
 			name = "bg",
@@ -3404,7 +3405,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if not self._settings.INTERACTION.HIDE and (self._settings.INTERACTION.MIN_DURATION or 0) <= timer then
 			local tweak_entry = self._tweak_data[id]
 			local text_id, macros = "hud_action_generic", {}
-			if tweak_entry then
+			if tweak_entry and (tweak_entry.action_text_id or tweak_entry.quantity) then
 				text_id = tweak_entry.action_text_id or "hud_deploying_equipment"
 				macros = { EQUIPMENT = (tweak_entry.text_id and managers.localization:text(tweak_entry.text_id) or ""), BTN_INTERACT = managers.localization:get_default_macro("BTN_INTERACT") }
 			end
@@ -3761,7 +3762,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDManager:teammate_progress(peer_id, type_index, enabled, tweak_data_id, timer, success, ...)		
-		local interact_tweak
+		local interact_tweak = {}
 		if type_index == 1 then
 			interact_tweak = tweak_data.interaction
 		elseif type_index == 2 then
@@ -3936,6 +3937,8 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		if peer_id == managers.network:session():local_peer():id() then
 			--outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string())
 			--Weapons handled by HUDManager:add_weapon()
+			
+			-- Detection, gets set on set_callsign for local player
 		else
 			local peer = managers.network:session():peer(peer_id)
 			outfit = peer and peer:blackmarket_outfit()
@@ -3953,6 +3956,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				local skills = outfit.skills.skills
 				self:set_teammate_specialization(panel_id, tonumber(deck_index), tonumber(deck_level))
 				self:set_teammate_skills(panel_id, skills)
+				
+				-- Detection
+				local detection = managers.blackmarket:get_suspicion_offset_of_peer(peer, tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
+				self:set_teammate_detection(panel_id, tonumber(string.format("%.0f", detection * 100)))
 			end
 		end
 	
@@ -3999,6 +4006,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	function HUDManager:reset_teammate_downs(i)
 		self._teammate_panels[i]:reset_downs()
+	end
+	
+	function HUDManager:set_teammate_detection(i, value)
+		self._teammate_panels[i]:set_detection(value)
 	end
 	
 	function HUDManager:set_teammate_specialization(i, index, level)

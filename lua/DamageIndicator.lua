@@ -82,19 +82,25 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 	local PlayerDamage_damage_fire = PlayerDamage.damage_fire
 	
 	function PlayerDamage:damage_explosion(attack_data, ...)
-		PlayerDamage_damage_explosion(self, attack_data, ...)
-		local distance = mvector3.distance(attack_data.position, self._unit:position())
-		if self:_chk_can_take_dmg() and distance <= attack_data.range and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated() or self._bleed_out) then
-			self:_hit_direction(attack_data.position, HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE)
+		local value = PlayerDamage_damage_explosion(self, attack_data, ...)
+		if alive(self._unit) and (attack_data.position or attack_data.col_ray.position) then
+			local distance = mvector3.distance(attack_data.position or attack_data.col_ray.position, self._unit:position())
+			if self:_chk_can_take_dmg() and distance <= attack_data.range and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated() or self._bleed_out) then
+				self:_hit_direction(attack_data.position, HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE)
+			end
 		end
+		return value
 	end
 	
 	function PlayerDamage:damage_fire(attack_data, ...)
-		PlayerDamage_damage_fire(self, attack_data, ...)
-		local distance = mvector3.distance(attack_data.position, self._unit:position())
-		if self:_chk_can_take_dmg() and distance <= attack_data.range and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated() or self._bleed_out) then
-			self:_hit_direction(attack_data.position, HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE)
+		local value = PlayerDamage_damage_fire(self, attack_data, ...)
+		if alive(self._unit) and (attack_data.position or attack_data.col_ray.position) then
+			local distance = mvector3.distance(attack_data.position or attack_data.col_ray.position, self._unit:position())
+			if self:_chk_can_take_dmg() and distance <= attack_data.range and not (self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable or self:incapacitated() or self._bleed_out) then
+				self:_hit_direction(attack_data.position, HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE)
+			end
 		end
+		return value
 	end
 	
 	function PlayerDamage:_hit_direction(position_vector, damage_type)
