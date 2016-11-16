@@ -654,6 +654,8 @@
 	
 	"wolfhud_show_dmg_popup_title" : "Zeige Schadens Popup",
 	"wolfhud_show_dmg_popup_desc" : "Aktiviere den Schadens Popup.",
+	"wolfhud_dmg_popup_player" : "Spieler",
+	"wolfhud_dmg_popup_all" : "Jeden",
 	"wolfhud_dmg_popup_time_title" : "Popup Zeit",
 	"wolfhud_dmg_popup_time_desc" : "Bestimmt wie lange das Popup angezeigt wird.",
 	"wolfhud_dmg_popup_color_title" : "Körpertreffer Popup Farbe",

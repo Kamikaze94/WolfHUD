@@ -7,11 +7,16 @@
 	"back_callback" : "",
 	"items" : [
 		{
-			"type" : "toggle",
+			"type" : "multiple_choice",
 			"id" : "show_dmg_popup",
 			"title" : "wolfhud_show_dmg_popup_title",
 			"description" : "wolfhud_show_dmg_popup_desc",
 			"callback" : "clbk_change_setting",
+			"items" : [
+				"wolfhud_multiselect_disabled",
+				"wolfhud_dmg_popup_player",
+				"wolfhud_dmg_popup_all"
+			],
 			"value" : "show_dmg_popup",
 		},
 		{

@@ -3992,7 +3992,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._teammate_panels[i]:reset_kill_count()
 	end
 	
-	function HUDManager:increment_teammate_kill_count_detailed(i, unit, weapon_type, weapon_slot)
+	function HUDManager:increment_teammate_kill_count_detailed(i, unit, weapon_id, weapon_type, weapon_slot)
 		--TODO
 	end
 	

@@ -7,23 +7,54 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	end
 	
 	function CopDamage:_process_popup_damage(attack_data)
-		if WolfHUD:getSetting("show_dmg_popup", "boolean") then
-			local player = managers.player:player_unit()
-			local damage = tonumber(attack_data.damage) or 0
-			if damage >= 0.1 and alive(attack_data.attacker_unit) and alive(player) then
-				if attack_data.attacker_unit:key() == player:key() or alive(attack_data.attacker_unit:base()._thrower_unit) and attack_data.attacker_unit:base()._thrower_unit:key() == player:key() then
+		local killer
+		
+		local attacker = alive(attack_data.attacker_unit) and attack_data.attacker_unit
+		local damage = tonumber(attack_data.damage) or 0
+		
+		local dmg_popup_setting = WolfHUD:getSetting("show_dmg_popup", "number")
+
+		if attacker and damage >= 0.1 and dmg_popup_setting > 1 then
+			if attacker:in_slot(3) or attacker:in_slot(5) then	
+				--Human team mate
+				killer = attacker
+			elseif attacker:in_slot(2) then
+				--Player
+				killer = attacker
+			elseif attacker:in_slot(16) then
+				--Bot/joker
+				killer = attacker
+			elseif attacker:in_slot(12) then
+				--Enemy
+			elseif attacker:in_slot(25)	then
+				--Turret
+				local owner = attacker:base():get_owner_id()
+				if owner then 
+					killer =  managers.criminals:character_unit_by_peer_id(owner)
+				end
+			elseif attacker:base().thrower_unit then
+				killer = attacker:base():thrower_unit()
+			end
+			
+			if dmg_popup_setting == 2 then
+				if killer:in_slot(2) then
 					local headshot = self._head_body_name and attack_data.col_ray and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_head_body_name
 					self:show_popup(damage, self._dead, headshot)
+				end
+			else
+				local color_id = managers.criminals:character_color_id_by_unit(killer)
+				if color_id then
+					self:show_popup(damage, self._dead, nil, color_id)
 				end
 			end
 		end
 	end
 	
-	function CopDamage:show_popup(damage, dead, headshot)
+	function CopDamage:show_popup(damage, dead, headshot, color_id)
 		if managers.waypoints then
 			local id = "damage_wp_" .. tostring(self._unit:key())
 			local waypoint = managers.waypoints:get_waypoint(id)
-			local waypoint_color = WolfHUD:getSetting(headshot and "dmg_popup_headshot_color" or "dmg_popup_color", "color")
+			local waypoint_color = color_id and tweak_data.chat_colors[color_id] or WolfHUD:getSetting(headshot and "dmg_popup_headshot_color" or "dmg_popup_color", "color")
 			local waypoint_duration = WolfHUD:getSetting("dmg_popup_time", "number")
 			if waypoint and not waypoint:is_deleted() then
 				self._dmg_value = self._dmg_value + (damage * 10)

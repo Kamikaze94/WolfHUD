@@ -648,6 +648,8 @@
 
 	"wolfhud_show_dmg_popup_title" : "Показать всплывающий урон",
 	"wolfhud_show_dmg_popup_desc" : "Включить всплывающий урон.",
+	"wolfhud_dmg_popup_player" : "Player",
+	"wolfhud_dmg_popup_all" : "Everyone",
 	"wolfhud_dmg_popup_time_title" : "Время всплывающей информации",
 	"wolfhud_dmg_popup_time_desc" : "Определяет как долго будет отображаться всплывающая информация.",
 	"wolfhud_dmg_popup_color_title" : "Цвет выстрела в тело",

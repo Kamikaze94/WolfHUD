@@ -408,7 +408,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 			if missing_money then
 				error_msg = string.format("%s%s %s", error_msg, ((missing_skill or missing_favours) and ";" or ""), managers.localization:text("wolfhud_preplanning_msg_loaded_missing_money"))
 			end
-			managers.preplanning:notify_user("wolfhud_preplanning_msg_loaded_partitially", {ERRORMSG = error_msg}}, true)
+			managers.preplanning:notify_user("wolfhud_preplanning_msg_loaded_partitially", {ERRORMSG = error_msg}, true)
 		end
 	end
 	

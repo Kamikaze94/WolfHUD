@@ -98,8 +98,23 @@ end
 				local i_body = data.col_ray and data.col_ray.body and self._unit:get_body_index(data.col_ray.body:name()) or self._sync_ibody
 				local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
 				local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false
+				
 				if killer:in_slot(2) then
 					managers.hud:increment_teammate_kill_count(HUDManager.PLAYER_PANEL, is_special, headshot)
+					
+					local current_player_state = managers.player and managers.player:get_current_state()
+					local weapon_base = current_player_state and current_player_state._equipped_unit:base()
+					local weapon_tweak = weapon_base and weapon_base:weapon_tweak_data()
+					local projectile_name = "bullet"
+					if weapon_tweak.projectile_type_index then
+						projectile_name = tweak_data and weapon_tweak and tweak_data:get_raw_value("blackmarket", "projectiles", "_projectiles_index", weapon_tweak.projectile_type_index)
+					end
+					if projectile_name == (data.variant or "") then
+						local weapon_id = weapon_base:get_name_id()
+						local weapon_type = weapon_tweak.category
+						local slot = weapon_tweak and weapon_tweak.use_data and weapon_tweak.use_data.selection_index
+						managers.hud:increment_teammate_kill_count_detailed(HUDManager.PLAYER_PANEL, self._unit, weapon_id, weapon_type, slot)
+					end
 				else
 					local crim_data = managers.criminals:character_data_by_unit(killer)
 					if crim_data and crim_data.panel_id then
@@ -181,7 +196,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._teammate_panels[i]:reset_kill_count()
 	end
 	
-	HUDManager.increment_teammate_kill_count_detailed = HUDManager.increment_teammate_kill_count_detailed or function(self, i, unit, weapon_type, weapon_slot)
+	HUDManager.increment_teammate_kill_count_detailed = HUDManager.increment_teammate_kill_count_detailed or function(self, i, unit, weapon_id, weapon_type, weapon_slot)
 		--TODO: Add call for default HUD  |  No need for that, really...
 	end
 	

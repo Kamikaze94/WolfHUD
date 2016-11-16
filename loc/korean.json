@@ -646,6 +646,8 @@
 	
 	"wolfhud_show_dmg_popup_title" : "데미지 팝업",
 	"wolfhud_show_dmg_popup_desc" : "데미지 팝업을 표시합니다.",
+	"wolfhud_dmg_popup_player" : "Player",
+	"wolfhud_dmg_popup_all" : "Everyone",
 	"wolfhud_dmg_popup_time_title" : "팝업 지속시간",
 	"wolfhud_dmg_popup_time_desc" : "데미지 팝업이 얼마나 오랫동안 지속될지 설정합니다.",
 	"wolfhud_dmg_popup_color_title" : "몸샷 팝업 색",

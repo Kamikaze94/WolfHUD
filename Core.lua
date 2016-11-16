@@ -213,7 +213,7 @@ if not _G.WolfHUD then
 			dmg_vehicle_color						= "yellow",
 			dmg_friendlyfire_color					= "orange",
 		  --Damage Popup
-			show_dmg_popup							= true,
+			show_dmg_popup							= 2,
 			dmg_popup_time	 						= 3,
 			dmg_popup_color							= "yellow",
 			dmg_popup_headshot_color				= "red",
