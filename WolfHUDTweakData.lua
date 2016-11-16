@@ -52,15 +52,5 @@ end
 ----------------------------------------- DONT EDIT BELOW THIS LINE!!! ----------------------------------------- DONT EDIT BELOW THIS LINE!!! ----------------------------------------- DONT EDIT BELOW THIS LINE!!! -----------------------------------------
 
 function WolfHUDTweakData:post_init()
-	local SUB_TABLE = {
-		["<ghost>"] = utf8.char(57363),
-		["<skull>"] = utf8.char(57364),
-	}
-	for category, names in pairs(self.inventory_names) do
-		for i, _ in ipairs(names) do
-			for key, subst in pairs(SUB_TABLE) do
-				self.inventory_names[category][i] = self.inventory_names[category][i]:gsub(key, subst)
-			end
-		end
-	end
+	
 end

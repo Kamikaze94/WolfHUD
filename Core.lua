@@ -468,12 +468,16 @@ if not _G.WolfHUD then
 	end
 
 	function WolfHUD:Save()
-		local file = io.open(self.settings_path, "w+")
-		if file then
-			file:write(json.encode(self.settings))
-			file:close()
+		if table.size(self.settings or {}) > 0 then
+			local file = io.open(self.settings_path, "w+")
+			if file then
+				file:write(json.encode(self.settings))
+				file:close()
+			else
+				self:print_log("Error while saving, settings file could not be opened (" .. self.settings_path .. ")", "error")
+			end
 		else
-			self:print_log("Error while saving, settings file could not be opened (" .. self.settings_path .. ")", "error")
+			self:print_log("Error while saving, settings table seems to be empty...", "error")
 		end
 	end
 	
@@ -866,8 +870,6 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 		local name = item:parameters().name
 		if managers.hud and managers.hud._change_vanillahud_setting then managers.hud:_change_vanillahud_setting(tostring(name)) end
 	end
-		
-	WolfHUD:Load()
 
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/options.json", 					WolfHUD, WolfHUD.settings)
 	MenuHelper:LoadFromJsonFile(WolfHUD.mod_path .. "menu/gadgets.json", 					WolfHUD, WolfHUD.settings)
@@ -942,8 +944,6 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_WolfHUD", function(men
 					end
 				end
 			end
-		else
-			WolfHUD:print_log("Tweak_Data not found!", "error")
 		end
 	end)
 
@@ -951,7 +951,7 @@ end)
 
 if MenuItemMultiChoice then
 	Hooks:PostHook( MenuItemMultiChoice , "setup_gui" , "MenuItemMultiChoicePostSetupGui_WolfHUD" , function( self, node, row_item )
-		if self:selected_option():parameters().color and row_item.choice_text then
+		if self:selected_option() and self:selected_option():parameters().color and row_item.choice_text then
 			row_item.choice_text:set_blend_mode("normal")
 		end
 	end)
