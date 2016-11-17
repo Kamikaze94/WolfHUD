@@ -7,14 +7,15 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	end
 	
 	function CopDamage:_process_popup_damage(attack_data)
-		local killer
+		local dmg_popup_setting = WolfHUD:getSetting("show_dmg_popup", "number")
 		
 		local attacker = alive(attack_data.attacker_unit) and attack_data.attacker_unit
 		local damage = tonumber(attack_data.damage) or 0
 		
-		local dmg_popup_setting = WolfHUD:getSetting("show_dmg_popup", "number")
 
 		if attacker and damage >= 0.1 and dmg_popup_setting > 1 then
+			local killer
+			
 			if attacker:in_slot(3) or attacker:in_slot(5) then	
 				--Human team mate
 				killer = attacker
@@ -23,7 +24,15 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 				killer = attacker
 			elseif attacker:in_slot(16) then
 				--Bot/joker
-				killer = attacker
+				local key = tostring(attacker:key())
+				local minion_data = managers.gameinfo and managers.gameinfo:get_minions(key)
+				if minion_data then
+					-- Joker
+					killer = minion_data.owner and managers.criminals:character_unit_by_peer_id(minion_data.owner)
+				else
+					-- Bot
+					killer = attacker
+				end
 			elseif attacker:in_slot(12) then
 				--Enemy
 			elseif attacker:in_slot(25)	then

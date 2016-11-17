@@ -95,6 +95,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			valign = "grow",
 		})
 		
+		if not HUDManager.CUSTOM_TEAMMATE_PANELS then	-- Arrange the position for non-CustomHUD
+			local player_hud = managers.hud._teammate_panels[HUDManager.PLAYER_PANEL]
+			local player_panel = player_hud and player_hud:panel()
+			if player_panel then
+				self:set_offset(player_panel:h(), "right")
+			end
+		end
+		
 		self._panel:set_enabled("in_vehicle", managers.player:get_vehicle())
 	end
 
@@ -332,8 +340,9 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	
 	function HUDDriving.HorizontalListItem:addComponents(components)
 		if components and type(components) == "table" then
+			local component_offset = table.size(self._components) or 0
 			for i, component in ipairs(components) do
-				table.insert(self._components, i, component)
+				table.insert(self._components, i + component_offset, component)
 			end
 			self:arrange()
 		end
@@ -405,8 +414,9 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	
 	function HUDDriving.VerticalListItem:addComponents(components)
 		if components and type(components) == "table" then
+			local component_offset = table.size(self._components) or 0
 			for i, component in ipairs(components) do
-				table.insert(self._components, i, component)
+				table.insert(self._components, i + component_offset, component)
 			end
 			self:arrange()
 		end

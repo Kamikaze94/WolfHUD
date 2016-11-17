@@ -104,13 +104,13 @@ end
 					
 					local current_player_state = managers.player and managers.player:get_current_state()
 					local weapon_base = current_player_state and current_player_state._equipped_unit:base()
-					local weapon_tweak = weapon_base and weapon_base:weapon_tweak_data()
 					local projectile_name = "bullet"
-					if weapon_tweak.projectile_type_index then
-						projectile_name = tweak_data and weapon_tweak and tweak_data:get_raw_value("blackmarket", "projectiles", "_projectiles_index", weapon_tweak.projectile_type_index)
+					if weapon_base._projectile_type_index then
+						projectile_name = tweak_data and tweak_data:get_raw_value("blackmarket", "projectiles", "_projectiles_index", weapon_base._projectile_type_index)
 					end
 					if projectile_name == (data.variant or "") then
 						local weapon_id = weapon_base:get_name_id()
+						local weapon_tweak = weapon_base and weapon_base:weapon_tweak_data()
 						local weapon_type = weapon_tweak.category
 						local slot = weapon_tweak and weapon_tweak.use_data and weapon_tweak.use_data.selection_index
 						managers.hud:increment_teammate_kill_count_detailed(HUDManager.PLAYER_PANEL, self._unit, weapon_id, weapon_type, slot)
