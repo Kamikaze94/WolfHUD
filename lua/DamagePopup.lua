@@ -36,15 +36,17 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 				killer = attacker:base():thrower_unit()
 			end
 			
-			if dmg_popup_setting == 2 then
-				if killer:in_slot(2) then
-					local headshot = self._head_body_name and attack_data.col_ray and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_head_body_name
-					self:show_popup(damage, self._dead, headshot)
-				end
-			else
-				local color_id = managers.criminals:character_color_id_by_unit(killer)
-				if color_id then
-					self:show_popup(damage, self._dead, nil, color_id)
+			if alive(killer) then
+				if dmg_popup_setting == 2 then
+					if killer:in_slot(2) then
+						local headshot = self._head_body_name and attack_data.col_ray and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_head_body_name
+						self:show_popup(damage, self._dead, headshot)
+					end
+				else
+					local color_id = managers.criminals:character_color_id_by_unit(killer)
+					if color_id then
+						self:show_popup(damage, self._dead, nil, color_id)
+					end
 				end
 			end
 		end
