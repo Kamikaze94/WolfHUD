@@ -153,19 +153,28 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	--Replace Tab Names with custom ones...
 	local BlackMarketGui__setup_original = BlackMarketGui._setup
 	function BlackMarketGui:_setup(is_start_page, component_data)
+		self._renameable_tabs = false
 		component_data = component_data or self:_start_page_data()
 		if WolfHUD:getSetting("inventory_tab_names", "boolean") and component_data then
 			local inv_name_tweak = WolfHUD:getSetting("custom_inv_tab_names", "table")
 			if inv_name_tweak then
 				for i, tab_data in ipairs(component_data) do
-					tab_data.name_localized = inv_name_tweak[string.format("%s_%d", tab_data.category, i)] or tab_data.name_localized
+					if not tab_data.prev_node_data then
+						tab_data.name_localized = inv_name_tweak[string.format("%s_%d", tab_data.category, i)] or tab_data.name_localized
+						self._renameable_tabs = true
+					end
 				end
 			end
 		end
 		
 		BlackMarketGui__setup_original(self, is_start_page, component_data)
 		
-		if alive(self._panel) then
+		if self._renameable_tabs and self._tabs[1] then
+			local first_tab_name = self._tabs[1]._tab_panel and self._tabs[1]._tab_panel:child("tab_text")
+			self._renameable_tabs = first_tab_name:visible()
+		end
+		
+		if self._renameable_tabs and alive(self._panel) then
 			-- create rename tab info text
 			local legends_panel = self._panel:panel({
 				name = "LegendsPanel",
@@ -201,13 +210,16 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	
 	local BlackMarketGui_mouse_double_click_original = BlackMarketGui.mouse_double_click
 	function BlackMarketGui:mouse_double_click(o, button, x, y)
-		if self._enabled and not self._data.is_loadout and self._mouse_click and self._mouse_click[0] and self._mouse_click[1] then
-			if self._tabs and self._mouse_click[0].selected_tab == self._mouse_click[1].selected_tab then
-				local current_tab = self._tabs[self._selected]
-				if current_tab and button == Idstring("0") then
-					if self._tab_scroll_panel:inside(x, y) and current_tab:inside(x, y) ~= 1 then
-						self:rename_tab_clbk(current_tab)
-						return
+		--log(json.encode(self._data))
+		if self._enabled and not self._data.is_loadout and self._renameable_tabs then
+			if self._mouse_click and self._mouse_click[0] and self._mouse_click[1] then
+				if self._tabs and self._mouse_click[0].selected_tab == self._mouse_click[1].selected_tab then
+					local current_tab = self._tabs[self._selected]
+					if current_tab and button == Idstring("0") then
+						if self._tab_scroll_panel:inside(x, y) and current_tab:inside(x, y) ~= 1 then
+							self:rename_tab_clbk(current_tab)
+							return
+						end
 					end
 				end
 			end
