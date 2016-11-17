@@ -409,7 +409,7 @@ if not _G.WolfHUD then
 			
 			replace_weapon_names 					= true,
 			inventory_tab_names						= true,
-			custom_inv_tab_names 					= {},
+			custom_inv_tab_names 					= { workaround = "pls fix json" },
 			inventory_names							= true,
 			show_mini_icons							= true,
 			skill_names								= true,	
