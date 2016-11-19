@@ -258,23 +258,14 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 	end
 	
 	function MissionAssetsManager:sync_load(data, ...)
-		--local has_assets = self:mission_has_assets()
 		if self:mission_has_assets() then
-			self._global = data.MissionAssetsManager
-			self:create_buy_all_asset()
-			self:update_buy_all_asset_cost()
-		else
---			self:remove_buy_all(data.MissionAssetsManager.assets)
-			self:remove_buy_all_tweak()
+			self:create_buy_all_asset(data.MissionAssetsManager.assets)
 		end
 		
 		sync_load_original(self, data, ...)
 		
 		if self:mission_has_assets() then
---			if not self:_get_asset_by_id("wolfhud_buy_all_assets") then
---				self:create_buy_all_asset()
---				self:update_buy_all_asset_cost()
---			end
+			self:update_buy_all_asset_cost()
 			self:check_all_assets_bought()
 		end
 	end
@@ -287,6 +278,15 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 		local asset_tweak = self._tweak_data[asset_id]
 		
 		local asset = self:_get_asset_by_id(asset_id)
+		
+		if not asset then
+			for i, data in ipairs(insert_table) do
+				if data.id == asset_id then
+					asset = data
+					break
+				end
+			end
+		end
 
 		if asset then
 			table.sort(insert_table, function(a, b)
@@ -384,6 +384,7 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 		if asset and not asset.unlocked and self._tweak_data.wolfhud_buy_all_assets then
 			self._tweak_data.wolfhud_buy_all_assets.money_lock = 0
 			sync_unlock_asset_original(self, "wolfhud_buy_all_assets")
+--			unlock_asset_original(self, "wolfhud_buy_all_assets")
 		end
 	end
 	

@@ -111,6 +111,7 @@ if not _G.WolfHUD then
 		["lib/player_actions/skills/playeractionunseenstrike"] 		= { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractiontriggerhappy"] 		= { "GameInfoManager.lua" },
 		["lib/states/ingamedriving"] 								= { "DrivingHUD.lua" },
+		["lib/states/ingamearrested"]								= { "EnemyHealthbar.lua" }, 
 		["lib/states/ingamewaitingforplayers"] 						= { "MenuTweaks.lua" },
 		["lib/tweak_data/tweakdata"] 								= { "MenuTweaks.lua" },	
 		["lib/tweak_data/guitweakdata"] 							= { "MenuTweaks.lua" },	
@@ -215,6 +216,7 @@ if not _G.WolfHUD then
 		  --Damage Popup
 			show_dmg_popup							= 2,
 			dmg_popup_time	 						= 3,
+			dmg_popup_scale							= 1,
 			dmg_popup_color							= "yellow",
 			dmg_popup_headshot_color				= "red",
 		  --Suspicion

@@ -79,7 +79,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 				local params = {
 					unit = self._unit,
 					offset = Vector3(10, 10, 20),
-					scale = 2,
+					scale = 2 * WolfHUD:getSetting("dmg_popup_scale", "number", 1),
 					color = waypoint_color,
 					visible_distance = { 
 						min = 30, 

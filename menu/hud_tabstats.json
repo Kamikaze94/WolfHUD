@@ -16,7 +16,8 @@
 			"items" : [
 				"wolfhud_multiselect_disabled",
 				"wolfhud_tabstats_clock_mode_a",
-				"wolfhud_tabstats_clock_mode_b"
+				"wolfhud_tabstats_clock_mode_b",
+				"wolfhud_tabstats_clock_mode_c"
 			],
 			"value" : "clock_mode",
 		},

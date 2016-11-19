@@ -423,7 +423,9 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			local text = ""
 			local x = 0
 			local mode = WolfHUD:getSetting("clock_mode", "number")
-			if mode >= 3 then
+			if mode == 4 then
+				return	-- Handled externally for more accurate heist timer...
+			elseif mode == 3 then
 				text = os.date("%X")
 				x = right_panel:child("time_icon"):w()
 			elseif mode == 2 then
@@ -433,6 +435,28 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			right_panel:child("time_icon"):set_center_x(right_panel:child("time_text"):left() + x)
 			right_panel:child("time_text"):set_visible(mode > 1)
 			right_panel:child("time_icon"):set_visible(mode > 1)
+		end
+	end
+	
+	function HUDStatsScreen:feed_heist_time(time)
+		local right_panel = self._full_hud_panel:child("right_panel")
+		if WolfHUD:getSetting("clock_mode", "number") == 4 and right_panel and (self._last_heist_time or 0) < math.floor(time) then
+			self._last_heist_time = time
+			
+			time = math.floor(time)
+			local hours = math.floor(time / 3600)
+			time = time - hours * 3600
+			local minutes = math.floor(time / 60)
+			time = time - minutes * 60
+			local seconds = math.round(time)
+
+			text = string.format("%02d:%02d:%02d", hours, minutes, seconds)
+			x = 1.3 * right_panel:child("time_icon"):w()
+			
+			right_panel:child("time_text"):set_text(text)
+			right_panel:child("time_icon"):set_center_x(right_panel:child("time_text"):left() + x)
+			right_panel:child("time_text"):set_visible(true)
+			right_panel:child("time_icon"):set_visible(true)
 		end
 	end
 
@@ -789,12 +813,20 @@ elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	local HUDManager_update_original = HUDManager.update
+	local HUDManager_feed_heist_time_original = HUDManager.feed_heist_time
 	local next_time_t = 0
 	function HUDManager:update(t, ...)
 		HUDManager_update_original(self, t, ...)
 		if self:showing_stats_screen() and next_time_t < t then
 			self._hud_statsscreen:update_time()
 			next_time_t = t + 1
+		end
+	end
+	
+	function HUDManager:feed_heist_time(time, ...)
+		HUDManager_feed_heist_time_original(self, time, ...)
+		if self._hud_statsscreen then
+			self._hud_statsscreen:feed_heist_time(time)
 		end
 	end
 	

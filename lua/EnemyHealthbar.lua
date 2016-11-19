@@ -313,4 +313,10 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 		return rotation
 
 	end
+elseif string.lower(RequiredScript) == "lib/states/ingamearrested" then
+	Hooks:PostHook( IngameArrestedState , "at_enter" , "WolfHUDPostIngameArrestedAtEnter" , function( self )
+		if managers.hud then
+			managers.hud:set_unit_health_visible( false, false )	
+		end
+	end )
 end

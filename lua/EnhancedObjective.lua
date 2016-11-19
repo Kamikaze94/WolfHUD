@@ -15,7 +15,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			name = "objectives_panel",
 			h = 130,
 			w = 400,
-			x = 80,
+			x = (WolfHUD:getSetting("clock_mode", "number") == 4) and 0 or 80,
 			valign = "top"
 		})
 			
@@ -206,7 +206,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			if alive(self._bg_box) then
 				self._bg_box:stop()
 				self._bg_box:animate(callback(self, self, "_animate_move"), self._bg_box:x(), self._offset_y, true)
-				self._panel:animate(callback(self, self, "_animate_move"), self._offset_y > 40 and 0 or 80, self._panel:y(), true)
+				self._panel:animate(callback(self, self, "_animate_move"), (self._offset_y > 40 or WolfHUD:getSetting("clock_mode", "number") == 4) and 0 or 80, self._panel:y(), true)
 			end
 		end
 		if managers.hud and HUDListManager then 
@@ -247,7 +247,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudheisttimer" then
 	
 	function HUDHeistTimer:init(hud, tweak_hud)
 		self._hud_panel = hud.panel
-		self._enabled = not tweak_hud or not tweak_hud.no_timer
+		self._enabled = (WolfHUD:getSetting("clock_mode", "number") ~= 4) and not (tweak_hud and tweak_hud.no_timer)
 		if self._hud_panel:child("heist_timer_panel") then
 			self._hud_panel:remove(self._hud_panel:child("heist_timer_panel"))
 		end
