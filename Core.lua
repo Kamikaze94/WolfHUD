@@ -548,9 +548,11 @@ if not _G.WolfHUD then
 	
 	function WolfHUD:createOverrides(data)
 		self:print_log("Creating Dummy for: " .. data["display_name"], "info")
-		if SystemFS and not SystemFS:exists("./" .. data["install_dir"] .. data["install_folder"]) then
+		if file.DirectoryExists("./" .. data["install_dir"] .. data["install_folder"]) then
 			WolfHUD:print_log("[WolfHUD] mod_override folder '" .. data["install_folder"] .. "' is missing!", "warning")
-			SystemFS:make_dir("./" .. data["install_dir"] .. data["install_folder"])
+			if SystemFS then
+				SystemFS:make_dir("./" .. data["install_dir"] .. data["install_folder"])
+			end
 		end
 		local file = io.open(data["revision"], "w+")
 		if file then

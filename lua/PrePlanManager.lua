@@ -261,9 +261,11 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 		end
 
 		function PrePlanningManager.save_plans()
-			if not SystemFS:exists("./" .. PrePlanningManager._SAVE_FOLDER) then
+			if file.DirectoryExists("./" .. PrePlanningManager._SAVE_FOLDER) then
 				WolfHUD:print_log("[WolfHUD] Preplanned folder '" .. PrePlanningManager._SAVE_FOLDER .. "' is missing!", "warning")
-				SystemFS:make_dir("./" .. PrePlanningManager._SAVE_FOLDER)
+				if SystemFS then
+					SystemFS:make_dir("./" .. PrePlanningManager._SAVE_FOLDER)
+				end
 			end
 			local file = io.open(PrePlanningManager._SAVE_FILE, "w+")
 			if file then
