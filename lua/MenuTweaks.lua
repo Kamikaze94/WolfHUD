@@ -454,6 +454,40 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/lootdropscreengui" the
 			end
 		end
 	end
+elseif string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
+	local create_character_text_original = ContractBoxGui.create_character_text
+	function ContractBoxGui:create_character_text(peer_id, ...)
+		create_character_text_original(self, peer_id, ...)
+		
+		if managers.network:session() and managers.network:session():local_peer():id() ~= peer_id then
+			local peer_label = self._peers[peer_id]
+			if alive(peer_label) then
+				local peer = managers.network:session():peer(peer_id)
+				local latency = peer and Network:qos(peer:rpc()).ping
+				local x, y = peer_label:center_x(), peer_label:top()
+				
+				self._peer_latency = self._peer_latency or {}
+				self._peer_latency[peer_id] = self._peer_latency[peer_id] or self._panel:text({
+					name = tostring(peer_id) .. "_latency",
+					text = "",
+					align = "center",
+					vertical = "center",
+					font = tweak_data.menu.pd2_medium_font,
+					font_size = tweak_data.menu.pd2_medium_font_size * 0.8,
+					layer = 0,
+					color = tweak_data.chat_colors[peer_id] or Color.white,
+					alpha = 0.8,
+					blend_mode = "add"
+				})
+				self._peer_latency[peer_id]:set_text(string.format("%sms", (latency or "---")))
+				self._peer_latency[peer_id]:set_visible(self._enabled)
+				local _, _, w, h = self._peer_latency[peer_id]:text_rect()
+				self._peer_latency[peer_id]:set_size(w, h)
+				self._peer_latency[peer_id]:set_center_x(x)
+				self._peer_latency[peer_id]:set_bottom(y)
+			end
+		end
+	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/renderers/menunodeskillswitchgui" then
 	local _create_menu_item=MenuNodeSkillSwitchGui._create_menu_item
 	function MenuNodeSkillSwitchGui:_create_menu_item(row_item, ...)

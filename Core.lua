@@ -66,6 +66,7 @@ if not _G.WolfHUD then
 		["lib/managers/group_ai_states/groupaistatebase"] 			= { "GameInfoManager.lua", "PacifiedCivs.lua" },
 		["lib/managers/missionassetsmanager"] 						= { "BuyAllAsset.lua" },
 		["lib/managers/menu/blackmarketgui"] 						= { "MenuTweaks.lua" },
+		["lib/managers/menu/contractboxgui"]						= { "MenuTweaks.lua" },
 		["lib/managers/menu/stageendscreengui"] 					= { "MenuTweaks.lua" },
 		["lib/managers/menu/lootdropscreengui"] 					= { "MenuTweaks.lua" },
 		["lib/managers/menu/skilltreeguinew"] 						= { "MenuTweaks.lua" },
@@ -526,11 +527,15 @@ if not _G.WolfHUD then
 				updates = info["updates"] or updates
 			end
 		end
-		if SystemInfo:platform() ~= Idstring("WIN32") then return end	--Abort here while Linux doesn't support 'mod_overrides'
+		
+		if SystemInfo:platform() ~= Idstring("WIN32") then -- Abort here while Linux doesn't support 'mod_overrides', TODO: Linux seems to return WIN32 as well...
+			return 
+		end	
+		
 		for k, v in pairs(updates) do
 			if type(v["revision"]) == "string" and not io.file_is_readable( v["revision"] ) then
 				local setting = "use_" .. v["identifier"]
-				if WolfHUD:getSetting(setting, "boolean") then
+				if WolfHUD.settings[setting] then
 					WolfHUD:AskOverride(v, setting)
 				elseif WolfHUD.settings[setting] == nil then
 					WolfHUD:createOverrides(v)
@@ -543,7 +548,7 @@ if not _G.WolfHUD then
 	
 	function WolfHUD:createOverrides(data)
 		self:print_log("Creating Dummy for: " .. data["display_name"], "info")
-		if not SystemFS:exists("./" .. data["install_dir"] .. data["install_folder"]) then
+		if SystemFS and not SystemFS:exists("./" .. data["install_dir"] .. data["install_folder"]) then
 			WolfHUD:print_log("[WolfHUD] mod_override folder '" .. data["install_folder"] .. "' is missing!", "warning")
 			SystemFS:make_dir("./" .. data["install_dir"] .. data["install_folder"])
 		end
