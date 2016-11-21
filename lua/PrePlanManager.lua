@@ -261,7 +261,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 		end
 
 		function PrePlanningManager.save_plans()
-			if file.DirectoryExists("./" .. PrePlanningManager._SAVE_FOLDER) then
+			if not file.DirectoryExists("./" .. PrePlanningManager._SAVE_FOLDER) then
 				WolfHUD:print_log("[WolfHUD] Preplanned folder '" .. PrePlanningManager._SAVE_FOLDER .. "' is missing!", "warning")
 				if SystemFS then
 					SystemFS:make_dir("./" .. PrePlanningManager._SAVE_FOLDER)
@@ -502,8 +502,9 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 			local plan_name = plan_data and plan_data.name_id and managers.localization:text(plan_data.name_id) or ""
 			text = string.format("%s - %s", text, plan_name)
 			local element = self._mission_elements_by_type[element_type] and self._mission_elements_by_type[element_type][element_index]
-			if element and not plan_data.pos_not_important then
-				text = string.format("%s (%s)\n", text, self:get_element_name(element))
+			local element_name = element and self:get_element_name(element)
+			if element_name and not element_name:lower():find("error") and not plan_data.pos_not_important then
+				text = string.format("%s (%s)\n", text, element_name)
 			else
 				text = string.format("%s\n", text)
 			end
@@ -545,8 +546,9 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 				local plan_name = plan_data and plan_data.name_id and managers.localization:text(plan_data.name_id) or ""
 				text = string.format("%s - %s", text, plan_name)
 				local element = self._mission_elements_by_type[element_type] and self._mission_elements_by_type[data.type][data.index]
-				if element and not plan_data.pos_not_important then
-					text = string.format("%s (%s)\n", text, self:get_element_name(element))
+				local element_name = element and self:get_element_name(element)
+				if element_name and not element_name:lower():find("error") and not plan_data.pos_not_important then
+					text = string.format("%s (%s)\n", text, element_name)
 				else
 					text = string.format("%s\n", text)
 				end

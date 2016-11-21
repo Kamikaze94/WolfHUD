@@ -459,32 +459,35 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 	function ContractBoxGui:create_character_text(peer_id, ...)
 		create_character_text_original(self, peer_id, ...)
 		
-		if managers.network:session() and managers.network:session():local_peer():id() ~= peer_id then
-			local peer_label = self._peers[peer_id]
-			if alive(peer_label) then
-				local peer = managers.network:session():peer(peer_id)
-				local latency = peer and Network:qos(peer:rpc()).ping
-				local x, y = peer_label:center_x(), peer_label:top()
-				
-				self._peer_latency = self._peer_latency or {}
-				self._peer_latency[peer_id] = self._peer_latency[peer_id] or self._panel:text({
-					name = tostring(peer_id) .. "_latency",
-					text = "",
-					align = "center",
-					vertical = "center",
-					font = tweak_data.menu.pd2_medium_font,
-					font_size = tweak_data.menu.pd2_medium_font_size * 0.8,
-					layer = 0,
-					color = tweak_data.chat_colors[peer_id] or Color.white,
-					alpha = 0.8,
-					blend_mode = "add"
-				})
-				self._peer_latency[peer_id]:set_text(string.format("%sms", (latency or "---")))
-				self._peer_latency[peer_id]:set_visible(self._enabled)
-				local _, _, w, h = self._peer_latency[peer_id]:text_rect()
-				self._peer_latency[peer_id]:set_size(w, h)
-				self._peer_latency[peer_id]:set_center_x(x)
-				self._peer_latency[peer_id]:set_bottom(y)
+		if WolfHUD:getSetting("TEAM_LATENCY", "boolean") and  managers.network:session() then
+			if managers.network:session():local_peer():id() ~= peer_id then
+				local peer_label = self._peers[peer_id]
+				if alive(peer_label) then
+					local peer = managers.network:session():peer(peer_id)
+					local latency = peer and Network:qos(peer:rpc()).ping or 0
+					local x, y = peer_label:center_x(), peer_label:top()
+					local LPI_offset = LobbyPlayerInfo and (LobbyPlayerInfo.settings.show_play_time_mode or 0) > 1 and LobbyPlayerInfo:GetFontSizeForPlayTime() or 0
+					
+					self._peer_latency = self._peer_latency or {}
+					self._peer_latency[peer_id] = self._peer_latency[peer_id] or self._panel:text({
+						name = tostring(peer_id) .. "_latency",
+						text = "",
+						align = "center",
+						vertical = "center",
+						font = tweak_data.menu.pd2_medium_font,
+						font_size = tweak_data.menu.pd2_medium_font_size * 0.8,
+						layer = 0,
+						color = tweak_data.chat_colors[peer_id] or Color.white,
+						alpha = 0.8,
+						blend_mode = "add"
+					})
+					self._peer_latency[peer_id]:set_text( latency > 0 and string.format("%.0fms", latency) or "---ms" )
+					self._peer_latency[peer_id]:set_visible(self._enabled)
+					local _, _, w, h = self._peer_latency[peer_id]:text_rect()
+					self._peer_latency[peer_id]:set_size(w, h)
+					self._peer_latency[peer_id]:set_center_x(x)
+					self._peer_latency[peer_id]:set_bottom(y - LPI_offset)
+				end
 			end
 		end
 	end
@@ -495,7 +498,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/renderers/menunodeskil
 		if row_item.type~="divider" and row_item.name~="back" then
 			local gd=Global.skilltree_manager.skill_switches[row_item.name]
 			row_item.status_gui:set_text( managers.localization:to_upper_text( ("menu_st_spec_%d"):format( managers.skilltree:digest_value(gd.specialization, false, 1) or 1 ) ) )
-			if row_item.skill_points_gui:text()==managers.localization:to_upper_text("menu_st_points_all_spent_skill_switch") then
+			if row_item.skill_points_gui:text() == managers.localization:to_upper_text("menu_st_points_all_spent_skill_switch") then
 				local pts, pt, pp, st, sp=0, 1, 0, 2, 0
 				for i=1, #gd.trees do
 					pts=Application:digest_value(gd.trees[i].points_spent, false)

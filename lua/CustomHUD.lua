@@ -1900,9 +1900,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.PlayerStatus:set_health(current, total)
 		local ratio = current / total
-		self:set_stored_health_max(1-ratio)
-		self._health_radial:set_color(Color(ratio, 1, 1))
-		self._stored_health_radial:set_rotation(-ratio * 360)
+		--self:set_stored_health_max(1-ratio)
+		--self._health_radial:set_color(Color(ratio, 1, 1))
+		--self._stored_health_radial:set_rotation(-ratio * 360)
+		self._health_radial:stop()
+		self._health_radial:animate(callback(self, self, "_animate_set_health"), self._stored_health_radial, ratio)
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:set_stored_health(amount)
@@ -2064,6 +2066,23 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			indicator:set_alpha(t / st)
 		end
 		indicator:set_alpha(0)
+	end
+	
+	function PlayerInfoComponent.PlayerStatus:_animate_set_health(health_radial, stored_health_radial, new_ratio)
+		local old_ratio = health_radial:color().red
+		local tt = new_ratio > old_ratio and 0.2 or 0.05
+		local t = 0
+		
+		while t < tt do
+			t = t + coroutine.yield()
+			local current_ratio = math.lerp(old_ratio, new_ratio, math.clamp(t/tt, 0, 1))
+			self:set_stored_health_max(1-current_ratio)
+			health_radial:set_color(Color(current_ratio, 1, 1))
+			stored_health_radial:set_rotation(-current_ratio * 360)
+		end
+		self:set_stored_health_max(1-new_ratio)
+		health_radial:set_color(Color(new_ratio, 1, 1))
+		stored_health_radial:set_rotation(-new_ratio * 360)
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:_animate_low_stamina(stamina_radial)
