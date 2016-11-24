@@ -520,6 +520,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:_set_show_timers()
 		self:_set_show_ammo_bags()
 		self:_set_show_doc_bags()
+		self:_set_show_first_aid_kits()
 		self:_set_show_body_bags()
 		self:_set_show_grenade_crates()
 		self:_set_show_sentries()
