@@ -86,6 +86,10 @@
 	"wolfhud_hudlist_loot_toast" : "토스트",
 	"wolfhud_hudlist_loot_crate" : "상자",
 	"wolfhud_hudlist_loot_toothbrush" : "Brush",
+	"wolfhud_hudlist_loot_bag" : "Bag",
+	"wolfhud_hudlist_loot_shoes" : "Shoes",
+	"wolfhud_hudlist_loot_toy" : "Toy",
+	"wolfhud_hudlist_loot_vr" : "Headset",
 	
 	"wolfhud_hudlist_buff_basic" : "베이직",
 	"wolfhud_hudlist_buff_aced" : "에이스",

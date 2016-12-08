@@ -241,6 +241,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			local player_panel = self._panel:child("player")
 			local name_label = self._panel:child("name")
 			self._kills_panel:set_rightbottom(player_panel:right(), (self._id == HUDManager.PLAYER_PANEL) and name_label:bottom() or name_label:top())
+			local killcount_color = WolfHUD:getSetting(self._setting_prefix .. "KILLCOUNTER_COLOR", "color")
 			
 			self._kill_icon = self._kills_panel:bitmap({
 				texture = "guis/textures/pd2/cn_miniskull",
@@ -250,14 +251,14 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 				alpha = 1,
 				blend_mode = "normal",
 				layer = 0,
-				color = Color.yellow
+				color = killcount_color
 			})
 			
 			self._kills_text = self._kills_panel:text({
 				name = "kills_text",
 				text = "-",
 				layer = 1,
-				color = Color.yellow,
+				color = killcount_color,
 				w = self._kills_panel:w() - self._kill_icon:w(),
 				h = self._kills_panel:h(),
 				vertical = "center",
@@ -330,7 +331,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			local _, _, w, _ = self._kills_text:text_rect()
 			self._kill_icon:set_right(self._kills_panel:w() - w - self._kill_icon:w() * 0.15)
 			
-			color = WolfHUD:getSetting("killcounter_color", "color")
+			local color = WolfHUD:getSetting(self._setting_prefix .. "KILLCOUNTER_COLOR", "color")
 			self._kill_icon:set_color(color)
 			self._kills_text:set_color(color)
 		end

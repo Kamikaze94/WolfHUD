@@ -146,37 +146,42 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	GameInfoManager._INTERACTIONS = {
 		INTERACTION_TO_CALLBACK = {
 			corpse_alarm_pager =				"_pager_event",
-			gen_pku_crowbar =					"_special_equipment_interaction_handler",
-			pickup_keycard =					"_special_equipment_interaction_handler",
-			pickup_hotel_room_keycard =			"_special_equipment_interaction_handler",
-			gage_assignment =					"_special_equipment_interaction_handler",
-			pickup_boards =						"_special_equipment_interaction_handler",
-			stash_planks_pickup =				"_special_equipment_interaction_handler",
-			muriatic_acid =						"_special_equipment_interaction_handler",
-			hydrogen_chloride =					"_special_equipment_interaction_handler",
-			caustic_soda =						"_special_equipment_interaction_handler",
-			gen_pku_blow_torch =				"_special_equipment_interaction_handler",
-			drk_pku_blow_torch = 				"_special_equipment_interaction_handler",
-			hold_born_receive_item_blow_torch = "_special_equipment_interaction_handler",
-			thermite = 							"_special_equipment_interaction_handler",
+			gen_pku_crowbar =					"_special_equipment_interaction_handler",	-- Crowbars
+			pickup_keycard =					"_special_equipment_interaction_handler",	-- Keycards
+			pickup_hotel_room_keycard =			"_special_equipment_interaction_handler",	-- GGC Keycard
+			gage_assignment =					"_special_equipment_interaction_handler",	-- Gage Courier
+			pickup_case = 						"_special_equipment_interaction_handler",	-- Gage Spec Ops Cases
+			pickup_keys = 						"_special_equipment_interaction_handler",	-- Gage Spec Ops Keys
+			hold_take_mask = 					"_special_equipment_interaction_handler",	-- Stealing Xmas Paycheck masks
+			pickup_boards =						"_special_equipment_interaction_handler",	-- Planks
+			stash_planks_pickup =				"_special_equipment_interaction_handler",	-- Planks
+			muriatic_acid =						"_special_equipment_interaction_handler",	-- MU
+			hydrogen_chloride =					"_special_equipment_interaction_handler",	-- HCL
+			caustic_soda =						"_special_equipment_interaction_handler",	-- CS
+			gen_pku_blow_torch =				"_special_equipment_interaction_handler",	-- Blowtorch
+			drk_pku_blow_torch = 				"_special_equipment_interaction_handler",	-- Blowtorch
+			hold_born_receive_item_blow_torch = "_special_equipment_interaction_handler",	-- Biker Blowtorch
+			thermite = 							"_special_equipment_interaction_handler",	
 			gasoline = 							"_special_equipment_interaction_handler",	--Spots to place gas canister
 			c4_consume = 						"_special_equipment_interaction_handler",	-- Spots to place mission c4
-			c4_consume_x1 = 					"_special_equipment_interaction_handler",
+			c4_consume_x1 = 					"_special_equipment_interaction_handler",	-- Spots to place mission c4
 			--c4_bag = 							"_special_equipment_interaction_handler", 	-- Yellow bag, pickup c4
 			gasoline_engine = 					"_special_equipment_interaction_handler",
-			gen_pku_thermite = 					"_special_equipment_interaction_handler",
-			gen_pku_thermite_paste = 			"_special_equipment_interaction_handler",
-			hold_take_gas_can = 				"_special_equipment_interaction_handler",
-			gen_pku_thermite_paste_z_axis = 	"_special_equipment_interaction_handler",
-			money_wrap_single_bundle = 			"_special_equipment_interaction_handler",
-			money_wrap_single_bundle_active = 	"_special_equipment_interaction_handler",
-			money_wrap_single_bundle_dyn = 		"_special_equipment_interaction_handler",
-			cas_chips_pile = 					"_special_equipment_interaction_handler",
-			diamond_pickup = 					"_special_equipment_interaction_handler",
-			diamond_pickup_pal = 				"_special_equipment_interaction_handler",
-			ring_band = 						"_special_equipment_interaction_handler",
-			safe_loot_pickup = 					"_special_equipment_interaction_handler",
-			press_pick_up =						"_special_equipment_interaction_handler",
+			gen_pku_thermite = 					"_special_equipment_interaction_handler",	-- Thermite
+			gen_pku_thermite_paste = 			"_special_equipment_interaction_handler",	-- Thermite Paste
+			hold_take_gas_can = 				"_special_equipment_interaction_handler",	-- HM / Slaughter Gas cans
+			gen_pku_thermite_paste_z_axis = 	"_special_equipment_interaction_handler",	-- Thermite Paste
+			money_wrap_single_bundle = 			"_special_equipment_interaction_handler",	-- Small loot
+			money_wrap_single_bundle_active = 	"_special_equipment_interaction_handler",	-- Small loot
+			money_wrap_single_bundle_dyn = 		"_special_equipment_interaction_handler",	-- Small loot
+			cas_chips_pile = 					"_special_equipment_interaction_handler",	-- Small loot
+			diamond_pickup = 					"_special_equipment_interaction_handler",	-- Small loot
+			diamond_pickup_pal = 				"_special_equipment_interaction_handler",	-- Small loot
+			ring_band = 						"_special_equipment_interaction_handler",	-- BoS Rings
+			safe_loot_pickup = 					"_special_equipment_interaction_handler",	-- Small loot
+			press_pick_up =						"_special_equipment_interaction_handler",	-- Biker Bottle
+			pickup_tablet = 					"_special_equipment_interaction_handler",	-- Stealing Xmas Tablet
+			pickup_phone = 						"_special_equipment_interaction_handler",	-- Stealing Xmas Phone
 			firstaid_box =						"_deployable_interaction_handler",
 			ammo_bag =							"_deployable_interaction_handler",
 			doctor_bag =						"_deployable_interaction_handler",
@@ -196,6 +201,14 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			crate_weapon_crowbar = 		"crate",
 			hold_open_xmas_present = 	"xmas_present",
 			hold_open_case =			"drone_control_helmet",	--May be reused in future heists for other loot
+			
+			hold_open_shopping_bag = 		"shopping_bag",
+			hold_take_toy = 				"robot_toy",
+			hold_take_wine = 				"ordinary_wine",
+			hold_take_expensive_wine = 		"expensive_vine",
+			hold_take_diamond_necklace =	"diamond_necklace",
+			hold_take_vr_headset = 			"vr_headset",
+			hold_take_shoes = 				"women_shoes",
 		},
 		BAGGED_IDS = {
 			painting_carry_drop = true,
@@ -2732,7 +2745,7 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	function PlayerManager:_on_messiah_recharge_event(...)
 		_on_messiah_recharge_event_original(self, ...)
 	
-		if self._messiah_charges > 0 then
+		if (self._messiah_charges or 0) > 0 then
 			managers.gameinfo:event("buff", "activate", "messiah")
 			managers.gameinfo:event("buff", "set_stack_count", "messiah", { stack_count = self._messiah_charges })
 		else
@@ -2743,7 +2756,7 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	
 	function PlayerManager:use_messiah_charge(...)
 		use_messiah_charge_original(self, ...)
-		if self._messiah_charges > 0 then
+		if (self._messiah_charges or 0) > 0 then
 			managers.gameinfo:event("buff", "activate", "messiah")
 			managers.gameinfo:event("buff", "set_stack_count", "messiah", { stack_count = self._messiah_charges })
 		else
@@ -3385,33 +3398,6 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 	end
 end
 
-if string.lower(RequiredScript) == "lib/units/weapons/raycastweaponbase" then
-	
-	local setup_original = RaycastWeaponBase.setup
-	local set_ammo_remaining_in_clip_original = RaycastWeaponBase.set_ammo_remaining_in_clip
-	
-	function RaycastWeaponBase:setup(...)
-		setup_original(self, ...)
-		
-		local user_unit = self._setup and self._setup.user_unit
-		local player_unit = managers.player:player_unit()
-		self._player_is_owner = alive(user_unit) and alive(player_unit) and user_unit:key() == player_unit:key()
-	end
-	
-	function RaycastWeaponBase:set_ammo_remaining_in_clip(ammo, ...)
-		if RaycastWeaponBase.LOCK_N_LOAD_ACTIVE and self._player_is_owner then
-			local data = RaycastWeaponBase.LOCK_N_LOAD_ACTIVE
-			if ammo <= data.max_threshold and ammo >= data.min_threshold then
-				local bonus = math.clamp(data.max_bonus * math.pow(data.penalty, ammo - data.min_threshold), data.min_bonus, data.max_bonus)
-				managers.gameinfo:event("buff", "set_value", "lock_n_load", { value = bonus, show_value = true })
-			end
-		end
-		
-		return set_ammo_remaining_in_clip_original(self, ammo, ...)
- 	end
-	
-end
-
 if string.lower(RequiredScript) == "lib/player_actions/skills/playeractionbloodthirstbase" then
 	
 	local bloodthirstbase_original = PlayerAction.BloodthirstBase.Function
@@ -3447,27 +3433,17 @@ if string.lower(RequiredScript) == "lib/player_actions/skills/playeractionshocka
 		local active = false
 	
 		local function on_enemy_killed(weapon_unit, variant)
-			if not active and alive(weapon_unit) then
+			if alive(weapon_unit) then
 				kill_count = kill_count + 1
 				
 				if kill_count >= target_enemies then
-					active = true
 					local min_threshold = min_bullets + (weapon_unit:base():is_category("smg", "assault_rifle", "lmg") and player_manager:upgrade_value("player", "automatic_mag_increase", 0) or 0)
-					local max_threshold = math.floor(min_threshold + math.log(min_reload_increase/max_reload_increase) / math.log(penalty))
-					local data = { 
-						max_bonus = max_reload_increase, 
-						min_bonus = min_reload_increase, 
-						penalty = penalty,
-						min_threshold = min_threshold,
-						max_threshold = max_threshold,
-					}
- 					
-					RaycastWeaponBase.LOCK_N_LOAD_ACTIVE = data
-					
-					local ammo = weapon_unit:base():get_ammo_remaining_in_clip()
-					local bonus = math.clamp(data.max_bonus * math.pow(data.penalty, ammo - data.min_threshold), data.min_bonus, data.max_bonus)
+					local max_threshold = math.floor(min_threshold + math.log(min_reload_increase/max_reload_increase) / math.log(penalty))					
+					local ammo = weapon_unit:base():get_ammo_max_per_clip()
+					local bonus = math.clamp(max_reload_increase * math.pow(penalty, ammo - min_threshold), min_reload_increase, max_reload_increase)
 					managers.gameinfo:event("buff", "activate", "lock_n_load")
 					managers.gameinfo:event("buff", "set_value", "lock_n_load", { value = bonus, show_value = true })
+					managers.player:unregister_message(Message.OnEnemyKilled, "lock_n_load_buff_listener")
 				end
 			end
 		end
@@ -3477,8 +3453,6 @@ if string.lower(RequiredScript) == "lib/player_actions/skills/playeractionshocka
 		managers.player:register_message(Message.OnEnemyKilled, "lock_n_load_buff_listener", on_enemy_killed)
 		shockandawe_original(player_manager, target_enemies, max_reload_increase, min_reload_increase, penalty, min_bullets, ...)
 		managers.gameinfo:event("buff", "deactivate", "lock_n_load")
-		managers.player:unregister_message(Message.OnEnemyKilled, "lock_n_load_buff_listener")
-		RaycastWeaponBase.LOCK_N_LOAD_ACTIVE = nil
 	end
 	
 end

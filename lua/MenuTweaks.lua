@@ -1,5 +1,21 @@
 if string.lower(RequiredScript) == "lib/managers/menumanager" then
 	function MenuCallbackHandler:is_dlc_latest_locked(...) return false end
+	
+	local modify_controls_original = MenuOptionInitiator.modify_controls
+	function MenuOptionInitiator:modify_controls(...)
+		local new_node = modify_controls_original(self, ...)
+		
+		-- Give sensitivity sliders a step size of 1%.
+		local item
+		for i, name in ipairs({"camera_sensitivity", "camera_sensitivity_horizontal", "camera_sensitivity_vertical", "camera_zoom_sensitivity"}) do
+			item = new_node:item(name)
+			if item then
+				item:set_step((tweak_data.player.camera.MAX_SENSITIVITY - tweak_data.player.camera.MIN_SENSITIVITY) * 0.01)
+			end
+		end
+		
+		return new_node
+	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	--Always enable mod mini icons, put ghost icon behind silent weapon names
 	local populate_weapon_category_new_original = BlackMarketGui.populate_weapon_category_new
@@ -174,7 +190,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 			self._renameable_tabs = first_tab_name:visible()
 		end
 		
-		if self._renameable_tabs and alive(self._panel) then
+		if self._renameable_tabs and not component_data.is_loadout  and alive(self._panel) then
 			-- create rename tab info text
 			local legends_panel = self._panel:panel({
 				name = "LegendsPanel",
@@ -210,7 +226,6 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	
 	local BlackMarketGui_mouse_double_click_original = BlackMarketGui.mouse_double_click
 	function BlackMarketGui:mouse_double_click(o, button, x, y)
-		--log(json.encode(self._data))
 		if self._enabled and not self._data.is_loadout and self._renameable_tabs then
 			if self._mouse_click and self._mouse_click[0] and self._mouse_click[1] then
 				if self._tabs and self._mouse_click[0].selected_tab == self._mouse_click[1].selected_tab then
@@ -374,6 +389,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/tweakdata" then
 	if tweak_data then
+		-- Give Sound sliders a step size of 1%.
 		tweak_data.menu = tweak_data.menu or {}
 		tweak_data.menu.MUSIC_CHANGE = 1
 		tweak_data.menu.SFX_CHANGE = 1
@@ -456,6 +472,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/lootdropscreengui" the
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 	local create_character_text_original = ContractBoxGui.create_character_text
+	
 	function ContractBoxGui:create_character_text(peer_id, ...)
 		create_character_text_original(self, peer_id, ...)
 		
@@ -490,7 +507,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 				end
 			end
 		end
-	end
+	end	
 elseif string.lower(RequiredScript) == "lib/managers/menu/renderers/menunodeskillswitchgui" then
 	local _create_menu_item=MenuNodeSkillSwitchGui._create_menu_item
 	function MenuNodeSkillSwitchGui:_create_menu_item(row_item, ...)
@@ -572,7 +589,8 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 	local update_person_joining_original = MenuManager.update_person_joining
 	local close_person_joining_original = MenuManager.close_person_joining
 	function MenuManager:show_person_joining( id, nick, ... )
-		self["peer_join_" .. id] = os.clock()
+		self.peer_join_start_t = self.peer_join_start_t or {}
+		self.peer_join_start_t[id] = os.clock()
 		local peer = managers.network:session():peer(id)
 		if peer then
 			if peer:rank() > 0 then
@@ -584,18 +602,76 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 	end
 	
 	function MenuManager:update_person_joining( id, progress_percentage, ... )
-		self["peer_join_" .. id] = self["peer_join_" .. id] or os.clock()
-		local t = os.clock() - self["peer_join_" .. id]
-		local result = update_person_joining_original(self, id, progress_percentage, ...)
-		local time_left = (t / progress_percentage) * (100 - progress_percentage)
-		local dialog = managers.system_menu:get_dialog("user_dropin" .. id)
-		if dialog and time_left then
-			dialog:set_text(managers.localization:text("dialog_wait") .. string.format(" %d%% (%0.2fs)", progress_percentage, time_left))
+		if self.peer_join_start_t[id] then
+			local t = os.clock() - self.peer_join_start_t[id]
+			local result = update_person_joining_original(self, id, progress_percentage, ...)
+			local time_left = (t / progress_percentage) * (100 - progress_percentage)
+			local dialog = managers.system_menu:get_dialog("user_dropin" .. id)
+			if dialog and time_left then
+				dialog:set_text(managers.localization:text("dialog_wait") .. string.format(" %d%% (%0.2fs)", progress_percentage, time_left))
+			end
 		end
 	end
 	
 	function MenuManager:close_person_joining(id, ...)
-		self["peer_join_" .. id] = nil
+		if self.peer_join_start_t then
+			self.peer_join_start_t[id] = nil
+		end
+		
+		if managers.chat and managers.system_menu:is_active_by_id("user_dropin" .. id) then
+			local peer = managers.network:session() and managers.network:session():peer(id)
+			local text = ""
+			if peer then
+				local name = peer:name()
+				local level = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "-" or "") .. (peer:level() or "")
+				local outfit_skills = (peer:blackmarket_outfit() or {}).skills
+				local perk = "[Unknown Perkdeck]"
+				local skill_str = "[No Skilldata available]"
+				
+				if outfit_skills then
+					if outfit_skills.specializations then
+						local deck_index, deck_level = unpack(outfit_skills.specializations or {})
+						local data = tweak_data.skilltree.specializations[tonumber(deck_index)]
+						local name_id = data and data.name_id
+						if name_id then
+							perk = string.format("%s%s", managers.localization:text(name_id), tonumber(deck_level) < 9 and string.format(" (%d/9)", deck_level) or "")
+						end
+					end
+					
+					local skill_data = outfit_skills.skills
+					if skill_data then
+						local tree_names = {}
+						for i, tree in ipairs(tweak_data.skilltree.skill_pages_order) do
+							local tree = tweak_data.skilltree.skilltree[tree]
+							if tree then
+								table.insert(tree_names, tree.name_id and utf8.sub(managers.localization:text(tree.name_id), 1, 1) or "?")
+							end
+						end
+						
+						local subtree_amt = math.floor(#skill_data / #tree_names)
+						skill_str = ""
+						
+						for tree = 1, #tree_names, 1 do
+							local tree_has_points = false
+							local tree_sum = 0
+							
+							for sub_tree = 1, subtree_amt, 1 do
+								local skills = skill_data[(tree-1) * subtree_amt + sub_tree] or 0
+								tree_sum = tree_sum + skills
+							end
+							skill_str = string.format("%s%s:%02d ", skill_str, tree_names[tree] or "?", tree_sum)
+						end
+					end
+					
+					text = string.format("%s, %s", skill_str, perk)
+				else
+					text = "[invalid outfit]"
+				end
+				
+				managers.chat:feed_system_message(ChatManager.GAME, string.format("(%s) %s: %s", level, name, text))
+			end
+		end
+
 		close_person_joining_original(self, id, ...)
 	end
 end

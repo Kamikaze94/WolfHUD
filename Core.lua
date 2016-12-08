@@ -39,7 +39,7 @@ if not _G.WolfHUD then
 	WolfHUD.tweak_data = {}
 	
 	WolfHUD.hook_files = WolfHUD.hook_files or {
-		["lib/setups/setup"] 										= { "GameInfoManager.lua", "WaypointsManager.lua" },
+		["lib/setups/setup"] 										= { "GameInfoManager.lua", "WaypointsManager.lua", "EnhancedCrewLoadout.lua" },
 		["lib/managers/menumanager"] 								= { "PrePlanManager.lua", "MenuTweaks.lua" },
 		["lib/managers/menumanagerdialogs"] 						= { "MenuTweaks.lua" },
 		["lib/managers/chatmanager"] 								= { "MenuTweaks.lua" },
@@ -66,7 +66,8 @@ if not _G.WolfHUD then
 		["lib/managers/group_ai_states/groupaistatebase"] 			= { "GameInfoManager.lua", "PacifiedCivs.lua" },
 		["lib/managers/missionassetsmanager"] 						= { "BuyAllAsset.lua" },
 		["lib/managers/menu/blackmarketgui"] 						= { "MenuTweaks.lua" },
-		["lib/managers/menu/contractboxgui"]						= { "MenuTweaks.lua" },
+		["lib/managers/menu/contractboxgui"]						= { "MenuTweaks.lua", "EnhancedCrewLoadout.lua" },
+		["lib/managers/menu/missionbriefinggui"]					= { "EnhancedCrewLoadout.lua", "BuyAllAsset.lua" },
 		["lib/managers/menu/stageendscreengui"] 					= { "MenuTweaks.lua" },
 		["lib/managers/menu/lootdropscreengui"] 					= { "MenuTweaks.lua" },
 		["lib/managers/menu/skilltreeguinew"] 						= { "MenuTweaks.lua" },
@@ -92,7 +93,7 @@ if not _G.WolfHUD then
 		["lib/units/weapons/sentrygunweapon"] 						= { "GameInfoManager.lua", "EquipmentTweaks.lua" },
 		["lib/units/weapons/weaponlaser"] 							= { "WeaponGadgets.lua" },
 		["lib/units/weapons/weaponflashlight"] 						= { "WeaponGadgets.lua" },
-		["lib/units/weapons/raycastweaponbase"] 					= { "GameInfoManager.lua", "Scripts.lua" },
+		["lib/units/weapons/raycastweaponbase"] 					= { "Scripts.lua" },
 		["lib/units/weapons/newraycastweaponbase"] 					= { "WeaponGadgets.lua", "BurstFire.lua" },
 		["lib/units/props/securitycamera"] 							= { "GameInfoManager.lua" },
 		["lib/units/beings/player/playerdamage"] 					= { "GameInfoManager.lua", "DamageIndicator.lua" },
@@ -194,7 +195,6 @@ if not _G.WolfHUD then
 			spam_filter								= true,		--Filter PocoHud and NGBTO Chat Spam messages.
 		  --KillCounter
 			use_killcounter 						= true,
-			killcounter_color						= "yellow",
 			SHOW_SPECIAL_KILLS 						= true,		--KillCounter shows special kills
 			SHOW_HEADSHOT_KILLS 					= true,		--KillCounter shows headshot kills
 			SHOW_AI_KILLS 							= true,		--Show KillCounter for Bots
@@ -587,7 +587,10 @@ if not _G.WolfHUD then
 				return value
 			end
 		else
-			self:print_log("Requested setting doesn't exists!  (id='" .. id .. "', type='" .. tostring(val_type) .. "') ", "error")
+			if val_type ~= "color" then
+				self:print_log("Requested setting doesn't exists!  (id='" .. id .. "', type='" .. tostring(val_type) .. "') ", "error")
+			end
+			
 			if default == nil then
 				if val_type == "number" then -- Try to prevent crash by giving default value
 					default = 1
@@ -662,7 +665,7 @@ if RequiredScript then
 end
 
 if MenuNodeMainGui then
-	Hooks:PostHook( MenuNodeMainGui , "_setup_item_rows" , "MenuNodeMainGuiPostSetupItemRows_WolfHUD" , function( self )
+	Hooks:PostHook( MenuNodeMainGui , "_add_version_string" , "MenuNodeMainGuiPostAddVersionString_WolfHUD" , function( self )
 		WolfHUD:checkOverrides()
 		if alive(self._version_string) then
 			self._version_string:set_text("Payday 2 v" .. Application:version() .. " | WolfHUD v" .. WolfHUD.version)

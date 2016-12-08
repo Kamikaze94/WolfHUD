@@ -4,6 +4,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	local sync_set_assault_mode_original = HUDAssaultCorner.sync_set_assault_mode
 	local _set_hostage_offseted_original = HUDAssaultCorner._set_hostage_offseted
 	local set_buff_enabled_original = HUDAssaultCorner.set_buff_enabled
+	local show_point_of_no_return_timer_original = HUDAssaultCorner.show_point_of_no_return_timer
+	local hide_point_of_no_return_timer_original = HUDAssaultCorner.hide_point_of_no_return_timer
 	local show_casing_original = HUDAssaultCorner.show_casing
 	local hide_casing_original = HUDAssaultCorner.hide_casing
 	local set_assault_wave_number_original = HUDAssaultCorner.set_assault_wave_number
@@ -101,20 +103,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		self:update_hudlist_offset(is_offseted)
 	end
 
-	function HUDAssaultCorner:show_point_of_no_return_timer()
-		local delay_time = self._assault and 1.2 or 0
-		self:_end_assault()
-		local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
-		point_of_no_return_panel:stop()
-		point_of_no_return_panel:animate(callback(self, self, "_animate_show_noreturn"), delay_time)
-		self._point_of_no_return = true
+	function HUDAssaultCorner:show_point_of_no_return_timer(...)
+		show_point_of_no_return_timer_original(self, ...)
 		self:update_hudlist_offset(true)
 	end
 
-	function HUDAssaultCorner:hide_point_of_no_return_timer()
-		self._noreturn_bg_box:stop()
-		self._hud_panel:child("point_of_no_return_panel"):set_visible(false)
-		self._point_of_no_return = false
+	function HUDAssaultCorner:hide_point_of_no_return_timer(...)
+		hide_point_of_no_return_timer_original(self, ...)
 		self:update_hudlist_offset(false)
 	end
 
@@ -149,8 +144,21 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	
 	function HUDAssaultCorner:set_assault_wave_number(...)
 		self._wave_text:set_text(self:get_completed_waves_string())
+		self._wave_text:animate(callback(self, self, "_animate_wave_text"))
 		
 		return set_assault_wave_number_original(self, ...)
+	end
+	
+	function HUDAssaultCorner:_animate_wave_text(object)
+		local TOTAL_T = 2
+		local t = TOTAL_T
+		object:set_alpha(0.8)
+		while t > 0 do
+			local dt = coroutine.yield()
+			t = t - dt
+			object:set_alpha(0.5 + 0.5 * (0.5 * math.sin(t * 360 * 2) + 0.5))
+		end
+		object:set_alpha(0.8)
 	end
 	
 	function HUDAssaultCorner:locked_assault(status)

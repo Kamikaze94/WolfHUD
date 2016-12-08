@@ -1,182 +1,3 @@
--- Old version:
---[[
-if RequiredScript == "lib/managers/missionassetsmanager" then
-	
-	local _setup_mission_assets_original = MissionAssetsManager._setup_mission_assets
-	local unlock_asset_original = MissionAssetsManager.unlock_asset
-	local sync_unlock_asset_original = MissionAssetsManager.sync_unlock_asset
-	local get_unlocked_asset_ids_original = MissionAssetsManager.get_unlocked_asset_ids
-	local is_unlock_asset_allowed_original = MissionAssetsManager.is_unlock_asset_allowed
-	local sync_save_original = MissionAssetsManager.sync_save
-	local sync_load_original = MissionAssetsManager.sync_load
-	
-
-	function MissionAssetsManager._setup_mission_assets(self, ...)
-		_setup_mission_assets_original(self, ...)
-		if not self:mission_has_preplanning() then
-			self:insert_buy_all_assets_asset()
-			self:check_all_assets()
-		end
-	end
-	
-	function MissionAssetsManager.sync_unlock_asset(self, ...)
-		sync_unlock_asset_original(self, ...)
-		if not self:mission_has_preplanning() then
-			self:update_buy_all_assets_asset_cost()
-			self:check_all_assets()
-		end
-	end
-
-	function MissionAssetsManager.unlock_asset(self, asset_id)
-		if asset_id ~= "buy_all_assets" or not game_state_machine or not self:is_unlock_asset_allowed() then
-			return unlock_asset_original(self, asset_id)
-		end
-		for _, asset in ipairs(self._global.assets) do
-			if self:asset_is_buyable(asset) then
-				unlock_asset_original(self, asset.id)
-			end
-		end
-		self:check_all_assets()
-	end
-	
-	function MissionAssetsManager:get_unlocked_asset_ids(...)
-		local asset_ids = get_unlocked_asset_ids_original(self, ...)
-		-- Remove 'Buy all' ID from unlocked table, so its state doesn't get restored after Profile switch.
-		if table.contains(asset_ids, "buy_all_assets") then
-			for i, id in ipairs(asset_ids) do
-				if id == "buy_all_assets" then
-					table.remove(asset_ids, i)
-					break
-				end
-			end
-		end
-		
-		return asset_ids
-	end
-	
-	function MissionAssetsManager:is_unlock_asset_allowed(...)
-		if game_state_machine then	-- original function can crash, if this doesn't exists (yet?) for some reason...
-			return is_unlock_asset_allowed_original(self, ...)
-		end
-		return false
-	end
-
-	function MissionAssetsManager.sync_save(self, data)
-		if self:mission_has_preplanning() then
-			return sync_save_original(self, data)
-		end
-		local _global = clone(self._global)
-		_global.assets = clone(_global.assets)
-		for id, asset in ipairs(_global.assets) do
-			if asset.id == "buy_all_assets" then
-				_global.assets[id] = self._gage_saved
-				self._tweak_data.gage_assignment = self._gage_saved_tweak
-				break
-			end
-		end
-		self._tweak_data.buy_all_assets = nil
-		data.MissionAssetsManager = _global
-	end
-
-	function MissionAssetsManager.sync_load(self, data, ...)
-		if not self:mission_has_preplanning() then
-			self._global = data.MissionAssetsManager
-			self:insert_buy_all_assets_asset()
-			self:check_all_assets()
-		end
-		sync_load_original(self, data, ...)
-	end
-
-	function MissionAssetsManager.insert_buy_all_assets_asset(self)
-		if self._tweak_data.gage_assignment then
-			self._tweak_data.buy_all_assets = clone(self._tweak_data.gage_assignment)
-			self._tweak_data.buy_all_assets.name_id = "wolfhud_buy_all_assets"
-			self._tweak_data.buy_all_assets.unlock_desc_id = "wolfhud_buy_all_assets_desc"
-			self._tweak_data.buy_all_assets.visible_if_locked = true
-			self._tweak_data.buy_all_assets.no_mystery = true
-			for _, asset in ipairs(self._global.assets) do
-				if asset.id == "gage_assignment" then
-					self._gage_saved = deep_clone(asset)
-					self._gage_saved_tweak = deep_clone(self._tweak_data.gage_assignment)
-					self._tweak_data.gage_assignment = nil
-					asset.id = "buy_all_assets"
-					asset.unlocked = false
-					asset.can_unlock = true
-					asset.no_mystery = true
-					break
-				end
-			end
-		end
-			table.sort(self._global.assets, function(a, b)
-				if a.id == "buy_all_assets" then
-					return true
-				elseif a.local_only ~= b.local_only then
-					return a.local_only
-				elseif a.show ~= b.show then
-					return a.show
-				elseif a.unlocked ~= b.unlocked then
-					return a.unlocked
-				elseif a.can_unlock ~= b.can_unlock then
-					return a.can_unlock
-				elseif a.no_mystery ~= b.no_mystery then
-					return a.no_mystery
-				else
-					local money_lock_a = a.id and self._tweak_data[a.id].money_lock or 0
-					local money_lock_b = b.id and self._tweak_data[b.id].money_lock or 0
-					if money_lock_a and money_lock_b then
-						return money_lock_a < money_lock_b
-					end
-				end
-				return false
-			end)
-		self:update_buy_all_assets_asset_cost()
-		self:check_all_assets()
-	end
-
-	function MissionAssetsManager.update_buy_all_assets_asset_cost(self)
-		if not self:mission_has_preplanning() and self._tweak_data.buy_all_assets then
-			self._tweak_data.buy_all_assets.money_lock = 0
-			for _, asset in ipairs(self._global.assets) do
-				if self:asset_is_buyable(asset) then
-					self._tweak_data.buy_all_assets.money_lock = self._tweak_data.buy_all_assets.money_lock + (self._tweak_data[asset.id].money_lock or 0)
-				end
-			end
-		end
-	end
-
-	function MissionAssetsManager.check_all_assets(self)
-		if game_state_machine then
-			for _, asset in ipairs(self._global.assets) do
-				if self:asset_is_buyable(asset) then
-					return
-				end
-			end
-			if not self._all_assets_bought then
-				self._tweak_data.buy_all_assets.money_lock = 0
-				self._all_assets_bought = true
-				unlock_asset_original(self, "buy_all_assets")
-			end
-		end
-	end
-	
-	function MissionAssetsManager:mission_has_preplanning()
-		if not self._has_locked_asset then
-			for _, asset in ipairs(self._global.assets) do
-				if self:asset_is_buyable(asset) then
-					self._has_locked_asset = true
-					break
-				end
-			end
-		end
-		return tweak_data.preplanning.locations[Global.game_settings and Global.game_settings.level_id] ~= nil and not self._has_locked_asset
-	end
-
-	function MissionAssetsManager:asset_is_buyable(asset)
-		return asset.id ~= "buy_all_assets" and asset.show and not asset.unlocked and ((Network:is_server() and asset.can_unlock) or (Network:is_client() and self:get_asset_can_unlock_by_id(asset.id)))
-	end
-end
---]]
-
 -- New Script:
 
 if RequiredScript == "lib/managers/missionassetsmanager" then
@@ -190,18 +11,13 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 	local sync_load_original = MissionAssetsManager.sync_load
 	
 	function MissionAssetsManager:_setup_mission_assets(...)
-		local is_host = Network:is_server() or Global.game_settings.single_player
-		local insert_buy_all = is_host and self:mission_has_assets()
-		if not insert_buy_all then
-			self:remove_buy_all()
-			self:remove_buy_all_tweak()
-		end
-		
 		_setup_mission_assets_original(self, ...)
 		
-		if insert_buy_all then
+		if self:mission_has_assets() then
 			self:create_buy_all_asset()
 			self:update_buy_all_asset_cost()
+		else
+			self:remove_buy_all_asset()
 		end
 	end
 	
@@ -250,23 +66,25 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 		return false
 	end
 	
-	function MissionAssetsManager:sync_save(...)
+	function MissionAssetsManager:sync_save(data, ...)
 		-- If we do not remove the buy all here it will be sent to clients and they may not know how to handle it.
-		self:remove_buy_all()
+		self:remove_buy_all_asset()
 		
-		sync_save_original(self, ...)
+		sync_save_original(self, data, ...)
+		
+		--self:remove_buy_all_asset(data.MissionAssetsManager.assets)
 	end
 	
 	function MissionAssetsManager:sync_load(data, ...)
-		if self:mission_has_assets() then
-			self:create_buy_all_asset(data.MissionAssetsManager.assets)
-		end
-		
 		sync_load_original(self, data, ...)
 		
 		if self:mission_has_assets() then
+			self:create_buy_all_asset()
+			
+			self:create_asset_textures()
+			
 			self:update_buy_all_asset_cost()
-			self:check_all_assets_bought()
+			self:check_all_assets_bought(true)
 		end
 	end
 
@@ -308,17 +126,19 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 					elseif a.no_mystery ~= b.no_mystery then
 						return a.no_mystery
 					else
-						local money_lock_a = a.id and self._tweak_data[a.id].money_lock or 0
-						local money_lock_b = b.id and self._tweak_data[b.id].money_lock or 0
+						local money_lock_a = a.id and self._tweak_data[a.id].money_lock
+						local money_lock_b = b.id and self._tweak_data[b.id].money_lock 
 						if money_lock_a and money_lock_b then
 							return money_lock_a < money_lock_b
+						else
+							return money_lock_a and true or false
 						end
 					end
 				end
 				return false
 			end)
 		elseif asset_tweak then
-			self:remove_buy_all(insert_table)
+			self:remove_buy_all_asset(insert_table)
 			
 			asset = {
 				id = asset_id,
@@ -333,13 +153,14 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 		end
 	end
 	
-	function MissionAssetsManager:remove_buy_all(remove_table)
+	function MissionAssetsManager:remove_buy_all_asset(remove_table)
 		remove_table = remove_table or self._global.assets
 		local asset_id = "wolfhud_buy_all_assets"
 		
 		for i, asset in ipairs(remove_table) do
 			if asset_id == asset.id then
 				table.remove(remove_table, i)
+				break
 			end
 		end
 	end
@@ -391,7 +212,7 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 	function MissionAssetsManager:mission_has_assets()
 		if self._tweak_data.wolfhud_buy_all_assets then
 			local current_stage = managers.job:current_level_id() or ""
-			local stages = self._tweak_data.wolfhud_buy_all_assets.stages
+			local stages = self._tweak_data.wolfhud_buy_all_assets.stages or "all"
 			local exclude_stages = self._tweak_data.wolfhud_buy_all_assets.exclude_stages
 			if type(stages) == "table" and table.contains(stages, current_stage) or stages == "all" and not (exclude_stages and table.contains(exclude_stages, current_stage)) then
 				local preplanning_with_assets = self._tweak_data.wolfhud_buy_all_assets.preplanning_with_assets

@@ -102,22 +102,26 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 				self:set_offset(player_panel:h(), "right")
 			end
 		end
-		
+				
 		self._panel:set_enabled("in_vehicle", managers.player:get_vehicle())
 	end
 
 	function HUDDriving:start()
 		self._active = true
 		self._people = 0
-		if self._panel:set_enabled("in_vehicle", true) and managers.hud and managers.hud.arrange_teammate_panels then
-			managers.hud:arrange_teammate_panels()
+		if self._panel:set_enabled("in_vehicle", true) and managers.hud then			
+			if HUDManager.CUSTOM_TEAMMATE_PANELS then	-- CustomHUD
+				managers.hud:arrange_teammate_panels()
+			end
 		end
 	end
 	
 	function HUDDriving:stop()
 		self._active = false
-		if self._panel:set_enabled("in_vehicle", managers.player:get_vehicle()) and managers.hud and managers.hud.arrange_teammate_panels then
-			managers.hud:arrange_teammate_panels()
+		if self._panel:set_enabled("in_vehicle", managers.player:get_vehicle()) and managers.hud then
+			if HUDManager.CUSTOM_TEAMMATE_PANELS then	-- CustomHUD
+				managers.hud:arrange_teammate_panels()
+			end
 		end
 	end
 	

@@ -79,19 +79,24 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata" then
 	local init_original = TimeSpeedEffectTweakData.init
+	local FORCE_ENABLE = {
+		mission_effects = true,
+	}
 	function TimeSpeedEffectTweakData:init()
 		init_original(self)
 		if WolfHUD:getSetting("no_slowmotion", "boolean") then
 			local function disable_effect(table)
 				for name, data in pairs(table) do
-					if data.speed and data.sustain then
-						data.speed = 1
-						data.fade_in_delay = 0
-						data.fade_in = 0
-						data.sustain = 0
-						data.fade_out = 0
-					elseif type(data) == "table" then
-						disable_effect(data)
+					if not FORCE_ENABLE[name] then
+						if data.speed and data.sustain then
+							data.speed = 1
+							data.fade_in_delay = 0
+							data.fade_in = 0
+							data.sustain = 0
+							data.fade_out = 0
+						elseif type(data) == "table" then
+							disable_effect(data)
+						end
 					end
 				end
 			end

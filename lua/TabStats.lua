@@ -2,6 +2,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	local update_stats_screen_loot_original = HUDStatsScreen._update_stats_screen_loot
 	local update_stats_screen_day_original = HUDStatsScreen._update_stats_screen_day
 	local init_original = HUDStatsScreen.init
+	local show_original = HUDStatsScreen.show
+	local hide_original = HUDStatsScreen.hide
 	HUDStatsScreen.CHARACTERS = {
 		female_1 = {
 			texture = "guis/dlcs/character_pack_clover/textures/pd2/blackmarket/icons/characters/female_1",
@@ -404,6 +406,20 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		self:_update_stats_screen_day(right_panel)
 	end
 	
+	function HUDStatsScreen:show(...)
+		show_original(self, ...)
+		if managers.hud then
+			managers.hud:add_updator("WolfHUD_TabStats_Clock", callback(self, self, "update_time"))
+		end
+	end
+	
+	function HUDStatsScreen:hide(...)
+		hide_original(self, ...)
+		if managers.hud then
+			managers.hud:remove_updator("WolfHUD_TabStats_Clock")
+		end
+	end
+	
 	function HUDStatsScreen:stats_visible()
 		return self._showing_stats_screen or false
 	end
@@ -417,46 +433,41 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		end
 	end
 	
-	function HUDStatsScreen:update_time()
-		local right_panel = self._full_hud_panel:child("right_panel")
-		if right_panel then
-			local text = ""
-			local x = 0
-			local mode = WolfHUD:getSetting("clock_mode", "number")
-			if mode == 4 then
-				return	-- Handled externally for more accurate heist timer...
-			elseif mode == 3 then
-				text = os.date("%X")
-				x = right_panel:child("time_icon"):w()
-			elseif mode == 2 then
-				text = os.date("%I:%M:%S %p")
+	function HUDStatsScreen:update_time(t, dt)
+		if (self._last_update_t or 0) + 1 < t then
+			local right_panel = self._full_hud_panel:child("right_panel")
+			if right_panel then
+				local text = ""
+				local x = 0
+				local mode = WolfHUD:getSetting("clock_mode", "number")
+				if mode == 4 then
+					local time = math.floor(self._last_heist_time)
+					local hours = math.floor(time / 3600)
+					time = time - hours * 3600
+					local minutes = math.floor(time / 60)
+					time = time - minutes * 60
+					local seconds = math.round(time)
+
+					text = string.format("%02d:%02d:%02d", hours, minutes, seconds)
+					x = 1.3 * right_panel:child("time_icon"):w()
+				elseif mode == 3 then
+					text = os.date("%X")
+					x = right_panel:child("time_icon"):w()
+				elseif mode == 2 then
+					text = os.date("%I:%M:%S %p")
+				end
+				right_panel:child("time_text"):set_text(text)
+				right_panel:child("time_icon"):set_center_x(right_panel:child("time_text"):left() + x)
+				right_panel:child("time_text"):set_visible(mode > 1)
+				right_panel:child("time_icon"):set_visible(mode > 1)
 			end
-			right_panel:child("time_text"):set_text(text)
-			right_panel:child("time_icon"):set_center_x(right_panel:child("time_text"):left() + x)
-			right_panel:child("time_text"):set_visible(mode > 1)
-			right_panel:child("time_icon"):set_visible(mode > 1)
+			self._last_update_t = t
 		end
 	end
 	
 	function HUDStatsScreen:feed_heist_time(time)
-		local right_panel = self._full_hud_panel:child("right_panel")
-		if WolfHUD:getSetting("clock_mode", "number") == 4 and right_panel and (self._last_heist_time or 0) < math.floor(time) then
+		if (self._last_heist_time or 0) < math.floor(time) then
 			self._last_heist_time = time
-			
-			time = math.floor(time)
-			local hours = math.floor(time / 3600)
-			time = time - hours * 3600
-			local minutes = math.floor(time / 60)
-			time = time - minutes * 60
-			local seconds = math.round(time)
-
-			text = string.format("%02d:%02d:%02d", hours, minutes, seconds)
-			x = 1.3 * right_panel:child("time_icon"):w()
-			
-			right_panel:child("time_text"):set_text(text)
-			right_panel:child("time_icon"):set_center_x(right_panel:child("time_text"):left() + x)
-			right_panel:child("time_text"):set_visible(true)
-			right_panel:child("time_icon"):set_visible(true)
 		end
 	end
 
@@ -488,7 +499,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 					for func, suffix in pairs(suffix_table) do 
 						local item = day_wrapper_panel:child(data.name .. suffix)
 						if item and update_data[func] and managers.statistics[update_data[func]] then
-							local value = managers.statistics[update_data[func]](managers.statistics, unpack(update_data.params))
+							local value = managers.statistics[update_data[func]](managers.statistics, unpack(update_data.params or {}))
 							local value_str = ""
 							if type(value) == "table" then
 								for i, count in ipairs(value) do
@@ -526,12 +537,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	end
 
 	function HUDStatsScreen:_update_stats_screen_day(right_panel)
-		local dwp = right_panel:child("day_wrapper_panel")
 		update_stats_screen_day_original(self, right_panel)
 		
 		if not self._use_tab_stats then return end
 		
 		self:clean_up(right_panel)
+		local dwp = right_panel:child("day_wrapper_panel")
 		if dwp then
 			self:update(dwp)
 		end
@@ -812,16 +823,7 @@ elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanager" then
-	local HUDManager_update_original = HUDManager.update
 	local HUDManager_feed_heist_time_original = HUDManager.feed_heist_time
-	local next_time_t = 0
-	function HUDManager:update(t, ...)
-		HUDManager_update_original(self, t, ...)
-		if self:showing_stats_screen() and next_time_t < t then
-			self._hud_statsscreen:update_time()
-			next_time_t = t + 1
-		end
-	end
 	
 	function HUDManager:feed_heist_time(time, ...)
 		HUDManager_feed_heist_time_original(self, time, ...)

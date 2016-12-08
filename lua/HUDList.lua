@@ -213,6 +213,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		pickup_keycard =					"keycard",
 		pickup_hotel_room_keycard =			"keycard",
 		gage_assignment =					"courier",
+		pickup_case = 						"gage_case",
+		pickup_keys = 						"gage_key",
+		hold_take_mask = 					"paycheck_masks",
 		pickup_boards =						"planks",
 		stash_planks_pickup =				"planks",
 		muriatic_acid =						"meth_ingredients",
@@ -237,6 +240,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		diamond_pickup_pal = 				"small_loot",
 		ring_band = 						"small_loot",
 		safe_loot_pickup = 					"small_loot",
+		pickup_tablet = 					"small_loot",
+		pickup_phone = 						"small_loot",
 		press_pick_up =						"secret_item",
 	}
 	
@@ -255,10 +260,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		cro_loot1 =					"bomb",
 		cro_loot2 =					"bomb",
 		diamonds =					"jewelry",
+		diamond_necklace = 			"jewelry",
 		din_pig =					"pig",
 		drk_bomb_part =				"bomb",
 		drone_control_helmet =		"drone_ctrl",
 		evidence_bag =				"evidence",
+		expensive_vine = 			"wine",
 		goat = 						"goat",
 		gold =						"gold",
 		hope_diamond =				"diamond",
@@ -274,27 +281,32 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		money =						"money",
 		mus_artifact =				"artifact",
 		mus_artifact_paint =		"painting",
+		ordinary_wine = 			"wine",
 		painting =					"painting",
 		person =					"body",
 		present = 					"present",
 		prototype = 				"prototype",
+		robot_toy = 				"toy",
 		safe_ovk =					"safe",
 		safe_wpn =					"safe",
 		samurai_suit =				"armor",
 		sandwich =					"toast",
 		special_person =			"body",
+		toothbrush = 				"toothbrush",
 		turret =					"turret",
 		unknown =					"dentist",
+		vr_headset = 				"vr",
 		warhead =					"warhead",
 		weapon =					"weapon",
 		weapon_glock =				"weapon",
 		weapon_scar =				"weapon",
-		toothbrush = 				"toothbrush",
+		women_shoes = 				"shoes",
 	}
 	
 	HUDListManager.POTENTIAL_LOOT_TYPES = {
 		crate = 					"crate",
 		xmas_present = 				"xmas_present",
+		shopping_bag = 				"shopping_bag",
 	}
 	
 	HUDListManager.LOOT_TYPES_CONDITIONS = {
@@ -2519,7 +2531,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		crowbar =					{ hudpickups = { 0, 64, 32, 32 }, 	priority = 1 },
 		keycard =					{ hudpickups = { 32, 0, 32, 32 }, 	priority = 1 },
 		small_loot = 				{ hudpickups = { 32, 224, 32, 32}, 	priority = 3 },
-		courier = 					{ atlas 	 = { 6, 0 }, 			priority = 3 },	--texture = "guis/dlcs/gage_pack_jobs/textures/pd2/endscreen/gage_assignment"	or	texture = "guis/textures/pd2/crimenet_marker_gage", texture_rect = { 5, 5, 20, 20 }
+		courier = 					{ atlas 	 = { 6, 0 }, 			priority = 3 },			--{ texture = "guis/textures/contact_vlad", texture_rect = {1920, 0, 64, 64}, priority = 3 },
+		gage_case = 				{ atlas 	 = { 1, 0 }, 			priority = 3 },
+		gage_key = 					{ hudpickups = { 32, 64, 32, 32 }, 	priority = 3 },
+		paycheck_masks = 			{ hudpickups = { 128, 32, 32, 32 }, priority = 3 },
 		planks =					{ hudpickups = { 0, 32, 32, 32 }, 	priority = 2 },
 		meth_ingredients =			{ waypoints  = { 192, 32, 32, 32 }, priority = 2 },
 		blowtorch = 				{ hudpickups = { 96, 192, 32, 32 }, priority = 1 },
@@ -2592,14 +2607,19 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		safe =			{ text = "hud_carry_safe", 					priority = 1 },	-- Aftershock
 		server =		{ text = "hud_carry_circuit", 				priority = 1 },
 		shell =			{ text = "hud_carry_ammo", 					priority = 1 },	-- Transport: Train
+		shoes = 		{ text = "wolfhud_hudlist_loot_shoes", 		priority = 1 },	-- Stealing Xmas
 		toast =			{ text = "wolfhud_hudlist_loot_toast", 		priority = 1 },	-- White Xmas
+		toothbrush = 	{ text = "wolfhud_hudlist_loot_toothbrush", priority = 1 },	-- Panic Room
+		toy = 			{ text = "wolfhud_hudlist_loot_toy", 		priority = 1 },	-- Stealing Xmas
 		turret =		{ text = "hud_carry_turret", 				priority = 1 },	-- Transport: Train
+		vr = 			{ text = "wolfhud_hudlist_loot_vr", 		priority = 1 },	-- Stealing Xmas
 		warhead =		{ text = "hud_carry_warhead", 				priority = 1 },	-- Meltdown
 		weapon =		{ text = "wolfhud_hudlist_loot_weapon", 	priority = 1 },
-		toothbrush = 	{ text = "wolfhud_hudlist_loot_toothbrush", priority = 1 },	-- Panic Room
+		wine = 			{ text = "hud_carry_wine", 					priority = 1 },	-- Stealing Xmas
 		body = 			{ text = "hud_carry_person", 				priority = 1 },	-- Boiling point
 		crate = 		{ text = "wolfhud_hudlist_loot_crate", 		priority = 2, no_separate = true },
 		xmas_present = 	{ text = "hud_carry_present", 				priority = 2, no_separate = true },	-- White Xmas
+		shopping_bag = 	{ text = "wolfhud_hudlist_loot_bag", 		priority = 2, no_separate = true },	-- White Xmas
 	}
 	function HUDList.LootItem:init(parent, name, id, members)
 		local loot_data = HUDList.LootItem.MAP[id]

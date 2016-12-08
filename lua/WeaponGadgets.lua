@@ -158,15 +158,40 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" 
 elseif string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" then
 	local clbk_stance_entered_original = FPCameraPlayerBase.clbk_stance_entered
 	FPCameraPlayerBase.angled_sight_rotation    = {
-		wpn_fps_upg_o_45iron = Rotation(0, 0, -45)
+		wpn_fps_upg_o_45iron = Rotation(0, 0, -45),
+		wpn_fps_upg_o_45rds = Rotation(0, 0, -45),
 	}
 	FPCameraPlayerBase.angled_sight_translation = { 
-		msr 	= Vector3(-14.8, 9, -8), 
-		m95 	= Vector3(-10.5, -8, -12), 
-		r93 	= Vector3(-12.5, 7, -11),
-		model70 = Vector3(-12.8, 10, -8),
-		wa2000	= Vector3(-12, 8.8, -11.3),		--TODO: Reload Stock clipping...
-		mosin	= Vector3(-10, 8, -9.5)
+		-- Vector3(x, y, z) -- x = right, y = forward, z = upward
+		m4 			= Vector3(-5, 9, -14),	
+		amcar 		= Vector3(-5, 9, -14),
+		m16 		= Vector3(-5, 9, -14),
+		ak74 		= Vector3(-5, 9, -14),
+		akm 		= Vector3(-5, 9, -14),
+		akm_gold 	= Vector3(-5, 9, -14),
+		ak5 		= Vector3(-5, 9, -14),
+		aug 		= Vector3(-5, 9, -14),
+		g36 		= Vector3(-5, 9, -14),
+		m14 		= Vector3(-5, 9, -14),
+		s552 		= Vector3(-5, 9, -14),
+		scar 		= Vector3(-5, 9, -14),
+		fal 		= Vector3(-5, 9, -14),
+		g3 			= Vector3(-5, 9, -14),
+		galil 		= Vector3(-5, 9, -14),
+		famas 		= Vector3(-5, 9, -14),
+		l85a2 		= Vector3(-5, 9, -14),
+		asval 		= Vector3(-5, 9, -14),
+		vhs 		= Vector3(-5, 9, -14),
+		sub2000 	= Vector3(-5, 9, -14),
+		tecci 		= Vector3(-5, 9, -14),
+		-- Sniper
+		msr 		= Vector3(-14.8, 9, -8), 
+		m95 		= Vector3(-10.5, -8, -12), 
+		r93 		= Vector3(-12.5, 7, -11),
+		model70 	= Vector3(-12.8, 10, -8),
+		wa2000		= Vector3(-12, 8.8, -11.3),		--TODO: Reload Stock clipping...
+		mosin		= Vector3(-10, 8, -9.5),
+		desertfox 	= Vector3(-12, 8.8, -11.3),		-- TODO: Stock clipping on stop running...
 	}
 	
 	function FPCameraPlayerBase:clbk_stance_entered(new_shoulder_stance, new_head_stance, new_vel_overshot, new_fov, new_shakers, stance_mod, ...)
@@ -196,13 +221,15 @@ elseif string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" th
 	end
 	
 	function FPCameraPlayerBase:set_weapon_name(w_name, sight_id)
-		self._weapon_name = name
+		self._weapon_name = w_name
 		self._sight_id = sight_id
 	end
 elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
 	local _stance_entered_original = PlayerStandard._stance_entered
+	local _check_action_weapon_gadget_original = PlayerStandard._check_action_weapon_gadget
 	PlayerStandard.ANGELED_SIGHTS = {
-		wpn_fps_upg_o_45iron = true
+		wpn_fps_upg_o_45iron = true,
+		wpn_fps_upg_o_45rds = true,
 	}
 	
 	function PlayerStandard:_stance_entered(...)
@@ -213,5 +240,17 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 		self._camera_unit:base():set_want_restored(not self._state_data.in_steelsight and (not self._equipped_unit:base():is_second_sight_on() or self:_is_reloading()) and rotate_weapon)
 		self._camera_unit:base():set_weapon_name(weapon_base and weapon_base._name_id, sight_id)
 		return _stance_entered_original(self, ...)
+	end
+	
+	function PlayerStandard:_check_action_weapon_gadget(t, input, ...)
+		local value = _check_action_weapon_gadget_original(self, t, input, ...)
+		
+		local weapon_base = self._equipped_unit:base()
+		local sight_id = weapon_base and weapon_base._second_sight_data and weapon_base._second_sight_data.part_id
+		if input.btn_weapon_gadget_press and sight_id and PlayerStandard.ANGELED_SIGHTS[sight_id] then
+			self:_stance_entered()
+		end
+		
+		return value
 	end
 end

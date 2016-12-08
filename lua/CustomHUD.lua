@@ -1265,15 +1265,23 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function PlayerInfoComponent.Build:set_skills(data)
-		local trees = { "M", "E", "T", "G", "F" }
+		local trees = {}
+		for i, tree in ipairs(tweak_data.skilltree.skill_pages_order) do
+			local tree = tweak_data.skilltree.skilltree[tree]
+			if tree then
+				table.insert(trees, tree.name_id and utf8.sub(managers.localization:text(tree.name_id), 1, 1) or "?")
+			end
+		end
+		local subtree_amt = math.floor(#data / #trees)
+		
 		local text = ""
 		
 		for tree = 1, #trees, 1 do
 			local tree_has_points = false
 			local skill_string = ""
 			
-			for sub_tree = 1, 3, 1 do
-				local skills = data[(tree-1) * 3 + sub_tree] or 0
+			for sub_tree = 1, subtree_amt, 1 do
+				local skills = data[(tree-1) * subtree_amt + sub_tree] or 0
 				skill_string = string.format("%s%02d%s", skill_string, tonumber(skills), sub_tree < 3 and "|" or "")
 				if tonumber(skills) > 0 then
 					tree_has_points = true

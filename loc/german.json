@@ -89,6 +89,10 @@
 	"wolfhud_hudlist_loot_toast" : "Toast",
 	"wolfhud_hudlist_loot_crate" : "Kiste",
 	"wolfhud_hudlist_loot_toothbrush" : "Bürste",
+	"wolfhud_hudlist_loot_bag" : "Tasche",
+	"wolfhud_hudlist_loot_shoes" : "Schuhe",
+	"wolfhud_hudlist_loot_toy" : "Spielzeug",
+	"wolfhud_hudlist_loot_vr" : "Headset",
 	
 	"wolfhud_hudlist_buff_basic" : "Basic",
 	"wolfhud_hudlist_buff_aced" : "Aced",
