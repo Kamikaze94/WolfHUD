@@ -609,6 +609,21 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:call_listeners("custom_radial", data.current, data.total)
 	end
 	
+	function HUDTeammateCustom:activate_ability_radial(time)
+		-- TODO!
+	end
+	
+	function HUDTeammateCustom:set_ability_radial(data)
+		self:call_listeners("ability_radial", data.current, data.total)
+	end
+	
+	function HUDTeammateCustom:set_ability_cooldown(data)
+		local cooldown = math.ceil(data.cooldown or 0)
+		if cooldown then
+			self:call_listeners("throwable_amount", math.max(cooldown, 1))
+		end
+	end
+	
 	function HUDTeammateCustom:set_weapon_firemode(index, fire_mode)
 		self:call_listeners("weapon_fire_mode", index, fire_mode)
 	end
@@ -1732,7 +1747,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			layer = self._health_radial:layer() + 1,
 			visible = HUDManager.DOWNS_COUNTER_PLUGIN and self._settings.DOWNCOUNTER or false,
 		})
-		
 		self._downs_counter:set_center(self._size / 2, self._size / 2)
 		
 		self._detection_counter = self._panel:text({
@@ -1748,7 +1762,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			layer = self._health_radial:layer() + 1,
 			visible = HUDManager.DOWNS_COUNTER_PLUGIN and self._settings.DOWNCOUNTER or false,
 		})
-		
 		self._detection_counter:set_center(self._size / 2, self._size / 2)
 		
 		local center_bg = self._panel:bitmap({
@@ -1799,6 +1812,19 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			layer = self._condition_icon:layer(),
 		})
 		
+		self._ability_radial_icon = self._panel:bitmap({
+			name = "custom_radial_icon",
+			texture = "guis/dlcs/chico/textures/pd2/hud_fearless",
+			texture_rect = { 0, 0, 64, 64 },
+			render_template = "VertexColorTexturedRadial",
+			blend_mode = "add",
+			color = Color(1, 0, 0, 0),
+			visible = false,
+			h = self._size,
+			w = self._size,
+			layer = self._condition_icon:layer(),
+		})
+		
 		self._maniac_absorb_radial = self._panel:bitmap({
 			name = "maniac_absorb_radial",
 			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_shield",
@@ -1838,7 +1864,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._owner:register_listener("PlayerStatus", { "start_condition_timer" }, callback(self, self, "start_timer"), false)
 		self._owner:register_listener("PlayerStatus", { "stop_condition_timer" }, callback(self, self, "stop_timer"), false)
 		self._owner:register_listener("PlayerStatus", { "pause_condition_timer" }, callback(self, self, "pause_timer"), false)
-		self._owner:register_listener("PlayerStatus", { "custom_radial" }, callback(self, self, "set_progress"), false)
+		self._owner:register_listener("PlayerStatus", { "custom_radial" }, callback(self, self, "set_custom_progress"), false)
+		self._owner:register_listener("PlayerStatus", { "ability_radial" }, callback(self, self, "set_ability_progress"), false)
 		self._owner:register_listener("PlayerStatus", { "absorb_active" }, callback(self, self, "set_absorb"), false)
 		if managers.gameinfo then
 			local panel_id = self._owner._id
@@ -1854,6 +1881,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			"damage_taken",
 			"condition", "start_condition_timer", "stop_condition_timer", "pause_condition_timer",
 			"custom_radial",
+			"ability_radial",
 			"absorb_active",
 		})
 		if managers.gameinfo then
@@ -2041,10 +2069,16 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._reviver_count = self._reviver_count + (pause and 1 or -1)
 	end
 	
-	function PlayerInfoComponent.PlayerStatus:set_progress(current, total)
+	function PlayerInfoComponent.PlayerStatus:set_custom_progress(current, total)
 		local ratio = current / total
 		self._custom_radial_icon:set_color(Color(1, ratio, 1, 1))
 		self._custom_radial_icon:set_visible(ratio > 0)
+	end
+	
+	function PlayerInfoComponent.PlayerStatus:set_ability_progress(current, total)
+		local ratio = current / total
+		self._ability_radial_icon:set_color(Color(1, ratio, 1, 1))
+		self._ability_radial_icon:set_visible(ratio > 0)
 	end
 	
 	function PlayerInfoComponent.PlayerStatus:set_absorb(amount)

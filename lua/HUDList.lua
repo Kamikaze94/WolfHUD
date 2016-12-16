@@ -301,6 +301,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		weapon_glock =				"weapon",
 		weapon_scar =				"weapon",
 		women_shoes = 				"shoes",
+		yayo = 						"yayo",
 	}
 	
 	HUDListManager.POTENTIAL_LOOT_TYPES = {
@@ -2616,6 +2617,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		warhead =		{ text = "hud_carry_warhead", 				priority = 1 },	-- Meltdown
 		weapon =		{ text = "wolfhud_hudlist_loot_weapon", 	priority = 1 },
 		wine = 			{ text = "hud_carry_wine", 					priority = 1 },	-- Stealing Xmas
+		yayo = 			{ text = "hud_carry_yayo", 					priority = 1 },	-- Scarface Mansion
 		body = 			{ text = "hud_carry_person", 				priority = 1 },	-- Boiling point
 		crate = 		{ text = "wolfhud_hudlist_loot_crate", 		priority = 2, no_separate = true },
 		xmas_present = 	{ text = "hud_carry_present", 				priority = 2, no_separate = true },	-- White Xmas
@@ -4577,7 +4579,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.BuffItemBase:_set_text(str)
 		self._has_text = str and true or false
-		self._value:set_text(tostring(str))
+		if alive(self._value) then
+			self._value:set_text(tostring(str))
+		end
 	end
 	
 	
