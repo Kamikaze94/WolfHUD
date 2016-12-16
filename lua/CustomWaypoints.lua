@@ -133,6 +133,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				[ "jimmy" ] 					= "menu_jimmy",
 				[ "sydney" ] 					= "menu_sydney",
 				[ "wild" ]						= "menu_wild",
+				[ "chico" ]						= "menu_chico",
 			},
 		},
 	}

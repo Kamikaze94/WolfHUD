@@ -34,9 +34,9 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 				self:_create_stamina_circle()
 			end
 		end
-		--[[
+		
 		function HUDTeammate:set_name(name, ...)
-			if self._main_player or self:peer_id() then
+			if self._main_player and WolfHUD:getSetting("PLAYER_RANK", "boolean") or self:peer_id() and WolfHUD:getSetting("TEAM_RANK", "boolean")  then
 				local peer = self:peer_id() and managers.network:session():peer(self:peer_id())
 				local infamy, level = peer and peer:rank() or managers.experience:current_rank(), peer and peer:level() or managers.experience:current_level()
 				local level_str = string.format(" [%s%s]", 
@@ -47,7 +47,6 @@ if not WolfHUD:getSetting("use_customhud", "boolean") then
 			end
 			return set_name_original(self, name,...)
 		end
-		]]
 		
 		function HUDTeammate:set_callsign(id, ...)
 			local color = tweak_data.chat_colors[id] or Color.white
@@ -273,6 +272,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			
 			self:set_latency(latency)
 			self._next_latency_update_t = t + 1
+		end
+		
+		if not self._is_player and self._peer_id and self._ability_duration and self._ability_duration >= 0 then
+			self._ability_duration = math.max(self._ability_duration - dt, 0)
+			self:set_ability_radial({current = self._ability_duration, total = self._ability_t})
 		end
 	end
 	
@@ -578,7 +582,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 	
 	function HUDTeammateCustom:set_info_meter(data)
-		--print_info("(DEBUG) set_info_meter: c: %s, t: %s, m: %s\n", tostring(data.current), tostring(data.total), tostring(data.max))
+		--print_info("(DEBUG) set_info_meter: c: %s, t: %s, m: %s", tostring(data.current), tostring(data.total), tostring(data.max))
 		--Used to set hysteria stacks. Unused in this HUD at the moment
 	end
 	
@@ -609,11 +613,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:call_listeners("custom_radial", data.current, data.total)
 	end
 	
-	function HUDTeammateCustom:activate_ability_radial(time)
-		-- TODO!
+	function HUDTeammateCustom:activate_ability_radial(time)	--Teammates, handled in update function.
+		self._ability_t = (time or 0)
+		self._ability_duration = self._ability_t
 	end
 	
-	function HUDTeammateCustom:set_ability_radial(data)
+	function HUDTeammateCustom:set_ability_radial(data)		--Player
 		self:call_listeners("ability_radial", data.current, data.total)
 	end
 	

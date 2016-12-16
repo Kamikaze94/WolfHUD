@@ -59,6 +59,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "jimmy" ] 					= "menu_jimmy",
 		[ "sydney" ] 					= "menu_sydney",
 		[ "wild" ]						= "menu_wild",
+		[ "chico" ]						= "menu_chico",
 	}
 
 	Hooks:PostHook( HUDManager , "_player_hud_layout" , "WolfHUDPostHUDManagerPlayerInfoHUDLayout" , function( self )

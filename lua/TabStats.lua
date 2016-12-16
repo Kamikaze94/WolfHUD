@@ -68,7 +68,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		wild = {
 			texture = "guis/dlcs/wild/textures/pd2/blackmarket/icons/characters/wild",
 			color = Color(1, 0.80, 0.25, 0.35)
-		}
+		},
+		chico = {
+			texture = "guis/dlcs/chico/textures/pd2/blackmarket/icons/characters/chico",
+			color = Color(1, 0.65, 0.05, 0.02)
+		},
 	}
 	
 	HUDStatsScreen.STAT_ITEMS = {
@@ -441,7 +445,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 				local x = 0
 				local mode = WolfHUD:getSetting("clock_mode", "number")
 				if mode == 4 then
-					local time = math.floor(self._last_heist_time)
+					local time = math.floor(self._last_heist_time or 0)
 					local hours = math.floor(time / 3600)
 					time = time - hours * 3600
 					local minutes = math.floor(time / 60)
