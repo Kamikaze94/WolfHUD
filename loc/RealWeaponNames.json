@@ -20,6 +20,7 @@
 	"bm_w_asval"				: "AS VAL",
 	"bm_w_sub2000" 				: "Kel-tec SUB-2000",
 	"bm_w_tecci"				: "H&K 416C",
+	"bm_w_contraband"			: "H&K 417",
  
 	"bm_w_spas12" 				: "Franchi SPAS-12",
 	"bm_w_b682" 				: "CZ Redhead Deluxe",
@@ -116,6 +117,7 @@
 	"bm_w_hunter" 				: "Avalanche Pistol Crossbow",
 	"bm_w_china" 				: "China Lake Grenade Launcher",
 	"bm_w_arbiter" 				: "H&K XM-25",
+	"bm_w_ray" 					: "M202 FLASH",
 	
 
 	"bm_grenade_frag" 			: "M67 Fragmentation Hand Grenade",

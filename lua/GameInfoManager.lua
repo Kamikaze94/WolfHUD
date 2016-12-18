@@ -403,6 +403,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		
 		--Temporary upgrades
 		temporary = {
+			chico_injector = "chico_injector",
 			damage_speed_multiplier = "second_wind",
 			dmg_multiplier_outnumbered = "underdog",
 			dmg_dampener_outnumbered = "underdog_aced",
@@ -1246,6 +1247,11 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			elseif event == "set_value" then
 				self._buffs[id].show_value = data.show_value
 				self._buffs[id].value = data.value
+			elseif event == "decrease_duration" then
+				self._buffs[id].expire_t = self._buffs[id].expire_t - data.decrease
+				event = "set_duration"
+				self:_remove_player_timer_expiration(id)
+				self:_add_player_timer_expiration(id, id, self._buffs[id].expire_t, self._timed_buff_expire_clbk)
 			end
 		else
 			return
@@ -2527,6 +2533,8 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	local add_to_temporary_property_original = PlayerManager.add_to_temporary_property
 	local chk_wild_kill_counter_original = PlayerManager.chk_wild_kill_counter
 	local set_synced_cocaine_stacks_original = PlayerManager.set_synced_cocaine_stacks
+	local activate_ability_original = PlayerManager.activate_ability
+	local speed_up_ability_cooldown_original = PlayerManager.speed_up_ability_cooldown
 	local _set_body_bags_amount_original = PlayerManager._set_body_bags_amount
 	
 	local PLAYER_HAS_SPAWNED = false
@@ -2855,6 +2863,24 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 			managers.gameinfo:event("buff", "set_value", "maniac", { value = string.format("%.0f%%", ratio*100), show_value = true } )
 		else
 			managers.gameinfo:event("buff", "deactivate", "maniac")
+		end
+	end
+
+	function PlayerManager:activate_ability(ability, ...)
+		activate_ability_original(self, ability, ...)
+		
+		if self["_cooldown_" .. ability] then
+			local t = TimerManager:game():time()
+			local duration = self["_cooldown_" .. ability] - t
+			managers.gameinfo:event("timed_buff", "activate", ability .. "_debuff", { duration = duration })
+		end
+	end
+
+	function PlayerManager:speed_up_ability_cooldown(ability, time, ...)
+		speed_up_ability_cooldown_original(self, ability, time, ...)
+
+		if self["_cooldown_" .. ability] then
+			managers.gameinfo:event("timed_buff", "decrease_duration", ability .. "_debuff", { decrease = time })
 		end
 	end
 	
@@ -3430,7 +3456,6 @@ if string.lower(RequiredScript) == "lib/player_actions/skills/playeractionshocka
 	
 	function PlayerAction.ShockAndAwe.Function(player_manager, target_enemies, max_reload_increase, min_reload_increase, penalty, min_bullets, ...)
 		local kill_count = 1
-		local active = false
 	
 		local function on_enemy_killed(weapon_unit, variant)
 			if alive(weapon_unit) then

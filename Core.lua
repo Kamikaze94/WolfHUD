@@ -307,6 +307,7 @@ if not _G.WolfHUD then
 			die_hard_buff							= false,
 			dire_need_buff							= true,
 			grinder_buff							= true,
+			chico_injector_buff						= false,	-- TODO!
 			hostage_situation_buff					= false,
 			hostage_taker_buff						= false,
 			inspire_buff							= true,

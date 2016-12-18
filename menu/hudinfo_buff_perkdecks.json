@@ -80,6 +80,14 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "chico_injector_buff",
+			"title" : "wolfhud_hudlist_chico_injector_buff_title",
+			"description" : "wolfhud_hudlist_chico_injector_buff_desc",
+			"callback" : "clbk_change_hudlist_buff_setting",
+			"value" : "chico_injector_buff",
+		},
+		{
+			"type" : "toggle",
 			"id" : "tooth_and_claw_buff",
 			"title" : "wolfhud_hudlist_tooth_and_claw_buff_title",
 			"description" : "wolfhud_hudlist_tooth_and_claw_buff_desc",

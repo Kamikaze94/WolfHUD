@@ -170,6 +170,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		security = 					{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" 				},
 		security_undominatable = 	{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" 				},
 		gensec = 					{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_gensec" 					},
+		bolivian_indoors =			{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_bolivian_security" 		},
+		bolivian =					{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_bolivian_thug" 			},
 		gangster = 					{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_gangster" 				},
 		mobster = 					{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_mobster" 				},
 		biker = 					{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_biker" 					},
@@ -181,11 +183,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		shield = 					{ type_id = "shield",		category = "enemies",	long_name = "wolfhud_enemy_shield" 					},
 		sniper = 					{ type_id = "sniper",		category = "enemies",	long_name = "wolfhud_enemy_sniper" 					},
 		medic = 					{ type_id = "medic",		category = "enemies",	long_name = "wolfhud_enemy_medic" 					},
-		mobster_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_mobster_boss" 			},
-		chavez_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_chavez_boss" 			},
 		biker_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_biker_boss" 				},
+		chavez_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_chavez_boss" 			},
+		drug_lord_boss =			{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_druglord_boss" 			},
+		drug_lord_boss_stealth =	{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_druglord_boss_stealth" 	},
 		hector_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_hector_boss" 			},
 		hector_boss_no_armor = 		{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_hector_boss_no_armor" 	},
+		mobster_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_mobster_boss" 			},
 		phalanx_vip = 				{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_phalanx_vip" 			},
 		phalanx_minion = 			{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_phalanx_minion" 			},
 		civilian = 					{ type_id = "civ",			category = "civilians",	long_name = "wolfhud_enemy_civilian" 				},
@@ -328,91 +332,46 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	}
 	
 	HUDListManager.BUFFS = {
-		--Buff list items affected by specific buffs/debuffs
-		aggressive_reload_aced = { "aggressive_reload_aced" },
-		ammo_efficiency = { "ammo_efficiency" },
-		ammo_give_out_debuff = { "ammo_give_out_debuff" },
-		anarchist_armor_recovery_debuff = { "anarchist_armor_recovery_debuff" },
-		armor_break_invulnerable = { "armor_break_invulnerable" },
-		armor_break_invulnerable_debuff = { "armor_break_invulnerable_debuff" },
+		--Buff list items affected by specific buffs/debuffs. Add entries if buff ID differs from the HUDList buff entry for some reason, or if a single buff ID affect multiple items
 		berserker = { "berserker", "damage_increase", "melee_damage_increase" },
 		berserker_aced = { "berserker", "damage_increase" },										--TODO: buff remains after expiration, base game does not reset upgrade value
 		bloodthirst_basic = { "bloodthirst_basic", "melee_damage_increase" },
-		bloodthirst_aced = { "bloodthirst_aced" },
-		bullet_storm = { "bullet_storm" },
-		bullet_storm_aced = { "bullet_storm" },
-		bullseye_debuff = { "bullseye_debuff" },
 		close_contact_1 = { "close_contact", "damage_reduction" },
 		close_contact_2 = { "close_contact", "damage_reduction" },
 		close_contact_3 = { "close_contact", "damage_reduction" },
 		combat_medic = { "combat_medic", "damage_reduction" },
 		combat_medic_passive = { "combat_medic_passive", "damage_reduction" },
-		desperado = { "desperado" },
 		die_hard = { "die_hard", "damage_reduction" },
-		dire_need = { "dire_need" },																--TODO: lacks duration, inconsistent treatment in base game at the moment
-		forced_friendship = { "forced_friendship" },
-		grinder = { "grinder" },
-		grinder_debuff = { "grinder_debuff" },
 		hostage_situation = { "hostage_situation", "damage_reduction" },
-		hostage_taker = { "hostage_taker" },
-		inspire = { "inspire" },
-		inspire_debuff = { "inspire_debuff" },
-		inspire_revive_debuff = { "inspire_revive_debuff" },
-		life_drain_debuff = { "life_drain_debuff" },
-		lock_n_load = { "lock_n_load" },
-		maniac = { "maniac" },
-		medical_supplies_debuff = { "medical_supplies_debuff" },
 		melee_stack_damage = { "melee_stack_damage", "melee_damage_increase" },
-		messiah = { "messiah" },
-		muscle_regen = { "muscle_regen" },
 		overdog = { "overdog", "damage_reduction" },
 		overkill = { "overkill", "damage_increase" },
 		overkill_aced = { "overkill", "damage_increase" },
 		pain_killer = { "painkiller", "damage_reduction" },
 		pain_killer_aced = { "painkiller", "damage_reduction" },
-		partner_in_crime = { "partner_in_crime" },
 		partner_in_crime_aced = { "partner_in_crime" },
 		quick_fix = { "quick_fix", "damage_reduction" },
 		running_from_death_basic = { "running_from_death" },
 		running_from_death_aced = { "running_from_death" },
-		second_wind = { "second_wind" },
-		sixth_sense = { "sixth_sense" },
-		sociopath_debuff = { "sociopath_debuff" },
-		swan_song = { "swan_song" },
 		swan_song_aced = { "swan_song" },
-		tooth_and_claw = { "tooth_and_claw" },
 		trigger_happy = { "trigger_happy", "damage_increase" },
 		underdog = { "underdog", "damage_increase" },
 		underdog_aced = { "underdog", "damage_reduction" },
 		up_you_go = { "up_you_go", "damage_reduction" },
-		uppers = { "uppers" },
-		uppers_debuff = { "uppers_debuff" },
-		unseen_strike = { "unseen_strike" },
-		unseen_strike_debuff = { "unseen_strike_debuff" },
 		yakuza_recovery = { "yakuza" },
 		yakuza_speed = { "yakuza" },
 		
 		armorer_9 = { "armorer" },
-		bulletproof = { "bulletproof" },
 		crew_chief_1 = { "crew_chief", "damage_reduction" },	--Bonus for <50% health changed separately through set_value
 		crew_chief_3 = { "crew_chief" },
 		crew_chief_5 = { "crew_chief" },
 		crew_chief_9 = { "crew_chief" },	--Damage reduction from hostages covered by hostage_situation
-		--endurance = { "endurance" },		--Baseline Skill
-		
-		--Player action type buffs, possibly do something special with these to separate from skill-related buffs
-		anarchist_armor_regeneration = { "anarchist_armor_regeneration" },
-		standard_armor_regeneration = { "standard_armor_regeneration" },
-		weapon_charge = { "weapon_charge" },
-		melee_charge = { "melee_charge" },
-		reload = { "reload" }, 
-		interact = { "interact"},
-		interact_debuff = { "interact_debuff" },
 		
 		--Debuffs that are merged into the buff itself
 		composite_debuffs = {
 			armor_break_invulnerable_debuff = "armor_break_invulnerable",
 			grinder_debuff = "grinder",
+			chico_injector_debuff = "chico_injector",
 			unseen_strike_debuff = "unseen_strike",
 			uppers_debuff = "uppers",
 			interact_debuff = "interact",
@@ -635,17 +594,23 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local buff_list = self:list("buff_list")
 		local items = {}
 		
+		local function register_item(item_id)
+			local item_data = HUDList.BuffItemBase.MAP[item_id]
+			
+			if item_data and not item_data.ignore then
+				local item = 
+					buff_list:item(item_id) or 
+					buff_list:register_item(item_id, item_data.class or "BuffItemBase", item_data)
+				table.insert(items, item)
+			end
+		end
+		
 		if HUDListManager.BUFFS[id] then
 			for _, item_id in ipairs(HUDListManager.BUFFS[id]) do
-				local item_data = HUDList.BuffItemBase.MAP and HUDList.BuffItemBase.MAP[item_id]
-				
-				if item_data and not item_data.ignore then
-					local item = 
-						buff_list:item(item_id) or 
-						buff_list:register_item(item_id, item_data.class or "BuffItemBase", item_data)
-					table.insert(items, item)
-				end
+				register_item(item_id)
 			end
+		else
+			register_item(id)
 		end
 		
 		return items
@@ -3927,6 +3892,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			invert_timers = true,
 			ignore = not WolfHUD:getSetting("hostage_taker_buff", "boolean"),
 		},
+		chico_injector = {
+			spec = {0, 0},
+			texture_bundle_folder = "chico",
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = not WolfHUD:getSetting("chico_injector_buff", "boolean"),
+		},
 		inspire = {
 			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
 			class = "TimedBuffItem",
@@ -4120,6 +4093,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = not WolfHUD:getSetting("grinder_debuff", "boolean"),	--Composite debuff
+		},
+		chico_injector_debuff = {
+			spec = {0,0},
+			texture_bundle_folder = "chico",
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = true,	--Composite debuff
 		},
 		inspire_debuff = {
 			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,

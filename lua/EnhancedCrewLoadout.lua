@@ -218,7 +218,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 	function ContractBoxGui:_animate_move(panel, x, y, instant, done_clbk)
 		self._active_move = true
 		if not instant then
-			local move_speed = 750
+			local move_speed = 1250
 			local init_x = panel:x()
 			local init_y = panel:y()
 			local x_change = x > init_x and 1 or x < init_x and -1
@@ -248,7 +248,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" then
 	core:import("CoreClass")
---do return end
+
 	TeamLoadoutCustom = TeamLoadoutCustom or class(MissionBriefingTabItem)
 	
 	function TeamLoadoutCustom:init(panel, text, i)
