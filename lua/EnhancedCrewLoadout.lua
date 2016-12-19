@@ -843,6 +843,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			id = tweak_entry[type][id] and tweak_entry[type][id].weapon_id or id
 			type = "weapon"
 		end
+		
 		local name_id = tweak_entry[type][id] and tweak_entry[type][id].name_id or tostring(id)
 		local name_text = managers.localization:text(name_id)
 		

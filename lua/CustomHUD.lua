@@ -3135,13 +3135,24 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.Equipment:set_ability_cooldown(amount)
 		local panel = self._panel:child("throwables")
-		local icon = panel:child("icon")
 		local text = panel:child("amount")
-		text:set_text(string.format("%02.0f", amount))
-		text:set_range_color(0, amount < 10 and 1 or 0, Color.white:with_alpha(0.5))
-		text:set_visible(amount > 0)
-		icon:set_alpha((amount > 0) and 0.5 or 1)
-		self:arrange()
+		text:set_text(string.format("%02.0f", math.max(amount, 1)))
+		
+		if amount > 0 and not self._ability_cooldown then
+			self._ability_cooldown = true
+			text:set_color(Color('FF7575'))
+		elseif amount <= 0 and self._ability_cooldown then
+			self._ability_cooldown = nil
+			text:set_color(Color.white)			
+		end
+		
+		local text_color = self._ability_cooldown and Color('FF7575') or Color.white
+		text:set_range_color(0, amount < 10 and 1 or 0, text_color:with_alpha(0.5))
+		
+		if not panel:visible() then
+			panel:set_visible(true)
+			self:arrange()
+		end
 	end
 	
 	function PlayerInfoComponent.Equipment:set_deployable(icon)

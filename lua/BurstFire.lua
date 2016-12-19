@@ -103,7 +103,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 	
 	--Semi-override
 	function NewRaycastWeaponBase:toggle_firemode(...)
-		return self:can_use_burst_mode() and not self._locked_fire_mode and self:_check_toggle_burst() or toggle_firemode_original(self, ...)
+		return self:can_use_burst_mode() and not self._locked_fire_mode and not self:gadget_overrides_weapon_functions() and self:_check_toggle_burst() or toggle_firemode_original(self, ...)
 	end
 	
 	
@@ -142,7 +142,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 	end
 	
 	function NewRaycastWeaponBase:in_burst_mode()
-		return self._fire_mode == Idstring("single") and self._in_burst_mode
+		return self._fire_mode == Idstring("single") and self._in_burst_mode and not self:gadget_overrides_weapon_functions()
 	end
 	
 	function NewRaycastWeaponBase:burst_rounds_remaining()
@@ -192,6 +192,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 
 	local update_original = PlayerStandard.update
 	local _check_action_primary_attack_original = PlayerStandard._check_action_primary_attack
+	local _check_action_deploy_underbarrel_original = PlayerStandard._check_action_deploy_underbarrel
 
 	function PlayerStandard:update(t, ...)
 		update_original(self, t, ...)
@@ -205,6 +206,16 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 		self._trigger_down = input.btn_primary_attack_state
 		
 		return _check_action_primary_attack_original(self, t, input, ...)
+	end
+	
+	function PlayerStandard:_check_action_deploy_underbarrel(...)
+		local new_action = _check_action_deploy_underbarrel_original(self, ...)
+		
+		if new_action and alive(self._equipped_unit) and self._equipped_unit:base() and self._equipped_unit:base():in_burst_mode() then
+			managers.hud:set_teammate_weapon_firemode_burst(self._equipped_unit:base():selection_index())
+		end
+		
+		return new_action
 	end
 	
 	--Override
