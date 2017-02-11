@@ -1,4 +1,4 @@
-if not WolfHUD:getSetting("show_dmg_indicator", "boolean") then return end
+if not WolfHUD:getSetting({"DamageIndicator", "ENABLED"}, true) then return end
 
 if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	HUDHitDirection.indicator_count = 0
@@ -23,15 +23,15 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	end
 	
 	function HUDHitDirection:_add_hit_indicator(...)
-		HUDHitDirection.PANEL_SIZE = WolfHUD:getSetting("dmg_ind_size", "number")
-		if self.indicator_count < WolfHUD:getSetting("dmg_indicator_max_count", "number") then
+		HUDHitDirection.PANEL_SIZE = WolfHUD:getSetting({"DamageIndicator", "SIZE"}, 150)
+		if self.indicator_count < WolfHUD:getSetting({"DamageIndicator", "MAX_AMOUNT"}, 10) then
 			self.indicator_count = self.indicator_count + 1
 			_add_hit_indicator_original(self, ...)
 		end
 	end
 	
 	function HUDHitDirection:_animate(indicator, data, remove_func)
-		data.duration = WolfHUD:getSetting("dmg_ind_time", "number")
+		data.duration = WolfHUD:getSetting({"DamageIndicator", "DURATION"}, 2)
 		data.t = 0
 		while data.t < data.duration do
 			data.t = data.t + coroutine.yield()
@@ -64,15 +64,15 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	
 	function HUDHitDirection:_get_indicator_color(damage_type, t)
 		if damage_type == HUDHitDirection.DAMAGE_TYPES.HEALTH then
-			return WolfHUD:getSetting("dmg_health_color", "color")
+			return WolfHUD:getColorSetting({"DamageIndicator", "HEALTH_COLOR"}, "red")
 		elseif damage_type == HUDHitDirection.DAMAGE_TYPES.ARMOUR then
-			return WolfHUD:getSetting("dmg_shield_color", "color")
+			return WolfHUD:getColorSetting({"DamageIndicator", "SHIELD_COLOR"}, "white")
 		elseif damage_type == HUDHitDirection.DAMAGE_TYPES.VEHICLE then
-			return WolfHUD:getSetting("dmg_vehicle_color", "color")
+			return WolfHUD:getColorSetting({"DamageIndicator", "VEHICLE_COLOR"}, "yellow")
 		elseif damage_type == HUDHitDirection.DAMAGE_TYPES.CRIT then
-			return WolfHUD:getSetting("dmg_crit_color", "color")
+			return WolfHUD:getColorSetting({"DamageIndicator", "CRIT_COLOR"}, "purple")
 		elseif damage_type == HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE then
-			return WolfHUD:getSetting("dmg_friendlyfire_color", "color")
+			return WolfHUD:getColorSetting({"DamageIndicator", "FRIENDLY_FIRE_COLOR"}, "orange")
 		else
 			return Color(1, t, t)
 		end

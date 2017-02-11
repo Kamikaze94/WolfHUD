@@ -1,4 +1,4 @@
-if WolfHUD and not WolfHUD:getSetting("use_hudlist", "boolean") then return end
+if WolfHUD and not WolfHUD:getSetting({"HUDList", "ENABLED"}, true) then return end
 print_info = function(...) 
 	WolfHUD:print_log(string.format(...), "info")
 end
@@ -94,57 +94,56 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDListManager.ListOptions = {
 		--General settings (Offsets get updated by Objective/Assault or CustomHUD)
         right_list_height_offset = 0,   										--Margin from top for the right list
-        right_list_scale = WolfHUD:getSetting("right_list_scale", "number"),   	--Size scale of right list
+        right_list_scale = WolfHUD:getSetting({"HUDList", "right_list_scale"}, 1),   	--Size scale of right list
         left_list_height_offset = 40,   										--Margin from top for the left list
-        left_list_scale = WolfHUD:getSetting("left_list_scale", "number"),    	--Size scale of left list
+        left_list_scale = WolfHUD:getSetting({"HUDList", "left_list_scale"}, 1),    	--Size scale of left list
         buff_list_height_offset = 80,   										--Margin from bottom for the buff list
-        buff_list_scale = WolfHUD:getSetting("buff_list_scale", "number"),    	--Size scale of buff list
+        buff_list_scale = WolfHUD:getSetting({"HUDList", "buff_list_scale"}, 1),    	--Size scale of buff list
         
         --Left side list
-        show_timers 					= WolfHUD:getSetting("show_timers", "boolean"),     				--Drills, time locks, hacking etc.
-		show_ammo_bags 					= WolfHUD:getSetting("show_ammo_bags", "boolean"),
-		show_doc_bags 					= WolfHUD:getSetting("show_doc_bags", "boolean"),
-		show_first_aid_kits				= WolfHUD:getSetting("show_first_aid_kits", "boolean"),
-		show_body_bags 					= WolfHUD:getSetting("show_body_bags", "boolean"),
-		show_grenade_crates 			= WolfHUD:getSetting("show_grenade_crates", "boolean"),
-        show_sentries 					= WolfHUD:getSetting("show_sentries", "boolean"),   				--Deployable sentries
-        show_ecms 						= WolfHUD:getSetting("show_ecms", "boolean"),       				--Active ECMs
-        show_ecm_retrigger 				= WolfHUD:getSetting("show_ecm_retrigger", "boolean"),      		--Countdown for player owned ECM feedback retrigger delay
-        show_minions 					= WolfHUD:getSetting("show_minions", "boolean"),    				--Converted enemies, type and health
-        show_pagers 					= WolfHUD:getSetting("show_pagers", "boolean"),     				--Show currently active pagers
-        show_tape_loop 					= WolfHUD:getSetting("show_tape_loop", "boolean"),  				--Show active tape loop duration
-        remove_answered_pager_contour 	= WolfHUD:getSetting("remove_answered_pager_contour", "boolean"), 	--Removes the interaction contour on answered pagers
+        show_timers 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_timers"}, true),     				--Drills, time locks, hacking etc.
+		show_ammo_bags 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_ammo_bags"}, true),
+		show_doc_bags 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_doc_bags"}, true),
+		show_first_aid_kits				= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_first_aid_kits"}, false),
+		show_body_bags 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_body_bags"}, true),
+		show_grenade_crates 			= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_grenade_crates"}, true),
+        show_sentries 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_sentries"}, true),   				--Deployable sentries
+        show_ecms 						= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_ecms"}, true),       				--Active ECMs
+        show_ecm_retrigger 				= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_ecm_retrigger"}, true),      		--Countdown for player owned ECM feedback retrigger delay
+        show_minions 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_minions"}, true),    				--Converted enemies, type and health
+        show_pagers 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_pagers"}, true),     				--Show currently active pagers
+        show_tape_loop 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_tape_loop"}, true),  				--Show active tape loop duration
         
         --Right side list
-        show_enemies 					= WolfHUD:getSetting("show_enemies", "boolean"),            		--Currently spawned enemies
-            aggregate_enemies 			= WolfHUD:getSetting("aggregate_enemies", "boolean"),      			--Aggregate all enemies into a single item
-        show_turrets 					= WolfHUD:getSetting("show_turrets", "boolean"),    				--Show active SWAT turrets
-        show_civilians 					= WolfHUD:getSetting("show_civilians", "boolean"),  				--Currently spawned, untied civs
-        show_hostages 					= WolfHUD:getSetting("show_hostages", "boolean"),   				--Currently tied civilian and dominated cops
-			aggregate_hostages 			= WolfHUD:getSetting("aggregate_hostages", "boolean"),															--Aggregate all hostages into a single item
-        show_minion_count 				= WolfHUD:getSetting("show_minion_count", "boolean"),       		--Current number of jokered enemies
-        show_pager_count 				= WolfHUD:getSetting("show_pager_count", "boolean"),        		--Show number of triggered pagers (only counts pagers triggered while you were present)
-		show_cam_count					= WolfHUD:getSetting("show_cam_count", "boolean"),
-		show_bodybags_count				= WolfHUD:getSetting("show_bodybags_count", "boolean"),
-		show_corpse_count				= WolfHUD:getSetting("show_corpse_count", "boolean"),
-        show_loot 						= WolfHUD:getSetting("show_loot", "boolean"),       				--Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
-            aggregate_loot 				= WolfHUD:getSetting("aggregate_loot", "boolean"), 					--Aggregate all loot into a single item
-            separate_bagged_loot 		= WolfHUD:getSetting("separate_bagged_loot", "boolean"),     		--Show bagged/unbagged loot as separate values
-			show_potential_loot			= WolfHUD:getSetting("show_potential_loot", "boolean"), 
-        show_special_pickups 			= WolfHUD:getSetting("show_special_pickups", "boolean"),    		--Show number of special equipment/items
+        show_enemies 					= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_enemies"}, true),            		--Currently spawned enemies
+            aggregate_enemies 			= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "aggregate_enemies"}, false),      			--Aggregate all enemies into a single item
+        show_turrets 					= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_turrets"}, true),    				--Show active SWAT turrets
+        show_civilians 					= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_civilians"}, true),  				--Currently spawned, untied civs
+        show_hostages 					= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_hostages"}, true),   				--Currently tied civilian and dominated cops
+			aggregate_hostages 			= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "aggregate_hostages"}, false),															--Aggregate all hostages into a single item
+        show_minion_count 				= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_minion_count"}, true),       		--Current number of jokered enemies
+        show_pager_count 				= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_pager_count"}, true),        		--Show number of triggered pagers (only counts pagers triggered while you were present)
+		show_cam_count					= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_cam_count"}, true),
+		show_bodybags_count				= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_bodybags_count"}, true),
+		show_corpse_count				= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_corpse_count"}, true),
+        show_loot 						= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_loot"}, true),       				--Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
+            aggregate_loot 				= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "aggregate_loot"}, false), 					--Aggregate all loot into a single item
+            separate_bagged_loot 		= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "separate_bagged_loot"}, true),     		--Show bagged/unbagged loot as separate values
+			show_potential_loot			= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_potential_loot"}, false), 
+        show_special_pickups 			= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_special_pickups"}, true),    		--Show number of special equipment/items
         
         --Buff list
-        show_buffs 						= WolfHUD:getSetting("show_buffs", "boolean"),       				--Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
+        show_buffs 						= WolfHUD:getSetting({"HUDList", "BUFF_LIST", "show_buffs"}, true),       				--Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
 		
-		list_color 						= WolfHUD:getSetting("list_color", "color"),
-		list_color_bg 					= WolfHUD:getSetting("list_color_bg", "color"),
-		civilian_color 					= WolfHUD:getSetting("civilian_color", "color"),
-		hostage_color 					= WolfHUD:getSetting("civilian_color", "color"),
-		thug_color 						= WolfHUD:getSetting("thug_color", "color"),
-		enemy_color 					= WolfHUD:getSetting("enemy_color", "color"),
-		guard_color 					= WolfHUD:getSetting("enemy_color", "color"),
-		special_color 					= WolfHUD:getSetting("special_color", "color"),
-		turret_color 					= WolfHUD:getSetting("special_color", "color"),
+		list_color 						= WolfHUD:getColorSetting({"HUDList", "list_color"}, "white"),
+		list_color_bg 					= WolfHUD:getColorSetting({"HUDList", "list_color_bg"}, "black"),
+		civilian_color 					= WolfHUD:getColorSetting({"HUDList", "civilian_color"}, "white"),
+		hostage_color 					= WolfHUD:getColorSetting({"HUDList", "civilian_color"}, "white"),
+		thug_color 						= WolfHUD:getColorSetting({"HUDList", "thug_color"}, "white"),
+		enemy_color 					= WolfHUD:getColorSetting({"HUDList", "enemy_color"}, "white"),
+		guard_color 					= WolfHUD:getColorSetting({"HUDList", "enemy_color"}, "white"),
+		special_color 					= WolfHUD:getColorSetting({"HUDList", "special_color"}, "white"),
+		turret_color 					= WolfHUD:getColorSetting({"HUDList", "special_color"}, "white"),
 	}
 		
 	HUDListManager.TIMER_SETTINGS = {
@@ -201,6 +200,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		--inside_man = 				{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_inside_man" 				},	--FWB
 		--boris = 					{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_boris" 					},	--Goat Sim Day 2
 		--escort_undercover = 		{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_escort_undercover" 		},	--Taxman
+		--spa_vip = 				{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_spa_vip" 				},	--Charon, Wick Heist
+		--spa_vip_hurt = 			{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_spa_vip_hurt" 			},	--Charon, Wick Heist
 		--mechanic = 				{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_biker_mechanic" 			},	
 		
 		--Custom unit definitions
@@ -342,6 +343,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		combat_medic = { "combat_medic", "damage_reduction" },
 		combat_medic_passive = { "combat_medic_passive", "damage_reduction" },
 		die_hard = { "die_hard", "damage_reduction" },
+		frenzy = { "frenzy", "damage_reduction" },
 		hostage_situation = { "hostage_situation", "damage_reduction" },
 		melee_stack_damage = { "melee_stack_damage", "melee_damage_increase" },
 		overdog = { "overdog", "damage_reduction" },
@@ -835,9 +837,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDListManager:_player_action_event(event, id, data)
-		if HUDListManager.BUFFS[id] then
-			self:_buff_event(event, id, data)
-		end
+		self:_buff_event(event, id, data)
 	end
 
 	function HUDListManager:_ammo_bag_event(event, key, data)
@@ -3771,28 +3771,28 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("aggressive_reload_aced_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "aggressive_reload_aced_buff"}, true),
 		},
 		ammo_efficiency = {
 			atlas_new = tweak_data.skilltree.skills.single_shot_ammo_return.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("ammo_efficiency_buff", "boolean")
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "ammo_efficiency_buff"}, true)
 		},
 		armor_break_invulnerable = {
 			spec = {6, 1},
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("armor_break_invulnerable_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "armor_break_invulnerable_buff"}, true),
 		},
 		berserker = {
 			atlas_new = tweak_data.skilltree.skills.wolverine.icon_xy,
 			class = "BerserkerBuffItem",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("berserker_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "berserker_buff"}, true),
 		},
 		biker = {
 			spec = {0, 0},
@@ -3800,7 +3800,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "BikerBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("biker_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "biker_buff"}, true),
 		},
 		bloodthirst_aced = {
 			atlas_new = tweak_data.skilltree.skills.bloodthirst.icon_xy,
@@ -3810,7 +3810,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ace_icon = true,
 			title = "wolfhud_hudlist_buff_aced",
 			localized = true,
-			ignore = not WolfHUD:getSetting("bloodthirst_aced_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "bloodthirst_aced_buff"}, true),
 		},
 		bloodthirst_basic = {
 			atlas_new = tweak_data.skilltree.skills.bloodthirst.icon_xy,
@@ -3819,70 +3819,77 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			title = "wolfhud_hudlist_buff_basic",
 			localized = true,
-			ignore = not WolfHUD:getSetting("bloodthirst_basic_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "bloodthirst_basic_buff"}, false),
 		},
 		bullet_storm = {
 			atlas_new = tweak_data.skilltree.skills.ammo_reservoir.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("bullet_storm_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "bullet_storm_buff"}, true),
 		},
 		close_contact = {
 			spec = {5, 4},
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("close_contact_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "close_contact_buff"}, true),
 		},
 		combat_medic = {
 			atlas_new = tweak_data.skilltree.skills.combat_medic.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("combat_medic_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "combat_medic_buff"}, true),
 		},
 		combat_medic_passive = {
 			atlas_new = tweak_data.skilltree.skills.combat_medic.icon_xy,
 			class = "BuffItemBase",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("combat_medic_passive_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "combat_medic_passive_buff"}, false),
  		},
 		desperado = {
 			atlas_new = tweak_data.skilltree.skills.expert_handling.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("desperado_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "desperado_buff"}, true),
 		},
 		die_hard = {
 			atlas_new = tweak_data.skilltree.skills.show_of_force.icon_xy,
 			class = "BuffItemBase",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("die_hard_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "die_hard_buff"}, false),
 		},
 		dire_need = {
 			atlas_new = tweak_data.skilltree.skills.dire_need.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("dire_need_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GHOST_BUFFS", "dire_need_buff"}, true),
+		},
+		frenzy = {
+			atlas_new = tweak_data.skilltree.skills.frenzy.icon_xy,
+			class = "FrenzyBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "frenzy_buff"}, false),
 		},
 		grinder = {
 			spec = {4, 6},
 			class = "TimedStacksBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("grinder_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "grinder_buff"}, true),
 		},
 		hostage_situation = {
 			spec = {0, 1},
 			class = "BuffItemBase",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("hostage_situation_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "hostage_situation_buff"}, false),
 		},
 		hostage_taker = {
 			atlas_new = tweak_data.skilltree.skills.black_marketeer.icon_xy,
@@ -3890,7 +3897,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			invert_timers = true,
-			ignore = not WolfHUD:getSetting("hostage_taker_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "hostage_taker_buff"}, false),
 		},
 		chico_injector = {
 			spec = {0, 0},
@@ -3898,21 +3905,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("chico_injector_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "chico_injector_buff"}, false) and (WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true) or WolfHUD:getSetting({"CustomHUD", "ENABLED"}, false)),
 		},
 		inspire = {
 			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("inspire_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "inspire_buff"}, true),
 		},
 		lock_n_load = {
 			atlas_new = tweak_data.skilltree.skills.shock_and_awe.icon_xy,
 			class = "ShockAndAweBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("lock_n_load_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "TECHNICIAN_BUFFS", "lock_n_load_buff"}, true),
 		},
 		maniac = {
 			spec = {0, 0},
@@ -3920,21 +3927,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "BuffItemBase",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = WolfHUD:getSetting("PLAYER_STATUS", "boolean") and not WolfHUD:getSetting("maniac_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "maniac_buff"}, false) and (WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true) or WolfHUD:getSetting({"CustomHUD", "ENABLED"}, false)),
 		},
 		messiah = {
 			atlas_new = tweak_data.skilltree.skills.messiah.icon_xy,
 			class = "BuffItemBase",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("messiah_buff", "boolean")
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "messiah_buff"}, true)
 		},
 		melee_stack_damage = {
 			spec = {5, 4},
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("melee_stack_damage_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "melee_stack_damage_buff"}, false),
 		},
 		muscle_regen = {
 			spec = { 4, 1 },
@@ -3942,119 +3949,119 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			invert_timers = true,
-			ignore = not WolfHUD:getSetting("muscle_regen_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "muscle_regen_buff"}, false),
 		},
 		overdog = {
 			spec = {6, 4},
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("overdog_buff", "boolean")
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "overdog_buff"}, false)
 		},
 		overkill = {
 			atlas_new = tweak_data.skilltree.skills.overkill.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("overkill_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "overkill_buff"}, false),
 		},
 		painkiller = {
 			atlas_new = tweak_data.skilltree.skills.fast_learner.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("painkiller_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "painkiller_buff"}, false),
 		},
 		partner_in_crime = {
 			atlas_new = tweak_data.skilltree.skills.control_freak.icon_xy,
 			class = "BuffItemBase",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("partner_in_crime_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "partner_in_crime_buff"}, false),
 		},
 		running_from_death = {
 			atlas_new = tweak_data.skilltree.skills.running_from_death.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("running_from_death_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "running_from_death_buff"}, true),
 		},
 		quick_fix = {
 			atlas_new = tweak_data.skilltree.skills.tea_time.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("quick_fix_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "quick_fix_buff"}, false),
 		},
 		second_wind = {
 			atlas_new = tweak_data.skilltree.skills.scavenger.icon_xy,
  			class = "TimedBuffItem",
 			priority = 4,
  			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("second_wind_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GHOST_BUFFS", "second_wind_buff"}, true),
  		},
 		sixth_sense = {
 			atlas_new = tweak_data.skilltree.skills.chameleon.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("sixth_sense_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GHOST_BUFFS", "sixth_sense_buff"}, true),
 		},
 		swan_song = {
 			atlas_new = tweak_data.skilltree.skills.perseverance.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = WolfHUD:getSetting("PLAYER_STATUS", "boolean") and not WolfHUD:getSetting("swan_song_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "swan_song_buff"}, false) and (WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true) or WolfHUD:getSetting({"CustomHUD", "ENABLED"}, false)),
 		},
 		tooth_and_claw = {
 			spec = {0, 3},
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("tooth_and_claw_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "tooth_and_claw_buff"}, true),
 		},
 		trigger_happy = {
 			atlas_new = tweak_data.skilltree.skills.trigger_happy.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("trigger_happy_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "trigger_happy_buff"}, false),
 		},
 		underdog = {
 			atlas_new = tweak_data.skilltree.skills.underdog.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("underdog_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "underdog_buff"}, false),
 		},
 		unseen_strike = {
 			atlas_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("unseen_strike_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GHOST_BUFFS", "unseen_strike_buff"}, true),
 		},
 		up_you_go = {
 			atlas_new = tweak_data.skilltree.skills.up_you_go.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("up_you_go_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "up_you_go_buff"}, false),
 		},
 		uppers = {
 			atlas_new = tweak_data.skilltree.skills.tea_cookies.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("uppers_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "uppers_buff"}, true),
 		},
 		yakuza = {
 			spec = {2, 7},
 			class = "BerserkerBuffItem",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting("yakuza_buff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "yakuza_buff"}, false),
 		},
 		
 		--Debuffs
@@ -4064,35 +4071,35 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			ignore = not WolfHUD:getSetting("anarchist_armor_recovery_debuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "anarchist_armor_recovery_debuff"}, true),
 		},
 		ammo_give_out_debuff = {
 			spec = {5, 5},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			ignore = not WolfHUD:getSetting("ammo_give_out_debuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "ammo_give_out_debuff"}, true),
 		},
 		armor_break_invulnerable_debuff = {
 			spec = {6, 1},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			ignore = not WolfHUD:getSetting("armor_break_invulnerable_debuff", "boolean"),	--Composite debuff
+			ignore = true,	--Composite debuff
 		},
 		bullseye_debuff = {
 			atlas_new = tweak_data.skilltree.skills.prison_wife.icon_xy,
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			ignore = not WolfHUD:getSetting("bullseye_debuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "bullseye_debuff"}, true),
 		},
 		grinder_debuff = {
 			spec = {4, 6},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			ignore = not WolfHUD:getSetting("grinder_debuff", "boolean"),	--Composite debuff
+			ignore = true,	--Composite debuff
 		},
 		chico_injector_debuff = {
 			spec = {0,0},
@@ -4109,7 +4116,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			title = "wolfhud_hudlist_buff_boost",
 			localized = true,
-			ignore = not WolfHUD:getSetting("inspire_debuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "inspire_debuff"}, true),
 		},
 		inspire_revive_debuff = {
 			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
@@ -4119,42 +4126,42 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ace_icon = true,
 			title = "wolfhud_hudlist_buff_revive",
 			localized = true,
-			ignore = not WolfHUD:getSetting("inspire_revive_debuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "inspire_revive_debuff"}, true),
 		},
 		life_drain_debuff = {
 			spec = {7, 4},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			ignore = not WolfHUD:getSetting("life_drain_debuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "life_drain_debuff"}, true),
 		},
 		medical_supplies_debuff = {
 			spec = {4, 5},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			ignore = not WolfHUD:getSetting("medical_supplies_debuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "medical_supplies_debuff"}, true),
 		},
 		sociopath_debuff = {
 			spec = {3, 5},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			ignore = not WolfHUD:getSetting("sociopath_debuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "sociopath_debuff"}, true),
 		},
 		unseen_strike_debuff = {
 			atlas_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			ignore = not WolfHUD:getSetting("unseen_strike_debuff", "boolean"),	--Composite debuff
+			ignore = true,	--Composite debuff
 		},
 		uppers_debuff = {
 			atlas_new = tweak_data.skilltree.skills.tea_cookies.icon_xy,
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			ignore = not WolfHUD:getSetting("uppers_debuff", "boolean"),	--Composite debuff
+			ignore = true,	--Composite debuff
 		},
 		
 		--Team buffs
@@ -4163,7 +4170,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
-			ignore = not WolfHUD:getSetting("armorer_teambuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "armorer_teambuff"}, true),
 		},
 		bulletproof = {						--TODO: Needs new icon (Faster Team armor recovery)
 			--atlas_new = tweak_data.skilltree.skills.iron_man.icon_xy,
@@ -4171,14 +4178,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
-			ignore = not WolfHUD:getSetting("bulletproof_teambuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "bulletproof_teambuff"}, true),
 		},
 		crew_chief = {
 			spec = {2, 0},
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
-			ignore = not WolfHUD:getSetting("crew_chief_teambuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "crew_chief_teambuff"}, true),
 		},
 		endurance = {
 			atlas_new = tweak_data.skilltree.skills.triathlete.icon_xy,
@@ -4192,7 +4199,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
-			ignore = not WolfHUD:getSetting("forced_friendship_teambuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "forced_friendship_teambuff"}, true),
  		},
 		
 		--Composite buffs
@@ -4203,7 +4210,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = Color(1, 1, 0),
 			title = "wolfhud_hudlist_buff_dmg_inc",
 			localized = true,
-			ignore = not WolfHUD:getSetting("damage_increase_compbuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "damage_increase_compbuff"}, true),
 		},
 		damage_reduction = {
 			atlas_new = tweak_data.skilltree.skills.disguise.icon_xy,
@@ -4212,7 +4219,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = Color(0, 1, 1),
 			title = "wolfhud_hudlist_buff_dmg_dec",
 			localized = true,
-			ignore = not WolfHUD:getSetting("damage_reduction_compbuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "damage_reduction_compbuff"}, true),
 		},
 		melee_damage_increase = {
 			atlas_new = tweak_data.skilltree.skills.hidden_blade.icon_xy,
@@ -4221,7 +4228,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = Color(1, 0, 1),
 			title = "wolfhud_hudlist_buff_mdmg_inc",
 			localized = true,
-			ignore = not WolfHUD:getSetting("melee_damage_increase_compbuff", "boolean"),
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "melee_damage_increase_compbuff"}, true),
 		},
 		
 		--Player actions
@@ -4256,7 +4263,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 10,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = WolfHUD:getSetting("SHOW_MELEE", "boolean")
+			ignore = WolfHUD:getSetting({"INTERACTION", "SHOW_MELEE"}, true)
 		},
 		reload = {
 			--atlas_new = tweak_data.skilltree.skills.speedy_reload.icon_xy,
@@ -4264,7 +4271,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 10,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = WolfHUD:getSetting("SHOW_RELOAD", "boolean")
+			ignore = WolfHUD:getSetting({"INTERACTION", "SHOW_RELOAD"}, true)
 		},
 		interact = {
 			--atlas_new = tweak_data.skilltree.skills.second_chances.icon_xy,
@@ -4272,7 +4279,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedInteractionItem",
 			priority = 10,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = (WolfHUD:getSetting("SHOW_CIRCLE", "boolean") or WolfHUD:getSetting("SHOW_TIME_REMAINING", "boolean"))
+			ignore = (WolfHUD:getSetting({"INTERACTION", "SHOW_CIRCLE"}, true) or WolfHUD:getSetting({"INTERACTION", "SHOW_TIME_REMAINING"}, true))
 		},
 		interact_debuff = {
 			--atlas_new = tweak_data.skilltree.skills.second_chances.icon_xy,
@@ -4569,6 +4576,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.BerserkerBuffItem:set_value(id, data)
 		if data.show_value then
 			self:_set_text(string.format("%.0f%%", data.value * 100))
+		end
+	end
+	
+	
+	HUDList.FrenzyBuffItem = HUDList.FrenzyBuffItem or class(HUDList.BuffItemBase)
+	function HUDList.FrenzyBuffItem:set_value(id, data)
+		if data.show_value then
+			self:_set_text(string.format("%.0f%%", (1-data.value) * 100))
 		end
 	end
 	
@@ -5134,7 +5149,7 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 
 	function ObjectInteractionManager:init(...)
 		init_original(self, ...)
-		if managers.gameinfo and WolfHUD:getSetting("remove_answered_pager_contour", "boolean") then
+		if managers.gameinfo and WolfHUD:getSetting({"HUDSuspicion", "REMOVE_ANSWERED_PAGER_CONTOUR"}, true) then
 			managers.gameinfo:register_listener("pager_contour_remover", "pager", "set_answered", callback(nil, _G, "pager_answered_clbk"))
 		end
 	end

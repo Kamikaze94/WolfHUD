@@ -145,7 +145,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			day_wrapper_panel:child("day_title"):set_color(Color.red)
 		end
 		
-		self._use_tab_stats = WolfHUD:getSetting("use_tabstats", "boolean")
+		self._use_tab_stats = WolfHUD:getSetting({"TabStats", "ENABLED"}, true)
 		if not self._use_tab_stats then return end
 		
 		local blank1 = day_wrapper_panel:text({
@@ -309,13 +309,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		blank2:set_y(math.round(spending_cash_text:bottom()))
 		
 		local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
-		local mask_color = WolfHUD:getSetting("tabstats_color", "color")
+		local mask_color = WolfHUD:getColorSetting({"TabStats", "COLOR"}, "red")
 		local char_data = HUDStatsScreen.CHARACTERS[managers.criminals:local_character_name()]
 		if char_data then
 			mask_icon = char_data.texture or mask_icon
-			mask_color = WolfHUD:getSetting("tabstats_color", "string") == "rainbow" and char_data.color or mask_color
+			mask_color = WolfHUD:getSetting({"TabStats", "COLOR"}, "rainbow") == "rainbow" and char_data.color or mask_color
 		end
-		self._actual_mask = WolfHUD:getSetting("use_actual_mask", "boolean")
+		self._actual_mask = WolfHUD:getSetting({"TabStats", "SHOW_MASK"}, true)
 		if self._actual_mask then
 			mask_icon = self.getMaskImage()
 		end
@@ -332,9 +332,9 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		logo:set_top(day_wrapper_panel:child("paygrade_title"):top() + 20)
 		
 		local y = blank2:bottom()
-		self._tabstats_font_size = WolfHUD:getSetting("tabstats_font_size", "number") or 18
-		self._tabstats_color = WolfHUD:getSetting("tabstats_color", "string")
-		local items_color = self._tabstats_color ~= "rainbow" and WolfHUD:getSetting("tabstats_color", "color") or false
+		self._tabstats_font_size = WolfHUD:getSetting({"TabStats", "FONT_SIZE"}, 18)
+		self._tabstats_color = WolfHUD:getSetting({"TabStats", "COLOR"}, "rainbow")
+		local items_color = self._tabstats_color ~= "rainbow" and WolfHUD:getColorSetting({"TabStats", "COLOR"}, "red") or false
 		for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
 			local name = data.name
 			local color = items_color or data.color
@@ -350,7 +350,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 				align = "right",
 				vertical = "top",
 				w = day_wrapper_panel:w()/2-5,
-				h = 18
+				h = self._tabstats_font_size
 			})
 			local killed_title = day_wrapper_panel:text({
 				layer = 0,
@@ -364,7 +364,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 				align = "left",
 				vertical = "top",
 				w = day_wrapper_panel:w()/2-5,
-				h = 18
+				h = self._tabstats_font_size
 			})
 			killed_text:set_y(math.round(y))
 			killed_title:set_top(killed_text:top())
@@ -383,7 +383,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 					align = "right",
 					vertical = "top",
 					w = day_wrapper_panel:w()/2-5,
-					h = 18
+					h = self._tabstats_font_size
 				})
 				local killed_alltime_title = day_wrapper_panel:text({
 					layer = 0,
@@ -397,7 +397,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 					align = "left",
 					vertical = "top",
 					w = day_wrapper_panel:w()/2-5,
-					h = 18
+					h = self._tabstats_font_size
 				})
 				killed_alltime_text:set_top(killed_text:top())
 				killed_alltime_title:set_top(killed_text:top())
@@ -443,7 +443,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			if right_panel then
 				local text = ""
 				local x = 0
-				local mode = WolfHUD:getSetting("clock_mode", "number")
+				local mode = WolfHUD:getSetting({"TabStats", "CLOCK_MODE"}, 3)
 				if mode == 4 then
 					local time = math.floor(self._last_heist_time or 0)
 					local hours = math.floor(time / 3600)
@@ -554,29 +554,33 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	
 	function HUDStatsScreen:update_setting(setting, value)
 		if self._use_tab_stats then
-			local font_size = (setting == "tabstats_font_size" and value) or self._tabstats_font_size
-			local color_name = (setting == "tabstats_color" and value) or self._tabstats_color
-			local actual_mask = (setting == "use_actual_mask" and value) or setting ~= "use_actual_mask" and self._actual_mask
+			local font_size = (setting == "FONT_SIZE" and value) or self._tabstats_font_size
+			local color_name = (setting == "COLOR" and value) or self._tabstats_color
+			local actual_mask = (setting == "SHOW_MASK" and value) or setting ~= "SHOW_MASK" and self._actual_mask
 			local dwp = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel"):child("day_wrapper_panel")
 			if self._tabstats_font_size ~= font_size then
+				local last_item = dwp:child("blank2")
 				local sub_items = {"_title", "_text", "_alltime_title", "_alltime_text"}
 				for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
 					for j, suffix in ipairs(sub_items) do
 						local item = dwp:child(data.name .. suffix)
 						if item then
 							item:set_font_size(font_size)
+							item:set_h(font_size)
+							item:top(last_item:bottom())
+							last_item = item
 						end
 					end
 				end
 			end
 			if self._tabstats_color ~= color_name then
-				local color = color_name ~= "rainbow" and WolfHUD:getSetting("tabstats_color", "color") or false
+				local color = WolfHUD:getColor(color_name)
 				local sub_items = {"_title", "_text", "_alltime_title", "_alltime_text"}
 				for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
 					for j, suffix in ipairs(sub_items) do
 						local item = dwp:child(data.name .. suffix)
 						if item then
-							item:set_color(color or data.color)
+							item:set_color(color or data.color or Color.white)
 						end
 					end
 				end
@@ -672,7 +676,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	
 	function HUDStatsScreen:_update_stats_screen_loot(loot_wrapper_panel)
 		update_stats_screen_loot_original(self, loot_wrapper_panel)
-		if not WolfHUD:getSetting("numberic_loot", "boolean") then return end
+		if not WolfHUD:getSetting({"TabStats", "SHOW_LOOT_NUMBERS"}, true) then return end
 		local mandatory_bags_data = managers.loot:get_mandatory_bags_data()
 		local mission_amount = managers.loot:get_secured_mandatory_bags_amount()
 		local bonus_amount = managers.loot:get_secured_bonus_bags_amount()
@@ -800,11 +804,44 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 		return {self._global.revives.player_count , self._global.revives.npc_count}
 	end
 	
-	function StatisticsManager:session_damage(damage)
-		if damage then
-			self._session_damage = (self._session_damage or 0 ) + (damage * 10)
+	function StatisticsManager:session_damage(peer_id)
+		local peer = peer_id and managers.network:session():peer(peer_id)
+		local peer_uid = peer and peer:user_id() or Steam:userid()
+		self._session_damage = self._session_damage or {}
+		return math.round(self._session_damage[peer_uid] or 0)
+	end
+	
+	function StatisticsManager:session_damage_string(peer_id)
+		local damage = self:session_damage(peer_id)
+		return managers.money:add_decimal_marks_to_string(tostring(damage))
+	end
+	
+	function StatisticsManager:add_session_damage(damage, peer_id)
+		local peer = peer_id and managers.network:session():peer(peer_id)
+		local peer_uid = peer and peer:user_id() or Steam:userid()
+		self._session_damage = self._session_damage or {}
+		self._session_damage[peer_uid] = (self._session_damage[peer_uid] or 0 ) + (damage * 10)
+	end
+	
+	function StatisticsManager:reset_session_damage(peer_id)
+		local peer = peer_id and managers.network:session():peer(peer_id)
+		local peer_uid = peer and peer:user_id() or Steam:userid()
+		self._session_damage = self._session_damage or {}
+		self._session_damage[peer_uid] = 0
+	end
+	
+	function StatisticsManager:most_session_damage() 
+		local user_id, max_damage = nil, 0
+		for peer_uid, damage in pairs(self._session_damage or {}) do
+			damage = math.round(damage)
+			if damage > max_damage then
+				max_damage = damage
+				user_id = peer_uid
+			end
 		end
-		return math.round(self._session_damage or 0)
+		
+		local peer_name = user_id and Steam:username(user_id) or managers.localization:text("debug_undecided")
+		return string.format("%s (%s)", peer_name, managers.money:add_decimal_marks_to_string(tostring(max_damage)))
 	end
 elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 	local _on_damage_received_original = CopDamage._on_damage_received
@@ -814,17 +851,90 @@ elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 		return _on_damage_received_original(self, damage_info, ...)
 	end
 
-	function CopDamage:_process_damage(aggressor, damage)
-		if alive(aggressor) and aggressor:base() then
-			if aggressor:in_slot( 2 ) or (aggressor:in_slot( 25 ) and aggressor:base():get_owner_id() == managers.network:session():local_peer():id()) or aggressor:base()._thrower_unit == managers.player:player_unit() then
-				if managers.statistics and managers.statistics.session_damage then
-					managers.statistics:session_damage(damage)
+	function CopDamage:_process_damage(attacker, damage)
+		local killer
+		
+		if attacker then
+			if attacker:in_slot(3) or attacker:in_slot(5) then	
+				--Human team mate
+				killer = attacker
+			elseif attacker:in_slot(2) then
+				--Player
+				killer = attacker
+			elseif attacker:in_slot(16) then
+				--Bot/joker
+				killer = attacker
+			elseif attacker:in_slot(12) then
+				--Enemy
+			elseif attacker:in_slot(25)	then
+				--Turret
+				local owner = attacker:base():get_owner_id()
+				if owner then 
+					killer =  managers.criminals:character_unit_by_peer_id(owner)
 				end
-				if managers.hud and managers.hud.update_stats_screen then
-					managers.hud:update_stats_screen()
+			elseif attacker:base().thrower_unit then
+				killer = attacker:base():thrower_unit()
+			end
+		end
+		
+		if alive(killer) then		
+			if killer:in_slot(2) then
+				managers.statistics:add_session_damage(damage)
+				
+				managers.hud:update_stats_screen()
+			else
+				local peer_id = managers.criminals:character_peer_id_by_unit(aggressor)
+				if peer_id then
+					managers.statistics:add_session_damage(damage, peer_id)
 				end
 			end
 		end
+	end
+elseif RequiredScript == "lib/units/civilians/civiliandamage" then
+	local _on_damage_received_original = CivilianDamage._on_damage_received
+	function CivilianDamage:_on_damage_received(damage_info, ...)
+		CivilianDamage.super._process_damage(self, damage_info.attacker_unit, damage_info.damage)
+		return _on_damage_received_original(self, damage_info, ...)
+	end
+elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" then
+	local set_stats_original = StatsTabItem.set_stats
+	local feed_statistics_original = StageEndScreenGui.feed_statistics
+	local feed_item_statistics_original = StatsTabItem.feed_statistics
+	
+	function StatsTabItem:set_stats(stats_data, ...)
+		if table.contains(stats_data, "best_killer") then
+			table.insert(stats_data, 6, "most_damage")
+		elseif table.contains(stats_data, "favourite_weapon") then
+			local total_objectives = managers.objectives:total_objectives(Global.level_data and Global.level_data.level_id)
+			if total_objectives > 0 then
+				table.insert(stats_data, 1, "completed_objectives")
+			end
+			table.insert(stats_data, 6, "session_damage")
+		end
+		
+		set_stats_original(self, stats_data, ...)
+	end
+	
+	function StageEndScreenGui:feed_statistics(data, ...)
+		local new_data = clone(data) or {}
+		new_data.most_damage = tostring(managers.statistics:most_session_damage())
+		new_data.session_damage = tostring(managers.statistics:session_damage_string())
+		
+		feed_statistics_original(self, new_data, ...)
+	end
+	
+	-- Make broken objective counter look less weird...
+	function StatsTabItem:feed_statistics(stats_data, ...)
+		local new_stats_data = clone(stats_data) or {}
+		if managers.statistics:started_session_from_beginning() then
+			new_stats_data.completed_objectives = managers.localization:text("menu_completed_objectives_of", {
+				COMPLETED = stats_data.total_objectives,
+				TOTAL = stats_data.total_objectives,
+				PERCENT = stats_data.completed_ratio
+			})
+		end
+		
+		feed_item_statistics_original(self, new_stats_data, ...)
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	local HUDManager_feed_heist_time_original = HUDManager.feed_heist_time

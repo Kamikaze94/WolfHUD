@@ -11,7 +11,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/sentrygunweapon" then
 	
 	function SentryGunWeapon:post_init()
 		local enable_ap = false
-		local laser_theme = "default_sentry"
+		local laser_theme = "team_sentry"
 		if self._unit:base():is_owner() then
 			laser_theme = "player_sentry"
 			enable_ap = managers.player:has_category_upgrade("sentry_gun", "ap_bullets")
@@ -19,7 +19,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/sentrygunweapon" then
 		self._laser_align = self._unit:get_object(Idstring("fire"))
 		self:set_laser_enabled(laser_theme)
 		
-		if WolfHUD:getSetting("senty_auto_ap", "boolean") and enable_ap then
+		if WolfHUD:getSetting({"EQUIPMENT", "SENTRY_AUTO_AP"}, true) and enable_ap then
 			if alive(self._fire_mode_unit) and alive(self._unit) then
 				local firemode_interaction = self._fire_mode_unit:interaction()
 				if firemode_interaction and firemode_interaction:can_interact(managers.player:player_unit()) then
@@ -41,7 +41,7 @@ elseif string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammer
 	local destroy_original = ECMJammerBase.destroy
 	function ECMJammerBase:setup(...)
 		setup_original(self, ...)
-		if WolfHUD:getSetting("ecm_feedback_disabled_stealth", "boolean") and managers.groupai:state():whisper_mode() then
+		if WolfHUD:getSetting({"EQUIPMENT", "ECM_FEEDBACK_STEALTH_DISABLED"}, true) and managers.groupai:state():whisper_mode() then
 			local owner_unit = self:owner()
 			local player_unit = managers.player:player_unit()
 			if alive(owner_unit) and alive(player_unit) and owner_unit:key() == player_unit:key() then
@@ -51,7 +51,7 @@ elseif string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammer
 	end
 	
 	function ECMJammerBase:contour_interaction(...)
-		if not (managers.groupai:state():whisper_mode() and WolfHUD:getSetting("ecm_feedback_disabled_stealth", "boolean")) then
+		if not (managers.groupai:state():whisper_mode() and WolfHUD:getSetting({"EQUIPMENT", "ECM_FEEDBACK_STEALTH_DISABLED"}, true)) then
 			contour_interaction_original(self, ...)
 		end
 	end
@@ -70,14 +70,14 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 	local ECMJammerInteaction_can_interact_original = ECMJammerInteractionExt.can_interact
 	local ECMJammerInteraction_can_select_original = ECMJammerInteractionExt.can_select
 	function ECMJammerInteractionExt:can_interact(...)
-		if WolfHUD:getSetting("ecm_feedback_disabled_stealth", "boolean") and managers.groupai:state():whisper_mode() then
+		if WolfHUD:getSetting({"EQUIPMENT", "ECM_FEEDBACK_STEALTH_DISABLED"}, true) and managers.groupai:state():whisper_mode() then
 			return false
 		end
 		return ECMJammerInteaction_can_interact_original(self, ...)
 	end
 	
 	function ECMJammerInteractionExt:can_select(...)
-		if WolfHUD:getSetting("ecm_feedback_disabled_stealth", "boolean") and managers.groupai:state():whisper_mode() then
+		if WolfHUD:getSetting({"EQUIPMENT", "ECM_FEEDBACK_STEALTH_DISABLED"}, true) and managers.groupai:state():whisper_mode() then
 			return false
 		end
 		return ECMJammerInteraction_can_select_original(self, ...)

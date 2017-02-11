@@ -1,5 +1,3 @@
---do return end
-
 QuickInputMenu = QuickInputMenu or class()
 QuickInputMenu._menu_id_key = "quick_input_menu_id_"
 QuickInputMenu._menu_id_index = 0

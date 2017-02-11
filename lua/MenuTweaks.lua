@@ -21,7 +21,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	local populate_weapon_category_new_original = BlackMarketGui.populate_weapon_category_new
 	function BlackMarketGui:populate_weapon_category_new(data, ...)
 		local value = populate_weapon_category_new_original(self, data, ...)
-		local show_icons = not WolfHUD:getSetting("show_mini_icons", "boolean")
+		local show_icons = not WolfHUD:getSetting({"INVENTORY", "SHOW_WEAPON_MINI_ICONS"}, true)
 		for id, w_data in ipairs(data) do
 			if tweak_data.weapon[w_data.name] then	--Filter out locked or empty slots
 				local category = tweak_data.weapon[w_data.name].category
@@ -102,7 +102,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	-- Show all Names in Inventory Boxxes
 	local orig_blackmarket_gui_slot_item_init = BlackMarketGuiSlotItem.init
 	function BlackMarketGuiSlotItem:init(main_panel, data, ...)
-		if WolfHUD:getSetting("inventory_names", "boolean") then
+		if WolfHUD:getSetting({"INVENTORY", "SHOW_WEAPON_NAMES"}, true) then
 			data.custom_name_text = data.custom_name_text or not data.empty_slot and data.name_localized
 		end
 		return orig_blackmarket_gui_slot_item_init(self, main_panel, data, ...)
@@ -167,16 +167,25 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	end
 
 	--Replace Tab Names with custom ones...
+	BlackMarketGui._SUB_TABLE = {
+		["<SKULL>"] = utf8.char(57364),	--Skull icon
+		["<GHOST>"] = utf8.char(57363),	--Ghost icon
+	}
+	
 	local BlackMarketGui__setup_original = BlackMarketGui._setup
 	function BlackMarketGui:_setup(is_start_page, component_data)
 		self._renameable_tabs = false
 		component_data = component_data or self:_start_page_data()
-		if WolfHUD:getSetting("inventory_tab_names", "boolean") and component_data then
-			local inv_name_tweak = WolfHUD:getSetting("custom_inv_tab_names", "table")
-			if inv_name_tweak then
-				for i, tab_data in ipairs(component_data) do
-					if not tab_data.prev_node_data then
-						tab_data.name_localized = inv_name_tweak[string.format("%s_%d", tab_data.category, i)] or tab_data.name_localized
+		local inv_name_tweak = WolfHUD:getSetting({"INVENTORY", "CUSTOM_TAB_NAMES"}, {})
+		if inv_name_tweak then
+			for i, tab_data in ipairs(component_data) do
+				if not tab_data.prev_node_data then
+					local custom_tab_name = inv_name_tweak[tab_data.category] and inv_name_tweak[tab_data.category][i] or ""
+					for key, subst in pairs(BlackMarketGui._SUB_TABLE) do
+						custom_tab_name = custom_tab_name:upper():gsub(key, subst)
+					end
+					if string.len(custom_tab_name or "") > 0 then
+						tab_data.name_localized = custom_tab_name or tab_data.name_localized
 						self._renameable_tabs = true
 					end
 				end
@@ -232,7 +241,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 					local current_tab = self._tabs[self._selected]
 					if current_tab and button == Idstring("0") then
 						if self._tab_scroll_panel:inside(x, y) and current_tab:inside(x, y) ~= 1 then
-							self:rename_tab_clbk(current_tab)
+							self:rename_tab_clbk(current_tab, self._selected)
 							return
 						end
 					end
@@ -243,20 +252,25 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 		BlackMarketGui_mouse_double_click_original(self, o, button, x, y)
 	end
 	
-	function BlackMarketGui:rename_tab_clbk(tab)
+	function BlackMarketGui:rename_tab_clbk(tab, tab_id)
 		local current_tab = tab or self._tabs[self._selected]
-		if current_tab and not self:in_setup()then
-			local prev_name = current_tab._tab_text_string or ""
+		local tab_data = self._data[self._selected]
+		local inv_name_tweak = WolfHUD:getSetting({"INVENTORY", "CUSTOM_TAB_NAMES"}, nil)
+		if current_tab and tab_data and inv_name_tweak and not self:in_setup()then
+			local prev_name = inv_name_tweak[tab_data.category] and inv_name_tweak[tab_data.category][tab_id or self._selected] or current_tab._tab_text_string
 			local menu_options = {
 				[1] = {
 					text = managers.localization:text("wolfhud_dialog_save"),
 					callback = function(cb_data, button_id, button, text)
 						if self._data and text and text ~= "" then
-							local tab_data = self._data[self._selected]
-							local inv_name_tweak = WolfHUD:getSetting("custom_inv_tab_names", "table")
 							if tab_data and inv_name_tweak then
-								inv_name_tweak[string.format("%s_%d", tab_data.category, self._selected)] = text
+								inv_name_tweak[tab_data.category] = inv_name_tweak[tab_data.category] or {}
+								inv_name_tweak[tab_data.category][tab_id or self._selected] = text
 								WolfHUD:Save()
+								
+								for key, subst in pairs(BlackMarketGui._SUB_TABLE) do
+									text = text:upper():gsub(key, subst)
+								end
 								
 								current_tab._tab_text_string = text
 								local name = current_tab._tab_panel:child("tab_text")
@@ -315,7 +329,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 		local value = orig_newskilltreeskillitem_refresh(self, ...)
 		
 		--Always show Skill names
-		if alive(self._skill_panel) and WolfHUD:getSetting("skill_names", "boolean") then
+		if alive(self._skill_panel) and WolfHUD:getSetting({"INVENTORY", "SHOW_SKILL_NAMES"}, true) then
 			local skill_name = self._skill_panel:child("SkillName")
 			if skill_name then
 				local unlocked = self._skill_id and self._tree and managers.skilltree and managers.skilltree:skill_unlocked(self._tree, self._skill_id) or false
@@ -342,7 +356,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 	local orig_newskilltreetieritem_refresh_tier_text = NewSkillTreeTierItem._refresh_tier_text
 	function NewSkillTreeTierItem:init(...)
 		local val = orig_newskilltreetieritem_init(self, ...)
-		if WolfHUD:getSetting("skill_names", "boolean") then
+		if WolfHUD:getSetting({"INVENTORY", "SHOW_SKILL_NAMES"}, true) then
 			if self._tier_points_needed and self._tier_points_needed_curr and self._tier_points_needed_zero then
 				--self._tier_points_needed_zero:set_left(self._text_space)
 				--self._tier_points_needed_curr:set_left(self._tier_points_needed_zero:right())
@@ -365,7 +379,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 	end
 	function NewSkillTreeTierItem:refresh_points(selected, ...)
 		orig_newskilltreetieritem_refresh_points(self, selected, ...)
-		if WolfHUD:getSetting("skill_names", "boolean") then
+		if WolfHUD:getSetting({"INVENTORY", "SHOW_SKILL_NAMES"}, true) then
 			if alive(self._tier_points_total) and alive(self._tier_points_total_zero) and alive(self._tier_points_total_curr) then
 				self._tier_points_total:set_y(self._text_space or 10)
 				self._tier_points_total_zero:set_y(self._text_space or 10)
@@ -375,7 +389,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 	end
 	function NewSkillTreeTierItem:_refresh_tier_text(selected, ...)
 		orig_newskilltreetieritem_refresh_tier_text(self, selected, ...)
-		if WolfHUD:getSetting("skill_names", "boolean") then
+		if WolfHUD:getSetting({"INVENTORY", "SHOW_SKILL_NAMES"}, true) then
 			if selected and alive(self._tier_points_needed) and alive(self._tier_points_needed_curr) and alive(self._tier_points_needed_zero) then
 				self._tier_points_needed_zero:set_left(self._tier_points_0:left())
 				self._tier_points_needed_curr:set_left(self._tier_points_needed_zero:right())
@@ -394,6 +408,11 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/tweakdata" then
 		tweak_data.menu.MUSIC_CHANGE = 1
 		tweak_data.menu.SFX_CHANGE = 1
 		tweak_data.menu.VOICE_CHANGE = 0.01
+		
+		if Network:is_server() and WolfHUD:getSetting({"SkipIt", "INSTANT_RESTART"}, false) then
+			tweak_data.vote = tweak_data.vote or {}
+			tweak_data.voting.restart_delay = 0
+		end
 	end
 elseif string.lower(RequiredScript) == "lib/tweak_data/guitweakdata" then
 	local GuiTweakData_init_orig = GuiTweakData.init
@@ -408,6 +427,8 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 	local init_actual = ItemSlider.init
 	local highlight_row_item_actual = ItemSlider.highlight_row_item
 	local set_value_original = ItemSlider.set_value
+	local set_enabled_original = ItemSlider.set_enabled
+	local reload_original = ItemSlider.reload
 	function ItemSlider:init(...)
 		init_actual(self, ...)
 		self._show_slider_text = true
@@ -416,8 +437,8 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 	function ItemSlider:highlight_row_item(node, row_item, mouse_over, ...)
 		local val = highlight_row_item_actual(self, node, row_item, mose_over, ...)
 		row_item.gui_slider_gfx:set_gradient_points({
-			0, _G.tweak_data.screen_colors.button_stage_2:with_alpha(0.6),
-			1, _G.tweak_data.screen_colors.button_stage_2:with_alpha(0.6)
+			0, self:slider_highlighted_color():with_alpha(0.6),
+			1, self:slider_highlighted_color():with_alpha(0.6)
 		})
 		return val
 	end
@@ -428,8 +449,26 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 		
 		set_value_original(self, value, ...)
 	end
+	
+	function ItemSlider:set_enabled(...)
+		set_enabled_original(self, ...)
+		if self._enabled then
+			self:set_slider_color(_G.tweak_data.screen_colors.button_stage_3)
+			self:set_slider_highlighted_color(_G.tweak_data.screen_colors.button_stage_2)
+		else
+			self:set_slider_color(Color(0.4, 0.4, 0.4, 0.4))
+			self:set_slider_highlighted_color(Color(0.2, 0.4, 0.4, 0.4))
+		end
+	end
+	
+	function ItemSlider:reload(row_item, ...)
+		reload_original(self, row_item, ...)
+		
+		row_item.gui_text:set_color(row_item.color)
+		row_item.gui_slider_text:set_color(row_item.color)
+	end
 elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then
-	local SKIP_BLACKSCREEN = WolfHUD:getSetting("skip_blackscreen", "boolean")
+	local SKIP_BLACKSCREEN = WolfHUD:getSetting({"SkipIt", "SKIP_BLACKSCREEN"}, true)
 	local update_original = IngameWaitingForPlayersState.update
 	function IngameWaitingForPlayersState:update(...)
 		update_original(self, ...)
@@ -439,8 +478,20 @@ elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" then
+	local init_original = StageEndScreenGui.init
 	local update_original = StageEndScreenGui.update
-	local SKIP_STAT_SCREEN_DELAY = WolfHUD:getSetting("stat_screen_delay", "number")
+	local special_btn_pressed_original = StageEndScreenGui.special_btn_pressed
+	local special_btn_released_original = StageEndScreenGui.special_btn_released
+	
+	function StageEndScreenGui:init(...)
+		init_original(self, ...)
+		
+		if self._enabled and WolfHUD:getSetting({"SkipIt", "STAT_SCREEN_SPEEDUP"}, false) and managers.hud then
+			managers.hud:set_speed_up_endscreen_hud(5)
+		end
+	end
+	
+	local SKIP_STAT_SCREEN_DELAY = WolfHUD:getSetting({"SkipIt", "STAT_SCREEN_DELAY"}, 5)
 	function StageEndScreenGui:update(t, ...)
 		update_original(self, t, ...)
 		if not self._button_not_clickable and SKIP_STAT_SCREEN_DELAY > 0 then
@@ -451,9 +502,21 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" the
 			end
 		end
 	end
+	
+	function StageEndScreenGui:special_btn_pressed(...)
+		if not WolfHUD:getSetting({"SkipIt", "STAT_SCREEN_SPEEDUP"}, false) then
+			special_btn_pressed_original(self, ...)
+		end
+	end
+	
+	function StageEndScreenGui:special_btn_released(...)
+		if not WolfHUD:getSetting({"SkipIt", "STAT_SCREEN_SPEEDUP"}, false) then
+			special_btn_released_original(self, ...)
+		end
+	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/lootdropscreengui" then
-	local SKIP_LOOT_SCREEN_DELAY = WolfHUD:getSetting("loot_screen_delay", "number")
-	local AUTO_PICK_CARD = WolfHUD:getSetting("autopick_card", "boolean")
+	local SKIP_LOOT_SCREEN_DELAY = WolfHUD:getSetting({"SkipIt", "LOOT_SCREEN_DELAY"}, 3)
+	local AUTO_PICK_CARD = WolfHUD:getSetting({"SkipIt", "AUTOPICK_CARD"}, true)
 	local update_original = LootDropScreenGui.update
 	function LootDropScreenGui:update(t, ...)
 		update_original(self, t, ...)
@@ -476,7 +539,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 	function ContractBoxGui:create_character_text(peer_id, ...)
 		create_character_text_original(self, peer_id, ...)
 		
-		if WolfHUD:getSetting("TEAM_LATENCY", "boolean") and  managers.network:session() then
+		if WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "LATENCY"}, 3) and  managers.network:session() then
 			if managers.network:session():local_peer():id() ~= peer_id then
 				local peer_label = self._peers[peer_id]
 				if alive(peer_label) then
@@ -530,7 +593,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/renderers/menunodeskil
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
-	if not WolfHUD:getSetting("spam_filter", "boolean") then return end
+	if not WolfHUD:getSetting({"HUDChat", "SPAM_FILTER"}, true) then return end
 	ChatManager._SUB_TABLE = {
 			[utf8.char(57364)] = "<SKULL>",	--Skull icon
 			[utf8.char(57363)] = "<GHOST>",	--Ghost icon
@@ -602,7 +665,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 	end
 	
 	function MenuManager:update_person_joining( id, progress_percentage, ... )
-		if self.peer_join_start_t[id] then
+		if self.peer_join_start_t and self.peer_join_start_t[id] then
 			local t = os.clock() - self.peer_join_start_t[id]
 			local result = update_person_joining_original(self, id, progress_percentage, ...)
 			local time_left = (t / progress_percentage) * (100 - progress_percentage)

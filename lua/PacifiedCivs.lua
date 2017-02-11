@@ -8,7 +8,7 @@ function GroupAIStateBase:_upd_criminal_suspicion_progress(...)
 				local waypoint = managers.hud and managers.hud._hud.waypoints[waypoint_id]
 				if waypoint then
 					local color, arrow_color
-					if unit:anim_data().drop and WolfHUD:getSetting("show_pacified_civilians", "boolean") then
+					if unit:anim_data().drop and WolfHUD:getSetting({"HUDSuspicion", "SHOW_PACIFIED_CIVILIANS"}, true) then
 						if not obs_susp_data._subdued_civ then
 							obs_susp_data._alerted_civ = nil
 							obs_susp_data._subdued_civ = true

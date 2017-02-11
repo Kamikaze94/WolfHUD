@@ -1,5 +1,3 @@
--- New Script:
-
 if RequiredScript == "lib/managers/missionassetsmanager" then
 	
 	local _setup_mission_assets_original = MissionAssetsManager._setup_mission_assets

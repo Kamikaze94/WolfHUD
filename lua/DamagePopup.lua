@@ -7,7 +7,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	end
 	
 	function CopDamage:_process_popup_damage(attack_data)
-		local dmg_popup_setting = WolfHUD:getSetting("show_dmg_popup", "number")
+		local dmg_popup_setting = WolfHUD:getSetting({"DamagePopup", "DISPLAY_MODE"}, true)
 		
 		local attacker = alive(attack_data.attacker_unit) and attack_data.attacker_unit
 		local damage = tonumber(attack_data.damage) or 0
@@ -65,8 +65,8 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 		if managers.waypoints then
 			local id = "damage_wp_" .. tostring(self._unit:key())
 			local waypoint = managers.waypoints:get_waypoint(id)
-			local waypoint_color = color_id and tweak_data.chat_colors[color_id] or WolfHUD:getSetting(headshot and "dmg_popup_headshot_color" or "dmg_popup_color", "color")
-			local waypoint_duration = WolfHUD:getSetting("dmg_popup_time", "number")
+			local waypoint_color = color_id and tweak_data.chat_colors[color_id] or WolfHUD:getColorSetting({"DamagePopup", headshot and "HEADSHOT_COLOR" or "COLOR"}, "yellow")
+			local waypoint_duration = WolfHUD:getSetting({"DamagePopup", "DURATION"}, 3)
 			if waypoint and not waypoint:is_deleted() then
 				self._dmg_value = self._dmg_value + (damage * 10)
 				managers.waypoints:set_waypoint_duration(id, "duration", waypoint_duration)
@@ -79,7 +79,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 				local params = {
 					unit = self._unit,
 					offset = Vector3(10, 10, 20),
-					scale = 2 * WolfHUD:getSetting("dmg_popup_scale", "number", 1),
+					scale = 2 * WolfHUD:getSetting({"DamagePopup", "SCALE"}, 1),
 					color = waypoint_color,
 					visible_distance = { 
 						min = 30, 

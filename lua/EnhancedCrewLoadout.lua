@@ -2,6 +2,9 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 	local init_original = ContractBoxGui.init
 	local update_character_original = ContractBoxGui.update_character
 	local update_character_menu_state_original = ContractBoxGui.update_character_menu_state
+	local update_bg_state_original = ContractBoxGui.update_bg_state
+	local mouse_wheel_up_original = ContractBoxGui.mouse_wheel_up
+	local mouse_wheel_down_original = ContractBoxGui.mouse_wheel_down
 	local mouse_pressed_original = ContractBoxGui.mouse_pressed
 	local mouse_moved_original = ContractBoxGui.mouse_moved
 	local set_enabled_original = ContractBoxGui.set_enabled
@@ -14,7 +17,17 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 		
 		if managers.network:session() then
 			self._peer_loadout = _peer_loadout or {}
-						
+			
+			self._loadout_icon = self._panel:bitmap({
+				name = "toggle_loadout_icon",
+				texture = "guis/textures/pd2/mouse_buttons",
+				texture_rect = {35, 1, 17, 23},
+				w = tweak_data.menu.pd2_small_font_size * 0.85,
+				h = tweak_data.menu.pd2_small_font_size * 1.10,
+			})
+			self._loadout_icon:set_left(self._panel:left())
+			self._loadout_icon:set_bottom(self._panel:bottom())
+			
 			self._loadout_btn = self._panel:text({
 				name = "toggle_loadout",
 				text = utf8.to_upper(managers.localization:text("menu_team_loadout") .. ": " .. managers.localization:text("menu_button_show")),
@@ -22,12 +35,12 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 				font_size = tweak_data.menu.pd2_small_font_size,
 				font = tweak_data.menu.pd2_small_font,
 				color = tweak_data.screen_colors.button_stage_3,
-				blend_mode = "add"
+				blend_mode = "add",
 			})
 			local _, _, w, _ = self._loadout_btn:text_rect()
 			self._loadout_btn:set_w(w)
-			self._loadout_btn:set_left(self._panel:left())
-			self._loadout_btn:set_bottom(self._panel:bottom())
+			self._loadout_btn:set_left(self._loadout_icon:right() + 5)
+			self._loadout_btn:set_bottom(self._panel:bottom() - 1)
 			
 			self._loadout_panel = self._panel:panel({
 				name = "crew_loadout",
@@ -61,12 +74,48 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 		end
 	end
 	
+	function ContractBoxGui:update_character(peer_id, ...)
+		update_character_original(self, peer_id, ...)
+		
+		if self._peer_loadout[peer_id] then
+			self:update_loadout_panel(peer_id)
+		end
+	end
+	--[[
 	function ContractBoxGui:update_character_menu_state(peer_id, ...)
 		update_character_menu_state_original(self, peer_id, ...)
 		
 		if self._peer_loadout[peer_id] then
 			self:update_loadout_panel(peer_id)
 		end
+	end
+	]]
+	
+	function ContractBoxGui:update_bg_state(peer_id, ...)
+		update_bg_state_original(self, peer_id, ...)
+		
+		-- Re-Hide Chat
+		if managers.menu_component and self._loadout_visible then
+			if self._peer_loadout[peer_id] and self._peer_loadout[peer_id]:local_peer() then
+				managers.menu_component:hide_game_chat_gui()
+			end
+		end
+	end
+	
+	function ContractBoxGui:mouse_wheel_up(...)
+		if self:can_take_input() and not self._loadout_visible and not self._active_move then
+			self:toggle_loadout()
+		end
+		
+		mouse_wheel_up_original(self, ...)
+	end
+	
+	function ContractBoxGui:mouse_wheel_down(...)
+		if self:can_take_input() and self._loadout_visible and not self._active_move then
+			self:toggle_loadout()
+		end
+		
+		mouse_wheel_down_original(self, ...)
 	end
 	
 	function ContractBoxGui:mouse_pressed(button, x, y, ...)
@@ -134,7 +183,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 	function ContractBoxGui:update_loadout_panel(peer_id)
 		if self._peer_loadout[peer_id] then
 			if self._peer_loadout[peer_id]:local_peer() then
-				local outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string()) or self._peer:blackmarket_outfit()
+				local outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string()) or {}
 				self._peer_loadout[peer_id]:set_outfit(outfit)
 			else
 				local peer = managers.network:session():peer(peer_id)

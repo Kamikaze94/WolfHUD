@@ -43,6 +43,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "drunk_pilot" ] 				= "wolfhud_enemy_drunk_pilot",
 		[ "escort" ] 					= "wolfhud_enemy_escort",
 		[ "boris" ]						= "wolfhud_enemy_boris",
+		[ "spa_vip" ]					= "wolfhud_enemy_spa_vip",
+		[ "spa_vip_hurt" ]				= "wolfhud_enemy_spa_vip_hurt",
 		[ "old_hoxton_mission" ] 		= "wolfhud_enemy_old_hoxton_mission",
 		[ "hector_boss" ] 				= "wolfhud_enemy_hector_boss",
 		[ "hector_boss_no_armor" ] 		= "wolfhud_enemy_hector_boss_no_armor",
@@ -127,7 +129,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			name 		= "unit_health_enemy_location",
 			text 		= "^",
 			blend_mode 	= "normal",
-			visible 	= WolfHUD:getSetting("show_healthbar_pointer", "boolean"),
+			visible 	= WolfHUD:getSetting({"EnemyHealthbar", "SHOW_POINTER"}, false),
 			alpha 		= 0.75,
 			halign 		= "center",
 			font 		= "fonts/font_medium_shadow_mf",
@@ -167,10 +169,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			self._bar_text_rect = self._shield and self._shield_text_rect or self._health_text_rect
 		end	
 		
-		if visible == true and not self._unit_health_visible and WolfHUD:getSetting("show_enemy_healthbar", "boolean") or self._unit_health_visible_forced then
+		if visible == true and not self._unit_health_visible and WolfHUD:getSetting({"EnemyHealthbar", "ENABLED"}, true) or self._unit_health_visible_forced then
 		
 			self._unit_health_visible = true
-			self._unit_health_enemy_location:set_visible(WolfHUD:getSetting("show_healthbar_pointer", "boolean"))
+			self._unit_health_enemy_location:set_visible(WolfHUD:getSetting({"EnemyHealthbar", "SHOW_POINTER"}, false))
 			self._unit_health_panel:stop()
 			self._unit_health_panel:animate( function( p )
 				self._unit_health_panel:set_visible( true )
@@ -272,7 +274,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 			local unit = self._fwd_ray.unit
 			if unit:in_slot( 8 ) and alive(unit:parent()) then unit = unit:parent() end
 			local turrets = managers.groupai:state():turrets() or {}
-			if alive( unit ) and unit:in_slot( 25 ) and (table.contains(turrets, unit) or WolfHUD:getSetting("show_civilian_healthbar", "boolean") and Network:is_server()) and not unit:character_damage():dead() then
+			if alive( unit ) and unit:in_slot( 25 ) and (table.contains(turrets, unit) or WolfHUD:getSetting({"EnemyHealthbar", "SHOW_CIVILIAN"}, true) and Network:is_server()) and not unit:character_damage():dead() then
 				self._last_unit = nil
 				if not unit:character_damage():needs_repair() then
 					managers.hud:set_unit_health_visible( true, true )
@@ -281,11 +283,11 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 					managers.hud:set_unit_health_visible( true )
 					managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base():get_name_id() or "TURRET" )
 				end
-			elseif alive( unit ) and ( unit:in_slot( 12 ) or WolfHUD:getSetting("show_civilian_healthbar", "boolean") and ( unit:in_slot( 21 ) or unit:in_slot( 22 ) ) or unit:in_slot( 16 ) and Network:is_server()) and not unit:character_damage():dead() then
+			elseif alive( unit ) and ( unit:in_slot( 12 ) or WolfHUD:getSetting({"EnemyHealthbar", "SHOW_CIVILIAN"}, false) and ( unit:in_slot( 21 ) or unit:in_slot( 22 ) ) or unit:in_slot( 16 ) and Network:is_server()) and not unit:character_damage():dead() then
 				self._last_unit = unit
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base()._tweak_table or "ENEMY" )
-			elseif alive( unit ) and unit:in_slot( 39 ) and WolfHUD:getSetting("show_car_healthbar", "boolean") and unit:vehicle_driving() and not self._seat then
+			elseif alive( unit ) and unit:in_slot( 39 ) and WolfHUD:getSetting({"EnemyHealthbar", "SHOW_VEHICLE"}, true) and unit:vehicle_driving() and not self._seat then
 				self._last_unit = nil
 				managers.hud:set_unit_health_visible( true )
 				managers.hud:set_unit_health( unit:character_damage()._health or 0 , unit:character_damage()._current_max_health or 0 , string.upper(unit:vehicle_driving()._tweak_data.name) or "VEHICLE" )

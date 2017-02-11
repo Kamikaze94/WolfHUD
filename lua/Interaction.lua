@@ -25,8 +25,8 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	
 	
 	function PlayerStandard:_check_interaction_locked(t) 
-		PlayerStandard.LOCK_MODE = WolfHUD:getSetting("LOCK_MODE", "number")						--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
-		PlayerStandard.MIN_TIMER_DURATION = WolfHUD:getSetting("MIN_TIMER_DURATION", "number")		--Min interaction duration (in seconds) for the toggle behavior to activate	
+		PlayerStandard.LOCK_MODE = WolfHUD:getSetting({"INTERACTION", "LOCK_MODE"}, 3)						--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
+		PlayerStandard.MIN_TIMER_DURATION = WolfHUD:getSetting({"INTERACTION", "MIN_TIMER_DURATION"}, 5)			--Min interaction duration (in seconds) for the toggle behavior to activate	
 		local is_locked = false
 		if PlayerStandard.LOCK_MODE >= 3 then
 			is_locked = self._interact_params and (self._interact_params.timer >= PlayerStandard.MIN_TIMER_DURATION) -- lock interaction, when total timer time is longer then given time
@@ -41,7 +41,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	end
 	
 	function PlayerStandard:_check_interact_toggle(t, input)
-		PlayerStandard.EQUIPMENT_PRESS_INTERRUPT = WolfHUD:getSetting("EQUIPMENT_PRESS_INTERRUPT", "boolean") 	--Use the equipment key ('G') to toggle off active interactions
+		PlayerStandard.EQUIPMENT_PRESS_INTERRUPT = WolfHUD:getSetting({"INTERACTION", "EQUIPMENT_PRESS_INTERRUPT"}, true) 	--Use the equipment key ('G') to toggle off active interactions
 		local interrupt_key_press = input.btn_interact_press
 		if PlayerStandard.EQUIPMENT_PRESS_INTERRUPT then
 			interrupt_key_press = input.btn_use_item_press
@@ -75,7 +75,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	
 	function PlayerStandard:_start_action_reload(t, ...)
 		_start_action_reload_original(self, t, ...)
-		PlayerStandard.SHOW_RELOAD = WolfHUD:getSetting("SHOW_RELOAD", "boolean")
+		PlayerStandard.SHOW_RELOAD = WolfHUD:getSetting({"INTERACTION", "SHOW_RELOAD"}, false)
 		if PlayerStandard.SHOW_RELOAD and not hide_int_state[managers.player:current_state()] then
 			if self._equipped_unit and not self._equipped_unit:base():clip_full() then
 				self._state_data.show_reload = true
@@ -112,7 +112,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	function PlayerStandard:_start_action_melee(t, input, instant, ...)
 		local val = _start_action_melee_original(self, t, input, instant, ...)
 		if not instant then
-			PlayerStandard.SHOW_MELEE = WolfHUD:getSetting("SHOW_MELEE", "boolean")
+			PlayerStandard.SHOW_MELEE = WolfHUD:getSetting({"INTERACTION", "SHOW_MELEE"}, false)
 			if PlayerStandard.SHOW_MELEE and self._state_data.meleeing and not hide_int_state[managers.player:current_state()] then
 				self._state_data.show_melee = true
 				self._state_data.melee_charge_duration = tweak_data.blackmarket.melee_weapons[managers.blackmarket:equipped_melee_weapon()].stats.charge_time or 1
@@ -146,7 +146,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	end
 	
 	function PlayerStandard:_check_action_throw_grenade(t, input, ...)
-		if input.btn_throw_grenade_press and WolfHUD:getSetting("SUPRESS_NADES_STEALTH", "boolean") then
+		if input.btn_throw_grenade_press and WolfHUD:getSetting({"INTERACTION", "SUPRESS_NADES_STEALTH"}, true) then
 			if managers.groupai:state():whisper_mode() and (t - (self._last_grenade_t or 0) >= PlayerStandard.NADE_TIMEOUT) then
 				self._last_grenade_t = t
 				return
@@ -213,7 +213,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		if HUDInteraction.SHOW_TIME_REMAINING then
 			self._interact_time:set_text(string.format("%.1fs", math.max(total - current, 0)))
 			local perc = current/total
-			local color = math.lerp(Color.white, color_end, perc)--perc * color + (1-perc) * Color.white
+			local color = math.lerp(Color.white, color_end, perc)
 			self._interact_time:set_color(color)
 			self._interact_time:set_alpha(1)
 			self._interact_time:set_visible(perc < 1)
@@ -230,11 +230,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		
 		local val = show_interaction_bar_original(self, current, total)
 		
-		HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD:getSetting("SHOW_LOCK_INDICATOR", "boolean")
-		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD:getSetting("SHOW_TIME_REMAINING", "boolean")
-		HUDInteraction.SHOW_CIRCLE 	= WolfHUD:getSetting("SHOW_CIRCLE", "boolean")
+		HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD:getSetting({"INTERACTION", "SHOW_LOCK_INDICATOR"}, true)
+		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD:getSetting({"INTERACTION", "SHOW_TIME_REMAINING"}, true)
+		HUDInteraction.SHOW_CIRCLE 	= WolfHUD:getSetting({"INTERACTION", "SHOW_CIRCLE"}, true)
 		HUDInteraction.LOCK_MODE = PlayerStandard.LOCK_MODE or 1
-		HUDInteraction.GRADIENT_COLOR = not (WolfHUD:getSetting("GRADIENT_COLOR", "string") == "rainbow") and WolfHUD:getSetting("GRADIENT_COLOR", "color") or false
+		HUDInteraction.GRADIENT_COLOR = not (WolfHUD:getSetting({"INTERACTION", "GRADIENT_COLOR"}, "light_green") == "rainbow") and WolfHUD:getColorSetting({"INTERACTION", "GRADIENT_COLOR"}, "light_green") or false
 		if HUDInteraction.SHOW_CIRCLE then
 			if HUDInteraction.LOCK_MODE > 1 and HUDInteraction.SHOW_LOCK_INDICATOR then
 				self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {
@@ -270,11 +270,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 				self._interact_time:set_font_size(32 * (self._circle_scale or 1))
 			end
 			self._interact_time:set_y(self._hud_panel:center_y() + self._circle_radius - (2 * self._interact_time:font_size()))
-		end
-		
-		if self._interact_time then
-			self._interact_time:show()
 			self._interact_time:set_text(string.format("%.1fs", total))
+			self._interact_time:show()
 		end
 		
 		return val
@@ -314,7 +311,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		if status then
 			self._old_text = self._hud_panel:child(self._child_name_text):text()
 			local locked_text = ""
-			if WolfHUD:getSetting("SHOW_INTERRUPT_HINT", "boolean") then
+			if WolfHUD:getSetting({"INTERACTION", "SHOW_INTERRUPT_HINT"}, true) then
 				local btn_cancel = PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and (managers.localization:btn_macro("use_item", true) or managers.localization:get_default_macro("BTN_USE_ITEM")) or (managers.localization:btn_macro("interact", true) or managers.localization:get_default_macro("BTN_INTERACT"))
 				locked_text = managers.localization:to_upper_text("wolfhud_int_locked", {BTN_CANCEL = btn_cancel})
 			end
@@ -338,8 +335,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 	end
 	
 	function HUDInteraction:_rescale(circle_scale, text_scale)
-		local circle_scale = circle_scale or WolfHUD:getSetting("CIRCLE_SCALE", "number")
-		local text_scale = text_scale or WolfHUD:getSetting("TEXT_SCALE", "number")
+		local circle_scale = circle_scale or WolfHUD:getSetting({"INTERACTION", "CIRCLE_SCALE"}, 0.8)
+		local text_scale = text_scale or WolfHUD:getSetting({"INTERACTION", "TEXT_SCALE"}, 0.8)
 		local interact_text = self._hud_panel:child(self._child_name_text)
 		local invalid_text = self._hud_panel:child(self._child_ivalid_name_text)
 		local changed = false
@@ -370,8 +367,8 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 		end
 		local mandatory_bags_amount = managers.loot:get_mandatory_bags_data().amount or 0
 		for _, data in ipairs(managers.loot._global.secured) do
-			if not tweak_data.carry.small_loot[data.carry_id] and not tweak_data.carry[data.carry_id].is_vehicle == not is_vehicle then
-				if mandatory_bags_amount > 1 and (managers.loot:get_mandatory_bags_data().carry_id == "none" or managers.loot._global.mandatory_bags.carry_id == data.carry_id) then
+			if not tweak_data.carry.small_loot[data.carry_id] and not tweak_data.carry[data.carry_id].is_vehicle then
+				if mandatory_bags_amount > 1 and (managers.loot:get_mandatory_bags_data().carry_id == "none" or managers.loot:get_mandatory_bags_data().carry_id == data.carry_id) then
 					mandatory_bags_amount = mandatory_bags_amount - 1
 				elseif mandatory_bags_amount <= 1 then
 					return true
@@ -382,21 +379,14 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 	end
 	
 	function BaseInteractionExt:get_unsecured_bag_value(carry_id)
-		local carry_value = managers.money:get_bag_value(carry_id, 1)
-		local bag_value = 0
-		local bag_risk = 0
+		local bag_value = managers.money:get_bag_value(carry_id, 1)
 		local bag_skill_bonus = managers.player:upgrade_value("player", "secured_bags_money_multiplier", 1)
 		if self:would_be_bonus_bag(carry_id) then
-			local job_id = managers.job:current_job_id()
 			local stars = managers.job:has_active_job() and managers.job:current_difficulty_stars() or 0
 			local money_multiplier = managers.money:get_contract_difficulty_multiplier(stars)
-			local total_stages = job_id and #tweak_data.narrative:job_chain(job_id) or 1
-			bag_value = carry_value
-			bag_risk = math.round(bag_value * money_multiplier)
-		else
-			bag_value = carry_value
+			bag_value =  bag_value + math.round(bag_value * money_multiplier)
 		end
-		return math.round((bag_value + bag_risk) * bag_skill_bonus / managers.money:get_tweak_value("money_manager", "offshore_rate"))
+		return math.round(bag_value * bag_skill_bonus / managers.money:get_tweak_value("money_manager", "offshore_rate"))
 	end
 	
 	function BaseInteractionExt:_add_string_macros(macros)
@@ -405,6 +395,8 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 			macros.BTN_INTERACT = macros.BTN_INTERACT or managers.localization:get_default_macro("BTN_INTERACT") --Ascii ID for RB
 			macros.BAG = managers.localization:text(tweak_data.carry[self._unit:carry_data():carry_id()].name_id)
 			macros.VALUE = not tweak_data.carry[self._unit:carry_data():carry_id()].skip_exit_secure and " (" .. managers.experience:cash_string(self:get_unsecured_bag_value(self._unit:carry_data():carry_id(), 1)) .. ")" or ""
+		else
+			macros.VALUE = ""
 		end
 	end
 
@@ -414,7 +406,7 @@ elseif string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" t
 	function ObjectInteractionManager:_update_targeted(player_pos, player_unit, ...)
 		_update_targeted_original(self, player_pos, player_unit, ...)
 
-		if WolfHUD:getSetting("HOLD2PICK", "boolean") and alive(self._active_unit) and not self._active_object_locked_data then
+		if WolfHUD:getSetting({"INTERACTION", "HOLD2PICK"}, true) and alive(self._active_unit) and not self._active_object_locked_data then
 			local t = Application:time()
 			if self._active_unit:base() and self._active_unit:base().small_loot and managers.menu:get_controller():get_input_bool("interact") and (t >= (self._next_auto_pickup_t or 0)) then
 				self._next_auto_pickup_t = t + ObjectInteractionManager.AUTO_PICKUP_DELAY

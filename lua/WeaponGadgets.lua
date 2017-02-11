@@ -1,161 +1,361 @@
-if string.lower(RequiredScript) == "lib/units/weapons/weaponlaser" and WolfHUD:getSetting("use_weaponlasers", "boolean") then
+print_info = print_info or function(...) WolfHUD:print_log(string.format(...), "info") end
+
+if RequiredScript == "lib/units/weapons/weapongadgetbase" then
+	
+	WeaponGadgetBase.SPAWNED_UNITS = {
+		laser = {},
+		flashlight = {},
+	}
+	
+	function WeaponGadgetBase.update_theme_setting(gadget, theme, feature, setting, value)
+		WeaponGadgetBase.THEME_SETTINGS[gadget][theme][feature][setting] = value
+		
+		for key, unit in pairs(WeaponGadgetBase.SPAWNED_UNITS[gadget]) do
+			unit:base():refresh_themes()
+		end
+	end
+	
+	--TODO: These needs to be filled by default if no option menu is used
+	WeaponGadgetBase.THEME_SETTINGS = {
+		laser = WolfHUD:getSetting({"GADGETS", "laser"}, nil),
+		flashlight = WolfHUD:getSetting({"GADGETS", "flashlight"}, nil)
+	}
+	
+	local init_original = WeaponGadgetBase.init
+	local destroy_original = WeaponGadgetBase.destroy
+	
+	function WeaponGadgetBase:init(...)
+		init_original(self, ...)
+		
+		if WeaponGadgetBase.SPAWNED_UNITS[self.GADGET_TYPE] then
+			WeaponGadgetBase.SPAWNED_UNITS[self.GADGET_TYPE][self._unit:key()] = self._unit
+ 		end
+	end
+	
+	function WeaponGadgetBase:destroy(...)
+		if WeaponGadgetBase.SPAWNED_UNITS[self.GADGET_TYPE] then
+			WeaponGadgetBase.SPAWNED_UNITS[self.GADGET_TYPE][self._unit:key()] = nil
+ 		end
+		destroy_original(self, ...)
+	end
+	
+	
+	function WeaponGadgetBase:set_owner_unit(owner, is_akimbo)
+		if alive(owner) then
+			print_info("Setting %s unit %s owner (slot %d)", tostring(self.GADGET_TYPE), tostring(self._unit:key()), owner:slot())
+			if managers.criminals:character_data_by_unit(owner) then
+				self:_set_theme("team")
+			elseif owner == managers.player:player_unit() then
+				self:_set_theme("player")
+			--elseif owner:in_slot(12) then
+				--Sniper, theme set at unit creation
+			--elseif owner:in_slot(25) or owner:in_slot(26) then
+				--Sentry/Turret, theme switched during operation for turrets
+				--local user_type = table.contains(managers.groupai:state():turrets() or {}, owner) and "turret" or "sentry"
+			end
+		end
+	end
+	
+	function WeaponGadgetBase:refresh_themes()
+	
+	end
+	
+	function WeaponGadgetBase:_set_theme(theme)
+	
+	end
+	
+	function WeaponGadgetBase:_update_effects(data, t, dt)
+		if data then
+			local color
+			
+			if data.rainbow then
+				local r = t * 360 * data.rainbow.frequency
+				color = Vector3((1 + math.sin(r + 0)) / 2, (1 + math.sin(r + 120)) / 2, (1 + math.sin(r + 240)) / 2)
+				self:set_color(color)
+			end
+			
+			if data.pulse then
+				local r = 0.5 + 0.5 * math.sin(t * 180 * data.pulse.frequency)
+				local intensity = math.lerp(data.pulse.min, data.pulse.max, r)
+				self:_set_pulse_intensity(intensity, color)
+			end
+		end
+	end
+	
+elseif RequiredScript == "lib/units/weapons/weaponlaser" then	
 	local init_original = WeaponLaser.init
 	local update_original = WeaponLaser.update
-	WeaponLaser.DEFINITIONS = {
-		player = {	  					--Player
-			color = WolfHUD:getSetting("laser_player", "color"),
-			alpha = WolfHUD:getSetting("laser_player_alpha", "number"),
-		},
-		player_sentry = {	  			--Player Sentry Gun
-			color = WolfHUD:getSetting("laser_player_sentry", "color"),
-			alpha = WolfHUD:getSetting("laser_player_sentry_alpha", "number"),
-		},
-		default = {	 					--Team mates
-			color = WolfHUD:getSetting("laser_teammates", "color"),
-			alpha = WolfHUD:getSetting("laser_teammates_alpha", "number"),
-		},
-		default_sentry = {	 			--Team mates Sentry Gun
-			color = WolfHUD:getSetting("laser_teammates_sentry", "color"),
-			alpha = WolfHUD:getSetting("laser_teammates_sentry_alpha", "number"),
-		},
-		cop_sniper = {  				--Enemy snipers
-			color = WolfHUD:getSetting("laser_sniper", "color"),
-			alpha = WolfHUD:getSetting("laser_sniper_alpha", "number"),
-		},
-		turret_module_active = {		--SWAT turret standard
-			color = WolfHUD:getSetting("laser_turret_active", "color"),
-			alpha = WolfHUD:getSetting("laser_turret_alpha", "number"),
-		},
-		turret_module_rearming = {	  	--SWAT turret reloading
-			color = WolfHUD:getSetting("laser_turret_reloading", "color"),
-			alpha = WolfHUD:getSetting("laser_turret_alpha", "number"),
-		},
-		turret_module_mad = {   		--SWAT turret jammed
-			color = WolfHUD:getSetting("laser_turret_jammed", "color"),
-			alpha = WolfHUD:getSetting("laser_turret_alpha", "number"),
-		},
-	}
-		
-	WeaponLaser._suffix_map = {
-		player = "player",
-		player_sentry = "player_sentry",
-		default = "teammates",
-		default_sentry = "teammates_sentry",
-		cop_sniper = "sniper",
-		turret_module_active = "turret_active",
-		turret_module_rearming = "turret_reloading",
-		turret_module_mad = "turret_jammed"
-	}
 	
 	function WeaponLaser:init(...)
 		init_original(self, ...)
-		self:init_themes()
-		--self._brush = Draw:brush(self._themes[self._theme_type].brush)	--Alpha doesn't apply to snipers
-		self:set_color_by_theme(self._theme_type)
-	end
-	   
-	function WeaponLaser:init_themes()
-		for theme, data in pairs(WeaponLaser.DEFINITIONS) do
-			self:update_theme(theme, data.color, data.alpha)
-		end
-	end
- 
-	function WeaponLaser:update_theme(name, color, alpha)
-		self._themes[name] = self._themes[name] or {}
-		local color = color or self._themes[name].brush or Color.white
-		local alpha = alpha or self._themes[name].brush and self._themes[name].brush.alpha or 0
- 
-		self._themes[name] = {
-			light = color * WolfHUD:getSetting("laser_light", "number"),
-			glow = color / WolfHUD:getSetting("laser_glow", "number"),
-			brush = color:with_alpha(alpha)
-		}
+		self._theme_type = "player"
+		self:refresh_themes()
 	end
 	
-	function WeaponLaser:update(unit, t, ...)
-		update_original(self, unit, t, ...)
-		local theme = self._theme_type
-		local suffix = self._suffix_map[theme]
-		local color = Color.white
-		if suffix and self._themes[theme] then 
-			if WolfHUD:getSetting("laser_" .. suffix, "string") == "rainbow" then
-				local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
-				color = Color(r, g, b)
-			else
-				color = WolfHUD:getSetting("laser_" .. suffix, "color")
-			end
-			local alpha = 1
-			if suffix == "turret_active" or suffix == "turret_reloading" or suffix == "turret_jammed" then
-				alpha = WolfHUD:getSetting("laser_turret_alpha", "number")
-			else
-				alpha = WolfHUD:getSetting("laser_" .. suffix .. "_alpha", "number")
-			end
-			if self._themes[theme].brush ~= color:with_alpha(alpha) then 
-				self:update_theme(theme, color, alpha)
-				self:set_color_by_theme(theme)
-			end
-		else
-			log("[WolfHUD] Trying to update unknown laser theme: " .. theme)
-		end
+	function WeaponLaser:update(unit, t, dt, ...)
+		update_original(self, unit, t, dt, ...)
+		self:_update_effects(self._themes[self._theme_type], t, dt)
 	end
-elseif string.lower(RequiredScript) == "lib/units/weapons/weaponflashlight" then
-	local init_flash_cbk = WeaponFlashLight.init
-	local update_flash_cbk = WeaponFlashLight.update
+	
+	function WeaponLaser:set_color(color)
+		local tmp = Vector3(color:unpack())
+		self:_set_colors(tmp, tmp, tmp)
+	end
+	
+	function WeaponLaser:set_color_by_theme(type)
+		if not self._themes[type] then print_info("ERROR (WeaponLaser:set_color_by_theme): Attempting to set missing theme %s", tostring(type)) end
+		
+		self._theme_type = type
+		self:_set_colors()
+	end
+	
+	
+	function WeaponLaser:refresh_themes()
+		for theme, data in pairs(WeaponGadgetBase.THEME_SETTINGS.laser or {}) do
+			local beam = Vector3(data.beam.r, data.beam.g, data.beam.b)
+			
+			self._themes[theme] = {
+				light = data.dot.match_beam and beam or Vector3(data.dot.r, data.dot.g, data.dot.b),
+				glow = data.dot.match_beam and beam or Vector3(data.glow.r, data.glow.g, data.glow.b),
+				brush = Vector3(data.beam.r, data.beam.g, data.beam.b),
+				alpha = { dot = data.dot.a, glow = data.glow.a, beam = data.beam.a },
+				rainbow = data.rainbow.enabled and {
+					frequency = data.rainbow.frequency,
+				},
+				pulse = data.pulse.enabled and {
+					min = data.pulse.min, 
+					max = data.pulse.max, 
+					frequency = data.pulse.frequency,
+				},
+			}
+		end
+
+		self._current_intensity = 1
+		self:_set_theme(self._theme_type)
+	end
+	
+	function WeaponLaser:_set_theme(theme)
+		self:set_color_by_theme(theme)
+	end
+	
+	function WeaponLaser:_set_pulse_intensity(intensity, color)
+		self._current_intensity = intensity
+		self:_set_colors(color, color, color)
+	end
+	
+	function WeaponLaser:_set_colors(light, glow, brush)
+		local theme = self._themes[self._theme_type] or self._themes.default
+		local alpha = theme and theme.alpha or { dot = 1, glow = 0.02, beam = 0.15 }
+		
+		mvector3.set(self._light_color, (light or theme.light) * 10 * alpha.dot * self._current_intensity)
+		mvector3.set(self._light_glow_color, (glow or theme.glow) * 10 * alpha.glow * self._current_intensity)
+		self._brush_color = Color((brush or theme.brush):unpack()):with_alpha(alpha.beam * self._current_intensity)
+		
+		self._light:set_color(self._light_color)
+		self._light_glow:set_color(self._light_glow_color)
+		self._brush:set_color(self._brush_color)
+	end
+	
+elseif RequiredScript == "lib/units/weapons/weaponflashlight" then	
+	local init_original = WeaponFlashLight.init
+	local update_original = WeaponFlashLight.update
+	
+	WeaponFlashLight._themes = {}
+	
 	function WeaponFlashLight:init(...)
-		init_flash_cbk(self, ...)
-		local angle = WolfHUD:getSetting("flashlight_angle", "number") --Angle/width of beam, 0-160 (default 60)
-		local range = (WolfHUD:getSetting("flashlight_range", "number") * 100) --Range of beam, 0+ (default 1000 -> 10m)
-		self._light:set_spot_angle_end(math.clamp(angle, 0, 160))
-		self._light:set_far_range(range)
+		init_original(self, ...)
+		self._theme_type = "player"
+		self._intensity_modifier = 1
+		self:refresh_themes()
 	end
 	
 	function WeaponFlashLight:update(unit, t, dt, ...)
-		update_flash_cbk(self, unit, t, dt, ...)
-		if not self._is_haunted then
-			local color = Color.white
-			if WolfHUD:getSetting("flashlight_color", "string") == "rainbow" then
-				local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
-				color = Color(r, g, b)
-			else
-				color = WolfHUD:getSetting("flashlight_color", "color")
-			end
-			self._light:set_spot_angle_end(math.clamp(WolfHUD:getSetting("flashlight_angle", "number"), 0, 160))
-			self._light:set_far_range((WolfHUD:getSetting("flashlight_range", "number") * 100))
-			self._light:set_multiplier(WolfHUD:getSetting("flashlight_mult", "number"))
-			self._light:set_color(color)
+		update_original(self, unit, t, dt, ...)
+		
+		if not self:is_haunted() then
+			self:_update_effects(self._themes[self._theme_type], t, dt)
 		end
 	end
-elseif string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then 
-	function NewRaycastWeaponBase:_setup_laser()
-		for id, part in pairs(self._parts) do
-			local base = part.unit and part.unit:base()
-			if base and base.set_color_by_theme then
-				if WolfHUD:getSetting("use_weaponlasers", "boolean") then
-					base:set_color_by_theme("player")
+	
+	
+	function WeaponFlashLight:set_owner_unit(owner, is_akimbo)
+		if is_akimbo then
+			self._intensity_modifier = 0.5
+		else
+			self._intensity_modifier = 1
+		end
+		
+		self.super.set_owner_unit(self, owner, is_akimbo)
+	end
+	
+	function WeaponFlashLight:refresh_themes()
+		for theme, data in pairs(WeaponGadgetBase.THEME_SETTINGS.flashlight or {}) do
+			self._themes[theme] = {
+				brightness = data.light.brightness,
+				light = Vector3(data.light.r, data.light.g, data.light.b),
+				angle = data.light.angle,
+				range = data.light.range * 100,
+				rainbow = data.rainbow.enabled and {
+					frequency = data.rainbow.frequency,
+				},
+				pulse = data.pulse.enabled and {
+					min = data.pulse.min, 
+					max = data.pulse.max, 
+					frequency = data.pulse.frequency,
+				}
+			}
+		end
+		
+		self._current_intensity = 1
+		self:_set_theme(self._theme_type)
+	end
+	
+	function WeaponFlashLight:set_color(color)
+		self:_set_colors(color)
+	end
+	
+	function WeaponFlashLight:_set_theme(theme)
+		self._theme_type = theme
+		
+		if not self:is_haunted() then
+			local theme = self._themes[self._theme_type]
+			
+			self:_set_colors(theme.light)
+			self._light:set_spot_angle_end(theme.angle)
+			self._light:set_far_range(theme.range)
+		end
+	end
+	
+	function WeaponFlashLight:_set_pulse_intensity(intensity, color)
+		self._current_intensity = intensity
+		self:_set_colors(color)
+	end
+	
+	function WeaponFlashLight:_set_colors(light)
+		local theme = self._themes[self._theme_type]
+		local light = light or theme.light
+		self._light:set_color(light * theme.brightness * self._current_intensity * self._intensity_modifier)
+	end
+	
+elseif RequiredScript == "lib/units/weapons/raycastweaponbase" then
+
+	local setup_original = RaycastWeaponBase.setup
+
+	function RaycastWeaponBase:setup(...)
+		setup_original(self, ...)
+		self:_update_gadget_owner(self._has_gadget)
+	end
+	
+	function RaycastWeaponBase:_update_gadget_owner(gadgets)
+		if gadgets then
+			for _, id in ipairs(gadgets) do
+				local base = self._parts[id] and alive(self._parts[id].unit) and self._parts[id].unit:base()
+				if base and base.set_owner_unit then
+					base:set_owner_unit(self._setup.user_unit, self.AKIMBO)
 				end
-				self._has_laser = WolfHUD:getSetting("laser_autoon", "boolean")
+			end
+		end
+		
+		--if alive(self._second_gun) then
+		--	local base = self._second_gun:base()
+		--	base:_update_gadget_owner(managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", base._factory_id, base._blueprint))
+		--end
+	end
+
+elseif RequiredScript == "lib/units/weapons/newnpcraycastweaponbase" then
+
+	local setup_original = NewNPCRaycastWeaponBase.setup
+
+	function NewNPCRaycastWeaponBase:setup(...)
+		setup_original(self, ...)
+		self:_update_gadget_owner(managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint))
+	end
+
+elseif RequiredScript == "lib/units/weapons/npcraycastweaponbase" then
+
+	local set_laser_enabled_original = NPCRaycastWeaponBase.set_laser_enabled
+
+	function NPCRaycastWeaponBase:set_laser_enabled(...)
+		set_laser_enabled_original(self, ...)
+		
+		if alive(self._laser_unit) then
+			self._laser_unit:base():set_owner_unit(self._setup.user_unit, self.AKIMBO)
+		end
+	end
+
+elseif RequiredScript == "lib/units/weapons/sentrygunweapon" then
+
+	local _set_laser_state_original = SentryGunWeapon._set_laser_state
+
+	function SentryGunWeapon:_set_laser_state(...)
+		_set_laser_state_original(self, ...)
+		
+		if alive(self._laser_unit) then
+			self._laser_unit:base():set_owner_unit(self._unit, false)
+		end
+	end
+	
+end
+
+-- Laser Auto On
+if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then 
+	function NewRaycastWeaponBase:_setup_laser()
+		if self._has_gadget then
+			local gadgets = clone(self._has_gadget)
+			table.sort(gadgets, function(x, y)
+				xd = self._parts[x]
+				yd = self._parts[y]
+				if not xd then
+					return false
+				end
+				if not yd then
+					return true
+				end
+				return xd.unit:base().GADGET_TYPE > yd.unit:base().GADGET_TYPE
+			end)
+			
+			for i, part_id in ipairs(gadgets) do
+				local base = self._parts[part_id] and self._parts[part_id].unit:base()
+				if base and base.GADGET_TYPE and base.GADGET_TYPE == (WeaponLaser.GADGET_TYPE or "") then
+					self:set_gadget_on(i or 0, false)
+					break
+				end
 			end
 		end
 	end
 	
+	local on_enabled_original = NewRaycastWeaponBase.on_enabled
 	local on_equip_original = NewRaycastWeaponBase.on_equip
 	local toggle_gadget_original = NewRaycastWeaponBase.toggle_gadget
+	
+	function NewRaycastWeaponBase:on_enabled(...)
+		on_enabled_original(self, ...)
+		
+		if WolfHUD:getSetting({"GADGETS", "LASER_AUTO_ON"}, true) and not self._saved_gadget_state then
+			self:_setup_laser()
+			
+			--if alive(self._second_gun) then
+			--	self._second_gun:base():_setup_laser()
+			--end
+			
+			self._saved_gadget_state = self._gadget_on or 0
+		end
+	end
+	
+	-- Save Gadget State, until the games code gets fixed...
 	function NewRaycastWeaponBase:on_equip(...)
 		on_equip_original(self, ...)
-		if self._has_gadget and self._has_laser == nil then
-			self:_setup_laser()
-			if alive(self._second_gun) then
-				self._second_gun:base():_setup_laser()
-			end
-		end
-		self:set_gadget_on(self._saved_gadget_state or self._has_laser and 1 or 0, false)
+		self:set_gadget_on(self._saved_gadget_state or 0, false)
 	end
 	
 	function NewRaycastWeaponBase:toggle_gadget(...)
 		toggle_gadget_original(self, ...)
 		self._saved_gadget_state = self._gadget_on or 0
 	end
-elseif string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" then
+end 
+
+-- Rotated Secondary Sight
+if string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" then
 	local clbk_stance_entered_original = FPCameraPlayerBase.clbk_stance_entered
 	FPCameraPlayerBase.angled_sight_rotation    = {
 		wpn_fps_upg_o_45iron = Rotation(0, 0, -45),
@@ -235,7 +435,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 	function PlayerStandard:_stance_entered(...)
 		local weapon_base = self._equipped_unit:base()
 		local sight_id = weapon_base and weapon_base._second_sight_data and weapon_base._second_sight_data.part_id
-		local rotate_weapon = WolfHUD:getSetting("show_angeled_sight", "boolean") and sight_id and PlayerStandard.ANGELED_SIGHTS[sight_id]
+		local rotate_weapon = WolfHUD:getSetting({"GADGETS", "SHOW_ANGELED_SIGHT"}, true) and sight_id and PlayerStandard.ANGELED_SIGHTS[sight_id]
 		self._camera_unit:base():set_want_rotated(not self._state_data.in_steelsight and self._equipped_unit:base():is_second_sight_on() and not self:_is_reloading() and rotate_weapon)
 		self._camera_unit:base():set_want_restored(not self._state_data.in_steelsight and (not self._equipped_unit:base():is_second_sight_on() or self:_is_reloading()) and rotate_weapon)
 		self._camera_unit:base():set_weapon_name(weapon_base and weapon_base._name_id, sight_id)

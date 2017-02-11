@@ -15,7 +15,7 @@ Weapon tweak data attributes:
 	DELAYED_BURST_RECOIL:
 		true/false	-	Build up and delay recoil until last shot in burst is fired
 ]]
-if not WolfHUD:getSetting("enable_burstmode", "boolean") then
+if not WolfHUD:getSetting({"EQUIPMENT", "ENABLE_BURSTMODE"}, true) then
 	return
 end
 

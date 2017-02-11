@@ -1197,7 +1197,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	end
 	
 	function GameInfoManager:_timed_stack_buff_event(event, id, data)
-		print_info("GameInfoManager:_timed_stack_buff_event(%s, %s, %s)", tostring(event), tostring(id), tostring(data))
+		print_info("GameInfoManager:_timed_stack_buff_event(%s, %s)", tostring(event), tostring(id))
 	
 		if event == "add_stack" then
 			if not self._buffs[id] then
@@ -1221,7 +1221,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	end
 	
 	function GameInfoManager:_buff_event(event, id, data)
-		print_info("GameInfoManager:_buff_event(%s, %s)", event, id)
+		print_info("GameInfoManager:_buff_event(%s, %s)", tostring(event), tostring(id))
 		
 		if event == "activate" then
 			if not self._buffs[id] then
@@ -1304,7 +1304,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	end
 	
 	function GameInfoManager:_player_action_event(event, id, data)
-		print_info("GameInfoManager:_player_action_event(%s, %s)", event, id)
+		print_info("GameInfoManager:_player_action_event(%s, %s)", tostring(event), tostring(id))
 	
 		if event == "activate" then
 			if not self._player_actions[id] then
@@ -1412,7 +1412,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		local dt = t - self._t
 		self._t = t
 		
-		print_info("_update_player_timer_expiration: %f - %f / %f - %f\n", ut, udt, t, dt)
+		print_info("_update_player_timer_expiration: %f - %f / %f - %f", ut, udt, t, dt)
 	
 		while self._auto_expire_timers.expire_t[1] and self._auto_expire_timers.expire_t[1].expire_t < t do
 			local data = self._auto_expire_timers.expire_t[1]
@@ -2556,6 +2556,12 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 			if self:has_category_upgrade("player", "messiah_revive_from_bleed_out") and (self._messiah_charges or 0) > 0 then
 				managers.gameinfo:event("buff", "activate", "messiah")
 				managers.gameinfo:event("buff", "set_stack_count", "messiah", { stack_count = (self._messiah_charges or 0) })
+ 			end
+			
+			if self:has_category_upgrade("player", "health_damage_reduction") then
+				local value = self:upgrade_value("player", "health_damage_reduction", 1)
+				managers.gameinfo:event("buff", "activate", "frenzy")
+				managers.gameinfo:event("buff", "set_value", "frenzy", { value = value, show_value = true })
  			end
 			
 			if self:has_category_upgrade("player", "headshot_regen_armor_bonus") then

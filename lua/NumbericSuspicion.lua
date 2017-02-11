@@ -46,13 +46,10 @@ function HUDSuspicion:_animate_detection_text(_suspicion_panel)
 			t = t + dt
 			local detection = self:_is_detected() and 1 or math.clamp(math.round(self._suspicion_value*100)/100, 0, 1)
 			local color = math.lerp(Color(0, 0.71, 1), Color(0.99, 0.08, 0), detection)
-			local alpha = WolfHUD:getSetting("numberic_suspicion", "boolean") and 1 or 0
+			local alpha = WolfHUD:getSetting({"HUDSuspicion", "SHOW_PERCENTAGE"}, true) and 1 or 0
 			suspicion_text:set_color(color)
 			suspicion_text:set_alpha(alpha)
 			suspicion_text:set_text(math.round(detection*100) .. "%")
-			if detection < 1 and detection > 0 and self._last_value_feed + 4.1 < t then
-				self:hide()
-			end
 			dt = 0
 		end
 	end
@@ -61,7 +58,7 @@ end
 function HUDSuspicion:animate_eye(...)
 	hudsuspicions_animate_eye_original(self, ...)
 	self:rescale()
-	local visibile = WolfHUD:getSetting("show_susp_eye", "boolean")
+	local visibile = WolfHUD:getSetting({"HUDSuspicion", "SHOW_BARS"}, true)
 	self._suspicion_panel:child("suspicion_left"):set_visible(visibile)
 	self._suspicion_panel:child("suspicion_right"):set_visible(visibile)
 	self._misc_panel:child("hud_stealthmeter_bg"):set_visible(visibile)
@@ -82,15 +79,8 @@ function HUDSuspicion:hide(...)
 	end
 end
 
-function HUDSuspicion:feed_value(value, ...)
-	if self._suspicion_value ~= math.min(value, 1) then
-		self._last_value_feed = Application:time()
-	end
-	feed_value_original(self, value, ...)
-end
-
 function HUDSuspicion:rescale()
-	local scale = WolfHUD:getSetting("suspicion_scale", "number")
+	local scale = WolfHUD:getSetting({"HUDSuspicion", "SCALE"}, 0.8)
 	if self._scale ~= scale then
 		local suspicion_left = self._suspicion_panel:child("suspicion_left")
 		local suspicion_right = self._suspicion_panel:child("suspicion_right")

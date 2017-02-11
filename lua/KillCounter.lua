@@ -216,13 +216,13 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		local set_state_original = HUDTeammate.set_state
 
 		function HUDTeammate:init(i, teammates_panel, ...)
-			if not HUDManager.CUSTOM_TEAMMATE_PANELS and WolfHUD:getSetting("PLAYER_SHOWACCURACY", "boolean") and WolfHUD:getSetting("PLAYER_KILLCOUNTER_HIDE", "boolean") then			
+			if not HUDManager.CUSTOM_TEAMMATE_PANELS and WolfHUD:getSetting({"CustomHUD", "PLAYER", "SHOW_ACCURACY"}, true) and WolfHUD:getSetting({"CustomHUD", "PLAYER", "KILLCOUNTER", "HIDE"}, true) then			
 				teammates_panel:set_h(teammates_panel:h() + 5)
 				teammates_panel:set_y(teammates_panel:y() - 5)
 			end
 			init_original(self, i, teammates_panel, ...)
 			if not HUDManager.CUSTOM_TEAMMATE_PANELS then
-				self._setting_prefix = self._main_player and "PLAYER_" or "TEAM_"
+				self._setting_prefix = self._main_player and "PLAYER" or "TEAMMATE"
 				self:_init_killcount()
 				self:init_accuracy()
 			end
@@ -231,7 +231,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		function HUDTeammate:_init_killcount()
 			self._kills_panel = self._panel:panel({
 				name = "kills_panel",
-				visible = WolfHUD:getSetting(self._setting_prefix .. "KILLCOUNTER_HIDE", "boolean"),
+				visible = WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "HIDE"}, true),
 				w = 100,
 				h = 20,
 				x = 0,
@@ -241,7 +241,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			local player_panel = self._panel:child("player")
 			local name_label = self._panel:child("name")
 			self._kills_panel:set_rightbottom(player_panel:right(), (self._id == HUDManager.PLAYER_PANEL) and name_label:bottom() or name_label:top())
-			local killcount_color = WolfHUD:getSetting(self._setting_prefix .. "KILLCOUNTER_COLOR", "color")
+			local killcount_color = WolfHUD:getColorSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "COLOR"}, "yellow")
 			
 			self._kill_icon = self._kills_panel:bitmap({
 				texture = "guis/textures/pd2/cn_miniskull",
@@ -275,7 +275,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			if not (self._id == HUDManager.PLAYER_PANEL) then return end
 			self._accuracy_panel = self._panel:panel({
 				name = "accuracy_panel",
-				visible = WolfHUD:getSetting(self._setting_prefix .. "SHOWACCURACY", "boolean"),
+				visible = WolfHUD:getSetting({"CustomHUD", "PLAYER", "SHOW_ACCURACY"}, true),
 				w = 100,
 				h = 20,
 				x = 0,
@@ -321,17 +321,17 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 
 		function HUDTeammate:_update_kill_count_text()
 			local kill_string = tostring(self._kill_count)
-			if WolfHUD:getSetting(self._setting_prefix .. "KILLCOUNTER_SHOWSPECIALKILLS", "boolean") then
+			if WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "SHOW_SPECIAL_KILLS"}, true) then
 				kill_string = kill_string .. "/" .. tostring(self._kill_count_special)
 			end
-			if WolfHUD:getSetting(self._setting_prefix .. "KILLCOUNTER_SHOWHEADSHOTKILLS", "boolean") then
+			if WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "SHOW_HEADSHOT_KILLS"}, true) then
 				kill_string = kill_string .. " (" .. tostring(self._headshot_kills) .. ")"
 			end
 			self._kills_text:set_text(kill_string)
 			local _, _, w, _ = self._kills_text:text_rect()
 			self._kill_icon:set_right(self._kills_panel:w() - w - self._kill_icon:w() * 0.15)
 			
-			local color = WolfHUD:getSetting(self._setting_prefix .. "KILLCOUNTER_COLOR", "color")
+			local color = WolfHUD:getColorSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "COLOR"}, "yellow")
 			self._kill_icon:set_color(color)
 			self._kills_text:set_color(color)
 		end
@@ -355,7 +355,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		function HUDTeammate:set_state(...)
 			set_state_original(self, ...)
 			
-			local visible = WolfHUD:getSetting(self._setting_prefix .. "KILLCOUNTER_HIDE", "boolean") and (not self._ai or WolfHUD:getSetting("TEAM_KILLCOUNTER_SHOWBOTKILLS", "boolean"))
+			local visible = WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "HIDE"}, true) and (not self._ai or WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "SHOW_BOT_KILLS"}, true))
 			self._kills_panel:set_visible(visible)
 
 			if self._ai then

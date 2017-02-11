@@ -10,6 +10,10 @@ function WolfHUDTweakData:init()
 	-- If you encounter problems, make sure the contents of this file matches the contents of your customized version.	--
 	----------------------------------------------------------------------------------------------------------------------
 	
+	-- Currency used ingame
+	self.CASH_SIGN = "$"				-- Dollar
+	--self.CASH_SIGN = "\194\128"		-- EUR
+	
 	-- Maximum amount of Plans, that can be saved per level/map.
 	self.MAX_PRE_PLANS = 10
 	-- Maximum Length of custom weapon names.
@@ -43,7 +47,7 @@ function WolfHUDTweakData:init()
 		{ color = '0000FF', name = "blue" 			},
 		{ color = '808080', name = "gray" 			},
 		{ color = '000000', name = "black" 			},
-		{ color = '000000', name = "rainbow" 		},
+		{ color = nil, 		name = "rainbow" 		},
 	}
 	
 	self:post_init()

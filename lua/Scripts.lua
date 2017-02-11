@@ -16,7 +16,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local set_slot_ready_orig = HUDManager.set_slot_ready
 	
 	function HUDManager:set_teammate_ammo_amount(id, selection_index, max_clip, current_clip, current_left, max)
-		if WolfHUD:getSetting("use_realammo", "boolean") then
+		if WolfHUD:getSetting({"CustomHUD", "USE_REAL_AMMO"}, true) then
 			local total_left = current_left - current_clip
 			if total_left >= 0 then 
 				current_left = total_left
@@ -84,7 +84,7 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata"
 	}
 	function TimeSpeedEffectTweakData:init()
 		init_original(self)
-		if WolfHUD:getSetting("no_slowmotion", "boolean") then
+		if WolfHUD:getSetting({"SkipIt", "NO_SLOWMOTION"}, true) then
 			local function disable_effect(table)
 				for name, data in pairs(table) do
 					if not FORCE_ENABLE[name] then

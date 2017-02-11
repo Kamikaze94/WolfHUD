@@ -51,7 +51,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	function HUDAssaultCorner:update_banner_pos()
 		if not alive(self._hud_panel) then return end
 		local hud_w = self._hud_panel:w()
-		local banner_pos = math.clamp(WolfHUD:getSetting("assault_banner_position", "number"), 1, 3)
+		local banner_pos = math.clamp(WolfHUD:getSetting({"AssaultBanner", "POSITION"}, 2), 1, 3)
 		local assault_panel = self._hud_panel:child("assault_panel")
 		local buffs_panel = self._hud_panel:child("buffs_panel")
 		local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
@@ -85,7 +85,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	
 	function HUDAssaultCorner:update_hudlist_offset(banner_visible)
 		banner_visible = banner_visible or banner_visible == nil and (self._assault or self._point_of_no_return or self._casing)
-		local banner_pos = math.clamp(WolfHUD:getSetting("assault_banner_position", "number"), 1, 3)
+		local banner_pos = math.clamp(WolfHUD:getSetting({"AssaultBanner", "POSITION"}, 2), 1, 3)
 		if managers.hud and banner_pos ~= 2 then
 			local offset = banner_visible and ((self._bg_box and self._bg_box:bottom() or 0) + (self:is_safehouse_raid() and self._wave_text:h() or 0)+ 12) or 0
 			if banner_pos > 2 and HUDListManager then
@@ -143,8 +143,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	end
 	
 	function HUDAssaultCorner:set_assault_wave_number(...)
-		self._wave_text:set_text(self:get_completed_waves_string())
-		self._wave_text:animate(callback(self, self, "_animate_wave_text"))
+		if alive(self._wave_text) then
+			self._wave_text:set_text(self:get_completed_waves_string())
+			self._wave_text:animate(callback(self, self, "_animate_wave_text"))
+		end
 		
 		return set_assault_wave_number_original(self, ...)
 	end
@@ -211,7 +213,7 @@ elseif string.lower(RequiredScript) == "lib/managers/localizationmanager" then
 	end
 
 	function LocalizationManager:hud_adv_assault()
-		if WolfHUD:getSetting("show_advanced_assault", "boolean") then
+		if WolfHUD:getSetting({"AssaultBanner", "USE_ADV_ASSAULT"}, true) then
 			if managers.hud and managers.hud:_locked_assault() then
 				return self:text("wolfhud_locked_assault")
 			else

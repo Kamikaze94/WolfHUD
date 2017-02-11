@@ -13,9 +13,9 @@ end
 
 if RequiredScript == "lib/managers/hud/hudchat" then
 	
-	HUDChat.LINE_HEIGHT = WolfHUD:getSetting("LINE_HEIGHT", "number")			--Size of each line in chat (and hence the text size)
+	HUDChat.LINE_HEIGHT = WolfHUD:getSetting({"HUDChat", "LINE_HEIGHT"}, 15)			--Size of each line in chat (and hence the text size)
 	HUDChat.WIDTH = 380															--Width of the chat window
-	HUDChat.MAX_OUTPUT_LINES = WolfHUD:getSetting("MAX_OUTPUT_LINES", "number")	--Number of chat lines to show
+	HUDChat.MAX_OUTPUT_LINES = WolfHUD:getSetting({"HUDChat", "MAX_OUTPUT_LINES"}, 8)	--Number of chat lines to show
 	HUDChat.MAX_INPUT_LINES = 5													--Number of lines of text you can type
 	HUDChat.MOUSE_SUPPORT = false												--For scolling and stuff. Experimental, you have been warned
 	
@@ -348,7 +348,7 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 	end
 	
 	function HUDChat:_animate_fade_output()
-		local wait_t = WolfHUD:getSetting("CHAT_WAIT_TIME", "number")
+		local wait_t = WolfHUD:getSetting({"HUDChat", "CHAT_WAIT_TIME"}, 10)
 		local fade_t = 1
 		if wait_t <= 0 then return end
 		local t = 0

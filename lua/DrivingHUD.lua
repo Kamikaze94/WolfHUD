@@ -137,18 +137,19 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	end
 	
 	function HUDDriving:apply_settings()
-		self._panel:set_enabled("setting", WolfHUD:getSetting("use_drivinghud", "boolean"))
-		self._legend_speed:set_text_suffix(WolfHUD:getSetting("drivinghud_speed_in_mph", "boolean") and "mph" or "km/h")
-		self._vehicle_image:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_vehicle", "boolean"))
-		self._legend_health:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_health", "boolean"))
-		self._legend_loot:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_loot", "boolean"))
-		self._legend_passengers:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_passengers", "boolean"))
-		self._legend_gear:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_gear", "boolean"))
-		self._legend_speed:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_speed", "boolean"))
-		self._legend_rpm:set_enabled("setting", WolfHUD:getSetting("drivinghud_show_rpm", "boolean"))
+		local settings = WolfHUD:getSetting({"DrivingHUD"}, {})
+		self._panel:set_enabled("setting", settings.ENABLED ~= false)
+		self._legend_speed:set_text_suffix(settings.SPEED_IN_MPH and "mph" or "km/h")
+		self._vehicle_image:set_enabled("setting", settings.SHOW_VEHICLE ~= false)
+		self._legend_health:set_enabled("setting", settings.SHOW_HEALTH ~= false)
+		self._legend_loot:set_enabled("setting", settings.SHOW_LOOT ~= false)
+		self._legend_passengers:set_enabled("setting", settings.SHOW_PASSENGERS ~= false)
+		self._legend_gear:set_enabled("setting", settings.SHOW_GEAR ~= false)
+		self._legend_speed:set_enabled("setting", settings.SHOW_SPEED ~= false)
+		self._legend_rpm:set_enabled("setting", settings.SHOW_RPM ~= false)
 		
 		
-		local scale = WolfHUD:getSetting("drivinghud_scale", "number")
+		local scale = settings.SCALE or 1
 		if scale ~= HUDDriving._SCALE then
 			self._panel:rescale(scale / HUDDriving._SCALE)
 			HUDDriving._SCALE = scale
@@ -907,7 +908,7 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 				speed = -speed
 			end
 			
-			if WolfHUD:getSetting("drivinghud_speed_in_mph", "boolean") then
+			if WolfHUD:getSetting({"DrivingHUD", "SPEED_IN_MPH"}, false) then
 				speed = speed / 1.60934
 			end
 			managers.hud:set_driving_vehicle_state(speed, rpm, gear, no_used_seats, no_total_seats, vehicle_name, seats_table, loot_current, loot_total, health_current, health_total)
