@@ -82,8 +82,8 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata"
 	local FORCE_ENABLE = {
 		mission_effects = true,
 	}
-	function TimeSpeedEffectTweakData:init()
-		init_original(self)
+	function TimeSpeedEffectTweakData:init(...)
+		init_original(self, ...)
 		if WolfHUD:getSetting({"SkipIt", "NO_SLOWMOTION"}, true) then
 			local function disable_effect(table)
 				for name, data in pairs(table) do

@@ -139,7 +139,7 @@ elseif RequiredScript == "lib/units/weapons/weaponlaser" then
 	end
 	
 	function WeaponLaser:_set_pulse_intensity(intensity, color)
-		self._current_intensity = intensity
+		self._current_intensity = intensity or self._current_intensity
 		self:_set_colors(color, color, color)
 	end
 	
@@ -227,7 +227,7 @@ elseif RequiredScript == "lib/units/weapons/weaponflashlight" then
 	end
 	
 	function WeaponFlashLight:_set_pulse_intensity(intensity, color)
-		self._current_intensity = intensity
+		self._current_intensity = intensity or self._current_intensity
 		self:_set_colors(color)
 	end
 	

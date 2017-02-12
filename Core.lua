@@ -1204,7 +1204,9 @@ if not _G.WolfHUD then
 		for interact_id, data in pairs(tweak_data.interaction) do
 			if type(data) == "table" and data.text_id then
 				local string_id = data.text_id
-				localized_strings[string_id] = loc:text(string_id, {BTN_INTERACT = "$BTN_INTERACT"}) .. "$VALUE"
+				if string_id:find("hud_int_hold_grab") then
+					localized_strings[string_id] = loc:text(string_id, {BTN_INTERACT = "$BTN_INTERACT"}) .. "$VALUE"
+				end
 			end
 		end
 		loc:add_localized_strings(localized_strings)
