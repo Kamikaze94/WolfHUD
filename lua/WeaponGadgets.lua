@@ -116,7 +116,7 @@ elseif RequiredScript == "lib/units/weapons/weaponlaser" then
 			
 			self._themes[theme] = {
 				light = data.dot.match_beam and beam or Vector3(data.dot.r, data.dot.g, data.dot.b),
-				glow = data.dot.match_beam and beam or Vector3(data.glow.r, data.glow.g, data.glow.b),
+				glow = data.glow.match_beam and beam or Vector3(data.glow.r, data.glow.g, data.glow.b),
 				brush = Vector3(data.beam.r, data.beam.g, data.beam.b),
 				alpha = { dot = data.dot.a, glow = data.glow.a, beam = data.beam.a },
 				rainbow = data.rainbow.enabled and {

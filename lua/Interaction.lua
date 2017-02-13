@@ -289,16 +289,19 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			self._interact_time:set_visible(false)
 		end
 		
-		if not complete and self._old_text then
+		if self._old_text then
 			self._hud_panel:child(self._child_name_text):set_text(self._old_text or "")
-		elseif complete and HUDInteraction.SHOW_CIRCLE then
+			self._old_text = nil
+		end
+		
+		if complete and HUDInteraction.SHOW_CIRCLE then
 			local bitmap = self._hud_panel:bitmap({texture = "guis/textures/pd2/hud_progress_active", blend_mode = "add", align = "center", valign = "center", layer = 2, w = 2 * self._circle_radius, h = 2 * self._circle_radius})
 			bitmap:set_position(bitmap:parent():w() / 2 - bitmap:w() / 2, bitmap:parent():h() / 2 - bitmap:h() / 2)
 			local circle = CircleBitmapGuiObject:new(self._hud_panel, {radius = self._circle_radius, sides = 64, current = 64, total = 64, color = Color.white:with_alpha(1), blend_mode = "normal", layer = 3})
 			circle:set_position(self._hud_panel:w() / 2 - self._circle_radius, self._hud_panel:h() / 2 - self._circle_radius)
 			bitmap:animate(callback(self, self, "_animate_interaction_complete"), circle)
 		end
-		self._old_text = nil
+		
 		return hide_interaction_bar_original(self, false, ...)
 	end
 

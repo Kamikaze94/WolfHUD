@@ -319,6 +319,9 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			short2_stage1 = {	-- Keycard
 				[104102] = true,
 			},
+			fish = {	--Yacht (1x artifact painting)
+				[500533] = true,
+			},
 		},
 	}
 	GameInfoManager._INTERACTIONS.IGNORE_IDS.watchdogs_2_day = table.deep_map_copy(GameInfoManager._INTERACTIONS.IGNORE_IDS.watchdogs_2)
@@ -1033,7 +1036,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	function GameInfoManager:_bag_deployable_event(event, key, data, type)
 		if event == "create" then
 			if not self._deployables[type][key] then
-				self._deployables[type][key] = { unit = data.unit }
+				self._deployables[type][key] = { unit = data.unit, type = type }
 				self:_listener_callback(type, "create", key, self._deployables[type][key])
  			end
 		elseif self._deployables[type][key] then
@@ -1160,6 +1163,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			elseif event == "set_owner" then
 				self._sentries[key].owner = data.owner
 			elseif event == "destroy" then
+				self:_sentry_event("set_active", key, { active = false })
 				self._sentries[key] = nil
 			end
 			

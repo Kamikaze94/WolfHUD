@@ -1202,11 +1202,8 @@ if not _G.WolfHUD then
 		
 		-- Add macro $VALUE to all interaction strings
 		for interact_id, data in pairs(tweak_data.interaction) do
-			if type(data) == "table" and data.text_id then
-				local string_id = data.text_id
-				if string_id:find("hud_int_hold_grab") then
-					localized_strings[string_id] = loc:text(string_id, {BTN_INTERACT = "$BTN_INTERACT"}) .. "$VALUE"
-				end
+			if type(data) == "table" and data.text_id and not data.verify_owner then
+				localized_strings[data.text_id] = loc:text(data.text_id, {BTN_INTERACT = "$BTN_INTERACT"}) .. "$VALUE"
 			end
 		end
 		loc:add_localized_strings(localized_strings)
