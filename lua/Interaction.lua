@@ -392,10 +392,10 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 		return math.round(bag_value * bag_skill_bonus / managers.money:get_tweak_value("money_manager", "offshore_rate"))
 	end
 	
-	function BaseInteractionExt:_add_string_macros(macros)
-		_add_string_macros_original(self, macros)
+	function BaseInteractionExt:_add_string_macros(macros, ...)
+		_add_string_macros_original(self, macros, ...)
+		macros.BTN_INTERACT = macros.BTN_INTERACT or managers.localization:get_default_macro("BTN_INTERACT") --Ascii ID for RB
 		if self._unit:carry_data() then
-			macros.BTN_INTERACT = macros.BTN_INTERACT or managers.localization:get_default_macro("BTN_INTERACT") --Ascii ID for RB
 			macros.BAG = managers.localization:text(tweak_data.carry[self._unit:carry_data():carry_id()].name_id)
 			macros.VALUE = not tweak_data.carry[self._unit:carry_data():carry_id()].skip_exit_secure and " (" .. managers.experience:cash_string(self:get_unsecured_bag_value(self._unit:carry_data():carry_id(), 1)) .. ")" or ""
 		else
