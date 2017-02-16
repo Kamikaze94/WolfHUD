@@ -147,9 +147,9 @@ elseif RequiredScript == "lib/units/weapons/weaponlaser" then
 		local theme = self._themes[self._theme_type] or self._themes.default
 		local alpha = theme and theme.alpha or { dot = 1, glow = 0.02, beam = 0.15 }
 		
-		mvector3.set(self._light_color, (light or theme.light) * 10 * alpha.dot * self._current_intensity)
-		mvector3.set(self._light_glow_color, (glow or theme.glow) * 10 * alpha.glow * self._current_intensity)
-		self._brush_color = Color((brush or theme.brush):unpack()):with_alpha(alpha.beam * self._current_intensity)
+		mvector3.set(self._light_color, (light or theme.light) * 10 * alpha.dot * (self._current_intensity or 1))
+		mvector3.set(self._light_glow_color, (glow or theme.glow) * 10 * alpha.glow * (self._current_intensity or 1))
+		self._brush_color = Color((brush or theme.brush):unpack()):with_alpha(alpha.beam * (self._current_intensity or 1))
 		
 		self._light:set_color(self._light_color)
 		self._light_glow:set_color(self._light_glow_color)
@@ -234,7 +234,7 @@ elseif RequiredScript == "lib/units/weapons/weaponflashlight" then
 	function WeaponFlashLight:_set_colors(light)
 		local theme = self._themes[self._theme_type]
 		local light = light or theme.light
-		self._light:set_color(light * theme.brightness * self._current_intensity * self._intensity_modifier)
+		self._light:set_color(light * theme.brightness * (self._current_intensity or 1) * (self._intensity_modifier or 1))
 	end
 	
 elseif RequiredScript == "lib/units/weapons/raycastweaponbase" then

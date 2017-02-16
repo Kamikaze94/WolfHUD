@@ -645,15 +645,18 @@ if not _G.WolfHUD then
 	end
 	
 	function WolfHUD:getSetting(id_table, default)
-		local entry = self.settings
-		for i = 1, #id_table do
-			entry = entry[id_table[i]]
-			if entry == nil then
-				self:print_log("Requested setting doesn't exists!  (id='" .. table.concat(id_table, "->") .. "', type='" .. tostring(default) .. "') ", "error")
-				return default
+		if type(id_table) == "table" then
+			local entry = self.settings
+			for i = 1, #id_table do
+				entry = entry[id_table[i]]
+				if entry == nil then
+					self:print_log("Requested setting doesn't exists!  (id='" .. table.concat(id_table, "->") .. "', type='" .. tostring(default) .. "') ", "error")
+					return default
+				end
 			end
+			return entry
 		end
-		return entry
+		return default
 	end
 	
 	function WolfHUD:setSetting(id_table, value)

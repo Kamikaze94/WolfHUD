@@ -531,11 +531,16 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 				end
 			end
 			
-			local day_description = dwp:child("day_description")
-			local last_stat_name = HUDStatsScreen.STAT_ITEMS[#HUDStatsScreen.STAT_ITEMS].name
-			local last_stat_item = dwp:child(last_stat_name .. "_title")
-			if day_description and last_stat_item then
-				day_description:set_bottom(last_stat_item:bottom() + 20)
+			if _G.LobbyPlayerInfo and LobbyPlayerInfo.settings.show_skills_in_stats_screen and alive(self._box_gui) then
+				self._box_gui:close()
+				self._box_gui = nil
+			else
+				local day_description = dwp:child("day_description")
+				local last_stat_name = HUDStatsScreen.STAT_ITEMS[#HUDStatsScreen.STAT_ITEMS].name
+				local last_stat_item = dwp:child(last_stat_name .. "_title")
+				if day_description and last_stat_item then
+					day_description:set_bottom(last_stat_item:bottom() + 15)
+				end
 			end
 		end
 	end
