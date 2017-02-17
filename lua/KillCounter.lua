@@ -216,7 +216,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		local set_state_original = HUDTeammate.set_state
 
 		function HUDTeammate:init(i, teammates_panel, ...)
-			if not HUDManager.CUSTOM_TEAMMATE_PANELS and WolfHUD:getSetting({"CustomHUD", "PLAYER", "SHOW_ACCURACY"}, true) and WolfHUD:getSetting({"CustomHUD", "PLAYER", "KILLCOUNTER", "HIDE"}, true) then			
+			if not HUDManager.CUSTOM_TEAMMATE_PANELS and WolfHUD:getSetting({"CustomHUD", "PLAYER", "SHOW_ACCURACY"}, true) and not WolfHUD:getSetting({"CustomHUD", "PLAYER", "KILLCOUNTER", "HIDE"}, false) then
 				teammates_panel:set_h(teammates_panel:h() + 5)
 				teammates_panel:set_y(teammates_panel:y() - 5)
 			end
@@ -231,7 +231,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		function HUDTeammate:_init_killcount()
 			self._kills_panel = self._panel:panel({
 				name = "kills_panel",
-				visible = WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "HIDE"}, true),
+				visible = not WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "HIDE"}, false),
 				w = 100,
 				h = 20,
 				x = 0,
@@ -355,7 +355,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		function HUDTeammate:set_state(...)
 			set_state_original(self, ...)
 			
-			local visible = WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "HIDE"}, true) and (not self._ai or WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "SHOW_BOT_KILLS"}, true))
+			local visible = not WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "HIDE"}, false) and (not self._ai or WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "SHOW_BOT_KILLS"}, true))
 			self._kills_panel:set_visible(visible)
 
 			if self._ai then
