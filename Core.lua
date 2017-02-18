@@ -620,9 +620,7 @@ if not _G.WolfHUD then
 		self:print_log("Creating Dummy for: " .. data["display_name"], "info")
 		if file.DirectoryExists("./" .. data["install_dir"] .. data["install_folder"]) then
 			WolfHUD:print_log("[WolfHUD] mod_override folder '" .. data["install_folder"] .. "' is missing!", "warning")
-			if SystemFS then
-				SystemFS:make_dir("./" .. data["install_dir"] .. data["install_folder"])
-			end
+			WolfHUD:createDirectory("./" .. data["install_dir"] .. data["install_folder"])
 		end
 		local file = io.open(data["revision"], "w+")
 		if file then
@@ -630,7 +628,15 @@ if not _G.WolfHUD then
 			file:close()
 		end
 	end
-	
+
+	function WolfHUD:createDirectory(path)
+		if SystemFS and SystemFS:make_dir then
+			SystemFS:make_dir(path)
+		elseif file and file.CreateDirectory then
+			file.CreateDirectory(path)
+		end
+	end
+
 	function WolfHUD:createOverrideNotification(data, setting)
 		local id = string.format("wolfhud_disabled_override_%s", data.identifier)
 		if not NotificationsManager:NotificationExists( id ) then
