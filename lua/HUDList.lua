@@ -383,7 +383,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:init()
 		self._lists = {}
 		self._unit_count_listeners = 0
-	
+		self._autorepair_map = {}
+
 		self:_setup_left_list()
 		self:_setup_right_list()
 		self:_setup_buff_list()
@@ -2762,6 +2763,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.TimerItem:init(parent, name, data)
 		self.STANDARD_COLOR = HUDListManager.ListOptions.list_color or Color(1, 1, 1, 1)
 		self.UPGRADE_COLOR = Color(1, 0.0, 0.8, 1.0)
+		self.AUTOREPAIR_COLOR = Color(1, 1, 0, 1)
 		self.DISABLED_COLOR = Color(1, 1, 0, 0)
 		self.UPGRADE_LVL_COLORS = { Color(0.3, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)}
 		self.FLASH_SPEED = 2
@@ -2856,7 +2858,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			visible = self._show_upgrade_icons
 		})
 		
-		local current_color = self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
+		local current_color = self:_get_color()
 		self._flash_color_table = {
 			{ ratio = 0.0, color = self.DISABLED_COLOR },
 			{ ratio = 1.0, color = current_color }
@@ -2883,7 +2885,19 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			table.insert(self._listener_clbks, { name = id, source = "timer", event = { event }, clbk = clbk, keys = { key }, data_only = true })
  		end
 	end
-	
+
+	function HUDList.TimerItem:_get_color()
+		local current_color = self.STANDARD_COLOR
+		if self._upgradable then
+			current_color = self.UPGRADE_COLOR
+		elseif self._device_type == "drill" then
+			if managers.hudlist._autorepair_map[tostring(self._unit:key())] then
+				current_color = self.AUTOREPAIR_COLOR
+			end
+		end
+		return current_color
+	end
+
 	function HUDList.TimerItem:update(t, dt)
 		if not alive(self._unit) then
 			self:delete()
@@ -2915,7 +2929,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.TimerItem:_set_upgradable(data)
 		self._upgradable = data.upgradable
-		local current_color = self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
+		local current_color = self:_get_color()
 		self._flash_color_table[2].color = current_color
 		self:_set_colors(current_color)
 	end
@@ -5208,5 +5222,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		if alive(hostages_panel) then
 			hostages_panel:set_alpha(0)
 		end
+	end
+end
+
+if string.lower(RequiredScript) == "lib/units/props/drill" then
+	local set_autorepair_original = Drill.set_autorepair
+	function Drill:set_autorepair(...)
+		set_autorepair_original(self, ...)
+		managers.hudlist._autorepair_map[tostring(self._unit:key())] = self._autorepair and true or false
 	end
 end

@@ -43,6 +43,7 @@
 		{ "hook_id" : "lib/network/handlers/unitnetworkhandler", 				"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/props/timergui", 								"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/props/digitalgui", 							"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/units/props/drill", 									"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/props/securitylockgui", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/props/securitycamera", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/civilians/civiliandamage", 					"script_path" : "Core.lua" },
@@ -91,7 +92,7 @@
 		{ "hook_id" : "lib/tweak_data/timespeedeffecttweakdata", 				"script_path" : "Core.lua" },
 		{ "hook_id" : "core/lib/managers/menu/items/coremenuitemslider", 		"script_path" : "Core.lua" },
 		{ "hook_id" : "core/lib/managers/subtitle/coresubtitlepresenter", 		"script_path" : "Core.lua" },
-		
+
 		{ "hook_id" : "lib/entry", 												"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/systemmenumanager", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/dialogs/specializationdialog", 				"script_path" : "Core.lua" },

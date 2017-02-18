@@ -48,6 +48,7 @@ if not _G.WolfHUD then
 		["lib/network/handlers/unitnetworkhandler"] 				= { "GameInfoManager.lua", "NetworkHandler.lua", "DownCounter.lua" },
 		["lib/units/props/timergui"] 								= { "GameInfoManager.lua" },
 		["lib/units/props/digitalgui"] 								= { "GameInfoManager.lua" },
+		["lib/units/props/drill"]									= { "HUDList.lua" },
 		["lib/units/props/securitylockgui"] 						= { "GameInfoManager.lua" },
 		["lib/units/civilians/civiliandamage"] 						= { "DamagePopup.lua", "TabStats.lua" },
 		["lib/units/enemies/cop/copdamage"] 						= { "GameInfoManager.lua", "KillCounter.lua", "DamagePopup.lua", "TabStats.lua" },
