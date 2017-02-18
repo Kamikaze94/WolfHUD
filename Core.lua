@@ -379,7 +379,10 @@ if not _G.WolfHUD then
 				TEXT_SCALE								= 0.8,
 				SHOW_INTERRUPT_HINT						= true,
 				SHOW_TIME_REMAINING 					= true,			--Show remaining Time in the Interaction-Circle
-				GRADIENT_COLOR 							= "light_green",--Color, which the timer reaches on completition
+				SHOW_TIME_REMAINING_OUTLINE				= false,		--Show black outline around remaining Time text
+				GRADIENT_COLOR_START					= "white",		--Color, which the timer starts with
+				GRADIENT_COLOR							= "light_green",--Color, which the timer reaches on completition
+				TIMER_SCALE								= 1,			--Timer scale (also takes CIRCLE_SCALE into account)
 				SHOW_RELOAD								= false,
 				SHOW_MELEE								= false,
 				SUPRESS_NADES_STEALTH					= true,
@@ -726,7 +729,45 @@ if not _G.WolfHUD then
 			return default
 		end
 	end
-	
+
+	function WolfHUD:makeOutlineText(panel, bg, txt)
+		bg.name = nil
+		local bgs = {}
+		for i = 1, 4 do
+			table.insert(bgs, panel:text(bg))
+		end
+		WolfHUD:refreshOutlinePos(bgs, txt)
+		return bgs
+	end
+
+	function WolfHUD:refreshOutlinePos(bgs, txt)
+		bgs[1]:set_x(txt:x() - 1)
+		bgs[1]:set_y(txt:y() - 1)
+		bgs[2]:set_x(txt:x() + 1)
+		bgs[2]:set_y(txt:y() - 1)
+		bgs[3]:set_x(txt:x() - 1)
+		bgs[3]:set_y(txt:y() + 1)
+		bgs[4]:set_x(txt:x() + 1)
+		bgs[4]:set_y(txt:y() + 1)
+	end
+
+	function WolfHUD:setOutlineText(bgs, text, show)
+		for _, bg in pairs(bgs) do
+			bg:set_text(text)
+			if show then
+				bg:show()
+			else
+				bg:set_visible(false)
+			end
+		end
+	end
+
+	function WolfHUD:setOutlineFontSize(bgs, size)
+		for _, bg in pairs(bgs) do
+			bg:set_font_size(size)
+		end
+	end
+
 	if not WolfHUD.tweak_path then		-- Populate tweak data
 		local tweak_path = string.format("%s%s", WolfHUD.save_path, WolfHUD.tweak_file)
 		if not io.file_is_readable(tweak_path) then
