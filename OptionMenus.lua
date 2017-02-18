@@ -2722,6 +2722,30 @@ if WolfHUD then
 						visible_reqs = {},
 					},
 					{
+						type = "slider",
+						name_id = "wolfhud_press2hold_timer_scale_title",
+						desc_id = "wolfhud_press2hold_timer_scale_desc",
+						value = {"INTERACTION", "TIMER_SCALE"},
+						visible_reqs = {
+							{ setting = { "INTERACTION", "SHOW_TIME_REMAINING" }, invert = false },
+						},
+						min_value = 0.3,
+						max_value = 2,
+						step_size = 0.01,
+					},
+					{
+						type = "multi_choice",
+						name_id = "wolfhud_press2hold_timer_color_start_title",
+						desc_id = "wolfhud_press2hold_timer_color_start_desc",
+						value = {"INTERACTION", "GRADIENT_COLOR_START"},
+						visible_reqs = {
+							{ setting = { "INTERACTION", "SHOW_TIME_REMAINING" }, invert = false },
+						},
+						options = {},
+						add_color_options = true,
+						add_rainbow = true,
+					},
+					{
 						type = "multi_choice",
 						name_id = "wolfhud_press2hold_timer_color_title",
 						desc_id = "wolfhud_press2hold_timer_color_desc",
@@ -2732,6 +2756,15 @@ if WolfHUD then
 						options = {},
 						add_color_options = true,
 						add_rainbow = true,
+					},
+					{
+						type = "toggle",
+						name_id = "wolfhud_press2hold_show_timer_outline_title",
+						desc_id = "wolfhud_press2hold_show_timer_outline_desc",
+						value = {"INTERACTION", "SHOW_TIME_REMAINING_OUTLINE"},
+						visible_reqs = {
+							{ setting = { "INTERACTION", "SHOW_TIME_REMAINING" }, invert = false },
+						},
 					},
 					{
 						type = "divider",

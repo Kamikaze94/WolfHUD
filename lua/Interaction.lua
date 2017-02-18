@@ -201,7 +201,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 	
 	function HUDInteraction:set_interaction_bar_width(current, total)
 		set_interaction_bar_width_original(self, current, total)
-		local color_end = Color.white
+		local color_end = HUDInteraction.GRADIENT_COLOR_START
 		if not HUDInteraction.GRADIENT_COLOR then
 			local t = Application:time()
 			local r, g, b = math.sin(135 * t + 0) / 2 + 0.5, math.sin(140 * t + 60) / 2 + 0.5, math.sin(145 * t + 120) / 2 + 0.5
@@ -211,12 +211,17 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		end
 		
 		if HUDInteraction.SHOW_TIME_REMAINING then
-			self._interact_time:set_text(string.format("%.1fs", math.max(total - current, 0)))
+			local text = string.format("%.1fs", math.max(total - current, 0))
+			self._interact_time:set_text(text)
 			local perc = current/total
-			local color = math.lerp(Color.white, color_end, perc)
+			local show = perc < 1
+			local color = math.lerp(HUDInteraction.GRADIENT_COLOR_START, color_end, perc)
 			self._interact_time:set_color(color)
 			self._interact_time:set_alpha(1)
-			self._interact_time:set_visible(perc < 1)
+			self._interact_time:set_visible(show)
+			if self._interact_time_bgs then
+				WolfHUD:setOutlineText(self._interact_time_bgs, text, show and HUDInteraction.SHOW_TIME_REMAINING_OUTLINE)
+			end
 		end
 	end
 	
@@ -232,9 +237,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		
 		HUDInteraction.SHOW_LOCK_INDICATOR = WolfHUD:getSetting({"INTERACTION", "SHOW_LOCK_INDICATOR"}, true)
 		HUDInteraction.SHOW_TIME_REMAINING = WolfHUD:getSetting({"INTERACTION", "SHOW_TIME_REMAINING"}, true)
+		HUDInteraction.SHOW_TIME_REMAINING_OUTLINE = WolfHUD:getSetting({"INTERACTION", "SHOW_TIME_REMAINING_OUTLINE"}, false)
 		HUDInteraction.SHOW_CIRCLE 	= WolfHUD:getSetting({"INTERACTION", "SHOW_CIRCLE"}, true)
 		HUDInteraction.LOCK_MODE = PlayerStandard.LOCK_MODE or 1
 		HUDInteraction.GRADIENT_COLOR = not (WolfHUD:getSetting({"INTERACTION", "GRADIENT_COLOR"}, "light_green") == "rainbow") and WolfHUD:getColorSetting({"INTERACTION", "GRADIENT_COLOR"}, "light_green") or false
+		HUDInteraction.GRADIENT_COLOR_START = not (WolfHUD:getSetting({"INTERACTION", "GRADIENT_COLOR_START"}, "white") == "rainbow") and WolfHUD:getColorSetting({"INTERACTION", "GRADIENT_COLOR_START"}, "white") or Color.white
 		if HUDInteraction.SHOW_CIRCLE then
 			if HUDInteraction.LOCK_MODE > 1 and HUDInteraction.SHOW_LOCK_INDICATOR then
 				self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {
@@ -253,6 +260,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		end
 		
 		if HUDInteraction.SHOW_TIME_REMAINING then
+			local fontSize = 32 * (self._circle_scale or 1) * WolfHUD:getSetting({"INTERACTION", "TIMER_SCALE"}, 1)
 			if not self._interact_time then
 				self._interact_time = self._hud_panel:text({
 				name = "interaction_timer",
@@ -260,25 +268,43 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 				text = "",
 				valign = "center",
 				align = "center",
-				layer = 1,
-				color = Color.white,
-				font = tweak_data.menu.default_font,
-				font_size = 32 * (self._circle_scale or 1),
+				layer = 2,
+				color = HUDInteraction.GRADIENT_COLOR_START,
+				font = tweak_data.menu.pd2_large_font,
+				font_size = fontSize,
 				h = 64
 				})
 			else
-				self._interact_time:set_font_size(32 * (self._circle_scale or 1))
+				self._interact_time:set_font_size(fontSize)
 			end
+			local text = string.format("%.1fs", total)
 			self._interact_time:set_y(self._hud_panel:center_y() + self._circle_radius - (2 * self._interact_time:font_size()))
-			self._interact_time:set_text(string.format("%.1fs", total))
+			self._interact_time:set_text(text)
 			self._interact_time:show()
+			if not self._interact_time_bgs then
+				self._interact_time_bgs = WolfHUD:makeOutlineText(self._hud_panel, {
+					visible = false,
+					text = "",
+					valign = "center",
+					align = "center",
+					layer = 1,
+					color = Color.black:with_alpha(0.5),
+					font = tweak_data.menu.pd2_large_font,
+					font_size = fontSize,
+					h = 64
+				}, self._interact_time)
+			else
+				WolfHUD:setOutlineFontSize(self._interact_time_bgs, fontSize)
+			end
+			WolfHUD:refreshOutlinePos(self._interact_time_bgs, self._interact_time)
+			WolfHUD:setOutlineText(self._interact_time_bgs, text, HUDInteraction.SHOW_TIME_REMAINING_OUTLINE)
 		end
 		
 		return val
 	end
 	
 
-	function HUDInteraction:hide_interaction_bar(complete, ...)		
+	function HUDInteraction:hide_interaction_bar(complete, ...)
 		if self._interact_circle_locked then
 			self._interact_circle_locked:remove()
 			self._interact_circle_locked = nil
@@ -287,6 +313,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		if self._interact_time then
 			self._interact_time:set_text("")
 			self._interact_time:set_visible(false)
+		end
+		if self._interact_time_bgs then
+			WolfHUD:setOutlineText(self._interact_time_bgs, "", false)
 		end
 		
 		if self._old_text then
@@ -333,6 +362,12 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		if self._interact_time and self._hud_panel then
 			self._hud_panel:remove(self._interact_time)
 			self._interact_time = nil
+		end
+		if self._interact_time_bgs and self._hud_panel then
+			for _, bg in pairs(self._interact_time_bgs) do
+				self._hud_panel:remove(bg)
+			end
+			self._interact_time_bgs = nil
 		end
 		destroy_original(self)
 	end
