@@ -797,10 +797,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_tape_loop_event(event, key, data)
 		local list = self:list("left_side_list"):item("tape_loop")
 		
-		if event == "start_tape_loop" then
-			list:register_item(key, HUDList.TapeLoopItem, data):activate()
-		elseif event == "stop_tape_loop" then
-			list:unregister_item(key)
+		if event == "set_tape_loop_active" then
+			if data.tape_loop_active then
+				list:register_item(key, HUDList.TapeLoopItem, data):activate()
+			else
+				list:unregister_item(key)
+			end
 		end
 	end
 	
@@ -1137,7 +1139,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_set_show_tape_loop()
 		local list = self:list("left_side_list"):item("tape_loop")
 		local listener_id = "HUDListManager_tape_loop_listener"
-		local events = { "start_tape_loop", "stop_tape_loop" }
+		local events = { "set_tape_loop_active" }
 		local clbk = callback(self, self, "_tape_loop_event")
 		
 		for _, event in pairs(events) do
@@ -3718,7 +3720,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self.FLASH_SPEED = 0.8
 		
 		self._unit = data.unit
-		self._expire_t = data.tape_loop_expire_t
 		self._flash_color_table = {
 			{ ratio = 0.0, color = self.DISABLED_COLOR },
 			{ ratio = 1.0, color = self.STANDARD_COLOR }
@@ -3739,17 +3740,51 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._box:h() * 0.6,
 		})
+		
+		if data.tape_loop_expire_t then
+			self:_set_expire_t(data)
+		end
+		
+		local key = tostring(self._unit:key())
+		local id = string.format("HUDList_tape_loop_listener_%s", key)
+		local events = {
+			set_tape_loop_expire_t = callback(self, self, "_set_expire_t"),
+			set_tape_loop_restart_active = callback(self, self, "_set_restart_active"),
+		}
+		
+		for event, clbk in pairs(events) do
+			table.insert(self._listener_clbks, { name = id, source = "camera", event = { event }, clbk = clbk, keys = { key }, data_only = true })
+		end
+	end
+	
+	function HUDList.TapeLoopItem:_animate_restart_active(text)
+		local t = Application:time()
+		while self._animating_restart do
+			t = t + coroutine.yield()
+			local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
+            text:set_color(new_color)
+		end
+		text:set_color(self.STANDARD_COLOR or Color.white)
 	end
 	
 	function HUDList.TapeLoopItem:update(t, dt)
-		local duration = math.max(0, self._expire_t - t)
+		local duration = math.max(0, (self._expire_t or t) - t)
 		self._text:set_text(format_time_string(duration))
-		if duration < 6 then
-			local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
-            self._text:set_color(new_color)
-		else
-			self._text:set_color(self.STANDARD_COLOR or Color.white)
-        end
+	end
+	
+	function HUDList.TapeLoopItem:_set_expire_t(data)
+		if data.tape_loop_active and data.tape_loop_expire_t then
+			self._expire_t = data.tape_loop_expire_t
+		end
+	end
+	
+	function HUDList.TapeLoopItem:_set_restart_active(data)
+		if data.tape_loop_restart_active and not self._animating_restart then
+			self._animating_restart = true
+			self._text:animate(callback(self, self, "_animate_restart_active"))
+		elseif not data.tape_loop_restart_active then
+			self._animating_restart = nil
+		end
 	end
 	
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

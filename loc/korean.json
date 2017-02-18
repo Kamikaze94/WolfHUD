@@ -596,6 +596,8 @@
 	"wolfhud_waypoints_options_name" : "사용자 지정 웨이 포인트 옵션",
 	"wolfhud_waypoints_options_help" : "웨이 포인트를 설정합니다.",
 	
+	"wolfhud_waypoints_color_title" : "Waypoints Color",
+	"wolfhud_waypoints_color_desc" : "The color of the default mission waypoints.",
 	"wolfhud_waypoints_show_ammo_bag_title" : "탄약 가방 표시",
 	"wolfhud_waypoints_show_ammo_bag_desc" : "탄약 가방 웨이 포인트를 표시합니다.\n(얼마나 남았는지 퍼센트로 표시됩니다.)",
 	"wolfhud_waypoints_show_doc_bag_title" : "의료 가방 표시",
@@ -702,6 +704,8 @@
 	"wolfhud_press2hold_lock_mode_desc" : "X 초 이상 누르면 잠금모드로 들어갑니다. (진행식)\n총 X 초 이상 눌러야 되면 잠금모드로 들어갑니다. (전체식)",
 	"wolfhud_press2hold_lock_mode_a" : "진행식",
 	"wolfhud_press2hold_lock_mode_b" : "전체식",
+	"wolfhud_press2hold_lock_mode_c": "Pagers+lockpick",
+	"wolfhud_press2hold_lock_mode_d": "Pagers only",
 	"wolfhud_press2hold_min_timer_duration_title" : "최소 시간",
 	"wolfhud_press2hold_min_timer_duration_desc" : "최소한 몇 초 동안 눌러야 잠금모드로 들어가는지 설정합니다.",
 	"wolfhud_press2hold_show_lockindicator_title" : "잠금 모드 표시",

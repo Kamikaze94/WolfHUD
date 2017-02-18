@@ -711,6 +711,8 @@
 	"wolfhud_press2hold_lock_mode_desc" : "Sperren, wenn schon länger als X Sekunden interagiert wird. (Fortschritt)\nSperren, wenn benötigte Interaktionszeit insgesamt länger ist als X Sekunden. (Gesamt)",
 	"wolfhud_press2hold_lock_mode_a" : "Fortschritt",
 	"wolfhud_press2hold_lock_mode_b" : "Gesamt",
+	"wolfhud_press2hold_lock_mode_c" : "Pager + Schlösser",
+	"wolfhud_press2hold_lock_mode_d" : "Nur Pager",
 	"wolfhud_press2hold_min_timer_duration_title" : "Timer Schwellwert",
 	"wolfhud_press2hold_min_timer_duration_desc" : "Die minimale Timerdauer um die Interaktion zu sperren.",
 	"wolfhud_press2hold_show_lockindicator_title" : "Zeige Sperr-Indikator",

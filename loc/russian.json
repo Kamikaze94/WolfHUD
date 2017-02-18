@@ -598,6 +598,8 @@
 	"wolfhud_waypoints_options_name" : "Настройки пользовательских вэйпоинтов",
 	"wolfhud_waypoints_options_help" : "Настройки управления пользовательскими вэйпоинтами.",
 	
+	"wolfhud_waypoints_color_title" : "Waypoints Color",
+	"wolfhud_waypoints_color_desc" : "The color of the default mission waypoints.",
 	"wolfhud_waypoints_show_ammo_bag_title" : "Показать сумки с боеприпасами",
 	"wolfhud_waypoints_show_ammo_bag_desc" : "Показать вэйпоинты для сумок с боеприпасами с остатком в процентах.",
 	"wolfhud_waypoints_show_doc_bag_title" : "Показать медицинские сумки",
@@ -704,6 +706,8 @@
     "wolfhud_press2hold_lock_mode_desc" : "Блокировка происходит после X секунд. (В прогрессе)\nБлокировка, когда общее время взаимодействия более X секунд. (Общее)",
     "wolfhud_press2hold_lock_mode_a" : "В прогрессе",
     "wolfhud_press2hold_lock_mode_b" : "Общее",
+	"wolfhud_press2hold_lock_mode_c": "Pagers+lockpick",
+	"wolfhud_press2hold_lock_mode_d": "Pagers only",
     "wolfhud_press2hold_min_timer_duration_title" : "Минимальное время таймера",
     "wolfhud_press2hold_min_timer_duration_desc" : "Минимальное время таймера для блокировки взаимодействия.",
     "wolfhud_press2hold_show_lockindicator_title" : "Показать индикатор блокировки",

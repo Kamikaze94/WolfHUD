@@ -1,13 +1,13 @@
 
-print_info = function(...) 
+local print_info = function(...) 
 	WolfHUD:print_log(string.format(...), "info")
 end
 
-print_warning = function(...) 
+local print_warning = function(...) 
 	WolfHUD:print_log(string.format(...), "warning")
 end
 
-print_error = function(...) 
+local print_error = function(...) 
 	WolfHUD:print_log(string.format(...), "error")
 end
 
@@ -352,8 +352,8 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			firstaid_box = -1,	--GGC drill asset, HB infirmary
 		},
 		AGGREAGATE_ITEMS = {
-			["first_aid_kit"] = "first_aid_kits",
-			[136859] = "hb_armory_grenade",
+			["first_aid_kit"] = "first_aid_kits",	-- Aggregate all FAKs
+			[136859] = "hb_armory_grenade",			-- Hoxton Breakout Armory
 			[136870] = "hb_armory_grenade",
 			[136869] = "hb_armory_grenade",
 			[136864] = "hb_armory_grenade",
@@ -366,15 +366,15 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			[136844] = "hb_armory_ammo",
 			[136845] = "hb_armory_ammo",
 			[136847] = "hb_armory_ammo",
-			[101470] = "hb_infirmary_cabinet",
+			[101470] = "hb_infirmary_cabinet",		-- Hoxton Breakout Infirmary
 			[101472] = "hb_infirmary_cabinet",
 			[101473] = "hb_infirmary_cabinet",
-			[151596] = "ggc_armory_grenade",
+			[151596] = "ggc_armory_grenade",		-- Golden Grin Casino
 			[151597] = "ggc_armory_grenade",
 			[151598] = "ggc_armory_grenade",
 			[151611] = "ggc_armory_ammo",
 			[151612] = "ggc_armory_ammo",
-			[100776] = "biker_bunker_grenade",
+			[100776] = "biker_bunker_grenade",		-- Biker Heist
 			[101226] = "biker_bunker_grenade",
 			[101469] = "biker_bunker_grenade",
 			[101472] = "biker_bunker_ammo",
@@ -853,10 +853,12 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				self._cameras[key].active = data.active
 			elseif event == "set_enabled" then
 				self._cameras[key].enabled = self._cameras[key].is_drone or data.enabled
-			elseif event == "start_tape_loop" then
+			elseif event == "set_tape_loop_active" then
+				self._cameras[key].tape_loop_active = data.tape_loop_active
+			elseif event == "set_tape_loop_expire_t" then
 				self._cameras[key].tape_loop_expire_t = data.tape_loop_expire_t
-			elseif event == "stop_tape_loop" then
-				self._cameras[key].tape_loopexpire_t = nil
+			elseif event == "set_tape_loop_restart_active" then
+				self._cameras[key].tape_loop_restart_active = data.tape_loop_restart_active
 			elseif event == "set_broken" then
 				self._cameras[key].broken = data.broken
 			elseif event == "destroy" then
@@ -2355,6 +2357,7 @@ if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 	
 	local init_original = SecurityCamera.init
 	local _start_tape_loop_original = SecurityCamera._start_tape_loop
+	local _activate_tape_loop_restart_original = SecurityCamera._activate_tape_loop_restart
 	local _deactivate_tape_loop_restart_original = SecurityCamera._deactivate_tape_loop_restart
 	local _deactivate_tape_loop_original = SecurityCamera._deactivate_tape_loop
 	local on_unit_set_enabled_original = SecurityCamera.on_unit_set_enabled
@@ -2369,16 +2372,26 @@ if string.lower(RequiredScript) == "lib/units/props/securitycamera" then
 	
 	function SecurityCamera:_start_tape_loop(...)
 		_start_tape_loop_original(self, ...)
-		managers.gameinfo:event("camera", "start_tape_loop", tostring(self._unit:key()), { tape_loop_expire_t = self._tape_loop_end_t + 5 })
+		managers.gameinfo:event("camera", "set_tape_loop_active", tostring(self._unit:key()), { tape_loop_active = true })
+		managers.gameinfo:event("camera", "set_tape_loop_expire_t", tostring(self._unit:key()), { tape_loop_expire_t = self._tape_loop_end_t + 5 })
 	end
 	
+	function SecurityCamera:_activate_tape_loop_restart(...)
+		_activate_tape_loop_restart_original(self, ...)
+		managers.gameinfo:event("camera", "set_tape_loop_restart_active", tostring(self._unit:key()), { tape_loop_restart_active = true })
+ 	end
+	
 	function SecurityCamera:_deactivate_tape_loop_restart(...)
-		managers.gameinfo:event("camera", "stop_tape_loop", tostring(self._unit:key()))
+		managers.gameinfo:event("camera", "set_tape_loop_restart_active", tostring(self._unit:key()), { tape_loop_restart_active = false })
+		if not self._tape_loop_end_t then
+			managers.gameinfo:event("camera", "set_tape_loop_active", tostring(self._unit:key()), { tape_loop_active = false })
+		end
+		
 		return _deactivate_tape_loop_restart_original(self, ...)
  	end
 	
 	function SecurityCamera:_deactivate_tape_loop(...)
-		managers.gameinfo:event("camera", "stop_tape_loop", tostring(self._unit:key()))
+		managers.gameinfo:event("camera", "set_tape_loop_active", tostring(self._unit:key()), { tape_loop_active = false })
 		return _deactivate_tape_loop_original(self, ...)
 	end
 	
