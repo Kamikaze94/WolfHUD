@@ -630,7 +630,7 @@ if not _G.WolfHUD then
 	end
 
 	function WolfHUD:createDirectory(path)
-		if SystemFS and SystemFS:make_dir then
+		if SystemFS and SystemFS.make_dir then
 			SystemFS:make_dir(path)
 		elseif file and file.CreateDirectory then
 			file.CreateDirectory(path)
