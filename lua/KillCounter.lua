@@ -355,7 +355,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		function HUDTeammate:set_state(...)
 			set_state_original(self, ...)
 			
-			local visible = not WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "HIDE"}, false) and (not self._ai or WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "SHOW_BOT_KILLS"}, true))
+			local visible = not WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "HIDE"}, false) and (not self._ai or WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "KILLCOUNTER", "SHOW_BOT_KILLS"}, true))
 			self._kills_panel:set_visible(visible)
 
 			if self._ai then
