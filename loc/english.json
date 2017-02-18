@@ -597,7 +597,9 @@
 	
 	"wolfhud_waypoints_options_name" : "Custom Waypoints Options",
 	"wolfhud_waypoints_options_help" : "Options to control Custom Waypoints.",
-	
+
+	"wolfhud_waypoints_color_title" : "Waypoints Color",
+	"wolfhud_waypoints_color_desc" : "The color of the default mission waypoints.",
 	"wolfhud_waypoints_show_ammo_bag_title" : "Show Ammo Bags",
 	"wolfhud_waypoints_show_ammo_bag_desc" : "Show Waypoints for Ammo bags, telling you the Percentage left.",
 	"wolfhud_waypoints_show_doc_bag_title" : "Show Doctor Bags",

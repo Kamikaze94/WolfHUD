@@ -1,5 +1,16 @@
 if RequiredScript == "lib/managers/hudmanager" then
 	local init_original = HUDManager.init
+	local add_waypoint_original = HUDManager.add_waypoint
+
+	function HUDManager:add_waypoint(id, data, ...)
+		add_waypoint_original(self, id, data, ...)
+		if data.distance then
+			local color = WolfHUD:getColorSetting({"CustomWaypoints", "WAYPOINTS_COLOR"}, "white")
+			self._hud.waypoints[id].bitmap:set_color(color)
+			self._hud.waypoints[id].distance:set_color(color)
+			self._hud.waypoints[id].arrow:set_color(color:with_alpha(0.75))
+		end
+	end
 
 	HUDManager.CUSTOM_WAYPOINTS = {
 		UPGRADE_COLORS = {

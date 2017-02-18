@@ -602,7 +602,9 @@
 	
 	"wolfhud_waypoints_options_name" : "Wegpunkt-Optionen",
 	"wolfhud_waypoints_options_help" : "Wähle die zusätzlichen Wegpunkte die du angezeigt bekommen möchtest.",
-	
+
+	"wolfhud_waypoints_color_title" : "Wegpunktfarbe",
+	"wolfhud_waypoints_color_desc" : "Die Farbe der Standard Missions-Wegpunkte.",
 	"wolfhud_waypoints_show_ammo_bag_title" : "Zeige Munitionstaschen",
 	"wolfhud_waypoints_show_ammo_bag_desc" : "Zeige einen Wegpunkt für Munitionstaschen, der dir verrät wieviel Munition übrig ist.",
 	"wolfhud_waypoints_show_doc_bag_title" : "Zeige Arzttaschen",

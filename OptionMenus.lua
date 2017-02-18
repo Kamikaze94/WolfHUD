@@ -2494,6 +2494,20 @@ if WolfHUD then
 				desc_id = "wolfhud_waypoints_options_help",
 				options = {
 					{
+						type = "multi_choice",
+						name_id = "wolfhud_waypoints_color_title",
+						desc_id = "wolfhud_waypoints_color_desc",
+						value = {"CustomWaypoints", "WAYPOINTS_COLOR"},
+						visible_reqs = {},
+						options = {},
+						add_color_options = true,
+						add_rainbow = false,
+					},
+					{
+						type = "divider",
+						size = 8,
+					},
+					{
 						type = "toggle",
 						name_id = "wolfhud_waypoints_show_ammo_bag_title",
 						desc_id = "wolfhud_waypoints_show_ammo_bag_desc",
