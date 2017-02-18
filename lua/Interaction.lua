@@ -241,7 +241,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		HUDInteraction.SHOW_CIRCLE 	= WolfHUD:getSetting({"INTERACTION", "SHOW_CIRCLE"}, true)
 		HUDInteraction.LOCK_MODE = PlayerStandard.LOCK_MODE or 1
 		HUDInteraction.GRADIENT_COLOR = not (WolfHUD:getSetting({"INTERACTION", "GRADIENT_COLOR"}, "light_green") == "rainbow") and WolfHUD:getColorSetting({"INTERACTION", "GRADIENT_COLOR"}, "light_green") or false
-		HUDInteraction.GRADIENT_COLOR_START = not (WolfHUD:getSetting({"INTERACTION", "GRADIENT_COLOR_START"}, "white") == "rainbow") and WolfHUD:getColorSetting({"INTERACTION", "GRADIENT_COLOR_START"}, "white") or Color.white
+		HUDInteraction.GRADIENT_COLOR_START = WolfHUD:getColorSetting({"INTERACTION", "GRADIENT_COLOR_START"}, "white")
 		if HUDInteraction.SHOW_CIRCLE then
 			if HUDInteraction.LOCK_MODE > 1 and HUDInteraction.SHOW_LOCK_INDICATOR then
 				self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {

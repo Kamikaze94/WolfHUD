@@ -2743,7 +2743,7 @@ if WolfHUD then
 						},
 						options = {},
 						add_color_options = true,
-						add_rainbow = true,
+						add_rainbow = false,
 					},
 					{
 						type = "multi_choice",
