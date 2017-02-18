@@ -2744,7 +2744,9 @@ if WolfHUD then
 						options = {
 							"wolfhud_multiselect_disabled",
 							"wolfhud_press2hold_lock_mode_a",
-							"wolfhud_press2hold_lock_mode_b"
+							"wolfhud_press2hold_lock_mode_b",
+                            "wolfhud_press2hold_lock_mode_c",
+							"wolfhud_press2hold_lock_mode_d"
 						},
 						visible_reqs = {},
 						value = {"INTERACTION", "LOCK_MODE"},

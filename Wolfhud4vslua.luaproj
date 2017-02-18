@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>E439935D-B2A2-46AE-856D-2AA408428F33</ProjectGuid>
+    <!--$guid1$-->
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>
+    </StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>Wolfhud4vslua</Name>
+    <RootNamespace>Wolfhud4vslua</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="loc\" />
+    <Folder Include="lua\" />
+    <Folder Include="lua\Utils\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core.lua" />
+    <Compile Include="lua\AdvAssault.lua" />
+    <Compile Include="lua\BurstFire.lua" />
+    <Compile Include="lua\BuyAllAsset.lua" />
+    <Compile Include="lua\CustomHUD.lua" />
+    <Compile Include="lua\CustomWaypoints.lua" />
+    <Compile Include="lua\DamageIndicator.lua" />
+    <Compile Include="lua\DamagePopup.lua" />
+    <Compile Include="lua\DownCounter.lua" />
+    <Compile Include="lua\DrivingHUD.lua" />
+    <Compile Include="lua\EnemyHealthbar.lua" />
+    <Compile Include="lua\EnhancedCrewLoadout.lua" />
+    <Compile Include="lua\EnhancedObjective.lua" />
+    <Compile Include="lua\EquipmentTweaks.lua" />
+    <Compile Include="lua\GameInfoManager.lua" />
+    <Compile Include="lua\HUDChat.lua" />
+    <Compile Include="lua\HUDList.lua" />
+    <Compile Include="lua\Interaction.lua" />
+    <Compile Include="lua\KillCounter.lua" />
+    <Compile Include="lua\MenuTweaks.lua" />
+    <Compile Include="lua\NetworkHandler.lua" />
+    <Compile Include="lua\NumbericSuspicion.lua" />
+    <Compile Include="lua\PacifiedCivs.lua" />
+    <Compile Include="lua\PrePlanManager.lua" />
+    <Compile Include="lua\Scripts.lua" />
+    <Compile Include="lua\TabStats.lua" />
+    <Compile Include="lua\Utils\InputDialog.lua" />
+    <Compile Include="lua\Utils\QuickInputMenu.lua" />
+    <Compile Include="lua\WaypointsManager.lua" />
+    <Compile Include="lua\WeaponGadgets.lua" />
+    <Compile Include="OptionMenus.lua" />
+    <Compile Include="WolfHUDTweakData.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="loc\chinese.json" />
+    <Content Include="loc\dutch.json" />
+    <Content Include="loc\english.json" />
+    <Content Include="loc\french.json" />
+    <Content Include="loc\german.json" />
+    <Content Include="loc\italian.json" />
+    <Content Include="loc\korean.json" />
+    <Content Include="loc\RealWeaponNames.json" />
+    <Content Include="loc\russian.json" />
+    <Content Include="loc\spanish.json" />
+    <Content Include="mod.txt" />
+    <Content Include="Readme.md" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+</Project>
