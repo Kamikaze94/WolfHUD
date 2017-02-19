@@ -34,26 +34,30 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 				self:_create_stamina_circle()
 			end
 		end
-		
+
 		function HUDTeammate:set_name(name, ...)
-			if self._main_player and WolfHUD:getSetting({"CustomHUD", "PLAYER", "RANK"}, true) or self:peer_id() and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "RANK"}, true)  then
-				local peer = self:peer_id() and managers.network:session():peer(self:peer_id())
-				local infamy, level = peer and peer:rank() or managers.experience:current_rank(), peer and peer:level() or managers.experience:current_level()
-				local level_str = string.format(" [%s%s]", 
-					(infamy or 0) > 0 and string.format("%s-", managers.experience:rank_string(infamy)) or "",
-					tostring(level)
-				)
-				name = name .. level_str
+			local _color_pos = 1
+			if not self._ai then
+				if (self._main_player and WolfHUD:getSetting({"CustomHUD", "PLAYER", "TRUNCATE_TAGS"}, true) or self:peer_id() and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "TRUNCATE_TAGS"}, true)) then
+					name = WolfHUD:truncateNameTag(name)
+				end
+				if (self._main_player and WolfHUD:getSetting({"CustomHUD", "PLAYER", "RANK"}, true) or self:peer_id() and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "RANK"}, true)) then
+					local peer = self:peer_id() and managers.network:session():peer(self:peer_id())
+					local infamy, level = peer and peer:rank() or managers.experience:current_rank(), peer and peer:level() or managers.experience:current_level()
+					local level_str = string.format("%s%s ",
+						(infamy or 0) > 0 and string.format("%s-", managers.experience:rank_string(infamy)) or "",
+						tostring(level)
+					)
+					name = level_str .. name
+					_color_pos = level_str:len() + 1
+				end
 			end
-			return set_name_original(self, name,...)
+			set_name_original(self, name,...)
+			if not self._ai then
+				self._panel:child("name"):set_range_color(_color_pos, name:len(), self._panel:child("callsign"):color():with_alpha(1))
+			end
 		end
-		
-		function HUDTeammate:set_callsign(id, ...)
-			local color = tweak_data.chat_colors[id] or Color.white
-			self._panel:child("name"):set_color(color)
-			return set_callsign_original(self, id, ...)
-		end
-		
+
 		function HUDTeammate:_create_stamina_circle()
 			local radial_health_panel = self._panel:child("player"):child("radial_health_panel")
 			self._stamina_bar = radial_health_panel:bitmap({
@@ -127,6 +131,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			OPACITY = WolfHUD:getSetting({"CustomHUD", "PLAYER", "OPACITY"}, 0.85),	--Transparency/alpha of panel (1 is solid, 0 is invisible)
 			
 			NAME = WolfHUD:getSetting({"CustomHUD", "PLAYER", "NAME"}, false),	--Show name
+			TRUNCATE_TAGS = WolfHUD:getSetting({"CustomHUD", "PLAYER", "TRUNCATE_TAGS"}, false),	--Truncate tags
 			RANK = WolfHUD:getSetting({"CustomHUD", "PLAYER", "RANK"}, false),	--Show infamy/level
 			CHARACTER = WolfHUD:getSetting({"CustomHUD", "PLAYER", "CHARACTER"}, false),	--Show character name
 			LATENCY = false,	--Show latency (not used by player panel)
@@ -189,6 +194,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			OPACITY = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "OPACITY"}, 0.85),	--Transparency/alpha of panel (1 is solid, 0 is invisible)
 			
 			NAME = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "NAME"}, true),	--Show name
+			TRUNCATE_TAGS = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "TRUNCATE_TAGS"}, false),	--Truncate tags
 			RANK = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "RANK"}, true),	--Show infamy/level
 			CHARACTER = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "CHARACTER"}, false),	--Show character name
 			LATENCY = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "LATENCY"}, true),	--Show latency (not used by player panel)
@@ -1070,7 +1076,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.PlayerInfo:set_id(id)
 		self._id = id
-		self:_set_text_color((tweak_data.chat_colors[id] or Color.white):with_alpha(1))
+		self:_set_text_color((id ~= 5 and tweak_data.chat_colors[id] or Color.white):with_alpha(1))
 	end
 	
 	function PlayerInfoComponent.PlayerInfo:set_cheater(state)
@@ -1085,6 +1091,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.PlayerInfo:set_name(name)
 		if name then
+			if self._settings.TRUNCATE_TAGS and not self._is_ai then
+				name = WolfHUD:truncateNameTag(name)
+			end
 			self._components.name:set_text(name)
 			self:arrange()
 		end

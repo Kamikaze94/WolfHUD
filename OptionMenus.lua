@@ -431,6 +431,13 @@ if WolfHUD then
 							},
 							{
 								type = "toggle",
+								name_id = "wolfhud_panels_truncate_tags_title",
+								desc_id = "wolfhud_panels_truncate_tags_desc",
+								visible_reqs = {},
+								value = {"CustomHUD", "PLAYER", "TRUNCATE_TAGS"},
+							},
+							{
+								type = "toggle",
 								name_id = "wolfhud_panels_show_char_title",
 								desc_id = "wolfhud_panels_show_char_desc",
 								visible_reqs = {
@@ -640,6 +647,13 @@ if WolfHUD then
 								desc_id = "wolfhud_panels_rank_name_desc",
 								visible_reqs = {},
 								value = {"CustomHUD", "TEAMMATE", "RANK"},
+							},
+							{
+								type = "toggle",
+								name_id = "wolfhud_panels_truncate_tags_title",
+								desc_id = "wolfhud_panels_truncate_tags_desc",
+								visible_reqs = {},
+								value = {"CustomHUD", "TEAMMATE", "TRUNCATE_TAGS"},
 							},
 							{
 								type = "toggle",

@@ -251,6 +251,8 @@
     "wolfhud_panels_show_name_desc" : "Отображает имена игроков.",
     "wolfhud_panels_show_rank_title" : "Отображение ранга",
     "wolfhud_panels_rank_name_desc" : "Показывает ранг игроков.",
+	"wolfhud_panels_truncate_tags_title" : "Truncate tags.",
+	"wolfhud_panels_truncate_tags_desc" : "Tries to truncate clan tags from player names.",
     "wolfhud_panels_show_char_title" : "Отображение персонажа",
     "wolfhud_panels_show_char_desc" : "Показывает персонажа, выбранного игроком.",
     "wolfhud_panels_show_ping_title" : "Отображение пинга",

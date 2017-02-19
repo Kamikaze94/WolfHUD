@@ -258,6 +258,8 @@
 	"wolfhud_panels_show_name_desc" : "Zeige den Spielernamen.",
 	"wolfhud_panels_show_rank_title" : "Zeige Rang",
 	"wolfhud_panels_rank_name_desc" : "Zeige den Spieler Rang.",
+	"wolfhud_panels_truncate_tags_title" : "Tags abschneiden",
+	"wolfhud_panels_truncate_tags_desc" : "Versuche Clan-Tags im Spielernamen abzuschneiden.",
 	"wolfhud_panels_show_char_title" : "Zeige Charakter",
 	"wolfhud_panels_show_char_desc" : "Zeige den vom Spieler gewählten Charakter.",
 	"wolfhud_panels_show_ping_title" : "Zeige Ping",

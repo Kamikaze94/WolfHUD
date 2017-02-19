@@ -116,6 +116,7 @@ if not _G.WolfHUD then
 					OPACITY							= 0.85,
 					NAME							= false,
 					RANK							= false,
+					TRUNCATE_TAGS					= true,
 					CHARACTER						= false,
 					STATUS							= true,
 					EQUIPMENT						= true,
@@ -145,6 +146,7 @@ if not _G.WolfHUD then
 					OPACITY							= 0.85,
 					NAME							= true,
 					RANK							= true,
+					TRUNCATE_TAGS					= true,
 					CHARACTER						= false,
 					LATENCY							= true,
 					STATUS							= true,
@@ -767,6 +769,14 @@ if not _G.WolfHUD then
 		for _, bg in pairs(bgs) do
 			bg:set_font_size(size)
 		end
+	end
+
+	function WolfHUD:truncateNameTag(name)
+		local truncated_name = name:gsub('^%b[]',''):gsub('^%b==',''):gsub('^%s*(.-)%s*$','%1')
+		if truncated_name:len() > 0 and name ~= truncated_name then
+			name = utf8.char(1031) .. truncated_name
+		end
+		return name
 	end
 
 	if not WolfHUD.tweak_path then		-- Populate tweak data
