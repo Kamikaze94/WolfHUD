@@ -169,7 +169,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			self._bar_text_rect = self._shield and self._shield_text_rect or self._health_text_rect
 		end	
 		
-		if visible == true and not self._unit_health_visible and WolfHUD:getSetting({"EnemyHealthbar", "ENABLED"}, true) or self._unit_health_visible_forced then
+		if visible == true and not self._unit_health_visible and WolfHUD:getSetting({"EnemyHealthbar", "ENABLED"}, true) then
 		
 			self._unit_health_visible = true
 			self._unit_health_enemy_location:set_visible(WolfHUD:getSetting({"EnemyHealthbar", "SHOW_POINTER"}, false))
@@ -255,12 +255,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	function HUDManager:set_unit_health_rotation( angle )
 
 		self._unit_health_enemy_location:set_rotation( angle )
-
-	end
-	
-	function HUDManager:force_unit_health_visible( status )
-
-		self._unit_health_visible_forced = status
 
 	end
 elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then

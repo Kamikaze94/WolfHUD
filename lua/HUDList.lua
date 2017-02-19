@@ -2762,6 +2762,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.TimerItem:init(parent, name, data)
 		self.STANDARD_COLOR = HUDListManager.ListOptions.list_color or Color(1, 1, 1, 1)
 		self.UPGRADE_COLOR = Color(1, 0.0, 0.8, 1.0)
+		self.AUTOREPAIR_COLOR = Color(1, 1, 0, 1)
 		self.DISABLED_COLOR = Color(1, 1, 0, 0)
 		self.UPGRADE_LVL_COLORS = { Color(0.3, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)}
 		self.FLASH_SPEED = 2
@@ -2772,6 +2773,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._jammed = data.jammed
 		self._powered = data.powered
 		self._upgradable = data.upgradable
+		self._auto_repair = data.auto_repair
 		self._upgrades = data.upgrades or {}
 		self._show_upgrade_icons = data.can_have_upgrades or false
 		
@@ -2856,7 +2858,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			visible = self._show_upgrade_icons
 		})
 		
-		local current_color = self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
+		local current_color = self._auto_repair and self.AUTOREPAIR_COLOR or self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
 		self._flash_color_table = {
 			{ ratio = 0.0, color = self.DISABLED_COLOR },
 			{ ratio = 1.0, color = current_color }
@@ -2877,6 +2879,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			set_powered = callback(self, self, "_set_powered"),
 			set_upgradable = callback(self, self, "_set_upgradable"),
 			set_upgrades = callback(self, self, "_set_upgrades"),
+			set_autorepair = callback(self, self, "_set_autorepair"),
 		}
 		
 		for event, clbk in pairs(events) do
@@ -2915,7 +2918,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	
 	function HUDList.TimerItem:_set_upgradable(data)
 		self._upgradable = data.upgradable
-		local current_color = self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
+		
+		local current_color = self._auto_repair and self.AUTOREPAIR_COLOR or self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
 		self._flash_color_table[2].color = current_color
 		self:_set_colors(current_color)
 	end
@@ -2932,6 +2936,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._noise_upgrade:set_color(self.UPGRADE_LVL_COLORS[noise_color])
 			self._restart_upgrade:set_color(self.UPGRADE_LVL_COLORS[restart_color])
 		end
+	end
+	
+	function HUDList.TimerItem:_set_autorepair(data)
+		self._auto_repair = data.auto_repair
+		
+		local current_color = self._auto_repair and self.AUTOREPAIR_COLOR or self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
+		self._flash_color_table[2].color = current_color
+		self:_set_colors(current_color)
 	end
 	
 	function HUDList.TimerItem:_check_is_running()

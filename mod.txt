@@ -43,6 +43,7 @@
 		{ "hook_id" : "lib/network/handlers/unitnetworkhandler", 				"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/props/timergui", 								"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/props/digitalgui", 							"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/units/props/drill", 									"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/props/securitylockgui", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/props/securitycamera", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/civilians/civiliandamage", 					"script_path" : "Core.lua" },

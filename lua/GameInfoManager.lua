@@ -94,6 +94,12 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 					managers.gameinfo:_listener_callback("timer", "set_upgrades", key, timers[key])
 				end
 			end,
+			set_autorepair = function(timers, key, auto_repair)
+				if timers[key] then
+					timers[key].auto_repair = auto_repair
+					managers.gameinfo:_listener_callback("timer", "set_autorepair", key, timers[key])
+				end
+			end,
 		},
 		overrides = {
 			--Common functions
@@ -1556,6 +1562,21 @@ if string.lower(RequiredScript) == "lib/units/props/digitalgui" then
 	function DigitalGui:_do_timer_callback(event, ...)
 		if not self._ignore then
 			managers.gameinfo:event("timer", event, self._info_key, ...)
+		end
+	end
+	
+end
+
+if string.lower(RequiredScript) == "lib/units/props/drill" then
+	
+	local set_autorepair_original = Drill.set_autorepair
+	
+	function Drill:set_autorepair(...)
+		set_autorepair_original(self, ...)
+		
+		local timer_gui = self._unit:timer_gui()
+		if timer_gui and timer_gui._info_key then
+			managers.gameinfo:event("timer", "set_autorepair", timer_gui._info_key, self._autorepair)
 		end
 	end
 	

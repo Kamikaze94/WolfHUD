@@ -21,6 +21,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 			[4] = Color.black,
 		},
 		TIMER = {
+			AUTOREPAIR_COLOR = Color(1, 1, 0, 1),
 			ICON_MAP = {
 				drill = "pd2_drill",
 				hack = "pd2_computer",
@@ -201,6 +202,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				managers.gameinfo:register_listener("timer_waypoint_listener", "timer", "set_jammed", callback(self, self, "custom_waypoint_timer_clbk"))
 				managers.gameinfo:register_listener("timer_waypoint_listener", "timer", "set_powered", callback(self, self, "custom_waypoint_timer_clbk"))
 				managers.gameinfo:register_listener("timer_waypoint_listener", "timer", "set_upgrades", callback(self, self, "custom_waypoint_timer_clbk"))
+				managers.gameinfo:register_listener("timer_waypoint_listener", "timer", "set_autorepair", callback(self, self, "custom_waypoint_timer_clbk"))
 			end
 			
 			if WolfHUD:getSetting({"CustomWaypoints", "SHOW_MINIONS"}, true) then
@@ -503,6 +505,9 @@ if RequiredScript == "lib/managers/hudmanager" then
 				if data.powered then
 					self:custom_waypoint_timer_clbk("set_powered", key, data)
 				end
+				if data.auto_repair then
+					self:custom_waypoint_timer_clbk("set_autorepair", key, data)
+				end
 			else
 				managers.waypoints:remove_waypoint(id)
 			end
@@ -535,6 +540,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 				managers.waypoints:set_waypoint_component_setting(id, "speed_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[speed_upgrade] or Color.white)
 				managers.waypoints:set_waypoint_component_setting(id, "noise_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[noise_upgrade] or Color.white)
 				managers.waypoints:set_waypoint_component_setting(id, "restart_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[restart_upgrade] or Color.white)
+			elseif event == "set_autorepair" then
+				managers.waypoints:set_waypoint_component_setting(id, "icon", "color", data.auto_repair and HUDManager.CUSTOM_WAYPOINTS.TIMER.AUTOREPAIR_COLOR or Color.white)
 			end
 		end
 	end
