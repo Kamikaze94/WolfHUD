@@ -377,7 +377,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 					local money_cost = self:_get_type_cost(data.type)
 					local favours_cost = self:get_type_budget_cost(data.type, 0)
 					local current_budget, total_budget = self:get_current_budget()
-					if current_budget + favours_cost < total_budget then
+					if current_budget + favours_cost <= total_budget then
 						if managers.money:can_afford_preplanning_type(type) then
 							self:reserve_mission_element(data.type, data.id)
 						else
