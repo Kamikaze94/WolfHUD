@@ -28,18 +28,20 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 		PlayerStandard.LOCK_MODE = WolfHUD:getSetting({"INTERACTION", "LOCK_MODE"}, 3)						--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
 		PlayerStandard.MIN_TIMER_DURATION = WolfHUD:getSetting({"INTERACTION", "MIN_TIMER_DURATION"}, 5)			--Min interaction duration (in seconds) for the toggle behavior to activate	
 		local is_locked = false
-        	if PlayerStandard.LOCK_MODE >= 5 then
-            		is_locked= self._interact_params ~= nil and self._interact_params.tweak_data == "corpse_alarm_pager"
-        	elseif PlayerStandard.LOCK_MODE >= 4 then
-            		is_locked= self._interact_params ~= nil and (self._interact_params.tweak_data == "corpse_alarm_pager" or string.match(self._interact_params.tweak_data,"pick_lock"))
-		elseif PlayerStandard.LOCK_MODE >= 3 then
-			is_locked = self._interact_params and (self._interact_params.timer >= PlayerStandard.MIN_TIMER_DURATION) -- lock interaction, when total timer time is longer then given time
-		elseif PlayerStandard.LOCK_MODE >= 2 then
-			is_locked = self._interact_expire_t and (t - (self._interact_expire_t - self._interact_params.timer) >= PlayerStandard.MIN_TIMER_DURATION) --lock interaction, when interacting longer then given time
+		if self._interact_expire_t ~= nil then
+			if PlayerStandard.LOCK_MODE >= 5 then
+				is_locked = self._interact_params ~= nil and self._interact_params.tweak_data == "corpse_alarm_pager"
+			elseif PlayerStandard.LOCK_MODE >= 4 then
+				is_locked = self._interact_params ~= nil and (self._interact_params.tweak_data == "corpse_alarm_pager" or string.match(self._interact_params.tweak_data,"pick_lock"))
+			elseif PlayerStandard.LOCK_MODE >= 3 then
+				is_locked = self._interact_params and (self._interact_params.timer >= PlayerStandard.MIN_TIMER_DURATION) -- lock interaction, when total timer time is longer then given time
+			elseif PlayerStandard.LOCK_MODE >= 2 then
+				is_locked = self._interact_expire_t and (t - (self._interact_expire_t - self._interact_params.timer) >= PlayerStandard.MIN_TIMER_DURATION) --lock interaction, when interacting longer then given time
+			end
 		end
 		
 		if self._interaction_locked ~= is_locked then
-			managers.hud:set_interaction_bar_locked(is_locked)
+			managers.hud:set_interaction_bar_locked(is_locked, self._interact_params and self._interact_params.tweak_data or "")
 			self._interaction_locked = is_locked
 		end
 	end
@@ -178,8 +180,8 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerciv
 	
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
-	function HUDManager:set_interaction_bar_locked(status)
-		self._hud_interaction:set_locked(status)
+	function HUDManager:set_interaction_bar_locked(status, tweak_entry)
+		self._hud_interaction:set_locked(status, tweak_entry)
 	end
 	
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
@@ -250,12 +252,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			if HUDInteraction.LOCK_MODE > 1 and HUDInteraction.SHOW_LOCK_INDICATOR then
 				self._interact_circle_locked = CircleBitmapGuiObject:new(self._hud_panel, {
 					radius = self._circle_radius,
-					color = Color.red,
+					color = self._old_text and Color.green or Color.red,
 					blend_mode = "normal",
-					alpha = 0,
+					alpha = 0.25,
 				})
 				self._interact_circle_locked:set_position(self._hud_panel:w() / 2 - self._circle_radius, self._hud_panel:h() / 2 - self._circle_radius)
-				self._interact_circle_locked:set_color(Color.red)
 				self._interact_circle_locked._circle:set_render_template(Idstring("Text"))
 			end
 		else
@@ -338,10 +339,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		return hide_interaction_bar_original(self, false, ...)
 	end
 
-	function HUDInteraction:set_locked(status)
+	function HUDInteraction:set_locked(status, tweak_entry)
 		if self._interact_circle_locked then
 			self._interact_circle_locked._circle:set_color(status and Color.green or Color.red)
-			self._interact_circle_locked._circle:set_alpha(0.25)
 		end
 		
 		if status then
@@ -349,7 +349,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			local locked_text = ""
 			if WolfHUD:getSetting({"INTERACTION", "SHOW_INTERRUPT_HINT"}, true) then
 				local btn_cancel = PlayerStandard.EQUIPMENT_PRESS_INTERRUPT and (managers.localization:btn_macro("use_item", true) or managers.localization:get_default_macro("BTN_USE_ITEM")) or (managers.localization:btn_macro("interact", true) or managers.localization:get_default_macro("BTN_INTERACT"))
-				locked_text = managers.localization:to_upper_text("wolfhud_int_locked", {BTN_CANCEL = btn_cancel})
+				locked_text = managers.localization:to_upper_text(tweak_entry == "corpse_alarm_pager" and "wolfhud_int_locked_pager" or "wolfhud_int_locked", {BTN_CANCEL = btn_cancel})
 			end
 			self._hud_panel:child(self._child_name_text):set_text(locked_text)
 		end

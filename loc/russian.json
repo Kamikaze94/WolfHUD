@@ -17,6 +17,7 @@
 	"woldhud_notification_restart_override_desc" : "Пожалуйста перезапустите игру для начала скачивания.",
 	
     "wolfhud_int_locked" : "НАЖМИТЕ $BTN_CANCEL ДЛЯ ОТМЕНЫ ВЗАИМОДЕЙСТВИЯ",
+	"wolfhud_int_locked_pager" : "PRESS $BTN_CANCEL TO INTERRUPT\n(TRIGGERS ALARM)",
 	
     "wolfhud_buy_all_assets" : "Купить все",
     "wolfhud_buy_all_assets_desc" : "Купить все активы которые вам доступны",

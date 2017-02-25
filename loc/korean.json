@@ -17,6 +17,7 @@
 	"woldhud_notification_restart_override_desc" : "다운로드를 하기 위해서 게임을 다시 시작해 주세요.",
 	
 	"wolfhud_int_locked" : "$BTN_CANCEL 키 를 눌러서 취소하기",
+	"wolfhud_int_locked_pager" : "PRESS $BTN_CANCEL TO INTERRUPT\n(TRIGGERS ALARM)",
 	
 	"wolfhud_buy_all_assets" : "모두 구매",
 	"wolfhud_buy_all_assets_desc" : "모든 에셋을 구입합니다.",

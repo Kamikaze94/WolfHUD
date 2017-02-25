@@ -17,6 +17,7 @@
 	"woldhud_notification_restart_override_desc" : "Please restart your game to start the download.",
 	
 	"wolfhud_int_locked" : "PRESS $BTN_CANCEL TO INTERRUPT",
+	"wolfhud_int_locked_pager" : "PRESS $BTN_CANCEL TO INTERRUPT\n(TRIGGERS ALARM)",
 	
 	"wolfhud_buy_all_assets" : "Buy All",
 	"wolfhud_buy_all_assets_desc" : "Buy all the assets that you are permitted to acquire.",

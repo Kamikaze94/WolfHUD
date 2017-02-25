@@ -19,6 +19,7 @@
 	"woldhud_notification_restart_override_desc" : "Bitte starte dein Spiel neu, um den Download zu starten.",
 	
 	"wolfhud_int_locked" : "DRÜCKE $BTN_CANCEL UM ABZUBRECHEN",
+	"wolfhud_int_locked_pager" : "DRÜCKE $BTN_CANCEL UM ABZUBRECHEN\n(LÖST ALARM AUS)",
 	
 	"wolfhud_buy_all_assets" : "Kaufe Alles",
 	"wolfhud_buy_all_assets_desc" : "Kaufe alle Vorteile, die du erwerben kannst.",
