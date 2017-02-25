@@ -1,6 +1,6 @@
 -- TODO:
 -- 	Maybe colorization for save, on which assets would get added/removed or stay. (seems to be not possible...?)
--- 	Show and save default votes 
+-- 	Hook "PrePlanningMapGui:set_map_position_to_item", check for existence of item parameter. (causes crashes with controller, might be fixed with proper selection of selected_item now...)
 
 requiredScript = string.lower(RequiredScript)
 if requiredScript == "lib/managers/menumanager" then
@@ -14,7 +14,7 @@ if requiredScript == "lib/managers/menumanager" then
 		if pp_nodes and not pp_nodes[PrePlanningManager.saved_plans_node] then
 			local arugements = {
 				_meta = "node",
-				back_callback = "stop_preplanning_post_event",
+				back_callback = "", --"stop_preplanning_post_event",
 				gui_class = "MenuNodePrePlanningGui",
 				menu_components = "preplanning_map preplanning_chats",
 				modifier = "MenuPrePlanningInitiator",
@@ -138,10 +138,11 @@ if requiredScript == "lib/managers/menumanager" then
 		
 		if table.size(saved_plans) <= 0 then
 			self:create_divider(node, "title_category_saved_plans", managers.localization:text("wolfhud_preplanning_error_no_saved_plans"), nil, tweak_data.screen_colors.text)
-			selected_item = ""
+			selected_item = nil
 		else
 			if PrePlanningManager._PREPLANNING_DELETE_MODE then
 				self:create_divider(node, "title_category_saved_plans", managers.localization:text("wolfhud_preplanning_delete"), nil, tweak_data.screen_colors.text)
+				selected_item = nil
 			else
 				self:create_divider(node, "title_category_saved_plans", managers.localization:text("wolfhud_preplanning_load"), nil, tweak_data.screen_colors.text)
 			end
@@ -449,7 +450,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 					
 					local open_menus = managers.menu and managers.menu._open_menus
 					local active_menu = open_menus and open_menus[#open_menus]
-					if active_menu and active_menu.logic and active_menu.logic then
+					if active_menu and active_menu.logic then
 						active_menu.logic:refresh_node(active_menu.logic:selected_node())
 					end
 				end,
