@@ -36,7 +36,7 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 		end
 
 		function HUDTeammate:set_name(name, ...)
-			local _color_pos = 1
+			local _color_pos = 0
 			if not self._ai then
 				if (self._main_player and WolfHUD:getSetting({"CustomHUD", "PLAYER", "TRUNCATE_TAGS"}, true) or self:peer_id() and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "TRUNCATE_TAGS"}, true)) then
 					name = WolfHUD:truncateNameTag(name)
@@ -49,12 +49,12 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 						tostring(level)
 					)
 					name = level_str .. name
-					_color_pos = level_str:len() + 1
+					_color_pos = level_str:len()
 				end
 			end
 			set_name_original(self, name,...)
 			if not self._ai then
-				self._panel:child("name"):set_range_color(_color_pos, name:len(), self._panel:child("callsign"):color():with_alpha(1))
+				self._panel:child("name"):set_range_color(_color_pos + 1, name:len() + 1, self._panel:child("callsign"):color():with_alpha(1))
 			end
 		end
 
