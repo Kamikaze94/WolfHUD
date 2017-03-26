@@ -240,7 +240,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			
 			local player_panel = self._panel:child("player")
 			local name_label = self._panel:child("name")
-			self._kills_panel:set_rightbottom(player_panel:right(), (self._id == HUDManager.PLAYER_PANEL) and name_label:bottom() or name_label:top())
+			self._kills_panel:set_rightbottom(player_panel:right(), self._main_player and name_label:bottom() or name_label:top())
 			local killcount_color = WolfHUD:getColorSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "COLOR"}, "yellow")
 			
 			self._kill_icon = self._kills_panel:bitmap({
@@ -272,7 +272,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 		end
 		
 		function HUDTeammate:init_accuracy()
-			if not (self._id == HUDManager.PLAYER_PANEL) then return end
+			if not self._main_player then return end
 			self._accuracy_panel = self._panel:panel({
 				name = "accuracy_panel",
 				visible = WolfHUD:getSetting({"CustomHUD", "PLAYER", "SHOW_ACCURACY"}, true),
@@ -330,6 +330,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			self._kills_text:set_text(kill_string)
 			local _, _, w, _ = self._kills_text:text_rect()
 			self._kill_icon:set_right(self._kills_panel:w() - w - self._kill_icon:w() * 0.15)
+			if self._main_player and not WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "HIDE"}, false) then
+				self._max_name_panel_width = (self._kills_panel:x() + self._kill_icon:x() - 4)
+				self:_truncate_name()
+			end
 			
 			local color = WolfHUD:getColorSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "COLOR"}, "yellow")
 			self._kill_icon:set_color(color)
@@ -362,14 +366,18 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 				self._kills_panel:set_bottom(self._panel:child("player"):bottom())
 			else
 				local name_label = self._panel:child("name")
-				self._kills_panel:set_bottom((self._id == HUDManager.PLAYER_PANEL) and name_label:bottom() or name_label:top())
+				self._kills_panel:set_bottom(self._main_player and name_label:bottom() or name_label:top())
 			end
 		end
-		
+
 		function HUDTeammate:set_accuracy(value)
 			self._accuracy_text:set_text(tostring(value) .. "%")
 			local _, _, w, _ = self._accuracy_text:text_rect()
 			self._accuracy_icon:set_right(self._accuracy_panel:w() - w - self._accuracy_icon:w() * 0.15)
+			if WolfHUD:getSetting({"CustomHUD", "PLAYER", "KILLCOUNTER", "HIDE"}, false) and WolfHUD:getSetting({"CustomHUD", "PLAYER", "SHOW_ACCURACY"}, true) then
+				self._max_name_panel_width = (self._accuracy_panel:x() + self._accuracy_icon:x() - 4)
+				self:_truncate_name()
+			end
 		end
 	end
 end

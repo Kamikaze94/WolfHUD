@@ -33,10 +33,11 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 			if i == HUDManager.PLAYER_PANEL and not HUDManager.CUSTOM_TEAMMATE_PANELS then
 				self:_create_stamina_circle()
 			end
+			local name_panel = self._panel:child("name")
+			self._max_name_panel_width = name_panel:x() + name_panel:w()
 		end
 
 		function HUDTeammate:set_name(name, ...)
-			local _color_pos = 0
 			if not self._ai then
 				if (self._main_player and WolfHUD:getSetting({"CustomHUD", "PLAYER", "TRUNCATE_TAGS"}, true) or self:peer_id() and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "TRUNCATE_TAGS"}, true)) then
 					name = WolfHUD:truncateNameTag(name)
@@ -49,13 +50,36 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 						tostring(level)
 					)
 					name = level_str .. name
-					_color_pos = level_str:len()
+					self._color_pos = level_str:len()
 				end
 			end
 			set_name_original(self, name,...)
-			if not self._ai then
-				self._panel:child("name"):set_range_color(_color_pos + 1, name:len() + 1, self._panel:child("callsign"):color():with_alpha(1))
+			self:_truncate_name()
+		end
+
+		function HUDTeammate:_truncate_name()
+			local name_panel = self._panel:child("name")
+			local name_bg_panel = self._panel:child("name_bg")
+			local teammate_name = name_panel:text()
+			name_panel:set_vertical("center")
+			name_panel:set_font_size(tweak_data.hud_players.name_size)
+			name_panel:set_w(self._panel:w() - name_panel:x())
+			local _,_,w,h = name_panel:text_rect()
+			while (name_panel:x() + w) > self._max_name_panel_width do
+				if name_panel:font_size() > 15.1 then
+					name_panel:set_font_size(name_panel:font_size() - 0.1)
+				else
+					name_panel:set_text(teammate_name:sub(1, teammate_name:len() - 1))
+				end
+				teammate_name = name_panel:text()
+				_,_,w,h = name_panel:text_rect()
 			end
+			if not self._ai then
+				name_panel:set_range_color((self._color_pos or 0) + 1, name_panel:text():len() + 1, self._panel:child("callsign"):color():with_alpha(1))
+			end
+			name_bg_panel:set_w(w + 4)
+			name_bg_panel:set_h(h + 2)
+			name_bg_panel:set_y(name_panel:y() + name_panel:h() / 2 - h / 2 - 1)
 		end
 
 		function HUDTeammate:_create_stamina_circle()
