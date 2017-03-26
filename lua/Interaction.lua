@@ -177,7 +177,64 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerciv
 			return _check_action_interact_original(self, t, input, ...)
 		end
 	end
-	
+
+elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerdriving" then
+
+	local _update_action_timers_original = PlayerDriving._update_action_timers
+	local _start_action_exit_vehicle_original = PlayerDriving._start_action_exit_vehicle
+	local _check_action_exit_vehicle_original = PlayerDriving._check_action_exit_vehicle
+
+	function PlayerDriving:_update_action_timers(t, ...)
+		self:_check_interaction_locked(t)
+		return _update_action_timers_original(self, t, ...)
+	end
+
+	function PlayerDriving:_start_action_exit_vehicle(t)
+		if not self:_interacting() then
+			return _start_action_exit_vehicle_original(self, t)
+		end
+	end
+
+	function PlayerDriving:_check_action_exit_vehicle(t, input, ...)
+		if not self:_check_interact_toggle(t, input) then
+			return _check_action_exit_vehicle_original(self, t, input, ...)
+		end
+	end
+
+	function PlayerDriving:_check_interact_toggle(t, input)
+		PlayerDriving.EQUIPMENT_PRESS_INTERRUPT = WolfHUD:getSetting({"INTERACTION", "EQUIPMENT_PRESS_INTERRUPT"}, true) 	--Use the equipment key ('G') to toggle off active interactions
+		local interrupt_key_press = input.btn_interact_press
+		if PlayerDriving.EQUIPMENT_PRESS_INTERRUPT then
+			interrupt_key_press = input.btn_use_item_press
+		end
+		if interrupt_key_press and self:_interacting() then
+			self:_interupt_action_exit_vehicle()
+			return true
+		elseif input.btn_interact_release and self:_interacting() then
+			if self._interaction_locked then
+				return true
+			end
+		end
+	end
+
+	function PlayerDriving:_check_interaction_locked(t)
+		PlayerDriving.LOCK_MODE = WolfHUD:getSetting({"INTERACTION", "LOCK_MODE"}, 3)						--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
+		PlayerDriving.MIN_TIMER_DURATION = WolfHUD:getSetting({"INTERACTION", "MIN_TIMER_DURATION"}, 5)			--Min interaction duration (in seconds) for the toggle behavior to activate
+		local is_locked = false
+		if self._exit_vehicle_expire_t ~= nil then
+			if PlayerDriving.LOCK_MODE == 3 then
+				is_locked = (PlayerDriving.EXIT_VEHICLE_TIMER >= PlayerDriving.MIN_TIMER_DURATION) -- lock interaction, when total timer time is longer then given time
+			elseif PlayerDriving.LOCK_MODE == 2 then
+				is_locked = self._exit_vehicle_expire_t and (t - (self._exit_vehicle_expire_t - PlayerDriving.EXIT_VEHICLE_TIMER) >= PlayerDriving.MIN_TIMER_DURATION) --lock interaction, when interacting longer then given time
+			end
+		end
+
+		if self._interaction_locked ~= is_locked then
+			managers.hud:set_interaction_bar_locked(is_locked, "")
+			self._interaction_locked = is_locked
+		end
+	end
+
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDManager:set_interaction_bar_locked(status, tweak_entry)

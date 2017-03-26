@@ -76,6 +76,7 @@ if not _G.WolfHUD then
 		["lib/units/beings/player/playermovement"] 					= { "GameInfoManager.lua" },
 		["lib/units/beings/player/huskplayermovement"] 				= { "DownCounter.lua" },
 		["lib/units/beings/player/states/playercivilian"] 			= { "Interaction.lua" },
+		["lib/units/beings/player/states/playerdriving"]			= { "Interaction.lua" },
 		["lib/units/beings/player/states/playerstandard"] 			= { "GameInfoManager.lua", "EnemyHealthbar.lua", "Interaction.lua", "BurstFire.lua", "WeaponGadgets.lua" },
 		["lib/units/beings/player/states/playermaskoff"] 			= { "GameInfoManager.lua" },
 		["lib/units/beings/player/states/playerbleedout"] 			= { "DownCounter.lua" },
