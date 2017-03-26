@@ -124,7 +124,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	end
 
 	function CopDamage:build_popup_text(damage, headshot, is_new)
-		self._dmg_value = (is_new and self._dmg_value or 0) + (damage * 10)
+		self._dmg_value = (not is_new and self._dmg_value or 0) + (damage * 10)
 		return math.floor(self._dmg_value) .. ((CopDamage.DMG_POPUP_SETTING == 3 and headshot) and "!" or "")
 	end
 
