@@ -1285,6 +1285,31 @@ if WolfHUD then
 							},
 							{
 								type = "slider",
+								name_id = "wolfhud_dmg_popup_skull_scale_title",
+								desc_id = "wolfhud_dmg_popup_skull_scale_desc",
+								visible_reqs = {
+									{ setting = { "DamagePopup", "DISPLAY_MODE" }, min = 2 },
+								},
+								value = {"DamagePopup", "SKULL_SCALE"},
+								min_value = 0.1,
+								max_value = 3,
+								step_size = 0.1,
+							},
+							{
+								type = "multi_choice",
+								name_id = "wolfhud_dmg_popup_skull_align_title",
+								desc_id = "wolfhud_dmg_popup_skull_align_desc",
+								value = {"DamagePopup", "SKULL_ALIGN"},
+								visible_reqs = {
+									{ setting = { "DamagePopup", "DISPLAY_MODE" }, min = 2 },
+								},
+								options = {
+									"wolfhud_multiselect_left",
+									"wolfhud_multiselect_right"
+								},
+							},
+							{
+								type = "slider",
 								name_id = "wolfhud_dmg_popup_time_title",
 								desc_id = "wolfhud_dmg_popup_time_desc",
 								visible_reqs = {

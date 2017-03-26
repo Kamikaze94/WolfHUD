@@ -206,6 +206,8 @@ if not _G.WolfHUD then
 				DISPLAY_MODE							= 2,
 				DURATION	 							= 3,
 				SCALE									= 1,
+				SKULL_SCALE								= 1.2,
+				SKULL_ALIGN								= 1,			-- left (1) or right (2)
 				COLOR									= "yellow",
 				HEADSHOT_COLOR							= "red",
 			},

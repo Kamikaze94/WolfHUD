@@ -7,13 +7,13 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	end
 	
 	function CopDamage:_process_popup_damage(attack_data)
-		local dmg_popup_setting = WolfHUD:getSetting({"DamagePopup", "DISPLAY_MODE"}, true)
+		CopDamage.DMG_POPUP_SETTING = WolfHUD:getSetting({"DamagePopup", "DISPLAY_MODE"}, 2)
 		
 		local attacker = alive(attack_data.attacker_unit) and attack_data.attacker_unit
 		local damage = tonumber(attack_data.damage) or 0
 		
 
-		if attacker and damage >= 0.1 and dmg_popup_setting > 1 then
+		if attacker and damage >= 0.1 and CopDamage.DMG_POPUP_SETTING > 1 then
 			local killer
 			
 			if attacker:in_slot(3) or attacker:in_slot(5) then	
@@ -46,21 +46,21 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 			end
 			
 			if alive(killer) then
-				if dmg_popup_setting == 2 then
+				local headshot = self._head_body_name and attack_data.col_ray and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_head_body_name
+				if CopDamage.DMG_POPUP_SETTING == 2 then
 					if killer:in_slot(2) then
-						local headshot = self._head_body_name and attack_data.col_ray and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_head_body_name
 						self:show_popup(damage, self._dead, headshot)
 					end
 				else
 					local color_id = managers.criminals:character_color_id_by_unit(killer)
 					if color_id then
-						self:show_popup(damage, self._dead, nil, color_id)
+						self:show_popup(damage, self._dead, headshot, color_id)
 					end
 				end
 			end
 		end
 	end
-	
+
 	function CopDamage:show_popup(damage, dead, headshot, color_id)
 		if managers.waypoints then
 			local id = "damage_wp_" .. tostring(self._unit:key())
@@ -68,14 +68,11 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 			local waypoint_color = color_id and tweak_data.chat_colors[color_id] or WolfHUD:getColorSetting({"DamagePopup", headshot and "HEADSHOT_COLOR" or "COLOR"}, "yellow")
 			local waypoint_duration = WolfHUD:getSetting({"DamagePopup", "DURATION"}, 3)
 			if waypoint and not waypoint:is_deleted() then
-				self._dmg_value = self._dmg_value + (damage * 10)
 				managers.waypoints:set_waypoint_duration(id, "duration", waypoint_duration)
-				managers.waypoints:set_waypoint_label(id, "label", math.floor(self._dmg_value))
+				managers.waypoints:set_waypoint_label(id, "label", self:build_popup_text(damage, headshot))
 				managers.waypoints:set_waypoint_setting(id, "color", waypoint_color)
 				managers.waypoints:set_waypoint_component_setting(id, "icon", "show", dead)
 			else
-				self._dmg_value = (damage * 10)
-							
 				local params = {
 					unit = self._unit,
 					offset = Vector3(10, 10, 20),
@@ -98,7 +95,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 					icon = {
 						type = "icon",
 						show = dead, 
-						scale = 1.2, 
+						scale = WolfHUD:getSetting({"DamagePopup", "SKULL_SCALE"}, 1.2),
 						texture = "guis/textures/pd2/risklevel_blackscreen", 
 						texture_rect = {0, 0, 64, 64},
 						blend_mode = "normal",
@@ -107,7 +104,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 					label = {
 						type = "label",
 						show = true, 
-						text = math.floor(self._dmg_value) 
+						text = self:build_popup_text(damage, headshot, true)
 					},
 					duration = {
 						type = "duration",
@@ -119,12 +116,18 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 							position = Vector3(0, 0, 30),
 						},
 					},
-					component_order = { { "icon", "label" }, { "duration" } }
+					component_order = { WolfHUD:getSetting({"DamagePopup", "SKULL_ALIGN"}, 1) == 1 and { "icon", "label" } or { "label", "icon" } , { "duration" } }
 				}
 				managers.waypoints:add_waypoint(id, "CustomWaypoint", params)
 			end
 		end
 	end
+
+	function CopDamage:build_popup_text(damage, headshot, is_new)
+		self._dmg_value = (not is_new and self._dmg_value or 0) + (damage * 10)
+		return math.floor(self._dmg_value) .. ((CopDamage.DMG_POPUP_SETTING == 3 and headshot) and "!" or "")
+	end
+
 elseif RequiredScript == "lib/units/civilians/civiliandamage" then
 	local _on_damage_received_original = CivilianDamage._on_damage_received
 	function CivilianDamage:_on_damage_received(data, ...)
