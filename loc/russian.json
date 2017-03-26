@@ -159,8 +159,8 @@
     "wolfhud_enemy_hector_boss" : "Бронированный Гектор",
     "wolfhud_enemy_hector_boss_no_armor" : "Гектор",
 	"wolfhud_enemy_crew" : "Член Команды",
-	"wolfhud_enemy_butler" : "Aldstone",
-	"wolfhud_enemy_vlad" : "Vlad",
+	"wolfhud_enemy_butler" : "Альдстоун",
+	"wolfhud_enemy_vlad" : "Влад",
     
 	
     "wolfhud_multiselect_all" : "Все",
@@ -419,8 +419,8 @@
     "wolfhud_hudlist_show_ecm_retrigger_desc" : "Показать, когда джаммер готов перезапуститься.",
     "wolfhud_hudlist_show_minions_title" : "Показать джокеров",
     "wolfhud_hudlist_show_minions_desc" : "Показать здоровьее всех пойманных копов.",
-	"wolfhud_hudlist_show_own_minions_only_title" : "Own Jokers Only",
-	"wolfhud_hudlist_show_own_minions_only_desc" : "Only display your own jokered Cops.",
+	"wolfhud_hudlist_show_own_minions_only_title" : "Только свои джокеры",
+	"wolfhud_hudlist_show_own_minions_only_desc" : "Показывать только своих джокеров.",
     "wolfhud_hudlist_show_pagers_title" : "Показать пейджеры",
     "wolfhud_hudlist_show_pagers_desc" : "Показать таймер оставшегося времени пейджера перед триггерами сигнализации.",
     "wolfhud_hudlist_show_tape_loop_title" : "Показать зацикленные камеры",
