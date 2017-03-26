@@ -21,6 +21,7 @@
 	"bm_w_sub2000" 				: "Kel-tec SUB-2000",
 	"bm_w_tecci"				: "H&K 416C",
 	"bm_w_contraband"			: "H&K 417",
+	"bm_w_flint"				: "Izhmash AK-12",
  
 	"bm_w_spas12" 				: "Franchi SPAS-12",
 	"bm_w_b682" 				: "CZ Redhead Deluxe",
@@ -58,6 +59,7 @@
 	"bm_w_model70" 				: "Winchester Model 70",
 	"bm_w_desertfox"			: "Desert Tech SRSA1",
 	"bm_w_tti"					: "KAC SR-25",
+	"bm_w_siltstone"			: "SVD Dragunov",
 
 	"bm_w_rpk" 					: "Izhmash RPK",
 	"bm_w_m249" 				: "FN M249 Para",
@@ -106,6 +108,7 @@
 	"bm_w_sr2" 					: "SR-2M Veresk",
 	"bm_w_hajk"					: "AR15 S4F",
 	"bm_w_schakal" 				: "UMP 45",
+	"bm_w_coal" 				: "PP-19 Bizon",
 
 
 

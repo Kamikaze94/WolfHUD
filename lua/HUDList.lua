@@ -111,6 +111,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
         show_ecms 						= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_ecms"}, true),       				--Active ECMs
         show_ecm_retrigger 				= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_ecm_retrigger"}, true),      		--Countdown for player owned ECM feedback retrigger delay
         show_minions 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_minions"}, true),    				--Converted enemies, type and health
+			show_own_minions_only 		= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_own_minions_only"}, true),			--Only show player-owned minions
         show_pagers 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_pagers"}, true),     				--Show currently active pagers
         show_tape_loop 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_tape_loop"}, true),  				--Show active tape loop duration
         
@@ -723,7 +724,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local minion_list = self:list("left_side_list"):item("minions")
 		
 		if event == "add" then
-			minion_list:register_item(key, HUDList.MinionItem, data):activate()
+			local item = minion_list:register_item(key, HUDList.MinionItem, data)
+			
+			if not HUDListManager.ListOptions.show_own_minions_only then
+				item:activate()
+			end
 		elseif event == "remove" then
 			minion_list:unregister_item(key)
 		end
@@ -927,7 +932,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				end
 			end
 		end
-		self:_set_hostage_color( HUDListManager.ListOptions.civilian_color )
+		self:_set_hostage_color( color or HUDListManager.ListOptions.civilian_color )
 	end
 	
 	function HUDListManager:_set_hostage_color(color)
@@ -959,12 +964,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				if data._id:find("cop") and data._icon then
 					data._icon:set_color(color or HUDListManager.ListOptions.enemy_color)
 					if data._shield_filler then
-						data._shield_filler:set_color(HUDListManager.ListOptions.enemy_color)
+						data._shield_filler:set_color(color or HUDListManager.ListOptions.enemy_color)
 					end
 				end
 			end
 		end
-		self:_set_guard_color(HUDListManager.ListOptions.enemy_color)
+		self:_set_guard_color(color or HUDListManager.ListOptions.enemy_color)
 	end
 	
 	function HUDListManager:_set_guard_color(color)
@@ -976,7 +981,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				end
 			end
 		end
-		self:_set_turret_color(HUDListManager.ListOptions.special_color)
 	end
 	
 	function HUDListManager:_set_special_color(color)
@@ -988,6 +992,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				end
 			end
 		end
+		self:_set_turret_color(HUDListManager.ListOptions.special_color)
 	end
 	
 	function HUDListManager:_set_turret_color(color)
@@ -1041,6 +1046,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		for key, data in pairs(managers.gameinfo:get_minions()) do
 			clbk(HUDListManager.ListOptions.show_minions and "add" or "remove", key, data)
  		end
+	end
+	
+	function HUDListManager:_set_show_own_minions_only()
+		local minion_list = self:list("left_side_list"):item("minions")
+		
+		for name, item in pairs(minion_list:items()) do
+			item:set_active(not HUDListManager.ListOptions.show_own_minions_only or data.owner == managers.network:session():local_peer():id())
+		end
 	end
 	
 	function HUDListManager:_set_show_pagers()
@@ -3413,6 +3426,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 	
+	function HUDList.MinionItem:owner()
+		return self._owner
+	end
+	
 	function HUDList.MinionItem:_set_health_ratio(data, skip_animate)
 		self._health_bar:set_color(Color(1, data.health_ratio, 1, 1))
 		if not skip_animate then
@@ -3422,7 +3439,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.MinionItem:_set_owner(data)
-		self._unit_type:set_color(data.owner and tweak_data.chat_colors[data.owner]:with_alpha(1) or Color(1, 1, 1, 1))
+		if data.owner then
+			self._owner = data.owner
+			self._unit_type:set_color(tweak_data.chat_colors[data.owner]:with_alpha(1) or Color(1, 1, 1, 1))
+
+			if HUDListManager.ListOptions.show_own_minions_only then
+				self:set_active(data.owner == managers.network:session():local_peer():id())
+			end
+		end
 	end
 	
 	function HUDList.MinionItem:_set_kills(data)

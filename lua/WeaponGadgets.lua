@@ -1,4 +1,4 @@
-print_info = print_info or function(...) WolfHUD:print_log(string.format(...), "info") end
+local print_info = print_info or function(...) WolfHUD:print_log(string.format(...), "info") end
 
 if RequiredScript == "lib/units/weapons/weapongadgetbase" then
 	
@@ -88,6 +88,7 @@ elseif RequiredScript == "lib/units/weapons/weaponlaser" then
 	
 	function WeaponLaser:init(...)
 		init_original(self, ...)
+		--self._brush = Draw:brush(self._brush_color or Color(0, 1, 0))
 		self._theme_type = "player"
 		self:refresh_themes()
 	end
@@ -392,6 +393,7 @@ if string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" then
 		wa2000		= Vector3(-12, 8.8, -11.3),		--TODO: Reload Stock clipping...
 		mosin		= Vector3(-10, 8, -9.5),
 		desertfox 	= Vector3(-12, 8.8, -11.3),		-- TODO: Stock clipping on stop running...
+		siltstone 	= Vector3(-12.8, 10, -8),		-- TODO: untested
 	}
 	
 	function FPCameraPlayerBase:clbk_stance_entered(new_shoulder_stance, new_head_stance, new_vel_overshot, new_fov, new_shakers, stance_mod, ...)

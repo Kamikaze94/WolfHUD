@@ -261,6 +261,7 @@ if not _G.WolfHUD then
 					show_ecms 								= true,		--Active ECMs
 					show_ecm_retrigger 						= true,  	--Countdown for players own ECM feedback retrigger delay
 					show_minions 							= true,  	--Converted enemies, type and health
+						show_own_minions_only				= false,	--Only show player-owned minions
 					show_pagers 							= true,  	--Show currently active pagers
 					show_tape_loop 							= true,  	--Show active tape loop duration
 				},

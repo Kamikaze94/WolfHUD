@@ -209,7 +209,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 				self._panel:animate(callback(self, self, "_animate_move"), (self._offset_y > 40 or WolfHUD:getSetting({"TabStats", "CLOCK_MODE"}, 3) == 4) and 0 or 80, self._panel:y(), true)
 			end
 		end
-		if managers.hud and HUDListManager then 
+		if managers.hud and managers.hud.change_list_setting then 
 			managers.hud:change_list_setting("left_list_height_offset", self._offset_y + (self._bg_box:w() > 0 and (self._bg_box:h() + HUDObjectives._BOUNCE) or 40) + HUDObjectives._TEXT_MARGIN) 
 		end
 	end

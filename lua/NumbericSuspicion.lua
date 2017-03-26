@@ -46,9 +46,7 @@ function HUDSuspicion:_animate_detection_text(_suspicion_panel)
 			t = t + dt
 			local detection = self:_is_detected() and 1 or math.clamp(math.round(self._suspicion_value*100)/100, 0, 1)
 			local color = math.lerp(Color(0, 0.71, 1), Color(0.99, 0.08, 0), detection)
-			local alpha = WolfHUD:getSetting({"HUDSuspicion", "SHOW_PERCENTAGE"}, true) and 1 or 0
 			suspicion_text:set_color(color)
-			suspicion_text:set_alpha(alpha)
 			suspicion_text:set_text(math.round(detection*100) .. "%")
 			dt = 0
 		end
@@ -65,7 +63,9 @@ function HUDSuspicion:animate_eye(...)
 	self._misc_panel:child("hud_stealth_eye"):set_visible(visibile)
 	self._misc_panel:child("hud_stealth_exclam"):set_visible(visibile)
 	self._animating_text = true
-	self._text_animation = self._suspicion_panel:child("suspicion_text_panel"):animate(callback(self, self, "_animate_detection_text"))
+	if WolfHUD:getSetting({"HUDSuspicion", "SHOW_PERCENTAGE"}, true) then
+		self._text_animation = self._suspicion_panel:child("suspicion_text_panel"):animate(callback(self, self, "_animate_detection_text"))
+	end
 end
  
 function HUDSuspicion:hide(...)
@@ -105,5 +105,8 @@ function HUDSuspicion:rescale()
 		hud_stealth_exclam:set_center(suspicion_left:center_x(), suspicion_left:top() - 4)
 		suspicion_text:set_y(suspicion_left:top() + (suspicion_left:center_y() - suspicion_left:top()) / 2 - suspicion_text:font_size() / 2)
 		self._scale = scale
+	end
+	if WolfHUD:getSetting({"HUDSuspicion", "SHOW_PERCENTAGE"}, true) and self._animating_text and not self._text_animation then
+		self._text_animation = self._suspicion_panel:child("suspicion_text_panel"):animate(callback(self, self, "_animate_detection_text"))
 	end
 end

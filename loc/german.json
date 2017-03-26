@@ -161,6 +161,8 @@
 	"wolfhud_enemy_hector_boss" : "Gepanzerter Hector",
 	"wolfhud_enemy_hector_boss_no_armor" : "Hector",
 	"wolfhud_enemy_crew" : "Crew Mitglied",
+	"wolfhud_enemy_butler" : "Aldstone",
+	"wolfhud_enemy_vlad" : "Vlad",
 	
 	
 	"wolfhud_multiselect_all" : "Alle",
@@ -422,8 +424,10 @@
 	"wolfhud_hudlist_show_ecms_desc" : "Zeige Timer für ECM's ",
 	"wolfhud_hudlist_show_ecm_retrigger_title" : "Zeige ECM Reaktivierungen",
 	"wolfhud_hudlist_show_ecm_retrigger_desc" : "Zeige, wenn ein ECM bereit für eine reaktivierung ist.",
-	"wolfhud_hudlist_show_minions_title" : "Zeige Jokers",
+	"wolfhud_hudlist_show_minions_title" : "Zeige Joker",
 	"wolfhud_hudlist_show_minions_desc" : "Zeige das Leben aller konvertierten Polizisten.",
+	"wolfhud_hudlist_show_own_minions_only_title" : "Nur eigene Joker",
+	"wolfhud_hudlist_show_own_minions_only_desc" : "Zeige nur eigene konvertierte Polizisten.",
 	"wolfhud_hudlist_show_pagers_title" : "Zeige Pager",
 	"wolfhud_hudlist_show_pagers_desc" : "Zeige Timer für die verbleibende Zeit des Pagers, bevor der Alarm aktiviert wird.",
 	"wolfhud_hudlist_show_tape_loop_title" : "Zeige Kameraschleife",

@@ -1,71 +1,76 @@
 if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	HUDManager.CharacterData = {
-		[ "civilian" ] 					= "wolfhud_enemy_civilian",
-		[ "civilian_female" ] 			= "wolfhud_enemy_civilian",
-		[ "gangster" ] 					= "wolfhud_enemy_gangster",
-		[ "biker" ] 					= "wolfhud_enemy_biker",
-		[ "biker_escape" ] 				= "wolfhud_enemy_biker",
-		[ "bolivian_indoors" ]			= "wolfhud_enemy_bolivian_security",
-		[ "bolivian" ]					= "wolfhud_enemy_bolivian_thug",
-		[ "mobster" ] 					= "wolfhud_enemy_mobster",
-		[ "security" ] 					= "wolfhud_enemy_security",
-		[ "security_undominatable" ] 	= "wolfhud_enemy_security",
-		[ "gensec" ] 					= "wolfhud_enemy_gensec",
-		[ "cop" ] 						= "wolfhud_enemy_cop",
-		[ "cop_female" ]				= "wolfhud_enemy_cop",
-		[ "cop_scared" ]				= "wolfhud_enemy_cop",
-		[ "fbi" ] 						= "wolfhud_enemy_fbi",
-		[ "swat" ] 						= "wolfhud_enemy_swat",
-		[ "heavy_swat" ] 				= "wolfhud_enemy_heavy_swat",
-		[ "fbi_swat" ] 					= "wolfhud_enemy_swat",
-		[ "fbi_heavy_swat" ] 			= "wolfhud_enemy_heavy_swat",
-		[ "city_swat" ] 				= "wolfhud_enemy_city_swat",
-		[ "shield" ] 					= "wolfhud_enemy_shield",
-		[ "spooc" ] 					= "wolfhud_enemy_spook",
-		[ "taser" ] 					= "wolfhud_enemy_taser",
-		[ "sniper" ] 					= "wolfhud_enemy_sniper",
-		[ "medic" ]						= "wolfhud_enemy_medic",
-		[ "tank" ] 						= "wolfhud_enemy_tank",
-		[ "tank_hw" ]					= "wolfhud_enemy_tank_hw",
-		[ "phalanx_minion" ] 			= "wolfhud_enemy_phalanx_minion",
-		[ "phalanx_vip" ] 				= "wolfhud_enemy_phalanx_vip",
-		[ "swat_van_turret_module" ] 	= "wolfhud_enemy_swat_van",
-		[ "ceiling_turret_module" ] 	= "wolfhud_enemy_ceiling_turret",
-		[ "sentry_gun" ]				= "wolfhud_enemy_sentry_gun",
-		[ "mobster_boss" ] 				= "wolfhud_enemy_mobster_boss",
-		[ "chavez_boss" ]				= "wolfhud_enemy_chavez_boss",
-		[ "drug_lord_boss" ]			= "wolfhud_enemy_druglord_boss",
-		[ "drug_lord_boss_stealth" ]	= "wolfhud_enemy_druglord_boss_stealth",
-		[ "biker_boss" ] 				= "wolfhud_enemy_biker_boss",
-		[ "bank_manager" ] 				= "wolfhud_enemy_bank_manager",
-		[ "inside_man" ] 				= "wolfhud_enemy_inside_man",
-		[ "escort_undercover" ] 		= "wolfhud_enemy_escort_undercover",
-		[ "drunk_pilot" ] 				= "wolfhud_enemy_drunk_pilot",
-		[ "escort" ] 					= "wolfhud_enemy_escort",
-		[ "boris" ]						= "wolfhud_enemy_boris",
-		[ "spa_vip" ]					= "wolfhud_enemy_spa_vip",
-		[ "spa_vip_hurt" ]				= "wolfhud_enemy_spa_vip_hurt",
-		[ "old_hoxton_mission" ] 		= "wolfhud_enemy_old_hoxton_mission",
-		[ "hector_boss" ] 				= "wolfhud_enemy_hector_boss",
-		[ "hector_boss_no_armor" ] 		= "wolfhud_enemy_hector_boss_no_armor",
-		[ "robbers_safehouse" ]			= "wolfhud_enemy_crew",
-		[ "russian" ] 					= "menu_russian",
-		[ "german" ] 					= "menu_german",
-		[ "spanish" ] 					= "menu_spanish",
-		[ "american" ] 					= "menu_american",
-		[ "jowi" ] 						= "menu_jowi",
-		[ "old_hoxton" ] 				= "menu_old_hoxton",
-		[ "female_1" ] 					= "menu_female_1",
-		[ "dragan" ] 					= "menu_dragan",
-		[ "jacket" ] 					= "menu_jacket",
-		[ "bonnie" ] 					= "menu_bonnie",
-		[ "sokol" ] 					= "menu_sokol",
-		[ "dragon" ] 					= "menu_dragon",
-		[ "bodhi" ] 					= "menu_bodhi",
-		[ "jimmy" ] 					= "menu_jimmy",
-		[ "sydney" ] 					= "menu_sydney",
-		[ "wild" ]						= "menu_wild",
-		[ "chico" ]						= "menu_chico",
+		[ "civilian" ] 						= "wolfhud_enemy_civilian",
+		[ "civilian_female" ] 				= "wolfhud_enemy_civilian",
+		[ "gangster" ] 						= "wolfhud_enemy_gangster",
+		[ "biker" ] 						= "wolfhud_enemy_biker",
+		[ "biker_escape" ] 					= "wolfhud_enemy_biker",
+		[ "bolivian_indoors" ]				= "wolfhud_enemy_bolivian_security",
+		[ "bolivian" ]						= "wolfhud_enemy_bolivian_thug",
+		[ "mobster" ] 						= "wolfhud_enemy_mobster",
+		[ "security" ] 						= "wolfhud_enemy_security",
+		[ "security_undominatable" ] 		= "wolfhud_enemy_security",
+		[ "gensec" ] 						= "wolfhud_enemy_gensec",
+		[ "cop" ] 							= "wolfhud_enemy_cop",
+		[ "cop_female" ]					= "wolfhud_enemy_cop",
+		[ "cop_scared" ]					= "wolfhud_enemy_cop",
+		[ "fbi" ] 							= "wolfhud_enemy_fbi",
+		[ "swat" ] 							= "wolfhud_enemy_swat",
+		[ "heavy_swat" ] 					= "wolfhud_enemy_heavy_swat",
+		[ "fbi_swat" ] 						= "wolfhud_enemy_swat",
+		[ "fbi_heavy_swat" ] 				= "wolfhud_enemy_heavy_swat",
+		[ "city_swat" ] 					= "wolfhud_enemy_city_swat",
+		[ "shield" ] 						= "wolfhud_enemy_shield",
+		[ "spooc" ] 						= "wolfhud_enemy_spook",
+		[ "taser" ] 						= "wolfhud_enemy_taser",
+		[ "sniper" ] 						= "wolfhud_enemy_sniper",
+		[ "medic" ]							= "wolfhud_enemy_medic",
+		[ "tank" ] 							= "wolfhud_enemy_tank",
+		[ "tank_hw" ]						= "wolfhud_enemy_tank_hw",
+		[ "phalanx_minion" ] 				= "wolfhud_enemy_phalanx_minion",
+		[ "phalanx_vip" ] 					= "wolfhud_enemy_phalanx_vip",
+		[ "swat_van_turret_module" ] 		= "wolfhud_enemy_swat_van",
+		[ "ceiling_turret_module" ] 		= "wolfhud_enemy_ceiling_turret",
+		[ "ceiling_turret_module_no_idle" ] = "wolfhud_enemy_ceiling_turret",
+		[ "sentry_gun" ]					= "wolfhud_enemy_sentry_gun",
+		[ "mobster_boss" ] 					= "wolfhud_enemy_mobster_boss",
+		[ "chavez_boss" ]					= "wolfhud_enemy_chavez_boss",
+		[ "drug_lord_boss" ]				= "wolfhud_enemy_druglord_boss",
+		[ "drug_lord_boss_stealth" ]		= "wolfhud_enemy_druglord_boss_stealth",
+		[ "biker_boss" ] 					= "wolfhud_enemy_biker_boss",
+		[ "bank_manager" ] 					= "wolfhud_enemy_bank_manager",
+		[ "inside_man" ] 					= "wolfhud_enemy_inside_man",
+		[ "escort_undercover" ] 			= "wolfhud_enemy_escort_undercover",
+		[ "drunk_pilot" ] 					= "wolfhud_enemy_drunk_pilot",
+		[ "escort" ] 						= "wolfhud_enemy_escort",
+		[ "boris" ]							= "wolfhud_enemy_boris",
+		[ "spa_vip" ]						= "wolfhud_enemy_spa_vip",
+		[ "spa_vip_hurt" ]					= "wolfhud_enemy_spa_vip_hurt",
+		[ "old_hoxton_mission" ] 			= "wolfhud_enemy_old_hoxton_mission",
+		[ "hector_boss" ] 					= "wolfhud_enemy_hector_boss",
+		[ "hector_boss_no_armor" ] 			= "wolfhud_enemy_hector_boss_no_armor",
+		[ "robbers_safehouse" ]				= "wolfhud_enemy_crew",
+		[ "butler" ]						= "wolfhud_enemy_butler",
+		[ "vlad" ]							= "wolfhud_enemy_vlad",
+		[ "russian" ] 						= "menu_russian",
+		[ "german" ] 						= "menu_german",
+		[ "spanish" ] 						= "menu_spanish",
+		[ "american" ] 						= "menu_american",
+		[ "jowi" ] 							= "menu_jowi",
+		[ "old_hoxton" ] 					= "menu_old_hoxton",
+		[ "female_1" ] 						= "menu_female_1",
+		[ "clover" ] 						= "menu_female_1",
+		[ "dragan" ] 						= "menu_dragan",
+		[ "jacket" ] 						= "menu_jacket",
+		[ "bonnie" ] 						= "menu_bonnie",
+		[ "sokol" ] 						= "menu_sokol",
+		[ "dragon" ] 						= "menu_dragon",
+		[ "bodhi" ] 						= "menu_bodhi",
+		[ "jimmy" ] 						= "menu_jimmy",
+		[ "sydney" ] 						= "menu_sydney",
+		[ "wild" ]							= "menu_wild",
+		[ "chico" ]							= "menu_chico",
+		[ "terry" ]							= "menu_chico",
 	}
 
 	Hooks:PostHook( HUDManager , "_player_hud_layout" , "WolfHUDPostHUDManagerPlayerInfoHUDLayout" , function( self )
@@ -219,7 +224,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		local rn = ( self._unit_bar_bg:w() - 4 ) * _r
 
 		self._unit_health_enemy_text:set_text( enemy )
-		self._unit_health_text:set_text( string.format( "%d/%d" , current , total ) )
+		if total > 0 then
+			self._unit_health_text:set_text( string.format( "%d/%d" , current , total ) )
+		else
+			self._unit_health_text:set_text( string.format( "%d" , current ) )
+		end
 		
 		local hx , hy , hw , hh = self._unit_health_text:text_rect()
 		local ex , ey , ew , eh = self._unit_health_enemy_text:text_rect()
@@ -238,18 +247,17 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		
 		self._bar_text_rect = self._shield and self._shield_text_rect or self._health_text_rect
 		
-		if rn < r then
-			self._unit_bar:animate( function( p )
+		self._unit_bar:animate( function( p )
+			if rn < r then
 				over( 0.2 , function( o )
 					self._unit_bar:set_w( math.lerp( r , rn , o ) )
-					self._unit_bar:set_texture_rect( self._bar_text_rect[ 1 ] , self._bar_text_rect[2] , math.lerp( r , rn , o ) , self._bar_text_rect[ 4 ] )
+					self._unit_bar:set_texture_rect( self._bar_text_rect[1] , self._bar_text_rect[2] , math.lerp( r , rn , o ) , self._bar_text_rect[4] )
 				end )
-			end )
-		end
-		
-		self._unit_bar:set_w( _r * ( self._bar_text_rect[ 3 ] - 2 ) )
-		self._unit_bar:set_texture_rect( self._bar_text_rect[ 1 ] , self._bar_text_rect[2] , self._bar_text_rect[ 3 ] * _r , self._bar_text_rect[ 4 ] )
-
+			end
+			
+			self._unit_bar:set_w( _r * ( self._bar_text_rect[3] - 2 ) )
+			self._unit_bar:set_texture_rect( self._bar_text_rect[1] , self._bar_text_rect[2] , self._bar_text_rect[3] * _r , self._bar_text_rect[4] )
+		end )
 	end
 
 	function HUDManager:set_unit_health_rotation( angle )
@@ -259,43 +267,69 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	end
 elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
 	Hooks:PostHook( PlayerStandard , "_update_fwd_ray" , "WolfHUDPostPlayerStandardUpdate" , function( self , t , dt )
-		if self._last_unit then
-			local angle = self:getUnitRotation( self._last_unit )
-			managers.hud:set_unit_health_rotation( 360 - angle )
-		end
-		
 		if self._fwd_ray and self._fwd_ray.unit and type(self._fwd_ray.unit) == "userdata" then
 			local unit = self._fwd_ray.unit
-			if unit:in_slot( 8 ) and alive(unit:parent()) then unit = unit:parent() end
-			local turrets = managers.groupai:state():turrets() or {}
-			if alive( unit ) and unit:in_slot( 25 ) and (table.contains(turrets, unit) or WolfHUD:getSetting({"EnemyHealthbar", "SHOW_CIVILIAN"}, true) and Network:is_server()) and not unit:character_damage():dead() then
-				self._last_unit = nil
-				if not unit:character_damage():needs_repair() then
-					managers.hud:set_unit_health_visible( true, true )
-					managers.hud:set_unit_health( unit:character_damage()._shield_health * 10 or 0 , unit:character_damage()._SHIELD_HEALTH_INIT * 10 or 0 , unit:base():get_name_id() or "TURRET" )
-				else
-					managers.hud:set_unit_health_visible( true )
-					managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base():get_name_id() or "TURRET" )
-				end
-			elseif alive( unit ) and ( unit:in_slot( 12 ) or WolfHUD:getSetting({"EnemyHealthbar", "SHOW_CIVILIAN"}, false) and ( unit:in_slot( 21 ) or unit:in_slot( 22 ) ) or unit:in_slot( 16 ) and Network:is_server()) and not unit:character_damage():dead() then
-				self._last_unit = unit
-				managers.hud:set_unit_health_visible( true )
-				managers.hud:set_unit_health( unit:character_damage()._health * 10 or 0 , unit:character_damage()._HEALTH_INIT * 10 or 0 , unit:base()._tweak_table or "ENEMY" )
-			elseif alive( unit ) and unit:in_slot( 39 ) and WolfHUD:getSetting({"EnemyHealthbar", "SHOW_VEHICLE"}, true) and unit:vehicle_driving() and not self._seat then
-				self._last_unit = nil
-				managers.hud:set_unit_health_visible( true )
-				managers.hud:set_unit_health( unit:character_damage()._health or 0 , unit:character_damage()._current_max_health or 0 , string.upper(unit:vehicle_driving()._tweak_data.name) or "VEHICLE" )
-			else
-				if self._last_unit and alive( self._last_unit ) then
-					managers.hud:set_unit_health( self._last_unit:character_damage()._health * 10 or 0 , self._last_unit:character_damage()._HEALTH_INIT * 10 or 0 , self._last_unit:base()._tweak_table or "ENEMY" )
-					local angle = self:getUnitRotation(self._last_unit)
-					if angle < 0 then angle = angle + 360 end
-					if self._last_unit:character_damage():dead() or (angle < 350 and angle > 10) then managers.hud:set_unit_health_visible( false ) end
-				else
-					managers.hud:set_unit_health_visible( false )
-				end
+			if unit:in_slot( 8 ) and alive(unit:parent()) then -- Fix when aiming at shields shield.
+				unit = unit:parent() 
 			end
 			
+			local visible, name, name_id, health, max_health, shield
+			if alive( unit ) then
+				if unit:in_slot( 25 ) and not unit:character_damage():dead() and (table.contains(managers.groupai:state():turrets() or {}, unit) or WolfHUD:getSetting({"EnemyHealthbar", "SHOW_CIVILIAN"}, true) and Network:is_server()) then
+					self._last_unit = nil
+					visible = true
+					name_id = unit:base():get_name_id() or "TURRET"
+					if not unit:character_damage():needs_repair() then
+						shield = true
+						health = unit:character_damage()._shield_health * 10 or 0
+						max_health = unit:character_damage()._SHIELD_HEALTH_INIT * 10 or 0
+					else
+						health = unit:character_damage()._health * 10 or 0
+						max_health = unit:character_damage()._HEALTH_INIT * 10 or 0
+					end
+				elseif alive( unit ) and ( unit:in_slot( 12 ) or WolfHUD:getSetting({"EnemyHealthbar", "SHOW_CIVILIAN"}, false) and ( unit:in_slot( 21 ) or unit:in_slot( 22 ) ) or unit:in_slot( 16 ) and Network:is_server()) and not unit:character_damage():dead() then
+					self._last_unit = unit
+					visible = true
+					health = unit:character_damage()._health * 10 or 0
+					max_health = unit:character_damage()._HEALTH_INIT * 10 or 0
+					name_id = unit:base()._tweak_table or "ENEMY"
+					
+					if name_id == "robbers_safehouse" and unit:interaction() then
+						name_id = CriminalsManager.convert_new_to_old_character_workname(unit:interaction().character or name_id)
+					end
+				elseif alive( unit ) and unit:in_slot( 39 ) and WolfHUD:getSetting({"EnemyHealthbar", "SHOW_VEHICLE"}, true) and unit:vehicle_driving() and not self._seat then
+					self._last_unit = nil
+					visible = true
+					health = unit:character_damage()._health * 10 or 0
+					max_health = unit:character_damage()._current_max_health * 10 or 0
+					name = unit:vehicle_driving()._tweak_data.name or "VEHICLE"
+				else
+					visible = false
+				end
+			end
+			if not visible and self._last_unit and alive( self._last_unit ) then
+				local angle = (self:getUnitRotation(self._last_unit) + 360) % 360
+				if self._last_unit:character_damage():dead() or (angle < 350 and angle > 10) then 
+					visible = false
+				else
+					visible = true
+				end
+				
+				health = self._last_unit:character_damage()._health * 10 or 0
+				max_health = self._last_unit:character_damage()._HEALTH_INIT * 10 or 0
+				name_id = self._last_unit:base()._tweak_table or "ENEMY"
+				
+				if name_id == "robbers_safehouse" and self._last_unit:interaction() then
+					name_id = CriminalsManager.convert_new_to_old_character_workname(self._last_unit:interaction().character or name_id)
+				end
+				
+				managers.hud:set_unit_health_rotation( 360 - angle )
+			else
+				managers.hud:set_unit_health_rotation(0)
+			end
+			
+			managers.hud:set_unit_health_visible( visible, shield )
+			managers.hud:set_unit_health( health or 0 , max_health or 0 , name_id or string.upper(name or "UNKNOWN"))
 		else
 			managers.hud:set_unit_health_visible( false )
 		end

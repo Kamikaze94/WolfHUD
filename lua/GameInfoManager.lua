@@ -231,7 +231,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			[105027] = 10, [105028] = 9, [104525] = 8, [104524] = 7, [104490] = 6, [100779] = 5, [100778] = 4, [100777] = 3, [100773] = 2, [100771] = 1, --Slaughterhouse alt 2.
 		},
 		CONDITIONAL_COMPOSITE_LOOT_UNITS = {
-			disassemble_turret = function(unit)
+			disassemble_turret = function(unit)	-- Turret - Armored Transport: Train
 				return unit:body("body_01") and unit:body("body_01"):enabled() and 3 or unit:body("body_02") and unit:body("body_02"):enabled() and 2 or unit:body("body_03") and unit:body("body_03"):enabled() and 1 or 0
 			end,
 		},
@@ -284,7 +284,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				[100900] = true,
 				[100901] = true,
 				[100902] = true,
-			},	--Hotline Miami day 1 (1x money)
+			}, 
 			mia_1 = {	--Hotline Miami day 1 (1x money)
 				[104526] = true,
 			},
@@ -339,7 +339,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	}
 	
 	GameInfoManager._EQUIPMENT = {
-		SENTRY_KEYS = {
+		SENTRY_KEYS = {	-- OBSOLETE
 			--unit:name():key() for friendly sentries
 			["07bd083cc5f2d3ba"] = true,	--Standard U100+
 			["c71d763cd8d33588"] = true,	--Suppressed U100+
@@ -357,34 +357,52 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			--interaction_id or editor_id
 			firstaid_box = -1,	--GGC drill asset, HB infirmary
 		},
-		AGGREAGATE_ITEMS = {
+		AGGREAGATE_ITEMS = {	-- [type] or [level_id + editor_id]
 			["first_aid_kit"] = "first_aid_kits",	-- Aggregate all FAKs
-			[136859] = "hb_armory_grenade",			-- Hoxton Breakout Armory
-			[136870] = "hb_armory_grenade",
-			[136869] = "hb_armory_grenade",
-			[136864] = "hb_armory_grenade",
-			[136866] = "hb_armory_grenade",
-			[136860] = "hb_armory_grenade",
-			[136867] = "hb_armory_grenade",
-			[136865] = "hb_armory_grenade",
-			[136868] = "hb_armory_grenade",
-			[136846] = "hb_armory_ammo",
-			[136844] = "hb_armory_ammo",
-			[136845] = "hb_armory_ammo",
-			[136847] = "hb_armory_ammo",
-			[101470] = "hb_infirmary_cabinet",		-- Hoxton Breakout Infirmary
-			[101472] = "hb_infirmary_cabinet",
-			[101473] = "hb_infirmary_cabinet",
-			[151596] = "ggc_armory_grenade",		-- Golden Grin Casino
-			[151597] = "ggc_armory_grenade",
-			[151598] = "ggc_armory_grenade",
-			[151611] = "ggc_armory_ammo",
-			[151612] = "ggc_armory_ammo",
-			[100776] = "biker_bunker_grenade",		-- Biker Heist
-			[101226] = "biker_bunker_grenade",
-			[101469] = "biker_bunker_grenade",
-			[101472] = "biker_bunker_ammo",
-			[101473] = "biker_bunker_ammo",
+			 hox_2 = {	--Hoxton breakout
+				[136859] = "armory_grenade",
+				[136870] = "armory_grenade",
+				[136869] = "armory_grenade",
+				[136864] = "armory_grenade",
+				[136866] = "armory_grenade",
+				[136860] = "armory_grenade",
+				[136867] = "armory_grenade",
+				[136865] = "armory_grenade",
+				[136868] = "armory_grenade",
+				[136846] = "armory_ammo",
+				[136844] = "armory_ammo",
+				[136845] = "armory_ammo",
+				[136847] = "armory_ammo",
+				[101470] = "infirmary_cabinet",
+				[101472] = "infirmary_cabinet",
+				[101473] = "infirmary_cabinet",
+			},
+			kenaz = {	--GGC
+				[151596] = "armory_grenade",
+				[151597] = "armory_grenade",
+				[151598] = "armory_grenade",
+				[151611] = "armory_ammo",
+				[151612] = "armory_ammo",
+			},
+			born = {	--Biker heist
+				[100776] = "bunker_grenade",
+				[101226] = "bunker_grenade",
+				[101469] = "bunker_grenade",
+				[101472] = "bunker_ammo",
+				[101473] = "bunker_ammo",
+			},
+			spa = {		--10-10
+				[132935] = "armory_ammo",
+				[132938] = "armory_ammo",
+				[133085] = "armory_ammo",
+				[133088] = "armory_ammo",
+				[133835] = "armory_ammo",
+				[133838] = "armory_ammo",
+				[134135] = "armory_ammo",
+				[134138] = "armory_ammo",
+				[137885] = "armory_ammo",
+				[137888] = "armory_ammo",
+			},
 		},
 	}
 	
@@ -851,7 +869,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				self:_listener_callback("camera", event, key, self._cameras[key])
 				
 				if not type then
-					print_warning("\tUNKNOWN CAMERA UNIT TYPE: %s\n", tostring(data.unit:name():key()))
+					print_warning("UNKNOWN CAMERA UNIT TYPE: %s", tostring(data.unit:name():key()))
 				end
 			end
 		elseif self._cameras[key] then
@@ -1064,7 +1082,9 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			end
 			
 			local lookup = GameInfoManager._EQUIPMENT.AGGREAGATE_ITEMS
-			local aggregate_key = lookup[type] or lookup[self._deployables[type][key].unit:editor_id()]
+			local level_id = managers.job:current_level_id() or ""
+			local editor_id = self._deployables[type][key].unit:editor_id()
+			local aggregate_key = lookup[type] or lookup[level_id] and lookup[level_id][editor_id]
 			print_info("(GameInfo) %s | %s", type, self._deployables[type][key].unit:editor_id())
 			if event == "destroy" then
 				self:_listener_callback(type, "destroy", key, self._deployables[type][key])
@@ -1153,7 +1173,9 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		print_info("GameInfoManager:_sentry_event(%s, %s)", event, key)
 		
 		if event == "create" then
-			if not self._sentries[key] and GameInfoManager._EQUIPMENT.SENTRY_KEYS[tostring(data.unit:name():key())] then
+			local sentry_type = data.unit:base() and data.unit:base():get_type() or ""
+			
+			if not self._sentries[key] and (sentry_type == "sentry_gun" or sentry_type == "sentry_gun_silent") then --GameInfoManager._EQUIPMENT.SENTRY_KEYS[tostring(data.unit:name():key())] then
 				self._sentries[key] = { unit = data.unit, kills = 0 }
 				self:_listener_callback("sentry", event, key, self._sentries[key])
  			end
@@ -1180,7 +1202,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	end
 	
 	function GameInfoManager:_whisper_mode_event(event, key, status)
-		self:_listener_callback("whisper_mode", "change", key, status)
+		self:_listener_callback("whisper_mode", event, key, status)
 	end
 	
 	function GameInfoManager:_temporary_buff_event(event, data)
@@ -1820,13 +1842,11 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 		local civilian_hostages = self._hostage_headcount
 	
 		for u_key, u_data in pairs(managers.enemy:all_enemies()) do
-			if u_data and u_data.unit and alive(u_data.unit) then
-				if u_data.unit:anim_data() and u_data.unit:anim_data().surrender or u_data.unit:base() and u_data.unit:base().mic_is_being_moved then
-					if u_data.unit:base()._tweak_table:find("security") or u_data.unit:base()._tweak_table:find("gensec") then
-						security_hostages = security_hostages + 1
-					else
-						police_hostages = police_hostages + 1
-					end
+			if alive(u_data.unit) and (u_data.unit:brain():surrendered() or u_data.unit:base().mic_is_being_moved) then
+				if u_data.unit:base()._tweak_table:find("security") or u_data.unit:base()._tweak_table:find("gensec") then
+					security_hostages = security_hostages + 1
+				else
+					police_hostages = police_hostages + 1
 				end
 			end
 		end

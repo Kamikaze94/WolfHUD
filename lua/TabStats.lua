@@ -852,14 +852,19 @@ elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 	local _on_damage_received_original = CopDamage._on_damage_received
 
 	function CopDamage:_on_damage_received(damage_info, ...)
-		self:_process_damage(damage_info.attacker_unit, damage_info.damage)
+		if damage_info and type(damage_info) == "table" then
+			self:_process_damage(damage_info)
+		end
 		return _on_damage_received_original(self, damage_info, ...)
 	end
 
-	function CopDamage:_process_damage(attacker, damage)
-		local killer
+	function CopDamage:_process_damage(damage_info)
+		local attacker = alive(damage_info.attacker_unit) and damage_info.attacker_unit
+		local damage = tonumber(damage_info.damage) or 0
 		
-		if attacker then
+		if attacker and damage >= 0.1 then
+			local killer
+			
 			if attacker:in_slot(3) or attacker:in_slot(5) then	
 				--Human team mate
 				killer = attacker
@@ -880,17 +885,17 @@ elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 			elseif attacker:base().thrower_unit then
 				killer = attacker:base():thrower_unit()
 			end
-		end
-		
-		if alive(killer) then		
-			if killer:in_slot(2) then
-				managers.statistics:add_session_damage(damage)
-				
-				managers.hud:update_stats_screen()
-			else
-				local peer_id = managers.criminals:character_peer_id_by_unit(aggressor)
-				if peer_id then
-					managers.statistics:add_session_damage(damage, peer_id)
+			
+			if alive(killer) then		
+				if killer:in_slot(2) then
+					managers.statistics:add_session_damage(damage)
+					
+					managers.hud:update_stats_screen()
+				else
+					local peer_id = managers.criminals:character_peer_id_by_unit(killer)
+					if peer_id then
+						managers.statistics:add_session_damage(damage, peer_id)
+					end
 				end
 			end
 		end
@@ -898,7 +903,9 @@ elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 elseif RequiredScript == "lib/units/civilians/civiliandamage" then
 	local _on_damage_received_original = CivilianDamage._on_damage_received
 	function CivilianDamage:_on_damage_received(damage_info, ...)
-		CivilianDamage.super._process_damage(self, damage_info.attacker_unit, damage_info.damage)
+		if damage_info and type(damage_info) == "table" then
+			CivilianDamage.super._process_damage(self, damage_info)
+		end
 		return _on_damage_received_original(self, damage_info, ...)
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" then

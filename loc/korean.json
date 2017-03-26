@@ -159,6 +159,8 @@
 	"wolfhud_enemy_hector_boss" : "무장한 헥터",
 	"wolfhud_enemy_hector_boss_no_armor" : "헥터",
 	"wolfhud_enemy_crew" : "팀 멤버",
+	"wolfhud_enemy_butler" : "Aldstone",
+	"wolfhud_enemy_vlad" : "Vlad",
 	
 	
 	"wolfhud_multiselect_all" : "모두",
@@ -417,6 +419,8 @@
 	"wolfhud_hudlist_show_ecm_retrigger_desc" : "ECM 재머의 피드백을 언제 재사용 가능한지 표시합니다.",
 	"wolfhud_hudlist_show_minions_title" : "조커 체력 표시",
 	"wolfhud_hudlist_show_minions_desc" : "조커된 경찰의 체력을 표시합니다.",
+	"wolfhud_hudlist_show_own_minions_only_title" : "Own Jokers Only",
+	"wolfhud_hudlist_show_own_minions_only_desc" : "Only display your own jokered Cops.",
 	"wolfhud_hudlist_show_pagers_title" : "페이저 표시",
 	"wolfhud_hudlist_show_pagers_desc" : "페이저의 알람이 울리기 전 까지의 시간을 표시합니다.",
 	"wolfhud_hudlist_show_tape_loop_title" : "카메라 루프 표시",
