@@ -3075,8 +3075,8 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 			managers.gameinfo:event("buff", "set_value", "die_hard", { value = value })
 		end
 		
-		local t = Application:time()
-		managers.gameinfo:event("player_action", "activate", "interact", { t = t, duration = timer })
+		local time = Application:time()
+		managers.gameinfo:event("player_action", "activate", "interact", { t = time, duration = timer })
 		managers.gameinfo:event("player_action", "set_data", "interact", { interact_id = interact_object:interaction().tweak_data })
 		
 		return _start_action_interact_original(self, t, input, timer, interact_object, ...)
