@@ -336,19 +336,19 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 
 			for element_id, mission_element in pairs(bought_assets) do
 				if mission_element.peer_id == peer_id then
-					element_type, element_index = unpack(mission_element.pack)
+					local element_type, element_index = unpack(mission_element.pack)
 					table.insert(saved_assets, { id = element_id, type = element_type, index = element_index })
 				end
 			end
 
 			for plan, data in pairs(votes) do
-				element_type, element_index = unpack(data)
+				local element_type, element_index = unpack(data)
 				table.insert(saved_votes, { id = self:get_mission_element_id(element_type, element_index), type = element_type, index = element_index })
 				default_votes[plan] = nil
 			end
 
 			for plan, data in pairs(default_votes) do
-				element_type, element_index = unpack(data)
+				local element_type, element_index = unpack(data)
 				table.insert(saved_votes, { id = self:get_mission_element_id(element_type, element_index), type = element_type, index = element_index })
 			end
 
@@ -479,7 +479,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 
 		text = string.format("%s%s\n", text, managers.localization:text("wolfhud_preplanning_votes_title"))
 		for plan, data in pairs(current_votes) do
-			element_type, element_index = unpack(data)
+			local element_type, element_index = unpack(data)
 			local plan_data = tweak_data and tweak_data.preplanning.types[element_type]
 			local plan_name = plan_data and plan_data.name_id and managers.localization:text(plan_data.name_id) or ""
 			text = string.format("%s - %s", text, plan_name)
@@ -493,7 +493,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 		end
 
 		for plan, data in pairs(default_votes) do
-			element_type, element_index = unpack(data)
+			local element_type, element_index = unpack(data)
 			local plan_data = tweak_data and tweak_data.preplanning.types[element_type]
 			local plan_name = plan_data and plan_data.name_id and managers.localization:text(plan_data.name_id) or ""
 			text = string.format("%s - %s", text, plan_name)
@@ -510,7 +510,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 		text = string.format("%s\n%s\n", text, managers.localization:text("wolfhud_preplanning_assets_title"))
 		for id, mission_element in pairs(current_assets) do
 			if mission_element.peer_id == peer_id then
-				element_type, index = unpack(mission_element.pack)
+				local element_type, index = unpack(mission_element.pack)
 				local type_name = self:get_type_name(element_type)
 				text = string.format("%s - %s", text, type_name)
 				local element = self._mission_elements_by_type[element_type] and self._mission_elements_by_type[element_type][index]

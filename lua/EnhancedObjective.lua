@@ -193,7 +193,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		end
 		local wrapped_text = ""
 		local w, h = 0, layout_text_field:font_size() * math.max(#wrapped_lines, 1)
-		for i, line in ipairs(wrapped_lines) do
+		for _, line in ipairs(wrapped_lines) do
 			w = math.max(w, self:_get_text_dimensions(line).w)
 			wrapped_text = string.format("%s%s\n", wrapped_text, line)
 		end

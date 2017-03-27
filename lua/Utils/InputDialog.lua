@@ -250,7 +250,7 @@ elseif requiresScript == "lib/managers/menu/specializationboxgui" then
 
 		local panel = TextInputBoxGui.super._create_text_box(self, ws, title, text, content_data, config, ...)
 
-		text_input_panel = self._scroll_panel:panel({
+		local text_input_panel = self._scroll_panel:panel({
 			name = "text_input_panel",
 			x = 10,
 			h = tweak_data.menu.pd2_medium_font_size * 1.1,

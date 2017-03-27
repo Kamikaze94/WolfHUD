@@ -37,7 +37,7 @@ function QuickInputMenu:init( title, text, user_text, options, show_immediately,
 		table.insert( options, tbl )
 	end
 
-	for k, option in ipairs( options ) do
+	for _, option in ipairs( options ) do
 
 		option.data = option.data
 		option.callback = option.callback

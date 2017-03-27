@@ -144,9 +144,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			layer 		= 1
 		})
 
-		local hx , hy , hw , hh = self._unit_health_text:text_rect()
-		local ex , ey , ew , eh = self._unit_health_enemy_text:text_rect()
-		local lx , ly , lw , lh = self._unit_health_enemy_location:text_rect()
+		local _ ,_ ,hw ,hh = self._unit_health_text:text_rect()
+		local _ ,_ ,ew ,eh = self._unit_health_enemy_text:text_rect()
+		local _ ,_ ,lw ,lh = self._unit_health_enemy_location:text_rect()
 
 		self._unit_health_text:set_size( hw , hh )
 		self._unit_health_enemy_text:set_size( ew , eh )
@@ -230,8 +230,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			self._unit_health_text:set_text( string.format( "%d" , current ) )
 		end
 
-		local hx , hy , hw , hh = self._unit_health_text:text_rect()
-		local ex , ey , ew , eh = self._unit_health_enemy_text:text_rect()
+		local _ ,_ ,hw ,hh = self._unit_health_text:text_rect()
+		local _ ,_ ,ew ,eh = self._unit_health_enemy_text:text_rect()
 
 		self._unit_health_text:set_size( hw , hh )
 		self._unit_health_enemy_text:set_size( ew , eh )

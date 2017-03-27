@@ -46,7 +46,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 					force_ready_clicked = force_ready_clicked + 1
 					if force_ready_clicked >= FORCE_READY_CLICKS then
 						local abort = false --session:chk_all_handshakes_complete()
-						for i, peer in ipairs(session:peers()) do
+						for _, peer in ipairs(session:peers()) do
 							if not (peer:synced() or peer:id() == local_peer:id()) then
 								abort = true
 								break
@@ -114,9 +114,6 @@ elseif string.lower(RequiredScript) == "lib/managers/experiencemanager" then
 		return val
 	end
 elseif string.lower(RequiredScript) == "lib/managers/moneymanager" then
-	local total_string_original = MoneyManager.total_string
-	local total_collected_string_original = MoneyManager.total_collected_string
-
 	function MoneyManager:total_string()
 		local total = math.round(self:total())
 		return managers.experience:cash_string(total)
