@@ -32,7 +32,6 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 			if i == HUDManager.PLAYER_PANEL and not HUDManager.CUSTOM_TEAMMATE_PANELS then
 				self:_create_stamina_circle()
 			end
-			local name_panel = self._panel:child("name")
 			self._max_name_panel_width = self._panel:w()
 		end
 
