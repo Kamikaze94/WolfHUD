@@ -474,7 +474,7 @@
 	
 	
 	"wolfhud_infopanels_buff_options_name" : "Fähigkeit Info Liste",
-	"wolfhud_infopanels_buff_options_help" : "Optionen der Fähigkeiten Liste."
+	"wolfhud_infopanels_buff_options_help" : "Optionen der Fähigkeiten Liste.",
 	
 	"wolfhud_infopanels_buff_mastermind_options_name" : "Drahtzieher Fähigkeiten",
 	"wolfhud_infopanels_buff_mastermind_options_help" : "Aktiviere oder Deaktiviere die Indikatoren für Drahtzieher Fähigkeiten.\n(Wird erst beim Mapwechsel aktiv...)",

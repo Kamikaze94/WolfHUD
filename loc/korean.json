@@ -467,7 +467,7 @@
 	
 	
 	"wolfhud_infopanels_buff_options_name" : "버프 리스트 옵션",
-	"wolfhud_infopanels_buff_options_help" : "버프 리스트에 표시될 버프들을 설정합니다."
+	"wolfhud_infopanels_buff_options_help" : "버프 리스트에 표시될 버프들을 설정합니다.",
 	
 	"wolfhud_infopanels_buff_mastermind_options_name" : "마스터마인드",
 	"wolfhud_infopanels_buff_mastermind_options_help" : "어떤 마스터마인드의 스킬들이 표시될지 설정합니다.\n(맵을 바꿔야 적용됩니다...)",
