@@ -25,7 +25,6 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 
 		local init_original = HUDTeammate.init
 		local set_name_original = HUDTeammate.set_name
-		local set_callsign_original = HUDTeammate.set_callsign
 
 		function HUDTeammate:init(i, ...)
 			init_original(self, i, ...)
