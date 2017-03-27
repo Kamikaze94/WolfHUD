@@ -1,5 +1,5 @@
 if RequiredScript == "lib/managers/missionassetsmanager" then
-	
+
 	local _setup_mission_assets_original = MissionAssetsManager._setup_mission_assets
 	local sync_unlock_asset_original = MissionAssetsManager.sync_unlock_asset
 	local unlock_asset_original = MissionAssetsManager.unlock_asset
@@ -7,10 +7,10 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 	local is_unlock_asset_allowed_original = MissionAssetsManager.is_unlock_asset_allowed
 	local sync_save_original = MissionAssetsManager.sync_save
 	local sync_load_original = MissionAssetsManager.sync_load
-	
+
 	function MissionAssetsManager:_setup_mission_assets(...)
 		_setup_mission_assets_original(self, ...)
-		
+
 		if self:mission_has_assets() then
 			self:create_buy_all_asset()
 			self:update_buy_all_asset_cost()
@@ -18,7 +18,7 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 			self:remove_buy_all_asset()
 		end
 	end
-	
+
 	function MissionAssetsManager:sync_unlock_asset(...)
 		sync_unlock_asset_original(self, ...)
 		if self:mission_has_assets() then
@@ -41,7 +41,7 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 			self:update_buy_all_asset_cost()
 		end
 	end
-	
+
 	function MissionAssetsManager:get_unlocked_asset_ids(...)
 		local asset_ids = get_unlocked_asset_ids_original(self, ...)
 		-- Remove 'Buy all' ID from unlocked table, so its state doesn't get restored after Profile switch.
@@ -53,48 +53,48 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 				end
 			end
 		end
-		
+
 		return asset_ids
 	end
-	
+
 	function MissionAssetsManager:is_unlock_asset_allowed(...)
 		if game_state_machine then	-- original function can crash, if this doesn't exists (yet?) for some reason...
 			return is_unlock_asset_allowed_original(self, ...)
 		end
 		return false
 	end
-	
+
 	function MissionAssetsManager:sync_save(data, ...)
 		-- If we do not remove the buy all here it will be sent to clients and they may not know how to handle it.
 		self:remove_buy_all_asset()
-		
+
 		sync_save_original(self, data, ...)
-		
+
 		--self:remove_buy_all_asset(data.MissionAssetsManager.assets)
 	end
-	
+
 	function MissionAssetsManager:sync_load(data, ...)
 		sync_load_original(self, data, ...)
-		
+
 		if self:mission_has_assets() then
 			self:create_buy_all_asset()
-			
+
 			self:create_asset_textures()
-			
+
 			self:update_buy_all_asset_cost()
 			self:check_all_assets_bought(true)
 		end
 	end
 
 	-- Custom functions
-	
+
 	function MissionAssetsManager:create_buy_all_asset(insert_table)
 		insert_table = insert_table or self._global.assets
 		local asset_id = "wolfhud_buy_all_assets"
 		local asset_tweak = self._tweak_data[asset_id]
-		
+
 		local asset = self:_get_asset_by_id(asset_id)
-		
+
 		if not asset then
 			for i, data in ipairs(insert_table) do
 				if data.id == asset_id then
@@ -125,7 +125,7 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 						return a.no_mystery
 					else
 						local money_lock_a = a.id and self._tweak_data[a.id].money_lock
-						local money_lock_b = b.id and self._tweak_data[b.id].money_lock 
+						local money_lock_b = b.id and self._tweak_data[b.id].money_lock
 						if money_lock_a and money_lock_b then
 							return money_lock_a < money_lock_b
 						else
@@ -137,7 +137,7 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 			end)
 		elseif asset_tweak then
 			self:remove_buy_all_asset(insert_table)
-			
+
 			asset = {
 				id = asset_id,
 				unlocked = self:check_all_assets_bought(nil),
@@ -146,15 +146,15 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 				no_mystery = asset_tweak.no_mystery,
 				local_only = asset_tweak.local_only
 			}
-			
+
 			table.insert(insert_table, 1, asset)
 		end
 	end
-	
+
 	function MissionAssetsManager:remove_buy_all_asset(remove_table)
 		remove_table = remove_table or self._global.assets
 		local asset_id = "wolfhud_buy_all_assets"
-		
+
 		for i, asset in ipairs(remove_table) do
 			if asset_id == asset.id then
 				table.remove(remove_table, i)
@@ -162,7 +162,7 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 			end
 		end
 	end
-	
+
 	function MissionAssetsManager:remove_buy_all_tweak()
 		self._tweak_data.wolfhud_buy_all_assets = nil
 	end
@@ -176,7 +176,7 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 					value = value + (asset_tweak and asset_tweak.money_lock or 0)
 				end
 			end
-			
+
 			self._tweak_data.wolfhud_buy_all_assets.money_lock = value
 			return self:check_all_assets_bought(true)
 		end
@@ -189,24 +189,24 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 					return false
 				end
 			end
-			
+
 			if auto_unlock then
 				self:unlock_buy_all_asset()
 			end
-			
+
 			return true
 		end
 	end
-	
+
 	function MissionAssetsManager:unlock_buy_all_asset()
 		local asset = self:_get_asset_by_id("wolfhud_buy_all_assets")
 		if asset and not asset.unlocked and self._tweak_data.wolfhud_buy_all_assets then
 			self._tweak_data.wolfhud_buy_all_assets.money_lock = 0
 			sync_unlock_asset_original(self, "wolfhud_buy_all_assets")
---			unlock_asset_original(self, "wolfhud_buy_all_assets")
+			--unlock_asset_original(self, "wolfhud_buy_all_assets")
 		end
 	end
-	
+
 	function MissionAssetsManager:mission_has_assets()
 		if self._tweak_data.wolfhud_buy_all_assets then
 			local current_stage = managers.job:current_level_id() or ""
@@ -227,7 +227,7 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/assetstweakdata" then
 	local _init_original = AssetsTweakData.init
 	function AssetsTweakData:init(...)
 		_init_original(self, ...)
-		
+
 		self.wolfhud_buy_all_assets = self.wolfhud_buy_all_assets or {
 			name_id = "wolfhud_buy_all_assets",
 			unlock_desc_id = "wolfhud_buy_all_assets_desc",

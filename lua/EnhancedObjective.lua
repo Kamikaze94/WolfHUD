@@ -1,5 +1,5 @@
 if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
-	
+
 	HUDObjectives._TEXT_MARGIN = 8
 	HUDObjectives._MAX_WIDTH = 300
 	HUDObjectives._FONT_SIZE = tweak_data.hud.active_objective_title_font_size
@@ -18,12 +18,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			x = (WolfHUD:getSetting({"TabStats", "CLOCK_MODE"}, 3) == 4) and 0 or 80,
 			valign = "top"
 		})
-			
+
 		self._bg_box = HUDBGBox_create(self._panel, {
 			w = 400,
 			h = 38,
 		})
-		
+
 		self._objective_text = self._bg_box:text({
 			name = "objective_text",
 			visible = false,
@@ -40,7 +40,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			wrap = false,
 			word_wrap = false
 		})
-		
+
 		self._amount_text = self._bg_box:text({
 			name = "amount_text",
 			visible = false,
@@ -56,23 +56,23 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			x = HUDObjectives._TEXT_MARGIN,
 			y = HUDObjectives._TEXT_MARGIN
 		})
-		
+
 		self:apply_offset(0)
 	end
-	
+
 	function HUDObjectives:activate_objective(data)
 		self._active_objective_id = data.id
 		self._panel:set_visible(true)
 		self._objective_text:set_visible(true)
 		self._amount_text:set_visible(false)
-		
+
 		local width, height, wrapped_text = self:_get_wrapped_text_dimensions(utf8.to_upper(data.text))
-		
+
 		self._objective_text:set_text(wrapped_text)
 		self._objective_text:set_w(width)
 		self._objective_text:set_h(height)
 		self._bg_box:set_h(HUDObjectives._TEXT_MARGIN * 2 + height)
-		
+
 		if data.amount then
 			self:update_amount_objective(data, true)
 		else
@@ -83,7 +83,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			self._bg_box:stop()
 			self._bg_box:animate(callback(self, self, "_animate_update_objective"))
 		end
-		
+
 		self:apply_offset(self._offset_y)
 	end
 
@@ -119,13 +119,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		if data.id ~= self._active_objective_id then
 			return
 		end
-		
+
 		self._active_objective_id = ""
 		self._amount_text:set_visible(false)
 		self._objective_text:set_visible(false)
 		self._panel:set_visible(false)
 		self._bg_box:set_w(0)
-		
+
 		self:apply_offset(self._offset_y)
 	end
 
@@ -167,7 +167,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		local x, y, w, h = string_width_measure_text_field:text_rect()
 		return {x = x, y = y, w = w, h = h}
 	end
-	
+
 	function HUDObjectives:_get_wrapped_text_dimensions(text_string)
 		local layout_text_field = self._panel:child("layout") or self._panel:text({
 			name = "layout",
@@ -199,7 +199,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 		end
 		return math.ceil(w), math.ceil(h), wrapped_text
 	end
-	
+
 	function HUDObjectives:apply_offset(offset)
 		if offset and offset ~= self._offset_y then
 			self._offset_y = offset
@@ -209,11 +209,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 				self._panel:animate(callback(self, self, "_animate_move"), (self._offset_y > 40 or WolfHUD:getSetting({"TabStats", "CLOCK_MODE"}, 3) == 4) and 0 or 80, self._panel:y(), true)
 			end
 		end
-		if managers.hud and managers.hud.change_list_setting then 
-			managers.hud:change_list_setting("left_list_height_offset", self._offset_y + (self._bg_box:w() > 0 and (self._bg_box:h() + HUDObjectives._BOUNCE) or 40) + HUDObjectives._TEXT_MARGIN) 
+		if managers.hud and managers.hud.change_list_setting then
+			managers.hud:change_list_setting("left_list_height_offset", self._offset_y + (self._bg_box:w() > 0 and (self._bg_box:h() + HUDObjectives._BOUNCE) or 40) + HUDObjectives._TEXT_MARGIN)
 		end
 	end
-	
+
 	function HUDObjectives:_animate_move(panel, x, y, instant)
 		self._active_move = true
 		if not instant then
@@ -224,7 +224,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 			local y_change = y > init_y and 1 or y < init_y and -1
 			local T = math.max(math.abs(x - init_x) / move_speed, math.abs(y - init_y) / move_speed)
 			local t = 0
-			
+
 			while alive(panel) and t < T do
 				if x_change then
 					panel:set_x(init_x  + t * x_change * move_speed)
@@ -235,23 +235,23 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 				t = t + coroutine.yield()
 			end
 		end
-		
+
 		if alive(panel) then
 			panel:set_x(x)
 			panel:set_y(y)
 		end
 		self._active_move = nil
 	end
-	
+
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudheisttimer" then
-	
+
 	function HUDHeistTimer:init(hud, tweak_hud)
 		self._hud_panel = hud.panel
 		self._enabled = (WolfHUD:getSetting({"TabStats", "CLOCK_MODE"}, 3) ~= 4) and not (tweak_hud and tweak_hud.no_timer)
 		if self._hud_panel:child("heist_timer_panel") then
 			self._hud_panel:remove(self._hud_panel:child("heist_timer_panel"))
 		end
-		
+
 		self._heist_timer_panel = self._hud_panel:panel({
 			visible = self._enabled,
 			name = "heist_timer_panel",
@@ -272,7 +272,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudheisttimer" then
 			wrap = false,
 			word_wrap = false
 		})
-		
+
 		self._last_time = 0
 	end
 elseif string.lower(RequiredScript) == "core/lib/managers/subtitle/coresubtitlepresenter" then
@@ -282,14 +282,14 @@ elseif string.lower(RequiredScript) == "core/lib/managers/subtitle/coresubtitlep
 		_on_resolution_changed_original(self, ...)
 		self:apply_bottom_offset()
 	end
-	
+
 	function OverlayPresenter:set_bottom(offset)
 		if self._bottom_off ~= offset then
 			self._bottom_off = offset
 			self:apply_bottom_offset()
 		end
 	end
-	
+
 	function OverlayPresenter:apply_bottom_offset()
 		if self.__subtitle_panel and self._bottom_off then
 			self.__subtitle_panel:set_height(self._bottom_off or self.__subtitle_panel:h())

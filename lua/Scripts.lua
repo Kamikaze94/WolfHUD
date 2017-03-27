@@ -14,29 +14,28 @@ if string.lower(RequiredScript) == "lib/units/weapons/raycastweaponbase" then
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local set_teammate_ammo_amount_orig = HUDManager.set_teammate_ammo_amount
 	local set_slot_ready_orig = HUDManager.set_slot_ready
-	
+
 	function HUDManager:set_teammate_ammo_amount(id, selection_index, max_clip, current_clip, current_left, max)
 		if WolfHUD:getSetting({"CustomHUD", "USE_REAL_AMMO"}, true) then
 			local total_left = current_left - current_clip
-			if total_left >= 0 then 
+			if total_left >= 0 then
 				current_left = total_left
 				max = max - current_clip
 			end
 		end
 		return set_teammate_ammo_amount_orig(self, id, selection_index, max_clip, current_clip, current_left, max)
 	end
-	
-	
+
 	local FORCE_READY_CLICKS = 3
 	local FORCE_READY_TIME = 2
 	local FORCE_READY_ACTIVE_T = 90
-		
+
 	local force_ready_start_t = 0
 	local force_ready_clicked = 0
-	
+
 	function HUDManager:set_slot_ready(peer, peer_id)
 		set_slot_ready_orig(self, peer, peer_id)
-		
+
 		if Network:is_server() and not Global.game_settings.single_player then
 			local session = managers.network and managers.network:session()
 			local local_peer = session and session:local_peer()
@@ -100,13 +99,13 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata"
 					end
 				end
 			end
-			
+
 			disable_effect(self)
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/experiencemanager" then
 	local cash_string_original = ExperienceManager.cash_string
-	
+
 	function ExperienceManager:cash_string(...)
 		local val = cash_string_original(self, ...)
 		if self._cash_sign == "\194\128" and val:find(self._cash_sign) then
@@ -117,7 +116,7 @@ elseif string.lower(RequiredScript) == "lib/managers/experiencemanager" then
 elseif string.lower(RequiredScript) == "lib/managers/moneymanager" then
 	local total_string_original = MoneyManager.total_string
 	local total_collected_string_original = MoneyManager.total_collected_string
-	
+
 	function MoneyManager:total_string()
 		local total = math.round(self:total())
 		return managers.experience:cash_string(total)

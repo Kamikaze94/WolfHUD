@@ -22,7 +22,7 @@
 	"bm_w_tecci"				: "H&K 416C",
 	"bm_w_contraband"			: "H&K 417",
 	"bm_w_flint"				: "Izhmash AK-12",
- 
+
 	"bm_w_spas12" 				: "Franchi SPAS-12",
 	"bm_w_b682" 				: "CZ Redhead Deluxe",
 	"bm_w_r870" 				: "Remington M870",
@@ -85,7 +85,7 @@
 	"bm_w_sparrow" 				: "Jericho 941 RPL",
 	"bm_w_pl14" 				: "PL-14 Lebedev",
 	"bm_w_packrat" 				: "H&K P30L",
-	
+
 	"bm_w_m1928" 				: "Thompson M1928A1",
 	"bm_w_mac10" 				: "Ingram MAC-10",
 	"bm_w_mp5" 					: "H&K MP5A4",
@@ -110,8 +110,6 @@
 	"bm_w_schakal" 				: "UMP 45",
 	"bm_w_coal" 				: "PP-19 Bizon",
 
-
-
 	"bm_w_judge" 				: "Taurus 4510PLYFS",
 	"bm_w_serbu" 				: "Remington M870 Short-Barreled",
 	"bm_w_striker" 				: "Sentinel Armsel Striker",
@@ -122,7 +120,6 @@
 	"bm_w_china" 				: "China Lake Grenade Launcher",
 	"bm_w_arbiter" 				: "H&K XM-25",
 	"bm_w_ray" 					: "M202 FLASH",
-	
 
 	"bm_grenade_frag" 			: "M67 Fragmentation Hand Grenade",
 	"bm_grenade_frag_desc" 		: "The M67 grenade is a fragmentation hand grenade used by the United States military. The M67 is a further development of the M33 grenade, a replacement for the M26-series grenades used during the Korean and Vietnam Wars.",

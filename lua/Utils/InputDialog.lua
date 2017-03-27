@@ -14,17 +14,17 @@ if requiresScript == "lib/managers/systemmenumanager" then
 		self:_show_result(success, data)
 	end
 elseif requiresScript == "lib/managers/dialogs/specializationdialog" then
-	
+
 	core:module("SystemMenuManager")
 	require("lib/managers/dialogs/GenericDialog")
 
 	TextInputDialog = TextInputDialog or class(GenericDialog)
 	TextInputDialog.KEY_INIT_DELAY = 0.6
 	TextInputDialog.KEY_DELAY = 0.03
-	
+
 	function TextInputDialog:init(manager, data, ...)
 		Dialog.init(self, manager, data)
-		
+
 		if not self._data.focus_button then
 			if #self._button_text_list > 0 then
 				self._data.focus_button = #self._button_text_list
@@ -64,30 +64,30 @@ elseif requiresScript == "lib/managers/dialogs/specializationdialog" then
 			self._counter_time = self._counter[1]
 		end
 		self._sound_event = data.sound_event
-		
+
 		self._last_key_pressed = nil
 		self._next_key_send_t = 0
 	end
-	
+
 	function TextInputDialog:set_input_enabled(enabled)
 		TextInputDialog.super.set_input_enabled(self, enabled)
-		
+
 		if managers.controller:get_default_wrapper_type() == "pc" or managers.controller:get_default_wrapper_type() == "steam" then
 			self._controller:remove_trigger("confirm", self._confirm_func)
 			self._controller:remove_trigger("toggle_menu", self._cancel_func)
 			self._controller:remove_trigger("cancel", self._cancel_func)
 		end
-		
+
 		if enabled then
 			local dialog_panel = self._panel_script and self._panel_script._panel
 			if not self._kb_connected and self._ws and dialog_panel then
 				local kb = Input:keyboard()
 				self._ws:connect_keyboard(kb)
-				
+
 				dialog_panel:enter_text(function(that, char) self:on_enter_text(char) end)
 				dialog_panel:key_press(function(that, key) self:on_key_press(key) end)
 				dialog_panel:key_release(function(that, key) self:on_key_release(key) end)
-				
+
 				self._kb_connected  = true
 			end
 		else
@@ -101,7 +101,7 @@ elseif requiresScript == "lib/managers/dialogs/specializationdialog" then
 			end
 		end
 	end
-	
+
 	function TextInputDialog:mouse_moved(o, x, y)
 		if self._panel_script and alive(self._panel_script._text_input_panel) then
 			local x, y = managers.mouse_pointer:convert_1280_mouse_pos(x, y)
@@ -114,7 +114,7 @@ elseif requiresScript == "lib/managers/dialogs/specializationdialog" then
 		end
 		return TextInputDialog.super.mouse_moved(self, o, x, y)
 	end
-	
+
 	function TextInputDialog:mouse_pressed(o, button, x, y)
 		if button == Idstring("0") then
 			if self._panel_script and alive(self._panel_script._text_input_panel) then
@@ -130,7 +130,7 @@ elseif requiresScript == "lib/managers/dialogs/specializationdialog" then
 		end
 		return TextInputDialog.super.mouse_pressed(self, o, button, x, y)
 	end
-	
+
 	function TextInputDialog:on_enter_text(char)
 		if self._data.text_input_focus then
 			local text = self._data.user_text
@@ -144,7 +144,7 @@ elseif requiresScript == "lib/managers/dialogs/specializationdialog" then
 			end
 		end
 	end
-	
+
 	function TextInputDialog:on_key_press(key)
 		local text = self._data.user_text
 		local n = utf8.len(text)
@@ -179,17 +179,17 @@ elseif requiresScript == "lib/managers/dialogs/specializationdialog" then
 		end
 		self._data.user_text = text
 	end
-	
+
 	function TextInputDialog:on_key_release(key)
 		self._last_key_pressed = nil
 	end
-	
+
 	function TextInputDialog:update_input(t, dt)
 		if self._data.text_input_focus then
 			if self._last_key_pressed and self._next_key_send_t < t then
 				local text = self._data.user_text
 				local n = utf8.len(text)
-				
+
 				if self._last_key_pressed == Idstring("backspace") then
 					text = utf8.sub(text, 0, math.max(n - 1, 0))
 				else
@@ -197,10 +197,10 @@ elseif requiresScript == "lib/managers/dialogs/specializationdialog" then
 				end
 				self._panel_script:update_user_text(text)
 				self._next_key_send_t = self._next_key_send_t + TextInputDialog.KEY_DELAY
-				
+
 				self._data.user_text = text
 			end
-			
+
 			local scroll = self._controller:get_input_axis("menu_scroll")
 			if scroll.y > self.MOVE_AXIS_LIMIT or scroll.y < -self.MOVE_AXIS_LIMIT then
 				self._panel_script:set_textinput_selected(false)
@@ -209,7 +209,7 @@ elseif requiresScript == "lib/managers/dialogs/specializationdialog" then
 		end
 		return TextInputDialog.super.update_input(self, t, dt)
 	end
-	
+
 	function TextInputDialog:chk_mouse_pointer_status()
 		if self._text_box_focus then
 			managers.mouse_pointer:disable()
@@ -217,7 +217,7 @@ elseif requiresScript == "lib/managers/dialogs/specializationdialog" then
 			managers.mouse_pointer:enable()
 		end
 	end
-	
+
 	function TextInputDialog:button_pressed(button_index)
 		local button_list = self._data.button_list
 		self:fade_out_close()
@@ -237,34 +237,33 @@ elseif requiresScript == "lib/managers/menu/specializationboxgui" then
 	TextInputBoxGui.TEXT = ""
 
 	function TextInputBoxGui:init(...)
-		
+
 		TextInputBoxGui.super.init(self, ...)
-		
+
 		self._text_box_highlight = false
 		self._text_box_focus = false
 		self._cursor_animation = false
 	end
-	
+
 	function TextInputBoxGui:_create_text_box(ws, title, text, user_text, content_data, config, ...)
 		text = text .. "\n\n."
-		
+
 		local panel = TextInputBoxGui.super._create_text_box(self, ws, title, text, content_data, config, ...)
-				
+
 		text_input_panel = self._scroll_panel:panel({
 			name = "text_input_panel",
 			x = 10,
 			h = tweak_data.menu.pd2_medium_font_size * 1.1,
 			w = panel:w() - 20,
-			layer = self._scroll_panel:layer() + 1,		
+			layer = self._scroll_panel:layer() + 1,
 		})
-		
-		
+
 		local scroll_text = self._scroll_panel:child("text")
 		if alive(scroll_text) then
 			scroll_text:set_h(scroll_text:h() - 10)
 			text_input_panel:set_bottom(scroll_text:bottom() - 5)
 		end
-		
+
 		local input_text = text_input_panel:text({
 			x = 5,
 			y = 0,
@@ -303,48 +302,48 @@ elseif requiresScript == "lib/managers/menu/specializationboxgui" then
 			blend_mode = config.text_blend_mode or "add",
 			visible = false,
 		})
-		
+
 		self._text_input_panel = text_input_panel
 	end
-	
+
 	function TextInputBoxGui:scroll_up(y)
-		
+
 		TextInputBoxGui.super.scroll_up(self, y)
-		
+
 		local scroll_text = self._scroll_panel:child("text")
 		if alive(self._text_input_panel) and alive(scroll_text) then
 			self._text_input_panel:set_bottom(scroll_text:bottom() - 5)
 		end
 	end
-	
+
 	function TextInputBoxGui:scroll_down(y)
-		
+
 		TextInputBoxGui.super.scroll_down(self, y)
-		
+
 		local scroll_text = self._scroll_panel:child("text")
 		if alive(self._text_input_panel) and alive(scroll_text) then
 			self._text_input_panel:set_bottom(scroll_text:bottom() - 5)
 		end
 	end
-	
+
 	function TextInputBoxGui:update_user_text(text)
 		local text_box = self._text_input_panel:child("input_text")
 		if text_box then
 			text_box:set_text(text)
 			local _, _, w, _ = text_box:text_rect()
 			text_box:set_w(w)
-			
+
 			local cursor = self._text_input_panel:child("cursor")
 			if cursor then
 				cursor:set_x(text_box:right())
 			end
 		end
 	end
-	
+
 	function TextInputBoxGui:set_textinput_highlight(status)
 		if status ~= self._text_box_highlight and alive(self._text_input_panel) then
 			self._text_box_highlight = status
-			
+
 			local text_input_bg = self._text_input_panel:child("text_input_bg")
 			local text_input = self._text_input_panel:child("input_text")
 			if not self._text_box_focus then
@@ -367,11 +366,11 @@ elseif requiresScript == "lib/managers/menu/specializationboxgui" then
 			end
 		end
 	end
-	
+
 	function TextInputBoxGui:set_textinput_selected(status)
 		if status ~= self._text_box_focus and alive(self._text_input_panel) then
 			self._text_box_focus = status
-			
+
 			local text_input_bg = self._text_input_panel:child("text_input_bg")
 			local text_input = self._text_input_panel:child("input_text")
 			if alive(text_input_bg) and alive(text_input) then
@@ -391,7 +390,7 @@ elseif requiresScript == "lib/managers/menu/specializationboxgui" then
 				text_input:set_color(color)
 				text_input_bg:set_color(color_bg)
 			end
-			
+
 			local cursor = self._text_input_panel:child("cursor")
 			if alive(cursor) and self._cursor_animation ~= status then
 				self._cursor_animation = status
@@ -401,7 +400,7 @@ elseif requiresScript == "lib/managers/menu/specializationboxgui" then
 			end
 		end
 	end
-	
+
 	function TextInputBoxGui:_animate_cursor(o)
 		local t = Application:time()
 		o:set_visible(true)

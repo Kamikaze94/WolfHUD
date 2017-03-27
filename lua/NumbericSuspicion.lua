@@ -2,7 +2,7 @@ local hudsuspicion_init_original = HUDSuspicion.init
 local hudsuspicions_animate_eye_original = HUDSuspicion.animate_eye
 local hudsuspicion_hide_original = HUDSuspicion.hide
 local feed_value_original = HUDSuspicion.feed_value
- 
+
 function HUDSuspicion:init(...)
 	hudsuspicion_init_original(self, ...)
 	self._scale = 1
@@ -15,7 +15,7 @@ function HUDSuspicion:init(...)
 		w = self._suspicion_panel:w(),
 		layer = 1
 	})
-	 
+
 	local _suspicion_text = _suspicion_text_panel:text({
 		name = "suspicion_text",
 		visible = true,
@@ -30,12 +30,12 @@ function HUDSuspicion:init(...)
 	})
 	_suspicion_text:set_y((math.round(_suspicion_text_panel:h() / 4)))
 end
-	 
+
 function HUDSuspicion:_is_detected()
 	local detected_text = self._suspicion_panel and self._suspicion_panel:child("suspicion_detected")
 	return self._discovered or self._suspicion_value and self._suspicion_value >= 1 or detected_text and detected_text:alpha() > 0
 end
- 
+
 function HUDSuspicion:_animate_detection_text(_suspicion_panel)
 	local suspicion_text = _suspicion_panel:child("suspicion_text")
 	local t = Application:time()
@@ -52,7 +52,7 @@ function HUDSuspicion:_animate_detection_text(_suspicion_panel)
 		end
 	end
 end
- 
+
 function HUDSuspicion:animate_eye(...)
 	hudsuspicions_animate_eye_original(self, ...)
 	self:rescale()
@@ -67,7 +67,7 @@ function HUDSuspicion:animate_eye(...)
 		self._text_animation = self._suspicion_panel:child("suspicion_text_panel"):animate(callback(self, self, "_animate_detection_text"))
 	end
 end
- 
+
 function HUDSuspicion:hide(...)
 	if self._suspicion_panel then
 		self._suspicion_panel:set_visible(false)

@@ -16,13 +16,13 @@ function QuickInputMenu:init( title, text, user_text, options, show_immediately,
 		user_text = user_text or "",
 		button_list = {},
 	}
-	
+
 	if config then
 		for k, v in pairs(config) do
 			self.dialog_data[k] = self.dialog_data[k] or v
 		end
 	end
-	
+
 	self.visible = false
 
 	local add_default = false
