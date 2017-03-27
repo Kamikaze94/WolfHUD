@@ -236,8 +236,8 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	local BlackMarketGui_mouse_double_click_original = BlackMarketGui.mouse_double_click
 	function BlackMarketGui:mouse_double_click(o, button, x, y)
 		if self._enabled and not self._data.is_loadout and self._renameable_tabs then
-			if self._mouse_click and self._mouse_click[0] and self._mouse_click[1] then
-				if self._tabs and self._mouse_click[0].selected_tab == self._mouse_click[1].selected_tab then
+			if self._mouse_click and self._mouse_click[1] and self._mouse_click[2] then
+				if self._tabs and self._mouse_click[1].selected_tab == self._mouse_click[2].selected_tab then
 					local current_tab = self._tabs[self._selected]
 					if current_tab and button == Idstring("0") then
 						if self._tab_scroll_panel:inside(x, y) and current_tab:inside(x, y) ~= 1 then

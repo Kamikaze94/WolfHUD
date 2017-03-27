@@ -14,7 +14,6 @@ if RequiredScript == "lib/managers/hudmanager" then
 
 	HUDManager.CUSTOM_WAYPOINTS = {
 		UPGRADE_COLORS = {
-			[0] = Color.white:with_alpha(0),
 			[1] = Color.white,
 			[2] = Color.yellow,
 			[3] = Color.red,
