@@ -33,7 +33,7 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 				self:_create_stamina_circle()
 			end
 			local name_panel = self._panel:child("name")
-			self._max_name_panel_width = name_panel:x() + name_panel:w()
+			self._max_name_panel_width = self._panel:w()
 		end
 
 		function HUDTeammate:set_name(name, ...)
