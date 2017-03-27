@@ -75,6 +75,8 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 			end
 			if not self._ai then
 				name_panel:set_range_color((self._color_pos or 0) + 1, name_panel:text():len() + 1, self._panel:child("callsign"):color():with_alpha(1))
+			else
+				name_panel:set_color(WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, false) and WolfHUD:getColorSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"}, Color.white) or tweak_data.chat_colors[5])
 			end
 			name_bg_panel:set_w(w + 4)
 			name_bg_panel:set_h(h + 2)
@@ -1099,7 +1101,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	
 	function PlayerInfoComponent.PlayerInfo:set_id(id)
 		self._id = id
-		self:_set_text_color((id ~= 5 and tweak_data.chat_colors[id] or Color.white):with_alpha(1))
+		self:_set_text_color((id == 5 and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, false)) and WolfHUD:getColorSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"}, Color.white) or tweak_data.chat_colors[id])
 	end
 	
 	function PlayerInfoComponent.PlayerInfo:set_cheater(state)

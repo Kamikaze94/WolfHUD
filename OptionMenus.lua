@@ -855,6 +855,29 @@ if WolfHUD then
 								max_value = 30,
 								step_size = 1,
 							},
+							{
+								type = "divider",
+								size = 8,
+							},
+							{
+								type = "toggle",
+								name_id = "wolfhud_panels_use_ai_color_title",
+								desc_id = "wolfhud_panels_use_ai_color_desc",
+								visible_reqs = {},
+								value = {"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"},
+							},
+							{
+								type = "multi_choice",
+								name_id = "wolfhud_panels_ai_color_title",
+								desc_id = "wolfhud_panels_ai_color_desc",
+								value = {"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"},
+								visible_reqs = {
+									{ setting = {"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, invert = false }
+								},
+								options = {},
+								add_color_options = true,
+								add_rainbow = false,
+							},
 						},
 					},
 					{

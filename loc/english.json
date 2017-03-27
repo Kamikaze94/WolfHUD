@@ -294,6 +294,10 @@
 	"wolfhud_panels_show_interaction_desc" : "Show your teammates interaction.",
 	"wolfhud_panels_interaction_time_title" : "Min Interaction Duration",
 	"wolfhud_panels_interaction_time_desc" : "Only show teammates interactiom, if its longer than X seconds.",
+	"wolfhud_panels_use_ai_color_title" : "Use custom bot color",
+	"wolfhud_panels_use_ai_color_desc" : "Use a custom color for the names of bots. (This also affects dmg popups)",
+	"wolfhud_panels_ai_color_title" : "Custom bot color",
+	"wolfhud_panels_ai_color_desc" : "Set the custom color to use for the names of bots. (This also affects dmg popups)",
 	
 	
 	"wolfhud_chat_options_name" : "Chat options",

@@ -294,6 +294,10 @@
 	"wolfhud_panels_show_interaction_desc" : "팀원의 상호작용을 표시합니다.",
 	"wolfhud_panels_interaction_time_title" : "최소 상호작용 시간",
 	"wolfhud_panels_interaction_time_desc" : "팀원의 상호작용이 X 초 이상일 경우, 팀원 HUD 에 표시합니다.",
+	"wolfhud_panels_use_ai_color_title" : "Use custom bot color",
+	"wolfhud_panels_use_ai_color_desc" : "Use a custom color for the names of bots. (This also affects dmg popups)",
+	"wolfhud_panels_ai_color_title" : "Custom bot color",
+	"wolfhud_panels_ai_color_desc" : "Set the custom color to use for the names of bots. (This also affects dmg popups)",
 	
 	
 	"wolfhud_chat_options_name" : "채팅 옵션",

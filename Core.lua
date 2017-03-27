@@ -160,6 +160,10 @@ if not _G.WolfHUD then
 						HIDE						= false,
 						DURATION					= 15,
 					},
+					AI_COLOR = {
+						USE							= false,
+						COLOR						= "white",
+					},
 					WEAPON = {
 						ICON						= 4,
 						NAME						= 1,
