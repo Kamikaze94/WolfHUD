@@ -301,8 +301,8 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 		if self._has_gadget then
 			local gadgets = clone(self._has_gadget)
 			table.sort(gadgets, function(x, y)
-				xd = self._parts[x]
-				yd = self._parts[y]
+				local xd = self._parts[x]
+				local yd = self._parts[y]
 				if not xd then
 					return false
 				end

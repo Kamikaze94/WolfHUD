@@ -3,7 +3,6 @@
 if string.lower(RequiredScript) == "lib/units/beings/player/huskplayermovement" then
 
 	local _start_bleedout_original = HuskPlayerMovement._start_bleedout
-	local _start_dead_original = HuskPlayerMovement._start_dead
 
 	function HuskPlayerMovement:_start_bleedout(...)
 		local crim_data = managers.criminals:character_data_by_unit(self._unit)
@@ -66,13 +65,13 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HUDManager.CUSTOM_TEAMMATE_PANELS then
 
-	Hooks:PostHook( HUDTeammate, "init", "WolfHUD_DownCounter_HUDTeammate_init", function(self, i, teammates_panel, is_player, ...)
+	Hooks:PostHook( HUDTeammate, "init", "WolfHUD_DownCounter_HUDTeammate_init", function(self, ...)
 		self._health_panel = self._health_panel or self._player_panel:child("radial_health_panel")
 		self._max_downs = (Global.game_settings.difficulty == "sm_wish" and 2 or tweak_data.player.damage.LIVES_INIT) - 1 + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
 		self._downs = self._main_player and self._max_downs or 0
 		self._setting_prefix = self._main_player and "PLAYER" or "TEAMMATE"
 
-		local risk_indicator_bg = self._health_panel:bitmap({
+		self._health_panel:bitmap({
 			name = "risk_indicator_bg",
 			texture = "guis/textures/pd2/crimenet_marker_glow",
 			texture_rect = { 0, 0, 64, 64 },

@@ -3916,7 +3916,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 
 		local hud_w, hud_h = hud_panel:w(), hud_panel:h()
 		local player_hud = self._teammate_panels[HUDManager.PLAYER_PANEL]
-		player_panel = player_hud and player_hud:panel() or nil
+		local player_panel = player_hud and player_hud:panel() or nil
 		if player_hud and player_panel then
 			local teammate_offset = { 0, 0, 0 }
 

@@ -96,7 +96,7 @@ if RequiredScript == "lib/managers/missionassetsmanager" then
 		local asset = self:_get_asset_by_id(asset_id)
 
 		if not asset then
-			for i, data in ipairs(insert_table) do
+			for _, data in ipairs(insert_table) do
 				if data.id == asset_id then
 					asset = data
 					break

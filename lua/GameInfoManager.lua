@@ -1370,7 +1370,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	end
 
 	function GameInfoManager:register_listener(listener_id, source_type, event, clbk, keys, data_only)
-		local listener_keys = nil
+		local listener_keys
 
 		if keys then
 			listener_keys = {}

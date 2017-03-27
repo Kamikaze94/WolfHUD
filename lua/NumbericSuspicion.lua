@@ -1,7 +1,6 @@
 local hudsuspicion_init_original = HUDSuspicion.init
 local hudsuspicions_animate_eye_original = HUDSuspicion.animate_eye
 local hudsuspicion_hide_original = HUDSuspicion.hide
-local feed_value_original = HUDSuspicion.feed_value
 
 function HUDSuspicion:init(...)
 	hudsuspicion_init_original(self, ...)
