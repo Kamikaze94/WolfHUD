@@ -6,10 +6,10 @@ if not _G.WolfHUD then
 	WolfHUD.tweak_file = "WolfHUDTweakData.lua"
 	WolfHUD.LOG_MODE = { error = true, warning = false, info = false }		-- error, info, warning or all
 	WolfHUD.version = "1.0"
-	
+
 	WolfHUD.settings = {}
 	WolfHUD.tweak_data = {}
-	
+
 	WolfHUD.hook_files = WolfHUD.hook_files or {
 		["lib/setups/setup"] 										= { "GameInfoManager.lua", "WaypointsManager.lua", "EnhancedCrewLoadout.lua" },
 		["lib/managers/menumanager"] 								= { "PrePlanManager.lua", "MenuTweaks.lua" },
@@ -90,23 +90,22 @@ if not _G.WolfHUD then
 		["lib/player_actions/skills/playeractionunseenstrike"] 		= { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractiontriggerhappy"] 		= { "GameInfoManager.lua" },
 		["lib/states/ingamedriving"] 								= { "DrivingHUD.lua" },
-		["lib/states/ingamearrested"]								= { "EnemyHealthbar.lua" }, 
+		["lib/states/ingamearrested"]								= { "EnemyHealthbar.lua" },
 		["lib/states/ingamewaitingforplayers"] 						= { "MenuTweaks.lua" },
-		["lib/tweak_data/tweakdata"] 								= { "MenuTweaks.lua" },	
-		["lib/tweak_data/guitweakdata"] 							= { "MenuTweaks.lua" },	
+		["lib/tweak_data/tweakdata"] 								= { "MenuTweaks.lua" },
+		["lib/tweak_data/guitweakdata"] 							= { "MenuTweaks.lua" },
 		["lib/tweak_data/assetstweakdata"] 							= { "BuyAllAsset.lua" },
 		["lib/tweak_data/timespeedeffecttweakdata"] 				= { "Scripts.lua" },
 		["core/lib/managers/menu/items/coremenuitemslider"] 		= { "MenuTweaks.lua" },
 		["core/lib/managers/subtitle/coresubtitlepresenter"] 		= { "EnhancedObjective.lua" },
-		
+
 		--Utils and custom classes...
 		["lib/entry"]												= { "Utils/QuickInputMenu.lua" },
 		["lib/managers/systemmenumanager"] 							= { "Utils/InputDialog.lua" },
 		["lib/managers/dialogs/specializationdialog"] 				= { "Utils/InputDialog.lua" },
 		["lib/managers/menu/specializationboxgui"] 					= { "Utils/InputDialog.lua" },
 	}
-	
-	
+
 	function WolfHUD:Reset()
 		WolfHUD.settings = {
 			CustomHUD = {
@@ -285,7 +284,7 @@ if not _G.WolfHUD then
 						separate_bagged_loot		 		= true,     --Show bagged loot as a separate value
 						show_potential_loot					= false,
 					show_special_pickups 					= true,    	--Show number of special equipment/items
-				
+
 				},
 				BUFF_LIST = {
 					show_buffs 								= true,     --Active effects (buffs/debuffs). Also see HUDList.BuffItemBase.IGNORED_BUFFS table to ignore specific buffs that you don't want listed, or enable some of those not shown by default
@@ -498,7 +497,7 @@ if not _G.WolfHUD then
 			},
 		}
 	end
-	
+
 	function WolfHUD:print_log(text, msg_type)
 		if msg_type and self.LOG_MODE[msg_type] then
 			local function log_table(userdata)
@@ -520,12 +519,12 @@ if not _G.WolfHUD then
 				return
 			elseif type(text) == "function" then
 				msg_type = "error"
-				text = "Cannot log function... " 
+				text = "Cannot log function... "
 			end
 			log(string.format("[WolfHUD] %s: %s", string.upper(msg_type), text))
 		end
 	end
-	
+
 	function WolfHUD:Load()
 		local file = io.open(self.settings_path, "r")
 		if file then
@@ -540,7 +539,7 @@ if not _G.WolfHUD then
 					end
 				end
 			end
-			
+
 			local settings = json.decode(file:read("*all"))
 			parse_settings(self.settings, settings)
 			file:close()
@@ -562,7 +561,7 @@ if not _G.WolfHUD then
 			self:print_log("Error while saving, settings table appears to be empty...", "error")
 		end
 	end
-	
+
 	function WolfHUD:AskOverride(data, setting, notif_id)
 		local menu_options = {
 			[1] = {
@@ -572,9 +571,9 @@ if not _G.WolfHUD then
 					WolfHUD:Save()
 					WolfHUD:createOverrides(data)
 					if notif_id and NotificationsManager:NotificationExists( notif_id ) then
-						NotificationsManager:UpdateNotification( notif_id, 
-							managers.localization:text("woldhud_notification_restart_override_title", { NAME = data.display_name }), 
-							managers.localization:text("woldhud_notification_restart_override_desc"), 20, function() end	
+						NotificationsManager:UpdateNotification( notif_id,
+							managers.localization:text("woldhud_notification_restart_override_title", { NAME = data.display_name }),
+							managers.localization:text("woldhud_notification_restart_override_desc"), 20, function() end
 						)
 					end
 				end,
@@ -592,11 +591,11 @@ if not _G.WolfHUD then
 				is_cancel_button = true,
 			},
 		}
-		return QuickMenu:new( managers.localization:text("wolfhud_dialog_install_title", { NAME = data["display_name"] }), 
-								string.format("%s\n\n%s", managers.localization:text(string.format("wolfhud_dialog_install_%s_desc", data["identifier"])), managers.localization:text("wolfhud_dialog_install_desc", { NAME = data["display_name"]})) ,
-								menu_options, true )
+		return QuickMenu:new( managers.localization:text("wolfhud_dialog_install_title", { NAME = data["display_name"] }),
+				string.format("%s\n\n%s", managers.localization:text(string.format("wolfhud_dialog_install_%s_desc", data["identifier"])), managers.localization:text("wolfhud_dialog_install_desc", { NAME = data["display_name"]})) ,
+				menu_options, true )
 	end
-	
+
 	function WolfHUD:checkOverrides()
 		local updates = {}
 		for k, v in pairs(LuaModManager.Mods) do
@@ -606,11 +605,11 @@ if not _G.WolfHUD then
 				updates = info["updates"] or updates
 			end
 		end
-		
+
 		if SystemInfo:platform() ~= Idstring("WIN32") then -- Abort here while Linux doesn't support 'mod_overrides', TODO: Linux seems to return WIN32 as well...
-			return 
-		end	
-		
+			return
+		end
+
 		for k, v in pairs(updates) do
 			if type(v["revision"]) == "string" and not io.file_is_readable( v["revision"] ) then
 				local setting = v["identifier"]
@@ -624,7 +623,7 @@ if not _G.WolfHUD then
 			end
 		end
 	end
-	
+
 	function WolfHUD:createOverrides(data)
 		self:print_log("Creating Dummy for: " .. data["display_name"], "info")
 		if file.DirectoryExists("./" .. data["install_dir"] .. data["install_folder"]) then
@@ -649,16 +648,16 @@ if not _G.WolfHUD then
 	function WolfHUD:createOverrideNotification(data, setting)
 		local id = string.format("wolfhud_disabled_override_%s", data.identifier)
 		if not NotificationsManager:NotificationExists( id ) then
-				NotificationsManager:AddNotification( id, 
-				managers.localization:text("woldhud_notification_disabled_override_title", { NAME = data.display_name }), 
-				managers.localization:text("woldhud_notification_disabled_override_desc"), 
-				20, function() 
+			NotificationsManager:AddNotification( id,
+				managers.localization:text("woldhud_notification_disabled_override_title", { NAME = data.display_name }),
+				managers.localization:text("woldhud_notification_disabled_override_desc"),
+				20, function()
 					WolfHUD:AskOverride(data, setting, id)
 				end
 			)
 		end
 	end
-	
+
 	function WolfHUD:getSetting(id_table, default)
 		if type(id_table) == "table" then
 			local entry = self.settings
@@ -673,7 +672,7 @@ if not _G.WolfHUD then
 		end
 		return default
 	end
-	
+
 	function WolfHUD:setSetting(id_table, value)
 		local entry = self.settings
 		for i = 1, (#id_table-1) do
@@ -682,18 +681,18 @@ if not _G.WolfHUD then
 				return false
 			end
 		end
-		
+
 		if type(entry[id_table[#id_table]]) == type(value) then
 			entry[id_table[#id_table]] = value
 			return true
 		end
 	end
-	
+
 	function WolfHUD:getColorSetting(id_table, default)
 		local color_name = self:getSetting(id_table, default)
 		return self:getColor(color_name) or default and self:getColor(default)
 	end
-	
+
 	function WolfHUD:getColorID(name)
 		if tweak_data and type(name) == "string" then
 			for i, data in ipairs(self:getTweakEntry("color_table", "table")) do
@@ -703,7 +702,7 @@ if not _G.WolfHUD then
 			end
 		end
 	end
-	
+
 	function WolfHUD:getColor(name)
 		if tweak_data and type(name) == "string" then
 			for i, data in ipairs(self:getTweakEntry("color_table", "table")) do
@@ -713,7 +712,7 @@ if not _G.WolfHUD then
 			end
 		end
 	end
-	
+
 	function WolfHUD:getTweakEntry(id, val_type, default)
 		local value = self.tweak_data[id]
 		if value ~= nil and (not val_type or type(value) == val_type) then
@@ -723,14 +722,14 @@ if not _G.WolfHUD then
 			if default == nil then
 				if val_type == "number" then -- Try to prevent crash by giving default value
 					default = 1
-				elseif val_type == "boolean" then 
+				elseif val_type == "boolean" then
 					default = false
-				elseif val_type == "string" then 
+				elseif val_type == "string" then
 					default = ""
 				elseif val_type == "table" then
 					default = {}
 				end
-			end			
+			end
 			return default
 		end
 	end
@@ -785,22 +784,22 @@ if not _G.WolfHUD then
 			WolfHUD:print_log(string.format("Tweak Data file couldn't be found! (%s)", tweak_path), "error")
 		end
 	end
-	
+
 	-- Table with all menu IDs
 	WolfHUD.menu_ids = WolfHUD.menu_ids or {}
-	
+
 	--callback functions to apply changed settings on the fly
 	if not WolfHUD.apply_settings_clbk then
 		WolfHUD.apply_settings_clbk = {
 			["CustomHUD"] = function(setting, value)
 				if managers.hud and managers.hud.change_hud_setting then
 					local type = table.remove(setting, 1)
-					managers.hud:change_hud_setting(type, setting, WolfHUD:getColor(value) or value) 
+					managers.hud:change_hud_setting(type, setting, WolfHUD:getColor(value) or value)
 				end
 			end,
 			["HUDList"] = function(setting, value)
-				if managers.hud and HUDListManager then 
-					managers.hud:change_list_setting(tostring(setting[#setting]), WolfHUD:getColor(value) or value) 
+				if managers.hud and HUDListManager then
+					managers.hud:change_list_setting(tostring(setting[#setting]), WolfHUD:getColor(value) or value)
 				end
 			end,
 			["TabStats"] = function(setting, value)
@@ -809,8 +808,8 @@ if not _G.WolfHUD then
 				end
 			end,
 			["DrivingHUD"] = function(setting, value)
-				if managers.hud and managers.hud.change_drivinghud_setting then 
-					managers.hud:change_drivinghud_setting(tostring(setting[#setting]), WolfHUD:getColor(value) or value) 
+				if managers.hud and managers.hud.change_drivinghud_setting then
+					managers.hud:change_drivinghud_setting(tostring(setting[#setting]), WolfHUD:getColor(value) or value)
 				end
 			end,
 			["GADGETS"] = function(setting, value)
@@ -820,15 +819,14 @@ if not _G.WolfHUD then
 			end,
 		}
 	end
-	
+
 	WolfHUD:Reset()	-- Populate settings table
 	WolfHUD:Load()	-- Load user settings
-
 
 	-- Create Ingame Menus
 	dofile(WolfHUD.mod_path .. "OptionMenus.lua")	-- Menu structure table in seperate file, in order to not bloat the Core file too much.
 	local menu_options = WolfHUD.options_menu_data
-	
+
 	-- Setup and register option menus
 	Hooks:Add("MenuManagerSetupCustomMenus", "MenuManagerSetupCustomMenus_WolfHUD", function( menu_manager, nodes )
 		local function create_menu(menu_table, parent_id)
@@ -839,29 +837,29 @@ if not _G.WolfHUD then
 				end
 			end
 		end
-		
+
 		create_menu({menu_options}, "lua_mod_options_menu")
 	end)
-	
+
 	--Populate options menus
-	Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenus_WolfHUD", function(menu_manager, nodes)	
+	Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenus_WolfHUD", function(menu_manager, nodes)
 		-- Called on setting change
 		local function change_setting(setting, value)
 			if WolfHUD:getSetting(setting, nil) ~= value and WolfHUD:setSetting(setting, value) then
 				WolfHUD:print_log(string.format("Change setting: %s = %s", table.concat(setting, "->"),tostring(value)), "info")	-- Change type back!
 				WolfHUD.settings_changed = true
-				
+
 				local script = table.remove(setting, 1)
 				if WolfHUD.apply_settings_clbk[script] then
 					WolfHUD.apply_settings_clbk[script](setting, value)
 				end
 			end
 		end
-		
+
 		local function add_visible_reqs(menu_id, id, data)
 			local visual_clbk_id = id .. "_visible_clbk"
 			local enabled_clbk_id = id .. "_enabled_clbk"
-				
+
 			--Add visual callback
 			MenuCallbackHandler[visual_clbk_id] = function(self, item)
 				for _, req in ipairs(data.visible_reqs) do
@@ -869,7 +867,7 @@ if not _G.WolfHUD then
 						local a = WolfHUD:getSetting(req.setting, nil)
 						if type(a) == "boolean" then
 							local b = req.invert and true or false
-							if a == b then 
+							if a == b then
 								return false
 							end
 						elseif type(a) == "number" then
@@ -883,12 +881,12 @@ if not _G.WolfHUD then
 				end
 				return true
 			end
-			
+
 			--Add enable callback
 			MenuCallbackHandler[enabled_clbk_id] = function(self, item)
 				return MenuCallbackHandler[visual_clbk_id](self, item)
 			end
-			
+
 			--Associate visual callback with item
 			local menu = MenuHelper:GetMenu(menu_id)
 			for i, item in pairs(menu._items_list) do
@@ -902,7 +900,7 @@ if not _G.WolfHUD then
 				end
 			end
 		end
-		
+
 		-- Reapply enabled state on all items in the same menu
 		local update_visible_clbks = "wolfhud_update_visibility"
 		MenuCallbackHandler[update_visible_clbks] = function(self, item)
@@ -912,24 +910,24 @@ if not _G.WolfHUD then
 					gui_node:refresh_gui(gui_node.node)
 					gui_node:highlight_item(item, true)
 				end
-				
+
 				for _, row_item in pairs(gui_node.row_items) do
 					local option_item = row_item.item
 					if option_item._type ~= "divider" and option_item:parameters().name ~= item:parameters().name then
 						local enabled = true
-						
+
 						for _, clbk in ipairs(option_item._enabled_callback_name_list or {}) do
 							enabled = enabled and self[clbk](self, option_item)
 						end
-						
+
 						option_item:set_enabled(enabled)
-						
+
 						gui_node:reload_item(option_item)
 					end
 				end
 			end
 		end
-		
+
 		-- item create functions by type
 		local create_item_handlers = {
 			menu = function(parent_id, offset, data)
@@ -940,7 +938,7 @@ if not _G.WolfHUD then
 			slider = function(menu_id, offset, data, value)
 				local id = string.format("%s_%s_slider", menu_id, data.name_id)
 				local clbk_id = id .. "_clbk"
-				
+
 				MenuHelper:AddSlider({
 					id = id,
 					title = data.name_id,
@@ -955,12 +953,12 @@ if not _G.WolfHUD then
 					priority = offset,
 					disabled_color = Color(0.6, 0.6, 0.6),
 				})
-				
+
 				--Value changed callback
 				MenuCallbackHandler[clbk_id] = function(self, item)
 					change_setting(clone(data.value), item:value())
 				end
-				
+
 				if data.visible_reqs then
 					add_visible_reqs(menu_id, id, data)
 				end
@@ -968,11 +966,11 @@ if not _G.WolfHUD then
 			toggle = function(menu_id, offset, data, value)
 				local id = string.format("%s_%s_toggle", menu_id, data.name_id)
 				local clbk_id = id .. "_clbk"
-				
+
 				if data.invert_value then
 					value = not value
 				end
-				
+
 				MenuHelper:AddToggle({
 					id = id,
 					title = data.name_id,
@@ -983,18 +981,18 @@ if not _G.WolfHUD then
 					priority = offset,
 					disabled_color = Color(0.6, 0.6, 0.6),
 				})
-				
+
 				--Add visual callback
 				MenuCallbackHandler[clbk_id] = function(self, item)
 					local value = (item:value() == "on") and true or false
-					
+
 					if data.invert_value then
 						value = not value
 					end
-					
+
 					change_setting(clone(data.value), value)
 				end
-				
+
 				if data.visible_reqs then
 					add_visible_reqs(menu_id, id, data)
 				end
@@ -1002,7 +1000,7 @@ if not _G.WolfHUD then
 			multi_choice = function(menu_id, offset, data, value)
 				local id = string.format("%s_%s_multi", menu_id, data.name_id)
 				local clbk_id = id .. "_clbk"
-				
+
 				MenuHelper:AddMultipleChoice({
 					id = id,
 					title = data.name_id,
@@ -1014,11 +1012,11 @@ if not _G.WolfHUD then
 					priority = offset,
 					disabled_color = Color(0.6, 0.6, 0.6),
 				})
-				
+
 				MenuCallbackHandler[clbk_id] = function(self, item)
 					change_setting(clone(data.value), item:value())
 				end
-				
+
 				if data.add_color_options then
 					local menu = MenuHelper:GetMenu(menu_id)
 					for i, item in pairs(menu._items_list) do
@@ -1044,7 +1042,7 @@ if not _G.WolfHUD then
 											params["color_stop" .. i] = i + 1
 										end
 									end
-									
+
 									item:add_option(CoreMenuItemOption.ItemOption:new(params))
 								end
 							end
@@ -1056,7 +1054,7 @@ if not _G.WolfHUD then
 						end
 					end
 				end
-				
+
 				if data.visible_reqs then
 					add_visible_reqs(menu_id, id, data)
 				end
@@ -1064,7 +1062,7 @@ if not _G.WolfHUD then
 			button = function(menu_id, offset, data)
 				local id = string.format("%s_%s_button", menu_id, data.name_id)
 				local clbk_id = data.clbk or (id .. "_clbk")
-				
+
 				MenuHelper:AddButton({
 					id = id,
 					title = data.name_id,
@@ -1074,49 +1072,49 @@ if not _G.WolfHUD then
 					priority = offset,
 					disabled_color = Color(0.6, 0.6, 0.6),
 				})
-				
+
 				MenuCallbackHandler[clbk_id] = MenuCallbackHandler[clbk_id] or function(self, item)
-				
+
 				end
-				
+
 				if data.visible_reqs then
 					add_visible_reqs(menu_id, id, data)
 				end
 			end,
 			divider = function(menu_id, offset, data)
 				local id = string.format("%s_divider_%d", menu_id, offset)
-				
+
 				MenuHelper:AddDivider({
-					 id = id,
-					 size = data.size,
-					 menu_id = menu_id,
-					 priority = offset,
+					id = id,
+					size = data.size,
+					menu_id = menu_id,
+					priority = offset,
 				})
 			end,
 		}
-		
+
 		-- Populate Menus with their menu items
 		local function populate_menu(menu_table, parent_id)
 			local item_amount = #menu_table
 			for i, data in ipairs(menu_table) do
 				local value = data.value and WolfHUD:getSetting(data.value, nil)
 				create_item_handlers[data.type](data.parent_id or parent_id, item_amount - i, data, value)
-				
+
 				if data.type == "menu" then
 					populate_menu(data.options, data.menu_id)
 				end
 			end
 		end
-		
+
 		populate_menu({menu_options}, "lua_mod_options_menu")
 	end)
-	
+
 	-- Create callbacks and finalize menus
 	Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_WolfHUD", function(menu_manager, nodes)
 		local back_clbk = "wolfhud_back_clbk"
 		local focus_clbk = "wolfhud_focus_clbk"
 		local reset_clbk = "wolfhud_reset_clbk"
-		
+
 		-- Add menu back callback
 		MenuCallbackHandler[back_clbk] = function(self, item)
 			if WolfHUD.settings_changed then
@@ -1125,24 +1123,24 @@ if not _G.WolfHUD then
 				WolfHUD:print_log("Settings saved!", "info")
 			end
 		end
-		
+
 		-- Add focus callback
 		MenuCallbackHandler[focus_clbk] = function(node, focus)
 			if focus then
 				for _, option_item in pairs(node._items) do
 					if option_item._type ~= "divider" then
 						local enabled = true
-						
+
 						for _, clbk in ipairs(option_item._enabled_callback_name_list or {}) do
 							enabled = enabled and MenuCallbackHandler[clbk](self, option_item)
 						end
-						
+
 						option_item:set_enabled(enabled)
 					end
 				end
 			end
 		end
-		
+
 		-- Add reset menu items callback
 		MenuCallbackHandler[reset_clbk] = function(self, item)
 			local menu_title = managers.localization:text("wolfhud_reset_options_title")
@@ -1152,7 +1150,7 @@ if not _G.WolfHUD then
 					text = managers.localization:text("dialog_yes"),
 					callback = function(self, item)
 						WolfHUD:Reset()
-						
+
 						for i, menu_id in ipairs(WolfHUD.menu_ids) do
 							local menu = MenuHelper:GetMenu(menu_id)
 							if menu then
@@ -1165,14 +1163,14 @@ if not _G.WolfHUD then
 											if WolfHUD.apply_settings_clbk[script] then
 												WolfHUD.apply_settings_clbk[script](setting, value)
 											end
-											
+
 											if menu_item._type == "toggle" then
 												if menu_item._create_data.invert_value then
 													value = not value
 												end
 												value = (value and "on" or "off")
 											end
-											
+
 											menu_item:set_value(value)
 										end
 									end
@@ -1180,7 +1178,7 @@ if not _G.WolfHUD then
 							end
 						end
 						managers.viewport:resolution_changed()
-						
+
 						WolfHUD.settings_changed = true
 						WolfHUD:print_log("Settings resetted!", "info")
 					end,
@@ -1192,28 +1190,28 @@ if not _G.WolfHUD then
 			}
 			QuickMenu:new( menu_title, menu_message, menu_buttons, true )
 		end
-		
+
 		-- Build Menus and add a button to parent menu
 		local function finalize_menu(menu_table, parent_id)
 			for i, data in ipairs(menu_table) do
 				if data.type == "menu" then
 					nodes[data.menu_id] = MenuHelper:BuildMenu(data.menu_id, { back_callback = back_clbk, focus_changed_callback = focus_clbk })
 					MenuHelper:AddMenuItem(
-						nodes[data.parent_id or parent_id], 
-						data.menu_id, 
-						data.name_id, 
-						data.desc_id, 
+						nodes[data.parent_id or parent_id],
+						data.menu_id,
+						data.name_id,
+						data.desc_id,
 						data.position or i
 					)
-					
+
 					finalize_menu(data.options, data.menu_id)
 				end
 			end
 		end
-		
+
 		finalize_menu({menu_options}, "lua_mod_options_menu")
 	end)
-	
+
 	--Add localiszation strings
 	Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", function(loc)
 		local loc_path = WolfHUD.mod_path .. "loc/"
@@ -1240,22 +1238,22 @@ if not _G.WolfHUD then
 				end
 			end
 			loc:load_localization_file(WolfHUD.mod_path .. "loc/english.json", false)
-			
+
 			if WolfHUD:getSetting({"INVENTORY", "USE_REAL_WEAPON_NAMES"}, false) then
 				loc:load_localization_file(WolfHUD.mod_path .. "loc/RealWeaponNames.json")
 			end
 		else
 			WolfHUD:print_log("Localization folder seems to be missing!", "error")
 		end
-		
+
 		local localized_strings = {}
 		localized_strings["cash_sign"] = WolfHUD:getTweakEntry("CASH_SIGN", "string", "$")
-		
+
 		-- Hide Skip Message, when auto skip blackscreen is active
 		if WolfHUD:getSetting({"SkipIt", "SKIP_BLACKSCREEN"}, false) then
 			localized_strings["hud_skip_blackscreen"] = ""
 		end
-		
+
 		-- Add macro $VALUE to all interaction strings
 		for interact_id, data in pairs(tweak_data.interaction) do
 			if type(data) == "table" and data.text_id and not data.verify_owner then
@@ -1285,7 +1283,7 @@ end
 
 if RequiredScript then
 	local requiredScript = RequiredScript:lower()
-	
+
 	if WolfHUD.hook_files[requiredScript] then
 		for __, file in ipairs(WolfHUD.hook_files[requiredScript]) do
 			dofile( WolfHUD.mod_path .. "lua/" .. file )

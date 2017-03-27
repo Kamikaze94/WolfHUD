@@ -37,13 +37,12 @@ function WolfHUD.Sync.gameinfo_ecm_feedback_event_sender(event, key, data)
 			source = "ecm",
 			event = event,
 			key = key,
-			feedback_duration = data.feedback_duration, 
+			feedback_duration = data.feedback_duration,
 			feedback_expire_t = data.feedback_expire_t
 		}
 		WolfHUD.Sync.send("WolfHUD_Sync_GameInfo_ecm_feedback", send_data)
 	end
 end
-
 
 --receive and apply data
 function WolfHUD.Sync.receive_gameinfo_ecm_feedback_event(event_data)
@@ -84,7 +83,6 @@ function WolfHUD.Sync:getCache(id)
 		return self.cache
 	end
 end
-
 
 -- Manage Networking and list of peers to sync to...
 Hooks:Add("NetworkReceivedData", "NetworkReceivedData_WolfHUD", function(sender, messageType, data)
