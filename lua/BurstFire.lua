@@ -29,12 +29,12 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 	local start_reload_original = NewRaycastWeaponBase.start_reload
 	local fire_original = NewRaycastWeaponBase.fire
 	local toggle_firemode_original = NewRaycastWeaponBase.toggle_firemode
-	
+
 	NewRaycastWeaponBase.DEFAULT_BURST_SIZE = 3
-	
+
 	function NewRaycastWeaponBase:_update_stats_values(...)
 		_update_stats_values_original(self, ...)
-		
+
 		if not self:is_npc() then
 			self._burst_rounds_remaining = 0
 			self._has_auto = not self._locked_fire_mode and (self:can_toggle_firemode() or self:weapon_tweak_data().FIRE_MODE == "auto")
@@ -45,47 +45,47 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 			self._adaptive_burst_size = self:weapon_tweak_data().ADAPTIVE_BURST_SIZE ~= false
 			self._burst_fire_rate_multiplier = self:weapon_tweak_data().BURST_FIRE_RATE_MULTIPLIER or 1
 			self._delayed_burst_recoil = self:weapon_tweak_data().DELAYED_BURST_RECOIL
-			
+
 			self._burst_rounds_fired = 0
 		end
 	end
-	
+
 	function NewRaycastWeaponBase:fire_rate_multiplier(...)
 		local mult = 1
 		if self:in_burst_mode() then
 			mult = mult * (self._burst_fire_rate_multiplier or 1)
 		end
-	
+
 		return fire_rate_multiplier_original(self, ...) * mult
 	end
-	
+
 	function NewRaycastWeaponBase:recoil_multiplier(...)
 		local mult = 1
 		if self._delayed_burst_recoil and self:in_burst_mode() and self:burst_rounds_remaining() then
 			mult = 0
 		end
-		
+
 		return recoil_multiplier_original(self, ...) * mult
 	end
-	
+
 	function NewRaycastWeaponBase:on_enabled(...)
 		self:cancel_burst()
 		return on_enabled_original(self, ...)
 	end
-	
+
 	function NewRaycastWeaponBase:on_disabled(...)
 		self:cancel_burst()
 		return on_disabled_original(self, ...)
 	end
-	
+
 	function NewRaycastWeaponBase:start_reload(...)
 		self:cancel_burst()
 		return start_reload_original(self, ...)
 	end
-	
+
 	function NewRaycastWeaponBase:fire(...)
 		local result = fire_original(self, ...)
-		
+
 		if not self._is_akimbo and result and self:in_burst_mode() then
 			if self:clip_empty() then
 				self:cancel_burst()
@@ -97,17 +97,15 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 				end
 			end
 		end
-		
+
 		return result
 	end
-	
+
 	--Semi-override
 	function NewRaycastWeaponBase:toggle_firemode(...)
 		return self:can_use_burst_mode() and not self._locked_fire_mode and not self:gadget_overrides_weapon_functions() and self:_check_toggle_burst() or toggle_firemode_original(self, ...)
 	end
-	
-	
-	
+
 	function NewRaycastWeaponBase:_check_toggle_burst()
 		if self:in_burst_mode() then
 			self:_set_burst_mode(false, self._is_akimbo and not self._has_auto)
@@ -121,54 +119,54 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 	function NewRaycastWeaponBase:_set_burst_mode(status, skip_sound)
 		self._in_burst_mode = status
 		self._fire_mode = Idstring(status and "single" or self._has_auto and "auto" or "single")
-		
+
 		if self._is_akimbo then
 			self._manual_fire_second_gun = not status
-			
+
 			if alive(self._second_gun) then
 				self._second_gun:base():_set_burst_mode(status, skip_sound)
 			end
 		end
-		
+
 		if not skip_sound then
 			self._sound_fire:post_event(status and "wp_auto_switch_on" or self._has_auto and "wp_auto_switch_on" or "wp_auto_switch_off")
 		end
-		
+
 		self:cancel_burst()
 	end
-	
+
 	function NewRaycastWeaponBase:can_use_burst_mode()
 		return self._has_burst_fire
 	end
-	
+
 	function NewRaycastWeaponBase:in_burst_mode()
 		return self._fire_mode == Idstring("single") and self._in_burst_mode and not self:gadget_overrides_weapon_functions()
 	end
-	
+
 	function NewRaycastWeaponBase:burst_rounds_remaining()
 		return self._burst_rounds_remaining > 0 and self._burst_rounds_remaining or false
 	end
-	
+
 	function NewRaycastWeaponBase:cancel_burst(soft_cancel)
 		if self._adaptive_burst_size or not soft_cancel then
 			self._burst_rounds_remaining = 0
-			
+
 			if self._delayed_burst_recoil and self._burst_rounds_fired > 0 then
 				self._setup.user_unit:movement():current_state():force_recoil_kick(self, self._burst_rounds_fired)
 			end
 			self._burst_rounds_fired = 0
 		end
 	end
-	
+
 elseif string.lower(RequiredScript) == "lib/units/weapons/akimboweaponbase" then
 
 	local _update_stats_values_original = AkimboWeaponBase._update_stats_values
 	local fire_rate_multiplier_original = AkimboWeaponBase.fire_rate_multiplier
 	local toggle_firemode_original = AkimboWeaponBase.toggle_firemode
-	
+
 	function AkimboWeaponBase:_update_stats_values(...)
 		_update_stats_values_original(self, ...)
-		
+
 		if not self:is_npc() then
 			self._is_akimbo = true
 			self._has_burst_fire = self._has_burst_fire or ((self:weapon_tweak_data().BURST_FIRE ~= false) and (self._fire_mode == Idstring("single")))
@@ -178,11 +176,11 @@ elseif string.lower(RequiredScript) == "lib/units/weapons/akimboweaponbase" then
 			end
 		end
 	end
-	
+
 	function AkimboWeaponBase:fire_rate_multiplier(...)
 		return fire_rate_multiplier_original(self, ...) * (self._manual_fire_second_gun and 2 or 1)
 	end
-	
+
 	--Override
 	function AkimboWeaponBase:toggle_firemode(...)
 		return self._has_burst_fire and self:_check_toggle_burst() or toggle_firemode_original(self, ...)
@@ -198,26 +196,26 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 		update_original(self, t, ...)
 		self:_update_burst_fire(t)
 	end
-	
+
 	function PlayerStandard:_check_action_primary_attack(t, input, ...)
 		if self._trigger_down and not input.btn_primary_attack_state then
 			self._equipped_unit:base():cancel_burst(true)
 		end
 		self._trigger_down = input.btn_primary_attack_state
-		
+
 		return _check_action_primary_attack_original(self, t, input, ...)
 	end
-	
+
 	function PlayerStandard:_check_action_deploy_underbarrel(...)
 		local new_action = _check_action_deploy_underbarrel_original(self, ...)
-		
+
 		if new_action and alive(self._equipped_unit) and self._equipped_unit:base() and self._equipped_unit:base():in_burst_mode() then
 			managers.hud:set_teammate_weapon_firemode_burst(self._equipped_unit:base():selection_index())
 		end
-		
+
 		return new_action
 	end
-	
+
 	--Override
 	function PlayerStandard:_check_action_weapon_firemode(t, input)
 		local wbase = self._equipped_unit:base()
@@ -232,22 +230,21 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 			end
 		end
 	end
-	
-	
+
 	function PlayerStandard:_update_burst_fire(t)
 		if alive(self._equipped_unit) and self._equipped_unit:base():burst_rounds_remaining() then
 			self:_check_action_primary_attack(t, { btn_primary_attack_state = true, btn_primary_attack_press = true })
 		end
 	end
-	
+
 	function PlayerStandard:force_recoil_kick(weap_base, manual_multiplier)
 		local recoil_multiplier = (weap_base:recoil() + weap_base:recoil_addend()) * weap_base:recoil_multiplier() * (manual_multiplier or 1)
 		local up, down, left, right = unpack(weap_base:weapon_tweak_data().kick[self._state_data.in_steelsight and "steelsight" or self._state_data.ducking and "crouching" or "standing"])
 		self._camera_unit:base():recoil_kick(up * recoil_multiplier, down * recoil_multiplier, left * recoil_multiplier, right * recoil_multiplier)
 	end
-	
+
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
-	
+
 	HUDManager._USE_BURST_MODE = true	--Custom HUD compatibility
 
 	HUDManager.set_teammate_weapon_firemode_burst = HUDManager.set_teammate_weapon_firemode_burst or function(self, id)
@@ -255,7 +252,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
-	
+
 	--Default function for vanilla HUD. If using a custom HUD that alters fire mode HUD components, make sure to implement this function in it
 	HUDTeammate.set_weapon_firemode_burst = HUDTeammate.set_weapon_firemode_burst or function(self, id, firemode, burst_fire)
 		local is_secondary = id == 1
@@ -271,5 +268,5 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			end
 		end
 	end
-	
+
 end

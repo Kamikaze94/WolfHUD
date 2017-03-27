@@ -8,11 +8,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 	HUDHitDirection.DAMAGE_TYPES.VEHICLE = 3
 	HUDHitDirection.DAMAGE_TYPES.CRIT = 4
 	HUDHitDirection.DAMAGE_TYPES.FRIENDLY_FIRE = 5
-	
+
 	local init_original = HUDHitDirection.init
 	local _add_hit_indicator_original = HUDHitDirection._add_hit_indicator
 	local _remove_original = HUDHitDirection._remove
-	
+
 	function HUDHitDirection:init(...)
 		init_original(self, ...)
 		if alive(self._hud_panel) and alive(self._hit_direction_panel) then
@@ -21,7 +21,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 			self._hit_direction_panel:set_center(self._hit_direction_panel:parent():w() * 0.5, self._hit_direction_panel:parent():h() * 0.5)
 		end
 	end
-	
+
 	function HUDHitDirection:_add_hit_indicator(...)
 		HUDHitDirection.PANEL_SIZE = WolfHUD:getSetting({"DamageIndicator", "SIZE"}, 150)
 		if self.indicator_count < WolfHUD:getSetting({"DamageIndicator", "MAX_AMOUNT"}, 10) then
@@ -29,7 +29,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 			_add_hit_indicator_original(self, ...)
 		end
 	end
-	
+
 	function HUDHitDirection:_animate(indicator, data, remove_func)
 		data.duration = WolfHUD:getSetting({"DamageIndicator", "DURATION"}, 2)
 		data.t = 0
@@ -56,12 +56,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 		end
 		remove_func(indicator, data)
 	end
-	
+
 	function HUDHitDirection:_remove(...)
 		_remove_original(self, ...)
 		self.indicator_count = self.indicator_count - 1
 	end
-	
+
 	function HUDHitDirection:_get_indicator_color(damage_type, t)
 		if damage_type == HUDHitDirection.DAMAGE_TYPES.HEALTH then
 			return WolfHUD:getColorSetting({"DamageIndicator", "HEALTH_COLOR"}, "red")
@@ -80,7 +80,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudhitdirection" then
 elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 	local PlayerDamage_damage_explosion = PlayerDamage.damage_explosion
 	local PlayerDamage_damage_fire = PlayerDamage.damage_fire
-	
+
 	function PlayerDamage:damage_explosion(attack_data, ...)
 		local value = PlayerDamage_damage_explosion(self, attack_data, ...)
 		if alive(self._unit) and (attack_data.position or attack_data.col_ray.position) then
@@ -91,7 +91,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 		end
 		return value
 	end
-	
+
 	function PlayerDamage:damage_fire(attack_data, ...)
 		local value = PlayerDamage_damage_fire(self, attack_data, ...)
 		if alive(self._unit) and (attack_data.position or attack_data.col_ray.position) then
@@ -102,7 +102,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 		end
 		return value
 	end
-	
+
 	function PlayerDamage:_hit_direction(position_vector, damage_type)
 		if position_vector then
 			local armor_left, low_health = (self:get_real_armor() > 0), ((self:get_real_health() / self:_max_health()) <= 0.20)
@@ -110,13 +110,13 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" th
 			managers.hud:on_hit_direction(position_vector, dmg_type)
 		end
 	end
-elseif string.lower(RequiredScript) == "lib/units/vehicles/vehicledamage" then	
---[[	-- Causes Access violation: Something with the angle calculation of the animation...
+elseif string.lower(RequiredScript) == "lib/units/vehicles/vehicledamage" then
+	--[[	-- Causes Access violation: Something with the angle calculation of the animation...
 	function VehicleDamage:_hit_direction(position_vector, damage_type)
 		if position_vector then
 			local dmg_type = damage_type or HUDHitDirection.DAMAGE_TYPES.VEHICLE
 			managers.hud:on_hit_direction(position_vector, dmg_type)
 		end
 	end
---]]
+	--]]
 end

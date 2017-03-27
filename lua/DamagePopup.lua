@@ -1,22 +1,21 @@
 if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	local _on_damage_received_original = CopDamage._on_damage_received
-	
+
 	function CopDamage:_on_damage_received(data, ...)
 		self:_process_popup_damage(data)
 		return _on_damage_received_original(self, data, ...)
 	end
-	
+
 	function CopDamage:_process_popup_damage(attack_data)
 		CopDamage.DMG_POPUP_SETTING = WolfHUD:getSetting({"DamagePopup", "DISPLAY_MODE"}, 2)
-		
+
 		local attacker = alive(attack_data.attacker_unit) and attack_data.attacker_unit
 		local damage = tonumber(attack_data.damage) or 0
-		
 
 		if attacker and damage >= 0.1 and CopDamage.DMG_POPUP_SETTING > 1 then
 			local killer
-			
-			if attacker:in_slot(3) or attacker:in_slot(5) then	
+
+			if attacker:in_slot(3) or attacker:in_slot(5) then
 				--Human team mate
 				killer = attacker
 			elseif attacker:in_slot(2) then
@@ -38,13 +37,13 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 			elseif attacker:in_slot(25)	then
 				--Turret
 				local owner = attacker:base():get_owner_id()
-				if owner then 
+				if owner then
 					killer =  managers.criminals:character_unit_by_peer_id(owner)
 				end
 			elseif attacker:base().thrower_unit then
 				killer = attacker:base():thrower_unit()
 			end
-			
+
 			if alive(killer) then
 				local headshot = self._head_body_name and attack_data.col_ray and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_head_body_name
 				if CopDamage.DMG_POPUP_SETTING == 2 then
@@ -78,14 +77,14 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 					offset = Vector3(10, 10, 20),
 					scale = 2 * WolfHUD:getSetting({"DamagePopup", "SCALE"}, 1),
 					color = waypoint_color,
-					visible_distance = { 
-						min = 30, 
-						max = 10000 
+					visible_distance = {
+						min = 30,
+						max = 10000
 					},
-					rescale_distance = { 
-						start_distance = 500, 
-						end_distance = 3000, 
-						final_scale = 0.5 
+					rescale_distance = {
+						start_distance = 500,
+						end_distance = 3000,
+						final_scale = 0.5
 					},
 					fade_duration = {
 						start = 0.5,
@@ -94,16 +93,16 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 					},
 					icon = {
 						type = "icon",
-						show = dead, 
+						show = dead,
 						scale = WolfHUD:getSetting({"DamagePopup", "SKULL_SCALE"}, 1.2),
-						texture = "guis/textures/pd2/risklevel_blackscreen", 
+						texture = "guis/textures/pd2/risklevel_blackscreen",
 						texture_rect = {0, 0, 64, 64},
 						blend_mode = "normal",
 						on_minimap = false
 					},
 					label = {
 						type = "label",
-						show = true, 
+						show = true,
 						text = self:build_popup_text(damage, headshot, true)
 					},
 					duration = {
