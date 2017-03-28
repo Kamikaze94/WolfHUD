@@ -265,6 +265,8 @@
 	"wolfhud_panels_show_ping_desc" : "Zeige den Ping des Spielers zu dir..",
 	"wolfhud_panels_show_status_title" : "Zeige Status",
 	"wolfhud_panels_show_status_desc" : "Zeige den Status des Spielers (Leben, Rüstung, etc.)",
+	"wolfhud_panels_condition_icon_color_title" : "Condition Icon Color",
+	"wolfhud_panels_condition_icon_color_desc" : "Set the color of the condition icon (downed, in custody, swan song, etc.)",
 	"wolfhud_panels_show_equip_title" : "Zeige Equipment",
 	"wolfhud_panels_show_equip_desc" : "Zeige das Equipment des Spielers.",
 	"wolfhud_panels_show_special_equip_title" : "Zeige spezielles Equipment",

@@ -132,7 +132,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 	end)
 
 	function HUDTeammate:_whisper_mode_change(event, key, status)
-		local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "DOWNCOUNTER"}, true)) or self._ai
+		local disabled = self._condition_icon:visible() or not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "DOWNCOUNTER"}, true)) or self._ai
 		self._downs_counter:set_visible(not disabled and (not status or self:down_amount() > 0))
 		self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
 	end
@@ -143,7 +143,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 			self._downs_counter:set_text(tostring(self._downs))
 			local progress = math.clamp(self:down_amount() / self._max_downs, 0, 1)
 			self._downs_counter:set_color(math.lerp(Color.white, Color(1, 1, 0.2, 0), progress))
-			local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "DOWNCOUNTER"}, true)) or self._ai
+			local disabled = self._condition_icon:visible() or not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "DOWNCOUNTER"}, true)) or self._ai
 			self._downs_counter:set_visible(not disabled and (not managers.groupai:state():whisper_mode() or self:down_amount() > 0))
 			self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
 		end
@@ -179,7 +179,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 				self._detection_counter:set_text(utf8.char(57363) .. tostring(self._risk))
 				self._detection_counter:set_color(color)
 			end
-			local disabled = not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "DOWNCOUNTER"}, true)) or self._ai
+			local disabled = self._condition_icon:visible() or not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "DOWNCOUNTER"}, true)) or self._ai
 			self._downs_counter:set_visible(not disabled and not managers.groupai:state():whisper_mode() or self:down_amount() > 0)
 			self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
 		end

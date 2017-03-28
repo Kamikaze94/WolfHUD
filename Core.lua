@@ -126,6 +126,7 @@ if not _G.WolfHUD then
 					STAMINA							= true,
 					DOWNCOUNTER						= true,
 					CARRY							= true,
+					CONDITION_ICON_COLOR			= "white",
 					WEAPON = {
 						ICON						= 4,
 						NAME						= 1,
@@ -156,6 +157,7 @@ if not _G.WolfHUD then
 					CALLSIGN						= false,
 					DOWNCOUNTER						= true,
 					CARRY							= true,
+					CONDITION_ICON_COLOR			= "white",
 					BUILD = {
 						HIDE						= false,
 						DURATION					= 15,
