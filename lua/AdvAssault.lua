@@ -178,6 +178,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local _change_vanillahud_setting_original = HUDManager._change_vanillahud_setting or function(...) end
+	local _create_downed_hud_original = HUDManager._create_downed_hud
+	local _create_custody_hud_original = HUDManager._create_custody_hud
 	function HUDManager:_locked_assault(status)
 		status = Network:is_server() and (managers.groupai:state():get_hunt_mode() or false) or status
 		self._assault_locked = self._assault_locked or false
@@ -200,6 +202,24 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			else
 				_change_vanillahud_setting_original(self, setting)
 			end
+		end
+	end
+	function HUDManager:_create_downed_hud(...)
+		_create_downed_hud_original(self, ...)
+		local banner_pos = math.clamp(WolfHUD:getSetting({"AssaultBanner", "POSITION"}, 2), 1, 3)
+		if banner_pos == 2 then
+			local timer_msg = self._hud_player_downed._hud_panel:child("downed_panel"):child("timer_msg")
+			timer_msg:set_y(50)
+			self._hud_player_downed._hud.timer:set_y(math.round(timer_msg:bottom() - 6))
+		end
+	end
+	function HUDManager:_create_custody_hud(...)
+		_create_custody_hud_original(self, ...)
+		local banner_pos = math.clamp(WolfHUD:getSetting({"AssaultBanner", "POSITION"}, 2), 1, 3)
+		if banner_pos == 2 then
+			local timer_msg = self._hud_player_custody._hud_panel:child("custody_panel"):child("timer_msg")
+			timer_msg:set_y(50)
+			self._hud_player_custody._timer:set_y(math.round(timer_msg:bottom() - 6))
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/localizationmanager" then
