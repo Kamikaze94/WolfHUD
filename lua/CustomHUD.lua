@@ -24,7 +24,6 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 
 		local init_original = HUDTeammate.init
 		local set_name_original = HUDTeammate.set_name
-		local set_callsign_original = HUDTeammate.set_callsign
 
 		function HUDTeammate:init(i, ...)
 			init_original(self, i, ...)
@@ -32,27 +31,56 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 			if i == HUDManager.PLAYER_PANEL and not HUDManager.CUSTOM_TEAMMATE_PANELS then
 				self:_create_stamina_circle()
 			end
+			self._max_name_panel_width = self._panel:w()
 		end
-		
+
 		function HUDTeammate:set_name(name, ...)
-			if self._main_player and WolfHUD:getSetting({"CustomHUD", "PLAYER", "RANK"}, true) or self:peer_id() and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "RANK"}, true)  then
-				local peer = self:peer_id() and managers.network:session():peer(self:peer_id())
-				local infamy, level = peer and peer:rank() or managers.experience:current_rank(), peer and peer:level() or managers.experience:current_level()
-				local level_str = string.format(" [%s%s]", 
-					(infamy or 0) > 0 and string.format("%s-", managers.experience:rank_string(infamy)) or "",
-					tostring(level)
-				)
-				name = name .. level_str
+			if not self._ai then
+				if (self._main_player and WolfHUD:getSetting({"CustomHUD", "PLAYER", "TRUNCATE_TAGS"}, true) or self:peer_id() and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "TRUNCATE_TAGS"}, true)) then
+					name = WolfHUD:truncateNameTag(name)
+				end
+				if (self._main_player and WolfHUD:getSetting({"CustomHUD", "PLAYER", "RANK"}, true) or self:peer_id() and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "RANK"}, true)) then
+					local peer = self:peer_id() and managers.network:session():peer(self:peer_id())
+					local infamy, level = peer and peer:rank() or managers.experience:current_rank(), peer and peer:level() or managers.experience:current_level()
+					local level_str = string.format("%s%s ",
+						(infamy or 0) > 0 and string.format("%s-", managers.experience:rank_string(infamy)) or "",
+						tostring(level)
+					)
+					name = level_str .. name
+					self._color_pos = level_str:len()
+				end
 			end
-			return set_name_original(self, name,...)
+			set_name_original(self, name,...)
+			self:_truncate_name()
 		end
-		
-		function HUDTeammate:set_callsign(id, ...)
-			local color = tweak_data.chat_colors[id] or Color.white
-			self._panel:child("name"):set_color(color)
-			return set_callsign_original(self, id, ...)
+
+		function HUDTeammate:_truncate_name()
+			local name_panel = self._panel:child("name")
+			local name_bg_panel = self._panel:child("name_bg")
+			local teammate_name = name_panel:text()
+			name_panel:set_vertical("center")
+			name_panel:set_font_size(tweak_data.hud_players.name_size)
+			name_panel:set_w(self._panel:w() - name_panel:x())
+			local _,_,w,h = name_panel:text_rect()
+			while (name_panel:x() + w) > self._max_name_panel_width do
+				if name_panel:font_size() > 15.1 then
+					name_panel:set_font_size(name_panel:font_size() - 0.1)
+				else
+					name_panel:set_text(teammate_name:sub(1, teammate_name:len() - 1))
+				end
+				teammate_name = name_panel:text()
+				_,_,w,h = name_panel:text_rect()
+			end
+			if not self._ai then
+				name_panel:set_range_color((self._color_pos or 0) + 1, name_panel:text():len() + 1, self._panel:child("callsign"):color():with_alpha(1))
+			else
+				name_panel:set_color(WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, false) and WolfHUD:getColorSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"}, Color.white) or tweak_data.chat_colors[5])
+			end
+			name_bg_panel:set_w(w + 4)
+			name_bg_panel:set_h(h + 2)
+			name_bg_panel:set_y(name_panel:y() + name_panel:h() / 2 - h / 2 - 1)
 		end
-		
+
 		function HUDTeammate:_create_stamina_circle()
 			local radial_health_panel = self._panel:child("player"):child("radial_health_panel")
 			self._stamina_bar = radial_health_panel:bitmap({
@@ -126,6 +154,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			OPACITY = WolfHUD:getSetting({"CustomHUD", "PLAYER", "OPACITY"}, 0.85),	--Transparency/alpha of panel (1 is solid, 0 is invisible)
 
 			NAME = WolfHUD:getSetting({"CustomHUD", "PLAYER", "NAME"}, false),	--Show name
+			TRUNCATE_TAGS = WolfHUD:getSetting({"CustomHUD", "PLAYER", "TRUNCATE_TAGS"}, false),	--Truncate tags
 			RANK = WolfHUD:getSetting({"CustomHUD", "PLAYER", "RANK"}, false),	--Show infamy/level
 			CHARACTER = WolfHUD:getSetting({"CustomHUD", "PLAYER", "CHARACTER"}, false),	--Show character name
 			LATENCY = false,	--Show latency (not used by player panel)
@@ -188,6 +217,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			OPACITY = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "OPACITY"}, 0.85),	--Transparency/alpha of panel (1 is solid, 0 is invisible)
 
 			NAME = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "NAME"}, true),	--Show name
+			TRUNCATE_TAGS = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "TRUNCATE_TAGS"}, false),	--Truncate tags
 			RANK = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "RANK"}, true),	--Show infamy/level
 			CHARACTER = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "CHARACTER"}, false),	--Show character name
 			LATENCY = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "LATENCY"}, true),	--Show latency (not used by player panel)
@@ -1062,7 +1092,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	function PlayerInfoComponent.PlayerInfo:set_id(id)
 		self._id = id
-		self:_set_text_color((tweak_data.chat_colors[id] or Color.white):with_alpha(1))
+		self:_set_text_color((id == 5 and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, false)) and WolfHUD:getColorSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"}, Color.white) or tweak_data.chat_colors[id])
 	end
 
 	function PlayerInfoComponent.PlayerInfo:set_cheater(state)
@@ -1077,6 +1107,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	function PlayerInfoComponent.PlayerInfo:set_name(name)
 		if name then
+			if self._settings.TRUNCATE_TAGS and not self._is_ai then
+				name = WolfHUD:truncateNameTag(name)
+			end
 			self._components.name:set_text(name)
 			self:arrange()
 		end

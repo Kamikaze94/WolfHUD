@@ -430,6 +430,13 @@ if WolfHUD then
 							},
 							{
 								type = "toggle",
+								name_id = "wolfhud_panels_truncate_tags_title",
+								desc_id = "wolfhud_panels_truncate_tags_desc",
+								visible_reqs = {},
+								value = {"CustomHUD", "PLAYER", "TRUNCATE_TAGS"},
+							},
+							{
+								type = "toggle",
 								name_id = "wolfhud_panels_show_char_title",
 								desc_id = "wolfhud_panels_show_char_desc",
 								visible_reqs = {
@@ -642,6 +649,13 @@ if WolfHUD then
 							},
 							{
 								type = "toggle",
+								name_id = "wolfhud_panels_truncate_tags_title",
+								desc_id = "wolfhud_panels_truncate_tags_desc",
+								visible_reqs = {},
+								value = {"CustomHUD", "TEAMMATE", "TRUNCATE_TAGS"},
+							},
+							{
+								type = "toggle",
 								name_id = "wolfhud_panels_show_char_title",
 								desc_id = "wolfhud_panels_show_char_desc",
 								visible_reqs = {
@@ -839,6 +853,29 @@ if WolfHUD then
 								min_value = 0,
 								max_value = 30,
 								step_size = 1,
+							},
+							{
+								type = "divider",
+								size = 8,
+							},
+							{
+								type = "toggle",
+								name_id = "wolfhud_panels_use_ai_color_title",
+								desc_id = "wolfhud_panels_use_ai_color_desc",
+								visible_reqs = {},
+								value = {"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"},
+							},
+							{
+								type = "multi_choice",
+								name_id = "wolfhud_panels_ai_color_title",
+								desc_id = "wolfhud_panels_ai_color_desc",
+								value = {"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"},
+								visible_reqs = {
+									{ setting = {"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, invert = false }
+								},
+								options = {},
+								add_color_options = true,
+								add_rainbow = false,
 							},
 						},
 					},

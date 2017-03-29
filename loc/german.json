@@ -257,6 +257,8 @@
 	"wolfhud_panels_show_name_desc" : "Zeige den Spielernamen.",
 	"wolfhud_panels_show_rank_title" : "Zeige Rang",
 	"wolfhud_panels_rank_name_desc" : "Zeige den Spieler Rang.",
+	"wolfhud_panels_truncate_tags_title" : "Tags abschneiden",
+	"wolfhud_panels_truncate_tags_desc" : "Versuche Clan-Tags im Spielernamen abzuschneiden.",
 	"wolfhud_panels_show_char_title" : "Zeige Charakter",
 	"wolfhud_panels_show_char_desc" : "Zeige den vom Spieler gewählten Charakter.",
 	"wolfhud_panels_show_ping_title" : "Zeige Ping",
@@ -298,16 +300,11 @@
 	"wolfhud_panels_show_interaction_desc" : "Zeige die Interaktion deiner Teamkammeraden.",
 	"wolfhud_panels_interaction_time_title" : "Min Interaktionszeit",
 	"wolfhud_panels_interaction_time_desc" : "Zeige nur Interaktionen, die länger als X sekunden dauern.",
-<<<<<<< HEAD
-	
-	
-=======
-	"wolfhud_panels_use_ai_color_title" : "Use custom bot color",
-	"wolfhud_panels_use_ai_color_desc" : "Use a custom color for the names of bots. (This also affects dmg popups)",
-	"wolfhud_panels_ai_color_title" : "Custom bot color",
-	"wolfhud_panels_ai_color_desc" : "Set the custom color to use for the names of bots. (This also affects dmg popups)",
+	"wolfhud_panels_use_ai_color_title" : "Nutze Bot Farbe",
+	"wolfhud_panels_use_ai_color_desc" : "Nutze die angepasste Farbe für Bots. (Dies wirkt sich auch auf Schadend-Popups aus.)",
+	"wolfhud_panels_ai_color_title" : "Angepasste Bot farbe",
+	"wolfhud_panels_ai_color_desc" : "Setze die angepasste Farbe für Bots. (Dies wirkt sich auch auf Schadend-Popups aus.)",
 
->>>>>>> aaeee76... whitespace cleanup
 	"wolfhud_chat_options_name" : "Chat Optionen",
 	"wolfhud_chat_options_help" : "Options zur Anpassung des Chats.",
 
