@@ -2,9 +2,9 @@ if WolfHUD then
 	--Helper function to create Gadgetoption tables
 	local function get_gadget_options(gadget_type, theme)
 		local rainbow_pulse_options = {
-			{ 
-				type = "divider", 
-				size = 24 
+			{
+				type = "divider",
+				size = 24
 			},
 			{
 				type = "toggle",
@@ -26,9 +26,9 @@ if WolfHUD then
 				max_value = 5,
 				step_size = 0.1,
 			},
-			{ 
-				type = "divider", 
-				size = 24 
+			{
+				type = "divider",
+				size = 24
 			},
 			{
 				type = "toggle",
@@ -77,7 +77,7 @@ if WolfHUD then
 				step_size = 0.1,
 			},
 		}
-		
+
 		local option_table = {
 			laser = {
 				{
@@ -129,9 +129,9 @@ if WolfHUD then
 					max_value = 1,
 					step_size = 0.01,
 				},
-				{ 
-					type = "divider", 
-					size = 12 
+				{
+					type = "divider",
+					size = 12
 				},
 				{
 					type = "toggle",
@@ -139,8 +139,8 @@ if WolfHUD then
 					desc_id = "wolfhud_gadgets_dot_match_desc",
 					value = {"GADGETS", "laser", theme, "dot", "match_beam"},
 					visible_reqs = {},
-					},
-					{
+				},
+				{
 					type = "slider",
 					name_id = "wolfhud_gadgets_dot_r_title",
 					desc_id = "wolfhud_gadgets_dot_r_desc",
@@ -192,9 +192,9 @@ if WolfHUD then
 					max_value = 1,
 					step_size = 0.01,
 				},
-				{ 
-					type = "divider", 
-					size = 12 
+				{
+					type = "divider",
+					size = 12
 				},
 				{
 					type = "toggle",
@@ -297,9 +297,9 @@ if WolfHUD then
 					max_value = 1,
 					step_size = 0.01,
 				},
-				{ 
-					type = "divider", 
-					size = 12 
+				{
+					type = "divider",
+					size = 12
 				},
 				{
 					type = "slider",
@@ -334,11 +334,10 @@ if WolfHUD then
 				unpack(rainbow_pulse_options)
 			}
 		}
-		
+
 		return option_table[gadget_type]
 	end
-	
-	
+
 	-- Actual Menu Data table
 	WolfHUD.options_menu_data = {
 		type = "menu",
@@ -348,7 +347,7 @@ if WolfHUD then
 		desc_id = "wolfhud_options_help",
 		position = 3,
 		options = {
-			{
+			{	--General HUD
 				type = "menu",
 				menu_id = "wolfhud_customhud_options_menu",
 				name_id = "wolfhud_panels_options_name",
@@ -365,7 +364,7 @@ if WolfHUD then
 						type = "divider",
 						size = 8,
 					},
-					{
+					{	--CustomHUD Player
 						type = "menu",
 						menu_id = "wolfhud_customhud_player_options_menu",
 						name_id = "wolfhud_playerpanel_options_name",
@@ -584,7 +583,7 @@ if WolfHUD then
 							}
 						},
 					},
-					{
+					{	--CustomHUD Teammate
 						type = "menu",
 						menu_id = "wolfhud_customhud_team_options_menu",
 						name_id = "wolfhud_teampanels_options_name",
@@ -884,7 +883,7 @@ if WolfHUD then
 						type = "divider",
 						size = 8
 					},
-					{
+					{	--KillCounter
 						type = "menu",
 						menu_id = "wolfhud_killcounter_options_menu",
 						name_id = "wolfhud_killcounter_options_name",
@@ -1003,7 +1002,7 @@ if WolfHUD then
 						type = "divider",
 						size = 16,
 					},
-					{
+					{	--Chat
 						type = "menu",
 						menu_id = "wolfhud_hudchat_options_menu",
 						name_id = "wolfhud_chat_options_name",
@@ -1247,7 +1246,7 @@ if WolfHUD then
 					{
 						type = "divider",
 						size = 16,
-					},					
+					},
 					{ -- EnemyHealthbar
 						type = "menu",
 						menu_id = "wolfhud_enemyhealthbar_options_menu",
@@ -1322,6 +1321,31 @@ if WolfHUD then
 							},
 							{
 								type = "slider",
+								name_id = "wolfhud_dmg_popup_skull_scale_title",
+								desc_id = "wolfhud_dmg_popup_skull_scale_desc",
+								visible_reqs = {
+									{ setting = { "DamagePopup", "DISPLAY_MODE" }, min = 2 },
+								},
+								value = {"DamagePopup", "SKULL_SCALE"},
+								min_value = 0.1,
+								max_value = 3,
+								step_size = 0.1,
+							},
+							{
+								type = "multi_choice",
+								name_id = "wolfhud_dmg_popup_skull_align_title",
+								desc_id = "wolfhud_dmg_popup_skull_align_desc",
+								value = {"DamagePopup", "SKULL_ALIGN"},
+								visible_reqs = {
+									{ setting = { "DamagePopup", "DISPLAY_MODE" }, min = 2 },
+								},
+								options = {
+									"wolfhud_multiselect_left",
+									"wolfhud_multiselect_right"
+								},
+							},
+							{
+								type = "slider",
 								name_id = "wolfhud_dmg_popup_time_title",
 								desc_id = "wolfhud_dmg_popup_time_desc",
 								visible_reqs = {
@@ -1357,11 +1381,11 @@ if WolfHUD then
 								add_rainbow = false,
 							},
 						},
-					}, 
+					},
 					{
 						type = "divider",
 						size = 16,
-					},	
+					},
 					{ -- drivingHUD
 						type = "menu",
 						menu_id = "wolfhud_drivinghud_options_menu",
@@ -1468,7 +1492,7 @@ if WolfHUD then
 					},
 				},
 			},
-			{
+			{	--HUDList
 				type = "menu",
 				menu_id = "wolfhud_hudlist_options_menu",
 				name_id = "wolfhud_infopanels_options_name",
@@ -1601,7 +1625,7 @@ if WolfHUD then
 						type ="divider",
 						size = 8,
 					},
-					{
+					{	--HUDList Left List
 						type = "menu",
 						menu_id = "wolfhud_hudlist_left_options_menu",
 						name_id = "wolfhud_infopanels_left_options_name",
@@ -1699,6 +1723,16 @@ if WolfHUD then
 							},
 							{
 								type = "toggle",
+								name_id = "wolfhud_hudlist_show_own_minions_only_title",
+								desc_id = "wolfhud_hudlist_show_own_minions_only_desc",
+								value = {"HUDList", "LEFT_LIST", "show_minions"},
+								visible_reqs = {
+									{ setting = { "HUDList", "ENABLED" }, invert = false },
+									{ setting = { "HUDList", "LEFT_LIST", "show_minions" }, invert = false },
+								},
+							},
+							{
+								type = "toggle",
 								name_id = "wolfhud_hudlist_show_pagers_title",
 								desc_id = "wolfhud_hudlist_show_pagers_desc",
 								value = {"HUDList", "LEFT_LIST", "show_pagers"},
@@ -1717,7 +1751,7 @@ if WolfHUD then
 							},
 						},
 					},
-					{
+					{	--HUDList Right List
 						type = "menu",
 						menu_id = "wolfhud_hudlist_right_options_menu",
 						name_id = "wolfhud_infopanels_right_options_name",
@@ -1873,7 +1907,7 @@ if WolfHUD then
 							},
 						},
 					},
-					{
+					{	--HUDList Buff List
 						type = "menu",
 						menu_id = "wolfhud_hudlist_buffs_options_menu",
 						name_id = "wolfhud_infopanels_buff_options_name",
@@ -2047,7 +2081,7 @@ if WolfHUD then
 										},
 									},
 									{
-										type = "divider", 
+										type = "divider",
 										size = 8,
 									},
 									{
@@ -2089,7 +2123,7 @@ if WolfHUD then
 										},
 									},
 									{
-										type = "divider", 
+										type = "divider",
 										size = 8,
 									},
 									{
@@ -2133,7 +2167,7 @@ if WolfHUD then
 										},
 									},
 									{
-										type = "divider", 
+										type = "divider",
 										size = 8,
 									},
 									{
@@ -2829,8 +2863,8 @@ if WolfHUD then
 							"wolfhud_multiselect_disabled",
 							"wolfhud_press2hold_lock_mode_a",
 							"wolfhud_press2hold_lock_mode_b",
-                            				"wolfhud_press2hold_lock_mode_c",
-                            				"wolfhud_press2hold_lock_mode_d"
+							"wolfhud_press2hold_lock_mode_c",
+							"wolfhud_press2hold_lock_mode_d"
 						},
 						visible_reqs = {},
 						value = {"INTERACTION", "LOCK_MODE"},
