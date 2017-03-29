@@ -316,7 +316,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 				if name_id == "robbers_safehouse" and self._last_unit:interaction() then
 					name_id = CriminalsManager.convert_new_to_old_character_workname(self._last_unit:interaction().character or name_id)
 				end
-				
+
 				local angle = (self:getUnitRotation(self._last_unit) + 360) % 360
 				if self._last_unit:character_damage():dead() or (angle < 350 and angle > 10) then
 					visible = false
