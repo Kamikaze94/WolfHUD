@@ -309,20 +309,20 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 			end
 			
 			if not visible and self._last_unit and alive( self._last_unit ) then
-				local angle = (self:getUnitRotation(self._last_unit) + 360) % 360
-				if self._last_unit:character_damage():dead() or (angle < 350 and angle > 10) then
-					visible = false
-					self._last_unit = nil
-				else
-					visible = true
-				end
-
 				health = self._last_unit:character_damage()._health * 10 or 0
 				max_health = self._last_unit:character_damage()._HEALTH_INIT * 10 or 0
 				name_id = self._last_unit:base()._tweak_table or "ENEMY"
 
 				if name_id == "robbers_safehouse" and self._last_unit:interaction() then
 					name_id = CriminalsManager.convert_new_to_old_character_workname(self._last_unit:interaction().character or name_id)
+				end
+				
+				local angle = (self:getUnitRotation(self._last_unit) + 360) % 360
+				if self._last_unit:character_damage():dead() or (angle < 350 and angle > 10) then
+					visible = false
+					self._last_unit = nil
+				else
+					visible = true
 				end
 
 				managers.hud:set_unit_health_rotation( 360 - angle )
