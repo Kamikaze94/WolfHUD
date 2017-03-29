@@ -307,10 +307,12 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 					visible = false
 				end
 			end
+			
 			if not visible and self._last_unit and alive( self._last_unit ) then
 				local angle = (self:getUnitRotation(self._last_unit) + 360) % 360
 				if self._last_unit:character_damage():dead() or (angle < 350 and angle > 10) then
 					visible = false
+					self._last_unit = nil
 				else
 					visible = true
 				end
@@ -329,7 +331,9 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 			end
 
 			managers.hud:set_unit_health_visible( visible, shield )
-			managers.hud:set_unit_health( health or 0 , max_health or 0 , name_id or string.upper(name or "UNKNOWN"))
+			if health and (name or name_id) then
+				managers.hud:set_unit_health( health or 0 , max_health or 0 , name_id or string.upper(name or "UNKNOWN"))
+			end
 		else
 			managers.hud:set_unit_health_visible( false )
 		end
