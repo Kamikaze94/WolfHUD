@@ -24,13 +24,8 @@ function WolfHUDTweakData:init()
 	-- Time within 2 presses of the nade button, to throw a nade in stealth.
 	self.STEALTH_NADE_TIMEOUT = 0.25
 	-- Time between 2 automatical pickups, when the interaction button remains pressed.
-<<<<<<< HEAD
 	self.AUTO_PICKUP_DELAY = 0.2
-	
-=======
-	self.AUTO_PICKUP_DELAY = 0.1
 
->>>>>>> aaeee76... whitespace cleanup
 	-- Color table
 	-- 		Add or remove any color you want
 	--		'color' needs to be that colors hexadecimal code

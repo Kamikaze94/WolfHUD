@@ -332,7 +332,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 				self._max_name_panel_width = (self._kills_panel:x() + self._kill_icon:x() - 4)
 				self:_truncate_name()
 			end
-      
+
 			local color = WolfHUD:getColorSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "COLOR"}, "yellow")
 			self._kill_icon:set_color(color)
 			self._kills_text:set_color(color)
