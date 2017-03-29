@@ -11,10 +11,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	local set_assault_wave_number_original = HUDAssaultCorner.set_assault_wave_number
 	local _animate_wave_started_original = HUDAssaultCorner._animate_wave_started
 	local _animate_wave_completed_original = HUDAssaultCorner._animate_wave_completed
-	 
+
 	function HUDAssaultCorner:init(...)
 		init_original(self, ...)
-		
+
 		-- Waves completed are visible in Objective and overlapping with HUDList.
 		if self:is_safehouse_raid() then
 			local wave_panel = self._hud_panel:child("wave_panel")
@@ -44,10 +44,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 				self._wave_text:set_right(self._bg_box and self._bg_box:right() or 575)
 			end
 		end
-		
+
 		self:update_banner_pos()
 	end
-	
+
 	function HUDAssaultCorner:update_banner_pos()
 		if not alive(self._hud_panel) then return end
 		local hud_w = self._hud_panel:w()
@@ -74,15 +74,15 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 				casing_panel:set_right(hud_w)
 			end
 		end
-		
+
 		self:update_hudlist_offset()
 	end
-	
+
 	function HUDAssaultCorner:set_buff_enabled(...)
 		self:update_banner_pos()
 		return set_buff_enabled_original(self, ...)
 	end
-	
+
 	function HUDAssaultCorner:update_hudlist_offset(banner_visible)
 		banner_visible = banner_visible or banner_visible == nil and (self._assault or self._point_of_no_return or self._casing)
 		local banner_pos = math.clamp(WolfHUD:getSetting({"AssaultBanner", "POSITION"}, 2), 1, 3)
@@ -97,7 +97,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 			end
 		end
 	end
-	
+
 	function HUDAssaultCorner:_set_hostage_offseted(is_offseted, ...)
 		_set_hostage_offseted_original(self, is_offseted, ...)
 		self:update_hudlist_offset(is_offseted)
@@ -113,15 +113,15 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		self:update_hudlist_offset(false)
 	end
 
-	function HUDAssaultCorner:show_casing(...) 
---		show_casing_original(self, ...)
---		self:update_hudlist_offset(true)
+	function HUDAssaultCorner:show_casing(...)
+		--show_casing_original(self, ...)
+		--self:update_hudlist_offset(true)
 	end
-	function HUDAssaultCorner:hide_casing(...) 
---		hide_casing_original(self, ...)
---		self:update_hudlist_offset(false)
+	function HUDAssaultCorner:hide_casing(...)
+		--hide_casing_original(self, ...)
+		--self:update_hudlist_offset(false)
 	end
-	
+
 	function HUDAssaultCorner:_start_assault(text_list, ...)
 		for i, string_id in ipairs(text_list) do
 			if string_id == "hud_assault_assault" then
@@ -130,27 +130,27 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		end
 		return _start_assault_original(self, text_list, ...)
 	end
-	
+
 	function HUDAssaultCorner:_animate_wave_started(...)
 		self._wave_text:set_text(self:get_completed_waves_string())
-		
+
 		return _animate_wave_started_original(self, ...)
 	end
 	function HUDAssaultCorner:_animate_wave_completed(...)
 		self._wave_text:set_text(self:get_completed_waves_string())
-		
+
 		return _animate_wave_completed_original(self, ...)
 	end
-	
+
 	function HUDAssaultCorner:set_assault_wave_number(...)
 		if alive(self._wave_text) then
 			self._wave_text:set_text(self:get_completed_waves_string())
 			self._wave_text:animate(callback(self, self, "_animate_wave_text"))
 		end
-		
+
 		return set_assault_wave_number_original(self, ...)
 	end
-	
+
 	function HUDAssaultCorner:_animate_wave_text(object)
 		local TOTAL_T = 2
 		local t = TOTAL_T
@@ -162,7 +162,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		end
 		object:set_alpha(0.8)
 	end
-	
+
 	function HUDAssaultCorner:locked_assault(status)
 		local assault_panel = self._hud_panel:child("assault_panel")
 		local icon_assaultbox = assault_panel and assault_panel:child("icon_assaultbox")
@@ -222,7 +222,7 @@ elseif string.lower(RequiredScript) == "lib/managers/localizationmanager" then
 					if WolfHUD.Sync and Network:is_server() then
 						WolfHUD.Sync:send("WolfHUD_Sync_Cache", { event = "assault_task_data", data = { phase = assault_task_data.phase, force_spawned = assault_task_data.force_spawned, phase_end_t = assault_task_data.phase_end_t } })
 					end
-					
+
 					local phase = self:text("wolfhud_advassault_phase_title") .. "  " .. self:text("wolfhud_advassault_phase_" .. assault_task_data.phase)
 					local spawns = managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.force_pool) * managers.groupai:state():_get_balancing_multiplier(tweak_data.group_ai.besiege.assault.force_pool_balance_mul)
 					local spawns_left = self:text("wolfhud_advassault_spawns_title") .. "  " .. math.round(math.max(spawns - assault_task_data.force_spawned, 0))

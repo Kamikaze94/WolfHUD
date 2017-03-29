@@ -1,7 +1,7 @@
 {
 	"menu_jowi" : "윅",
 	"hud_int_hold_grab_the_bag" : "$BTN_INTERACT 키 를 눌러서 $BAG 를(을) 들기",
-	
+
 	"wolfhud_dialog_force_start_title" : "강제로 게임을 시작할까요?",
 	"wolfhud_dialog_force_start_desc" : "정말로 강제로 게임을 시작하시겠습니까?\n이 기능을 잠수 플레이어, 버그걸린 로비일때만 사용해주세요.\n그리고 모든 플레이어가 무기를 바꿀 시간도 주시구요.\n\n감사합니다 :)",
 	"wolfhud_dialog_install_title" : "설치: $NAME",
@@ -15,13 +15,13 @@
 	"woldhud_notification_disabled_override_desc" : "설정을 원하신다면 여기를 눌러주세요.",
 	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME 는(은) 설치가 가능합니다.",
 	"woldhud_notification_restart_override_desc" : "다운로드를 하기 위해서 게임을 다시 시작해 주세요.",
-	
+
 	"wolfhud_int_locked" : "$BTN_CANCEL 키 를 눌러서 취소하기",
 	"wolfhud_int_locked_pager" : "PRESS $BTN_CANCEL TO INTERRUPT\n(TRIGGERS ALARM)",
-	
+
 	"wolfhud_buy_all_assets" : "모두 구매",
 	"wolfhud_buy_all_assets_desc" : "모든 에셋을 구입합니다.",
-	
+
 	"wolfhud_preplanning_save" : "계획 저장",
 	"wolfhud_preplanning_load" : "계획 불러오기",
 	"wolfhud_preplanning_reset" : "계획 초기화",
@@ -60,12 +60,12 @@
 	"wolfhud_preplanning_msg_reseted_failed" : "계획을 초기화 하는 도중에 오류가 발생하였습니다.",
 	"wolfhud_preplanning_msg_deleted_success" : "계획이 삭제되었습니다.",
 	"wolfhud_preplanning_msg_deleted_failed" : "저장된 계획을 삭제하는 도중에 오류가 발생하였습니다.",
-	
+
 	"wolfhud_inv_tab_rename_hint" : "Double click the selected Inventory tab to rename it.",
-	
+
 	"victory_most_damage" : "Highest Damage:",
 	"victory_session_damage" : "Total Damage:",
-	
+
 	"wolfhud_advassault_phase_title" : "습격 타입: ",
 	"wolfhud_advassault_spawns_title" : "남은 스폰: ",
 	"wolfhud_advassault_time_title" : "남은 시간: ",
@@ -74,10 +74,10 @@
 	"wolfhud_advassault_phase_fade" : "페이드",
 	"wolfhud_advassault_time_overdue" : "OVERDUE",
 	"wolfhud_locked_assault" : "끝이 없는 습격 입니다! 최대한 빨리 탈출하십시오!",
-	
+
 	"wolfhud_customhud_interaction_done" : "완료",
 	"wolfhud_customhud_interaction_aborted" : "취소됨",
-	
+
 	"wolfhud_hudlist_device_timer" : "타이머",
 	"wolfhud_hudlist_device_drill" : "드릴",
 	"wolfhud_hudlist_device_hack" : "해킹",
@@ -94,7 +94,7 @@
 	"wolfhud_hudlist_loot_shoes" : "Shoes",
 	"wolfhud_hudlist_loot_toy" : "Toy",
 	"wolfhud_hudlist_loot_vr" : "Headset",
-	
+
 	"wolfhud_hudlist_buff_basic" : "베이직",
 	"wolfhud_hudlist_buff_aced" : "에이스",
 	"wolfhud_hudlist_buff_boost" : "부스트",
@@ -102,7 +102,7 @@
 	"wolfhud_hudlist_buff_dmg_inc" : "+데미지",
 	"wolfhud_hudlist_buff_dmg_dec" : "-데미지",
 	"wolfhud_hudlist_buff_mdmg_inc" : "+근접데미지",
-	
+
 	"wolfhud_tabstats_total_damage" : "총 데미지:",
 	"wolfhud_tabstats_tanks_killed" : "불도저 사살 수:",
 	"wolfhud_tabstats_cloakers_killed" : "클로커 사살 수:",
@@ -116,7 +116,7 @@
 	"wolfhud_tabstats_nonspecial_kills" : "일반경찰 사살 수:",
 	"wolfhud_tabstats_total_revives" : "총 살려낸 팀원 (플레이어/봇):",
 	"wolfhud_tabstats_alltime_stat" : "합계:",
-	
+
 	"wolfhud_enemy_civilian" : "시민",
 	"wolfhud_enemy_gangster" : "갱스터",
 	"wolfhud_enemy_biker" : "바이커",
@@ -161,15 +161,14 @@
 	"wolfhud_enemy_crew" : "팀 멤버",
 	"wolfhud_enemy_butler" : "Aldstone",
 	"wolfhud_enemy_vlad" : "Vlad",
-	
-	
+
 	"wolfhud_multiselect_all" : "모두",
 	"wolfhud_multiselect_none" : "없음",
 	"wolfhud_multiselect_disabled" : "비활성화",
 	"wolfhud_multiselect_left" : "왼쪽",
 	"wolfhud_multiselect_center" : "가운데",
 	"wolfhud_multiselect_right" : "오른쪽",
-	
+
 	"wolfhud_colors_white"  : "하얀색",
 	"wolfhud_colors_light_yellow"  : "연한 노란색",
 	"wolfhud_colors_light_orange"  : "연한 주황색",
@@ -187,11 +186,10 @@
 	"wolfhud_colors_gray" : "회색",
 	"wolfhud_colors_black" : "검은색",
 	"wolfhud_colors_rainbow" : "무지개색",
-	
-	
+
 	"wolfhud_options_name" : "WolfHUD 설정",
 	"wolfhud_options_help" : "WolfHUD 를 설정하는 곳 입니다.",
-	
+
 	"wolfhud_skip_blackscreen_title" : "검은화면 스킵",
 	"wolfhud_skip_blackscreen_desc" : "자동으로 검은 화면(미션시작)을 스킵합니다.\n(방장 전용)",
 	"wolfhud_instant_restart_title" : "Instant Restart",
@@ -219,11 +217,10 @@
 	"wolfhud_reset_options_title" : "설정 초기화",
 	"wolfhud_reset_options_desc" : "모든 설정을 기본값으로 초기화시킵니다.",
 	"wolfhud_reset_options_confirm" : "정말로 모든 설정을 기본값으로 되돌리시겠습니까?",
-	
-	
+
 	"wolfhud_panels_options_name" : "일반 HUD 패널 설정",
 	"wolfhud_panels_options_help" : "CustomHUD, 의심도, 데미지 인디케이터 등을 설정합니다.",
-	
+
 	"wolfhud_use_customhud_title" : "CustomHUD 를 사용합니다",
 	"wolfhud_use_customhud_desc" : "Se7en 님이 만든 고급 CustomHUD 를 사용합니다.\n(맵을 바꿔야 적용됩니다...)",
 	"wolfhud_adv_assault_title" : "자세한 어설트 배너",
@@ -236,14 +233,13 @@
 	"wolfhud_use_realammo_desc" : "탄약 표시를 다른게임처럼(예 : C-S:S) 표시합니다.",
 	"wolfhud_enable_burstmode_title" : "점사 모드",
 	"wolfhud_enable_burstmode_desc" : "당신의 무기에 점사 모드를 활성화시킵니다.",
-	
-	
+
 	"wolfhud_playerpanel_options_name" : "플레이어 패널",
 	"wolfhud_playerpanel_options_help" : "당신의 HUD 패널을 설정합니다.",
-	
+
 	"wolfhud_teampanels_options_name" : "팀 패널",
 	"wolfhud_teampanels_options_help" : "팀원의 HUD 패널을 설정합니다.",
-	
+
 	"wolfhud_panels_position_title" : "패널 위치",
 	"wolfhud_panels_position_desc" : "패널 위치를 설정합니다.",
 	"wolfhud_panels_scale_title" : "크기",
@@ -295,11 +291,19 @@
 	"wolfhud_panels_show_interaction_desc" : "팀원의 상호작용을 표시합니다.",
 	"wolfhud_panels_interaction_time_title" : "최소 상호작용 시간",
 	"wolfhud_panels_interaction_time_desc" : "팀원의 상호작용이 X 초 이상일 경우, 팀원 HUD 에 표시합니다.",
+<<<<<<< HEAD
 	
 	
+=======
+	"wolfhud_panels_use_ai_color_title" : "Use custom bot color",
+	"wolfhud_panels_use_ai_color_desc" : "Use a custom color for the names of bots. (This also affects dmg popups)",
+	"wolfhud_panels_ai_color_title" : "Custom bot color",
+	"wolfhud_panels_ai_color_desc" : "Set the custom color to use for the names of bots. (This also affects dmg popups)",
+
+>>>>>>> aaeee76... whitespace cleanup
 	"wolfhud_chat_options_name" : "채팅 옵션",
 	"wolfhud_chat_options_help" : "채팅창이 어떻게 표시될지 설정합니다.",
-	
+
 	"wolfhud_chat_waittime_title" : "채팅 페이드 시간",
 	"wolfhud_chat_waittime_desc" : "X 초 후에 채팅이 사라집니다.\n(0 = 무제한)",
 	"wolfhud_chat_fontsize_title" : "채팅 폰트 크기",
@@ -308,22 +312,20 @@
 	"wolfhud_chat_outputlines_desc" : "스크롤이 활성화되기전 까지의 채팅창 줄 수 를 설정합니다.",
 	"wolfhud_spam_filter_title" : "채팅 도배 필터",
 	"wolfhud_spam_filter_desc" : "PocoHUD, [NGBTO] 의 도배를 차단합니다.",
-	
-	
+
 	"wolfhud_suspicion_options_name" : "의심미터 옵션",
 	"wolfhud_suspicion_options_help" : "의심미터, 의심도 등을 설정합니다.",
-	
+
 	"wolfhud_suspicion_scale_title" : "의심미터 크기",
 	"wolfhud_suspicion_scale_desc" : "의심미터 크기를 설정합니다.",
 	"wolfhud_susp_eye_title" : "기본 의심미터 표시",
 	"wolfhud_susp_eye_desc" : "기본 의심미터를 표시합니다.",
 	"wolfhud_susp_numberic_title" : "의심미터 숫자 표시",
 	"wolfhud_susp_numberic_desc" : "의심도를 숫자로 표시합니다.",
-	
-	
+
 	"wolfhud_killcounter_options_name" : "킬 카운터 옵션",
 	"wolfhud_killcounter_options_help" : "화면에 표시되는 킬 카운터를 설정합니다.",
-	
+
 	"wolfhud_killcounter_player_show_killcount_title" : "플레이어 킬 카운터 표시",
 	"wolfhud_killcounter_player_show_killcount_desc" : "당신의 킬 카운터를 HUD 에 표시합니다.",
 	"wolfhud_killcounter_player_color_title" : "킬 카운터 색 설정",
@@ -346,11 +348,10 @@
 	"wolfhud_killcounter_team_show_ai_desc" : "봇 킬 카운터를 표시합니다.",
 	"wolfhud_corpse_limit_title" : "시체 제한",
 	"wolfhud_corpse_limit_desc" : "한번에 시체 몇 구를 표시할 수 있는지 설정합니다.\n(맵을 바꿔야 적용됩니다...)",
-	
-	
+
 	"wolfhud_drivinghud_options_name" : "DrivingHUD 옵션",
 	"wolfhud_drivinghud_options_help" : "DrivingHUD 를 설정합니다",
-	
+
 	"wolfhud_show_drivinghud_title" : "DrivingHUD 사용하기",
 	"wolfhud_show_drivinghud_desc" : "오른쪽 하단에 차량 허드를 표시합니다.\n(맵을 바꿔야 적용됩니다...)",
 	"wolfhud_drivinghud_scale_title" : "크기",
@@ -371,11 +372,10 @@
 	"wolfhud_drivinghud_speed_in_mph_desc" : "속도를 MPH으로 표시합니다.\n(기본적으로 km/h 으로 표시됩니다.)",
 	"wolfhud_drivinghud_show_rpm_title" : "RPM 표시",
 	"wolfhud_drivinghud_show_rpm_desc" : "차량 RPM 을 표시합니다.",
-	
-	
+
 	"wolfhud_infopanels_options_name" : "HUD 리스트 정보 옵션",
 	"wolfhud_infopanels_options_help" : "화면 양옆에 나오는 HUD 리스트를 설정합니다.",
-	
+
 	"wolfhud_use_hudlist_title" : "HUDList 사용",
 	"wolfhud_use_hudlist_desc" : "HUDList 는 드릴타이머, 경찰수 등을 표시합니다.\n(맵을 바꿔야 적용됩니다...)",
 	"wolfhud_hudlist_scale_right_title" : "오른쪽 리스트 크기",
@@ -396,11 +396,10 @@
 	"wolfhud_hudlist_copcolor_desc" : "적 카운터 에 표시될 스왓, 헤비스왓 등의 색을 바꿉니다.",
 	"wolfhud_hudlist_specialcolor_title" : "스페셜 색",
 	"wolfhud_hudlist_specialcolor_desc" : "적 카운터 에 표시될 스페셜의 색을 바꿉니다.",
-	
-	
+
 	"wolfhud_infopanels_left_options_name" : "왼쪽 리스트 옵션",
 	"wolfhud_infopanels_left_options_help" : "왼쪽에 표시될 리스트들을 설정합니다.",
-	
+
 	"wolfhud_hudlist_show_timers_title" : "타이머 표시",
 	"wolfhud_hudlist_show_timers_desc" : "드릴, 해킹 등의 시간이 얼마나 남아있는지 HUD 에 표시합니다.",
 	"wolfhud_hudlist_show_equipment_desc" : "어떤 장비가 당신의 화면 오른쪽에 표시될지 설정합니다.",
@@ -427,11 +426,10 @@
 	"wolfhud_hudlist_show_tape_loop_desc" : "카메라 루프의 시간이 얼마나 남았는지 표시합니다.",
 	"wolfhud_hudlist_remove_answered_pagers_title" : "페이저 아웃라인 비활성화",
 	"wolfhud_hudlist_remove_answered_pagers_desc" : "다른 플레이어가 페이저를 받고 있으면 아웃라인을 비활성화 시킵니다.",
-	
-	
+
 	"wolfhud_infopanels_right_options_name" : "오른쪽 리스트 옵션",
 	"wolfhud_infopanels_right_options_help" : "오른쪽에 표시될 리스트들을 설정합니다..",
-	
+
 	"wolfhud_hudlist_show_enemies_title" : "적 표시",
 	"wolfhud_hudlist_show_enemies_desc" : "맵에 적이 몇명 남았는지 표시합니다.",
 	"wolfhud_hudlist_aggregate_enemies_title" : "모든 적 표시",
@@ -464,11 +462,10 @@
 	"wolfhud_hudlist_show_potential_loot_desc" : "루트 카운터에 상자를 표시합니다. \n(주의 : 빈 상자일수도 있습니다...)",
 	"wolfhud_hudlist_show_special_pickups_title" : "특수 픽업 표시",
 	"wolfhud_hudlist_show_special_pickups_desc" : "맵에 있는 키카드, 크로우바, 재료 등을 표시합니다.",
-	
-	
+
 	"wolfhud_infopanels_buff_options_name" : "버프 리스트 옵션",
-	"wolfhud_infopanels_buff_options_help" : "버프 리스트에 표시될 버프들을 설정합니다."
-	
+	"wolfhud_infopanels_buff_options_help" : "버프 리스트에 표시될 버프들을 설정합니다.",
+
 	"wolfhud_infopanels_buff_mastermind_options_name" : "마스터마인드",
 	"wolfhud_infopanels_buff_mastermind_options_help" : "어떤 마스터마인드의 스킬들이 표시될지 설정합니다.\n(맵을 바꿔야 적용됩니다...)",
 	"wolfhud_infopanels_buff_enforcer_options_name" : "인포서",
@@ -481,7 +478,7 @@
 	"wolfhud_infopanels_buff_fugitive_options_help" : "어떤 퓨지티브의 스킬들이 표시될지 설정합니다.\n(맵을 바꿔야 적용됩니다...)",
 	"wolfhud_infopanels_buff_perkdecks_options_name" : "특성 덱",
 	"wolfhud_infopanels_buff_perkdecks_options_help" : "어떤 특성 덱의 스킬들이 표시될지 설정합니다.\n(맵을 바꿔야 적용됩니다...)",
-	
+
 	"wolfhud_hudlist_show_buffs_title" : "버프 표시",
 	"wolfhud_hudlist_show_buffs_desc" : "화면 가운대에 버프를 표시합니다.",
 	"wolfhud_hudlist_damage_increase_compbuff_title" : "데미지 증가",
@@ -596,11 +593,10 @@
 	"wolfhud_hudlist_crew_chief_teambuff_desc" : "모두 모아지는 버프 중 하나입니다.",
 	"wolfhud_hudlist_forced_friendship_teambuff_title" : "강제 친구 팀 버프",
 	"wolfhud_hudlist_forced_friendship_teambuff_desc" : "",
-	
-	
+
 	"wolfhud_waypoints_options_name" : "사용자 지정 웨이 포인트 옵션",
 	"wolfhud_waypoints_options_help" : "웨이 포인트를 설정합니다.",
-	
+
 	"wolfhud_waypoints_color_title" : "Waypoints Color",
 	"wolfhud_waypoints_color_desc" : "The color of the default mission waypoints.",
 	"wolfhud_waypoints_show_ammo_bag_title" : "탄약 가방 표시",
@@ -627,11 +623,10 @@
 	"wolfhud_waypoints_show_minions_desc" : "조커된 경찰 위에 이름, 조커 주인 색, 킬 카운터를 표시합니다.",
 	"wolfhud_waypoints_show_pager_title" : "페이저 표시",
 	"wolfhud_waypoints_show_pager_desc" : "페이저 웨이 포인트를 표시합니다.\n(다른 플레이어가 응답 중 일 경우 초록색으로 바뀝니다.)",
-	
-	
+
 	"wolfhud_tabstats_options_name" : "TabStats 옵션",
 	"wolfhud_tabstats_options_help" : "Tab 누르면 나오는 화면을 설정합니다.",
-	
+
 	"wolfhud_tabstats_clock_mode_title" : "시간 모드",
 	"wolfhud_tabstats_clock_mode_desc" : "시간이 어떻게 표시될지 설정합니다.",
 	"wolfhud_tabstats_clock_mode_a" : "12시간",
@@ -647,11 +642,10 @@
 	"wolfhud_tabstats_actual_mask_desc" : "현재 당신이 쓰고있는 마스크를 표시합니다\n(기본적으로 캐릭터의 마스크로 표시됩니다).",
 	"wolfhud_tabstats_numberic_loot_title" : "Numberic Loot Counter",
 	"wolfhud_tabstats_numberic_loot_desc" : "Disable the bag counting minigame and display the number right away.",
-	
-	
+
 	"wolfhud_dmgindicator_options_name" : "데미지 인디케이터",
 	"wolfhud_dmgindicator_options_help" : "데미지 인디케이터의 페이드 시간, 크기 등을 설정합니다.",
-	
+
 	"wolfhud_show_dmg_indicator_title" : "다이나믹 데미지 인디케이터",
 	"wolfhud_show_dmg_indicator_desc" : "데미지 인디케이터의 애니메이션을 활성화 합니다.",
 	"wolfhud_dmg_ind_time_title" : "인디케이터 지속시간",
@@ -670,11 +664,10 @@
 	"wolfhud_dmg_vehicle_color_desc" : "차량안에 있을때 데미지를 받을경우의 색을 설정합니다.",
 	"wolfhud_dmg_friendlyfire_color_title" : "팀킬 색",
 	"wolfhud_dmg_friendlyfire_color_desc" : "팀원의 폭팔물, 불 등의 체력을 받았을때의 색을 설정합니다..",
-	
-	
+
 	"wolfhud_dmgpopup_options_name" : "적군 데미지 팝업 설정",
 	"wolfhud_dmgpopup_options_help" : "적군 머리 옆에 뜨는 데미지 딜을 설정합니다.",
-	
+
 	"wolfhud_show_dmg_popup_title" : "데미지 팝업",
 	"wolfhud_show_dmg_popup_desc" : "데미지 팝업을 표시합니다.",
 	"wolfhud_dmg_popup_player" : "Player",
@@ -691,11 +684,10 @@
 	"wolfhud_dmg_popup_color_desc" : "몸샷으로 표시된 팝업 색을 설정합니다.",
 	"wolfhud_dmg_popup_headshot_color_title" : "헤드샷 팝업 색",
 	"wolfhud_dmg_popup_headshot_color_desc" : "헤드샷으로 표시된 팝업 색을 설정합니다.",
-	
-	
+
 	"wolfhud_enemyhealthbar_options_name" : "적 체력",
 	"wolfhud_enemyhealthbar_options_help" : "적 체력바를 설정합니다.",
-	
+
 	"wolfhud_show_enemyhealthbar_title" : "적 체력바 사용",
 	"wolfhud_show_enemyhealthbar_desc" : "화면 가운데에 적 체력을 표시합니다.\n(맵을 바꿔야 적용됩니다...)",
 	"wolfhud_show_civhealthbar_title" : "시민 체력바 사용",
@@ -704,11 +696,10 @@
 	"wolfhud_show_carhealthbar_desc" : "탈것 체력을 표시합니다.",
 	"wolfhud_show_healthbar_pointer_title" : "포인터 사용",
 	"wolfhud_show_healthbar_pointer_desc" : "체력바 해당되는 적(시민)을 가르키는 화살표를 표시합니다.",
-	
-	
+
 	"wolfhud_interaction_options_name" : "상호작용 설정",
 	"wolfhud_interaction_options_help" : "상호작용이 어떻게 표시될지 설정합니다.",
-	
+
 	"wolfhud_press2hold_lock_mode_title" : "잠금 모드",
 	"wolfhud_press2hold_lock_mode_desc" : "X 초 이상 누르면 잠금모드로 들어갑니다. (진행식)\n총 X 초 이상 눌러야 되면 잠금모드로 들어갑니다. (전체식)",
 	"wolfhud_press2hold_lock_mode_a" : "진행식",
@@ -747,27 +738,25 @@
 	"wolfhud_doubletap_nades_stealth_desc" : "스텔스 일 경우 수류탄을 던지려면 2번 연속 키를 눌러야됩니다. \n사고 방지용.",
 	"wolfhud_hold_to_pick_title" : "인스턴트 자동 줍기",
 	"wolfhud_hold_to_pick_desc" : "상호작용 키 를 계속 누르고 있으면 자동으로 인스턴트 캐쉬가 주워집니다.",
-	
-	
+
 	"wolfhud_inventory_options_name" : "Inventory Tweak Options",
 	"wolfhud_inventory_options_help" : "Options to change the visuals of your Inventory and alter Equipment behavior.",
-	
+
 	"wolfhud_equipment_senty_auto_ap_title" : "센트리 자동 AP 모드",
 	"wolfhud_equipment_senty_auto_ap_desc" : "스킬이 있다면 센트리가 설치되는순간 자동으로 AP 모드로 설정됩니다.",
 	"wolfhud_equipment_tripmine_auto_sensor_stealth_title" : "트립마인 자동 센서 모드",
 	"wolfhud_equipment_tripmine_auto_sensor_stealth_desc" : "스텔스 일 경우, 트립마인을 설치하면 자동으로 센서 모드로 변경됩니다.",
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_title" : "ECM 피드팩 차단",
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_desc" : "스텔스 일 경우 ECM 피드팩을 사용 못하게 차단합니다.",
-	
-	
+
 	"wolfhud_gadget_options_name" : "무기 가젯 옵션",
 	"wolfhud_gadget_options_help" : "무기 가젯을 사용자에 맞게 설정합니다.",
-	
+
 	"wolfhud_laser_autoon_title" : "자동 레이저",
 	"wolfhud_laser_autoon_desc" : "자동으로 레이저를 활성화 시킵니다.",
 	"wolfhud_show_angeled_sight_title" : "기울어진 무기",
 	"wolfhud_show_angeled_sight_desc" : "무기도 같이 기울어지게 나오게 설정합니다. (가방을 들 경우)",
-	
+
 	"wolfhud_gadget_player_laser_options_name" : "Player Laser",
 	"wolfhud_gadget_player_laser_options_help" : "Setting for your local laser.",
 	"wolfhud_gadget_player_sentry_laser_options_name" : "Player Sentry Options",
@@ -788,7 +777,7 @@
 	"wolfhud_gadget_player_flashlight_options_help" : "Settings for your local flashlight.",
 	"wolfhud_gadget_team_flashlight_options_name" : "Teammate Flashlight",
 	"wolfhud_gadget_team_flashlight_options_help" : "Settings for your Teammates flashlights.",
-	
+
 	"wolfhud_gadgets_beam_r_title" : "Laser Beam (R)",
 	"wolfhud_gadgets_beam_r_desc" : "Red component of the laser color.",
 	"wolfhud_gadgets_beam_g_title" : "Laser Beam (G)",
@@ -841,7 +830,7 @@
 	"wolfhud_gadgets_pulse_max_desc" : "Maximum Oppacity modificator that gets used.",
 	"wolfhud_gadgets_pulse_frequency_title" : "Pulse Frequency",
 	"wolfhud_gadgets_pulse_frequency_desc" : "Determines the time it takes the pulse from minimum to maximum oppacity multiplicator.",
-	
+
 	"wolfhud_skipit_options_name" : "Skip-It Options",
 	"wolfhud_skipit_options_help" : "Options to skip unnecessary menus automatically to save your time.",
 	"wolfhud_assaultbanner_options_name" : "Assault Banner Options",

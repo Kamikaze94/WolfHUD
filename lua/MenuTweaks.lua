@@ -1,10 +1,10 @@
 if string.lower(RequiredScript) == "lib/managers/menumanager" then
 	function MenuCallbackHandler:is_dlc_latest_locked(...) return false end
-	
+
 	local modify_controls_original = MenuOptionInitiator.modify_controls
 	function MenuOptionInitiator:modify_controls(...)
 		local new_node = modify_controls_original(self, ...)
-		
+
 		-- Give sensitivity sliders a step size of 1%.
 		local item
 		for i, name in ipairs({"camera_sensitivity", "camera_sensitivity_horizontal", "camera_sensitivity_vertical", "camera_zoom_sensitivity"}) do
@@ -13,7 +13,7 @@ if string.lower(RequiredScript) == "lib/managers/menumanager" then
 				item:set_step((tweak_data.player.camera.MAX_SENSITIVITY - tweak_data.player.camera.MIN_SENSITIVITY) * 0.01)
 			end
 		end
-		
+
 		return new_node
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
@@ -44,7 +44,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 		end
 		return value
 	end
-	
+
 	-- Remove free Buckshot ammo, if you own Gage Shotty DLC
 	local populate_mods_original = BlackMarketGui.populate_mods
 	function BlackMarketGui:populate_mods(data, ...)
@@ -59,7 +59,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 
 		return populate_mods_original(self, data, ...)
 	end
-	
+
 	local function getEquipmentAmount(name_id)
 		local data = tweak_data.equipments[name_id]
 		if data and data.quantity then
@@ -80,7 +80,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 		end
 		return ""
 	end
-	
+
 	local populate_deployables_original = BlackMarketGui.populate_deployables
 	function BlackMarketGui:populate_deployables(data, ...)
 		populate_deployables_original(self, data, ...)
@@ -88,7 +88,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 			equipment.name_localized = equipment.name_localized .. (equipment.unlocked and getEquipmentAmount(equipment.name) or "")
 		end
 	end
-	
+
 	local populate_grenades_original = BlackMarketGui.populate_grenades
 	function BlackMarketGui:populate_grenades(data, ...)
 		populate_grenades_original(self, data, ...)
@@ -107,23 +107,23 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 		end
 		return orig_blackmarket_gui_slot_item_init(self, main_panel, data, ...)
 	end
-	
+
 	local orig_blackmarket_gui_slot_item_select = BlackMarketGuiItem.select
 	function BlackMarketGuiItem:select(instant, ...)
 		self._is_selected = true
 		self:set_highlight(true, instant)
-		
+
 		return orig_blackmarket_gui_slot_item_select(self, instant, ...)
 	end
-	
+
 	local orig_blackmarket_gui_slot_item_deselect = BlackMarketGuiItem.deselect
 	function BlackMarketGuiItem:deselect(instant, ...)
 		self._is_selected = false
 		self:set_highlight(false, instant)
-		
+
 		return orig_blackmarket_gui_slot_item_deselect(self, instant, ...)
 	end
-	
+
 	local orig_blackmarket_gui_slot_item_set_highlight = BlackMarketGuiSlotItem.set_highlight
 	function BlackMarketGuiSlotItem:set_highlight(highlight, ...)
 		if highlight or self._is_selected or self._data.equipped then
@@ -143,18 +143,18 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 				self._mini_panel:set_alpha(0.4)
 			end
 		end
-		
+
 		return orig_blackmarket_gui_slot_item_set_highlight(self, highlight, ...)
 	end
 
 	local orig_blackmarket_gui_set_selected_tab = BlackMarketGui.set_selected_tab
-	function BlackMarketGui:set_selected_tab(...)	
+	function BlackMarketGui:set_selected_tab(...)
 		local value = orig_blackmarket_gui_set_selected_tab(self, ...)
-		
+
 		local current_tab = self._tabs[self._selected]
 		local selected_slot = current_tab and current_tab._slots[current_tab._slot_selected]
 		local highlighted_slot 	= current_tab and current_tab._slots[current_tab._slot_highlighted]
-		
+
 		if selected_slot then
 			selected_slot:select(true, true)
 			if highlighted_slot and selected_slot ~= highlighted_slot then
@@ -162,7 +162,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 				highlighted_slot:set_highlight(true, false)
 			end
 		end
-		
+
 		return value
 	end
 
@@ -171,7 +171,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 		["<SKULL>"] = utf8.char(57364),	--Skull icon
 		["<GHOST>"] = utf8.char(57363),	--Ghost icon
 	}
-	
+
 	local BlackMarketGui__setup_original = BlackMarketGui._setup
 	function BlackMarketGui:_setup(is_start_page, component_data)
 		self._renameable_tabs = false
@@ -191,14 +191,14 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 				end
 			end
 		end
-		
+
 		BlackMarketGui__setup_original(self, is_start_page, component_data)
-		
+
 		if self._renameable_tabs and self._tabs[1] then
 			local first_tab_name = self._tabs[1]._tab_panel and self._tabs[1]._tab_panel:child("tab_text")
 			self._renameable_tabs = first_tab_name:visible()
 		end
-		
+
 		if self._renameable_tabs and not component_data.is_loadout  and alive(self._panel) then
 			-- create rename tab info text
 			local legends_panel = self._panel:panel({
@@ -220,19 +220,19 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 			})
 		end
 	end
-	
+
 	-- Input Dialog on double click selected tab
 	local BlackMarketGui_mouse_clicked_original = BlackMarketGui.mouse_clicked
 	function BlackMarketGui:mouse_clicked(...)
 		BlackMarketGui_mouse_clicked_original(self, ...)
-		
+
 		if not self._enabled then
 			return
 		end
-		
+
 		self._mouse_click[self._mouse_click_index].selected_tab = self._selected
 	end
-	
+
 	local BlackMarketGui_mouse_double_click_original = BlackMarketGui.mouse_double_click
 	function BlackMarketGui:mouse_double_click(o, button, x, y)
 		if self._enabled and not self._data.is_loadout and self._renameable_tabs then
@@ -248,10 +248,10 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 				end
 			end
 		end
-		
+
 		BlackMarketGui_mouse_double_click_original(self, o, button, x, y)
 	end
-	
+
 	function BlackMarketGui:rename_tab_clbk(tab, tab_id)
 		local current_tab = tab or self._tabs[self._selected]
 		local tab_data = self._data[self._selected]
@@ -267,11 +267,11 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 								inv_name_tweak[tab_data.category] = inv_name_tweak[tab_data.category] or {}
 								inv_name_tweak[tab_data.category][tab_id or self._selected] = text
 								WolfHUD:Save()
-								
+
 								for key, subst in pairs(BlackMarketGui._SUB_TABLE) do
 									text = text:upper():gsub(key, subst)
 								end
-								
+
 								current_tab._tab_text_string = text
 								local name = current_tab._tab_panel:child("tab_text")
 								if alive(name) then
@@ -289,18 +289,18 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 				}
 			}
 			QuickInputMenu:new(managers.localization:text("wolfhud_dialog_rename_inv_tab"), managers.localization:text("wolfhud_dialog_rename_inv_tab_desc"), prev_name, menu_options, true, {w = 420, to_upper = true, max_len = 15})
-			
+
 			return
 		end
 	end
-	
+
 	function BlackMarketGui:rearrange_tab_width(start_with_selected)
 		local current = start_with_selected and self._selected or 1
 		local start = current + 1
 		local stop = #self._tabs
-		
+
 		local current_tab = self._tabs[current]
-		if current_tab then 
+		if current_tab then
 			local current_panel = current_tab._tab_panel
 			local current_text = current_panel and current_panel:child("tab_text")
 			local current_selection = current_panel and current_panel:child("tab_select_rect")
@@ -312,7 +312,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 				current_text:set_center_x(current_panel:w() / 2)
 			end
 		end
-		
+
 		local offset = alive(self._tabs[current]._tab_panel) and self._tabs[current]._tab_panel:right() or 0
 		for i = start, stop do
 			local tab = self._tabs[i]
@@ -320,14 +320,14 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 			if alive(tab._tab_panel) then
 				offset = tab:set_tab_position(offset)
 			end
-			
+
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 	local orig_newskilltreeskillitem_refresh = NewSkillTreeSkillItem.refresh
 	function NewSkillTreeSkillItem:refresh(...)
 		local value = orig_newskilltreeskillitem_refresh(self, ...)
-		
+
 		--Always show Skill names
 		if alive(self._skill_panel) and WolfHUD:getSetting({"INVENTORY", "SHOW_SKILL_NAMES"}, true) then
 			local skill_name = self._skill_panel:child("SkillName")
@@ -339,17 +339,17 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 				skill_name:set_alpha(self._selected and 1 or skilled and 0.6 or 0.4)
 			end
 		end
-		
+
 		return value
 	end
-	
+
 	--Fix mouse pointer for locked skills
 	local orig_newskilltreeskillitem_is_active = NewSkillTreeSkillItem.is_active
 	function NewSkillTreeSkillItem:is_active(...)
-		local unlocked = self._skill_id and self._tree and managers.skilltree and managers.skilltree:skill_unlocked(self._tree, self._skill_id) or false		
+		local unlocked = self._skill_id and self._tree and managers.skilltree and managers.skilltree:skill_unlocked(self._tree, self._skill_id) or false
 		return orig_newskilltreeskillitem_is_active(self, ...) or not unlocked
 	end
-	
+
 	--Resize and move total points label
 	local orig_newskilltreetieritem_init = NewSkillTreeTierItem.init
 	local orig_newskilltreetieritem_refresh_points = NewSkillTreeTierItem.refresh_points
@@ -361,8 +361,8 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 				--self._tier_points_needed_zero:set_left(self._text_space)
 				--self._tier_points_needed_curr:set_left(self._tier_points_needed_zero:right())
 				--self._tier_points_needed:set_left(self._tier_points_needed_curr:right())	
-			end	
-			
+			end
+
 			if self._tier_points_total and self._tier_points_total_zero and self._tier_points_total_curr then
 				local font_size = tweak_data.menu.pd2_small_font_size * 0.75
 				self._tier_points_total:set_font_size(font_size)
@@ -394,7 +394,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 				self._tier_points_needed_zero:set_left(self._tier_points_0:left())
 				self._tier_points_needed_curr:set_left(self._tier_points_needed_zero:right())
 				self._tier_points_needed:set_left(self._tier_points_needed_curr:right() + self._text_space)
-			end			
+			end
 			if alive(self._tier_points_0) and alive(self._tier_points) then
 				self._tier_points:set_visible(not self._tier_points_needed:visible())
 				self._tier_points_0:set_visible(not self._tier_points_needed:visible())
@@ -408,7 +408,7 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/tweakdata" then
 		tweak_data.menu.MUSIC_CHANGE = 1
 		tweak_data.menu.SFX_CHANGE = 1
 		tweak_data.menu.VOICE_CHANGE = 0.01
-		
+
 		if Network:is_server() and WolfHUD:getSetting({"SkipIt", "INSTANT_RESTART"}, false) then
 			tweak_data.vote = tweak_data.vote or {}
 			tweak_data.voting.restart_delay = 0
@@ -433,7 +433,7 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 		init_actual(self, ...)
 		self._show_slider_text = true
 	end
-	
+
 	function ItemSlider:highlight_row_item(node, row_item, mouse_over, ...)
 		local val = highlight_row_item_actual(self, node, row_item, mose_over, ...)
 		row_item.gui_slider_gfx:set_gradient_points({
@@ -442,14 +442,14 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 		})
 		return val
 	end
-	
+
 	function ItemSlider:set_value(value, ...)
 		local times = math.round((value - self._min) / self._step)
 		value = self._min + self._step * times
-		
+
 		set_value_original(self, value, ...)
 	end
-	
+
 	function ItemSlider:set_enabled(...)
 		set_enabled_original(self, ...)
 		if self._enabled then
@@ -460,10 +460,10 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 			self:set_slider_highlighted_color(Color(0.2, 0.4, 0.4, 0.4))
 		end
 	end
-	
+
 	function ItemSlider:reload(row_item, ...)
 		reload_original(self, row_item, ...)
-		
+
 		row_item.gui_text:set_color(row_item.color)
 		row_item.gui_slider_text:set_color(row_item.color)
 	end
@@ -472,7 +472,7 @@ elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then
 	local update_original = IngameWaitingForPlayersState.update
 	function IngameWaitingForPlayersState:update(...)
 		update_original(self, ...)
-		
+
 		if self._skip_promt_shown and SKIP_BLACKSCREEN then
 			self:_skip()
 		end
@@ -482,15 +482,15 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" the
 	local update_original = StageEndScreenGui.update
 	local special_btn_pressed_original = StageEndScreenGui.special_btn_pressed
 	local special_btn_released_original = StageEndScreenGui.special_btn_released
-	
+
 	function StageEndScreenGui:init(...)
 		init_original(self, ...)
-		
+
 		if self._enabled and WolfHUD:getSetting({"SkipIt", "STAT_SCREEN_SPEEDUP"}, false) and managers.hud then
 			managers.hud:set_speed_up_endscreen_hud(5)
 		end
 	end
-	
+
 	local SKIP_STAT_SCREEN_DELAY = WolfHUD:getSetting({"SkipIt", "STAT_SCREEN_DELAY"}, 5)
 	function StageEndScreenGui:update(t, ...)
 		update_original(self, t, ...)
@@ -502,13 +502,13 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" the
 			end
 		end
 	end
-	
+
 	function StageEndScreenGui:special_btn_pressed(...)
 		if not WolfHUD:getSetting({"SkipIt", "STAT_SCREEN_SPEEDUP"}, false) then
 			special_btn_pressed_original(self, ...)
 		end
 	end
-	
+
 	function StageEndScreenGui:special_btn_released(...)
 		if not WolfHUD:getSetting({"SkipIt", "STAT_SCREEN_SPEEDUP"}, false) then
 			special_btn_released_original(self, ...)
@@ -525,7 +525,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/lootdropscreengui" the
 			self:_set_selected_and_sync(math.random(3))
 			self:confirm_pressed()
 		end
-		
+
 		if not self._button_not_clickable and SKIP_LOOT_SCREEN_DELAY > 0 then
 			self._auto_continue_t = self._auto_continue_t or (t + SKIP_LOOT_SCREEN_DELAY)
 			if t >= self._auto_continue_t then
@@ -535,10 +535,10 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/lootdropscreengui" the
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 	local create_character_text_original = ContractBoxGui.create_character_text
-	
+
 	function ContractBoxGui:create_character_text(peer_id, ...)
 		create_character_text_original(self, peer_id, ...)
-		
+
 		if WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "LATENCY"}, 3) and  managers.network:session() then
 			if managers.network:session():local_peer():id() ~= peer_id then
 				local peer_label = self._peers[peer_id]
@@ -547,7 +547,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 					local latency = peer and Network:qos(peer:rpc()).ping or 0
 					local x, y = peer_label:center_x(), peer_label:top()
 					local LPI_offset = LobbyPlayerInfo and (LobbyPlayerInfo.settings.show_play_time_mode or 0) > 1 and LobbyPlayerInfo:GetFontSizeForPlayTime() or 0
-					
+
 					self._peer_latency = self._peer_latency or {}
 					self._peer_latency[peer_id] = self._peer_latency[peer_id] or self._panel:text({
 						name = tostring(peer_id) .. "_latency",
@@ -570,7 +570,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 				end
 			end
 		end
-	end	
+	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/renderers/menunodeskillswitchgui" then
 	local _create_menu_item=MenuNodeSkillSwitchGui._create_menu_item
 	function MenuNodeSkillSwitchGui:_create_menu_item(row_item, ...)
@@ -595,35 +595,35 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/renderers/menunodeskil
 elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	if not WolfHUD:getSetting({"HUDChat", "SPAM_FILTER"}, true) then return end
 	ChatManager._SUB_TABLE = {
-			[utf8.char(57364)] = "<SKULL>",	--Skull icon
-			[utf8.char(57363)] = "<GHOST>",	--Ghost icon
-			[utf8.char(139)] = "<LC>",		--broken bar
-			[utf8.char(155)] = "<RC>",		
-			[utf8.char(1035)] = "<DRC>",		
-			[utf8.char(1014)] = "<DIV>",	--PocoHuds bar
-			[utf8.char(57344)] = "<A>",		--Controller A
-			[utf8.char(57345)] = "<B>",		--Controller B
-			[utf8.char(57346)] = "<X>",		--Controller X
-			[utf8.char(57347)] = "<Y>",		--Controller Y
-			[utf8.char(57348)] = "<BACK>",	--Controller BACK
-			[utf8.char(57349)] = "<START>",	--Controller START
-			[utf8.char(1031)] = "<DOT>",		
-			[utf8.char(1015)] = "<CHAPTER>",	
-			[utf8.char(1012)] = "<BIGDOT>",	
-			[utf8.char(215)] = "<TIMES>",	--Mult
-			[utf8.char(247)] = "<DIVIDED>",	--Divided
-			[utf8.char(1024)] = "<DEG>",	--Degree
-			[utf8.char(1030)] = "<PM>",		--PM Sign
-			[utf8.char(1033)] = "<NO>"		--Number
-			
+		[utf8.char(57364)] = "<SKULL>",	--Skull icon
+		[utf8.char(57363)] = "<GHOST>",	--Ghost icon
+		[utf8.char(139)] = "<LC>",		--broken bar
+		[utf8.char(155)] = "<RC>",
+		[utf8.char(1035)] = "<DRC>",
+		[utf8.char(1014)] = "<DIV>",	--PocoHuds bar
+		[utf8.char(57344)] = "<A>",		--Controller A
+		[utf8.char(57345)] = "<B>",		--Controller B
+		[utf8.char(57346)] = "<X>",		--Controller X
+		[utf8.char(57347)] = "<Y>",		--Controller Y
+		[utf8.char(57348)] = "<BACK>",	--Controller BACK
+		[utf8.char(57349)] = "<START>",	--Controller START
+		[utf8.char(1031)] = "<DOT>",
+		[utf8.char(1015)] = "<CHAPTER>",
+		[utf8.char(1012)] = "<BIGDOT>",
+		[utf8.char(215)] = "<TIMES>",	--Mult
+		[utf8.char(247)] = "<DIVIDED>",	--Divided
+		[utf8.char(1024)] = "<DEG>",	--Degree
+		[utf8.char(1030)] = "<PM>",		--PM Sign
+		[utf8.char(1033)] = "<NO>"		--Number
+
 	}
-	
+
 	ChatManager._BLOCK_PATTERNS = {
-	  ".-%[NGBT%w+%].+",
-	  --NGBTO info blocker Should work since its mass spam.
-	  "[%d:]+%d:%d%d.-<DIV>.+",
-	  --Blocks anything, that starts with numbers and ':' and then has a divider (Might block other mods, not only Poco...)
-	  "Replenished: .+",
+		".-%[NGBT%w+%].+",
+		--NGBTO info blocker Should work since its mass spam.
+		"[%d:]+%d:%d%d.-<DIV>.+",
+		--Blocks anything, that starts with numbers and ':' and then has a divider (Might block other mods, not only Poco...)
+		"Replenished: .+",
 	}
 
 	local _receive_message_original = ChatManager._receive_message
@@ -631,7 +631,7 @@ elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
 	function ChatManager:_receive_message(channel_id, name, message, ...)
 		local message2 = message or ""
 		for key, subst in pairs(ChatManager._SUB_TABLE) do
-				message2 = message2:gsub(key, subst)
+			message2 = message2:gsub(key, subst)
 		end
 		for _, pattern in ipairs(ChatManager._BLOCK_PATTERNS) do
 			if message2:match("^" .. pattern .. "$") then
@@ -647,7 +647,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 	MenuManager.show_confirm_blackmarket_buy_weapon_slot = expect_yes
 	MenuManager.show_confirm_mission_asset_buy = expect_yes
 	MenuManager.show_confirm_pay_casino_fee = expect_yes
-	
+
 	local show_person_joining_original = MenuManager.show_person_joining
 	local update_person_joining_original = MenuManager.update_person_joining
 	local close_person_joining_original = MenuManager.close_person_joining
@@ -663,7 +663,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 		end
 		return show_person_joining_original(self, id, nick, ...)
 	end
-	
+
 	function MenuManager:update_person_joining( id, progress_percentage, ... )
 		if self.peer_join_start_t and self.peer_join_start_t[id] then
 			local t = os.clock() - self.peer_join_start_t[id]
@@ -675,12 +675,12 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 			end
 		end
 	end
-	
+
 	function MenuManager:close_person_joining(id, ...)
 		if self.peer_join_start_t then
 			self.peer_join_start_t[id] = nil
 		end
-		
+
 		if managers.chat and managers.system_menu:is_active_by_id("user_dropin" .. id) then
 			local peer = managers.network:session() and managers.network:session():peer(id)
 			local text = ""
@@ -690,7 +690,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 				local outfit_skills = (peer:blackmarket_outfit() or {}).skills
 				local perk = "[Unknown Perkdeck]"
 				local skill_str = "[No Skilldata available]"
-				
+
 				if outfit_skills then
 					if outfit_skills.specializations then
 						local deck_index, deck_level = unpack(outfit_skills.specializations or {})
@@ -700,7 +700,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 							perk = string.format("%s%s", managers.localization:text(name_id), tonumber(deck_level) < 9 and string.format(" (%d/9)", deck_level) or "")
 						end
 					end
-					
+
 					local skill_data = outfit_skills.skills
 					if skill_data then
 						local tree_names = {}
@@ -710,14 +710,14 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 								table.insert(tree_names, tree.name_id and utf8.sub(managers.localization:text(tree.name_id), 1, 1) or "?")
 							end
 						end
-						
+
 						local subtree_amt = math.floor(#skill_data / #tree_names)
 						skill_str = ""
-						
+
 						for tree = 1, #tree_names, 1 do
 							local tree_has_points = false
 							local tree_sum = 0
-							
+
 							for sub_tree = 1, subtree_amt, 1 do
 								local skills = skill_data[(tree-1) * subtree_amt + sub_tree] or 0
 								tree_sum = tree_sum + skills
@@ -725,12 +725,12 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 							skill_str = string.format("%s%s:%02d ", skill_str, tree_names[tree] or "?", tree_sum)
 						end
 					end
-					
+
 					text = string.format("%s, %s", skill_str, perk)
 				else
 					text = "[invalid outfit]"
 				end
-				
+
 				managers.chat:feed_system_message(ChatManager.GAME, string.format("(%s) %s: %s", level, name, text))
 			end
 		end

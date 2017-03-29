@@ -2,9 +2,9 @@ if WolfHUD then
 	--Helper function to create Gadgetoption tables
 	local function get_gadget_options(gadget_type, theme)
 		local rainbow_pulse_options = {
-			{ 
-				type = "divider", 
-				size = 24 
+			{
+				type = "divider",
+				size = 24
 			},
 			{
 				type = "toggle",
@@ -26,9 +26,9 @@ if WolfHUD then
 				max_value = 5,
 				step_size = 0.1,
 			},
-			{ 
-				type = "divider", 
-				size = 24 
+			{
+				type = "divider",
+				size = 24
 			},
 			{
 				type = "toggle",
@@ -77,7 +77,7 @@ if WolfHUD then
 				step_size = 0.1,
 			},
 		}
-		
+
 		local option_table = {
 			laser = {
 				{
@@ -129,9 +129,9 @@ if WolfHUD then
 					max_value = 1,
 					step_size = 0.01,
 				},
-				{ 
-					type = "divider", 
-					size = 12 
+				{
+					type = "divider",
+					size = 12
 				},
 				{
 					type = "toggle",
@@ -139,8 +139,8 @@ if WolfHUD then
 					desc_id = "wolfhud_gadgets_dot_match_desc",
 					value = {"GADGETS", "laser", theme, "dot", "match_beam"},
 					visible_reqs = {},
-					},
-					{
+				},
+				{
 					type = "slider",
 					name_id = "wolfhud_gadgets_dot_r_title",
 					desc_id = "wolfhud_gadgets_dot_r_desc",
@@ -192,9 +192,9 @@ if WolfHUD then
 					max_value = 1,
 					step_size = 0.01,
 				},
-				{ 
-					type = "divider", 
-					size = 12 
+				{
+					type = "divider",
+					size = 12
 				},
 				{
 					type = "toggle",
@@ -297,9 +297,9 @@ if WolfHUD then
 					max_value = 1,
 					step_size = 0.01,
 				},
-				{ 
-					type = "divider", 
-					size = 12 
+				{
+					type = "divider",
+					size = 12
 				},
 				{
 					type = "slider",
@@ -334,11 +334,10 @@ if WolfHUD then
 				unpack(rainbow_pulse_options)
 			}
 		}
-		
+
 		return option_table[gadget_type]
 	end
-	
-	
+
 	-- Actual Menu Data table
 	WolfHUD.options_menu_data = {
 		type = "menu",
@@ -1210,7 +1209,7 @@ if WolfHUD then
 					{
 						type = "divider",
 						size = 16,
-					},					
+					},
 					{ -- EnemyHealthbar
 						type = "menu",
 						menu_id = "wolfhud_enemyhealthbar_options_menu",
@@ -1345,11 +1344,11 @@ if WolfHUD then
 								add_rainbow = false,
 							},
 						},
-					}, 
+					},
 					{
 						type = "divider",
 						size = 16,
-					},	
+					},
 					{ -- drivingHUD
 						type = "menu",
 						menu_id = "wolfhud_drivinghud_options_menu",
@@ -2045,7 +2044,7 @@ if WolfHUD then
 										},
 									},
 									{
-										type = "divider", 
+										type = "divider",
 										size = 8,
 									},
 									{
@@ -2087,7 +2086,7 @@ if WolfHUD then
 										},
 									},
 									{
-										type = "divider", 
+										type = "divider",
 										size = 8,
 									},
 									{
@@ -2131,7 +2130,7 @@ if WolfHUD then
 										},
 									},
 									{
-										type = "divider", 
+										type = "divider",
 										size = 8,
 									},
 									{
@@ -2827,8 +2826,8 @@ if WolfHUD then
 							"wolfhud_multiselect_disabled",
 							"wolfhud_press2hold_lock_mode_a",
 							"wolfhud_press2hold_lock_mode_b",
-                            				"wolfhud_press2hold_lock_mode_c",
-                            				"wolfhud_press2hold_lock_mode_d"
+							"wolfhud_press2hold_lock_mode_c",
+							"wolfhud_press2hold_lock_mode_d"
 						},
 						visible_reqs = {},
 						value = {"INTERACTION", "LOCK_MODE"},

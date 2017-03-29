@@ -3,7 +3,7 @@
 	"menu_risk_elite" : "Todeswunsch. Ungeheuer viel ERF und Bargeld.",
 	"menu_difficulty_apocalypse" : "Todeswunsch",
 	"hud_int_hold_grab_the_bag" : "Halte $BTN_INTERACT um $BAG zu nehmen",
-	
+
 	"wolfhud_dialog_force_start_title" : "Erzwinge Spielstart?",
 	"wolfhud_dialog_force_start_desc" : "Bist du sicher, das du den Spielstart erzwingen möchtest?\n\nBitte nutze diese Funktion nur für verbuggte Lobbies oder wenn Spieler afk sind.\nLasse deinen Mitspielern genügend Zeit, ihr Loadout zu wählen.\n\nDankeschön :)",
 	"wolfhud_dialog_install_title" : "Installiere: $NAME",
@@ -17,13 +17,13 @@
 	"woldhud_notification_disabled_override_desc" : "Wenn du es dir anders überlegt hast, klicke hier.",
 	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME ist bereit zur Installation.",
 	"woldhud_notification_restart_override_desc" : "Bitte starte dein Spiel neu, um den Download zu starten.",
-	
+
 	"wolfhud_int_locked" : "DRÜCKE $BTN_CANCEL UM ABZUBRECHEN",
 	"wolfhud_int_locked_pager" : "DRÜCKE $BTN_CANCEL UM ABZUBRECHEN\n(LÖST ALARM AUS)",
-	
+
 	"wolfhud_buy_all_assets" : "Kaufe Alles",
 	"wolfhud_buy_all_assets_desc" : "Kaufe alle Vorteile, die du erwerben kannst.",
-	
+
 	"wolfhud_preplanning_save" : "Plan speichern",
 	"wolfhud_preplanning_load" : "Plan laden",
 	"wolfhud_preplanning_reset" : "Plan zurücksetzen",
@@ -62,12 +62,12 @@
 	"wolfhud_preplanning_msg_reseted_failed" : "Das Zurücksetzen des aktuellen Plans ist fehlgeschlagen.",
 	"wolfhud_preplanning_msg_deleted_success" : "Der Plan wurde erfolgreich gelöscht.",
 	"wolfhud_preplanning_msg_deleted_failed" : "Das Löschen des Plans ist fehlgeschlagen.",
-	
+
 	"wolfhud_inv_tab_rename_hint" : "Klicke doppelt auf den aktiven Inventar Tab, um ihn umzubenennen.",
-	
+
 	"victory_most_damage" : "Höchster Schaden:",
 	"victory_session_damage" : "Gesamtzahl Schaden:",
-	
+
 	"wolfhud_advassault_phase_title" : "Ansturms Phase:",
 	"wolfhud_advassault_spawns_title" : "Verbleibende Spawns:",
 	"wolfhud_advassault_time_title" : "Verbleibende Zeit:",
@@ -76,10 +76,10 @@
 	"wolfhud_advassault_phase_fade" : "Abklang",
 	"wolfhud_advassault_time_overdue" : "ÜBERFÄLLIG",
 	"wolfhud_locked_assault" : "Endloser Polizei Ansturm!!!   Verschwinde so schnell wie möglich!!!",
-	
+
 	"wolfhud_customhud_interaction_done" : "ABSCHLUSS",
 	"wolfhud_customhud_interaction_aborted" : "ABBRUCH",
-	
+
 	"wolfhud_hudlist_device_timer" : "Timer",
 	"wolfhud_hudlist_device_drill" : "Bohrer",
 	"wolfhud_hudlist_device_hack" : "Hack",
@@ -96,7 +96,7 @@
 	"wolfhud_hudlist_loot_shoes" : "Schuhe",
 	"wolfhud_hudlist_loot_toy" : "Spielzeug",
 	"wolfhud_hudlist_loot_vr" : "Headset",
-	
+
 	"wolfhud_hudlist_buff_basic" : "Basic",
 	"wolfhud_hudlist_buff_aced" : "Aced",
 	"wolfhud_hudlist_buff_boost" : "Boost",
@@ -104,7 +104,7 @@
 	"wolfhud_hudlist_buff_dmg_inc" : "+Dmg",
 	"wolfhud_hudlist_buff_dmg_dec" : "-Dmg",
 	"wolfhud_hudlist_buff_mdmg_inc" : "+M.Dmg",
-	
+
 	"wolfhud_tabstats_total_damage" : "Schaden gesamt:",
 	"wolfhud_tabstats_tanks_killed" : "Bulldozer getötet:",
 	"wolfhud_tabstats_cloakers_killed" : "Cloaker getötet:",
@@ -118,7 +118,7 @@
 	"wolfhud_tabstats_nonspecial_kills" : "Normale Kills:",
 	"wolfhud_tabstats_total_revives" : "Wiederbelebung (P/AI):",
 	"wolfhud_tabstats_alltime_stat" : "Insgesamt:",
-	
+
 	"wolfhud_enemy_civilian" : "Zivilist",
 	"wolfhud_enemy_gangster" : "Gangster",
 	"wolfhud_enemy_biker" : "Biker",
@@ -163,15 +163,14 @@
 	"wolfhud_enemy_crew" : "Crew Mitglied",
 	"wolfhud_enemy_butler" : "Aldstone",
 	"wolfhud_enemy_vlad" : "Vlad",
-	
-	
+
 	"wolfhud_multiselect_all" : "Alle",
 	"wolfhud_multiselect_none" : "Keine",
 	"wolfhud_multiselect_disabled" : "Deaktiviert",
 	"wolfhud_multiselect_left" : "Links",
 	"wolfhud_multiselect_center" : "Zentriert",
 	"wolfhud_multiselect_right" : "Rechts",
-	
+
 	"wolfhud_colors_white"  : "Weiß",
 	"wolfhud_colors_light_yellow"  : "Hell Gelb",
 	"wolfhud_colors_light_orange"  : "Hell Orange",
@@ -189,11 +188,10 @@
 	"wolfhud_colors_gray" : "Grau",
 	"wolfhud_colors_black" : "Schwarz",
 	"wolfhud_colors_rainbow" : "Regenbogen",
-	
-	
+
 	"wolfhud_options_name" : "WolfHUD Einstellungen",
 	"wolfhud_options_help" : "Passe deine WolfHUD Einstellungen deinem Geschmack an.",
-	
+
 	"wolfhud_skip_blackscreen_title" : "Überspringe schwarzen Bildschirm",
 	"wolfhud_skip_blackscreen_desc" : "Überspringt den schwarzen Bildschirm beim Missionsstart.\n(Nur Host)",
 	"wolfhud_instant_restart_title" : "Sofortiger Neustart",
@@ -221,11 +219,10 @@
 	"wolfhud_reset_options_title" : "Zurücksetzen",
 	"wolfhud_reset_options_desc" : "Setze alle Einstellungen auf den Standard zurück.",
 	"wolfhud_reset_options_confirm" : "Bist du sicher, dass du alle Einstellungen zurücksetzten willst?",
-	
-	
+
 	"wolfhud_panels_options_name" : "Allgemeine HUD Panel Optionen",
 	"wolfhud_panels_options_help" : "Optionen für alle HUD Panels, wie CustomHUD, die Verdachts- oder Schadensanzeige, und viele mehr.",
-	
+
 	"wolfhud_use_customhud_title" : "Nutze CustomHUD",
 	"wolfhud_use_customhud_desc" : "Ersetzt die Standard HUD mit der erweiterten CustomHUD, erstellt von Se7en.\n(Wird erst beim Mapwechsel aktiv...)",
 	"wolfhud_customhud_healthbars_title" : "Färbe Lebensanzeigen",
@@ -243,14 +240,13 @@
 	"wolfhud_use_realammo_desc" : "Zeigt die verbleibende Munition richtig, ohne die geladene Munition mitzuzählen.",
 	"wolfhud_enable_burstmode_title" : "Aktiviere Burst Modus",
 	"wolfhud_enable_burstmode_desc" : "Aktiviere den Burst Feuermodus für deine Waffen.",
-	
-	
+
 	"wolfhud_playerpanel_options_name" : "Player Panel",
 	"wolfhud_playerpanel_options_help" : "Einstellungen für dein eigenes HUD Panel.",
-	
+
 	"wolfhud_teampanels_options_name" : "Teamkammeraden Panels",
 	"wolfhud_teampanels_options_help" : "Einstellungen für die Anzeigen deiner Teamkammeraden.",
-	
+
 	"wolfhud_panels_position_title" : "Position",
 	"wolfhud_panels_position_desc" : "Horizontale Position des HUD Panels.",
 	"wolfhud_panels_scale_title" : "Skalierung",
@@ -302,11 +298,19 @@
 	"wolfhud_panels_show_interaction_desc" : "Zeige die Interaktion deiner Teamkammeraden.",
 	"wolfhud_panels_interaction_time_title" : "Min Interaktionszeit",
 	"wolfhud_panels_interaction_time_desc" : "Zeige nur Interaktionen, die länger als X sekunden dauern.",
+<<<<<<< HEAD
 	
 	
+=======
+	"wolfhud_panels_use_ai_color_title" : "Use custom bot color",
+	"wolfhud_panels_use_ai_color_desc" : "Use a custom color for the names of bots. (This also affects dmg popups)",
+	"wolfhud_panels_ai_color_title" : "Custom bot color",
+	"wolfhud_panels_ai_color_desc" : "Set the custom color to use for the names of bots. (This also affects dmg popups)",
+
+>>>>>>> aaeee76... whitespace cleanup
 	"wolfhud_chat_options_name" : "Chat Optionen",
 	"wolfhud_chat_options_help" : "Options zur Anpassung des Chats.",
-	
+
 	"wolfhud_chat_waittime_title" : "Chat Ausblendung",
 	"wolfhud_chat_waittime_desc" : "Die Zeit nachdem der Chat ausgeblendet wird.\n(0 = Niemals)",
 	"wolfhud_chat_fontsize_title" : "Chat Schriftgröße",
@@ -315,22 +319,20 @@
 	"wolfhud_chat_outputlines_desc" : "Max Zeilen zur Ausgabe, bevor du scrollen musst.",
 	"wolfhud_spam_filter_title" : "Chat Spam Filter",
 	"wolfhud_spam_filter_desc" : "Entfernt PocoHUD und  [NGBTO] Spam-Nachrichten aus dem Chat.",
-	
-	
+
 	"wolfhud_suspicion_options_name" : "Verdachts Optionen",
 	"wolfhud_suspicion_options_help" : "Optionen für die Größe der Verdachtsanziege, sowie ihrer sichtbaren Komponenten.",
-	
+
 	"wolfhud_suspicion_scale_title" : "Verdachts Skalierung",
 	"wolfhud_suspicion_scale_desc" : "Skalierungsfaktor der Verdachtsanzeige.",
 	"wolfhud_susp_eye_title" : "Zeige Verdachtsanzeige",
 	"wolfhud_susp_eye_desc" : "Zeige die Standard Verdachtspanels.",
 	"wolfhud_susp_numberic_title" : "Zeige numerischen Verdacht",
 	"wolfhud_susp_numberic_desc" : "Zeige den numerischen Verdachtswert.",
-	
-	
+
 	"wolfhud_killcounter_options_name" : "Killzähler Optionen",
 	"wolfhud_killcounter_options_help" : "Optionen für die Darstellung des Killzählers",
-	
+
 	"wolfhud_killcounter_player_show_killcount_title" : "Zeige Spieler Killzähler",
 	"wolfhud_killcounter_player_show_killcount_desc" : "Zeige den Killzähler in deinem HUD.",
 	"wolfhud_killcounter_player_color_title" : "Killzähler Farbe",
@@ -353,11 +355,10 @@
 	"wolfhud_killcounter_team_show_ai_desc" : "Gibt auch Bots einen Killzähler.",
 	"wolfhud_corpse_limit_title" : "Leichen Limit",
 	"wolfhud_corpse_limit_desc" : "Wie viele Leichen sollen zeitgleich herumliegen können?\n (Wird erst beim Mapwechsel aktiv...)",
-	
-	
+
 	"wolfhud_drivinghud_options_name" : "DrivingHUD Optionen",
 	"wolfhud_drivinghud_options_help" : "Optionen für DrivingHUD.",
-	
+
 	"wolfhud_show_drivinghud_title" : "Zeige Driving HUD",
 	"wolfhud_show_drivinghud_desc" : "Zeige eine kleine HUD unten rechts, während du fährst.\n(Wird erst beim Mapwechsel aktiv...)",
 	"wolfhud_drivinghud_scale_title" : "Skalierung",
@@ -378,11 +379,10 @@
 	"wolfhud_drivinghud_speed_in_mph_desc" : "Zeige die Geschwindigkeit in mph.\n(Ansonsten km/h .)",
 	"wolfhud_drivinghud_show_rpm_title" : "Zeige RPM",
 	"wolfhud_drivinghud_show_rpm_desc" : "Zeige die aktuelle Drehzahl des Fahrzeugs.",
-	
-	
+
 	"wolfhud_infopanels_options_name" : "HUD Info Optionen",
 	"wolfhud_infopanels_options_help" : "Optionen für die Info Boxen von HUD List.",
-	
+
 	"wolfhud_use_hudlist_title" : "Benutze HUDList",
 	"wolfhud_use_hudlist_desc" : "HUDList kann viele nützliche Dinge anzeigen, wie zum Beispiel Bohrerzeiten, Gegner- oder Beutezähler, Equipment auf der Karte, etc. (Wird erst beim Mapwechsel aktiv...)",
 	"wolfhud_hudlist_scale_right_title" : "Skalierung Liste rechts",
@@ -403,11 +403,10 @@
 	"wolfhud_hudlist_copcolor_desc" : "Farbe der Polizisten, SWATs und Schwere SWATs des Gegner Zählers.",
 	"wolfhud_hudlist_specialcolor_title" : "Spezialgegner Farbe",
 	"wolfhud_hudlist_specialcolor_desc" : "Farbe für Spezialgegner und Geschützwagen des Gegner Zählers.",
-	
-	
+
 	"wolfhud_infopanels_left_options_name" : "Linke Info Liste",
 	"wolfhud_infopanels_left_options_help" : "Optionen der linken Liste.",
-	
+
 	"wolfhud_hudlist_show_timers_title" : "Zeige Timer",
 	"wolfhud_hudlist_show_timers_desc" : "Zeige Timer für Bohrer, Hacks, etc.",
 	"wolfhud_hudlist_show_equipment_desc" : "Zeige das Equipment in der Liste.",
@@ -434,11 +433,10 @@
 	"wolfhud_hudlist_show_tape_loop_desc" : "Zeige Kameraschleifen Countdown Timer.",
 	"wolfhud_hudlist_remove_answered_pagers_title" : "Entferne Pager Kontur",
 	"wolfhud_hudlist_remove_answered_pagers_desc" : "Entferne die Pager Kontur, wenn er beantwortet wird.",
-	
-	
+
 	"wolfhud_infopanels_right_options_name" : "Rechte Info Liste",
 	"wolfhud_infopanels_right_options_help" : "Optionen der rechten Liste.",
-	
+
 	"wolfhud_hudlist_show_enemies_title" : "Zeige Gegner",
 	"wolfhud_hudlist_show_enemies_desc" : "Zeige die Anzahl an Gegnern auf der Karte.",
 	"wolfhud_hudlist_aggregate_enemies_title" : "Fasse Gegner zusammen",
@@ -471,11 +469,10 @@
 	"wolfhud_hudlist_show_potential_loot_desc" : "Zeige die Anzahl der Kisten auf der Map im Beute-Zähler. \n(Merke, Kisten können auch leer sein...)",
 	"wolfhud_hudlist_show_special_pickups_title" : "Zeige Spezial Equipment",
 	"wolfhud_hudlist_show_special_pickups_desc" : "Zeige die Anzahl an Chemikalien, Schlüsselkarten, etc. auf der Karte.",
-	
-	
+
 	"wolfhud_infopanels_buff_options_name" : "Fähigkeit Info Liste",
-	"wolfhud_infopanels_buff_options_help" : "Optionen der Fähigkeiten Liste."
-	
+	"wolfhud_infopanels_buff_options_help" : "Optionen der Fähigkeiten Liste.",
+
 	"wolfhud_infopanels_buff_mastermind_options_name" : "Drahtzieher Fähigkeiten",
 	"wolfhud_infopanels_buff_mastermind_options_help" : "Aktiviere oder Deaktiviere die Indikatoren für Drahtzieher Fähigkeiten.\n(Wird erst beim Mapwechsel aktiv...)",
 	"wolfhud_infopanels_buff_enforcer_options_name" : "Vollstrecker Fähigkeiten",
@@ -488,7 +485,7 @@
 	"wolfhud_infopanels_buff_fugitive_options_help" : "Aktiviere oder Deaktiviere die Indikatoren für Flüchtling Fähigkeiten.\n(Wird erst beim Mapwechsel aktiv...)",
 	"wolfhud_infopanels_buff_perkdecks_options_name" : "Perk-Decks",
 	"wolfhud_infopanels_buff_perkdecks_options_help" : "Aktiviere oder Deaktiviere die Indikatoren für Perk-Decks.\n(Wird erst beim Mapwechsel aktiv...)",
-	
+
 	"wolfhud_hudlist_show_buffs_title" : "Zeige Fähigkeiten",
 	"wolfhud_hudlist_show_buffs_desc" : "Zeige aktive Fähigkeiten in der unteren Mitte der HUD.",
 	"wolfhud_hudlist_damage_increase_compbuff_title" : "Erhöhter Schaden Buff",
@@ -603,8 +600,7 @@
 	"wolfhud_hudlist_crew_chief_teambuff_desc" : "Teil eines zusammenfassenden Buffs.",
 	"wolfhud_hudlist_forced_friendship_teambuff_title" : "Zwangsfreundschaft Teambuff",
 	"wolfhud_hudlist_forced_friendship_teambuff_desc" : "",
-	
-	
+
 	"wolfhud_waypoints_options_name" : "Wegpunkt-Optionen",
 	"wolfhud_waypoints_options_help" : "Wähle die zusätzlichen Wegpunkte die du angezeigt bekommen möchtest.",
 
@@ -634,11 +630,10 @@
 	"wolfhud_waypoints_show_minions_desc" : "Zeige den namen und das Leben von konvertierten Polizisten über ihrem Kopf.\nZählt auch dessen Tötungen.",
 	"wolfhud_waypoints_show_pager_title" : "Zeige Pager",
 	"wolfhud_waypoints_show_pager_desc" : "Zeige einen Wegpunkt für aktivierte Pager. Ändert die Farbe falls er von jemandem beantwortet wird.",
-	
-	
+
 	"wolfhud_tabstats_options_name" : "TabStats Optionen",
 	"wolfhud_tabstats_options_help" : "Konfiguriere das Aussehen des Tab-Panels.",
-	
+
 	"wolfhud_tabstats_clock_mode_title" : "Uhr Modus",
 	"wolfhud_tabstats_clock_mode_desc" : "Welchen Modus soll die Uhr benutzen?",
 	"wolfhud_tabstats_clock_mode_a" : "12-h",
@@ -654,11 +649,10 @@
 	"wolfhud_tabstats_actual_mask_desc" : "Zeige deine aktuelle Maske anstatt des Profilbildes des gespielten Charakters.",
 	"wolfhud_tabstats_numberic_loot_title" : "Numerischer Beute Zähler",
 	"wolfhud_tabstats_numberic_loot_desc" : "Ersetze das Taschenzählspiel mit der wirklichen Zahl an gesicherter Beute.",
-	
-	
+
 	"wolfhud_dmgindicator_options_name" : "Schadens Indikator",
 	"wolfhud_dmgindicator_options_help" : "Setzte die Zeit, Größe und Farben des Schadensindikators.",
-	
+
 	"wolfhud_show_dmg_indicator_title" : "Dynamischer Schadensindikator",
 	"wolfhud_show_dmg_indicator_desc" : "Ändert die 4 Standard Indikatoren in viele dynamische, die sich bewegen, in Relation zu deiner aktuellen Position, und der des Gegners der den Schaden zugefügt hat.",
 	"wolfhud_dmg_ind_time_title" : "Indikator Zeit",
@@ -677,11 +671,10 @@
 	"wolfhud_dmg_vehicle_color_desc" : "Farbe des Indikators, wenn du in einem Fahrzeug bist, das Schaden nimmt.",
 	"wolfhud_dmg_friendlyfire_color_title" : "Teambeschuss Farbe",
 	"wolfhud_dmg_friendlyfire_color_desc" : "Farbe des Indikators, wenn du Feuer- oder Explosivschaden nimmst.",
-	
-	
+
 	"wolfhud_dmgpopup_options_name" : "Gegner Schadens Popup",
 	"wolfhud_dmgpopup_options_help" : "Popup am Kopf des Gegners, zeigt an wie viel Schaden du ihm zugefügt hast.",
-	
+
 	"wolfhud_show_dmg_popup_title" : "Zeige Schadens Popup",
 	"wolfhud_show_dmg_popup_desc" : "Aktiviere den Schadens Popup.",
 	"wolfhud_dmg_popup_player" : "Spieler",
@@ -698,11 +691,10 @@
 	"wolfhud_dmg_popup_color_desc" : "Setzt die Farbe des Popups für normale Körpertreffer.",
 	"wolfhud_dmg_popup_headshot_color_title" : "Kopfschuss Popup Farbe",
 	"wolfhud_dmg_popup_headshot_color_desc" : "Setzt die Farbe des Popups für Kopftreffer.",
-	
-	
+
 	"wolfhud_enemyhealthbar_options_name" : "Gegner Lebensanzeige",
 	"wolfhud_enemyhealthbar_options_help" : "Bestimme für welche Einheiten eine Lebenanzeige gezeigt werden soll.",
-	
+
 	"wolfhud_show_enemyhealthbar_title" : "Zeige Gegner Lebensanzeige",
 	"wolfhud_show_enemyhealthbar_desc" : "Zeige Gegner Lebensanzeige oben in der Mitte, wenn du auf einen Gegner zielst.\n(Wird erst beim Mapwechsel aktiv...)",
 	"wolfhud_show_civhealthbar_title" : "Zivilisten Lebensanzeige",
@@ -711,11 +703,10 @@
 	"wolfhud_show_carhealthbar_desc" : "Zeige Lebensanzeige für fahrbare Fahrzeuge.",
 	"wolfhud_show_healthbar_pointer_title" : "Zeige Pfeil",
 	"wolfhud_show_healthbar_pointer_desc" : "Zeige Pfeil unter der Lebensanzeige, der auf den Gegner zeigt, zu dem die Anzeige gehört.",
-	
-	
+
 	"wolfhud_interaction_options_name" : "Interaktions-Optionen",
 	"wolfhud_interaction_options_help" : "Ändere das Interaktionsverhalten des Spiels.",
-	
+
 	"wolfhud_press2hold_lock_mode_title" : "Sperr-Modus",
 	"wolfhud_press2hold_lock_mode_desc" : "Sperren, wenn schon länger als X Sekunden interagiert wird. (Fortschritt)\nSperren, wenn benötigte Interaktionszeit insgesamt länger ist als X Sekunden. (Gesamt)",
 	"wolfhud_press2hold_lock_mode_a" : "Fortschritt",
@@ -754,27 +745,25 @@
 	"wolfhud_doubletap_nades_stealth_desc" : "Wenn ausgewählt musst du im stealth 2x schnell die Granatentaste drücken, um sie zu werfen. \nZur Vorbeugung von Unfällen.  ;)",
 	"wolfhud_hold_to_pick_title" : "Automatisches Pickup",
 	"wolfhud_hold_to_pick_desc" : "Kleine Beute wird automatisch aufgehoben, während du die Interaktionstaste gedrückt hältst.",
-	
-	
+
 	"wolfhud_inventory_options_name" : "Inventar Tweak Optionen",
 	"wolfhud_inventory_options_help" : "Optionen um das Inventar und das Verhalten von Equipment zu verändern.",
-	
+
 	"wolfhud_equipment_senty_auto_ap_title" : "Sentry Auto AP-Modus",
 	"wolfhud_equipment_senty_auto_ap_desc" : "Sentries werden im AP-Modus platziert, wenn du den erforderlichen Skill hast.",
 	"wolfhud_equipment_tripmine_auto_sensor_stealth_title" : "Stolpermine Auto Sensor-Modus",
 	"wolfhud_equipment_tripmine_auto_sensor_stealth_desc" : "Stolperminen werden im Sensor-Modus platziert, solange du unentdeckt bleibst.",
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_title" : "Kein ECM Feedback",
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_desc" : "ECM Feedback wird deaktiviert, solange du unentdeckt bleibst.",
-	
-	
+
 	"wolfhud_gadget_options_name" : "Waffen Gadget Optionen",
 	"wolfhud_gadget_options_help" : "Wähle die Laserfarben und Taschenlampen-Parameter.",
-	
+
 	"wolfhud_laser_autoon_title" : "Auto Laser An",
 	"wolfhud_laser_autoon_desc" : "Schaltet die Laser beim Missionsstart automatisch ein, wenn die Waffe einen Laser besitzt.",
 	"wolfhud_show_angeled_sight_title" : "Zeige Winkel-Visier",
 	"wolfhud_show_angeled_sight_desc" : "Neige die Waffe in deiner Hand, während das Winkel-Visier benutzt wird.",
-	
+
 	"wolfhud_gadget_player_laser_options_name" : "Spieler Laser",
 	"wolfhud_gadget_player_laser_options_help" : "Einstellungen für deinen eigenen Laser.",
 	"wolfhud_gadget_player_sentry_laser_options_name" : "Spieler Sentry Optionen",
@@ -795,7 +784,7 @@
 	"wolfhud_gadget_player_flashlight_options_help" : "Einstellungen für deine eigene Taschenlampe.",
 	"wolfhud_gadget_team_flashlight_options_name" : "Mitspieler Taschenlampe",
 	"wolfhud_gadget_team_flashlight_options_help" : "Einstellungen für die Taschenlampen deiner Mitspieler.",
-	
+
 	"wolfhud_gadgets_beam_r_title" : "Laserstrahl (R)",
 	"wolfhud_gadgets_beam_r_desc" : "Rotanteil der Laserfarbe.",
 	"wolfhud_gadgets_beam_g_title" : "Laserstrahl (G)",
@@ -848,7 +837,7 @@
 	"wolfhud_gadgets_pulse_max_desc" : "Maximaler Sichtbarkeits-Multiplikator die genutzt wird.",
 	"wolfhud_gadgets_pulse_frequency_title" : "Puls Frequenz",
 	"wolfhud_gadgets_pulse_frequency_desc" : "Bestimmt die Zeit, die der Puls vom minimalen zum maximalen Multiplikator benötigt.",
-	
+
 	"wolfhud_skipit_options_name" : "Skip-It Optionen",
 	"wolfhud_skipit_options_help" : "Optionen um überflüssige menüs automatisch zu überspringen, um Zeit zu sparen.",
 	"wolfhud_assaultbanner_options_name" : "Ansturms-Banner Optionen",
