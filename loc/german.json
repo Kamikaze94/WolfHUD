@@ -752,8 +752,6 @@
 	"wolfhud_equipment_tripmine_auto_sensor_stealth_desc" : "Stolperminen werden im Sensor-Modus platziert, solange du unentdeckt bleibst.",
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_title" : "Kein ECM Feedback",
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_desc" : "ECM Feedback wird deaktiviert, solange du unentdeckt bleibst.",
-	"wolfhud_equipment_shaped_charge_disabled_stealth_title" : "Shaped Charge Suppression",
-	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "When checked, you need to doubletap to deploy shaped charges in stealth. \nOnly to prevent accidents.",
 
 	"wolfhud_gadget_options_name" : "Waffen Gadget Optionen",
 	"wolfhud_gadget_options_help" : "Wähle die Laserfarben und Taschenlampen-Parameter.",
