@@ -475,6 +475,7 @@ if not _G.WolfHUD then
 			EQUIPMENT = {
 				SENTRY_AUTO_AP 							= true,
 				ECM_FEEDBACK_STEALTH_DISABLED			= true,
+				SHAPED_CHARGE_STEALTH_DISABLED			= true,
 				ENABLE_BURSTMODE						= true,
 			},
 			INVENTORY = {

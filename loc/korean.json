@@ -745,6 +745,8 @@
 	"wolfhud_equipment_tripmine_auto_sensor_stealth_desc" : "스텔스 일 경우, 트립마인을 설치하면 자동으로 센서 모드로 변경됩니다.",
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_title" : "ECM 피드팩 차단",
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_desc" : "스텔스 일 경우 ECM 피드팩을 사용 못하게 차단합니다.",
+	"wolfhud_equipment_shaped_charge_disabled_stealth_title" : "Shaped Charge Suppression",
+	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "When checked, you need to doubletap to deploy shaped charges in stealth. \nOnly to prevent accidents.",
 
 	"wolfhud_gadget_options_name" : "무기 가젯 옵션",
 	"wolfhud_gadget_options_help" : "무기 가젯을 사용자에 맞게 설정합니다.",

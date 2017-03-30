@@ -3092,6 +3092,13 @@ if WolfHUD then
 						value = {"EQUIPMENT", "ECM_FEEDBACK_STEALTH_DISABLED"},
 						visible_reqs = {},
 					},
+					{
+						type = "toggle",
+						name_id = "wolfhud_equipment_shaped_charge_disabled_stealth_title",
+						desc_id = "wolfhud_equipment_shaped_charge_disabled_stealth_desc",
+						value = {"EQUIPMENT", "SHAPED_CHARGE_STEALTH_DISABLED"},
+						visible_reqs = {},
+					},
 				},
 			},
 			--SkipIt
