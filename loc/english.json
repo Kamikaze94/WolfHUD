@@ -745,8 +745,6 @@
 	"wolfhud_equipment_tripmine_auto_sensor_stealth_desc" : "Trip-Mines will spawn in Sensor Mode, while you are in stealth.",
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_title" : "ECM Feedback Suppression",
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_desc" : "ECM Feedback will be disabled during stealth.",
-	"wolfhud_equipment_shaped_charge_disabled_stealth_title" : "Shaped Charge Suppression",
-	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "When checked, you need to doubletap to deploy shaped charges in stealth. \nOnly to prevent accidents.",
 
 	"wolfhud_gadget_options_name" : "Weapon Gadget Options",
 	"wolfhud_gadget_options_help" : "Specify your custom laser colors.",
