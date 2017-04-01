@@ -67,6 +67,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 
 	Hooks:PostHook( HUDTeammate, "init", "WolfHUD_DownCounter_HUDTeammate_init", function(self, ...)
 		self._health_panel = self._health_panel or self._player_panel:child("radial_health_panel")
+		self._condition_icon = self._condition_icon or self._panel:child("condition_icon")
 		self._max_downs = (Global.game_settings.difficulty == "sm_wish" and 2 or tweak_data.player.damage.LIVES_INIT) - 1 + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
 		self._downs = self._main_player and self._max_downs or 0
 		self._setting_prefix = self._main_player and "PLAYER" or "TEAMMATE"

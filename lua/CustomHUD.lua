@@ -28,13 +28,16 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 
 		function HUDTeammate:init(...)
 			init_original(self, ...)
+			
 			self._setting_prefix = self._main_player and "PLAYER" or "TEAMMATE"
+			self._max_name_panel_width = self._panel:w()
+			
 			self._condition_icon = self._panel:child("condition_icon")
-			self._condition_icon:set_color(WolfHUD:getColorSetting({"CustomHUD", self._setting_prefix, "CONDITION_ICON_COLOR"}, Color.white))
+			self._condition_icon:set_color(WolfHUD:getColorSetting({"CustomHUD", self._setting_prefix, "CONDITION_ICON_COLOR"}, "white"))
+			
 			if self._main_player and not HUDManager.CUSTOM_TEAMMATE_PANELS then
 				self:_create_stamina_circle()
 			end
-			self._max_name_panel_width = self._panel:w()
 		end
 
 		function HUDTeammate:set_name(name, ...)
@@ -77,7 +80,7 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 			if not self._ai then
 				name_panel:set_range_color((self._color_pos or 0) + 1, name_panel:text():len() + 1, self._panel:child("callsign"):color():with_alpha(1))
 			else
-				name_panel:set_color(WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, false) and WolfHUD:getColorSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"}, Color.white) or tweak_data.chat_colors[5])
+				name_panel:set_color(WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, false) and WolfHUD:getColorSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"}, "white") or tweak_data.chat_colors[5])
 			end
 			name_bg_panel:set_w(w + 4)
 			name_bg_panel:set_h(h + 2)
@@ -177,6 +180,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			CHARACTER = WolfHUD:getSetting({"CustomHUD", "PLAYER", "CHARACTER"}, false),	--Show character name
 			LATENCY = false,	--Show latency (not used by player panel)
 			STATUS = WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true),	--Show health/armor/condition etc.
+			CONDITION_ICON_COLOR = WolfHUD:getColorSetting({"CustomHUD", "PLAYER", "CONDITION_ICON_COLOR"}, "white"),
 			EQUIPMENT = WolfHUD:getSetting({"CustomHUD", "PLAYER", "EQUIPMENT"}, true),	--Show throwables, cable ties and deployables
 			SPECIAL_EQUIPMENT = WolfHUD:getSetting({"CustomHUD", "PLAYER", "SPECIAL_EQUIPMENT"}, true),	--Show special equipment/tools (keycards etc.)
 			SPECIAL_EQUIPMENT_ROWS = WolfHUD:getSetting({"CustomHUD", "PLAYER", "SPECIAL_EQUIPMENT_ROWS"}, 3),
@@ -240,6 +244,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			CHARACTER = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "CHARACTER"}, false),	--Show character name
 			LATENCY = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "LATENCY"}, true),	--Show latency (not used by player panel)
 			STATUS = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "STATUS"}, true),	--Show health/armor/condition etc.
+			CONDITION_ICON_COLOR = WolfHUD:getColorSetting({"CustomHUD", "TEAMMATE", "CONDITION_ICON_COLOR"}, "white"),
 			EQUIPMENT = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "EQUIPMENT"}, true),	--Show throwables, cable ties and deployables
 			SPECIAL_EQUIPMENT = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "SPECIAL_EQUIPMENT"}, true),	--Show special equipment/tools (keycards etc.)
 			SPECIAL_EQUIPMENT_ROWS = WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "SPECIAL_EQUIPMENT_ROWS"}, 3),
@@ -1110,7 +1115,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	function PlayerInfoComponent.PlayerInfo:set_id(id)
 		self._id = id
-		self:_set_text_color((id == 5 and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, false)) and WolfHUD:getColorSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"}, Color.white) or tweak_data.chat_colors[id])
+		self:_set_text_color((id == 5 and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, false)) and WolfHUD:getColorSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"}, "white") or tweak_data.chat_colors[id])
 	end
 
 	function PlayerInfoComponent.PlayerInfo:set_cheater(state)
@@ -1584,7 +1589,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._condition_icon = self._panel:bitmap({
 			name = "condition_icon",
 			visible = false,
-			color = WolfHUD:getColorSetting({"CustomHUD", self._setting_prefix, "CONDITION_ICON_COLOR"}, Color.white),
+			color = self._settings.CONDITION_ICON_COLOR,
 			h = size,
 			w = size,
 		})
@@ -1609,6 +1614,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function PlayerInfoComponent.Callsign:update_settings()
+		self._condition_icon:set_color(self._settings.CONDITION_ICON_COLOR)
+		
 		if self:set_enabled("setting", self._settings.CALLSIGN) then
 			self._owner:arrange()
 		end
@@ -1818,7 +1825,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._condition_icon = self._panel:bitmap({
 			name = "condition_icon",
 			visible = false,
-			color = WolfHUD:getColorSetting({"CustomHUD", self._setting_prefix, "CONDITION_ICON_COLOR"}, Color.white),
+			color = self._settings.CONDITION_ICON_COLOR,
 			h = self._size,
 			w = self._size,
 			layer = 10,
@@ -1933,6 +1940,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	function PlayerInfoComponent.PlayerStatus:update_settings()
 		self._stamina_radial:set_visible(self._is_local_player and self._settings.STAMINA)
+		self._condition_icon:set_color(self._settings.CONDITION_ICON_COLOR)
 
 		local disabled = self._condition_icon:visible() or not (HUDManager.DOWNS_COUNTER_PLUGIN and self._settings.DOWNCOUNTER)
 		self._downs_counter:set_visible(not disabled and (not managers.groupai:state():whisper_mode() or self:down_amount() > 0))
@@ -2245,7 +2253,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	PlayerInfoComponent.Carry = PlayerInfoComponent.Carry or class(PlayerInfoComponent.Base)
 	function PlayerInfoComponent.Carry:init(panel, owner, player_height, team_height, settings)
-		PlayerInfoComponent.SpecialEquipment.super.init(self, panel, owner, "carry", 0, 0)
+		PlayerInfoComponent.Carry.super.init(self, panel, owner, "carry", 0, 0)
 
 		self._player_height = player_height
 		self._team_height = team_height

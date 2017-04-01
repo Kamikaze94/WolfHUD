@@ -23,8 +23,8 @@ if string.lower(RequiredScript) == "lib/units/weapons/sentrygunweapon" then
 			if alive(self._fire_mode_unit) and alive(self._unit) then
 				local firemode_interaction = self._fire_mode_unit:interaction()
 				if firemode_interaction and firemode_interaction:can_interact(managers.player:player_unit()) then
-					self:_switch_fire_mode()
-					managers.network:session():send_to_peers_synched("sentrygun_sync_state", self._unit)	--clone(self._unit)
+					self:_set_fire_mode(true)
+					self._unit:network():send("sentrygun_sync_armor_piercing", self._use_armor_piercing)
 					self._unit:event_listener():call("on_switch_fire_mode", self._use_armor_piercing)
 				end
 			end
