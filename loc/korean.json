@@ -258,6 +258,8 @@
 	"wolfhud_panels_show_ping_desc" : "다른사람의 핑을 표시합니다.",
 	"wolfhud_panels_show_status_title" : "플레이어 상태 표시",
 	"wolfhud_panels_show_status_desc" : "플레이어의 체력, 방탄복 등을 표시합니다.",
+	"wolfhud_panels_condition_icon_color_title" : "Condition Icon Color",
+	"wolfhud_panels_condition_icon_color_desc" : "Set the color of the condition icon (downed, in custody, swan song, etc.)",
 	"wolfhud_panels_show_equip_title" : "장비",
 	"wolfhud_panels_show_equip_desc" : "플레이어의 장비를 표시합니다.",
 	"wolfhud_panels_show_special_equip_title" : "특별한 장비",

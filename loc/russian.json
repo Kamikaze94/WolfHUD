@@ -258,6 +258,8 @@
 	"wolfhud_panels_show_ping_desc" : "Показывает пинг игроков для вас.",
 	"wolfhud_panels_show_status_title" : "Отображение статуса",
 	"wolfhud_panels_show_status_desc" : "Показывает статус игроков (здоровье, броня и т.д.)",
+	"wolfhud_panels_condition_icon_color_title" : "Condition Icon Color",
+	"wolfhud_panels_condition_icon_color_desc" : "Set the color of the condition icon (downed, in custody, swan song, etc.)",
 	"wolfhud_panels_show_equip_title" : "Отображение снаряжения",
 	"wolfhud_panels_show_equip_desc" : "Показывает снаряжение игроков.",
 	"wolfhud_panels_show_special_equip_title" : "Отображение особого снаряжения",

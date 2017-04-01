@@ -468,6 +468,16 @@ if WolfHUD then
 								value = {"CustomHUD", "PLAYER", "STAMINA"},
 							},
 							{
+								type = "multi_choice",
+								name_id = "wolfhud_panels_condition_icon_color_title",
+								desc_id = "wolfhud_panels_condition_icon_color_desc",
+								value = {"CustomHUD", "PLAYER", "CONDITION_ICON_COLOR"},
+								visible_reqs = {},
+								options = {},
+								add_color_options = true,
+								add_rainbow = false,
+							},
+							{
 								type = "toggle",
 								name_id = "wolfhud_panels_show_equip_title",
 								desc_id = "wolfhud_panels_show_equip_desc",
@@ -687,6 +697,16 @@ if WolfHUD then
 								desc_id = "wolfhud_panels_show_downcounter_desc",
 								visible_reqs = {},
 								value = {"CustomHUD", "TEAMMATE", "DOWNCOUNTER"},
+							},
+							{
+								type = "multi_choice",
+								name_id = "wolfhud_panels_condition_icon_color_title",
+								desc_id = "wolfhud_panels_condition_icon_color_desc",
+								value = {"CustomHUD", "TEAMMATE", "CONDITION_ICON_COLOR"},
+								visible_reqs = {},
+								options = {},
+								add_color_options = true,
+								add_rainbow = false,
 							},
 							{
 								type = "toggle",

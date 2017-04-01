@@ -258,6 +258,8 @@
 	"wolfhud_panels_show_ping_desc" : "Show the players ping to you.",
 	"wolfhud_panels_show_status_title" : "Show Status",
 	"wolfhud_panels_show_status_desc" : "Show the players status (health, armor, etc.)",
+	"wolfhud_panels_condition_icon_color_title" : "Condition Icon Color",
+	"wolfhud_panels_condition_icon_color_desc" : "Set the color of the condition icon (downed, in custody, swan song, etc.)",
 	"wolfhud_panels_show_equip_title" : "Show Equipment",
 	"wolfhud_panels_show_equip_desc" : "Show the players equipment.",
 	"wolfhud_panels_show_special_equip_title" : "Show Special Equipment",
