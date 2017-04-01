@@ -229,7 +229,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 			self._kills_panel = self._panel:panel({
 				name = "kills_panel",
 				visible = not WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "KILLCOUNTER", "HIDE"}, false),
-				w = 100,
+				w = 150,
 				h = 20,
 				x = 0,
 				halign = "right"
