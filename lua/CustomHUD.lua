@@ -126,7 +126,7 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 
 		function HUDTeammate:set_current_stamina(value)
 			self._stamina_bar:set_color(Color(1, value/self._max_stamina, 0, 0))
-			self:set_stamina_meter_visibility(WolfHUD:getSetting({"CustomHUD", "PLAYER", "STAMINA"}, true))
+			self:set_stamina_meter_visibility(WolfHUD:getSetting({"CustomHUD", "PLAYER", "STAMINA"}, true) and not self._condition_icon:visible())
 		end
 
 		function HUDTeammate:set_stamina_meter_visibility(value)
@@ -141,7 +141,7 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 			self:set_stamina_meter_visibility(not visible and WolfHUD:getSetting({"CustomHUD", "PLAYER", "STAMINA"}, true))
 			if HUDManager.DOWNS_COUNTER_PLUGIN and self._downs_counter and self._detection_counter then
 				local disabled = visible or not WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "DOWNCOUNTER"}, true) or self._ai
-				self._downs_counter:set_visible(not disabled and not managers.groupai:state():whisper_mode() or self:down_amount() > 0)
+				self._downs_counter:set_visible(not disabled and (not managers.groupai:state():whisper_mode() or self:down_amount() > 0))
 				self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
 			end
 			set_condition_original(self, icon_data, ...)
@@ -2037,7 +2037,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			self._detection_counter:set_color(color)
 
 			local disabled = self._condition_icon:visible() or not (HUDManager.DOWNS_COUNTER_PLUGIN and self._settings.DOWNCOUNTER)
-			self._downs_counter:set_visible(not disabled and not managers.groupai:state():whisper_mode() or self:down_amount() > 0)
+			self._downs_counter:set_visible(not disabled and (not managers.groupai:state():whisper_mode() or self:down_amount() > 0))
 			self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
 		end
 	end

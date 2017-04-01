@@ -180,7 +180,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 				self._detection_counter:set_color(color)
 			end
 			local disabled = self._condition_icon:visible() or not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "DOWNCOUNTER"}, true)) or self._ai
-			self._downs_counter:set_visible(not disabled and not managers.groupai:state():whisper_mode() or self:down_amount() > 0)
+			self._downs_counter:set_visible(not disabled and (not managers.groupai:state():whisper_mode() or self:down_amount() > 0))
 			self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())
 		end
 	end
