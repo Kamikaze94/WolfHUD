@@ -635,7 +635,7 @@ if not _G.WolfHUD then
 
 	function WolfHUD:createOverrides(data)
 		self:print_log("Creating Dummy for: " .. data["display_name"], "info")
-		if file.DirectoryExists("./" .. data["install_dir"] .. data["install_folder"]) then
+		if not file.DirectoryExists("./" .. data["install_dir"] .. data["install_folder"]) then
 			WolfHUD:print_log("[WolfHUD] mod_override folder '" .. data["install_folder"] .. "' is missing!", "warning")
 			WolfHUD:createDirectory("./" .. data["install_dir"] .. data["install_folder"])
 		end
