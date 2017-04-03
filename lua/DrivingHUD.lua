@@ -75,7 +75,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		self._vehicle_image 	= HUDDriving.VehicleImageItem:new(self._data:panel(), self._data, "vehicle_image", HUDDriving._WIDTH / 2, HUDDriving._WIDTH / 2, {})
 		self._legend 			= HUDDriving.VerticalListItem:new(self._data:panel(), self._data, "legend_panel", HUDDriving._WIDTH / 2, HUDDriving._WIDTH / 2, {})
 
-		self._legend_health 	= HUDDriving.LegendHealthItem:new(self._legend:panel(), self._legend, "legend_health", HUDDriving._WIDTH / 2, HUDDriving._FONT_SIZE, { suffix = "HP" })
+		self._legend_health 	= HUDDriving.LegendHealthItem:new(self._legend:panel(), self._legend, "legend_health", HUDDriving._WIDTH / 2, HUDDriving._FONT_SIZE, { suffix = "HP", show_decimal_marks = true })
 		self._legend_loot 		= HUDDriving.LegendImageItem:new(self._legend:panel(), self._legend, "legend_loot", HUDDriving._WIDTH / 2, HUDDriving._FONT_SIZE, { texture = "guis/textures/contact_vlad", text_rect = {1840, 63, 160, 137}, show_max = true })
 		self._legend_passengers = HUDDriving.LegendImageItem:new(self._legend:panel(), self._legend, "legend_passengers", HUDDriving._WIDTH / 2, HUDDriving._FONT_SIZE, { texture = "guis/textures/contact_vlad", text_rect = {1920, 256, 128, 130}, show_max = true })
 		self._legend_gear 		= HUDDriving.LegendItem:new(self._legend:panel(), self._legend, "legend_gear", HUDDriving._WIDTH / 2, HUDDriving._FONT_SIZE, {})
@@ -658,6 +658,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 
 		self._text_suffix = params.suffix and tostring(params.suffix) or ""
 		self._show_max_value = params.show_max or false
+		self._show_decimal_marks = params.show_decimal_marks or false
 		self._max_value = params.max_value or 1
 		self._value = params.value or 0
 
@@ -686,9 +687,18 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	function HUDDriving.LegendItem:_set_value()
 		if self._value then
 			local text = tostring(self._value)
+			
+			if self._show_decimal_marks then
+				text = managers.money:add_decimal_marks_to_string(text)
+			end
+			
 			if self._max_value then
 				if self._show_max_value then
-					text = string.format("%s/%s", text, tostring(self._max_value))
+					local max_str = tostring(self._max_value)
+					if self._show_decimal_marks then
+						max_str = managers.money:add_decimal_marks_to_string(max_str)
+					end
+					text = string.format("%s/%s", text, max_str)
 				end
 			end
 			if self._text_suffix then

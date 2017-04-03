@@ -882,7 +882,11 @@ if not _G.WolfHUD then
 				for _, req in ipairs(data.visible_reqs) do
 					if type(req) == "table" then
 						local a = WolfHUD:getSetting(req.setting, nil)
-						if type(a) == "boolean" then
+						if req.equal then
+							if a ~= b then
+								return false
+							end
+						elseif type(a) == "boolean" then
 							local b = req.invert and true or false
 							if a == b then
 								return false

@@ -225,9 +225,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 
 		self._unit_health_enemy_text:set_text( enemy )
 		if total > 0 then
-			self._unit_health_text:set_text( string.format( "%d/%d" , current , total ) )
+			self._unit_health_text:set_text( string.format( "%s/%s" , managers.money:add_decimal_marks_to_string(tostring(current)) , managers.money:add_decimal_marks_to_string(tostring(total)) ) )
 		else
-			self._unit_health_text:set_text( string.format( "%d" , current ) )
+			self._unit_health_text:set_text( string.format( "%s" , managers.money:add_decimal_marks_to_string(tostring(current)) ) )
 		end
 
 		local _ ,_ ,hw ,hh = self._unit_health_text:text_rect()
@@ -300,8 +300,8 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 				elseif alive( unit ) and unit:in_slot( 39 ) and WolfHUD:getSetting({"EnemyHealthbar", "SHOW_VEHICLE"}, true) and unit:vehicle_driving() and not self._seat then
 					self._last_unit = nil
 					visible = true
-					health = unit:character_damage()._health * 10 or 0
-					max_health = unit:character_damage()._current_max_health * 10 or 0
+					health = unit:character_damage()._health or 0
+					max_health = unit:character_damage()._current_max_health or 0
 					name = unit:vehicle_driving()._tweak_data.name or "VEHICLE"
 				else
 					visible = false
@@ -332,7 +332,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 
 			managers.hud:set_unit_health_visible( visible, shield )
 			if health and (name or name_id) then
-				managers.hud:set_unit_health( health or 0 , max_health or 0 , name_id or string.upper(name or "UNKNOWN"))
+				managers.hud:set_unit_health( math.floor(health or 0) , math.floor(max_health or 0) , name_id or string.upper(name or "UNKNOWN"))
 			end
 		else
 			managers.hud:set_unit_health_visible( false )

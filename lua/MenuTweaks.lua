@@ -462,10 +462,12 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 	end
 
 	function ItemSlider:reload(row_item, ...)
-		reload_original(self, row_item, ...)
+		local val = reload_original(self, row_item, ...)
 
 		row_item.gui_text:set_color(row_item.color)
 		row_item.gui_slider_text:set_color(row_item.color)
+		
+		return val
 	end
 elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then
 	local SKIP_BLACKSCREEN = WolfHUD:getSetting({"SkipIt", "SKIP_BLACKSCREEN"}, true)
@@ -680,7 +682,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 		if self.peer_join_start_t then
 			self.peer_join_start_t[id] = nil
 		end
-
+--[[
 		if managers.chat and managers.system_menu:is_active_by_id("user_dropin" .. id) then
 			local peer = managers.network:session() and managers.network:session():peer(id)
 			local text = ""
@@ -734,7 +736,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 				managers.chat:feed_system_message(ChatManager.GAME, string.format("(%s) %s: %s", level, name, text))
 			end
 		end
-
+]]
 		close_person_joining_original(self, id, ...)
 	end
 end

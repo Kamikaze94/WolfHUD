@@ -1950,7 +1950,7 @@ if WolfHUD then
 								type = "toggle",
 								name_id = "wolfhud_hudlist_damage_increase_compbuff_title",
 								desc_id = "wolfhud_hudlist_damage_increase_compbuff_desc",
-								value = {"HUDList", "BUFF_LIST", "damage_reduction_compbuff"},
+								value = {"HUDList", "BUFF_LIST", "damage_increase_compbuff"},
 								visible_reqs = {
 									{ setting = { "HUDList", "ENABLED" }, invert = false },
 									{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -1960,7 +1960,7 @@ if WolfHUD then
 								type = "toggle",
 								name_id = "wolfhud_hudlist_damage_reduction_compbuff_title",
 								desc_id = "wolfhud_hudlist_damage_reduction_compbuff_desc",
-								value = {"HUDList", "BUFF_LIST", "melee_damage_increase_compbuff"},
+								value = {"HUDList", "BUFF_LIST", "damage_reduction_compbuff"},
 								visible_reqs = {
 									{ setting = { "HUDList", "ENABLED" }, invert = false },
 									{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -1970,7 +1970,7 @@ if WolfHUD then
 								type = "toggle",
 								name_id = "wolfhud_hudlist_melee_damage_increase_compbuff_title",
 								desc_id = "wolfhud_hudlist_melee_damage_increase_compbuff_desc",
-								value = {"HUDList", "BUFF_LIST", "show_buffs"},
+								value = {"HUDList", "BUFF_LIST", "melee_damage_increase_compbuff"},
 								visible_reqs = {
 									{ setting = { "HUDList", "ENABLED" }, invert = false },
 									{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },

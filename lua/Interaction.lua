@@ -27,7 +27,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 		PlayerStandard.LOCK_MODE = WolfHUD:getSetting({"INTERACTION", "LOCK_MODE"}, 3)						--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
 		PlayerStandard.MIN_TIMER_DURATION = WolfHUD:getSetting({"INTERACTION", "MIN_TIMER_DURATION"}, 5)			--Min interaction duration (in seconds) for the toggle behavior to activate	
 		local is_locked = false
-		if self._interact_expire_t ~= nil then
+		if self._interact_params ~= nil then
 			if PlayerStandard.LOCK_MODE >= 5 then
 				is_locked = self._interact_params ~= nil and self._interact_params.tweak_data == "corpse_alarm_pager"
 			elseif PlayerStandard.LOCK_MODE >= 4 then
