@@ -73,7 +73,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 			self:populate_loadout_panel()
 		end
 	end
-
+--[[
 	function ContractBoxGui:update_character(peer_id, ...)
 		update_character_original(self, peer_id, ...)
 
@@ -81,7 +81,8 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 			self:update_loadout_panel(peer_id)
 		end
 	end
-	--[[
+--]]
+----[[
 	function ContractBoxGui:update_character_menu_state(peer_id, ...)
 		update_character_menu_state_original(self, peer_id, ...)
 		
@@ -89,7 +90,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 			self:update_loadout_panel(peer_id)
 		end
 	end
-	]]
+--]]
 
 	function ContractBoxGui:update_bg_state(peer_id, ...)
 		update_bg_state_original(self, peer_id, ...)

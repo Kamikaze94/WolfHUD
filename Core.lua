@@ -524,6 +524,7 @@ if not _G.WolfHUD then
 				end
 			end
 			if type(text) == "table" or type(text) == "userdata" then
+				log(string.format("[WolfHUD] %s:", string.upper(type(text))))
 				log_table(text)
 				return
 			elseif type(text) == "function" then
@@ -863,7 +864,7 @@ if not _G.WolfHUD then
 		-- Called on setting change
 		local function change_setting(setting, value)
 			if WolfHUD:getSetting(setting, nil) ~= value and WolfHUD:setSetting(setting, value) then
-				WolfHUD:print_log(string.format("Change setting: %s = %s", table.concat(setting, "->"),tostring(value)), "info")	-- Change type back!
+				WolfHUD:print_log(string.format("Change setting: %s = %s", table.concat(setting, "->"), tostring(value)), "info")	-- Change type back!
 				WolfHUD.settings_changed = true
 
 				local script = table.remove(setting, 1)

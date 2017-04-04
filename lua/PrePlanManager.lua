@@ -1,6 +1,6 @@
 -- TODO:
 -- 	Maybe colorization for save, on which assets would get added/removed or stay. (seems to be not possible...?)
--- 	Saved plans: make Icons default left aligned, change icon color to white
+-- 	Include Hint for taging plans as stealth/loud to input dialog
 
 requiredScript = string.lower(RequiredScript)
 if requiredScript == "lib/managers/menumanager" then
@@ -21,6 +21,7 @@ if requiredScript == "lib/managers/menumanager" then
 				name = PrePlanningManager.saved_plans_node,
 				no_menu_wrapper = true,
 				refresh = "MenuPrePlanningInitiator",
+				current_category = "none"
 			}
 
 			local node_class = CoreSerialize.string_to_classtable("MenuNodeTable")
@@ -147,16 +148,13 @@ if requiredScript == "lib/managers/menumanager" then
 			for name, data in pairs(saved_plans) do
 				local item = node:item(name)
 				if not item then
-					local mini_plan_icon
-					local plan_icon = "feature_crimenet_heat"
+					local plan_icon --= "feature_crimenet_heat"
 					local display_name = name
 					if display_name:find("<GHOST>") then
 						display_name = display_name:gsub("<GHOST>", "")
-						mini_plan_icon = "cn_playstyle_stealth"
 						plan_icon = "endscreen/stealth_bonus"
 					elseif display_name:find("<SKULL>") then
 						display_name = display_name:gsub("<SKULL>", "")
-						mini_plan_icon = "cn_playstyle_loud"
 						plan_icon = "risklevel_blackscreen"
 					end
 					
@@ -167,13 +165,13 @@ if requiredScript == "lib/managers/menumanager" then
 					local params = {
 						name = name,
 						text_id = display_name or name,
-						--icon = mini_plan_icon and ("guis/textures/pd2/" .. mini_plan_icon),
 						localize = false,
 						callback = "saved_plan_clbk",
 						tooltip = {
 							name = display_name or name,
 							desc = managers.preplanning and managers.preplanning:saved_assets_name(name),
-							texture = "guis/textures/pd2/" .. (plan_icon or "feature_crimenet_heat")
+							texture = "guis/textures/pd2/" .. (plan_icon or "feature_crimenet_heat"),
+							texture_rect = not plan_icon and {0, 0, 1, 1}
 						},
 						enabled = true
 					}
