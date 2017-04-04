@@ -248,6 +248,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		pickup_tablet = 					"small_loot",
 		pickup_phone = 						"small_loot",
 		press_pick_up =						"secret_item",
+		hold_take_missing_animal_poster = 	"poster",
 	}
 
 	HUDListManager.LOOT_TYPES = {
@@ -2511,6 +2512,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		thermite = 					{ hudpickups = { 64, 64, 32, 32 }, 	priority = 1 },
 		c4 = 						{ hudicons	 = { 36, 242, 32, 32 }, priority = 1 },
 		secret_item =				{ waypoints  = { 96, 64, 32, 32 }, 	priority = 4 },
+		poster = 					{ hudpickups = { 96, 96, 32, 32 }, 	priority = 4 },
 	}
 
 	function HUDList.SpecialPickupItem:init(parent, name, id, members)

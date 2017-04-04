@@ -185,6 +185,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			ring_band = 						"_special_equipment_interaction_handler",	-- BoS Rings
 			safe_loot_pickup = 					"_special_equipment_interaction_handler",	-- Small loot
 			press_pick_up =						"_special_equipment_interaction_handler",	-- Biker Bottle
+			hold_take_missing_animal_poster = 	"_special_equipment_interaction_handler",	-- Heat Streat Posters
 			pickup_tablet = 					"_special_equipment_interaction_handler",	-- Stealing Xmas Tablet
 			pickup_phone = 						"_special_equipment_interaction_handler",	-- Stealing Xmas Phone
 			firstaid_box =						"_deployable_interaction_handler",
