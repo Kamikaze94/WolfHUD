@@ -4,8 +4,8 @@ if not _G.WolfHUD then
 	WolfHUD.save_path = SavePath
 	WolfHUD.settings_path = WolfHUD.save_path .. "WolfHUD_v2.json"
 	WolfHUD.tweak_file = "WolfHUDTweakData.lua"
-	WolfHUD.LOG_MODE = { error = true, warning = false, info = false }		-- error, info, warning or all
-	WolfHUD.version = "1.0"
+	WolfHUD.LOG_MODE = { error = true, warning = true, info = false }		-- error, info, warning or all
+	WolfHUD.version = nil
 
 	WolfHUD.settings = {}
 	WolfHUD.tweak_data = {}
@@ -30,7 +30,7 @@ if not _G.WolfHUD then
 		["lib/managers/hud/hudobjectives"] 							= { "EnhancedObjective.lua" },
 		["lib/managers/hud/hudheisttimer"] 							= { "EnhancedObjective.lua" },
 		["lib/managers/hud/hudchat"] 								= { "HUDChat.lua" },
-		["lib/managers/hud/hudstatsscreen"] 						= { "TabStats.lua" },
+		["lib/managers/hud/hudstatsscreen"] 						= { "TabStats.lua", "EnhancedCrewLoadout.lua" },
 		["lib/managers/hud/hudinteraction"] 						= { "Interaction.lua" },
 		["lib/managers/hud/hudsuspicion"] 							= { "NumbericSuspicion.lua" },
 		["lib/managers/hud/hudhitdirection"] 						= { "DamageIndicator.lua" },
@@ -39,12 +39,16 @@ if not _G.WolfHUD then
 		["lib/managers/missionassetsmanager"] 						= { "BuyAllAsset.lua" },
 		["lib/managers/menu/blackmarketgui"] 						= { "MenuTweaks.lua" },
 		["lib/managers/menu/contractboxgui"]						= { "MenuTweaks.lua", "EnhancedCrewLoadout.lua" },
-		["lib/managers/menu/missionbriefinggui"]					= { "EnhancedCrewLoadout.lua", "BuyAllAsset.lua" },
+		["lib/managers/menu/crimespreecontractboxgui"] 				= { "EnhancedCrewLoadout.lua" },
+		["lib/managers/menu/crimespreedetailsmenucomponent"]		= { "EnhancedCrewLoadout.lua" },
+		["lib/managers/menu/missionbriefinggui"]					= { "BuyAllAsset.lua", "EnhancedCrewLoadout.lua" },
 		["lib/managers/menu/stageendscreengui"] 					= { "MenuTweaks.lua", "TabStats.lua" },
 		["lib/managers/menu/lootdropscreengui"] 					= { "MenuTweaks.lua" },
 		["lib/managers/menu/skilltreeguinew"] 						= { "MenuTweaks.lua" },
 		["lib/managers/menu/renderers/menunodeskillswitchgui"] 		= { "MenuTweaks.lua" },
 		["lib/managers/objectinteractionmanager"] 					= { "GameInfoManager.lua", "HUDList.lua", "Interaction.lua" },
+		["lib/modifiers/boosts/gagemodifiermeleeinvincibility"] 	= { "GameInfoManager.lua" },
+		["lib/modifiers/boosts/gagemodifierlifesteal"] 				= { "GameInfoManager.lua" },
 		["lib/network/handlers/unitnetworkhandler"] 				= { "GameInfoManager.lua", "NetworkHandler.lua", "DownCounter.lua" },
 		["lib/units/props/timergui"] 								= { "GameInfoManager.lua" },
 		["lib/units/props/digitalgui"] 								= { "GameInfoManager.lua" },
@@ -94,7 +98,6 @@ if not _G.WolfHUD then
 		["lib/states/ingamewaitingforplayers"] 						= { "MenuTweaks.lua" },
 		["lib/tweak_data/tweakdata"] 								= { "MenuTweaks.lua" },
 		["lib/tweak_data/guitweakdata"] 							= { "MenuTweaks.lua" },
-		["lib/tweak_data/assetstweakdata"] 							= { "BuyAllAsset.lua" },
 		["lib/tweak_data/timespeedeffecttweakdata"] 				= { "Scripts.lua" },
 		["core/lib/managers/menu/items/coremenuitemslider"] 		= { "MenuTweaks.lua" },
 		["core/lib/managers/subtitle/coresubtitlepresenter"] 		= { "EnhancedObjective.lua" },
@@ -249,6 +252,12 @@ if not _G.WolfHUD then
 				SHOW_MASK								= true,
 				SHOW_LOOT_NUMBERS						= true,
 			},
+			CrewLoadout = {
+				REPLACE_IN_BRIEFING 					= true,
+				SHOW_IN_LOBBY							= true,
+				SHOW_IN_CS_LOBBY 						= true,
+				SHOW_ON_STATS_PANEL						= true,
+			},
 			HUDList = {
 				ENABLED	 								= true,
 				right_list_scale						= 1,
@@ -363,7 +372,11 @@ if not _G.WolfHUD then
 						muscle_regen_buff					= false,
 						sociopath_debuff					= true,
 						yakuza_buff							= false,
-					}
+					},
+					GAGE_BOOSTS = {
+						invulnerable_buff					= true,
+						life_steal_debuff					= true,
+					},
 				},
 			},
 			CustomWaypoints = {
@@ -605,14 +618,28 @@ if not _G.WolfHUD then
 				string.format("%s\n\n%s", managers.localization:text(string.format("wolfhud_dialog_install_%s_desc", data["identifier"])), managers.localization:text("wolfhud_dialog_install_desc", { NAME = data["display_name"]})) ,
 				menu_options, true )
 	end
+	
+	function WolfHUD:getVersion()
+		if not self.version then
+			for k, v in pairs(LuaModManager.Mods) do
+				local info = v.definition
+				if info["name"] == "WolfHUD" then
+					self.version = info["version"] or self.version
+					break
+				end
+			end
+		end
+
+		return self.version
+	end
 
 	function WolfHUD:checkOverrides()
 		local updates = {}
 		for k, v in pairs(LuaModManager.Mods) do
 			local info = v.definition
 			if info["name"] == "WolfHUD" then
-				self.version = info["version"] or self.version
-				updates = info["updates"] or updates
+				updates = info["updates"] or {}
+				break
 			end
 		end
 
@@ -636,6 +663,10 @@ if not _G.WolfHUD then
 
 	function WolfHUD:createOverrides(data)
 		self:print_log("Creating Dummy for: " .. data["display_name"], "info")
+		if not file.DirectoryExists("./" .. data["install_dir"]) then
+			WolfHUD:print_log("[WolfHUD] 'mod_overrides' folder is missing!", "warning")
+			WolfHUD:createDirectory("./" .. data["install_dir"])
+		end
 		if not file.DirectoryExists("./" .. data["install_dir"] .. data["install_folder"]) then
 			WolfHUD:print_log("[WolfHUD] mod_override folder '" .. data["install_folder"] .. "' is missing!", "warning")
 			WolfHUD:createDirectory("./" .. data["install_dir"] .. data["install_folder"])
@@ -1287,10 +1318,13 @@ if not _G.WolfHUD then
 end
 
 if MenuNodeMainGui then
-	Hooks:PostHook( MenuNodeMainGui , "_add_version_string" , "MenuNodeMainGuiPostAddVersionString_WolfHUD" , function( self )
+	Hooks:PostHook( MenuNodeMainGui , "_setup_item_rows" , "MenuNodeMainGuiPostAddVersionString_WolfHUD" , function( self, node )
 		WolfHUD:checkOverrides()
+	end)
+
+	Hooks:PostHook( MenuNodeMainGui , "_add_version_string" , "MenuNodeMainGuiPostAddVersionString_WolfHUD" , function( self )
 		if alive(self._version_string) then
-			self._version_string:set_text("Payday 2 v" .. Application:version() .. " | WolfHUD v" .. WolfHUD.version)
+			self._version_string:set_text("Payday 2 v" .. Application:version() .. " | WolfHUD v" .. WolfHUD:getVersion())
 		end
 	end)
 end

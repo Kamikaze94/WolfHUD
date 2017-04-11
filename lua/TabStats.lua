@@ -96,6 +96,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		local player = managers.player:player_unit()
 		local char_data = player and managers.criminals:character_data_by_unit(player)
 		local mask_id = char_data and char_data.mask_id
+
+		-- Fall back to default AI mask, as there is no efficient way to get the original mask_id in case of a character specific overwrite. 
+		if tweak_data.blackmarket.masks[mask_id] and tweak_data.blackmarket.masks[mask_id].inaccessible then
+			mask_id = char_data.static_data.ai_mask_id or "alienware"
+		end
+
 		local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/alienware"
 		if mask_id then
 			local guis_catalog = "guis/"
@@ -105,11 +111,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			end
 			mask_icon = tweak_data.blackmarket.masks[mask_id].custom_texture or guis_catalog .. "textures/pd2/blackmarket/icons/masks/" .. mask_id
 		end
+
 		return mask_icon
 	end
 
-	function HUDStatsScreen:init()
-		init_original(self)
+	function HUDStatsScreen:init(...)
+		init_original(self, ...)
 		local right_panel = self._full_hud_panel:child("right_panel")
 		local day_wrapper_panel = right_panel:child("day_wrapper_panel")
 		local time_icon = right_panel:bitmap({
@@ -412,6 +419,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 
 	function HUDStatsScreen:show(...)
 		show_original(self, ...)
+
 		if managers.hud then
 			managers.hud:add_updator("WolfHUD_TabStats_Clock", callback(self, self, "update_time"))
 		end
@@ -531,16 +539,16 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 				end
 			end
 
-			if _G.LobbyPlayerInfo and LobbyPlayerInfo.settings.show_skills_in_stats_screen and alive(self._box_gui) then
+			local day_description = dwp:child("day_description")
+			local last_stat_name = HUDStatsScreen.STAT_ITEMS[#HUDStatsScreen.STAT_ITEMS].name
+			local last_stat_item = dwp:child(last_stat_name .. "_title")
+			if day_description and last_stat_item then
+				day_description:set_bottom(last_stat_item:bottom() + 15)
+			end
+
+			if alive(self._box_gui) then
 				self._box_gui:close()
 				self._box_gui = nil
-			else
-				local day_description = dwp:child("day_description")
-				local last_stat_name = HUDStatsScreen.STAT_ITEMS[#HUDStatsScreen.STAT_ITEMS].name
-				local last_stat_item = dwp:child(last_stat_name .. "_title")
-				if day_description and last_stat_item then
-					day_description:set_bottom(last_stat_item:bottom() + 15)
-				end
 			end
 		end
 	end

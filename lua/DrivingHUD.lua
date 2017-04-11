@@ -596,11 +596,17 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 
 	function HUDDriving.VehiclePassengerItem:set_passenger(unit)
 		if unit and (not self._unit or self._unit:key() ~= unit:key()) then
-			local character_name = managers.criminals:character_name_by_unit(unit)
 			local character_data = managers.criminals:character_data_by_unit(unit)
-			local mask_id = character_data and character_data.mask_id or character_name and tweak_data.blackmarket.masks.character_locked[character_name] or "alienware"
+			local mask_id = character_data and (character_data.mask_id or character_data.static_data.ai_mask_id) or "alienware"
 			local color_id = managers.criminals:character_color_id_by_unit(unit) or 5
 			local color = tweak_data.chat_colors[color_id]
+
+			-- Fall back to default AI mask, as there is no efficient way to get the original mask_id in case of a character specific overwrite. 
+			local tweak_entry = tweak_data.blackmarket.masks
+			if tweak_entry and tweak_entry[mask_id].inaccessible then
+				mask_id = character_data.static_data.ai_mask_id
+			end
+
 			if mask_id ~= self._mask_id or self._color ~= color then
 				self._mask_id = mask_id
 				self._color = color

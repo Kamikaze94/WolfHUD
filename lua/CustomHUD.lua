@@ -1890,7 +1890,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._stored_health = 0
 		self._stored_health_max = 0
 		self._downs = 0
-		self._max_downs = (Global.game_settings.difficulty == "sm_wish" and 2 or tweak_data.player.damage.LIVES_INIT) - 1
+		self._max_downs = managers.crime_spree:modify_value("PlayerDamage:GetMaximumLives", (Global.game_settings.difficulty == "sm_wish" and 2 or tweak_data.player.damage.LIVES_INIT)) - 1
 		self._reviver_count = 0
 		self._risk = 0
 

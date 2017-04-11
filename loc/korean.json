@@ -62,6 +62,8 @@
 	"wolfhud_preplanning_msg_deleted_failed" : "저장된 계획을 삭제하는 도중에 오류가 발생하였습니다.",
 
 	"wolfhud_inv_tab_rename_hint" : "Double click the selected Inventory tab to rename it.",
+	
+	"wolfhud_loadout_hours_played" : "$HOURS hrs.",
 
 	"victory_most_damage" : "Highest Damage:",
 	"victory_session_damage" : "Total Damage:",
@@ -150,12 +152,14 @@
 	"wolfhud_enemy_bank_manager" : "은행 관리원",
 	"wolfhud_enemy_inside_man" : "내부자",
 	"wolfhud_enemy_escort_undercover" : "택스맨",
+	"wolfhud_enemy_escort_heatstreet" : "Matt",
 	"wolfhud_enemy_drunk_pilot" : "취한 파일럿",
 	"wolfhud_enemy_escort" : "호위자",
 	"wolfhud_enemy_boris" : "보리스",
 	"wolfhud_enemy_spa_vip" : "Charon",
 	"wolfhud_enemy_spa_vip_hurt" : "Charon (Hurt)",
-	"wolfhud_enemy_old_hoxton_mission" : "혹스턴 / 로크",
+	"wolfhud_enemy_old_hoxton_mission" : "혹스턴",
+	"wolfhud_enemy_locke_mission" : "로크",
 	"wolfhud_enemy_hector_boss" : "무장한 헥터",
 	"wolfhud_enemy_hector_boss_no_armor" : "헥터",
 	"wolfhud_enemy_crew" : "팀 멤버",
@@ -477,6 +481,8 @@
 	"wolfhud_infopanels_buff_fugitive_options_help" : "어떤 퓨지티브의 스킬들이 표시될지 설정합니다.\n(맵을 바꿔야 적용됩니다...)",
 	"wolfhud_infopanels_buff_perkdecks_options_name" : "특성 덱",
 	"wolfhud_infopanels_buff_perkdecks_options_help" : "어떤 특성 덱의 스킬들이 표시될지 설정합니다.\n(맵을 바꿔야 적용됩니다...)",
+	"wolfhud_infopanels_buff_gageboosts_options_name" : "Gage Boosts",
+	"wolfhud_infopanels_buff_gageboosts_options_help" : "Enable or Disable visual indicators for Gage Boosts.\n(A map restart is needed to apply...)",
 
 	"wolfhud_hudlist_show_buffs_title" : "버프 표시",
 	"wolfhud_hudlist_show_buffs_desc" : "화면 가운대에 버프를 표시합니다.",
@@ -592,6 +598,10 @@
 	"wolfhud_hudlist_crew_chief_teambuff_desc" : "모두 모아지는 버프 중 하나입니다.",
 	"wolfhud_hudlist_forced_friendship_teambuff_title" : "강제 친구 팀 버프",
 	"wolfhud_hudlist_forced_friendship_teambuff_desc" : "",
+	"wolfhud_hudlist_life_steal_gage_debuff_title" : "Life Steal",
+	"wolfhud_hudlist_life_steal_gage_debuff_desc" : "",
+	"wolfhud_hudlist_invulnerable_gage_buff_title" : "Invulnerability",
+	"wolfhud_hudlist_invulnerable_gage_buff_desc" : "",
 
 	"wolfhud_waypoints_options_name" : "사용자 지정 웨이 포인트 옵션",
 	"wolfhud_waypoints_options_help" : "웨이 포인트를 설정합니다.",
@@ -641,6 +651,18 @@
 	"wolfhud_tabstats_actual_mask_desc" : "현재 당신이 쓰고있는 마스크를 표시합니다\n(기본적으로 캐릭터의 마스크로 표시됩니다).",
 	"wolfhud_tabstats_numberic_loot_title" : "Numberic Loot Counter",
 	"wolfhud_tabstats_numberic_loot_desc" : "Disable the bag counting minigame and display the number right away.",
+
+	"wolfhud_crewloadout_options_name" : "Crew Loadout Options",
+	"wolfhud_crewloadout_options_help" : "Choose where you want to get Information on which gear and skills your teammates are bringing.",
+
+	"wolfhud_crewloadout_lobby_title" : "Show in Lobby",
+	"wolfhud_crewloadout_lobby_desc" : "Adds a button to your Lobby screen, that can display the loadout of you and your crew.",
+	"wolfhud_crewloadout_cs_lobby_title" : "Show in Crimespree Lobby",
+	"wolfhud_crewloadout_cs_lobby_desc" : "Adds a new tab right next to the modifiers and rewards in the crimespree lobby.",
+	"wolfhud_crewloadout_briefing_title" : "Replace in briefing",
+	"wolfhud_crewloadout_briefing_desc" : "Replaces the default Crew Loadout Panel in Mission briefing.",
+	"wolfhud_crewloadout_tabscreen_title" : "Show on Tabscreen",
+	"wolfhud_crewloadout_tabscreen_desc" : "Displays the Skills, Perk and current Ping of players in your lobby. \n(Disabled if you use this feature of LobbyPlayerInfo)",
 
 	"wolfhud_dmgindicator_options_name" : "데미지 인디케이터",
 	"wolfhud_dmgindicator_options_help" : "데미지 인디케이터의 페이드 시간, 크기 등을 설정합니다.",

@@ -62,6 +62,8 @@
 	"wolfhud_preplanning_msg_deleted_failed" : "Произошла ошибка при удалении сохраненного планирования.",
 
 	"wolfhud_inv_tab_rename_hint" : "Дважды щелкните вкладку инвентаря, чтобы переименовать ее.",
+	
+	"wolfhud_loadout_hours_played" : "$HOURS hrs.",
 
 	"victory_most_damage" : "Наибольший урон:",
 	"victory_session_damage" : "Общий урон:",
@@ -150,12 +152,14 @@
 	"wolfhud_enemy_bank_manager" : "Менеджер банка",
 	"wolfhud_enemy_inside_man" : "Крот",
 	"wolfhud_enemy_escort_undercover" : "Налогосборщик",
+	"wolfhud_enemy_escort_heatstreet" : "Matt",
 	"wolfhud_enemy_drunk_pilot" : "Пьяный пилот",
 	"wolfhud_enemy_escort" : "Сопровождающий",
 	"wolfhud_enemy_boris" : "Борис",
 	"wolfhud_enemy_spa_vip" : "Харон",
 	"wolfhud_enemy_spa_vip_hurt" : "Харон (раненый)",
-	"wolfhud_enemy_old_hoxton_mission" : "Хокcтон / Лок",
+	"wolfhud_enemy_old_hoxton_mission" : "Хокcтон",
+	"wolfhud_enemy_locke_mission" : "Лок",
 	"wolfhud_enemy_hector_boss" : "Бронированный Гектор",
 	"wolfhud_enemy_hector_boss_no_armor" : "Гектор",
 	"wolfhud_enemy_crew" : "Член Команды",
@@ -477,6 +481,8 @@
 	"wolfhud_infopanels_buff_fugitive_options_help" : "Включение или отключение визуальные индикаторы Навыков Беглеца.\n(Необходимо сменить карту для принятия изменений...)",
 	"wolfhud_infopanels_buff_perkdecks_options_name" : "Перки",
 	"wolfhud_infopanels_buff_perkdecks_options_help" : "Включение или отключение визуальные индикаторы Перков.\n(Необходимо сменить карту для принятия изменений...)",
+	"wolfhud_infopanels_buff_gageboosts_options_name" : "Gage Boosts",
+	"wolfhud_infopanels_buff_gageboosts_options_help" : "Enable or Disable visual indicators for Gage Boosts.\n(A map restart is needed to apply...)",
 
 	"wolfhud_hudlist_show_buffs_title" : "Показать баффы",
 	"wolfhud_hudlist_show_buffs_desc" : "Отображает активный баффы в центральной части экрана.",
@@ -592,6 +598,10 @@
 	"wolfhud_hudlist_crew_chief_teambuff_desc" : "Часть составных баффов.",
 	"wolfhud_hudlist_forced_friendship_teambuff_title" : "Навязанная дружба командный бафф",
 	"wolfhud_hudlist_forced_friendship_teambuff_desc" : "",
+	"wolfhud_hudlist_life_steal_gage_debuff_title" : "Life Steal",
+	"wolfhud_hudlist_life_steal_gage_debuff_desc" : "",
+	"wolfhud_hudlist_invulnerable_gage_buff_title" : "Invulnerability",
+	"wolfhud_hudlist_invulnerable_gage_buff_desc" : "",
 
 	"wolfhud_waypoints_options_name" : "Настройки пользовательских вэйпоинтов",
 	"wolfhud_waypoints_options_help" : "Настройки управления пользовательскими вэйпоинтами.",
@@ -641,6 +651,18 @@
 	"wolfhud_tabstats_actual_mask_desc" : "Использует фактическую маску вместо вашего изображения персонажа на экране TAB.\n(Необходимо сменить карту для принятия изменений...)",
 	"wolfhud_tabstats_numberic_loot_title" : "Числовой счетчик добычи",
 	"wolfhud_tabstats_numberic_loot_desc" : "Отключает миниигру подсчета добычи и отображает кол-во сразу же.",
+
+	"wolfhud_crewloadout_options_name" : "Crew Loadout Options",
+	"wolfhud_crewloadout_options_help" : "Choose where you want to get Information on which gear and skills your teammates are bringing.",
+
+	"wolfhud_crewloadout_lobby_title" : "Show in Lobby",
+	"wolfhud_crewloadout_lobby_desc" : "Adds a button to your Lobby screen, that can display the loadout of you and your crew.",
+	"wolfhud_crewloadout_cs_lobby_title" : "Show in Crimespree Lobby",
+	"wolfhud_crewloadout_cs_lobby_desc" : "Adds a new tab right next to the modifiers and rewards in the crimespree lobby.",
+	"wolfhud_crewloadout_briefing_title" : "Replace in briefing",
+	"wolfhud_crewloadout_briefing_desc" : "Replaces the default Crew Loadout Panel in Mission briefing.",
+	"wolfhud_crewloadout_tabscreen_title" : "Show on Tabscreen",
+	"wolfhud_crewloadout_tabscreen_desc" : "Displays the Skills, Perk and current Ping of players in your lobby. \n(Disabled if you use this feature of LobbyPlayerInfo)",
 
 	"wolfhud_dmgindicator_options_name" : "Индикатор попадания",
 	"wolfhud_dmgindicator_options_help" : "Установите время исчезания, размер и цвета для индикаторов попадания.",

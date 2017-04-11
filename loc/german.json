@@ -64,6 +64,8 @@
 	"wolfhud_preplanning_msg_deleted_failed" : "Das Löschen des Plans ist fehlgeschlagen.",
 
 	"wolfhud_inv_tab_rename_hint" : "Klicke doppelt auf den aktiven Inventar Tab, um ihn umzubenennen.",
+	
+	"wolfhud_loadout_hours_played" : "$HOURS Std.",
 
 	"victory_most_damage" : "Höchster Schaden:",
 	"victory_session_damage" : "Gesamtzahl Schaden:",
@@ -152,12 +154,14 @@
 	"wolfhud_enemy_bank_manager" : "Bank Manager",
 	"wolfhud_enemy_inside_man" : "Insider",
 	"wolfhud_enemy_escort_undercover" : "Taxman",
+	"wolfhud_enemy_escort_heatstreet" : "Matt",
 	"wolfhud_enemy_drunk_pilot" : "Betrunkener Pilot",
 	"wolfhud_enemy_escort" : "Escort",
 	"wolfhud_enemy_boris" : "Boris",
 	"wolfhud_enemy_spa_vip" : "Charon",
 	"wolfhud_enemy_spa_vip_hurt" : "Charon (Verletzt)",
-	"wolfhud_enemy_old_hoxton_mission" : "Hoxton / Locke",
+	"wolfhud_enemy_old_hoxton_mission" : "Hoxton",
+	"wolfhud_enemy_locke_mission" : "Locke",
 	"wolfhud_enemy_hector_boss" : "Gepanzerter Hector",
 	"wolfhud_enemy_hector_boss_no_armor" : "Hector",
 	"wolfhud_enemy_crew" : "Crew Mitglied",
@@ -484,6 +488,8 @@
 	"wolfhud_infopanels_buff_fugitive_options_help" : "Aktiviere oder Deaktiviere die Indikatoren für Flüchtling Fähigkeiten.\n(Wird erst beim Mapwechsel aktiv...)",
 	"wolfhud_infopanels_buff_perkdecks_options_name" : "Perk-Decks",
 	"wolfhud_infopanels_buff_perkdecks_options_help" : "Aktiviere oder Deaktiviere die Indikatoren für Perk-Decks.\n(Wird erst beim Mapwechsel aktiv...)",
+	"wolfhud_infopanels_buff_gageboosts_options_name" : "Gage Boosts",
+	"wolfhud_infopanels_buff_gageboosts_options_help" : "Aktiviere oder Deaktiviere die Indikatoren für Gage Boosts.\n(Wird erst beim Mapwechsel aktiv...)",
 
 	"wolfhud_hudlist_show_buffs_title" : "Zeige Fähigkeiten",
 	"wolfhud_hudlist_show_buffs_desc" : "Zeige aktive Fähigkeiten in der unteren Mitte der HUD.",
@@ -599,6 +605,10 @@
 	"wolfhud_hudlist_crew_chief_teambuff_desc" : "Teil eines zusammenfassenden Buffs.",
 	"wolfhud_hudlist_forced_friendship_teambuff_title" : "Zwangsfreundschaft Teambuff",
 	"wolfhud_hudlist_forced_friendship_teambuff_desc" : "",
+	"wolfhud_hudlist_life_steal_gage_debuff_title" : "Lebensraub",
+	"wolfhud_hudlist_life_steal_gage_debuff_desc" : "",
+	"wolfhud_hudlist_invulnerable_gage_buff_title" : "Unverwundbarkeit",
+	"wolfhud_hudlist_invulnerable_gage_buff_desc" : "",
 
 	"wolfhud_waypoints_options_name" : "Wegpunkt-Optionen",
 	"wolfhud_waypoints_options_help" : "Wähle die zusätzlichen Wegpunkte die du angezeigt bekommen möchtest.",
@@ -648,6 +658,18 @@
 	"wolfhud_tabstats_actual_mask_desc" : "Zeige deine aktuelle Maske anstatt des Profilbildes des gespielten Charakters.",
 	"wolfhud_tabstats_numberic_loot_title" : "Numerischer Beute Zähler",
 	"wolfhud_tabstats_numberic_loot_desc" : "Ersetze das Taschenzählspiel mit der wirklichen Zahl an gesicherter Beute.",
+
+	"wolfhud_crewloadout_options_name" : "Crew Loadout Optionen",
+	"wolfhud_crewloadout_options_help" : "Wähle aus, wo du Informationen zu Ausrüstung und Fähigkeiten deiner Mitspieler angezeigt bekommen möchtest.",
+
+	"wolfhud_crewloadout_lobby_title" : "Zeige in der Lobby",
+	"wolfhud_crewloadout_lobby_desc" : "Fügt dem Lobby Bildschirm einen Knopf hinzu, der deine und die Ausrüstung deiner Crew anzeigt.",
+	"wolfhud_crewloadout_cs_lobby_title" : "Zeige in Crimespree Lobby",
+	"wolfhud_crewloadout_cs_lobby_desc" : "Fügt der Crimespree Lobby einen neuen Tab neben den Modifizierungen und Belohnungen hinzu.",
+	"wolfhud_crewloadout_briefing_title" : "Ersetze in Briefing",
+	"wolfhud_crewloadout_briefing_desc" : "Ersetzt das standart Crew Loadout Panel im Missions Briefing.",
+	"wolfhud_crewloadout_tabscreen_title" : "Zeige auf dem Tab Panel",
+	"wolfhud_crewloadout_tabscreen_desc" : "Zeigt die Fähigkeiten, Perk und aktuellen Ping der Spieler in deiner Lobby. \n(Deaktiviert, wenn diese feature von Lobby Player Info genutzt wird.)",
 
 	"wolfhud_dmgindicator_options_name" : "Schadens Indikator",
 	"wolfhud_dmgindicator_options_help" : "Setzte die Zeit, Größe und Farben des Schadensindikators.",
@@ -741,7 +763,7 @@
 	"wolfhud_press2hold_show_timer_outline_title" : "Schwarze Umrandung",
 	"wolfhud_press2hold_show_timer_outline_desc" : "Zeige eine schwarze Umrandung um den Timer Text.",
 	"wolfhud_doubletap_nades_stealth_title" : "Stealth Granaten Unterdrückung",
-	"wolfhud_doubletap_nades_stealth_desc" : "Wenn ausgewählt musst du im stealth 2x schnell die Granatentaste drücken, um sie zu werfen. \nZur Vorbeugung von Unfällen.  ;)",
+	"wolfhud_doubletap_nades_stealth_desc" : "Wenn ausgewählt, musst du im stealth 2x schnell die Granatentaste drücken, um sie zu werfen. \nZur Vorbeugung von Unfällen.  ;)",
 	"wolfhud_hold_to_pick_title" : "Automatisches Pickup",
 	"wolfhud_hold_to_pick_desc" : "Kleine Beute wird automatisch aufgehoben, während du die Interaktionstaste gedrückt hältst.",
 
@@ -754,8 +776,8 @@
 	"wolfhud_equipment_tripmine_auto_sensor_stealth_desc" : "Stolperminen werden im Sensor-Modus platziert, solange du unentdeckt bleibst.",
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_title" : "Kein ECM Feedback",
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_desc" : "ECM Feedback wird deaktiviert, solange du unentdeckt bleibst.",
-	"wolfhud_equipment_shaped_charge_disabled_stealth_title" : "Shaped Charge Suppression",
-	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "When checked, you need to doubletap to deploy shaped charges in stealth. \nOnly to prevent accidents.",
+	"wolfhud_equipment_shaped_charge_disabled_stealth_title" : "Stealth Sprengladung Unterdrückung",
+	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "Wenn ausgewählt, musst du im stealth 2x schnell die Interaktionstaste drücken, um eine Sprengladung zu platzieren. (Zur Vorbeugung von Unfällen.)",
 
 	"wolfhud_gadget_options_name" : "Waffen Gadget Optionen",
 	"wolfhud_gadget_options_help" : "Wähle die Laserfarben und Taschenlampen-Parameter.",

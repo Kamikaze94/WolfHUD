@@ -1,6 +1,7 @@
 -- TODO:
 -- 	Maybe colorization for save, on which assets would get added/removed or stay. (seems to be not possible...?)
 -- 	Include Hint for taging plans as stealth/loud to input dialog
+-- Remove Save_ID from saved_plans node display.
 
 requiredScript = string.lower(RequiredScript)
 if requiredScript == "lib/managers/menumanager" then
@@ -239,11 +240,28 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 	if not PrePlanningManager._PREPLANNING_SETUP then
 		PrePlanningManager._SAVE_FOLDER = SavePath .. "/Preplanned/"
 		PrePlanningManager._SAVE_FILE = PrePlanningManager._SAVE_FOLDER .. "Unknown.json"
-		PrePlanningManager._SAVED_PLANS = {}
+		PrePlanningManager._SAVED_PLANS = nil
 		PrePlanningManager.saved_plans_node = "preplanning_saved_plans"
 		PrePlanningManager._PREPLANNING_DELETE_MODE = false
 		PrePlanningManager._PREPLANNING_MAX_PLANS = WolfHUD and WolfHUD:getTweakEntry("MAX_PRE_PLANS", "number", 10) or 10
 		PrePlanningManager._DEFAULT_PLAN_NAMES = { "Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrott", "Golf", "Hotel", "India", "Juliett", "Kilo", "Lima", "Mike", "November", "Oscar"}
+		PrePlanningManager._LEVEL_ID_SUB = { "_night", "_day" }
+		PrePlanningManager._LEVEL_ID_OVERWRITES = { gallery = "framing_frame_1", firestarter_3 = "branchbank" }
+
+		function PrePlanningManager.set_path()
+			if managers.crime_spree and managers.job then
+				local level_id = managers.job:current_level_id()
+
+				if level_id then
+					level_id = PrePlanningManager._LEVEL_ID_OVERWRITES[level_id] or level_id
+					for _, str in pairs(PrePlanningManager._LEVEL_ID_SUB) do
+						level_id:gsub(str, "")
+					end
+
+					PrePlanningManager._SAVE_FILE = string.format("%s%s.json", PrePlanningManager._SAVE_FOLDER, level_id or "Unknown")
+				end
+			end
+		end
 
 		function PrePlanningManager.load_plans()
 			local file = io.open(PrePlanningManager._SAVE_FILE, "r")
@@ -251,21 +269,24 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 				PrePlanningManager._SAVED_PLANS = json.decode(file:read("*all"))
 				file:close()
 			end
+			if not PrePlanningManager._SAVED_PLANS then
+				PrePlanningManager._SAVED_PLANS = {}
+			end
 		end
 
 		function PrePlanningManager.has_saved_plans()
-			return (table.size(PrePlanningManager._SAVED_PLANS) > 0)
+			return PrePlanningManager._SAVED_PLANS and (table.size(PrePlanningManager._SAVED_PLANS) > 0)
 		end
 
 		function PrePlanningManager.has_free_save_slot()
-			return (table.size(PrePlanningManager._SAVED_PLANS) < PrePlanningManager._PREPLANNING_MAX_PLANS)
+			return PrePlanningManager._SAVED_PLANS and (table.size(PrePlanningManager._SAVED_PLANS) < PrePlanningManager._PREPLANNING_MAX_PLANS)
 		end
 
 		function PrePlanningManager.has_current_plan()
 			if managers.preplanning then
 				local peer_id = managers.network:session() and managers.network:session():local_peer():id()
 				local current_assets, current_votes = managers.preplanning._reserved_mission_elements or {}, peer_id and managers.preplanning:get_player_votes(peer_id) or {}
-				return (table.size(current_assets) > 0) or (table.size(current_votes) >0)
+				return (table.size(current_assets) > 0) or (table.size(current_votes) > 0)
 			end
 			return false
 		end
@@ -278,7 +299,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 			local file = io.open(PrePlanningManager._SAVE_FILE, "w+")
 			if file then
 				local tbl_str = "{}"
-				if table.size(PrePlanningManager._SAVED_PLANS) > 0 then
+				if PrePlanningManager._SAVED_PLANS and table.size(PrePlanningManager._SAVED_PLANS) > 0 then
 					tbl_str = json.encode(PrePlanningManager._SAVED_PLANS)
 				end
 				file:write(tbl_str)
@@ -287,57 +308,55 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 		end
 
 		function PrePlanningManager.get_saved_plans()
+			if not PrePlanningManager._SAVED_PLANS then
+				PrePlanningManager.set_path()
+				PrePlanningManager.load_plans()
+			end
+
 			return PrePlanningManager._SAVED_PLANS
 		end
 
 		PrePlanningManager._PREPLANNING_SETUP = true
 	end
 
-	local post_init_original = PrePlanningManager.init
-
-	function PrePlanningManager:init(...)
-		PrePlanningManager._SAVE_FILE = string.format("%s%s.json", PrePlanningManager._SAVE_FOLDER, managers.job and string.format("%s_%s", managers.job:current_real_job_id() or "Unknown", managers.job:current_level_id() or "Unknown") or "Unknown")
-		PrePlanningManager.load_plans()
-		return post_init_original(self, ...)
-	end
-
 	function PrePlanningManager:save_preplanning()
-		if not PrePlanningManager.has_free_save_slot() then
-			managers.preplanning:notify_user("wolfhud_preplanning_msg_no_save_slot", {}, true)
-		elseif not PrePlanningManager.has_current_plan() then
-			managers.preplanning:notify_user("wolfhud_preplanning_msg_no_current_plan", {}, true)
-		else
+		if PrePlanningManager._SAVED_PLANS then
+			if not PrePlanningManager.has_free_save_slot() then
+				managers.preplanning:notify_user("wolfhud_preplanning_msg_no_save_slot", {}, true)
+			elseif not PrePlanningManager.has_current_plan() then
+				managers.preplanning:notify_user("wolfhud_preplanning_msg_no_current_plan", {}, true)
+			else
 
-			local default_name = ""
-			for i = 1, #PrePlanningManager._DEFAULT_PLAN_NAMES do
-				local name = PrePlanningManager._DEFAULT_PLAN_NAMES[i]
-				if not PrePlanningManager._SAVED_PLANS[name] then
-					default_name = name
-					break
+				local default_name = ""
+				for i = 1, #PrePlanningManager._DEFAULT_PLAN_NAMES do
+					local name = PrePlanningManager._DEFAULT_PLAN_NAMES[i]
+					if not PrePlanningManager._SAVED_PLANS[name] then
+						default_name = name
+						break
+					end
 				end
-			end
 
-			local menu_options = {
-				[1] = {
-					text = managers.localization:text("wolfhud_dialog_save"),
-					callback = function(cb_data, button_id, button, text)
-						if managers.preplanning then
-							managers.preplanning:save_preplanning_clbk(text)
-						end
-					end,
-				},
-				[2] = {
-					text = managers.localization:text("dialog_cancel"),
-					is_cancel_button = true,
+				local menu_options = {
+					[1] = {
+						text = managers.localization:text("wolfhud_dialog_save"),
+						callback = function(cb_data, button_id, button, text)
+							if managers.preplanning then
+								managers.preplanning:save_preplanning_clbk(text)
+							end
+						end,
+					},
+					[2] = {
+						text = managers.localization:text("dialog_cancel"),
+						is_cancel_button = true,
+					}
 				}
-			}
-			local plan_str = managers.preplanning and managers.preplanning:current_assets_name() or ""
-			QuickInputMenu:new(managers.localization:text("wolfhud_preplanning_dialog_save"), managers.localization:text("wolfhud_preplanning_dialog_save_desc", {PLAN = plan_str}), default_name, menu_options, true)
+				local plan_str = managers.preplanning and managers.preplanning:current_assets_name() or ""
+				QuickInputMenu:new(managers.localization:text("wolfhud_preplanning_dialog_save"), managers.localization:text("wolfhud_preplanning_dialog_save_desc", {PLAN = plan_str}), default_name, menu_options, true)
+			end
 		end
 	end
 
 	function PrePlanningManager:save_preplanning_clbk(name)
-		self.input_gui_active = nil
 		if name and name ~= "" then
 			local peer_id = managers.network and managers.network:session():local_peer():id()
 
@@ -353,15 +372,10 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 				end
 			end
 
-			for plan, data in pairs(votes) do
-				local element_type, element_index = unpack(data)
-				table.insert(saved_votes, { id = self:get_mission_element_id(element_type, element_index), type = element_type, index = element_index })
-				default_votes[plan] = nil
-			end
-
 			for plan, data in pairs(default_votes) do
-				local element_type, element_index = unpack(data)
-				table.insert(saved_votes, { id = self:get_mission_element_id(element_type, element_index), type = element_type, index = element_index })
+				local type, index = votes[plan] and unpack(votes[plan] or {})
+				local default_type, default_index = unpack(data)
+				table.insert(saved_votes, { id = self:get_mission_element_id(element_type, element_index), type = type or default_type, index = index or default_index })
 			end
 
 			local preplanning_data = {
@@ -376,49 +390,51 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 	end
 
 	function PrePlanningManager:load_preplanning(name)
-		if PrePlanningManager._SAVED_PLANS[name] then
+		if PrePlanningManager._SAVED_PLANS and PrePlanningManager._SAVED_PLANS[name] then
 			local saved_assets = PrePlanningManager._SAVED_PLANS[name].assets or {}
 			local saved_votes = PrePlanningManager._SAVED_PLANS[name].votes or {}
 
 			local missing_skill, missing_favours, missing_money = false, false, false
+			local peer_id = managers.network:session():local_peer():id()
 			for i, data in ipairs(saved_assets) do
-				local lockData = tweak_data:get_raw_value("preplanning", "types", data.type, "upgrade_lock") or false
-				if not lockData or managers.player:has_category_upgrade(lockData.category, lockData.upgrade) then
-					local money_cost = self:_get_type_cost(data.type)
-					local favours_cost = self:get_type_budget_cost(data.type, 0)
-					local current_budget, total_budget = self:get_current_budget()
-					if current_budget + favours_cost <= total_budget then
-						if managers.money:can_afford_preplanning_type(type) then
-							self:reserve_mission_element(data.type, data.id)
-						else
+				local id = self:get_mission_element_id(data.type, data.index)
+				if not self:get_reserved_mission_element(id) then
+					local lockData = tweak_data:get_raw_value("preplanning", "types", data.type, "upgrade_lock") or false
+					if not lockData or managers.player:has_category_upgrade(lockData.category, lockData.upgrade) then
+						local available, err_code = self:can_reserve_mission_element(data.type, peer_id)
+						if available then
+							self:reserve_mission_element(data.type, id)
+						elseif err_code == 1 then
 							missing_money = true
+						elseif err_code == 2 then
+							missing_favours = true
 						end
 					else
-						missing_favours = true
+						missing_skill = true
 					end
-				else
-					missing_skill = true
 				end
 			end
 
 			for i, data in ipairs(saved_votes) do
-				self:vote_on_plan(data.type, data.id)
+				local id = self:get_mission_element_id(data.type, data.index)
+				self:vote_on_plan(data.type, id)
 			end
-		end
-		if not (missing_skill or missing_favours or missing_money) then
-			managers.preplanning:notify_user("wolfhud_preplanning_msg_loaded_success", {}, false)
-		else
-			local error_msg = ""
-			if missing_skill then
-				error_msg = managers.localization:text("wolfhud_preplanning_msg_loaded_missing_skill")
+
+			if not (missing_skill or missing_favours or missing_money) then
+				managers.preplanning:notify_user("wolfhud_preplanning_msg_loaded_success", {}, false)
+			else
+				local error_msg = ""
+				if missing_skill then
+					error_msg = managers.localization:text("wolfhud_preplanning_msg_loaded_missing_skill")
+				end
+				if missing_favours then
+					error_msg = string.format("%s%s %s", error_msg, (missing_skill and ";" or ""), managers.localization:text("wolfhud_preplanning_msg_loaded_missing_favours"))
+				end
+				if missing_money then
+					error_msg = string.format("%s%s %s", error_msg, ((missing_skill or missing_favours) and ";" or ""), managers.localization:text("wolfhud_preplanning_msg_loaded_missing_money"))
+				end
+				managers.preplanning:notify_user("wolfhud_preplanning_msg_loaded_partitially", {ERRORMSG = error_msg}, true)
 			end
-			if missing_favours then
-				error_msg = string.format("%s%s %s", error_msg, (missing_skill and ";" or ""), managers.localization:text("wolfhud_preplanning_msg_loaded_missing_favours"))
-			end
-			if missing_money then
-				error_msg = string.format("%s%s %s", error_msg, ((missing_skill or missing_favours) and ";" or ""), managers.localization:text("wolfhud_preplanning_msg_loaded_missing_money"))
-			end
-			managers.preplanning:notify_user("wolfhud_preplanning_msg_loaded_partitially", {ERRORMSG = error_msg}, true)
 		end
 	end
 
@@ -473,7 +489,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 	end
 
 	function PrePlanningManager:delete_preplanning_clbk(name)
-		if PrePlanningManager._SAVED_PLANS[name] then
+		if PrePlanningManager._SAVED_PLANS and PrePlanningManager._SAVED_PLANS[name] then
 			PrePlanningManager._SAVED_PLANS[name] = nil
 			PrePlanningManager.save_plans()
 
@@ -545,7 +561,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 	function PrePlanningManager:saved_assets_name(plan_name)
 		local text = ""
 
-		if PrePlanningManager._SAVED_PLANS[plan_name] then
+		if PrePlanningManager._SAVED_PLANS and PrePlanningManager._SAVED_PLANS[plan_name] then
 			local saved_assets, saved_votes = PrePlanningManager._SAVED_PLANS[plan_name].assets or {}, PrePlanningManager._SAVED_PLANS[plan_name].votes or {}
 
 			text = string.format("%s%s\n", text, managers.localization:text("wolfhud_preplanning_votes_title"))
@@ -566,7 +582,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 			for id, mission_element in pairs(saved_assets) do
 				local type_name = self:get_type_name(mission_element.type)
 				text = string.format("%s - %s", text, type_name)
-				local element = self._mission_elements_by_type[mission_element.type][mission_element.index]
+				local element = self._mission_elements_by_type[mission_element.type] and self._mission_elements_by_type[mission_element.type][mission_element.index]
 				local element_name = element and self:get_element_name(element)
 				if element_name and not element_name:lower():find("error") then
 					text = string.format("%s (%s)\n", text, element_name)
@@ -586,7 +602,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 	function PrePlanningManager:get_saved_costs(name)
 		local money_costs, favours = 0, 0
 
-		if PrePlanningManager._SAVED_PLANS[name] then
+		if PrePlanningManager._SAVED_PLANS and PrePlanningManager._SAVED_PLANS[name] then
 			local saved_assets, saved_votes = PrePlanningManager._SAVED_PLANS[name].assets or {}, PrePlanningManager._SAVED_PLANS[name].votes or {}
 			for i, data in pairs(saved_votes) do
 				money_costs = money_costs + self:_get_type_cost(data.type)
@@ -610,7 +626,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 		for plan, element_type in pairs(default_plans) do
 			local default_element = self:get_default_plan_mission_element(element_type)
 			if element_type and default_element then
-				default_votes[plan] = {element_type, default_element:id()}
+				default_votes[plan] = {element_type, 1}
 			end
 		end
 

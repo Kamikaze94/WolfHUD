@@ -1,9 +1,24 @@
 if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	local _on_damage_received_original = CopDamage._on_damage_received
+	--Workaround for Teammate Headshots, since col_ray doesn't get forwarded...  (self._sync_ibody_popup)
+	local sync_damage_bullet_original = CopDamage.sync_damage_bullet
+	local sync_damage_melee_original = CopDamage.sync_damage_melee
 
 	function CopDamage:_on_damage_received(data, ...)
 		self:_process_popup_damage(data)
+		self._sync_ibody_popup = nil
 		return _on_damage_received_original(self, data, ...)
+	end
+
+	function CopDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body, ...)
+		self._sync_ibody_popup = i_body
+		return sync_damage_bullet_original(self, attacker_unit, damage_percent, i_body, ...)
+	end
+
+	function CopDamage:sync_damage_melee(attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
+		self._sync_ibody_popup = i_body
+		return sync_damage_melee_original(self, attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
+
 	end
 
 	function CopDamage:_process_popup_damage(attack_data)
@@ -45,7 +60,9 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 			end
 
 			if alive(killer) then
-				local headshot = self._head_body_name and attack_data.col_ray and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_head_body_name
+				local i_body = attack_data.col_ray and attack_data.col_ray.body and self._unit:get_body_index(attack_data.col_ray.body:name()) or self._sync_ibody_popup
+				local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
+				local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false
 				if CopDamage.DMG_POPUP_SETTING == 2 then
 					if killer:in_slot(2) then
 						self:show_popup(damage, self._dead, headshot)

@@ -303,10 +303,10 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 			table.sort(gadgets, function(x, y)
 				local xd = self._parts[x]
 				local yd = self._parts[y]
-				if not xd then
+				if not xd or not xd.unit then
 					return false
 				end
-				if not yd then
+				if not yd or not yd.unit then
 					return true
 				end
 				return xd.unit:base().GADGET_TYPE > yd.unit:base().GADGET_TYPE
@@ -358,6 +358,7 @@ if string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" then
 	FPCameraPlayerBase.angled_sight_rotation    = {
 		wpn_fps_upg_o_45iron = Rotation(0, 0, -45),
 		wpn_fps_upg_o_45rds = Rotation(0, 0, -45),
+		wpn_fps_upg_o_45rds_v2 = Rotation(0, 0, -45),
 	}
 	FPCameraPlayerBase.angled_sight_translation = {
 		-- Vector3(x, y, z) -- x = right, y = forward, z = upward

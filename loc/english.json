@@ -62,6 +62,8 @@
 	"wolfhud_preplanning_msg_deleted_failed" : "An error occurred while deleting saved plan.",
 
 	"wolfhud_inv_tab_rename_hint" : "Double click the selected Inventory tab to rename it.",
+	
+	"wolfhud_loadout_hours_played" : "$HOURS hrs.",
 
 	"victory_most_damage" : "Highest Damage:",
 	"victory_session_damage" : "Total Damage:",
@@ -150,12 +152,14 @@
 	"wolfhud_enemy_bank_manager" : "Bank Manager",
 	"wolfhud_enemy_inside_man" : "Inside Man",
 	"wolfhud_enemy_escort_undercover" : "Taxman",
+	"wolfhud_enemy_escort_heatstreet" : "Matt",
 	"wolfhud_enemy_drunk_pilot" : "Drunk Pilot",
 	"wolfhud_enemy_escort" : "Escort",
 	"wolfhud_enemy_boris" : "Boris",
 	"wolfhud_enemy_spa_vip" : "Charon",
 	"wolfhud_enemy_spa_vip_hurt" : "Charon (Hurt)",
-	"wolfhud_enemy_old_hoxton_mission" : "Hoxton / Locke",
+	"wolfhud_enemy_old_hoxton_mission" : "Hoxton",
+	"wolfhud_enemy_locke_mission" : "Locke",
 	"wolfhud_enemy_hector_boss" : "Armoured Hector",
 	"wolfhud_enemy_hector_boss_no_armor" : "Hector",
 	"wolfhud_enemy_crew" : "Crew Member",
@@ -477,6 +481,8 @@
 	"wolfhud_infopanels_buff_fugitive_options_help" : "Enable or Disable visual indicators for Fugitive Skills.\n(A map restart is needed to apply...)",
 	"wolfhud_infopanels_buff_perkdecks_options_name" : "Perk Decks",
 	"wolfhud_infopanels_buff_perkdecks_options_help" : "Enable or Disable visual indicators for Perk Decks.\n(A map restart is needed to apply...)",
+	"wolfhud_infopanels_buff_gageboosts_options_name" : "Gage Boosts",
+	"wolfhud_infopanels_buff_gageboosts_options_help" : "Enable or Disable visual indicators for Gage Boosts.\n(A map restart is needed to apply...)",
 
 	"wolfhud_hudlist_show_buffs_title" : "Show Buffs",
 	"wolfhud_hudlist_show_buffs_desc" : "Display active Buffs in the bottom center of your screen.",
@@ -592,6 +598,10 @@
 	"wolfhud_hudlist_crew_chief_teambuff_desc" : "Part of Composite Buffs.",
 	"wolfhud_hudlist_forced_friendship_teambuff_title" : "Forced Friendship Teambuff",
 	"wolfhud_hudlist_forced_friendship_teambuff_desc" : "",
+	"wolfhud_hudlist_life_steal_gage_debuff_title" : "Life Steal",
+	"wolfhud_hudlist_life_steal_gage_debuff_desc" : "",
+	"wolfhud_hudlist_invulnerable_gage_buff_title" : "Invulnerability",
+	"wolfhud_hudlist_invulnerable_gage_buff_desc" : "",
 
 	"wolfhud_waypoints_options_name" : "Custom Waypoints Options",
 	"wolfhud_waypoints_options_help" : "Options to control Custom Waypoints.",
@@ -641,6 +651,18 @@
 	"wolfhud_tabstats_actual_mask_desc" : "Use your Actual mask instead of your played character picture.",
 	"wolfhud_tabstats_numberic_loot_title" : "Numeric Loot Counter",
 	"wolfhud_tabstats_numberic_loot_desc" : "Disable the bag counting minigame and display the number right away.",
+
+	"wolfhud_crewloadout_options_name" : "Crew Loadout Options",
+	"wolfhud_crewloadout_options_help" : "Choose where you want to get Information on which gear and skills your teammates are bringing.",
+
+	"wolfhud_crewloadout_lobby_title" : "Show in Lobby",
+	"wolfhud_crewloadout_lobby_desc" : "Adds a button to your Lobby screen, that can display the loadout of you and your crew.",
+	"wolfhud_crewloadout_cs_lobby_title" : "Show in Crimespree Lobby",
+	"wolfhud_crewloadout_cs_lobby_desc" : "Adds a new tab right next to the modifiers and rewards in the crimespree lobby.",
+	"wolfhud_crewloadout_briefing_title" : "Replace in briefing",
+	"wolfhud_crewloadout_briefing_desc" : "Replaces the default Crew Loadout Panel in Mission briefing.",
+	"wolfhud_crewloadout_tabscreen_title" : "Show on Tabscreen",
+	"wolfhud_crewloadout_tabscreen_desc" : "Displays the Skills, Perk and current Ping of players in your lobby. \n(Disabled if you use this feature of LobbyPlayerInfo)",
 
 	"wolfhud_dmgindicator_options_name" : "Damage Indicator",
 	"wolfhud_dmgindicator_options_help" : "Set the fade time, size and colors or your damage indicators.",

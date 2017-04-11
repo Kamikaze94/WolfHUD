@@ -58,7 +58,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	]]
 
 	local _on_damage_received_original = CopDamage._on_damage_received
-	--Workaround for Teammate Headshots, since col_ray doesn't get forwarded...  (self._sync_ibody)
+	--Workaround for Teammate Headshots, since col_ray doesn't get forwarded...  (self._sync_ibody_killcount)
 	local sync_damage_bullet_original = CopDamage.sync_damage_bullet
 	local sync_damage_melee_original = CopDamage.sync_damage_melee
 
@@ -93,7 +93,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 				local tweak_id = self._unit:base()._tweak_table
 				local special_unit_ids = managers.statistics and managers.statistics.special_unit_ids or {}
 				local is_special = managers.groupai:state():is_enemy_special(self._unit) or table.contains(special_unit_ids, tweak_id)
-				local i_body = data.col_ray and data.col_ray.body and self._unit:get_body_index(data.col_ray.body:name()) or self._sync_ibody
+				local i_body = data.col_ray and data.col_ray.body and self._unit:get_body_index(data.col_ray.body:name()) or self._sync_ibody_killcount
 				local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
 				local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false
 
@@ -127,17 +127,17 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 		if self._dead then
 			self:_process_kill(data)
 		end
-		self._sync_ibody = nil
+		self._sync_ibody_killcount = nil
 		return _on_damage_received_original(self, data, ...)
 	end
 
 	function CopDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body, ...)
-		self._sync_ibody = i_body
+		self._sync_ibody_killcount = i_body
 		return sync_damage_bullet_original(self, attacker_unit, damage_percent, i_body, ...)
 	end
 
 	function CopDamage:sync_damage_melee(attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
-		self._sync_ibody = i_body
+		self._sync_ibody_killcount = i_body
 		return sync_damage_melee_original(self, attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
 
 	end
