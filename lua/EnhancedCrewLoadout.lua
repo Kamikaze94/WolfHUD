@@ -172,7 +172,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 	function ContractBoxGui:set_enabled(...)
 		set_enabled_original(self, ...)
 
-		self:set_loadout_enabled(self._enabled)
+		self:set_loadout_enabled(self._enabled and WolfHUD:getSetting({"CrewLoadout", "SHOW_IN_LOBBY"}, true))
 	end
 	
 	function ContractBoxGui:set_loadout_enabled(status)

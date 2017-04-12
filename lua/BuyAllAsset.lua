@@ -82,13 +82,15 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 			if self._buy_all_btn:inside(x, y) then
 				if not self._buy_all_highlighted then
 					self._buy_all_highlighted = true
-					self._buy_all_btn:set_color(tweak_data.screen_colors.button_stage_2)
-					managers.menu_component:post_event("highlight")
+					self:update_buy_all_btn(true)
+					if self:can_afford_all_assets() then
+						managers.menu_component:post_event("highlight")
+					end
 				end
 				return true, "link"
 			elseif self._buy_all_highlighted then
 				self._buy_all_highlighted = nil
-				self._buy_all_btn:set_color(tweak_data.screen_colors.button_stage_3)
+				self:update_buy_all_btn(true)
 			end
 		end
 
@@ -96,7 +98,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 	end
 	
 	function AssetsItem:mouse_pressed(button, x, y, ...)
-		if alive(self._buy_all_btn) and button == Idstring("0") and self._buy_all_btn:inside(x, y) then
+		if alive(self._buy_all_btn) and self:can_afford_all_assets() and button == Idstring("0") and self._buy_all_btn:inside(x, y) then
 			managers.assets:unlock_all_buyable_assets()
 			self:update_buy_all_btn()
 		end
@@ -104,20 +106,30 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 		return mouse_pressed_original(self, button, x, y, ...)
 	end
 	
-	function AssetsItem:update_buy_all_btn()
+	function AssetsItem:update_buy_all_btn(colors_only)
 		if alive(self._buy_all_btn) then
+			local asset_costs = managers.assets:get_total_assets_costs()
 			if managers.assets:has_buyable_assets() then
-				self._buy_all_btn:set_color(self._buy_all_highlighted and tweak_data.screen_colors.button_stage_2 or tweak_data.screen_colors.button_stage_3)
+				if self:can_afford_all_assets() then
+					self._buy_all_btn:set_color(self._buy_all_highlighted and tweak_data.screen_colors.button_stage_2 or tweak_data.screen_colors.button_stage_3)
+				else
+					self._buy_all_btn:set_color(tweak_data.screen_colors.pro_color)
+				end
 			else
 				self._buy_all_btn:set_color(tweak_data.screen_color_grey)
 			end
-			local asset_costs = managers.assets:get_total_assets_costs()
-			local text = string.format("%s (%s)", managers.localization:to_upper_text("wolfhud_buy_all_assets"), managers.experience:cash_string(asset_costs))
-			self._buy_all_btn:set_text(text)
-			local _, _, w, _ = self._buy_all_btn:text_rect()
-			self._buy_all_btn:set_w(math.ceil(w))
-			self._buy_all_btn:set_top(15)
-			self._buy_all_btn:set_right(self._panel:w() - 5)
+			if not colors_only then
+				local text = string.format("%s (%s)", managers.localization:to_upper_text("wolfhud_buy_all_assets"), managers.experience:cash_string(asset_costs))
+				self._buy_all_btn:set_text(text)
+				local _, _, w, _ = self._buy_all_btn:text_rect()
+				self._buy_all_btn:set_w(math.ceil(w))
+				self._buy_all_btn:set_top(15)
+				self._buy_all_btn:set_right(self._panel:w() - 5)
+			end
 		end
+	end
+	
+	function AssetsItem:can_afford_all_assets()
+		return (managers.assets:get_total_assets_costs() <= managers.money:total())
 	end
 end

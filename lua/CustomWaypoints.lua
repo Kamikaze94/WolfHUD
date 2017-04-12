@@ -127,6 +127,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				[ "bank_manager" ] 					= "wolfhud_enemy_bank_manager",
 				[ "inside_man" ] 					= "wolfhud_enemy_inside_man",
 				[ "escort_undercover" ] 			= "wolfhud_enemy_escort_undercover",
+				[ "escort_chinese_prisoner" ]		= "wolfhud_enemy_escort_chinese_prisoner",
 				[ "drunk_pilot" ] 					= "wolfhud_enemy_drunk_pilot",
 				[ "escort" ] 						= "wolfhud_enemy_escort",
 				[ "boris" ]							= "wolfhud_enemy_boris",

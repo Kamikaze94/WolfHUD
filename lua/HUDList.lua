@@ -199,7 +199,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		--old_hoxton_mission = 		{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_old_hoxton_mission" 		},	--Hox Breakout / BtM (Locke)
 		--inside_man = 				{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_inside_man" 				},	--FWB
 		--boris = 					{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_boris" 					},	--Goat Sim Day 2
-		--escort_undercover = 		{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_escort_undercover" 		},	--Taxman
+		--escort_undercover = 		{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_escort_undercover" 		},	--Taxman, Undercover + Matt, Heat Street
+		--escort_chinese_prisoner = { type_id = "unique", 		category = "civilians", long_name = "wolfhud_enemy_escort_chinese_prisoner" },	--Kazo, Green Bridge
 		--spa_vip = 				{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_spa_vip" 				},	--Charon, Wick Heist
 		--spa_vip_hurt = 			{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_spa_vip_hurt" 			},	--Charon, Wick Heist
 
@@ -249,6 +250,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		pickup_phone = 						"small_loot",
 		press_pick_up =						"secret_item",
 		hold_pick_up_turtle = 				"secret_item",
+		glc_hold_take_handcuffs = 			"secret_item",
 		hold_take_missing_animal_poster = 	"poster",
 	}
 
@@ -324,13 +326,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		end,
 		crate = function(id, data)
-			local level_id = managers.job:current_level_id() or ""
+			local level_id = managers.job:current_level_id()
 			local disabled_lvls = {
-				"election_day", "election_day_prof", 	-- Election Day
-				"mia", "mia_prof", 						-- Hotline Miami
-				"pal" 									-- Counterfeit
+				"election_day_3", 		-- Election Day Day 2 Warehouse
+				"election_day_3_skip1", 
+				"election_day_3_skip2",
+				"mia_1",		 		-- Hotline Miami Day 1
+				"pal" 					-- Counterfeit
 			}
-			return not table.contains(disabled_lvls, level_id)
+			return not (level_id and table.contains(disabled_lvls, level_id))
 		end,
 	}
 

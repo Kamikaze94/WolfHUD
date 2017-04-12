@@ -187,6 +187,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			press_pick_up =						"_special_equipment_interaction_handler",	-- Biker Bottle
 			hold_take_missing_animal_poster = 	"_special_equipment_interaction_handler",	-- Heat Streat Posters
 			hold_pick_up_turtle = 				"_special_equipment_interaction_handler",	-- Heat Street Tutle
+			glc_hold_take_handcuffs = 			"_special_equipment_interaction_handler",	-- Green Bridge Handcuffs
 			pickup_tablet = 					"_special_equipment_interaction_handler",	-- Stealing Xmas Tablet
 			pickup_phone = 						"_special_equipment_interaction_handler",	-- Stealing Xmas Phone
 			firstaid_box =						"_deployable_interaction_handler",
