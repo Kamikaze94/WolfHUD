@@ -108,6 +108,7 @@ elseif string.lower(RequiredScript) == "lib/managers/experiencemanager" then
 
 	function ExperienceManager:cash_string(...)
 		local val = cash_string_original(self, ...)
+		if self._cash_sign ~= "$" and val:find(self._cash_sign) then
 			val = val:gsub(self._cash_sign, "") .. self._cash_sign
 		end
 		return val

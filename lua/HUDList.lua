@@ -745,13 +745,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
+	--[[
 	function HUDListManager:_pager_count_event(event, key, data)
 		local item = self:list("right_side_list"):item("stealth_list"):item("PagerCount")
 		if item then
 			item:change_count(1)
 		end
 	end
-	--[[
 	function HUDListManager:_cam_count_event(event, key, data)
 		local item = self:list("right_side_list"):item("stealth_list"):item("CamCount")
 		if event == "add" or event == "enable" then
