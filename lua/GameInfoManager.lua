@@ -1488,11 +1488,11 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		local count = 0
 
 		for key, cam_data in pairs(self._cameras) do
-			if cam_data.enabled then
-				print_info("Camera (%s): Drone:%s Enabled:%s Active:%s Broken:%s Loop:%s", key, tostring(cam_data.is_drone and true or false), tostring(cam_data.enabled and true or false), tostring(cam_data.active and true or false), tostring(cam_data.broken and true or false), tostring(cam_data.tape_loop_expire_t and cam_data.tape_loop_expire_t > Application:time() and true or false))
+			if cam_data.enabled or cam_data.active then	-- Ukrainian Job never sets cams 'enabled', only 'active' if guard in front of console. GO Bank sets both flags.
+				print_error("Camera (%s): Drone:%s Enabled:%s Active:%s Broken:%s Loop:%s", key, tostring(cam_data.is_drone and true or false), tostring(cam_data.enabled and true or false), tostring(cam_data.active and true or false), tostring(cam_data.broken and true or false), tostring(cam_data.tape_loop_expire_t and cam_data.tape_loop_expire_t > Application:time() and true or false))
 			end
 
-			if cam_data.enabled and not cam_data.broken and (cam_data.active or Network:is_client()) then
+			if (cam_data.enabled or cam_data.active) and not cam_data.broken then
 				count = count + 1
 			end
 		end
