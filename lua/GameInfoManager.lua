@@ -196,6 +196,9 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			first_aid_kit = 					"_deployable_interaction_handler",
 			bodybags_bag =						"_deployable_interaction_handler",
 			grenade_crate =						"_deployable_interaction_handler",
+			
+			pku_scubagear_vest = 				"_special_equipment_interaction_handler",	--TMP: Where is this used...?
+			pku_scubagear_tank = 				"_special_equipment_interaction_handler",	--TMP: Where is this used...?
 		},
 		INTERACTION_TO_CARRY = {
 			weapon_case =				"weapon",
@@ -1489,11 +1492,11 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		local count = 0
 
 		for key, cam_data in pairs(self._cameras) do
-			if cam_data.enabled or cam_data.active then	-- Ukrainian Job never sets cams 'enabled', only 'active' if guard in front of console. GO Bank sets both flags.
-				print_error("Camera (%s): Drone:%s Enabled:%s Active:%s Broken:%s Loop:%s", key, tostring(cam_data.is_drone and true or false), tostring(cam_data.enabled and true or false), tostring(cam_data.active and true or false), tostring(cam_data.broken and true or false), tostring(cam_data.tape_loop_expire_t and cam_data.tape_loop_expire_t > Application:time() and true or false))
+			if cam_data.enabled ~= false and (cam_data.active or Network:is_client()) then	-- Ukrainian Job never sets cams 'enabled', only 'active' if guard in front of console. GO Bank sets both flags.
+				print_info("Camera (%s): Drone:%s Enabled:%s Active:%s Broken:%s Loop:%s", key, tostring(cam_data.is_drone), tostring(cam_data.enabled), tostring(cam_data.active), tostring(cam_data.brokene), tostring(cam_data.tape_loop_expire_t and cam_data.tape_loop_expire_t > Application:time() and true or false))
 			end
 
-			if (cam_data.enabled or cam_data.active) and not cam_data.broken then
+			if cam_data.enabled ~= false and (cam_data.active or Network:is_client()) and not cam_data.broken then
 				count = count + 1
 			end
 		end
@@ -2086,15 +2089,7 @@ if string.lower(RequiredScript) == "lib/units/interactions/interactionext" then
 			managers.interaction:add_unit_clbk(self._unit)
 		end
 	end
-	--[[
-	function SecurityCameraInteractionExt:set_active(active, ...)
-		if self:active() ~= active then
-			managers.gameinfo:event("camera", "set_active", tostring(self._unit:key()), { active = active and true or false } )
-		end
-
-		return SecurityCameraInteractionExt_set_active_original(self, active, ...)
-	end
-	]]
+	
 end
 
 if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase" then

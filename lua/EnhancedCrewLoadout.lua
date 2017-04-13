@@ -102,7 +102,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 
 	function ContractBoxGui:update_character_menu_state(peer_id, ...)
 		update_character_menu_state_original(self, peer_id, ...)
-		
+
 		if self._peer_loadout[peer_id] then
 			self:update_loadout_panel(peer_id)
 		end
@@ -231,7 +231,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 				outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string())
 			else
 				local peer = managers.network:session():peer(peer_id)
-				local outfit = peer and peer:blackmarket_outfit()
+				outfit = peer and peer:blackmarket_outfit()
 			end
 			panel:set_outfit(outfit)
 		end
@@ -328,7 +328,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 	function CrimeSpreeDetailsMenuComponent:populate_tabs_data(tabs_data, ...)
 		populate_tabs_data_original(self, tabs_data, ...)
 
-		if not self:_is_in_preplanning() and WolfHUD:getSetting({"CrewLoadout", "SHOW_IN_CS_LOBBY"}, true) then
+		if not self:_is_in_preplanning() and not Global.game_settings.single_player and WolfHUD:getSetting({"CrewLoadout", "SHOW_IN_CS_LOBBY"}, true) then
 			table.insert(tabs_data, CrimeSpreeDetailsMenuComponent._LOADOUT_INDEX, {
 				name_id = "menu_team_loadout",
 				page_class = "CrimeSpreeCrewLoadoutPage",
@@ -367,7 +367,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 		self._loadout_data = self:panel():panel({
 			name = "crew_loadout",
 			w = self:panel():w(),
-			h = self:panel():h(),
+			h = 240,
 		})
 
 		self._loadout_data:rect({
@@ -424,7 +424,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 		local width = math.floor(self._loadout_data:w() / 4)
 		for i, peer_id in ipairs({3, 2, 1, 4}) do
 			if not self._peer_loadout[peer_id] then
-				self._peer_loadout[peer_id] = LoadoutPanel:new(self._loadout_data, self, peer_id, width, self._loadout_data:h() + 9, {
+				self._peer_loadout[peer_id] = LoadoutPanel:new(self._loadout_data, self, peer_id, width, math.floor(self._loadout_data:h() + 9), {
 					component_layout = WolfHUD:getTweakEntry("CS_LOBBY_LOADOUT_LAYOUT", "table", 
 						{ 
 							{ "playtime", "ping" }, 
@@ -451,15 +451,16 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 	end
 
 	function CrimeSpreeCrewLoadoutPage:update_loadout_panel(peer_id)
-		if self._peer_loadout[peer_id] then
-			if self._peer_loadout[peer_id]:local_peer() then
-				local outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string()) or {}
-				self._peer_loadout[peer_id]:set_outfit(outfit)
+		local panel = self._peer_loadout[peer_id]
+		if panel then
+			local outfit
+			if panel:local_peer() then
+				outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string())
 			else
 				local peer = managers.network:session():peer(peer_id)
-				local outfit = peer and peer:blackmarket_outfit() or {}
-				self._peer_loadout[peer_id]:set_outfit(outfit)
+				outfit = peer and peer:blackmarket_outfit()
 			end
+			panel:set_outfit(outfit)
 		end
 	end
 
@@ -543,13 +544,12 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 	end
 
 	function TeamLoadoutCustom:arrange_loadout_panels()
-		local x, y = 0, 1
+		local x = 0
 		local width = math.floor(self._panel:w() / 4)
 		for peer_id = 1, 4 do
 			local panel = self._player_slots[peer_id]
 			if panel and panel:enabled() then
 				panel:set_x(x)
-				panel:set_y(y)
 				panel:set_center_y(self._panel:h() / 2)
 				x = x + panel:w()
 			else
@@ -691,14 +691,14 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 
 	function HUDStatsScreen:update_loadout_panel(peer_id)
 		if self._peer_loadout[peer_id] and (not _G.LobbyPlayerInfo or not LobbyPlayerInfo.settings.show_skills_in_stats_screen) then
+			local outfit
 			if self._peer_loadout[peer_id]:local_peer() then
-				local outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string()) or {}
-				self._peer_loadout[peer_id]:set_outfit(outfit)
+				outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string())
 			else
 				local peer = managers.network:session():peer(peer_id)
-				local outfit = peer and peer:blackmarket_outfit() or {}
-				self._peer_loadout[peer_id]:set_outfit(outfit)
+				outfit = peer and peer:blackmarket_outfit()
 			end
+			self._peer_loadout[peer_id]:set_outfit(outfit)
 		end
 	end
 
@@ -952,33 +952,28 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 
 	function LoadoutPanel:arrange()
 		local total_y = self._margin or 0
-		local row_w = {}
 		local active_comps = {}
 		for i, data in ipairs(self._component_layout) do
-			local x = self._margin or 0
 			local max_h = 0
 			active_comps[i] = {}
 			for j, name in ipairs(data) do
 				local component = self._components[name]
 				if component:enabled() then
-					component:set_x(x)
 					component:set_y(total_y)
-					x = x + component:w()
 					max_h = math.max(max_h, component:h())
 					table.insert(active_comps[i], component)
 				end
 			end
-			row_w[i] = x
 			total_y = total_y + max_h
 		end
 
 		for i, components in ipairs(active_comps) do
-			local free_w = math.floor((self._panel:w() - row_w[i] - self._margin) / table.size(components))
+			local new_w = math.floor((self._panel:w() - (2 * self._margin)) / table.size(components))
 			local x = self._margin or 0
 			for i, component in ipairs(components) do
 				if component:enabled() then
 					component:set_x(x)
-					if component:set_w(component:w() + free_w) then
+					if component:set_w(new_w) then
 						component:arrange()
 					end
 					x = x + component:w()
@@ -1002,8 +997,12 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 		if enabled then
 			self:arrange()
 		end
-		self:set_enabled("outfit", outfit and true or false)
-		self:set_enabled("active_components", enabled)
+
+		local outfit_changed = self:set_enabled("outfit", outfit and true or false)
+		local active_comp_changed = self:set_enabled("active_components", enabled)
+		if outfit_changed or active_comp_changed then
+			self._owner:arrange_loadout_panels()
+		end
 	end
 
 	function LoadoutPanel:get_peer_id()
@@ -1209,8 +1208,8 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 
 	function LoadoutImageItem:set_outfit(outfit)
 		if outfit[self._name] then
+			self:set_enabled("outfit", true)
 			if self._loadout ~= outfit[self._name] then
-				self:set_enabled("outfit", true)
 				self._loadout = outfit[self._name]
 				local texture, name = self:get_outfit_data(self._name, self._loadout)
 				local amount = (self._name == "grenade") and tweak_data.blackmarket.projectiles[self._loadout] and tweak_data.blackmarket.projectiles[self._loadout].max_amount or 0
