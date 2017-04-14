@@ -559,6 +559,8 @@ if not _G.WolfHUD then
 						else
 							table_dst[k] = v
 						end
+					else
+						self:print_log("Error while loading, Setting types don't match (" .. k .. ")", "error")
 					end
 				end
 			end
