@@ -596,16 +596,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 
 	function HUDDriving.VehiclePassengerItem:set_passenger(unit)
 		if unit and (not self._unit or self._unit:key() ~= unit:key()) then
-			local character_data = managers.criminals:character_data_by_unit(unit)
-			local mask_id = character_data and (character_data.mask_id or character_data.static_data.ai_mask_id) or "alienware"
+			local peer = managers.network:session():peer_by_unit(unit)
+			local outfit = peer and peer:blackmarket_outfit()
+			local mask_id = outfit and outfit.mask and outfit.mask.mask_id or "alienware"
 			local color_id = managers.criminals:character_color_id_by_unit(unit) or 5
 			local color = tweak_data.chat_colors[color_id]
-
-			-- Fall back to default AI mask, as there is no efficient way to get the original mask_id in case of a character specific overwrite. 
-			local tweak_entry = tweak_data.blackmarket.masks
-			if tweak_entry and tweak_entry[mask_id].inaccessible then
-				mask_id = character_data.static_data.ai_mask_id
-			end
 
 			if mask_id ~= self._mask_id or self._color ~= color then
 				self._mask_id = mask_id
@@ -904,7 +899,7 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 			local vehicle_name = vehicle_driving._tweak_data.name
 			local seats_table = vehicle_driving._seats
 			local health_total = math.min(vehicle_unit:character_damage()._current_max_health, 1000000000)
-			local health_current = math.clamp(vehicle_unit:character_damage()._health, 0, total)
+			local health_current = math.clamp(vehicle_unit:character_damage()._health, 0, health_total)
 			local loot_current = #vehicle_driving._loot
 			local loot_total = vehicle_driving._tweak_data.max_loot_bags
 

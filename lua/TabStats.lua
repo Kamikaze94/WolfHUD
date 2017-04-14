@@ -93,14 +93,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	}
 
 	function HUDStatsScreen.getMaskImage()
-		local player = managers.player:player_unit()
-		local char_data = player and managers.criminals:character_data_by_unit(player)
-		local mask_id = char_data and char_data.mask_id
-
-		-- Fall back to default AI mask, as there is no efficient way to get the original mask_id in case of a character specific overwrite. 
-		if tweak_data.blackmarket.masks[mask_id] and tweak_data.blackmarket.masks[mask_id].inaccessible then
-			mask_id = char_data.static_data.ai_mask_id or "alienware"
-		end
+		local outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string())
+		local mask_id = outfit and outfit.mask and outfit.mask.mask_id or "alienware"
 
 		local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/alienware"
 		if mask_id then
