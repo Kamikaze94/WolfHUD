@@ -474,8 +474,8 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 		return false
 	end
 
-	function BaseInteractionExt:get_unsecured_bag_value(carry_id)
-		local bag_value = managers.money:get_bag_value(carry_id, 1)
+	function BaseInteractionExt:get_unsecured_bag_value(carry_id, mult)
+		local bag_value = managers.money:get_bag_value(carry_id, mult)
 		local bag_skill_bonus = managers.player:upgrade_value("player", "secured_bags_money_multiplier", 1)
 		if self:would_be_bonus_bag(carry_id) then
 			local stars = managers.job:has_active_job() and managers.job:current_difficulty_stars() or 0
@@ -489,8 +489,13 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 		_add_string_macros_original(self, macros, ...)
 		macros.BTN_INTERACT = macros.BTN_INTERACT or managers.localization:get_default_macro("BTN_INTERACT") --Ascii ID for RB
 		if self._unit:carry_data() then
-			macros.BAG = managers.localization:text(tweak_data.carry[self._unit:carry_data():carry_id()].name_id)
-			macros.VALUE = not tweak_data.carry[self._unit:carry_data():carry_id()].skip_exit_secure and " (" .. managers.experience:cash_string(self:get_unsecured_bag_value(self._unit:carry_data():carry_id(), 1)) .. ")" or ""
+			local carry_id = self._unit:carry_data():carry_id()
+			macros.BAG = managers.localization:text(tweak_data.carry[carry_id].name_id)
+			if not (managers.crimespree and managers.crime_spree:_is_active()) then
+				macros.VALUE = not tweak_data.carry[carry_id].skip_exit_secure and " (" .. managers.experience:cash_string(self:get_unsecured_bag_value(carry_id, 1)) .. ")" or ""
+			else
+				macros.VALUE = ""
+			end
 		else
 			macros.VALUE = ""
 		end

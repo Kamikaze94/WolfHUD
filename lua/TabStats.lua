@@ -113,6 +113,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		init_original(self, ...)
 		local right_panel = self._full_hud_panel:child("right_panel")
 		local day_wrapper_panel = right_panel:child("day_wrapper_panel")
+
 		local time_icon = right_panel:bitmap({
 			name = "time_icon",
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
@@ -164,7 +165,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			h = 18
 		})
 		blank1:set_y(math.round(day_wrapper_panel:child("day_title"):bottom()))
-
 		local paygrade_text = day_wrapper_panel:text({
 			layer = 0,
 			x =  0,
@@ -179,7 +179,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			w = 2*(day_wrapper_panel:w()/3),
 			h = 18
 		})
-
 		local paygrade_title = day_wrapper_panel:text({
 			layer = 0,
 			x = 0,
@@ -194,12 +193,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			w = 2*(day_wrapper_panel:w()/3),
 			h = 18
 		})
-		local job_stars = managers.job:current_job_stars()
-		local job_and_difficulty_stars = managers.job:current_job_and_difficulty_stars()
-		local difficulty_stars = managers.job:current_difficulty_stars()
-		local difficulty = tweak_data.difficulties[difficulty_stars + 2] or 1
-		local difficulty_string_id = tweak_data.difficulty_name_ids[difficulty]
-		paygrade_text:set_text(managers.localization:to_upper_text(difficulty_string_id))
 		paygrade_text:set_y(math.round(blank1:bottom()))
 		paygrade_title:set_top(paygrade_text:top())
 		local offshore_payout_text = day_wrapper_panel:text({
@@ -408,6 +401,17 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			y = killed_text:bottom()
 		end
 
+		local difficulty_text
+		if managers.crime_spree:_is_active() then
+			difficulty_text = managers.localization:text("menu_cs_level", {level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")})
+		else
+			local difficulty_stars = managers.job:current_difficulty_stars()
+			local difficulty = tweak_data.difficulties[difficulty_stars + 2] or 1
+			local difficulty_string_id = tweak_data.difficulty_name_ids[difficulty]
+			difficulty_text = managers.localization:to_upper_text(difficulty_string_id)
+		end
+		paygrade_text:set_text(difficulty_text)
+
 		self:_update_stats_screen_day(right_panel)
 	end
 
@@ -480,7 +484,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	function HUDStatsScreen:update(day_wrapper_panel, item)
 		if not (self._use_tab_stats and day_wrapper_panel) then return end
 		if managers.money and managers.statistics and managers.experience and not item then
-			local money_current_stage 	= managers.money:get_potential_payout_from_current_stage() or 0
+			local money_current_stage 	= managers.crime_spree:_is_active() and managers.crime_spree:get_potential_payout_from_current_stage("cash") or managers.money:get_potential_payout_from_current_stage() or 0
 			local offshore_rate 		= managers.money:get_tweak_value("money_manager", "offshore_rate") or 0
 			local civilian_kills 		= managers.statistics:session_total_civilian_kills() or 0
 			local cleaner_costs			= (managers.money:get_civilian_deduction() or 0) * civilian_kills
@@ -949,6 +953,52 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" the
 		end
 
 		feed_item_statistics_original(self, new_stats_data, ...)
+	end
+elseif string.lower(RequiredScript) == "lib/managers/crimespreemanager" then
+	function CrimeSpreeManager:get_potential_payout_from_current_stage(reward_id)
+		local multi = self:get_current_reward_multiplier()
+		rewards_table = {}
+		for _, reward in ipairs(tweak_data.crime_spree.rewards) do
+			if not reward_id then
+				rewards_table[reward.id] = reward.amount * multi
+			elseif reward.id == reward_id then
+				return reward.amount * multi
+			end
+		end
+
+		return rewards_table
+	end
+	
+	function CrimeSpreeManager:get_current_reward_multiplier()
+		if self:has_failed() then
+			return 0
+		end
+
+		local mission_id = self:current_mission()
+		local mission_data = mission_id and self:get_mission(mission_id)
+		local reward_add = mission_data and mission_data.add or 0
+		
+		if not self:_is_host() and reward_add > 0 then
+			if self:server_spree_level() > self:spree_level() then
+				local diff = self:server_spree_level() - self:spree_level()
+				local catch_up = math.floor(diff * tweak_data.crime_spree.catchup_bonus)
+				reward_add = reward_add + catch_up
+			elseif self:server_spree_level() < self:spree_level() then
+				local diff = self:spree_level() - self:server_spree_level()
+				reward_add = reward_add - diff
+			end
+		end
+		reward_add = math.max(math.floor(reward_add), 0)
+
+		if self:server_spree_level() >= self:spree_level() and reward_add > 0 then
+			streak_bonus = (self._global.winning_streak or 1) + reward_add * tweak_data.crime_spree.winning_streak
+			if 1 > streak_bonus then
+				streak_bonus = streak_bonus + 1
+			end
+			reward_add = math.max(math.floor(reward_add * streak_bonus), 0)
+		end
+		
+		return reward_add
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	local HUDManager_feed_heist_time_original = HUDManager.feed_heist_time

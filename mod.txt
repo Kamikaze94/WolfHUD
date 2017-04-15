@@ -13,6 +13,7 @@
 		{ "hook_id" : "lib/managers/localizationmanager", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/experiencemanager", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/moneymanager", 								"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/managers/crimespreemanager", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/hudmanager", 								"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/hudmanagerpd2", 							"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/statisticsmanager", 						"script_path" : "Core.lua" },
