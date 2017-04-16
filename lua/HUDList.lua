@@ -96,7 +96,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		right_list_scale = WolfHUD:getSetting({"HUDList", "right_list_scale"}, 1),   	--Size scale of right list
 		left_list_height_offset = 40,   										--Margin from top for the left list
 		left_list_scale = WolfHUD:getSetting({"HUDList", "left_list_scale"}, 1),    	--Size scale of left list
-		buff_list_height_offset = 80,   										--Margin from bottom for the buff list
+		buff_list_height_offset = 90,   										--Margin from bottom for the buff list
 		buff_list_scale = WolfHUD:getSetting({"HUDList", "buff_list_scale"}, 1),    	--Size scale of buff list
 
 		--Left side list
@@ -549,13 +549,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if HUDManager.CUSTOM_TEAMMATE_PANELS then
 			y = managers.hud._teammate_panels[HUDManager.PLAYER_PANEL]:panel():top() - (list_height + 10)
 		else
-			y = hud_panel:bottom() - ((HUDListManager.ListOptions.buff_list_height_offset or 80) + list_height)
+			y = hud_panel:bottom() - ((HUDListManager.ListOptions.buff_list_height_offset or 90) + list_height)
 		end
 
 		if managers.subtitle then
 			local sub_presenter = managers.subtitle:presenter()
 			if sub_presenter and sub_presenter.set_bottom then
-				sub_presenter:set_bottom(y)
+				sub_presenter:set_bottom(y - 10)
 			end
 		end
 
@@ -904,7 +904,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_set_buff_list_height_offset()
 		local list = self:list("buff_list")
 		if list then
-			list:move(list:panel():x(), HUDListManager.ListOptions.buff_list_height_offset or 40, false)
+			list:move(list:panel():x(), HUDListManager.ListOptions.buff_list_height_offset or 90, false)
 		end
 	end
 

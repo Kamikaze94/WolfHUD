@@ -4143,7 +4143,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			if managers.subtitle then
 				local sub_presenter = managers.subtitle:presenter()
 				if sub_presenter and sub_presenter.set_bottom then
-					sub_presenter:set_bottom(y)
+					sub_presenter:set_bottom(y - 10)
 				end
 			end
 			local align_id = teammate_offset[1] < teammate_offset[3] and 1 or 3
