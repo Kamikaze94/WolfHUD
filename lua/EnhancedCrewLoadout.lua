@@ -84,7 +84,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 			self._loadout_panel:set_left(self._panel:left())
 
 			self:populate_loadout_panel()
-			self:set_loadout_enabled(WolfHUD:getSetting({"CrewLoadout", "SHOW_IN_LOBBY"}, true))
+			self:set_loadout_enabled(WolfHUD:getSetting({"CrewLoadout", "SHOW_IN_LOBBY"}, true) and managers.menu:is_pc_controller())
 		end
 	end
 
@@ -172,7 +172,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 	function ContractBoxGui:set_enabled(...)
 		set_enabled_original(self, ...)
 
-		self:set_loadout_enabled(self._enabled and WolfHUD:getSetting({"CrewLoadout", "SHOW_IN_LOBBY"}, true))
+		self:set_loadout_enabled(self._enabled and WolfHUD:getSetting({"CrewLoadout", "SHOW_IN_LOBBY"}, true) and managers.menu:is_pc_controller())
 	end
 	
 	function ContractBoxGui:set_loadout_enabled(status)

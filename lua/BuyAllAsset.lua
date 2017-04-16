@@ -31,7 +31,7 @@ if string.lower(RequiredScript) == "lib/managers/missionassetsmanager" then
 		local level_id = managers.job:current_level_id()
 		if self:is_unlock_asset_allowed() and not tweak_data.preplanning or not tweak_data.preplanning.locations or not tweak_data.preplanning.locations[level_id] then
 			local asset_costs = self:get_total_assets_costs()
-			if asset_costs > 0 and  asset_costs < managers.money:total() then
+			if asset_costs > 0 then
 				return true
 			end
 		end
@@ -50,6 +50,11 @@ if string.lower(RequiredScript) == "lib/managers/missionassetsmanager" then
 elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" then
 	local create_assets_original = AssetsItem.create_assets
 	local unlock_asset_by_id_original = AssetsItem.unlock_asset_by_id
+	local move_up_original = AssetsItem.move_up
+	local move_down_original = AssetsItem.move_down
+	local move_left_original = AssetsItem.move_left
+	local move_right_original = AssetsItem.move_right
+	local confirm_pressed_original = AssetsItem.confirm_pressed
 	local mouse_moved_original = AssetsItem.mouse_moved
 	local mouse_pressed_original = AssetsItem.mouse_pressed
 
@@ -75,6 +80,53 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 		unlock_asset_by_id_original(self, ...)
 
 		self:update_buy_all_btn()
+	end
+	
+	function AssetsItem:move_up(...)
+		if self._asset_selected and (self._asset_selected % 2 > 0) and managers.assets:has_buyable_assets() and self:can_afford_all_assets() then
+			self._buy_all_highlighted = true
+			self._last_selected_asset = self._asset_selected
+			self:check_deselect_item()
+			self:update_buy_all_btn(true)
+			managers.menu_component:post_event("highlight")
+		else
+			move_up_original(self, ...)
+		end
+	end
+	
+	function AssetsItem:move_down(...)
+		if self._buy_all_highlighted then
+			self._buy_all_highlighted = nil
+			self:select_asset(self._last_selected_asset)
+			self:update_buy_all_btn(true)
+			self._last_selected_asset = nil
+		else
+			move_down_original(self, ...)
+		end
+	end
+	
+	function AssetsItem:move_left(...)
+		if not self._buy_all_highlighted then
+			move_left_original(self, ...)
+		end
+	end
+	
+	function AssetsItem:move_right(...)
+		if not self._buy_all_highlighted then
+			move_right_original(self, ...)
+		end
+	end
+	
+	function AssetsItem:confirm_pressed(...)
+		if self._buy_all_highlighted then
+			if self:can_afford_all_assets() then
+				managers.assets:unlock_all_buyable_assets()
+				self:update_buy_all_btn()
+				self:move_down()
+			end
+		else
+			return confirm_pressed_original(self, ...)
+		end
 	end
 	
 	function AssetsItem:mouse_moved(x, y, ...)
@@ -124,7 +176,11 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 				local _, _, w, _ = self._buy_all_btn:text_rect()
 				self._buy_all_btn:set_w(math.ceil(w))
 				self._buy_all_btn:set_top(15)
-				self._buy_all_btn:set_right(self._panel:w() - 5)
+				if managers.menu:is_pc_controller() then
+					self._buy_all_btn:set_right(self._panel:w() - 5)
+				else
+					self._buy_all_btn:set_left(5)
+				end
 			end
 		end
 	end
