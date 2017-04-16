@@ -856,18 +856,36 @@ if WolfHUD then
 								type = "toggle",
 								name_id = "wolfhud_panels_show_interaction_title",
 								desc_id = "wolfhud_panels_show_interaction_desc",
-								visible_reqs = {
-									{ setting = {"CustomHUD", "ENABLED"}, invert = false }
-								},
+								visible_reqs = {},
 								value = {"CustomHUD", "TEAMMATE", "INTERACTION", "HIDE"},
 								invert_value = true,
+							},
+							{
+								type = "toggle",
+								name_id = "wolfhud_panels_show_interaction_number_title",
+								desc_id = "wolfhud_panels_show_interaction_number_desc",
+								visible_reqs = {
+									{ setting = {"CustomHUD", "ENABLED"}, invert = true },
+									{ setting = {"CustomHUD", "TEAMMATE", "INTERACTION", "HIDE"}, invert = true },
+								},
+								value = {"CustomHUD", "TEAMMATE", "INTERACTION", "NUMBER"},
+							},
+							{
+								type = "toggle",
+								name_id = "wolfhud_panels_show_interaction_text_title",
+								desc_id = "wolfhud_panels_show_interaction_text_desc",
+								visible_reqs = {
+									{ setting = {"CustomHUD", "ENABLED"}, invert = true },
+									{ setting = {"CustomHUD", "TEAMMATE", "INTERACTION", "HIDE"}, invert = true },
+								},
+								value = {"CustomHUD", "TEAMMATE", "INTERACTION", "TEXT"},
 							},
 							{
 								type = "slider",
 								name_id = "wolfhud_panels_interaction_time_title",
 								desc_id = "wolfhud_panels_interaction_time_desc",
 								visible_reqs = {
-									{ setting = {"CustomHUD", "ENABLED"}, invert = false }
+									{ setting = {"CustomHUD", "TEAMMATE", "INTERACTION", "HIDE"}, invert = true },
 								},
 								value = {"CustomHUD", "TEAMMATE", "INTERACTION", "MIN_DURATION"},
 								min_value = 0,

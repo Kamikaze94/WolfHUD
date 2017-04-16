@@ -178,6 +178,8 @@ if not _G.WolfHUD then
 					},
 					INTERACTION = {
 						HIDE					= false,		-- Show Interaction
+						NUMBER					= true,
+						TEXT					= true,
 						MIN_DURATION			= 1,
 					},
 					KILLCOUNTER = {

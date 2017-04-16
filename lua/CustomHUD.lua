@@ -9,6 +9,7 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 
 		local set_stamina_value_original = HUDManager.set_stamina_value
 		local set_max_stamina_original = HUDManager.set_max_stamina
+		local teammate_progress_original = HUDManager.teammate_progress
 
 		function HUDManager:set_stamina_value(value, ...)
 			self._teammate_panels[HUDManager.PLAYER_PANEL]:set_current_stamina(value)
@@ -20,11 +21,25 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 			return set_max_stamina_original(self, value, ...)
 		end
 
+		function HUDManager:teammate_progress(peer_id, type_index, enabled, tweak_data_id, timer, success, ...)
+			teammate_progress_original(self, peer_id, type_index, enabled, tweak_data_id, timer, success, ...)
+			local character_data = managers.criminals:character_data_by_peer_id(peer_id)
+			if character_data then
+				local teammate_panel = self._teammate_panels[character_data.panel_id]
+				local name_label = self:_name_label_by_peer_id(peer_id)
+				if name_label then
+					teammate_panel:set_interact_text(name_label.panel:child("action"):text())
+				end
+				teammate_panel:set_interact_visibility(enabled and timer and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "INTERACTION", "MIN_DURATION"}, 1) <= timer and not WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "INTERACTION", "HIDE"}, false) and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "INTERACTION", "TEXT"}, true))
+			end
+		end
+
 	elseif RequiredScript == "lib/managers/hud/hudteammate" then
 
 		local init_original = HUDTeammate.init
 		local set_name_original = HUDTeammate.set_name
 		local set_condition_original = HUDTeammate.set_condition
+		local teammate_progress_original = HUDTeammate.teammate_progress
 
 		function HUDTeammate:init(...)
 			init_original(self, ...)
@@ -37,6 +52,8 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 			
 			if self._main_player and not HUDManager.CUSTOM_TEAMMATE_PANELS then
 				self:_create_stamina_circle()
+			else
+				self:_init_interact_info()
 			end
 		end
 
@@ -136,6 +153,104 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 			if self._stamina_bar and self._stamina_bar:visible() ~= value then
 				self._stamina_bar:set_visible(value)
 				self._stamina_line:set_visible(value)
+			end
+		end
+
+		function HUDTeammate:_init_interact_info()
+			self._interact_info_panel = self._panel:panel({
+				name = "interact_info_panel",
+				x = 0,
+				y = 0,
+				visible = false
+			})
+			self._interact_info = self._interact_info_panel:text({
+				name = "interact_info",
+				text = "|",
+				layer = 3,
+				color = Color.white,
+				x = 0,
+				y = 1,
+				align = "right",
+				vertical = "top",
+				font_size = tweak_data.hud_players.name_size,
+				font = tweak_data.hud_players.name_font
+			})
+			local _, _, text_w, text_h = self._interact_info:text_rect()
+			self._interact_info:set_right(self._interact_info_panel:w() - 4)
+			self._interact_info_bg = self._interact_info_panel:bitmap({
+				name = "interact_info_bg",
+				texture = "guis/textures/pd2/hud_tabs",
+				texture_rect = {
+					84,
+					0,
+					44,
+					32
+				},
+				layer = 2,
+				color = Color.white / 3,
+				x = 0,
+				y = 0,
+				align = "left",
+				vertical = "bottom",
+				w = text_w + 4,
+				h = text_h
+			})
+		end
+
+		function HUDTeammate:set_interact_text(text)
+			if alive(self._interact_info) then
+				self._interact_info:set_text(text)
+				local _, _, w, _ = self._interact_info:text_rect()
+				self._interact_info_bg:set_w(w + 8)
+				self._interact_info_bg:set_right(self._interact_info:right() + 4)
+			end
+		end
+
+		function HUDTeammate:set_interact_visibility(visible)
+			if self._interact_info_panel then
+				self._interact_info_panel:set_visible(visible)
+			end
+		end
+
+		function HUDTeammate:teammate_progress(enabled, tweak_data_id, timer, success, ...)
+			local show = timer and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "INTERACTION", "MIN_DURATION"}, 1) <= timer and not WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "INTERACTION", "HIDE"}, false)
+			teammate_progress_original(self, enabled and show, tweak_data_id, timer, success and show, ...)
+			if enabled and show and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "INTERACTION", "NUMBER"}, true) then
+				self:_start_interact_timer(timer)
+			else
+				self:_stop_interact_timer()
+			end
+		end
+
+		function HUDTeammate:_start_interact_timer(interaction_time)
+			self._timer_paused = 0
+			self._timer = interaction_time
+			local condition_timer = self._panel:child("condition_timer")
+			condition_timer:set_font_size(tweak_data.hud_players.timer_size)
+			condition_timer:set_color(Color.white)
+			condition_timer:stop()
+			condition_timer:set_visible(true)
+			condition_timer:animate(callback(self, self, "_animate_interact_timer"), condition_timer)
+		end
+
+		function HUDTeammate:_animate_interact_timer(_, condition_timer)
+			while self._timer >= 0 do
+				if self._timer_paused == 0 then
+					self._timer = self._timer - coroutine.yield()
+					if self._timer < 0 then
+						self._timer = 0
+					end
+					condition_timer:set_text(string.format("%.1f", self._timer) .. "s")
+					condition_timer:set_color(Color(self._timer / self._timer, 1, self._timer / self._timer))
+				end
+			end
+		end
+
+		function HUDTeammate:_stop_interact_timer()
+			if alive(self._panel) then
+				local condition_timer = self._panel:child("condition_timer")
+				condition_timer:set_visible(false)
+				condition_timer:stop()
 			end
 		end
 
