@@ -223,34 +223,31 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 		end
 
 		function HUDTeammate:_start_interact_timer(interaction_time)
-			self._timer_paused = 0
-			self._timer = interaction_time
 			local condition_timer = self._panel:child("condition_timer")
-			condition_timer:set_font_size(tweak_data.hud_players.timer_size)
-			condition_timer:set_color(Color.white)
 			condition_timer:stop()
-			condition_timer:set_visible(true)
-			condition_timer:animate(callback(self, self, "_animate_interact_timer"), condition_timer)
+			condition_timer:animate(callback(self, self, "_animate_interact_timer"), interaction_time)
 		end
 
-		function HUDTeammate:_animate_interact_timer(_, condition_timer)
-			while self._timer >= 0 do
-				if self._timer_paused == 0 then
-					self._timer = self._timer - coroutine.yield()
-					if self._timer < 0 then
-						self._timer = 0
-					end
-					condition_timer:set_text(string.format("%.1f", self._timer) .. "s")
-					condition_timer:set_color(Color(self._timer / self._timer, 1, self._timer / self._timer))
-				end
+		function HUDTeammate:_animate_interact_timer(condition_timer, total_time)
+			condition_timer:set_font_size(tweak_data.hud_players.timer_size)
+			condition_timer:set_color(Color.white)
+			condition_timer:set_visible(true)
+
+			local t = total_time
+			while t >= 0 do
+				t = t - coroutine.yield()
+				condition_timer:set_text(string.format("%.1fs", t))
+				condition_timer:set_color(math.lerp(Color('00FF00'), Color.white, t / total_time))
 			end
+			condition_timer:set_text(string.format("%.1fs", 0))
+			condition_timer:set_color(Color('00FF00'))
 		end
 
 		function HUDTeammate:_stop_interact_timer()
 			if alive(self._panel) then
 				local condition_timer = self._panel:child("condition_timer")
-				condition_timer:set_visible(false)
 				condition_timer:stop()
+				condition_timer:set_visible(false)
 			end
 		end
 
