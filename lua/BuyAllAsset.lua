@@ -135,6 +135,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 				if not self._buy_all_highlighted then
 					self._buy_all_highlighted = true
 					self:update_buy_all_btn(true)
+					self:check_deselect_item()
 					if self:can_afford_all_assets() then
 						managers.menu_component:post_event("highlight")
 					end
