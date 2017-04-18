@@ -2983,7 +2983,7 @@ if string.lower(RequiredScript) == "lib/modifiers/boosts/gagemodifiermeleeinvinc
 
 		OnPlayerManagerKillshot_original(self, ...)
 
-		if self._special_kill_t > last_kill_t then
+		if (self._special_kill_t or 0) > last_kill_t then
 			managers.gameinfo:event("buff", "activate", "invulnerable_buff")
 			managers.gameinfo:event("buff", "set_duration", "invulnerable_buff", { duration = self:value() })
 		end
@@ -3000,7 +3000,7 @@ if string.lower(RequiredScript) == "lib/modifiers/boosts/gagemodifierlifesteal" 
 		
 		OnPlayerManagerKillshot_original(self, ...)
 
-		if self._last_killshot_t > last_kill_t then
+		if (self._last_killshot_t or 0) > last_kill_t then
 			managers.gameinfo:event("buff", "activate", "life_steal_debuff")
 			managers.gameinfo:event("buff", "set_duration", "life_steal_debuff", { duration = self:value("cooldown") })
 		end

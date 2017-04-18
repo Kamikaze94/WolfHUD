@@ -28,10 +28,11 @@ if requiredScript == "lib/managers/menumanager" then
 			local node_class = CoreSerialize.string_to_classtable("MenuNodeTable")
 			if node_class then
 				pp_nodes[PrePlanningManager.saved_plans_node]  = node_class:new(arugements)
+				local callback_handler = CoreSerialize.string_to_classtable("MenuCallbackHandler")
+				if callback_handler then
+					pp_nodes[PrePlanningManager.saved_plans_node]:set_callback_handler(callback_handler:new())
+				end
 			end
-
-			local callback_handler = CoreSerialize.string_to_classtable("MenuCallbackHandler")
-			pp_nodes[PrePlanningManager.saved_plans_node]:set_callback_handler(callback_handler:new())
 		end
 
 		local return_values = { modifiy_node_preplanning_original(self, node, ...) }
@@ -137,7 +138,7 @@ if requiredScript == "lib/managers/menumanager" then
 
 		if table.size(saved_plans) <= 0 then
 			self:create_divider(node, "title_category_saved_plans", managers.localization:text("wolfhud_preplanning_error_no_saved_plans"), nil, tweak_data.screen_colors.text)
-			selected_item = nil
+			selected_item = "title_category_saved_plans"
 		else
 			if PrePlanningManager._PREPLANNING_DELETE_MODE then
 				self:create_divider(node, "title_category_saved_plans", managers.localization:text("wolfhud_preplanning_delete"), nil, tweak_data.screen_colors.text)
@@ -179,9 +180,8 @@ if requiredScript == "lib/managers/menumanager" then
 
 					local plan_item = node:create_item(item_data, params)
 					node:add_item(plan_item)
-
-					selected_item = selected_item or params.name
 				end
+				selected_item = selected_item or name
 			end
 
 			table.sort(node:items(), function (a, b)
@@ -382,6 +382,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 				assets = #saved_assets > 0 and saved_assets or nil,
 				votes = #saved_votes > 0 and saved_votes or nil,
 			}
+			PrePlanningManager._SAVED_PLANS = PrePlanningManager._SAVED_PLANS or {}
 			PrePlanningManager._SAVED_PLANS[name] = (preplanning_data.assets or preplanning_data.votes) and preplanning_data or nil
 			PrePlanningManager.save_plans()
 
