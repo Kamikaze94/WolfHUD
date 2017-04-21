@@ -220,7 +220,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 			enemy = tweak_table or "UNKNOWN"
 		end
 
-		total = math.min(total, 1000000000)
+		total = math.min(total, 999999999)
 		current = math.clamp(current, 0, total)
 		local _r = current / total
 

@@ -1437,6 +1437,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 		LoadoutSkillsItem.super.init(self, base_panel, owner, name, width, height, params)
 
 		self._tree_names = {}
+		self._detailed = params.show_subtrees or false
 
 		for i, tree in ipairs(tweak_data.skilltree.skill_pages_order) do
 			local tree = tweak_data.skilltree.skilltree[tree]
@@ -1459,13 +1460,19 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 
 				for tree = 1, #self._tree_names, 1 do
 					local tree_has_points = false
+					local tree_detailed = ""
 					local tree_sum = 0
 
 					for sub_tree = 1, subtree_amt, 1 do
 						local skills = skill_data[(tree-1) * subtree_amt + sub_tree] or 0
 						tree_sum = tree_sum + skills
+						tree_detailed = string.format("%s%02d ", tree_detailed, skills)
 					end
-					text = string.format("%s%s:%02d ", text, self._tree_names[tree] or "?", tree_sum)
+					if self._detailed then
+						text = string.format("%s%s:%s", text, self._tree_names[tree] or "?", tree_detailed)
+					else
+						text = string.format("%s%s:%02d ", text, self._tree_names[tree] or "?", tree_sum)
+					end
 				end
 
 				self:set_text(text)
@@ -1799,9 +1806,8 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 	function LoadoutDeployableItem:set_outfit(outfit)
 		if outfit[self._name] and tostring(outfit[self._name]) ~= "nil" and (self._name ~= "secondary_deployable" or (outfit.skills and outfit.skills.skills and tonumber(outfit.skills.skills[7]) >= 12)) then
 			self:set_enabled("outfit", true)
-			local deployable_id = outfit[self._name]
-			if self._loadout ~= deployable_id then
-				self._loadout = deployable_id
+			if self._loadout ~= outfit[self._name] then
+				self._loadout = outfit[self._name]
 				local texture, name = self:get_outfit_data("deployables", self._loadout)
 
 				self:set_text(name)
@@ -1816,7 +1822,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 		local amount = outfit[string.format("%s_amount", self._name)]
 		if amount and (not self._loadout_amount or self._loadout_amount ~= amount) then
 			if self._name == "secondary_deployable" then
-				amount = math.floor(amount / 2)
+				amount = math.ceil(amount / 2)
 			end
 
 			self:set_amount(amount)

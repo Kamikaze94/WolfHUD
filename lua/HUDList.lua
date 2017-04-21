@@ -343,6 +343,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		berserker = { "berserker", "damage_increase", "melee_damage_increase" },
 		berserker_aced = { "berserker", "damage_increase" },										--TODO: buff remains after expiration, base game does not reset upgrade value
 		bloodthirst_basic = { "bloodthirst_basic", "melee_damage_increase" },
+		chico_injector = { "chico_injector", "damage_reduction" },
 		close_contact_1 = { "close_contact", "damage_reduction" },
 		close_contact_2 = { "close_contact", "damage_reduction" },
 		close_contact_3 = { "close_contact", "damage_reduction" },
@@ -351,6 +352,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		die_hard = { "die_hard", "damage_reduction" },
 		frenzy = { "frenzy", "damage_reduction" },
 		hostage_situation = { "hostage_situation", "damage_reduction" },
+		maniac = { "maniac", "damage_reduction" },
 		melee_stack_damage = { "melee_stack_damage", "melee_damage_increase" },
 		overdog = { "overdog", "damage_reduction" },
 		overkill = { "overkill", "damage_increase" },
@@ -3980,9 +3982,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		maniac = {
 			spec = {0, 0},
 			texture_bundle_folder = "coco",
-			class = "BuffItemBase",
+			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			progress_color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			invert_timers = true,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "maniac_buff"}, false) and (WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true) or WolfHUD:getSetting({"CustomHUD", "ENABLED"}, false)),
 		},
 		messiah = {
@@ -4190,6 +4194,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "life_drain_debuff"}, true),
+		},
+		maniac_debuff = {
+			spec = {0, 0},
+			texture_bundle_folder = "coco",
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = true,	--Composite debuff
 		},
 		medical_supplies_debuff = {
 			spec = {4, 5},
@@ -4873,6 +4885,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
+	function HUDList.CompositeBuff:activate_debuff(id)
+		-- TODO?
+	end
+
+	function HUDList.CompositeBuff:deactivate_debuff(id)
+		-- TODO?
+	end
+
 	function HUDList.CompositeBuff:update(t, dt)
 		if self._min_expire_buff then
 			self:_set_progress_inner((t - self._member_buffs[self._min_expire_buff].start_t) / (self._member_buffs[self._min_expire_buff].expire_t - self._member_buffs[self._min_expire_buff].start_t))
@@ -4961,11 +4981,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		}
 
 		self._buff_effects = {
-			berserker = function(active_buffs)
-				return 1 + (active_buffs.berserker.value or 0) * managers.player:upgrade_value("player", "melee_damage_health_ratio_multiplier", 0)
+			berserker = function(value)
+				return 1 + (value or 0) * managers.player:upgrade_value("player", "melee_damage_health_ratio_multiplier", 0)
 			end,
-			berserker_aced = function(active_buffs)
-				return 1 + (active_buffs.berserker_aced.value or 0) * managers.player:upgrade_value("player", "damage_health_ratio_multiplier", 0)
+			berserker_aced = function(value)
+				return 1 + (value or 0) * managers.player:upgrade_value("player", "damage_health_ratio_multiplier", 0)
 			end,
 		}
 	end
@@ -5002,7 +5022,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 					if not self._buff_weapon_requirements[id] or self._buff_weapon_requirements[id][weapon_category] then
 						if not (self._buff_weapon_exclusions[id] and self._buff_weapon_exclusions[id][weapon_category]) then
 							local clbk = self._buff_effects[id]
-							value = value * (clbk and clbk(self._member_buffs) or (data.value or 1))
+							value = value * (clbk and clbk(data.value) or (data.value or 1))
 						end
 					end
 				end
@@ -5039,7 +5059,22 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDList.DamageReductionBuff = HUDList.DamageReductionBuff or class(HUDList.CompositeBuff)
 	function HUDList.DamageReductionBuff:init(...)
 		HUDList.DamageReductionBuff.super.init(self, ...)
-		self._buff_effects = {}
+		self._buff_effects = {
+			chico_injector = function(value)
+				local player = managers.player:player_unit()
+				local health_ratio = alive(player) and player:character_damage():health_ratio() or 1
+				local upg_values = managers.player:upgrade_value("player", "chico_injector_low_health_multiplier")
+				if health_ratio < upg_values[1] then
+					value = value + upg_values[2]
+				end
+				return 1 - value
+			end,
+			maniac = function(value)
+				local tweak = tweak_data.upgrades
+				local max_absorb = (tweak.cocaine_stacks_dmg_absorption_value * tweak.values.player.cocaine_stack_absorption_multiplier[1] * tweak.max_total_cocaine_stacks  / tweak.cocaine_stacks_convert_levels[2])
+				return 1 - (managers.player:get_best_cocaine_damage_absorption() / max_absorb)
+			end
+		}
 	end
 
 	function HUDList.DamageReductionBuff:_update_value()
@@ -5047,10 +5082,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		for id, data in pairs(self._member_buffs) do
 			local clbk = self._buff_effects[id]
-			value = value * (clbk and clbk(self._member_buffs) or (data.value or 1))
+			value = value * (clbk and clbk(data.value) or (data.value or 1))
 		end
 
-		self:_set_text(string.format("-%.0f%%", (1-value)*100))
+		self:_set_text(string.format("-%.0f%%", math.min(1 - value, 1) * 100))
 	end
 
 	HUDList.TimedInteractionItem = HUDList.TimedInteractionItem or class(HUDList.TimedBuffItem)

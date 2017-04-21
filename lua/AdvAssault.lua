@@ -187,10 +187,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			if self._hud_assault_corner then
 				self._hud_assault_corner:locked_assault(status)
 			end
-			if Network:is_server() and WolfHUD.Sync then
-				local data = { event = "assault_lock_state", data = status}
-				WolfHUD.Sync.send("WolfHUD_Sync", data)
-			end
 			self._assault_locked = status
 		end
 		return self._assault_locked

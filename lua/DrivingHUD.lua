@@ -898,7 +898,7 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 			local no_total_seats = self:_number_in_the_vehicle(vehicle_driving, true)
 			local vehicle_name = vehicle_driving._tweak_data.name
 			local seats_table = vehicle_driving._seats
-			local health_total = math.min(vehicle_unit:character_damage()._current_max_health, 1000000000)
+			local health_total = math.min(vehicle_unit:character_damage()._current_max_health, 999999999)
 			local health_current = math.clamp(vehicle_unit:character_damage()._health, 0, health_total)
 			local loot_current = #vehicle_driving._loot
 			local loot_total = vehicle_driving._tweak_data.max_loot_bags

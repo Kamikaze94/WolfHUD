@@ -339,8 +339,9 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	GameInfoManager._INTERACTIONS.IGNORE_IDS.welcome_to_the_jungle_1_night = table.deep_map_copy(GameInfoManager._INTERACTIONS.IGNORE_IDS.welcome_to_the_jungle_1)
 
 	GameInfoManager._CAMERAS = {
-		["6c5d032fe7e08d01"] = "standard",
-		["490a9313f945cccf"] = "drone",
+		["6c5d032fe7e08d01"] = "standard",	--units/payday2/equipment/gen_equipment_security_camera/gen_equipment_security_camera
+		["0c721a9fa6d2fe0a"] = "standard",	--units/world/props/security_camera/security_camera
+		["490a9313f945cccf"] = "drone",		--units/pd2_dlc_dark/equipment/gen_drone_camera/gen_drone_camera
 	}
 
 	GameInfoManager._EQUIPMENT = {
@@ -1787,6 +1788,7 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 	local on_hostage_state_original = GroupAIStateBase.on_hostage_state
 	local sync_hostage_headcount_original = GroupAIStateBase.sync_hostage_headcount
 	local convert_hostage_to_criminal_original = GroupAIStateBase.convert_hostage_to_criminal
+	local remove_minion_original = GroupAIStateBase.remove_minion
 	local sync_converted_enemy_original = GroupAIStateBase.sync_converted_enemy
 	local set_whisper_mode_original = GroupAIStateBase.set_whisper_mode
 
@@ -1834,6 +1836,12 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 				managers.gameinfo:event("minion", "set_damage_multiplier", key, { damage_multiplier = damage_mult })
 			end
 		end
+	end
+	
+	function GroupAIStateBase:remove_minion(minion_key, ...)
+		remove_minion_original(self, minion_key, ...)
+
+		managers.gameinfo:event("minion", "remove", minion_key)
 	end
 
 	function GroupAIStateBase:sync_converted_enemy(converted_enemy, ...)
@@ -2926,7 +2934,12 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		local ratio = max_stack / tweak_data.upgrades.max_total_cocaine_stacks
 		if ratio > 0 then
 			managers.gameinfo:event("buff", "activate", "maniac")
+			if (self._last_stack_decay or 0) < (self._damage_dealt_to_cops_decay_t or tweak_data.upgrades.cocaine_stacks_decay_t or 5) then
+				managers.gameinfo:event("buff", "set_duration", "maniac", { expire_t = self._damage_dealt_to_cops_decay_t })
+			end
 			managers.gameinfo:event("buff", "set_value", "maniac", { value = string.format("%.0f%%", ratio*100), show_value = true } )
+
+			self._last_stack_decay = (self._damage_dealt_to_cops_decay_t or 0)
 		else
 			managers.gameinfo:event("buff", "deactivate", "maniac")
 		end
