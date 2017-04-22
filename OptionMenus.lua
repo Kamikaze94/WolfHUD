@@ -1968,7 +1968,7 @@ if WolfHUD then
 								type = "toggle",
 								name_id = "wolfhud_hudlist_damage_increase_compbuff_title",
 								desc_id = "wolfhud_hudlist_damage_increase_compbuff_desc",
-								value = {"HUDList", "BUFF_LIST", "damage_increase_compbuff"},
+								value = {"HUDList", "BUFF_LIST", "damage_increase"},
 								visible_reqs = {
 									{ setting = { "HUDList", "ENABLED" }, invert = false },
 									{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -1978,7 +1978,7 @@ if WolfHUD then
 								type = "toggle",
 								name_id = "wolfhud_hudlist_damage_reduction_compbuff_title",
 								desc_id = "wolfhud_hudlist_damage_reduction_compbuff_desc",
-								value = {"HUDList", "BUFF_LIST", "damage_reduction_compbuff"},
+								value = {"HUDList", "BUFF_LIST", "damage_reduction"},
 								visible_reqs = {
 									{ setting = { "HUDList", "ENABLED" }, invert = false },
 									{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -1988,7 +1988,7 @@ if WolfHUD then
 								type = "toggle",
 								name_id = "wolfhud_hudlist_melee_damage_increase_compbuff_title",
 								desc_id = "wolfhud_hudlist_melee_damage_increase_compbuff_desc",
-								value = {"HUDList", "BUFF_LIST", "melee_damage_increase_compbuff"},
+								value = {"HUDList", "BUFF_LIST", "melee_damage_increase"},
 								visible_reqs = {
 									{ setting = { "HUDList", "ENABLED" }, invert = false },
 									{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2008,7 +2008,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_forced_friendship_teambuff_title",
 										desc_id = "wolfhud_hudlist_forced_friendship_teambuff_desc",
-										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "forced_friendship_teambuff"},
+										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "forced_friendship"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2022,7 +2022,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_aggressive_reload_aced_buff_title",
 										desc_id = "wolfhud_hudlist_aggressive_reload_aced_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "aggressive_reload_aced_buff"},
+										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "aggressive_reload_aced"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2032,7 +2032,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_ammo_efficiency_buff_title",
 										desc_id = "wolfhud_hudlist_ammo_efficiency_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "ammo_efficiency_buff"},
+										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "ammo_efficiency"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2042,7 +2042,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_combat_medic_buff_title",
 										desc_id = "wolfhud_hudlist_combat_medic_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "combat_medic_buff"},
+										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "combat_medic"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2052,7 +2052,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_combat_medic_passive_buff_title",
 										desc_id = "wolfhud_hudlist_combat_medic_passive_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "combat_medic_passive_buff"},
+										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "combat_medic_passive"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2062,7 +2062,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_hostage_taker_buff_title",
 										desc_id = "wolfhud_hudlist_hostage_taker_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "hostage_taker_buff"},
+										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "hostage_taker"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2072,7 +2072,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_inspire_buff_title",
 										desc_id = "wolfhud_hudlist_inspire_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "inspire_buff"},
+										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "inspire"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2082,7 +2082,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_painkiller_buff_title",
 										desc_id = "wolfhud_hudlist_painkiller_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "painkiller_buff"},
+										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "painkiller"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2092,7 +2092,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_partner_in_crime_buff_title",
 										desc_id = "wolfhud_hudlist_partner_in_crime_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "partner_in_crime_buff"},
+										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "partner_in_crime"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2102,7 +2102,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_quick_fix_buff_title",
 										desc_id = "wolfhud_hudlist_quick_fix_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "quick_fix_buff"},
+										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "quick_fix"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2112,7 +2112,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_uppers_buff_title",
 										desc_id = "wolfhud_hudlist_uppers_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "uppers_buff"},
+										value = {"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "uppers"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2154,7 +2154,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_bulletproof_teambuff_title",
 										desc_id = "wolfhud_hudlist_bulletproof_teambuff_desc",
-										value = {"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "bulletproof_teambuff"},
+										value = {"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "bulletproof"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2168,7 +2168,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_bullet_storm_buff_title",
 										desc_id = "wolfhud_hudlist_bullet_storm_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "bullet_storm_buff"},
+										value = {"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "bullet_storm"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2178,7 +2178,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_die_hard_buff_title",
 										desc_id = "wolfhud_hudlist_die_hard_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "die_hard_buff"},
+										value = {"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "die_hard"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2188,7 +2188,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_overkill_buff_title",
 										desc_id = "wolfhud_hudlist_overkill_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "overkill_buff"},
+										value = {"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "overkill"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2198,7 +2198,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_underdog_buff_title",
 										desc_id = "wolfhud_hudlist_underdog_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "underdog_buff"},
+										value = {"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "underdog"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2230,7 +2230,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_lock_n_load_buff_title",
 										desc_id = "wolfhud_hudlist_lock_n_load_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "TECHNICIAN_BUFFS", "lock_n_load_buff"},
+										value = {"HUDList", "BUFF_LIST", "TECHNICIAN_BUFFS", "lock_n_load"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2248,7 +2248,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_dire_need_buff_title",
 										desc_id = "wolfhud_hudlist_dire_need_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "GHOST_BUFFS", "dire_need_buff"},
+										value = {"HUDList", "BUFF_LIST", "GHOST_BUFFS", "dire_need"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2258,7 +2258,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_second_wind_buff_title",
 										desc_id = "wolfhud_hudlist_second_wind_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "GHOST_BUFFS", "second_wind_buff"},
+										value = {"HUDList", "BUFF_LIST", "GHOST_BUFFS", "second_wind"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2268,7 +2268,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_sixth_sense_buff_title",
 										desc_id = "wolfhud_hudlist_sixth_sense_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "GHOST_BUFFS", "sixth_sense_buff"},
+										value = {"HUDList", "BUFF_LIST", "GHOST_BUFFS", "sixth_sense"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2278,7 +2278,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_unseen_strike_buff_title",
 										desc_id = "wolfhud_hudlist_unseen_strike_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "GHOST_BUFFS", "unseen_strike_buff"},
+										value = {"HUDList", "BUFF_LIST", "GHOST_BUFFS", "unseen_strike"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2296,7 +2296,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_berserker_buff_title",
 										desc_id = "wolfhud_hudlist_berserker_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "berserker_buff"},
+										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "berserker"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2306,7 +2306,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_bloodthirst_basic_buff_title",
 										desc_id = "wolfhud_hudlist_bloodthirst_basic_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "bloodthirst_basic_buff"},
+										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "bloodthirst_basic"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2316,7 +2316,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_bloodthirst_aced_buff_title",
 										desc_id = "wolfhud_hudlist_bloodthirst_aced_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "bloodthirst_aced_buff"},
+										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "bloodthirst_aced"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2326,7 +2326,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_desperado_buff_title",
 										desc_id = "wolfhud_hudlist_desperado_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "desperado_buff"},
+										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "desperado"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2336,7 +2336,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_frenzy_buff_title",
 										desc_id = "wolfhud_hudlist_frenzy_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "frenzy_buff"},
+										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "frenzy"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2346,7 +2346,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_messiah_buff_title",
 										desc_id = "wolfhud_hudlist_messiah_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "messiah_buff"},
+										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "messiah"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2356,7 +2356,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_running_from_death_buff_title",
 										desc_id = "wolfhud_hudlist_running_from_death_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "running_from_death_buff"},
+										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "running_from_death"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2366,7 +2366,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_swan_song_buff_title",
 										desc_id = "wolfhud_hudlist_swan_song_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "swan_song_buff"},
+										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "swan_song"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2376,7 +2376,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_trigger_happy_buff_title",
 										desc_id = "wolfhud_hudlist_trigger_happy_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "trigger_happy_buff"},
+										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "trigger_happy"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2386,7 +2386,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_up_you_go_buff_title",
 										desc_id = "wolfhud_hudlist_up_you_go_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "up_you_go_buff"},
+										value = {"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "up_you_go"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2404,7 +2404,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_armor_break_invulnerable_buff_title",
 										desc_id = "wolfhud_hudlist_armor_break_invulnerable_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "armor_break_invulnerable_buff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "armor_break_invulnerable"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2424,7 +2424,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_armorer_teambuff_title",
 										desc_id = "wolfhud_hudlist_armorer_teambuff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "armorer_teambuff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "armorer"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2434,7 +2434,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_biker_buff_title",
 										desc_id = "wolfhud_hudlist_biker_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "biker_buff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "biker"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2444,7 +2444,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_crew_chief_teambuff_title",
 										desc_id = "wolfhud_hudlist_crew_chief_teambuff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "crew_chief_teambuff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "crew_chief"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2454,7 +2454,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_hostage_situation_buff_title",
 										desc_id = "wolfhud_hudlist_hostage_situation_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "hostage_situation_buff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "hostage_situation"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2484,7 +2484,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_grinder_buff_title",
 										desc_id = "wolfhud_hudlist_grinder_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "grinder_buff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "grinder"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2494,7 +2494,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_chico_injector_buff_title",
 										desc_id = "wolfhud_hudlist_chico_injector_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "chico_injector_buff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "chico_injector"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2504,7 +2504,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_tooth_and_claw_buff_title",
 										desc_id = "wolfhud_hudlist_tooth_and_claw_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "tooth_and_claw_buff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "tooth_and_claw"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2514,7 +2514,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_close_contact_buff_title",
 										desc_id = "wolfhud_hudlist_close_contact_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "close_contact_buff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "close_contact"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2534,7 +2534,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_melee_stack_damage_buff_title",
 										desc_id = "wolfhud_hudlist_melee_stack_damage_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "melee_stack_damage_buff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "melee_stack_damage"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2544,7 +2544,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_overdog_buff_title",
 										desc_id = "wolfhud_hudlist_overdog_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "overdog_buff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "overdog"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2554,7 +2554,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_maniac_buff_title",
 										desc_id = "wolfhud_hudlist_maniac_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "maniac_buff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "maniac"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2564,7 +2564,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_muscle_regen_buff_title",
 										desc_id = "wolfhud_hudlist_muscle_regen_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "muscle_regen_buff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "muscle_regen"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
@@ -2584,7 +2584,7 @@ if WolfHUD then
 										type = "toggle",
 										name_id = "wolfhud_hudlist_yakuza_buff_title",
 										desc_id = "wolfhud_hudlist_yakuza_buff_desc",
-										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "yakuza_buff"},
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "yakuza"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },

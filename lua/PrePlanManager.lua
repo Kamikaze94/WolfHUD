@@ -398,7 +398,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 			local missing_skill, missing_favours, missing_money = false, false, false
 			local peer_id = managers.network:session():local_peer():id()
 			for i, data in ipairs(saved_assets) do
-				local id = self:get_mission_element_id(data.type, data.index)
+				local id = data.id or self:get_mission_element_id(data.type, data.index)
 				if not self:get_reserved_mission_element(id) then
 					local lockData = tweak_data:get_raw_value("preplanning", "types", data.type, "upgrade_lock") or false
 					if not lockData or managers.player:has_category_upgrade(lockData.category, lockData.upgrade) then
@@ -413,11 +413,13 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 					else
 						missing_skill = true
 					end
+				else
+					--Asset not found...
 				end
 			end
 
 			for i, data in ipairs(saved_votes) do
-				local id = self:get_mission_element_id(data.type, data.index)
+				local id = data.id or self:get_mission_element_id(data.type, data.index)
 				self:vote_on_plan(data.type, id)
 			end
 
@@ -449,7 +451,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 			local votes = self:get_player_votes(peer_id) or {}
 
 			for element_id, mission_element in pairs(bought_assets) do
-				if (full_reset and PrePlanningManager.server_master_planner) or mission_element.peer_id == peer_id then
+				if (full_reset and PrePlanningManager.server_master_planner and Network:is_server()) or mission_element.peer_id == peer_id then
 					self:unreserve_mission_element(element_id)
 				end
 			end

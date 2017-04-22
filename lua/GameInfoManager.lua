@@ -2997,8 +2997,7 @@ if string.lower(RequiredScript) == "lib/modifiers/boosts/gagemodifiermeleeinvinc
 		OnPlayerManagerKillshot_original(self, ...)
 
 		if (self._special_kill_t or 0) > last_kill_t then
-			managers.gameinfo:event("buff", "activate", "invulnerable_buff")
-			managers.gameinfo:event("buff", "set_duration", "invulnerable_buff", { duration = self:value() })
+			managers.gameinfo:event("timed_buff", "activate", "invulnerable_buff", { duration = self:value() })
 		end
 	end
 
@@ -3014,8 +3013,7 @@ if string.lower(RequiredScript) == "lib/modifiers/boosts/gagemodifierlifesteal" 
 		OnPlayerManagerKillshot_original(self, ...)
 
 		if (self._last_killshot_t or 0) > last_kill_t then
-			managers.gameinfo:event("buff", "activate", "life_steal_debuff")
-			managers.gameinfo:event("buff", "set_duration", "life_steal_debuff", { duration = self:value("cooldown") })
+			managers.gameinfo:event("timed_buff", "activate", "life_steal_debuff", { duration = self:value("cooldown")})
 		end
 	end
 
@@ -3479,7 +3477,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 	function PlayerDamage:build_suppression(...)
 		build_suppression_original(self, ...)
 		if self:get_real_armor() < self:_max_armor() then
-			LAST_ARMOR_REGEN_BUFF_RESET = Application:time()
+			LAST_ARMOR_REGEN_BUFF_RESET = managers.player:player_timer():time() --Application:time()	--TMP: Test
 			self:_check_armor_regen_timer()
 		end
 	end
@@ -3506,13 +3504,13 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 
 	function PlayerDamage:_custom_on_damage_clbk()
 		if not self:is_downed() then
-			LAST_ARMOR_REGEN_BUFF_RESET = Application:time()
+			LAST_ARMOR_REGEN_BUFF_RESET = managers.player:player_timer():time() --Application:time()	--TMP: Test
 			self:_check_armor_regen_timer()
 		end
 	end
 
 	function PlayerDamage:_check_armor_regen_timer()
-		if self._regenerate_timer then
+		if self._regenerate_timer and not self:is_downed() then
 			local t = managers.player:player_timer():time()
 			local duration = self._regenerate_timer / (self._regenerate_speed or 1)
 
