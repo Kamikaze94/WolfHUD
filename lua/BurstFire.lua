@@ -129,7 +129,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 		end
 
 		if not skip_sound then
-			self._sound_fire:post_event(status and "wp_auto_switch_on" or self._has_auto and "wp_auto_switch_on" or "wp_auto_switch_off")
+			self._sound_fire:post_event((status or self._has_auto) and "wp_auto_switch_on" or "wp_auto_switch_off")
 		end
 
 		self:cancel_burst()

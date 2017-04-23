@@ -215,6 +215,9 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 							{ "grenade", "armor" }, 
 							{ "deployable", "secondary_deployable" } 
 						}),
+					name = 		{ alpha = 1, use_peer_color = true },
+					character = { alpha = 1, use_peer_color = true },
+					default = 	{ alpha = 0.9 },
 					margin = 5,
 					borders = {1, 1, 1, 1}
 				})
@@ -435,13 +438,13 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 							{ "grenade", "armor" }, 
 							{ "deployable", "secondary_deployable" } 
 						}),
-					name = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.95, height = tweak_data.menu.pd2_medium_font_size * 1.00, align = "center", margin = 3 },
-					level = 	{ font_size = tweak_data.menu.pd2_medium_font_size * 0.9,  height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "right",  margin = 3 },
-					skills = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 0.7,  height = tweak_data.menu.pd2_small_font_size  * 0.75, align = "center" 			},
-					perk = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.7,  height = tweak_data.menu.pd2_medium_font_size * 0.75, align = "center"  			},
-					ping = 		{ font_size = tweak_data.menu.pd2_small_font_size  * 0.75, height = tweak_data.menu.pd2_small_font_size  * 0.8, align = "right" 			},
-					playtime = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 0.7,  height = tweak_data.menu.pd2_small_font_size  * 0.75, align = "center" 			},
-					hide_names = true,
+					name = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.95, height = tweak_data.menu.pd2_medium_font_size * 1.00, align = "center", margin = 3, use_peer_color = true, alpha = 1 },
+					level = 	{ font_size = tweak_data.menu.pd2_medium_font_size * 0.9,  height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "right",  margin = 3, use_peer_color = true, alpha = 1 },
+					skills = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 0.7,  height = tweak_data.menu.pd2_small_font_size  * 0.75, align = "center", use_peer_color = true, alpha = 0.95 },
+					perk = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.7,  height = tweak_data.menu.pd2_medium_font_size * 0.75, align = "center", use_peer_color = true, alpha = 0.95 },
+					ping = 		{ font_size = tweak_data.menu.pd2_small_font_size  * 0.75, height = tweak_data.menu.pd2_small_font_size  * 0.8,  align = "right",  alpha = 1 	},
+					playtime = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 0.7,  height = tweak_data.menu.pd2_small_font_size  * 0.75, align = "center", alpha = 1 	},
+					default = 	{ hide_name = true, alpha = 0.9 },
 					margin = 5,
 					borders = { 1, 1, 1, 1 }
 				})
@@ -498,13 +501,13 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 						{ "armor", "mask" }, 
 						{ "deployable", "secondary_deployable" } 
 					}),
-				name = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.95, height = tweak_data.menu.pd2_medium_font_size * 1.00, align = "center", margin = 3 	},
-				level = 	{ font_size = tweak_data.menu.pd2_medium_font_size * 0.9,  height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "right",  margin = 3 	},
-				skills = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 0.7,  height = tweak_data.menu.pd2_small_font_size  * 0.75, align = "center" 				},
-				perk = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.9,  height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "left"  				},
-				ping = 		{ font_size = tweak_data.menu.pd2_small_font_size  * 0.75, height = tweak_data.menu.pd2_small_font_size  * 0.8, align = "right" 				},
-				playtime = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 0.7,  height = tweak_data.menu.pd2_small_font_size  * 0.75, align = "center" 				},
-				hide_names = true,
+				name = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.95, height = tweak_data.menu.pd2_medium_font_size * 1.00, align = "center", margin = 3, use_peer_color = true },
+				level = 	{ font_size = tweak_data.menu.pd2_medium_font_size * 0.9,  height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "right",  margin = 3, use_peer_color = true },
+				skills = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 0.9,  height = tweak_data.menu.pd2_small_font_size  * 0.95, align = "center", use_peer_color = true },
+				perk = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.9,  height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "left",   use_peer_color = true },
+				ping = 		{ font_size = tweak_data.menu.pd2_small_font_size  * 0.75, height = tweak_data.menu.pd2_small_font_size  * 0.8,  align = "right" 	},
+				playtime = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 0.7,  height = tweak_data.menu.pd2_small_font_size  * 0.75, align = "center" 	},
+				default = 	{ hide_name = true },
 				margin = 5,
 				borders = { 1, 1, 1, 1 }
 			})
@@ -674,13 +677,13 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 							{ "name", "ping" }, 
 							{ "skills", "perk" },
 						}),
-					name = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.90, height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "left",  margin = 0 },
-					level = 	{ font_size = tweak_data.menu.pd2_medium_font_size * 0.90, height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "left",  margin = 0 },
+					name = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.90, height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "left",  margin = 0, use_peer_color = true },
+					level = 	{ font_size = tweak_data.menu.pd2_medium_font_size * 0.90, height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "left",  margin = 0, use_peer_color = true },
 					skills = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 1.10, height = tweak_data.menu.pd2_small_font_size  * 1.15, align = "left",  margin = 3 },
 					perk = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.95, height = tweak_data.menu.pd2_medium_font_size * 1.00, align = "left",  margin = 3 },
 					ping = 		{ font_size = tweak_data.menu.pd2_small_font_size  * 0.75, height = tweak_data.menu.pd2_small_font_size  * 0.80, align = "right" 			 },
 					playtime = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 0.75, height = tweak_data.menu.pd2_small_font_size  * 0.80, align = "left" 			 },
-					hide_names = true,
+					default = 	{ hide_name = true },
 					margin = 5,
 					borders = { 0, 0, 0, 2 }
 				})
@@ -822,8 +825,8 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 
 	LoadoutPanel = LoadoutPanel or class(LoadoutBaseItem)
 	LoadoutPanel.NAME_TO_CLASS = {
-		name 					= { class = "LoadoutNameItem", 			params = { font_size = tweak_data.menu.pd2_medium_font_size, 		height = tweak_data.menu.pd2_medium_font_size, margin = 0 } },
-		level 					= { class = "LoadoutLevelItem", 		params = { font_size = tweak_data.menu.pd2_medium_font_size, 		height = tweak_data.menu.pd2_medium_font_size, margin = 0 } },
+		name 					= { class = "LoadoutNameItem", 			params = { font_size = tweak_data.menu.pd2_medium_font_size, 		height = tweak_data.menu.pd2_medium_font_size, margin = 0, use_peer_color = true } },
+		level 					= { class = "LoadoutLevelItem", 		params = { font_size = tweak_data.menu.pd2_medium_font_size, 		height = tweak_data.menu.pd2_medium_font_size, margin = 0, use_peer_color = true } },
 		ping					= { class = "LoadoutPingItem", 			params = { font_size = tweak_data.menu.pd2_medium_font_size * 0.6, 	height = tweak_data.menu.pd2_medium_font_size, margin = 2 } },
 		playtime 				= { class = "LoadoutPlaytimeItem", 		params = { font_size = tweak_data.menu.pd2_medium_font_size * 0.6, 	height = tweak_data.menu.pd2_medium_font_size, margin = 0 } },
 		character				= { class = "LoadoutCharacterItem", 	params = { font_size = tweak_data.menu.pd2_medium_font_size * 0.9,  height = tweak_data.menu.pd2_medium_font_size, margin = 2 } },
@@ -854,7 +857,12 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 		for i, data in ipairs(self._component_layout) do
 			local max_h = 0
 			for i, name in ipairs(data) do
-				local config = params[name] or self.NAME_TO_CLASS[name] and self.NAME_TO_CLASS[name].params or {}
+				local config = params[name] or {}
+				if self.NAME_TO_CLASS[name] then
+					for name, value in pairs(self.NAME_TO_CLASS[name].params or {}) do
+						config[name] = config[name] or value
+					end
+				end
 				if config and config.height then
 					max_h = math.max(max_h, (config.height or 0))
 				end
@@ -876,7 +884,14 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 				local class = config and config.class
 				if class then
 					local component_params = params[name] or config.params
-					component_params.hide_name = component_params.hide_name or component_params.hide_name == nil and params.hide_names or false
+					if params.default then
+						for name, value in pairs(params.default) do
+							component_params[name] = component_params[name] or value
+						end
+					end
+					if component_params.use_peer_color then
+						component_params.color = self._peer_color
+					end
 					self._components[name] = _G[class]:new(self._panel, self, name, sub_comp_w, component_params and component_params.height or math.ceil(comp_h), component_params or {})
 				end
 			end
@@ -902,23 +917,6 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 		self:arrange()
 
 		self:set_outfit(params.outfit or {})
-
-		if self._components["name"] then
-			self._components["name"]:set_color(self._peer_color)
-		else
-			if self._components["skills"] then
-				self._components["skills"]:set_color(self._peer_color)
-			end
-			if self._components["perk"] then
-				self._components["perk"]:set_color(self._peer_color)
-			end
-		end
-		if self._components["level"] then
-			self._components["level"]:set_color(self._peer_color)
-		end
-		if self._components["character"] then
-			self._components["character"]:set_color(self._peer_color)
-		end
 	end
 
 	function LoadoutPanel:set_enabled(reason, status)
@@ -1038,7 +1036,8 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 		self._text = self._panel:text({
 			name = name,
 			text = params.text or "",
-			color = Color.white,
+			color = params.color or Color.white,
+			alpha = params.alpha or 1,
 			align = params.align or "center",
 			vertical = "center",
 			x = self._margin,
@@ -1048,7 +1047,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			layer = 2,
 			font_size = self._font_size * 0.95,
 			font = tweak_data.menu.pd2_medium_font,
-			blend_mode = "add",
+			blend_mode = params.blend_mode or "normal",
 		})
 	end
 
@@ -1061,9 +1060,15 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 		end
 	end
 
-	function LoadoutTextItem:set_text(text)
+	function LoadoutTextItem:set_text(text, color_range)
 		if text and alive(self._text) then
 			self._text:set_text(text)
+			if color_range then
+				local color, alpha = self._text:color(), self._text:alpha()
+				for _, range in ipairs(color_range) do
+					self._text:set_range_color(range[1], range[2], color:with_alpha(alpha * 0.65))
+				end
+			end
 
 			local _, _, actual_w, _ = self._text:text_rect()
 			local new_font_size = math.min(self._text:font_size() * math.max(self._panel:w() - 2 * self._margin, 0.1) / actual_w, self._font_size * 0.95)
@@ -1090,13 +1095,14 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			name = name .. "_title",
 			text = params.text or "",
 			color = params.color or Color.white,
+			alpha = params.alpha or 1,
 			align = "left",
 			vertical = "center",
 			h = self._font_size,
 			layer = 3,
 			font_size = self._font_size * 0.95,
 			font = tweak_data.menu.pd2_medium_font,
-			blend_mode = "add",
+			blend_mode = params.blend_mode or "normal",
 			visible = not self._hide_name,
 		})
 		self._text:set_top(self._margin)
@@ -1123,10 +1129,10 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			font_size = tweak_data.menu.pd2_small_font_size * 0.9,
 			font = tweak_data.menu.pd2_small_font,
 			color = params.color or Color.white,
-			blend_mode = "add",
+			alpha = params.alpha or 1,
+			blend_mode = params.blend_mode or "normal",
 			align = "right",
 			vertical = "bottom",
-			blend_mode = "add",
 			layer = 3,
 		})
 		self._amount_text:set_right(self._panel:w() - self._margin)
@@ -1163,9 +1169,15 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 		self._amount_text:set_bottom(self._panel:h() - self._margin)
 	end
 
-	function LoadoutImageItem:set_text(text)
+	function LoadoutImageItem:set_text(text, color_range)
 		if text and self._text:visible() then
 			self._text:set_text(text)
+			if color_range then
+				local color, alpha = self._text:color(), self._text:alpha()
+				for _, range in ipairs(color_range) do
+					self._text:set_range_color(range[1], range[2], color:with_alpha(alpha * 0.65))
+				end
+			end
 
 			local _, _, actual_w, _ = self._text:text_rect()
 			local new_h = math.min(self._text:h() * math.max(self._panel:w() - 2 * self._margin, 0.1) / actual_w, self._font_size)
@@ -1194,10 +1206,16 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 		end
 	end
 
-	function LoadoutImageItem:set_amount(amount)
+	function LoadoutImageItem:set_amount(amount, color_range)
 		if amount then
 			local text = amount > 1 and string.format("x%d", amount) or ""
 			self._amount_text:set_text(text)
+			if color_range then
+				local color, alpha = self._text:color(), self._text:alpha()
+				for _, range in ipairs(color_range) do
+					self._amount_text:set_range_color(range[1], range[2], color:with_alpha(alpha * 0.65))
+				end
+			end
 
 			local _, _, actual_w, _ = self._amount_text:text_rect()
 			local new_h = math.min(self._amount_text:h() * (math.max(self._panel:w() - 2 * self._margin, 0.1) / 3) / actual_w, tweak_data.menu.pd2_small_font_size)
@@ -1457,25 +1475,37 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 				self._loadout = skill_str
 				local subtree_amt = math.floor(#skill_data / #self._tree_names)
 				local text = ""
+				local color_range = {}
 
 				for tree = 1, #self._tree_names, 1 do
 					local tree_has_points = false
-					local tree_detailed = ""
+					local tree_name = (self._tree_names[tree] or "?")
+					local tree_detailed = string.format("%s:", tree_name)
 					local tree_sum = 0
 
 					for sub_tree = 1, subtree_amt, 1 do
 						local skills = skill_data[(tree-1) * subtree_amt + sub_tree] or 0
-						tree_sum = tree_sum + skills
+						if self._detailed and skills < 10 then
+							local l = text:len() + tree_detailed:len()
+							local l_end = l + (skills > 0 and 1 or 2)
+							table.insert(color_range, {l, l_end})
+						end
 						tree_detailed = string.format("%s%02d ", tree_detailed, skills)
+						tree_sum = tree_sum + skills
 					end
 					if self._detailed then
-						text = string.format("%s%s:%s", text, self._tree_names[tree] or "?", tree_detailed)
+						text = string.format("%s%s", text, tree_detailed)
 					else
-						text = string.format("%s%s:%02d ", text, self._tree_names[tree] or "?", tree_sum)
+						if tree_sum < 10 then
+							local l = text:len() + tree_name:len() + 1
+							local l_end = l + (tree_sum > 0 and 1 or 2)
+							table.insert(color_range, {l, l_end})
+						end
+						text = string.format("%s%s:%02d ", text, tree_name, tree_sum)
 					end
 				end
 
-				self:set_text(text)
+				self:set_text(text, color_range)
 
 				self:arrange()
 			end
@@ -1496,7 +1526,13 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			if name_id and self._loadout ~= deck_id then
 				self._loadout = deck_id
 				local text = managers.localization:text(name_id)
-				self:set_text(string.format("%s%s", text, tonumber(deck_level) < 9 and string.format(" (%d/9)", deck_level) or ""))
+				local color_range = {}
+				if tonumber(deck_level) < 9 then
+					local l = text:len()
+					text = string.format("%s%s", text, string.format(" (%d/9)", deck_level))
+					table.insert(color_range, {l, text:len()})
+				end
+				self:set_text(text, color_range)
 
 				self:arrange()
 			end

@@ -57,9 +57,10 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			end,
 
 			--General functions
-			update = function(timers, key, t, timer)
+			update = function(timers, key, t, timer, timer_ratio)
 				if timers[key] then
 					timers[key].timer_value = timer
+					timers[key].timer_ratio = timer_ratio
 					managers.gameinfo:_listener_callback("timer", "update", key, timers[key])
 				end
 			end,
@@ -1531,7 +1532,8 @@ if string.lower(RequiredScript) == "lib/units/props/digitalgui" then
 
 	function DigitalGui:update(unit, t, ...)
 		update_original(self, unit, t, ...)
-		self:_do_timer_callback("update", t, self._timer)
+		self._max_timer = self._max_timer or self._timer
+		self:_do_timer_callback("update", t, self._timer, self._timer / self._max_timer)
 	end
 
 	function DigitalGui:timer_set(timer, ...)
@@ -1665,7 +1667,7 @@ if string.lower(RequiredScript) == "lib/units/props/timergui" then
 
 	function TimerGui:update(unit, t, dt, ...)
 		update_original(self, unit, t, dt, ...)
-		managers.gameinfo:event("timer", "update", self._info_key, t, self._time_left)
+		managers.gameinfo:event("timer", "update", self._info_key, t, self._time_left, self._current_timer / self._timer)
 	end
 
 	function TimerGui:_start(...)
@@ -1713,7 +1715,7 @@ if string.lower(RequiredScript) == "lib/units/props/securitylockgui" then
 
 	function SecurityLockGui:update(unit, t, ...)
 		update_original(self, unit, t, ...)
-		managers.gameinfo:event("timer", "update", self._info_key, t, self._current_timer)
+		managers.gameinfo:event("timer", "update", self._info_key, t, self._current_timer, self._current_timer / self._timer)
 	end
 
 	function SecurityLockGui:_start(...)
@@ -3421,7 +3423,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 			end
 		end
 
-		if health_ratio < 1 then
+		if not self:full_health() then
 			if managers.player:has_category_upgrade("player", "passive_health_regen") then
 				managers.gameinfo:event("buff", "activate", "muscle_regen")
 			end
@@ -3436,7 +3438,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 		local result = _upd_health_regen_original(self, t, ...)
 
 		if self._health_regen_update_timer then
-			if self._health_regen_update_timer > (old_timer or 0) and self:health_ratio() < 1 then
+			if self._health_regen_update_timer > (old_timer or 0) and not self:full_health() then
 				managers.gameinfo:event("buff", "set_duration", "muscle_regen", { duration = self._health_regen_update_timer })
 				managers.gameinfo:event("buff", "set_duration", "hostage_taker", { duration = self._health_regen_update_timer })
 			end

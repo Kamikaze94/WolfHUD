@@ -1,37 +1,78 @@
-if WolfHUD and not WolfHUD:getSetting({"HUDList", "ENABLED"}, true) then return end
-print_info = function(...)
-	WolfHUD:print_log(string.format(...), "info")
-end
-
-print_warning = function(...)
-	WolfHUD:print_log(string.format(...), "warning")
-end
-
-print_error = function(...)
-	WolfHUD:print_log(string.format(...), "error")
-end
+if not (WolfHUD and WolfHUD:getSetting({"HUDList", "ENABLED"}, true)) then return end
 if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
-
 	local format_time_string = function(value)
-		local frmt_string
+		local time_str
 
 		if math.floor(value) > 60 then
-			frmt_string = string.format("%d:%02d", math.floor(value / 60), math.floor(value % 60))
+			time_str = string.format("%d:%02d", math.floor(value / 60), math.floor(value % 60))
 		elseif math.floor(value) > 9.9 then
-			frmt_string = string.format("%d", math.floor(value))
+			time_str = string.format("%d", math.floor(value))
 		elseif value > 0 then
-			frmt_string = string.format("%.1f", value)
+			time_str = string.format("%.1f", value)
 		else
-			frmt_string = string.format("%.1f", 0)
+			time_str = string.format("%.1f", 0)
 		end
 
-		return frmt_string
+		return time_str
 	end
 
 	local function get_distance_to_player(unit)
+		local distance, rotation = 0, 360
+
 		local cam = managers.viewport:get_current_camera()
-		local distance = alive(cam) and alive(unit) and (mvector3.normalize(cam:position() - unit:position()) / 100) or 0
-		return string.format("%.0fm", distance)
+		if alive(cam) and alive(unit) then
+			local vector = unit:position() - cam:position()
+			local forward = cam:rotation():y()
+			distance = (mvector3.normalize(vector) or 0) / 100
+			rotation = math.floor( vector:to_polar_with_reference( forward , math.UP ).spin )
+		end
+
+		local distance_str
+		if math.floor(distance) > 9.9 then
+			distance_str = string.format("%dm", distance)
+		else
+			distance_str = string.format("%.1fm", distance)
+		end
+		return distance_str, rotation
+	end
+	
+	local function get_icon_data(icon)
+		local texture = icon.texture
+		local texture_rect = icon.texture_rect
+
+		if icon.atlas then
+			texture = "guis/textures/pd2/skilltree/icons_atlas"
+			local x, y = unpack(icon.atlas)
+			texture_rect = { x * 64, y * 64, 64, 64 }
+		elseif icon.atlas_new then
+			texture = "guis/textures/pd2/skilltree_2/icons_atlas_2"
+			local x, y = unpack(icon.atlas_new)
+			texture_rect = { x * 80, y * 80, 80, 80 }
+		elseif icon.spec then
+			texture = string.format("guis/%stextures/pd2/specialization/icons_atlas", icon.texture_bundle_folder and string.format("dlcs/%s/", tostring(icon.texture_bundle_folder)) or "")
+			local x, y = unpack(icon.spec)
+			texture_rect = { x * 64, y * 64, 64, 64 }
+		elseif icon.preplanning then
+			texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_icon_types"
+			local x, y = unpack(icon.preplanning)
+			texture_rect = { x * 48, y * 48, 48, 48 }
+		elseif icon.hud_tweak then
+			texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon.hud_tweak)
+		elseif icon.hud_icons then
+			texture = "guis/textures/hud_icons"
+			texture_rect = icon.hud_icons
+		elseif icon.hudtabs then
+			texture = "guis/textures/pd2/hud_tabs"
+			texture_rect = icon.hudtabs
+		elseif icon.hudpickups then
+			texture = "guis/textures/pd2/hud_pickups"
+			texture_rect = icon.hudpickups
+		elseif icon.waypoints then
+			texture = "guis/textures/pd2/pd2_waypoints"
+			texture_rect = icon.waypoints
+		end
+
+		return texture, texture_rect
 	end
 
 	local _setup_player_info_hud_pd2_original = HUDManager._setup_player_info_hud_pd2
@@ -44,7 +85,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if managers.gameinfo then
 			managers.hudlist = HUDListManager:new()
 		else
-			print_error("HUDList: GameInfoManager not present!")
+			WolfHUD:print_log("HUDList: GameInfoManager not present!", "error")
 		end
 	end
 
@@ -146,14 +187,20 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	}
 
 	HUDListManager.TIMER_SETTINGS = {
-		[132864] = {	--Meltdown vault temperature
-			class = "TemperatureGaugeItem",
-			params = { start = 0, goal = 50 },
+		shoutout_raid = {
+			[132864] = {	--Meltdown vault temperature
+				class = "TemperatureGaugeItem",
+				params = { start = 0, goal = 50 },
+			},
 		},
-		[135076] = { ignore = true },	--Lab rats cloaker safe 2
-		[135246] = { ignore = true },	--Lab rats cloaker safe 3
-		[135247] = { ignore = true },	--Lab rats cloaker safe 4
-		[400003] = { ignore = true },	--Prison Nightmare Big Loot timer
+		nail = {
+			[135076] = { ignore = true },	--Lab rats cloaker safe 2
+			[135246] = { ignore = true },	--Lab rats cloaker safe 3
+			[135247] = { ignore = true },	--Lab rats cloaker safe 4
+		},
+		help = {
+			[400003] = { ignore = true },	--Prison Nightmare Big Loot timer
+		},
 	}
 
 	HUDListManager.UNIT_TYPES = {
@@ -249,7 +296,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		pickup_phone = 						"small_loot",
 		press_pick_up =						"secret_item",
 		hold_pick_up_turtle = 				"secret_item",
-		glc_hold_take_handcuffs = 			"secret_item",
+		glc_hold_take_handcuffs = 			"handcuffs",
 		hold_take_missing_animal_poster = 	"poster",
 	}
 
@@ -467,7 +514,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		--Timers
 		local timer_list = list:register_item("timers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 3 })
 		timer_list:set_static_item(HUDList.LeftListIcon, 1, 4/5, {
-			{ atlas = true, texture_rect = { 3 * 64, 6 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
+			{ atlas = {3, 6}, color = HUDListManager.ListOptions.list_color },
 		})
 
 		--Deployables
@@ -475,40 +522,40 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		equipment_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
 			--{ atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[2] * 64, 64, 64 }, valign = "top", halign = "right", color = HUDListManager.ListOptions.list_color },
 			--{ atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[2] * 64, 64, 64 }, valign = "bottom", halign = "left", color = HUDListManager.ListOptions.list_color },
-			{ atlas = true, h = 0.55, w = 0.55, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[2] * 64, 64, 64 }, valign = "top", halign = "right", color = HUDListManager.ListOptions.list_color },
-			{ atlas = true, h = 0.55, w = 0.55, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[2] * 64, 64, 64 }, valign = "top", halign = "left", color = HUDListManager.ListOptions.list_color },
-			{ atlas = true, h = 0.55, w = 0.55, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.sentry.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.sentry.atlas[2] * 64, 64, 64 }, valign = "bottom", halign = "right", color = HUDListManager.ListOptions.list_color },
-			{ atlas = true, h = 0.55, w = 0.55, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.body_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.body_bag.atlas[2] * 64, 64, 64 }, valign = "bottom", halign = "left", color = HUDListManager.ListOptions.list_color },
+			{ atlas = HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas, h = 0.55, w = 0.55, valign = "top", halign = "right", color = HUDListManager.ListOptions.list_color },
+			{ atlas = HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas, h = 0.55, w = 0.55, valign = "top", halign = "left", color = HUDListManager.ListOptions.list_color },
+			{ atlas = HUDList.EquipmentItem.EQUIPMENT_TABLE.sentry.atlas, h = 0.55, w = 0.55, valign = "bottom", halign = "right", color = HUDListManager.ListOptions.list_color },
+			{ atlas = HUDList.EquipmentItem.EQUIPMENT_TABLE.body_bag.atlas, h = 0.55, w = 0.55, valign = "bottom", halign = "left", color = HUDListManager.ListOptions.list_color },
 		})
 
 		--Minions
 		local minion_list = list:register_item("minions", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, left_to_right = true, item_margin = 5, priority = 4 })
 		minion_list:set_static_item(HUDList.LeftListIcon, 1, 4/5, {
-			{ atlas = true, texture_rect = { 6 * 64, 8 * 64, 64, 64 } },
+			{ atlas = {6, 8} },
 		})
 
 		--Pagers
 		local pager_list = list:register_item("pagers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 2 })
 		pager_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-			{ spec = true, texture_rect = { 1 * 64, 4 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
+			{ spec = {1, 4}, color = HUDListManager.ListOptions.list_color },
 		})
 
 		--ECMs
 		local ecm_list = list:register_item("ecms", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5, priority = 5 })
 		ecm_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-			{ atlas = true, texture_rect = { 1 * 64, 4 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
+			{ atlas = {1, 4}, color = HUDListManager.ListOptions.list_color },
 		})
 
 		--ECM trigger
 		local retrigger_list = list:register_item("ecm_retrigger", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5, priority = 6 })
 		retrigger_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-			{ atlas = true, texture_rect = { 6 * 64, 2 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
+			{ atlas = {6, 2}, color = HUDListManager.ListOptions.list_color },
 		})
 
 		--Tape loop
 		local tape_loop_list = list:register_item("tape_loop", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5, priority = 7 })
 		tape_loop_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-			{ atlas = true, texture_rect = { 4 * 64, 2 * 64, 64, 64 }, color = HUDListManager.ListOptions.list_color },
+			{ atlas = {4, 2}, color = HUDListManager.ListOptions.list_color },
 		})
 
 		self:_set_show_timers()
@@ -702,7 +749,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	--Event handlers
 	function HUDListManager:_timer_event(event, key, data)
-		local settings = HUDListManager.TIMER_SETTINGS[data.id] or HUDListManager.TIMER_SETTINGS[data.device_type] or {}
+		local level_id = managers.job:current_level_id() or ""
+		local settings = HUDListManager.TIMER_SETTINGS[level_id] and HUDListManager.TIMER_SETTINGS[level_id][data.id] or HUDListManager.TIMER_SETTINGS[data.device_type] or HUDList.TimerItem.DEVICE_TYPES[data.device_type] or {}
 
 		if not settings.ignore then
 			local timer_list = self:list("left_side_list"):item("timers")
@@ -844,14 +892,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDListManager:_buff_event(event, id, data)
-		print_info("(%.3f) HUDListManager:_buff_event(%s, %s)", Application:time(), tostring(event), tostring(id))
+		WolfHUD:print_log(string.format("(%.3f) HUDListManager:_buff_event(%s, %s)", Application:time(), tostring(event), tostring(id)), "info")
 		local items = self:_get_buff_items(id)
 
 		for _, item in ipairs(items) do
 			if item[event] then
 				item[event](item, id, data)
 			else
-				print_info("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s", Application:time(), event, id)
+				WolfHUD:print_log(string.format("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s", Application:time(), tostring(event), tostring(id)), "warning")
 			end
 		end
 
@@ -1768,15 +1816,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local icons_added = {}
 
 		for i, icon in ipairs(data) do
-			local x, y = unpack((icon.atlas or icon.spec) or { 0, 0 })
-			local texture = icon.texture
-					or icon.spec and "guis/textures/pd2/specialization/icons_atlas"
-					or icon.atlas and "guis/textures/pd2/skilltree/icons_atlas"
-					or icon.waypoints and "guis/textures/pd2/pd2_waypoints"
-					or icon.hudtabs and "guis/textures/pd2/hud_tabs"
-					or icon.hudpickups and "guis/textures/pd2/hud_pickups"
-					or icon.hudicons and "guis/textures/hud_icons"
-			local texture_rect = (icon.spec or icon.atlas) and { x * 64, y * 64, 64, 64 } or icon.waypoints or icon.hudtabs or icon.hudpickups or icon.hudicons or icon.texture_rect
+			local texture, texture_rect = get_icon_data(icon)
 
 			local new_icon = self._panel:bitmap({
 				name = data.name or "icon",
@@ -2137,15 +2177,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._change_increase_color = Color.green
 		self._change_decrease_color = Color.red
 
-		local x, y = unpack((icon.atlas or icon.spec) or { 0, 0 })
-		local texture = icon.texture
-				or icon.spec and "guis/textures/pd2/specialization/icons_atlas"
-				or icon.atlas and "guis/textures/pd2/skilltree/icons_atlas"
-				or icon.waypoints and "guis/textures/pd2/pd2_waypoints"
-				or icon.hudtabs and "guis/textures/pd2/hud_tabs"
-				or icon.hudpickups and "guis/textures/pd2/hud_pickups"
-				or icon.hudicons and "guis/textures/hud_icons"
-		local texture_rect = (icon.spec or icon.atlas) and { x * 64, y * 64, 64, 64 } or icon.waypoints or icon.hudtabs or icon.hudpickups or icon.hudicons or icon.texture_rect
+		
+		local texture, texture_rect = get_icon_data(icon)
 
 		self._icon = self._panel:bitmap({
 			name = "icon",
@@ -2525,7 +2558,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		courier = 					{ atlas 	 = { 6, 0 }, 			priority = 3 },			--{ texture = "guis/textures/contact_vlad", texture_rect = {1920, 0, 64, 64}, priority = 3 },
 		gage_case = 				{ atlas 	 = { 1, 0 }, 			priority = 3 },
 		gage_key = 					{ hudpickups = { 32, 64, 32, 32 }, 	priority = 3 },
-		paycheck_masks = 			{ hudpickups = { 128, 32, 32, 32 }, priority = 3 },
+		paycheck_masks = 			{ hudpickups = { 128, 32, 32, 32 }, priority = 4 },
 		planks =					{ hudpickups = { 0, 32, 32, 32 }, 	priority = 2 },
 		meth_ingredients =			{ waypoints  = { 192, 32, 32, 32 }, priority = 2 },
 		blowtorch = 				{ hudpickups = { 96, 192, 32, 32 }, priority = 1 },
@@ -2533,6 +2566,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		c4 = 						{ hudicons	 = { 36, 242, 32, 32 }, priority = 1 },
 		secret_item =				{ waypoints  = { 96, 64, 32, 32 }, 	priority = 4 },
 		poster = 					{ hudpickups = { 96, 96, 32, 32 }, 	priority = 4 },
+		handcuffs = 				{ hud_icons  = {294,469, 40, 40 }, 	priority = 4 },
 	}
 
 	function HUDList.SpecialPickupItem:init(parent, name, id, members)
@@ -2741,15 +2775,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		self._icons = {}
 		for i, icon in ipairs(icons) do
-			local texture = icon.spec and "guis/textures/pd2/specialization/icons_atlas"
-					or icon.atlas and "guis/textures/pd2/skilltree/icons_atlas"
-					or icon.waypoints and "guis/textures/pd2/pd2_waypoints"
-					or icon.texture
+			local texture, texture_rect = get_icon_data(icon)
 
 			local bitmap = self._panel:bitmap({
 				name = "icon_" .. tostring(i),
 				texture = texture,
-				texture_rect = icon.texture_rect or nil,
+				texture_rect = texture_rect or nil,
 				h = self:panel():w() * (icon.h or 1),
 				w = self:panel():w() * (icon.w or 1),
 				blend_mode = "add",
@@ -2774,12 +2805,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	HUDList.TimerItem = HUDList.TimerItem or class(HUDList.ItemBase)	--TODO: Make inheriting UpgradableTimerItem?
 	HUDList.TimerItem.DEVICE_TYPES = {
-		digital = "wolfhud_hudlist_device_timer",
-		drill = "wolfhud_hudlist_device_drill",
-		hack = "wolfhud_hudlist_device_hack",
-		saw = "wolfhud_hudlist_device_saw",
-		timer = "wolfhud_hudlist_device_timer",
-		securitylock = "wolfhud_hudlist_device_hack",
+		digital 		= { name = "wolfhud_hudlist_device_timer" 	},
+		drill 			= { name = "wolfhud_hudlist_device_drill" 	},
+		hack 			= { name = "wolfhud_hudlist_device_hack" 	},
+		saw 			= { name = "wolfhud_hudlist_device_saw" 	},
+		timer 			= { name = "wolfhud_hudlist_device_timer" 	},
+		securitylock 	= { name = "wolfhud_hudlist_device_hack" 	},
 	}
 	function HUDList.TimerItem:init(parent, name, data)
 		self.STANDARD_COLOR = HUDListManager.ListOptions.list_color or Color(1, 1, 1, 1)
@@ -2801,7 +2832,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		HUDList.ItemBase.init(self, parent, name, { align = "left", w = parent:panel():h() * (self._show_upgrade_icons and 1 or 4/5), h = parent:panel():h() })
 
-		local txt = self.DEVICE_TYPES[self._device_type] and managers.localization:text(self.DEVICE_TYPES[self._device_type]) or "Timer"
+		local txt = self.DEVICE_TYPES[self._device_type] and managers.localization:text(self.DEVICE_TYPES[self._device_type].name or "N/A") or "N/A"
 		self._type_text = self._panel:text({
 			name = "type_text",
 			text = txt,
@@ -2814,67 +2845,80 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			font_size = self._panel:h() * 0.3
 		})
 
-		self._box = HUDBGBox_create(self._panel, {
+		--self._box = HUDBGBox_create(self._panel, {
+		--	w = self._panel:w(),
+		--	h = self._panel:h() * 0.7,
+		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
+		--self._box:set_bottom(self._panel:bottom())
+
+		self._progress = PanelFrame:new(self._panel, {
 			w = self._panel:w(),
-			h = self._panel:h() * 0.7,
-		}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
-		self._box:set_bottom(self._panel:bottom())
+			h = self._panel:w() * 0.7,
+			invert_progress = true,
+			bar_w = 2,
+			bar_color = (self.STANDARD_COLOR or Color.white),
+			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			add_bg = true,
+		})
+		local box = self._progress:panel()
+		box:set_bottom(self._panel:bottom())
 
 		local w_mult = self._show_upgrade_icons and 4/5 or 1
 
-		self._distance_text = self._box:text({
+		self._distance_text = box:text({
 			name = "distance",
 			align = "center",
 			vertical = "top",
-			w = self._box:w() * w_mult,
-			h = self._box:h(),
+			y = 2,
+			w = box:w() * w_mult,
+			h = box:h() - 2,
 			color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.4
+			font_size = box:h() * 0.4
 		})
 
-		self._time_text = self._box:text({
+		self._time_text = box:text({
 			name = "time",
 			align = "center",
 			vertical = "bottom",
-			w = self._box:w() * w_mult,
-			h = self._box:h(),
+			w = box:w() * w_mult,
+			h = box:h(),
 			color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.6
+			font_size = box:h() * 0.6
 		})
 
-		self._speed_upgrade = self._box:bitmap({
+		self._speed_upgrade = box:bitmap({
 			name = "icon_speed",
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
 			x = self._time_text:right() * 0.95,
-			y = self._box:h() * (0.03),
-			h = self._box:h() * 0.3,
-			w = self._box:w() * (1/5),
+			y = box:h() * (0.03),
+			h = box:h() * 0.3,
+			w = box:w() * (1/5),
 			blend_mode = "add",
 			color = self.UPGRADE_LVL_COLORS[1],
 			visible = self._show_upgrade_icons
 		})
 
-		self._noise_upgrade = self._box:bitmap({
+		self._noise_upgrade = box:bitmap({
 			name = "icon_noise",
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_silent",
 			x = self._time_text:right() * 0.95,
-			y = self._box:h() * (0.33),
-			h = self._box:h() * 0.3,
-			w = self._box:w() * (1/5),
+			y = box:h() * (0.33),
+			h = box:h() * 0.3,
+			w = box:w() * (1/5),
 			blend_mode = "add",
 			color = self.UPGRADE_LVL_COLORS[1],
 			visible = self._show_upgrade_icons
 		})
 
-		self._restart_upgrade = self._box:bitmap({
+		self._restart_upgrade = box:bitmap({
 			name = "icon_restart",
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_restarter",
 			x = self._time_text:right() * 0.95,
-			y = self._box:h() * 0.66,
-			h = self._box:h() * 0.3,
-			w = self._box:w() * (1/5),
+			y = box:h() * 0.66,
+			h = box:h() * 0.3,
+			w = box:w() * (1/5),
 			blend_mode = "add",
 			color = self.UPGRADE_LVL_COLORS[1],
 			visible = self._show_upgrade_icons
@@ -2908,6 +2952,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			table.insert(self._listener_clbks, { name = id, source = "timer", event = { event }, clbk = clbk, keys = { key }, data_only = true })
 		end
 	end
+	
+	function HUDList.TimerItem:priority()
+		return self._remaining
+	end
 
 	function HUDList.TimerItem:update(t, dt)
 		if not alive(self._unit) then
@@ -2926,6 +2974,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.TimerItem:_update_timer(data)
 		self._remaining = data.timer_value or 0
 		self._time_text:set_text(format_time_string(self._remaining))
+		if data.timer_ratio then
+			self._progress:set_ratio(data.timer_ratio)
+		end
 	end
 
 	function HUDList.TimerItem:_set_jammed(data)
@@ -2978,6 +3029,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._time_text:set_color(color)
 		self._type_text:set_color(color)
 		self._distance_text:set_color(color)
+		self._progress:set_color(color)
 	end
 
 	HUDList.TemperatureGaugeItem = HUDList.TemperatureGaugeItem or class(HUDList.TimerItem)
@@ -2993,8 +3045,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDList.TemperatureGaugeItem:update(t, dt)
 		local estimate = "N/A"
-		if self._time_left and self._last_update_t then
-			local time_left = self._time_left - math.max(t - self._last_update_t, 0)
+		if self._remaining and self._last_update_t then
+			local time_left = self._remaining - math.max(t - self._last_update_t, 0)
 			estimate = format_time_string(time_left)
 		end
 		self._time_text:set_text(estimate)
@@ -3004,11 +3056,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if data.timer_value then
 			local dv = math.max(data.timer_value - self._last_value, 0)
 			if dv > 0 then
-				self._time_left = math.max(self._goal - data.timer_value, 0) / dv
+				self._remaining = math.max(self._goal - data.timer_value, 0) / dv
 				self._last_update_t = Application:time()
 			end
 
 			self._distance_text:set_text(string.format("%d / %d", data.timer_value, self._goal))
+			self._progress:set_ratio(data.timer_value / self._goal)
 			self._last_value = data.timer_value
 		end
 	end
@@ -3018,8 +3071,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		sentry 			= {	atlas 		= { 7,  5 }, priority = 1 },
 		ammo_bag 		= {	atlas 		= { 1,  0 }, priority = 3 },
 		doc_bag 		= {	atlas 		= { 2,  7 }, priority = 4 },
-		first_aid_kit	= {	atlas 		= { 3, 10 }, priority = 4 },
-		body_bag 		= {	atlas 		= { 5, 11 }, priority = 5 },
+		first_aid_kit	= {	atlas 		= { 3, 10 }, priority = 5 },
+		body_bag 		= {	atlas 		= { 5, 11 }, priority = 6 },
 		grenade_crate 	= {	preplanning = { 1,  0 }, priority = 2 },
 	}
 	function HUDList.EquipmentItem:init(parent, name, data, equipment_type)
@@ -3031,12 +3084,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._key = name --normally unit:key(), exception for aggregated items that have no singular unit
 		self._equipment_type = equipment_type
 
-		local texture =
-		icon_data.atlas and "guis/textures/pd2/skilltree/icons_atlas" or
-				icon_data.preplanning and "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_icon_types"
-		local x, y = unpack((icon_data.atlas or icon_data.preplanning) or { 0, 0 })
-		local w = icon_data.atlas and 64 or icon_data.preplanning and 48
-		local texture_rect = (icon_data.atlas or icon_data.preplanning) and { x * w, y * w, w, w }
+		local texture, texture_rect = get_icon_data(icon_data)
 
 		self._box = HUDBGBox_create(self._panel, {
 			name = "bg_box",
@@ -3496,33 +3544,60 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._remaining = data.expire_t - Application:time()
 		self._duration = data.expire_t - data.start_t
 
-		self._box = HUDBGBox_create(self._panel, {
-			w = self._panel:w(),
-			h = self._panel:h(),
-		}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
+		--self._box = HUDBGBox_create(self._panel, {
+		--	w = self._panel:w(),
+		--	h = self._panel:h(),
+		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 
-		self._timer_text = self._box:text({
+		self._progress = PanelFrame:new(self._panel, {
+			w = self._panel:w(),
+			h = self._panel:w(),
+			invert_progress = true,
+			bar_w = 2,
+			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
+			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			add_bg = true,
+		})
+
+		local box = self._progress:panel()
+
+		self._timer_text = box:text({
 			name = "time",
 			align = "center",
-			vertical = "top",
-			w = self._box:w(),
-			h = self._box:h(),
+			vertical = "center",
+			w = box:w(),
+			h = box:h() * 0.6,
 			color = Color.red,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.5,
+			font_size = box:h() * 0.6,
 		})
 
-		self._distance_text = self._box:text({
+		self._distance_text = box:text({
 			name = "distance",
 			align = "center",
-			vertical = "bottom",
-			w = self._box:w(),
-			h = self._box:h(),
+			vertical = "center",
+			y = self._timer_text:bottom(),
+			w = box:w() * 0.65,
+			h = box:h() * 0.4,
 			color = HUDListManager.ListOptions.list_color or Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.5,
+			font_size = box:h() * 0.35,
 			text = "DIST"
 		})
+
+		self._direction_icon = box:bitmap({
+			name = "direction",
+			texture = "guis/textures/hud_icons",
+			texture_rect = { 434, 46, 30, 19 },
+			align = "center",
+			vertical = "center",
+			valign = "scale",
+			halign = "scale",
+			w = box:h() * 0.3,
+			h = box:h() * 0.2,
+			rotation = 270,
+		})
+		self._direction_icon:set_center(box:w() * 0.8, box:h() * 0.75)
 
 		local key = tostring(self._unit:key())
 		table.insert(self._listener_clbks, {
@@ -3535,10 +3610,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		})
 	end
 
+	function HUDList.PagerItem:priority()
+		return self._remaining
+	end
+
 	function HUDList.PagerItem:_set_answered()
 		if not self._answered then
 			self._answered = true
 			self._timer_text:set_color(Color(1, 0.1, 0.9, 0.1))
+			self._progress:set_color(Color(1, 0.1, 0.9, 0.1))
 		end
 	end
 
@@ -3547,9 +3627,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._remaining = math.max(self._remaining - dt, 0)
 			self._timer_text:set_text(format_time_string(self._remaining))
 			self._timer_text:set_color(self:_get_color_from_table(self._remaining, self._duration))
+			self._progress:set_ratio(self._remaining / self._duration)
 		end
 
-		self._distance_text:set_text(get_distance_to_player(self._unit))
+		local distance, rotation = get_distance_to_player(self._unit)
+		self._distance_text:set_text(distance)
+		self._direction_icon:set_rotation(270 - rotation)
 	end
 
 	HUDList.ECMItem = HUDList.ECMItem or class(HUDList.ItemBase)
@@ -3559,20 +3642,32 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._unit = data.unit
 		self._max_duration = tweak_data.upgrades.ecm_jammer_base_battery_life
 
-		self._box = HUDBGBox_create(self._panel, {
-			w = self._panel:w(),
-			h = self._panel:h(),
-		}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
+		--self._box = HUDBGBox_create(self._panel, {
+		--	w = self._panel:w(),
+		--	h = self._panel:h(),
+		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 
-		self._text = self._box:text({
+		self._progress = PanelFrame:new(self._panel, {
+			w = self._panel:w(),
+			h = self._panel:w(),
+			invert_progress = true,
+			bar_w = 2,
+			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
+			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			add_bg = true,
+		})
+
+		local box = self._progress:panel()
+
+		self._text = box:text({
 			name = "text",
 			align = "center",
 			vertical = "center",
-			w = self._box:w(),
-			h = self._box:h() * 0.7,
+			w = box:w(),
+			h = box:h() * 0.7,
 			color = HUDListManager.ListOptions.list_color or Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.6,
+			font_size = box:h() * 0.6,
 			layer = 10,
 		})
 
@@ -3590,16 +3685,16 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._upgrade_lvl3:set_left(self._panel:left())
 		self._upgrade_lvl3:set_bottom(self._panel:bottom() - 2)
 
-		self._level = self._box:text({
+		self._level = box:text({
 			name = "text",
 			align = "center",
 			vertical = "bottom",
 			text = "",
-			w = self._box:w(),
-			h = self._box:h(),
+			w = box:w(),
+			h = box:h(),
 			color = HUDListManager.ListOptions.list_color or Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.4,
+			font_size = box:h() * 0.4,
 			layer = 10,
 		})
 
@@ -3618,6 +3713,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
+	function HUDList.ECMItem:priority()
+		return self._remaining
+	end
+
 	function HUDList.ECMItem:_set_upgrade_level(data)
 		if data.upgrade_level then
 			self._max_duration = tweak_data.upgrades.ecm_jammer_base_battery_life * ECMJammerBase.battery_life_multiplier[data.upgrade_level]
@@ -3627,38 +3726,52 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 			self._level:set_text(string.format("Lv. %i", data.upgrade_level))
 			self._level:set_x(self._blocks_pager and (self._upgrade_lvl3:w() - 2) or 0)
-			self._level:set_w(self._box:w() * (self._blocks_pager and 0.6 or 1))
+			self._level:set_w(self._progress:panel():w() * (self._blocks_pager and 0.6 or 1))
 		end
 	end
 
 	function HUDList.ECMItem:_set_jammer_battery(data)
 		if data.jammer_battery then
+			self._remaining = data.jammer_battery
 			self._text:set_text(format_time_string(data.jammer_battery))
 			self._text:set_color(self:_get_color_from_table(data.jammer_battery, self._max_duration))
+			self._progress:set_ratio(data.jammer_battery / self._max_duration)
 		end
 	end
 
 	HUDList.ECMRetriggerItem = HUDList.ECMRetriggerItem or class(HUDList.ItemBase)
 	function HUDList.ECMRetriggerItem:init(parent, name, data)
-		HUDList.ECMRetriggerItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
+		HUDList.ECMRetriggerItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h(), priority = 100 })
 
 		self._unit = data.unit
 		self._max_duration = tweak_data.upgrades.ecm_feedback_retrigger_interval or 60
 
-		self._box = HUDBGBox_create(self._panel, {
-			w = self._panel:w(),
-			h = self._panel:h(),
-		}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
+		--self._box = HUDBGBox_create(self._panel, {
+		--	w = self._panel:w(),
+		--	h = self._panel:h(),
+		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 
-		self._text = self._box:text({
+		self._progress = PanelFrame:new(self._panel, {
+			w = self._panel:w(),
+			h = self._panel:w(),
+			invert_progress = true,
+			bar_w = 2,
+			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
+			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			add_bg = true,
+		})
+
+		local box = self._progress:panel()
+
+		self._text = box:text({
 			name = "text",
 			align = "center",
 			vertical = "center",
-			w = self._box:w(),
-			h = self._box:h(),
+			w = box:w(),
+			h = box:h(),
 			color = Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.6,
+			font_size = box:h() * 0.6,
 		})
 
 		self:_set_retrigger_delay(data)
@@ -3674,10 +3787,16 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		})
 	end
 
+	function HUDList.ECMRetriggerItem:priority()
+		return self._remaining and (self._remaining + self._priority)
+	end
+
 	function HUDList.ECMRetriggerItem:_set_retrigger_delay(data)
 		if data.retrigger_delay then
+			self._remaining = data.retrigger_delay
 			self._text:set_text(format_time_string(data.retrigger_delay))
 			self._text:set_color(self:_get_color_from_table(self._max_duration - data.retrigger_delay, self._max_duration))
+			self._progress:set_ratio(data.retrigger_delay / self._max_duration)
 		end
 	end
 
@@ -3689,32 +3808,44 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._max_duration = 60
 		self._expire_t = 0
 
-		self._box = HUDBGBox_create(self._panel, {
-			w = self._panel:w(),
-			h = self._panel:h(),
-		}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
+		--self._box = HUDBGBox_create(self._panel, {
+		--	w = self._panel:w(),
+		--	h = self._panel:h(),
+		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 
-		self._text = self._box:text({
+		self._progress = PanelFrame:new(self._panel, {
+			w = self._panel:w(),
+			h = self._panel:w(),
+			invert_progress = true,
+			bar_w = 2,
+			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
+			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			add_bg = true,
+		})
+
+		local box = self._progress:panel()
+
+		self._text = box:text({
 			name = "text",
 			text = "Active",
 			align = "center",
 			vertical = "center",
-			w = self._box:w(),
-			h = self._box:h() * 0.7,
+			w = box:w(),
+			h = box:h() * 0.7,
 			color = Color(1, 0.0, 0.8, 1.0),
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.5,
+			font_size = box:h() * 0.5,
 		})
 
-		self._distance_text = self._box:text({
+		self._distance_text = box:text({
 			name = "distance",
 			align = "center",
 			vertical = "bottom",
-			w = self._box:w(),
-			h = self._box:h(),
+			w = box:w(),
+			h = box:h(),
 			color = HUDListManager.ListOptions.list_color or Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.4
+			font_size = box:h() * 0.4
 		})
 
 		self:_set_feedback_duration(data)
@@ -3730,19 +3861,24 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		})
 	end
 
+	function HUDList.ECMFeedbackItem:priority()
+		return self._remaining
+	end
+
 	function HUDList.ECMFeedbackItem:_set_feedback_duration(data)
 		if data.feedback_active and (data.feedback_duration or data.feedback_expire_t) then
 			local t = Application:time()
 			self._max_duration = data.feedback_duration or (data.feedback_expire_t - t) or 15
 			self._expire_t = data.feedback_expire_t or (t + data.feedback_duration) or 0
-			self._text:set_font_size(self._box:h() * 0.6)
+			self._text:set_font_size(self._progress:panel():h() * 0.6)
 		end
 	end
 
 	function HUDList.ECMFeedbackItem:update(t, dt)
 		if self._expire_t >= t then
-			local duration = math.max(0, self._expire_t - t)
-			self._text:set_text(format_time_string(duration))
+			self._remaining = math.max(0, self._expire_t - t)
+			self._text:set_text(format_time_string(self._remaining))
+			self._progress:set_ratio(self._remaining / self._max_duration)
 		end
 
 		self._distance_text:set_text(get_distance_to_player(self._unit))
@@ -3762,20 +3898,32 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			{ ratio = 1.0, color = self.STANDARD_COLOR }
 		}
 
-		self._box = HUDBGBox_create(self._panel, {
-			w = self._panel:w(),
-			h = self._panel:h(),
-		}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
+		--self._box = HUDBGBox_create(self._panel, {
+		--	w = self._panel:w(),
+		--	h = self._panel:h(),
+		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
 
-		self._text = self._box:text({
+		self._progress = PanelFrame:new(self._panel, {
+			w = self._panel:w(),
+			h = self._panel:w(),
+			invert_progress = true,
+			bar_w = 2,
+			bar_color = (self.STANDARD_COLOR or Color.white),
+			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			add_bg = true,
+		})
+
+		local box = self._progress:panel()
+
+		self._text = box:text({
 			name = "text",
 			align = "center",
 			vertical = "center",
-			w = self._box:w(),
-			h = self._box:h(),
+			w = box:w(),
+			h = box:h(),
 			color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.6,
+			font_size = box:h() * 0.6,
 		})
 
 		if data.tape_loop_expire_t then
@@ -3794,23 +3942,35 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
-	function HUDList.TapeLoopItem:_animate_restart_active(text)
+	function HUDList.TapeLoopItem:priority()
+		return self._remaining
+	end
+
+	function HUDList.TapeLoopItem:_animate_restart_active(text, progress_bar)
 		local t = Application:time()
 		while self._animating_restart do
 			t = t + coroutine.yield()
 			local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
 			text:set_color(new_color)
+			if progress_bar then
+				progress_bar:set_color(new_color)
+			end
 		end
 		text:set_color(self.STANDARD_COLOR or Color.white)
+		if progress_bar then
+			progress_bar:set_color(self.STANDARD_COLOR or Color.white)
+		end
 	end
 
 	function HUDList.TapeLoopItem:update(t, dt)
-		local duration = math.max(0, (self._expire_t or t) - t)
-		self._text:set_text(format_time_string(duration))
+		self._remaining = math.max(0, (self._expire_t or t) - t)
+		self._text:set_text(format_time_string(self._remaining))
+		self._progress:set_ratio(self._remaining / self._max_duration)
 	end
 
 	function HUDList.TapeLoopItem:_set_expire_t(data)
 		if data.tape_loop_active and data.tape_loop_expire_t then
+			self._max_duration = data.tape_loop_expire_t - Application:time()
 			self._expire_t = data.tape_loop_expire_t
 		end
 	end
@@ -3818,7 +3978,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.TapeLoopItem:_set_restart_active(data)
 		if data.tape_loop_restart_active and not self._animating_restart then
 			self._animating_restart = true
-			self._text:animate(callback(self, self, "_animate_restart_active"))
+			self._text:animate(callback(self, self, "_animate_restart_active"), self._progress)
 		elseif not data.tape_loop_restart_active then
 			self._animating_restart = nil
 		end
@@ -4286,14 +4446,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		--Gage Boosts
 		invulnerable_buff = {
-			hud_icons = "csb_melee",
+			hud_tweak = "csb_melee",
 			class = "TimedBuffItem",
 			priority = 10,
 			color = HUDList.BuffItemBase.ICON_COLOR.BUFF,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GAGE_BOOSTS", "invulnerable_buff"}, true),
 		},
 		life_steal_debuff = {
-			hud_icons = "csb_lifesteal",
+			hud_tweak = "csb_lifesteal",
 			class = "TimedBuffItem",
 			priority = 10,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
@@ -4392,29 +4552,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.BuffItemBase:init(parent, name, icon, w, h)
 		HUDList.BuffItemBase.super.init(self, parent, name, { priority = icon.priority, align = "bottom", w = w or parent:panel():h() * 0.6, h = h or parent:panel():h() })
 
-		local texture = icon.texture
-		local texture_rect = icon.texture_rect
-
-		if icon.atlas or icon.atlas_new or icon.spec then
-			local x, y = unpack(icon.atlas_new or icon.atlas or icon.spec)
-			local rect = icon.atlas_new and 80 or 64
-			texture_rect = { x * rect, y * rect, rect, rect }
-
-			texture = "guis/"
-			if icon.texture_bundle_folder then
-				texture = string.format("%sdlcs/%s/", texture, icon.texture_bundle_folder)
-			end
-			texture = string.format("%stextures/pd2/%s", texture, icon.atlas_new and "skilltree_2/icons_atlas_2" or icon.atlas and "skilltree/icons_atlas" or "specialization/icons_atlas")
-		elseif icon.hud_icons then
-			texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon.hud_icons)
-		elseif icon.hudtabs then
-			texture = "guis/textures/pd2/hud_tabs"
-			texture_rect = icon.hudtabs
-		elseif icon.preplanning then
-			texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_icon_types"
-			local x, y = unpack(icon.preplanning)
-			texture_rect = { x * 48, y * 48, 48, 48 }
-		end
+		local texture, texture_rect = get_icon_data(icon)
 
 		self._default_icon_color = icon.color or HUDList.BuffItemBase.ICON_COLOR.STANDARD or Color.white
 		local progress_bar_width = self._panel:w() * 0.05
@@ -4934,7 +5072,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDList.CompositeBuff:set_value(id, data)
 		if self._member_buffs[id] and self._member_buffs[id].value ~= data.value then
-			print_info("HUDList.CompositeBuff:set_value(%s, %s)", id, tostring(data.value))
+			WolfHUD:print_log(string.format("HUDList.CompositeBuff:set_value(%s, %s)", tostring(id), tostring(data.value)), "info")
 			self._member_buffs[id].value = data.value
 			self:_check_buffs()
 		end
@@ -5114,14 +5252,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		ecm_jammer 					= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 1*64, 4*64, 64, 64 } 	},
 		corpse_alarm_pager			= { texture = "guis/textures/pd2/specialization/icons_atlas", 					 texture_rect = { 1*64, 4*64, 64, 64 }	},
 		pick_lock_easy_no_skill 	= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 5*64, 4*64, 64, 64 } 	},
-		intimidate					= "equipment_cable_ties",
-		c4_consume 					= "equipment_c4",
-		drill 						= "pd2_drill",
-		hack 						= "pd2_computer",
-		saw 						= "wp_saw",
-		timer 						= "pd2_computer",
-		securitylock 				= "pd2_computer",
-		digital 					= "pd2_computer",
+		intimidate					= { hud_tweak = "equipment_cable_ties" 	},
+		c4_consume 					= { hud_tweak = "equipment_c4" 			},
+		drill 						= { hud_tweak = "pd2_drill" 			},
+		hack 						= { hud_tweak = "pd2_computer" 			},
+		saw 						= { hud_tweak = "wp_saw" 				},
+		timer 						= { hud_tweak = "pd2_computer" 			},
+		securitylock 				= { hud_tweak = "pd2_computer" 			},
+		digital 					= { hud_tweak = "pd2_computer" 			},
 	}
 	function HUDList.TimedInteractionItem:init(...)
 		HUDList.TimedInteractionItem.super.init(self, ...)
@@ -5149,19 +5287,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.TimedInteractionItem:_set_icon(interact_id)
-		--log(interact_id)
 		local lookup = HUDList.TimedInteractionItem.INTERACT_ID_TO_ICON
 		local icon_data = lookup[interact_id] or lookup["default"]
 		if icon_data and alive(self._icon) then
-			local texture, texture_rect
-			if type(icon_data) == "string" then
-				texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon_data, {0, 0, 32, 32})
-			else
-				texture, texture_rect = icon_data.texture, icon_data.texture_rect
-			end
+			local texture, texture_rect = get_icon_data(icon_data)
 
 			self._icon:set_image(texture)
-			if icon_data.texture_rect then
+			if texture_rect then
 				self._icon:set_texture_rect(unpack(texture_rect))
 			end
 		end
@@ -5182,6 +5314,18 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			alpha = settings.alpha or 1,
 		})
 
+		if settings.add_bg then
+			self._bg = self._panel:rect({
+				name = "bg",
+				h = self._panel:h(),
+				w = self._panel:w(),
+				blend_mode = "normal",
+				layer = self._panel:layer() - 1,
+				color = settings.bg_color or Color.black,
+				alpha = settings.bg_alpha or 0.2,
+			})
+		end
+
 		self._invert_progress = settings.invert_progress
 		self._stages = { 0, w/total, (w+h)/total, (2*w+h)/total, 1 }
 		self._top = self._panel:rect({})
@@ -5190,7 +5334,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._right = self._panel:rect({})
 
 		self:set_width(settings.bar_w or 2)
-		self:set_color(settings.color or Color.white)
+		self:set_color(settings.bar_color or settings.color or Color.white, settings.alpha or settings.bar_alpha or 1)
 		self:reset()
 	end
 
@@ -5209,11 +5353,26 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._right:set_right(self._panel:w())
 	end
 
-	function PanelFrame:set_color(c)
+	function PanelFrame:set_color(c, alpha)
 		self._top:set_color(c)
 		self._bottom:set_color(c)
 		self._left:set_color(c)
 		self._right:set_color(c)
+		if alpha then
+			self._top:set_alpha(alpha)
+			self._bottom:set_alpha(alpha)
+			self._left:set_alpha(alpha)
+			self._right:set_alpha(alpha)
+		end
+	end
+	
+	function PanelFrame:set_bg_color(c, alpha)
+		if alive(self._bg) then
+			self._bg:set_color(c)
+			if alpha then
+				self._bg:set_alpha(alpha)
+			end
+		end
 	end
 
 	function PanelFrame:reset()
