@@ -2853,7 +2853,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		self._progress = PanelFrame:new(self._panel, {
 			w = self._panel:w(),
-			h = self._panel:w() * 0.7,
+			h = self._panel:h() * 0.7,
 			invert_progress = true,
 			bar_w = 2,
 			bar_color = (self.STANDARD_COLOR or Color.white),
