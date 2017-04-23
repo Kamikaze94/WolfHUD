@@ -862,5 +862,5 @@
 	"wolfhud_skipit_options_name" : "Настройки пропуска",
 	"wolfhud_skipit_options_help" : "Настройки автоматического пропуска ненужных меню, для экономии времени.",
 	"wolfhud_assaultbanner_options_name" : "Настройки баннера штурма",
-	"wolfhud_assaultbanner_options_help" : "Настройки для изменений баннера штурма.",
+	"wolfhud_assaultbanner_options_help" : "Настройки для изменений баннера штурма."
 }

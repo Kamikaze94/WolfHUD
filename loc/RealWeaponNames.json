@@ -131,5 +131,5 @@
 	"bm_grenade_molotov_desc" 	: "A Molotov cocktail, also known as a petrol bomb, poor man's grenade and fire bomb is a generic name used for a variety of bottle-based improvised incendiary weapons. They are primarily intended to set targets ablaze rather than instantly destroy them.",
 
 	"bm_melee_model24" 			: "Model 24 Stielhandgranate",
-	"bm_melee_ballistic"		: "Dual Wield Ballistic Knife",
+	"bm_melee_ballistic"		: "Dual Wield Ballistic Knife"
 }
