@@ -106,7 +106,7 @@
 	"updates" : [
 		{
 			"revision" : 20,
-			"identifier" : "wolfhud",
+			"identifier" : "wolfhud"
 		},
 		{
 			"revision" : "./assets/mod_overrides/WolfHUD_Textures/revision.txt",
