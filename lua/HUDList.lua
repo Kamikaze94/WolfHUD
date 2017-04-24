@@ -2191,19 +2191,32 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = self._default_icon_color,
 		})
 
-		self._box = HUDBGBox_create(self._panel, { w = self._panel:w(),	h = self._panel:w() }, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
-		self._box:set_bottom(self._panel:bottom())
+		--self._box = HUDBGBox_create(self._panel, { w = self._panel:w(),	h = self._panel:w() }, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
+		--self._box:set_bottom(self._panel:bottom())
 
-		self._text = self._box:text({
+		self._progress = PanelFrame:new(self._panel, {
+			w = self._panel:w(),
+			h = self._panel:w(),
+			invert_progress = true,
+			bar_w = 2,
+			bar_color = self._default_text_color,
+			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			add_bg = true,
+		})
+		self._progress:set_ratio(1)
+		local box = self._progress:panel()
+		box:set_bottom(self._panel:bottom())
+
+		self._text = box:text({
 			name = "text",
 			text = "",
 			align = "center",
 			vertical = "center",
-			w = self._box:w(),
-			h = self._box:h(),
+			w = box:w(),
+			h = box:h(),
 			color = self._default_text_color,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = self._box:h() * 0.6
+			font_size = box:h() * 0.6
 		})
 
 		self._count = 0
@@ -2214,7 +2227,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		if diff ~= 0 then
 			self._text:stop()
-			self._text:animate(callback(self, self, "_animate_change"), diff)
+			self._text:animate(callback(self, self, "_animate_change"), diff, self._progress)
 		end
 	end
 
@@ -2228,7 +2241,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		return self._count or 0
 	end
 
-	function HUDList.RightListItem:_animate_change(item, diff)
+	function HUDList.RightListItem:_animate_change(item, diff, progress_bar)
 		if alive(item) and diff ~= 0 then
 			local duration = 0.5
 			local t = duration
@@ -2237,9 +2250,19 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			item:set_color(color)
 			while t > 0 do
 				t = t - coroutine.yield()
-				item:set_color(math.lerp(self._default_text_color, color, t / duration))
+				local ratio = t / duration
+				local new_color = math.lerp(self._default_text_color, color, ratio)
+				item:set_color(new_color)
+				if progress_bar then
+					progress_bar:set_color(new_color)
+					progress_bar:set_ratio((diff > 0 and (1-ratio) or ratio))
+				end
 			end
 			item:set_color(self._default_text_color)
+			if progress_bar then
+				progress_bar:set_color(self._default_text_color)
+				progress_bar:set_ratio(1)
+			end
 		end
 	end
 
@@ -2313,7 +2336,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				h = self._icon:h() * 0.4,
 				color = HUDListManager.ListOptions.special_color or Color.white,
 				blend_mode = "normal",
-				layer = self._icon:layer() - 1,
+				layer = self._icon:layer() + 1,
 			})
 			self._shield_filler:set_center(self._icon:center())
 		end
@@ -2514,7 +2537,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		if value ~= 0 then
 			self._text:stop()
-			self._text:animate(callback(self, self, "_animate_change"), value)
+			self._text:animate(callback(self, self, "_animate_change"), value, self._progress)
 		end
 	end
 
@@ -2531,7 +2554,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:set_count(unbagged_count, bagged_count)
 
 		self._text:stop()
-		self._text:animate(callback(self, self, "_animate_change"), value)
+		self._text:animate(callback(self, self, "_animate_change"), value, self._progress)
 	end
 
 	function HUDList.CorpseCountItem:_whisper_mode_change(status)
@@ -2760,7 +2783,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 			if value ~= 0 then
 				self._text:stop()
-				self._text:animate(callback(self, self, "_animate_change"), value)
+				self._text:animate(callback(self, self, "_animate_change"), value, self._progress)
 			end
 		end
 	end
@@ -3086,11 +3109,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		local texture, texture_rect = get_icon_data(icon_data)
 
-		self._box = HUDBGBox_create(self._panel, {
-			name = "bg_box",
+		--self._box = HUDBGBox_create(self._panel, {
+		--	name = "bg_box",
+		--	w = self._panel:w(),
+		--	h = self._panel:h(),
+		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
+
+		self._progress = PanelFrame:new(self._panel, {
 			w = self._panel:w(),
 			h = self._panel:h(),
-		}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
+			invert_progress = true,
+			bar_w = 2,
+			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
+			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			add_bg = true,
+		})
 
 		self._icon = self._panel:bitmap({
 			name = "icon",
@@ -3202,7 +3235,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if self._amount and self._max_amount then
 			local offset = self._amount_offset or 0
 			self._info_text:set_text(string.format("%.0f", self._amount + offset))
-			self._info_text:set_color(self:_get_color_from_table(self._amount + offset, self._max_amount + offset))
+			self._progress:set_ratio((self._amount + offset) / (self._max_amount + offset))
+			local new_color = self:_get_color_from_table(self._amount + offset, self._max_amount + offset)
+			self._info_text:set_color(new_color)
+			self._progress:set_color(new_color)
 		end
 	end
 
@@ -3211,7 +3247,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if self._amount and self._max_amount then
 			local offset = self._amount_offset or 0
 			self._info_text:set_text(string.format("%.0f%%", (self._amount + offset) * 100))
-			self._info_text:set_color(self:_get_color_from_table(self._amount + offset, self._max_amount + offset))
+			self._progress:set_ratio((self._amount + offset) / (self._max_amount + offset))
+			local new_color = self:_get_color_from_table(self._amount + offset, self._max_amount + offset)
+			self._info_text:set_color(new_color)
+			self._progress:set_color(new_color)
 		end
 	end
 
@@ -3304,6 +3343,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if data.ammo_ratio then
 			self._ammo_ratio = data.ammo_ratio or 0
 			self._ammo_bar:set_w(self._bar_bg:w() * self._ammo_ratio)
+			self._progress:set_ratio(self._ammo_ratio)
 
 			if self._ammo_ratio <= 0 then
 				self:_set_inactive(nil)
@@ -3639,8 +3679,16 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.ECMItem:init(parent, name, data)
 		HUDList.ECMItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
 
+		self.STANDARD_COLOR = HUDListManager.ListOptions.list_color or Color(1, 1, 1, 1)
+		self.DISABLED_COLOR = Color(1, 1, 0, 0)
+		self.FLASH_SPEED = 2
+
 		self._unit = data.unit
 		self._max_duration = tweak_data.upgrades.ecm_jammer_base_battery_life
+		self._flash_color_table = {
+			{ ratio = 0.0, color = self.DISABLED_COLOR },
+			{ ratio = 1.0, color = self.STANDARD_COLOR }
+		}
 
 		--self._box = HUDBGBox_create(self._panel, {
 		--	w = self._panel:w(),
@@ -3698,14 +3746,18 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			layer = 10,
 		})
 
+		self:_set_owner(data)
 		self:_set_jammer_battery(data)
 		self:_set_upgrade_level(data)
+		self:_set_battery_low(data)
 
 		local key = tostring(self._unit:key())
 		local id = string.format("HUDList_ecm_jammer_listener_%s", key)
 		local events = {
+			set_owner = callback(self, self, "_set_owner"),
 			set_upgrade_level = callback(self, self, "_set_upgrade_level"),
 			set_jammer_battery = callback(self, self, "_set_jammer_battery"),
+			set_battery_low = callback(self, self, "_set_battery_low"),
 		}
 
 		for event, clbk in pairs(events) do
@@ -3715,6 +3767,31 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDList.ECMItem:priority()
 		return self._remaining
+	end
+
+	function HUDList.ECMItem:_animate_battery_low(text, progress_bar)
+		local t = Application:time()
+		while self._animating_low_battery do
+			t = t + coroutine.yield()
+			local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
+			text:set_color(new_color)
+			if progress_bar then
+				progress_bar:set_color(new_color)
+			end
+		end
+		text:set_color(self.STANDARD_COLOR or Color.white)
+		if progress_bar then
+			progress_bar:set_color(HUDListManager.ListOptions.list_color or Color.white)
+		end
+	end
+
+	function HUDList.ECMItem:_set_owner(data)
+		if data.owner then
+			local color = data.owner > 0 and tweak_data.chat_colors[data.owner]:with_alpha(1) or Color.white
+			self._text:set_color(color)
+			self.STANDARD_COLOR = color
+			self._flash_color_table[2].color = color
+		end
 	end
 
 	function HUDList.ECMItem:_set_upgrade_level(data)
@@ -3734,17 +3811,31 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if data.jammer_battery then
 			self._remaining = data.jammer_battery
 			self._text:set_text(format_time_string(data.jammer_battery))
-			self._text:set_color(self:_get_color_from_table(data.jammer_battery, self._max_duration))
 			self._progress:set_ratio(data.jammer_battery / self._max_duration)
+		end
+	end
+
+	function HUDList.ECMItem:_set_battery_low(data)
+		if data.battery_low and not self._animating_low_battery then
+			self._animating_low_battery = true
+			self._text:animate(callback(self, self, "_animate_battery_low"), self._progress)
+		elseif not data.battery_low then
+			self._animating_low_battery = nil
 		end
 	end
 
 	HUDList.ECMRetriggerItem = HUDList.ECMRetriggerItem or class(HUDList.ItemBase)
 	function HUDList.ECMRetriggerItem:init(parent, name, data)
-		HUDList.ECMRetriggerItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h(), priority = 100 })
+		HUDList.ECMRetriggerItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
 
+		self.STANDARD_COLOR = HUDListManager.ListOptions.list_color or Color.white
 		self._unit = data.unit
 		self._max_duration = tweak_data.upgrades.ecm_feedback_retrigger_interval or 60
+		self._flash_color_table = {
+			{ ratio = 0.00, color = self.STANDARD_COLOR },
+			{ ratio = 0.75, color = self.STANDARD_COLOR },
+			{ ratio = 1.00, color = Color('00FF00') }
+		}
 
 		--self._box = HUDBGBox_create(self._panel, {
 		--	w = self._panel:w(),
@@ -3756,7 +3847,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			h = self._panel:w(),
 			invert_progress = true,
 			bar_w = 2,
-			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
+			bar_color = self.STANDARD_COLOR,
 			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
 			add_bg = true,
 		})
@@ -3769,7 +3860,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			vertical = "center",
 			w = box:w(),
 			h = box:h(),
-			color = Color.white,
+			color = self.STANDARD_COLOR,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = box:h() * 0.6,
 		})
@@ -3788,15 +3879,18 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.ECMRetriggerItem:priority()
-		return self._remaining and (self._remaining + self._priority)
+		return self._remaining
 	end
 
 	function HUDList.ECMRetriggerItem:_set_retrigger_delay(data)
 		if data.retrigger_delay then
 			self._remaining = data.retrigger_delay
 			self._text:set_text(format_time_string(data.retrigger_delay))
-			self._text:set_color(self:_get_color_from_table(self._max_duration - data.retrigger_delay, self._max_duration))
 			self._progress:set_ratio(data.retrigger_delay / self._max_duration)
+
+			local new_color = self:_get_color_from_table(self._max_duration - data.retrigger_delay, self._max_duration, self._flash_color_table, self.STANDARD_COLOR)
+			self._text:set_color(new_color)
+			--self._progress:set_color(new_color)
 		end
 	end
 
@@ -3804,9 +3898,17 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.ECMFeedbackItem:init(parent, name, data)
 		HUDList.ECMFeedbackItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
 
+		self.STANDARD_COLOR = Color(1, 0.0, 0.8, 1.0)
+		self.DISABLED_COLOR = Color(1, 1, 0, 0)
+		self.FLASH_SPEED = 2
+
 		self._unit = data.unit
 		self._max_duration = 60
 		self._expire_t = 0
+		self._flash_color_table = {
+			{ ratio = 0.0, color = self.DISABLED_COLOR },
+			{ ratio = 1.0, color = self.STANDARD_COLOR }
+		}
 
 		--self._box = HUDBGBox_create(self._panel, {
 		--	w = self._panel:w(),
@@ -3832,7 +3934,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			vertical = "center",
 			w = box:w(),
 			h = box:h() * 0.7,
-			color = Color(1, 0.0, 0.8, 1.0),
+			color = self.STANDARD_COLOR,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = box:h() * 0.5,
 		})
@@ -3849,6 +3951,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		})
 
 		self:_set_feedback_duration(data)
+		self:_set_feedback_low(data)
 
 		local key = tostring(data.unit:key())
 		table.insert(self._listener_clbks, {
@@ -3859,10 +3962,34 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			keys = { key },
 			data_only = true
 		})
+		table.insert(self._listener_clbks, {
+			name = string.format("HUDList_ecm_feedback_listener_%s", key),
+			source = "ecm",
+			event = { "set_feedback_low" },
+			clbk = callback(self, self, "_set_feedback_low"),
+			keys = { key },
+			data_only = true
+		})
 	end
 
 	function HUDList.ECMFeedbackItem:priority()
 		return self._remaining
+	end
+
+	function HUDList.ECMFeedbackItem:_animate_battery_low(text, progress_bar)
+		local t = Application:time()
+		while self._animating_low_battery do
+			t = t + coroutine.yield()
+			local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
+			text:set_color(new_color)
+			if progress_bar then
+				progress_bar:set_color(new_color)
+			end
+		end
+		text:set_color(self.STANDARD_COLOR or Color.white)
+		if progress_bar then
+			progress_bar:set_color(HUDListManager.ListOptions.list_color or Color.white)
+		end
 	end
 
 	function HUDList.ECMFeedbackItem:_set_feedback_duration(data)
@@ -3871,6 +3998,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._max_duration = data.feedback_duration or (data.feedback_expire_t - t) or 15
 			self._expire_t = data.feedback_expire_t or (t + data.feedback_duration) or 0
 			self._text:set_font_size(self._progress:panel():h() * 0.6)
+		end
+	end
+
+	function HUDList.ECMFeedbackItem:_set_feedback_low(data)
+		if data.feedback_low and not self._animating_low_battery then
+			self._animating_low_battery = true
+			self._text:animate(callback(self, self, "_animate_battery_low"), self._progress)
+		elseif not data.feedback_low then
+			self._animating_low_battery = nil
 		end
 	end
 
@@ -5328,6 +5464,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		self._invert_progress = settings.invert_progress
 		self._stages = { 0, w/total, (w+h)/total, (2*w+h)/total, 1 }
+		self._bar_w = settings.bar_w or 2
 		self._top = self._panel:rect({})
 		self._bottom = self._panel:rect({})
 		self._left = self._panel:rect({})
@@ -5343,6 +5480,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function PanelFrame:set_width(w)
+		self._bar_w = w
 		self._top:set_h(w)
 		self._top:set_top(0)
 		self._bottom:set_h(w)
