@@ -2201,6 +2201,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			bar_w = 2,
 			bar_color = self._default_text_color,
 			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			bar_alpha = 0.4,
 			add_bg = true,
 		})
 		self._progress:set_ratio(1)
@@ -2881,6 +2882,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			bar_w = 2,
 			bar_color = (self.STANDARD_COLOR or Color.white),
 			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			bar_alpha = 0.4,
 			add_bg = true,
 		})
 		local box = self._progress:panel()
@@ -2914,8 +2916,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._speed_upgrade = box:bitmap({
 			name = "icon_speed",
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
-			x = self._time_text:right() * 0.95,
-			y = box:h() * (0.03),
+			x = self._time_text:right() * 0.9,
+			y = box:h() * (0.05),
 			h = box:h() * 0.3,
 			w = box:w() * (1/5),
 			blend_mode = "add",
@@ -2926,7 +2928,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._noise_upgrade = box:bitmap({
 			name = "icon_noise",
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_silent",
-			x = self._time_text:right() * 0.95,
+			x = self._time_text:right() * 0.9,
 			y = box:h() * (0.33),
 			h = box:h() * 0.3,
 			w = box:w() * (1/5),
@@ -2938,8 +2940,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._restart_upgrade = box:bitmap({
 			name = "icon_restart",
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_restarter",
-			x = self._time_text:right() * 0.95,
-			y = box:h() * 0.66,
+			x = self._time_text:right() * 0.9,
+			y = box:h() * 0.63,
 			h = box:h() * 0.3,
 			w = box:w() * (1/5),
 			blend_mode = "add",
@@ -3122,6 +3124,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			bar_w = 2,
 			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
 			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			bar_alpha = 0.4,
 			add_bg = true,
 		})
 
@@ -3596,6 +3599,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			bar_w = 2,
 			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
 			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			bar_alpha = 0.4,
 			add_bg = true,
 		})
 
@@ -3702,6 +3706,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			bar_w = 2,
 			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
 			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			bar_alpha = 0.4,
 			add_bg = true,
 		})
 
@@ -3849,6 +3854,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			bar_w = 2,
 			bar_color = self.STANDARD_COLOR,
 			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			bar_alpha = 0.4,
 			add_bg = true,
 		})
 
@@ -3922,6 +3928,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			bar_w = 2,
 			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
 			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			bar_alpha = 0.4,
 			add_bg = true,
 		})
 
@@ -4046,6 +4053,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			bar_w = 2,
 			bar_color = (self.STANDARD_COLOR or Color.white),
 			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			bar_alpha = 0.4,
 			add_bg = true,
 		})
 
@@ -5442,7 +5450,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		local h = settings.h or parent:h()
 		local w = settings.w or parent:w()
-		local total = 2*w + 2*h
 
 		self._panel = parent:panel({
 			w = w,
@@ -5457,14 +5464,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				w = self._panel:w(),
 				blend_mode = "normal",
 				layer = self._panel:layer() - 1,
-				color = settings.bg_color or Color.black,
-				alpha = settings.bg_alpha or 0.2,
+				color = settings.bg_color or settings.color or Color.black,
+				alpha = settings.bg_alpha or settings.alpha or 0.25,
 			})
 		end
 
 		self._invert_progress = settings.invert_progress
-		self._stages = { 0, w/total, (w+h)/total, (2*w+h)/total, 1 }
-		self._bar_w = settings.bar_w or 2
 		self._top = self._panel:rect({})
 		self._bottom = self._panel:rect({})
 		self._left = self._panel:rect({})
@@ -5480,7 +5485,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function PanelFrame:set_width(w)
+		local pw, ph = self._panel:w(), self._panel:h()
+		local total = 2*pw + 2*ph
 		self._bar_w = w
+		self._stages = { 0, (pw - 2*self._bar_w)/total, (pw+ph-self._bar_w)/total, (2*pw+ph-2*self._bar_w)/total, 1 }
 		self._top:set_h(w)
 		self._top:set_top(0)
 		self._bottom:set_h(w)
@@ -5515,11 +5523,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function PanelFrame:reset()
 		self._current_stage = 1
-		self._top:set_w(self._panel:w())
+		self._top:set_w(self._panel:w() - 2 * self._bar_w)
+		self._top:set_left(self._bar_w)
 		self._right:set_h(self._panel:h())
 		self._right:set_bottom(self._panel:h())
-		self._bottom:set_w(self._panel:w())
-		self._bottom:set_right(self._panel:w())
+		self._bottom:set_w(self._panel:w() - 2 * self._bar_w)
+		self._bottom:set_right(self._panel:w() - self._bar_w)
 		self._left:set_h(self._panel:h())
 	end
 
@@ -5551,13 +5560,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local stage_progress = (r - low) / (high - low)
 
 		if self._current_stage == 1 then
-			self._top:set_w(self._panel:w() * (1-stage_progress))
-			self._top:set_right(self._panel:w())
+			self._top:set_w((self._panel:w() - 2 * self._bar_w) * (1-stage_progress))
+			self._top:set_right(self._panel:w() - self._bar_w)
 		elseif self._current_stage == 2 then
 			self._right:set_h(self._panel:h() * (1-stage_progress))
 			self._right:set_bottom(self._panel:h())
 		elseif self._current_stage == 3 then
-			self._bottom:set_w(self._panel:w() * (1-stage_progress))
+			self._bottom:set_w((self._panel:w() - 2 * self._bar_w) * (1-stage_progress))
 		elseif self._current_stage == 4 then
 			self._left:set_h(self._panel:h() * (1-stage_progress))
 		end
