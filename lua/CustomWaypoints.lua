@@ -22,6 +22,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 		},
 		TIMER = {
 			AUTOREPAIR_COLOR = Color(1, 1, 0, 1),
+			BROKEN_COLOR = Color('FF7575'),
 			ICON_MAP = {
 				drill = "pd2_drill",
 				hack = "pd2_computer",
@@ -522,7 +523,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				managers.waypoints:set_waypoint_timer(id, "timer", data.timer_value)
 			elseif event == "set_jammed" then
 				if data.jammed then
-					managers.waypoints:set_waypoint_setting(id, "color", Color('FF7575'))
+					managers.waypoints:set_waypoint_setting(id, "color", HUDManager.CUSTOM_WAYPOINTS.TIMER.BROKEN_COLOR)
 					managers.waypoints:set_waypoint_setting(id, "show_offscreen", true)
 				else
 					managers.waypoints:set_waypoint_setting(id, "color", Color('FFFFFF'))
@@ -533,19 +534,19 @@ if RequiredScript == "lib/managers/hudmanager" then
 					managers.waypoints:set_waypoint_setting(id, "color", Color('FFFFFF'))
 					managers.waypoints:set_waypoint_setting(id, "show_offscreen", false)
 				else
-					managers.waypoints:set_waypoint_setting(id, "color", Color('FF7575'))
+					managers.waypoints:set_waypoint_setting(id, "color", HUDManager.CUSTOM_WAYPOINTS.TIMER.BROKEN_COLOR)
 					managers.waypoints:set_waypoint_setting(id, "show_offscreen", true)
 				end
 			elseif event == "set_upgrades" then
-				local speed_upgrade 	= math.clamp(data.upgrades.speed_upgrade_level or 0, 0, 2)
-				local noise_upgrade 	= (data.upgrades.silent_drill and 1 or 0) + (data.upgrades.reduced_alert and 1 or 0)
-				local restart_upgrade 	= ((data.upgrades.auto_repair_level_2 and data.upgrades.auto_repair_level_2 > 0) and 2 or (data.upgrades.auto_repair_level_1 and data.upgrades.auto_repair_level_1 > 0) and 1 or 0)
-				managers.waypoints:set_waypoint_component_setting(id, "speed_upgrade", "show", (speed_upgrade > 0))
-				managers.waypoints:set_waypoint_component_setting(id, "noise_upgrade", "show", (noise_upgrade > 0))
-				managers.waypoints:set_waypoint_component_setting(id, "restart_upgrade", "show", (restart_upgrade > 0))
-				managers.waypoints:set_waypoint_component_setting(id, "speed_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[speed_upgrade] or Color.white)
-				managers.waypoints:set_waypoint_component_setting(id, "noise_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[noise_upgrade] or Color.white)
-				managers.waypoints:set_waypoint_component_setting(id, "restart_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[restart_upgrade] or Color.white)
+				if data.upgrades then
+					local speed_upgrade, noise_upgrade, restart_upgrade = data.upgrades.faster or 0, data.upgrades.silent or 0, data.upgrades.restarter or 0
+					managers.waypoints:set_waypoint_component_setting(id, "speed_upgrade", "show", (speed_upgrade > 0))
+					managers.waypoints:set_waypoint_component_setting(id, "noise_upgrade", "show", (noise_upgrade > 0))
+					managers.waypoints:set_waypoint_component_setting(id, "restart_upgrade", "show", (restart_upgrade > 0))
+					managers.waypoints:set_waypoint_component_setting(id, "speed_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[speed_upgrade] or Color.white)
+					managers.waypoints:set_waypoint_component_setting(id, "noise_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[noise_upgrade] or Color.white)
+					managers.waypoints:set_waypoint_component_setting(id, "restart_upgrade", "color", HUDManager.CUSTOM_WAYPOINTS.UPGRADE_COLORS[restart_upgrade] or Color.white)
+				end
 			elseif event == "set_autorepair" then
 				managers.waypoints:set_waypoint_component_setting(id, "icon", "color", data.auto_repair and HUDManager.CUSTOM_WAYPOINTS.TIMER.AUTOREPAIR_COLOR or Color.white)
 			end

@@ -703,9 +703,9 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 	function GameInfoManager:_timer_event(event, key, ...)
 		if event == "create" then
 			if not self._timers[key] then
-				local unit, ext, device_type, can_have_upgrades = ...
+				local unit, ext, device_type = ...
 				local id = unit:editor_id()
-				self._timers[key] = { unit = unit, ext = ext, device_type = device_type, id = id, jammed = false, powered = true, upgradable = false, can_have_upgrades = can_have_upgrades }
+				self._timers[key] = { unit = unit, ext = ext, device_type = device_type, id = id, jammed = false, powered = true, upgradable = false }
 				self:_listener_callback("timer", "create", key, self._timers[key])
 			end
 		elseif event == "destroy" then
@@ -1645,13 +1645,15 @@ if string.lower(RequiredScript) == "lib/units/props/timergui" then
 		self._info_key = tostring(unit:key())
 		local device_type = unit:base().is_drill and "drill" or unit:base().is_hacking_device and "hack" or unit:base().is_saw and "saw" or "timer"
 		local can_have_upgrades = (unit:base().is_drill or unit:base().is_saw) and not unit:base()._disable_upgrades
-		managers.gameinfo:event("timer", "create", self._info_key, unit, self, device_type, can_have_upgrades)
+		if not can_have_upgrades then
+			device_type = string.format("%s_noupgrade", device_type)
+		end
+		managers.gameinfo:event("timer", "create", self._info_key, unit, self, device_type)
 		init_original(self, unit, ...)
 	end
 
 	function TimerGui:set_background_icons(...)
 		local skills = self._unit:base().get_skill_upgrades and self._unit:base():get_skill_upgrades()
-		managers.gameinfo:event("timer", "set_upgrades", self._info_key, skills)
 		if not self._unit:base()._disable_upgrades then
 			local player_skills = Drill.get_upgrades(self._unit, nil)
 			local function player_can_upgrade(drill_upgrades, player_upgrades)
@@ -1663,7 +1665,13 @@ if string.lower(RequiredScript) == "lib/units/props/timergui" then
 				return player_upgrades.auto_repair_level_1 > drill_upgrades.auto_repair_level_1 or player_upgrades.auto_repair_level_2 > drill_upgrades.auto_repair_level_2 or player_upgrades.speed_upgrade_level > drill_upgrades.speed_upgrade_level or player_upgrades.silent_drill and not drill_upgrades.silent_drill or player_upgrades.reduced_alert and not drill_upgrades.reduced_alert
 			end
 			local can_upgrade = player_skills and player_can_upgrade(skills, player_skills) or false
+			local upgrade_table = {
+				restarter = (skills.auto_repair_level_1 or 0) + (skills.auto_repair_level_2 or 0),
+				faster = (skills.speed_upgrade_level or 0),
+				silent = (skills.reduced_alert and 1 or 0) + (skills.silent_drill and 1 or 0),
+			}
 			managers.gameinfo:event("timer", "set_upgradable", self._info_key, can_upgrade)
+			managers.gameinfo:event("timer", "set_upgrades", self._info_key, upgrade_table)
 		end
 
 		return set_background_icons_original(self, ...)
@@ -1720,7 +1728,7 @@ if string.lower(RequiredScript) == "lib/units/props/securitylockgui" then
 
 	function SecurityLockGui:init(unit, ...)
 		self._info_key = tostring(unit:key())
-		managers.gameinfo:event("timer", "create", self._info_key, unit, self, "securitylock", false)
+		managers.gameinfo:event("timer", "create", self._info_key, unit, self, "securitylock")
 		init_original(self, unit, ...)
 	end
 

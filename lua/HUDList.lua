@@ -520,8 +520,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		--Deployables
 		local equipment_list = list:register_item("equipment", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 1 })
 		equipment_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-			--{ atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas[2] * 64, 64, 64 }, valign = "top", halign = "right", color = HUDListManager.ListOptions.list_color },
-			--{ atlas = true, h = 2/3, w = 2/3, texture_rect = { HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[1] * 64, HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas[2] * 64, 64, 64 }, valign = "bottom", halign = "left", color = HUDListManager.ListOptions.list_color },
 			{ atlas = HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas, h = 0.55, w = 0.55, valign = "top", halign = "right", color = HUDListManager.ListOptions.list_color },
 			{ atlas = HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas, h = 0.55, w = 0.55, valign = "top", halign = "left", color = HUDListManager.ListOptions.list_color },
 			{ atlas = HUDList.EquipmentItem.EQUIPMENT_TABLE.sentry.atlas, h = 0.55, w = 0.55, valign = "bottom", halign = "right", color = HUDListManager.ListOptions.list_color },
@@ -1692,21 +1690,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
-	function HUDList.ItemBase:_fade(target_alpha, instant)
+	function HUDList.ItemBase:_fade(target_alpha, instant, time_override)
 		self._panel:stop()
 		--if self._panel:alpha() ~= target_alpha then
 		--self._active_fade = { instant = instant, alpha = target_alpha }
-		self._active_fade = { instant = instant or self._panel:alpha() == target_alpha, alpha = target_alpha }
+		self._active_fade = { instant = instant or self._panel:alpha() == target_alpha, alpha = target_alpha, time_override = time_override }
 		--end
 		self:_animate_item()
 	end
 
-	function HUDList.ItemBase:move(x, y, instant)
+	function HUDList.ItemBase:move(x, y, instant, time_override)
 		if alive(self._panel) then
 			self._panel:stop()
 			--if self._panel:x() ~= x or self._panel:y() ~= y then
 			--self._active_move = { instant = instant, x = x, y = y }
-			self._active_move = { instant = instant or (self._panel:x() == x and self._panel:y() == y), x = x, y = y }
+			self._active_move = { instant = instant or (self._panel:x() == x and self._panel:y() == y), x = x, y = y, time_override = time_override }
 			--end
 			self:_animate_item()
 		end
@@ -1720,20 +1718,20 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDList.ItemBase:_animate_item()
 		if alive(self._panel) and self._active_fade then
-			self._panel:animate(callback(self, self, "_animate_fade"), self._active_fade.alpha, self._active_fade.instant)
+			self._panel:animate(callback(self, self, "_animate_fade"), self._active_fade.alpha, self._active_fade.instant, self._active_fade.time_override)
 		end
 
 		if alive(self._panel) and self._active_move then
-			self._panel:animate(callback(self, self, "_animate_move"), self._active_move.x, self._active_move.y, self._active_move.instant)
+			self._panel:animate(callback(self, self, "_animate_move"), self._active_move.x, self._active_move.y, self._active_move.instant, self._active_move.time_override)
 		end
 	end
 
-	function HUDList.ItemBase:_animate_fade(panel, alpha, instant)
+	function HUDList.ItemBase:_animate_fade(panel, alpha, instant, time_override)
 		if not instant and self._fade_time > 0 then
-			local fade_time = self._fade_time
 			local init_alpha = panel:alpha()
+			local fade_time = time_override and math.abs(alpha - init_alpha) / time_override or self._fade_time
 			local change = alpha > init_alpha and 1 or -1
-			local T = math.abs(alpha - init_alpha) * fade_time
+			local T = time_override or math.abs(alpha - init_alpha) * fade_time
 			local t = 0
 
 			while alive(panel) and t < T do
@@ -1756,14 +1754,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
-	function HUDList.ItemBase:_animate_move(panel, x, y, instant)
+	function HUDList.ItemBase:_animate_move(panel, x, y, instant, time_override)
 		if not instant and self._move_speed > 0 then
-			local move_speed = self._move_speed
 			local init_x = panel:x()
 			local init_y = panel:y()
+			local move_speed = time_override and math.abs(x - init_x) / time_override or self._move_speed
 			local x_change = x > init_x and 1 or x < init_x and -1
 			local y_change = y > init_y and 1 or y < init_y and -1
-			local T = math.max(math.abs(x - init_x) / move_speed, math.abs(y - init_y) / move_speed)
+			local T = time_override or math.max(math.abs(x - init_x) / move_speed, math.abs(y - init_y) / move_speed)
 			local t = 0
 
 			while alive(panel) and t < T do
@@ -1861,7 +1859,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._item_move_speed = params.item_move_speed
 		self._item_margin = params.item_margin or 0
 		self._margin = params.item_margin or 0
-		self._stack = params.stack or false
 		self._items = {}
 		self._shown_items = {}
 	end
@@ -1893,7 +1890,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.ListBase:update(t, dt)
-		local delete_items = {}
 		for name, item in pairs(self._items) do
 			if item.update and item:is_active() then
 				item:update(t, dt)
@@ -2016,6 +2012,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._left_to_right = params.left_to_right
 		self._right_to_left = params.right_to_left and not self._left_to_right
 		self._centered = params.centered and not (self._right_to_left or self._left_to_right)
+
+		self._recheck_interval = params.recheck_interval or 1
+		self._next_recheck = self._recheck_interval
 	end
 
 	function HUDList.HorizontalList:_set_default_item_position(item)
@@ -2034,7 +2033,40 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:_update_item_positions()
 	end
 
-	function HUDList.HorizontalList:_update_item_positions(insert_item, instant_move)
+	function HUDList.HorizontalList:update(t, dt)
+		self._next_recheck = self._next_recheck - dt
+
+		if self:shown_items() > 0 and self._next_recheck <= 0 then
+			local order_changed = false
+			local swapped = false
+			repeat
+				swapped = false
+				
+				for i = 2, #self._shown_items, 1 do
+					local prev = self._shown_items[i-1]
+					local cur = self._shown_items[i]
+					
+					local prev_prio, cur_prio = prev and prev:priority(), cur and cur:priority()
+					if cur_prio then
+						if not prev_prio or prev_prio > cur_prio then
+							table.insert(self._shown_items, i, table.remove(self._shown_items, i-1))
+							swapped = true
+						end
+					end
+				end
+				order_changed = order_changed or swapped
+			until not swapped
+
+			if order_changed then
+				self:_update_item_positions(nil, false, self._recheck_interval / 2)
+			end
+			self._next_recheck = self._recheck_interval
+		end
+
+		HUDList.HorizontalList.super.update(self, t, dt)
+	end
+
+	function HUDList.HorizontalList:_update_item_positions(insert_item, instant_move, move_timer)
 		if self._centered then
 			local total_width = self._static_item and (self._static_item:panel():w() + self._item_margin) or 0
 			for i, item in ipairs(self._shown_items) do
@@ -2047,7 +2079,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local left = (self._panel:w() - math.min(total_width, self._panel:w())) / 2
 
 			if self._static_item then
-				self._static_item:move(left, item:panel():y(), instant_move)
+				self._static_item:move(left, item:panel():y(), instant_move, move_timer)
 				left = left + self._static_item:panel():w() + self._item_margin
 			end
 
@@ -2056,10 +2088,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 					if insert_item and item == insert_item then
 						if item:panel():x() ~= left then
 							item:panel():set_x(left - item:panel():w() / 2)
-							item:move(left, item:panel():y(), instant_move)
+							item:move(left, item:panel():y(), instant_move, move_timer)
 						end
 					else
-						item:move(left, item:panel():y(), instant_move)
+						item:move(left, item:panel():y(), instant_move, move_timer)
 					end
 					left = left + item:panel():w() + self._item_margin
 				end
@@ -2074,7 +2106,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 						item:panel():set_x(new_x)
 						item:cancel_move()
 					else
-						item:move(new_x, item:panel():y(), instant_move)
+						item:move(new_x, item:panel():y(), instant_move, move_timer)
 					end
 
 					prev_width = prev_width + width + self._item_margin
@@ -2829,19 +2861,18 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	HUDList.TimerItem = HUDList.TimerItem or class(HUDList.ItemBase)	--TODO: Make inheriting UpgradableTimerItem?
 	HUDList.TimerItem.DEVICE_TYPES = {
-		digital 		= { name = "wolfhud_hudlist_device_timer" 	},
-		drill 			= { name = "wolfhud_hudlist_device_drill" 	},
-		hack 			= { name = "wolfhud_hudlist_device_hack" 	},
-		saw 			= { name = "wolfhud_hudlist_device_saw" 	},
-		timer 			= { name = "wolfhud_hudlist_device_timer" 	},
-		securitylock 	= { name = "wolfhud_hudlist_device_hack" 	},
+		digital 		= { class = "TimerItem", 			name = "wolfhud_hudlist_device_timer" 	},
+		drill 			= { class = "UpgradeableTimerItem", name = "wolfhud_hudlist_device_drill" 	},
+		drill_noupgrade	= { class = "TimerItem", 			name = "wolfhud_hudlist_device_drill" 	},
+		saw 			= { class = "UpgradeableTimerItem", name = "wolfhud_hudlist_device_saw" 	},
+		saw_noupgrade 	= { class = "TimerItem", 			name = "wolfhud_hudlist_device_saw" 	},
+		hack 			= { class = "TimerItem", 			name = "wolfhud_hudlist_device_hack" 	},
+		timer 			= { class = "TimerItem", 			name = "wolfhud_hudlist_device_timer" 	},
+		securitylock 	= { class = "TimerItem", 			name = "wolfhud_hudlist_device_hack" 	},
 	}
 	function HUDList.TimerItem:init(parent, name, data)
 		self.STANDARD_COLOR = HUDListManager.ListOptions.list_color or Color(1, 1, 1, 1)
-		self.UPGRADE_COLOR = Color(1, 0.0, 0.8, 1.0)
-		self.AUTOREPAIR_COLOR = Color(1, 1, 0, 1)
 		self.DISABLED_COLOR = Color(1, 1, 0, 0)
-		self.UPGRADE_LVL_COLORS = { Color(0.3, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)}
 		self.FLASH_SPEED = 2
 
 		self._show_distance = true
@@ -2854,7 +2885,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._upgrades = data.upgrades or {}
 		self._show_upgrade_icons = data.can_have_upgrades or false
 
-		HUDList.ItemBase.init(self, parent, name, { align = "left", w = parent:panel():h() * (self._show_upgrade_icons and 1 or 4/5), h = parent:panel():h() })
+		HUDList.ItemBase.init(self, parent, name, { align = "left", w = data.w or (parent:panel():h() * 4/5), h = parent:panel():h() })
 
 		local txt = self.DEVICE_TYPES[self._device_type] and managers.localization:text(self.DEVICE_TYPES[self._device_type].name or "N/A") or "N/A"
 		self._type_text = self._panel:text({
@@ -2888,78 +2919,38 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local box = self._progress:panel()
 		box:set_bottom(self._panel:bottom())
 
-		local w_mult = self._show_upgrade_icons and 4/5 or 1
-
-		self._distance_text = box:text({
+		self._distance_text = self._panel:text({
 			name = "distance",
 			align = "center",
 			vertical = "top",
-			y = 2,
-			w = box:w() * w_mult,
+			y = box:y() + 2,
+			w = box:w(),
 			h = box:h() - 2,
 			color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = box:h() * 0.4
 		})
 
-		self._time_text = box:text({
+		self._time_text = self._panel:text({
 			name = "time",
 			align = "center",
 			vertical = "bottom",
-			w = box:w() * w_mult,
+			y = box:y(),
+			w = box:w(),
 			h = box:h(),
 			color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = box:h() * 0.6
 		})
 
-		self._speed_upgrade = box:bitmap({
-			name = "icon_speed",
-			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
-			x = self._time_text:right() * 0.9,
-			y = box:h() * (0.05),
-			h = box:h() * 0.3,
-			w = box:w() * (1/5),
-			blend_mode = "add",
-			color = self.UPGRADE_LVL_COLORS[1],
-			visible = self._show_upgrade_icons
-		})
-
-		self._noise_upgrade = box:bitmap({
-			name = "icon_noise",
-			texture = "guis/textures/pd2/skilltree/drillgui_icon_silent",
-			x = self._time_text:right() * 0.9,
-			y = box:h() * (0.33),
-			h = box:h() * 0.3,
-			w = box:w() * (1/5),
-			blend_mode = "add",
-			color = self.UPGRADE_LVL_COLORS[1],
-			visible = self._show_upgrade_icons
-		})
-
-		self._restart_upgrade = box:bitmap({
-			name = "icon_restart",
-			texture = "guis/textures/pd2/skilltree/drillgui_icon_restarter",
-			x = self._time_text:right() * 0.9,
-			y = box:h() * 0.63,
-			h = box:h() * 0.3,
-			w = box:w() * (1/5),
-			blend_mode = "add",
-			color = self.UPGRADE_LVL_COLORS[1],
-			visible = self._show_upgrade_icons
-		})
-
-		local current_color = self._auto_repair and self.AUTOREPAIR_COLOR or self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
 		self._flash_color_table = {
 			{ ratio = 0.0, color = self.DISABLED_COLOR },
-			{ ratio = 1.0, color = current_color }
+			{ ratio = 1.0, color = self.STANDARD_COLOR }
 		}
-		self:_set_colors(current_color)
+		self:_set_colors(self.STANDARD_COLOR)
 
 		self:_set_jammed(data)
 		self:_set_powered(data)
-		self:_set_upgradable(data)
-		self:_set_upgrades(data)
 		self:_update_timer(data)
 
 		local key = tostring(self._unit:key())
@@ -2968,9 +2959,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			update = callback(self, self, "_update_timer"),
 			set_jammed = callback(self, self, "_set_jammed"),
 			set_powered = callback(self, self, "_set_powered"),
-			set_upgradable = callback(self, self, "_set_upgradable"),
-			set_upgrades = callback(self, self, "_set_upgrades"),
-			set_autorepair = callback(self, self, "_set_autorepair"),
 		}
 
 		for event, clbk in pairs(events) do
@@ -2979,7 +2967,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.TimerItem:priority()
-		return self._remaining
+		return self._remaining or self._priority
 	end
 
 	function HUDList.TimerItem:update(t, dt)
@@ -2997,10 +2985,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.TimerItem:_update_timer(data)
-		self._remaining = data.timer_value or 0
-		self._time_text:set_text(format_time_string(self._remaining))
-		if data.timer_ratio then
-			self._progress:set_ratio(data.timer_ratio)
+		if data.timer_value then
+			self._remaining = data.timer_value
+			self._time_text:set_text(format_time_string(self._remaining))
+			if data.timer_ratio then
+				self._progress:set_ratio(data.timer_ratio)
+			end
 		end
 	end
 
@@ -3014,36 +3004,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:_check_is_running()
 	end
 
-	function HUDList.TimerItem:_set_upgradable(data)
-		self._upgradable = data.upgradable
-
-		local current_color = self._auto_repair and self.AUTOREPAIR_COLOR or self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
-		self._flash_color_table[2].color = current_color
-		self:_set_colors(current_color)
-	end
-
-	function HUDList.TimerItem:_set_upgrades(data)
-		if data.upgrades then
-			self._upgrades = data.upgrades
-		end
-		if self._show_upgrade_icons then
-			local speed_color = 1 + math.clamp(self._upgrades.speed_upgrade_level or 0, 0, 2)
-			local noise_color = 1 + (self._upgrades.silent_drill and 1 or 0) + (self._upgrades.reduced_alert and 1 or 0)
-			local restart_color = 1 + ((self._upgrades.auto_repair_level_2 and self._upgrades.auto_repair_level_2 > 0) and 2 or (self._upgrades.auto_repair_level_1 and self._upgrades.auto_repair_level_1 > 0) and 1 or 0)
-			self._speed_upgrade:set_color(self.UPGRADE_LVL_COLORS[speed_color])
-			self._noise_upgrade:set_color(self.UPGRADE_LVL_COLORS[noise_color])
-			self._restart_upgrade:set_color(self.UPGRADE_LVL_COLORS[restart_color])
-		end
-	end
-
-	function HUDList.TimerItem:_set_autorepair(data)
-		self._auto_repair = data.auto_repair
-
-		local current_color = self._auto_repair and self.AUTOREPAIR_COLOR or self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
-		self._flash_color_table[2].color = current_color
-		self:_set_colors(current_color)
-	end
-
 	function HUDList.TimerItem:_check_is_running()
 		if not self._jammed and self._powered then
 			self:_set_colors(self._flash_color_table[2].color)
@@ -3055,6 +3015,87 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._type_text:set_color(color)
 		self._distance_text:set_color(color)
 		self._progress:set_color(color)
+	end
+	
+	HUDList.UpgradeableTimerItem = HUDList.UpgradeableTimerItem or class(HUDList.TimerItem)
+	function HUDList.UpgradeableTimerItem:init(parent, name, data)
+		self.UPGRADE_COLOR = Color(1, 0.0, 0.8, 1.0)
+		self.AUTOREPAIR_COLOR = Color(1, 1, 0.5, 1)
+		self.UPGRADE_LVL_COLORS = { Color(0.3, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)}
+
+		self._upgradable = data.upgradable
+		self._auto_repair = data.auto_repair
+
+		data.w = parent:panel():h()
+
+		HUDList.UpgradeableTimerItem.super.init(self, parent, name, data)
+
+		self._upgrade_types = { "faster", "silent", "restarter"}
+		self._upgrade_icons = {}
+
+		local icon_size = (self._panel:h() - self._type_text:h() - 5) / #self._upgrade_types
+		local y = self._time_text:y() + 3
+		for i, upgrade in ipairs(self._upgrade_types) do
+			local icon = self._panel:bitmap{
+				texture = "guis/textures/pd2/skilltree/drillgui_icon_" .. upgrade,
+				y = y + icon_size * (i-1),
+				w = icon_size,
+				h = icon_size,
+				align = "center",
+				vertical = "center",
+				valign = "scale",
+				halign = "scale",
+				color = self.UPGRADE_LVL_COLORS[1],
+				visible = true,
+			}
+			icon:set_right(self._panel:w() - 3)
+			self._upgrade_icons[upgrade] = icon
+		end
+
+		self._time_text:set_w(self._panel:w() - icon_size)
+		self._distance_text:set_w(self._panel:w() - icon_size)
+
+		self:_set_upgradable(data)
+		self:_set_upgrades(data)
+
+		local key = tostring(self._unit:key())
+		local id = string.format("HUDList_timer_listener_%s", key)
+		local events = {
+			set_upgradable = callback(self, self, "_set_upgradable"),
+			set_upgrades = callback(self, self, "_set_upgrades"),
+			set_autorepair = callback(self, self, "_set_autorepair"),
+		}
+
+		for event, clbk in pairs(events) do
+			table.insert(self._listener_clbks, { name = id, source = "timer", event = { event }, clbk = clbk, keys = { key }, data_only = true })
+		end
+	end
+
+	function HUDList.UpgradeableTimerItem:_set_upgradable(data)
+		self._upgradable = data.upgradable
+
+		local current_color = self._auto_repair and self.AUTOREPAIR_COLOR or self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
+		self._flash_color_table[2].color = current_color
+		self:_set_colors(current_color)
+	end
+
+	function HUDList.UpgradeableTimerItem:_set_upgrades(data)
+		if data.upgrades then
+			for _, upgrade in ipairs(self._upgrade_types) do
+				if data.upgrades[upgrade] and self._upgrade_icons[upgrade] then
+					local upgrade_color = self.UPGRADE_LVL_COLORS[math.clamp((data.upgrades[upgrade] or 0) + 1, 1, #self.UPGRADE_LVL_COLORS)] or Color.red
+					self._upgrade_icons[upgrade]:set_color(upgrade_color)
+				end
+			end
+		end
+	end
+
+	function HUDList.UpgradeableTimerItem:_set_autorepair(data)
+		self._auto_repair = data.auto_repair
+
+		local current_color = self._auto_repair and self.AUTOREPAIR_COLOR or self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
+		self._flash_color_table[2].color = current_color
+		self:_set_colors(current_color)
 	end
 
 	HUDList.TemperatureGaugeItem = HUDList.TemperatureGaugeItem or class(HUDList.TimerItem)
@@ -3093,7 +3134,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	HUDList.EquipmentItem = HUDList.EquipmentItem or class(HUDList.ItemBase)
 	HUDList.EquipmentItem.EQUIPMENT_TABLE = {
-		sentry 			= {	atlas 		= { 7,  5 }, priority = 1 },
+		sentry 			= {	atlas 		= { 7,  5 }, priority = 0 },
 		ammo_bag 		= {	atlas 		= { 1,  0 }, priority = 3 },
 		doc_bag 		= {	atlas 		= { 2,  7 }, priority = 4 },
 		first_aid_kit	= {	atlas 		= { 3, 10 }, priority = 5 },
@@ -3209,8 +3250,20 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
+	function HUDList.BagEquipmentItem:priority()
+		return HUDList.BagEquipmentItem.super.priority(self) - Utl.round(self:amount() / 1000, 3)
+	end
+
 	function HUDList.BagEquipmentItem:amount()
-		return self._amount + (self._amount_offset or 0)
+		return (self._amount or 1) + (self._amount_offset or 0)
+	end
+
+	function HUDList.BagEquipmentItem:max_amount()
+		return (self._max_amount or 1) + (self._amount_offset or 0)
+	end
+
+	function HUDList.BagEquipmentItem:amount_ratio()
+		return self:amount() / self:max_amount()
 	end
 
 	function HUDList.BagEquipmentItem:_set_max_amount(data)
@@ -3253,7 +3306,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._progress:set_ratio((self._amount + offset) / (self._max_amount + offset))
 			local new_color = self:_get_color_from_table(self._amount + offset, self._max_amount + offset)
 			self._info_text:set_color(new_color)
-			self._progress:set_color(new_color)
+			self._progress:set_color(math.lerp(new_color, (HUDListManager.ListOptions.list_color or Color.white), 0.4))
 		end
 	end
 
@@ -3358,6 +3411,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if data.health_ratio then
 			self._health_ratio = data.health_ratio or 0
 			self._health_bar:set_w(self._bar_bg:w() * self._health_ratio)
+			self._progress:set_color(math.lerp(self:_get_color_from_table(self._health_ratio, 1), (HUDListManager.ListOptions.list_color or Color.white), 0.4))
 
 			if self._health_ratio <= 0 then
 				self:_set_inactive(nil)
@@ -3902,7 +3956,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	HUDList.ECMFeedbackItem = HUDList.ECMFeedbackItem or class(HUDList.ItemBase)
 	function HUDList.ECMFeedbackItem:init(parent, name, data)
-		HUDList.ECMFeedbackItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
+		HUDList.ECMFeedbackItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h(), priority = 0 })
 
 		self.STANDARD_COLOR = Color(1, 0.0, 0.8, 1.0)
 		self.DISABLED_COLOR = Color(1, 1, 0, 0)
@@ -3980,7 +4034,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.ECMFeedbackItem:priority()
-		return self._remaining
+		return self._remaining or self._priority
 	end
 
 	function HUDList.ECMFeedbackItem:_animate_battery_low(text, progress_bar)
