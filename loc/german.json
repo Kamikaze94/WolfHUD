@@ -869,5 +869,5 @@
 	"wolfhud_skipit_options_name" : "Skip-It Optionen",
 	"wolfhud_skipit_options_help" : "Optionen um überflüssige menüs automatisch zu überspringen, um Zeit zu sparen.",
 	"wolfhud_assaultbanner_options_name" : "Ansturms-Banner Optionen",
-	"wolfhud_assaultbanner_options_help" : "Optionen um das Ansturmsbanner zu verändern.",
+	"wolfhud_assaultbanner_options_help" : "Optionen um das Ansturmsbanner zu verändern."
 }
