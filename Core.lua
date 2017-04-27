@@ -304,6 +304,11 @@ if not _G.WolfHUD then
 						separate_bagged_loot		 		= true,     --Show bagged loot as a separate value
 						show_potential_loot					= false,
 					show_special_pickups 					= true,    	--Show number of special equipment/items
+					SHOW_PICKUP_CATEGORIES = {
+						mission_pickups 					= true,
+						collectables 						= true,
+						valuables 							= true,
+					}
 
 				},
 				BUFF_LIST = {
@@ -853,10 +858,12 @@ if not _G.WolfHUD then
 			end,
 			["HUDList"] = function(setting, value)
 				if managers.hud and HUDListManager then
-					if not (setting[1] == "BUFF_LIST" and setting[2] ~= "show_buffs") then
-						managers.hud:change_list_setting(tostring(setting[#setting]), WolfHUD:getColor(value) or value)
-					else
+					if setting[1] == "BUFF_LIST" and setting[2] ~= "show_buffs" then
 						managers.hud:change_bufflist_setting(tostring(setting[#setting]), WolfHUD:getColor(value) or value)
+					elseif setting[1] == "RIGHT_LIST" and setting[2] == "SHOW_PICKUP_CATEGORIES" then
+						managers.hud:change_pickuplist_setting(tostring(setting[#setting]), WolfHUD:getColor(value) or value)
+					else
+						managers.hud:change_list_setting(tostring(setting[#setting]), WolfHUD:getColor(value) or value)
 					end
 				end
 			end,

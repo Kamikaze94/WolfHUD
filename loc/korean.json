@@ -470,6 +470,12 @@
 	"wolfhud_hudlist_show_potential_loot_desc" : "루트 카운터에 상자를 표시합니다. \n(주의 : 빈 상자일수도 있습니다...)",
 	"wolfhud_hudlist_show_special_pickups_title" : "특수 픽업 표시",
 	"wolfhud_hudlist_show_special_pickups_desc" : "맵에 있는 키카드, 크로우바, 재료 등을 표시합니다.",
+	"wolfhud_hudlist_show_mission_pickups_title" : "Show Mission Pickups",
+	"wolfhud_hudlist_show_mission_pickups_desc" : "Show amount of chemicals, keycards, planks and other mission pickups on the map.",
+	"wolfhud_hudlist_show_collectables_pickups_title" : "Show Collectable Pickups",
+	"wolfhud_hudlist_show_collectables_pickups_desc" : "Show amount of Gage packages, Spec-Ops Cases & Keys et cetera on the map.",
+	"wolfhud_hudlist_show_valuables_pickups_title" : "Show Loot Pickups",
+	"wolfhud_hudlist_show_valuables_pickups_desc" : "Show amount of valuable items, like money bundles or necklaces on the map.",
 
 	"wolfhud_infopanels_buff_options_name" : "버프 리스트 옵션",
 	"wolfhud_infopanels_buff_options_help" : "버프 리스트에 표시될 버프들을 설정합니다.",

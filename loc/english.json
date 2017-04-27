@@ -470,6 +470,12 @@
 	"wolfhud_hudlist_show_potential_loot_desc" : "Show the amount of crates on the map in the loot counter. \n(Remember, crates might be empty...)",
 	"wolfhud_hudlist_show_special_pickups_title" : "Show Special Pickups",
 	"wolfhud_hudlist_show_special_pickups_desc" : "Show amount of chemicals, keycards and other stuff on the map.",
+	"wolfhud_hudlist_show_mission_pickups_title" : "Show Mission Pickups",
+	"wolfhud_hudlist_show_mission_pickups_desc" : "Show amount of chemicals, keycards, planks and other mission pickups on the map.",
+	"wolfhud_hudlist_show_collectables_pickups_title" : "Show Collectable Pickups",
+	"wolfhud_hudlist_show_collectables_pickups_desc" : "Show amount of Gage packages, Spec-Ops Cases & Keys et cetera on the map.",
+	"wolfhud_hudlist_show_valuables_pickups_title" : "Show Loot Pickups",
+	"wolfhud_hudlist_show_valuables_pickups_desc" : "Show amount of valuable items, like money bundles or necklaces on the map.",
 
 	"wolfhud_infopanels_buff_options_name" : "Buff List Options",
 	"wolfhud_infopanels_buff_options_help" : "Options for the buff info list.",

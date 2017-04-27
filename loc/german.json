@@ -477,6 +477,12 @@
 	"wolfhud_hudlist_show_potential_loot_desc" : "Zeige die Anzahl der Kisten auf der Map im Beute-Zähler. \n(Merke, Kisten können auch leer sein...)",
 	"wolfhud_hudlist_show_special_pickups_title" : "Zeige Spezial Equipment",
 	"wolfhud_hudlist_show_special_pickups_desc" : "Zeige die Anzahl an Chemikalien, Schlüsselkarten, etc. auf der Karte.",
+	"wolfhud_hudlist_show_mission_pickups_title" : "Zeige Missions-Equipment",
+	"wolfhud_hudlist_show_mission_pickups_desc" : "Zeige die Anzahl an Chemikalien, Schlüsselkarten, Brettern und anderem Missions-Equipment auf der Karte.",
+	"wolfhud_hudlist_show_collectables_pickups_title" : "Zeige sammelbare Pickups",
+	"wolfhud_hudlist_show_collectables_pickups_desc" : "Zeige die Anzahl an Gage Paketen, Spec-Ops Kisten und Schlüsseln, etc. auf der Karte.",
+	"wolfhud_hudlist_show_valuables_pickups_title" : "Zeige Beute Pickups",
+	"wolfhud_hudlist_show_valuables_pickups_desc" : "Zeige die Anzahl an Beute, wie Geldbündel oder Halsketten auf der Karte.",
 
 	"wolfhud_infopanels_buff_options_name" : "Fähigkeit Info Liste",
 	"wolfhud_infopanels_buff_options_help" : "Optionen der Fähigkeiten Liste.",
