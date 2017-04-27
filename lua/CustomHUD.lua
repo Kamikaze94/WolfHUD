@@ -803,7 +803,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammateCustom:set_grenades_amount(data)
-		if data.ability then
+		if data.has_cooldown then
 			self:set_ability_cooldown(data)
 		elseif data.amount then
 			self:call_listeners("throwable_amount", data.amount)
