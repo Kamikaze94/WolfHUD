@@ -326,6 +326,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenucomponent" then
 	local populate_tabs_data_original = CrimeSpreeDetailsMenuComponent.populate_tabs_data
+	local _add_panels_original = CrimeSpreeDetailsMenuComponent._add_panels
 	local update_original = CrimeSpreeDetailsMenuComponent.update
 	CrimeSpreeDetailsMenuComponent._LOADOUT_INDEX = 2
 	function CrimeSpreeDetailsMenuComponent:populate_tabs_data(tabs_data, ...)
@@ -343,8 +344,16 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 			table.insert(tabs_data, {
 				name_id = "menu_button_hide",
 				page_class = "CrimeSpreeEmptyPage",
-				width_multiplier = 1.2
+				width_multiplier = 1
 			})
+		end
+	end
+
+	function CrimeSpreeDetailsMenuComponent:_add_panels(...)
+		_add_panels_original(self, ...)
+		if alive(self._tabs_panel) and alive(self._tabs_scroll_panel) then
+			self._tabs_panel:set_w(self._panel:w())
+			self._tabs_scroll_panel:set_w(self._panel:w())
 		end
 	end
 	
@@ -834,7 +843,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 		perk 					= { class = "LoadoutPerkItem", 			params = { height = tweak_data.menu.pd2_small_font_size, 			margin = 2 } },
 		primary 				= { class = "LoadoutWeaponItem", 	 	params = { margin = 5 } },
 		secondary 				= { class = "LoadoutWeaponItem", 		params = { margin = 5 } },
-		melee_weapon			= { class = "LoadoutMeleeItem", 	 	params = { margin = 5 } },
+		melee_weapon			= { class = "LoadoutImageItem", 	 	params = { margin = 5 } },
 		grenade 				= { class = "LoadoutImageItem", 	 	params = { margin = 5 } },
 		mask					= { class = "LoadoutMaskItem", 		 	params = { margin = 5 } },
 		armor 					= { class = "LoadoutImageItem", 	 	params = { margin = 5 } },
@@ -883,7 +892,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 				local config = self.NAME_TO_CLASS[name]
 				local class = config and config.class
 				if class then
-					local component_params = params[name] or config.params
+					local component_params = params[name] or clone(config.params)
 					if params.default then
 						for name, value in pairs(params.default) do
 							component_params[name] = component_params[name] or value
