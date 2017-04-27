@@ -474,7 +474,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local buff_list = self:list("buff_list")
 			local item = buff_list and buff_list:item(buff_id)
 			if item then
-				item:set_force_hide(hide)
+				buff_list:set_item_hidden(item, "setting", hide)
 			end
 		end
 	end
@@ -504,8 +504,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDListManager:_setup_left_list()
-		local list_width = 600
-		local list_height = 800
+		local list_width = 500
+		local list_height = 450
 		local x = 0
 		local y = HUDListManager.ListOptions.left_list_height_offset or 40
 		local scale = HUDListManager.ListOptions.left_list_scale or 1
@@ -571,8 +571,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDListManager:_setup_right_list()
-		local list_width = 800
-		local list_height = 800
+		local list_width = 600
+		local list_height = 500
 		local x = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel:right() - list_width
 		local y = HUDListManager.ListOptions.right_list_height_offset or 0
 		local scale = HUDListManager.ListOptions.right_list_scale or 1
@@ -627,7 +627,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			centered = true,
 			item_margin = 0,
 			item_move_speed = 300,
-			fade_time = 0.15,
+			fade_time = 0.15
 		})
 
 		self:_set_show_buffs()
@@ -668,7 +668,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				local item = buff_list:item(item_id)
 				if not item then
 					item = buff_list:register_item(item_id, item_data.class or "BuffItemBase", item_data)
-					item:set_force_hide(item_data.ignore)
+					buff_list:set_item_hidden(item, "setting", item_data.ignore)
 				end
 				table.insert(items, item)
 			end
@@ -1569,6 +1569,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._move_speed = params.move_speed or 150
 		self._priority = params.priority
 		self._listener_clbks = {}
+		self._hide_reason = {}
 
 		self._panel = (self._parent_list and self._parent_list:panel() or params.native_panel or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel):panel({
 			name = name,
@@ -1605,18 +1606,24 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.ItemBase:is_active() return self._active end
 	function HUDList.ItemBase:priority() return self._priority end
 	function HUDList.ItemBase:fade_time() return self._fade_time end
-	function HUDList.ItemBase:hidden() return self._force_hide end
+	function HUDList.ItemBase:hidden() return next(self._hide_reason) ~= nil end
 
 	function HUDList.ItemBase:_set_item_visible(status)
-		self._panel:set_visible(status and not self._force_hide)
+		self._panel:set_visible(status and not self:hidden())
 	end
 
-	function HUDList.ItemBase:set_force_hide(status)
-		self._force_hide = status
-		self:_set_item_visible(self._active)
+	function HUDList:set_force_hide(reason, status)
+		self:_set_force_hide(reason, status)
+
 		if self._parent_list then
-			self._parent_list:set_item_hidden(self, status)
+			self._parent_list:update_item_positions()
 		end
+	end
+
+	function HUDList.ItemBase:_set_force_hide(reason, status)
+		self._hide_reason[reason] = status and true or nil
+
+		self:_set_item_visible(self._active)
 	end
 
 	function HUDList.ItemBase:set_priority(priority)
@@ -1861,6 +1868,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._margin = params.item_margin or 0
 		self._items = {}
 		self._shown_items = {}
+		
+		self._bg = self._panel:rect({
+			name = "bg",
+			color = Color(math.random(), math.random(), math.random()),
+			alpha = 0.25,
+			valign = "grow",
+			halign = "grow",
+			layer = -1,
+		})
 	end
 
 	function HUDList.ListBase:item(name)
@@ -1942,6 +1958,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		return self._static_item
 	end
 
+	function HUDList.ListBase:setup_static_item()
+	end
+
 	function HUDList.ListBase:delete_static_item()
 		if self._static_item then
 			self._static_item:delete(true)
@@ -1989,8 +2008,16 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:_update_item_positions(item)
 	end
 
-	function HUDList.ListBase:set_item_hidden(item, hidden)
+	function HUDList.ListBase:set_item_hidden(item, reason, hidden)
+		item:_set_force_hide(reason, hidden)
+		self:update_item_positions()
+	end
+
+	function HUDList.ListBase:update_item_positions()
 		self:_update_item_positions(nil, true)
+	end
+	
+	function HUDList.ListBase:_update_item_positions(insert_item, instant_move, move_timer)
 	end
 
 	function HUDList.ListBase:_cbk_update_visibility()
@@ -2013,8 +2040,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._right_to_left = params.right_to_left and not self._left_to_right
 		self._centered = params.centered and not (self._right_to_left or self._left_to_right)
 
+		self._max_shown_items = params.max_items
+
 		self._recheck_interval = params.recheck_interval or 1
 		self._next_recheck = self._recheck_interval
+		
+		self:setup_expansion_item()
 	end
 
 	function HUDList.HorizontalList:_set_default_item_position(item)
@@ -2031,6 +2062,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		item:panel():set_left(x)
 		item:panel():set_top(y)
 		self:_update_item_positions()
+	end
+
+	function HUDList.HorizontalList:setup_expansion_item()
+		self._expansion_indicator = HUDList.ExpansionIndicator:new(self, "expansion_indicator", 1/5, 1, {})
+		self._expansion_indicator:set_mirrored(self._right_to_left)
+		self._expansion_indicator:set_active(self._max_shown_items and self._max_shown_items >= self:shown_items())
 	end
 
 	function HUDList.HorizontalList:update(t, dt)
@@ -2067,11 +2104,27 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.HorizontalList:_update_item_positions(insert_item, instant_move, move_timer)
+		local total_shown_items = 0
+		local max_width_reached = false
 		if self._centered then
 			local total_width = self._static_item and (self._static_item:panel():w() + self._item_margin) or 0
 			for i, item in ipairs(self._shown_items) do
+				if self._max_shown_items then
+					item:_set_force_hide("max_items_reached", total_shown_items >= self._max_shown_items)
+				end
+				if total_width + item:panel():w() + self._item_margin >= self._panel:w() then
+					item:_set_force_hide("max_width_reached", true)
+					max_width_reached = true
+				else
+					item:_set_force_hide("max_width_reached", false)
+				end
+
 				if not item:hidden() then
 					total_width = total_width + item:panel():w() + self._item_margin
+					total_shown_items = total_shown_items + 1
+				else
+					item:panel():set_x(total_width)
+					item:cancel_move()
 				end
 			end
 			total_width = total_width - self._item_margin
@@ -2094,11 +2147,29 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 						item:move(left, item:panel():y(), instant_move, move_timer)
 					end
 					left = left + item:panel():w() + self._item_margin
+				else
+					item:panel():set_x(left)
 				end
+			end
+
+			if self._expansion_indicator then
+				self._expansion_indicator:set_active(max_width_reached or self._max_shown_items and self:shown_items() > self._max_shown_items)
+				self._expansion_indicator:panel():set_x(left)
+				self._expansion_indicator:cancel_move()
 			end
 		else
 			local prev_width = self._static_item and (self._static_item:panel():w() + self._item_margin) or 0
 			for i, item in ipairs(self._shown_items) do
+				if self._max_shown_items then
+					item:_set_force_hide("max_items_reached", total_shown_items >= self._max_shown_items)
+				end
+				if prev_width + item:panel():w() + self._item_margin >= self._panel:w() then
+					item:_set_force_hide("max_width_reached", true)
+					max_width_reached = true
+				else
+					item:_set_force_hide("max_width_reached", false)
+				end
+
 				if not item:hidden() then
 					local width = item:panel():w()
 					local new_x = (self._left_to_right and prev_width) or (self._panel:w() - (width+prev_width))
@@ -2110,7 +2181,19 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 					end
 
 					prev_width = prev_width + width + self._item_margin
+					total_shown_items = total_shown_items + 1
+				else
+					item:panel():set_x(prev_width)
+					item:cancel_move()
 				end
+			end
+
+			if self._expansion_indicator then
+				self._expansion_indicator:set_active(max_width_reached or self._max_shown_items and self:shown_items() > self._max_shown_items)
+				local width = self._expansion_indicator:panel():w()
+				local new_x = (self._left_to_right and math.min(prev_width, self._panel:w() - width)) or math.max(self._panel:w() - (width+prev_width), 0)
+				self._expansion_indicator:panel():set_x(new_x)
+				self._expansion_indicator:cancel_move()
 			end
 		end
 	end
@@ -2142,7 +2225,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:_update_item_positions()
 	end
 
-	function HUDList.VerticalList:_update_item_positions(insert_item, instant_move)
+	function HUDList.VerticalList:_update_item_positions(insert_item, instant_move, move_timer)
 		if self._centered then
 			local total_height = self._static_item and (self._static_item:panel():h() + self._item_margin) or 0
 			for i, item in ipairs(self._shown_items) do
@@ -2155,7 +2238,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local top = (self._panel:h() - math.min(total_height, self._panel:h())) / 2
 
 			if self._static_item then
-				self._static_item:move(item:panel():x(), top, instant_move)
+				self._static_item:move(item:panel():x(), top, instant_move, move_timer)
 				top = top + self._static_item:panel():h() + self._item_margin
 			end
 
@@ -2164,10 +2247,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 					if insert_item and item == insert_item then
 						if item:panel():y() ~= top then
 							item:panel():set_y(top - item:panel():h() / 2)
-							item:move(item:panel():x(), top, instant_move)
+							item:move(item:panel():x(), top, instant_move, move_timer)
 						end
 					else
-						item:move(item:panel():x(), top, instant_move)
+						item:move(item:panel():x(), top, instant_move, move_timer)
 					end
 					top = top + item:panel():h() + self._item_margin
 				end
@@ -2182,11 +2265,53 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 						item:panel():set_y(new_y)
 						item:cancel_move()
 					else
-						item:move(item:panel():x(), new_y, instant_move)
+						item:move(item:panel():x(), new_y, instant_move, move_timer)
 					end
 					prev_height = prev_height + height + self._item_margin
 				end
 			end
+		end
+	end
+
+	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	HUDList.ExpansionIndicator = HUDList.ExpansionIndicator or class(HUDList.ItemBase)
+	
+	function HUDList.ExpansionIndicator:init(parent, name, ratio_w, ratio_h, params)
+		HUDList.ItemBase.init(self, parent, name, { align = "center", w = parent:panel():h() * (ratio_w or 1), h = parent:panel():h() * (ratio_h or 1) })
+
+		local icon = params.icon or {}
+		self._icon = self._panel:bitmap({
+			name = "icon_expansion",
+			texture = icon.texture or "guis/textures/hud_icons",
+			texture_rect = icon.texture_rect or { 434, 48, 30, 16 },
+			h = self:panel():h() * (icon.h or 1),
+			w = self:panel():w() * (icon.w or 0.8),
+			blend_mode = "add",
+			align = "center",
+			vertical = "center",
+			valign = "scale",
+			halign = "scale",
+			color = icon.color or Color.white,
+		})
+
+		self._icon:set_center(self._panel:center())
+	end
+
+	function HUDList.ExpansionIndicator:set_mirrored(status)
+		self._icon:set_rotation(status and 180 or 0)
+	end
+
+	function HUDList.ExpansionIndicator:_show(instant)
+		if alive(self._panel) then
+			self:_set_item_visible(true)
+			self:_fade(1, instant)
+		end
+	end
+
+	function HUDList.ExpansionIndicator:_hide(instant)
+		if alive(self._panel) then
+			self:_fade(0, instant)
 		end
 	end
 
@@ -3251,7 +3376,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.BagEquipmentItem:priority()
-		return HUDList.BagEquipmentItem.super.priority(self) - Utl.round(self:amount() / 1000, 3)
+		return HUDList.BagEquipmentItem.super.priority(self) - Utl.round(self:amount() * 0.1, 3)
 	end
 
 	function HUDList.BagEquipmentItem:amount()

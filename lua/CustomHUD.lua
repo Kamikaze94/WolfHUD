@@ -4098,7 +4098,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		if player_hud and player_panel then
 			local teammate_offset = { 0, 0, 0 }
 
-			local function getW(hud_w, panel_w, pos_id)
+			local function getCenterX(hud_w, panel_w, pos_id)
 				local hud_w2, panel_w2 = hud_w / 2, panel_w / 2
 				return pos_id <= 1 and panel_w2 or pos_id == 2 and hud_w2 or (hud_w - panel_w2)
 			end
@@ -4106,7 +4106,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			--Seperate Player Panel setup, so its always the most bottom one
 			local player_pos = math.clamp(WolfHUD:getSetting({"CustomHUD", "PLAYER", "POSITION"}, 2), 1, 3)
 			local player_w, player_h = player_panel:w() or 0, player_panel:h() or 0
-			player_panel:set_center_x(getW(hud_w, player_w, player_pos))
+			player_panel:set_center_x(getCenterX(hud_w, player_w, player_pos))
 			player_panel:set_bottom(hud_h - teammate_offset[player_pos])
 			player_hud:set_alignment((player_pos < 3) and "left" or "right")
 			teammate_offset[player_pos] = teammate_offset[player_pos] + player_panel:h() + MARGIN
@@ -4122,7 +4122,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 				if i ~= HUDManager.PLAYER_PANEL and panel:visible() then
 					local team_stack = j < MAX_STACK_SIZE and 1 or 2
 
-					panel:set_center_x(getW(hud_w, panel:w(), teammate_pos[team_stack]))
+					panel:set_center_x(getCenterX(hud_w, panel:w(), teammate_pos[team_stack]))
 					panel:set_bottom(hud_h - teammate_offset[teammate_pos[team_stack]])
 					teammate:set_alignment((teammate_pos[team_stack] < 3) and "left" or "right")
 
