@@ -1120,6 +1120,15 @@ if WolfHUD then
 								value = {"HUDSuspicion", "SHOW_PERCENTAGE"},
 							},
 							{
+								type = "toggle",
+								name_id = "wolfhud_susp_numberic_outline_title",
+								desc_id = "wolfhud_susp_numberic_outline_desc",
+								visible_reqs = {
+									{ setting = {"HUDSuspicion", "SHOW_PERCENTAGE"}, invert = false }
+								},
+								value = {"HUDSuspicion", "SHOW_PERCENTAGE_OUTLINE"},
+							},
+							{
 								type = "divider",
 								size = 24,
 							},

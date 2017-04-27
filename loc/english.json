@@ -330,6 +330,8 @@
 	"wolfhud_susp_eye_desc" : "Display the default suspicion elements.",
 	"wolfhud_susp_numberic_title" : "Show numeric Suspicion",
 	"wolfhud_susp_numberic_desc" : "Show numeric suspicion value.",
+	"wolfhud_susp_numberic_outline_title" : "Black outline",
+	"wolfhud_susp_numberic_outline_desc" : "Show a black outline around the numeric Suspicion text.",
 
 	"wolfhud_killcounter_options_name" : "Killcounter Options",
 	"wolfhud_killcounter_options_help" : "Options for the appearance of the kill counter",

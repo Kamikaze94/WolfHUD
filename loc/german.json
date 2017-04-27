@@ -337,6 +337,8 @@
 	"wolfhud_susp_eye_desc" : "Zeige die Standard Verdachtspanels.",
 	"wolfhud_susp_numberic_title" : "Zeige numerischen Verdacht",
 	"wolfhud_susp_numberic_desc" : "Zeige den numerischen Verdachtswert.",
+	"wolfhud_susp_numberic_outline_title" : "Black outline",
+	"wolfhud_susp_numberic_outline_desc" : "Show a black outline around the numeric Suspicion text.",
 
 	"wolfhud_killcounter_options_name" : "Killzähler Optionen",
 	"wolfhud_killcounter_options_help" : "Optionen für die Darstellung des Killzählers",
