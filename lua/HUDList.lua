@@ -1868,7 +1868,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._margin = params.item_margin or 0
 		self._items = {}
 		self._shown_items = {}
-		
+
+		--[[
 		self._bg = self._panel:rect({
 			name = "bg",
 			color = Color(math.random(), math.random(), math.random()),
@@ -1877,6 +1878,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			halign = "grow",
 			layer = -1,
 		})
+		]]
 	end
 
 	function HUDList.ListBase:item(name)
