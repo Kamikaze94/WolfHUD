@@ -1,4 +1,5 @@
 if not (WolfHUD and WolfHUD:getSetting({"HUDList", "ENABLED"}, true)) then return end
+
 if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local format_time_string = function(value)
 		local time_str
@@ -40,24 +41,24 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local texture = icon.texture
 		local texture_rect = icon.texture_rect
 
-		if icon.atlas then
+		if icon.skills then
 			texture = "guis/textures/pd2/skilltree/icons_atlas"
-			local x, y = unpack(icon.atlas)
+			local x, y = unpack(icon.skills)
 			texture_rect = { x * 64, y * 64, 64, 64 }
-		elseif icon.atlas_new then
+		elseif icon.skills_new then
 			texture = "guis/textures/pd2/skilltree_2/icons_atlas_2"
-			local x, y = unpack(icon.atlas_new)
+			local x, y = unpack(icon.skills_new)
 			texture_rect = { x * 80, y * 80, 80, 80 }
-		elseif icon.spec then
+		elseif icon.perks then
 			texture = string.format("guis/%stextures/pd2/specialization/icons_atlas", icon.texture_bundle_folder and string.format("dlcs/%s/", tostring(icon.texture_bundle_folder)) or "")
-			local x, y = unpack(icon.spec)
+			local x, y = unpack(icon.perks)
 			texture_rect = { x * 64, y * 64, 64, 64 }
 		elseif icon.preplanning then
 			texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_icon_types"
 			local x, y = unpack(icon.preplanning)
 			texture_rect = { x * 48, y * 48, 48, 48 }
 		elseif icon.hud_tweak then
-			texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon.hud_tweak)
+			texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon.hud_tweak, texture_rect)
 		elseif icon.hud_icons then
 			texture = "guis/textures/hud_icons"
 			texture_rect = icon.hud_icons
@@ -73,6 +74,33 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 
 		return texture, texture_rect
+	end
+
+	local function get_color_from_table(value, max_value, color_table, default_color)
+		local color_table = color_table or {
+			{ ratio = 0.0, color = Color(1, 0.9, 0.1, 0.1) }, --Red
+			{ ratio = 0.5, color = Color(1, 0.9, 0.9, 0.1) }, --Yellow
+			{ ratio = 1.0, color = Color(1, 0.1, 0.9, 0.1) } --Green
+		}
+		local color = default_color or color_table[#color_table].color or Color.white
+		if value and max_value then
+			local ratio = math.clamp(value / max_value, 0 , 1)
+
+			for i, data in ipairs(color_table) do
+				if ratio < data.ratio then
+					local nxt = color_table[math.clamp(i-1, 1, #color_table)]
+					local scale = (ratio - data.ratio) / (nxt.ratio - data.ratio)
+					color = Color(
+						(data.color.alpha or 1) * (1-scale) + (nxt.color.alpha or 1) * scale,
+						(data.color.red or 0) * (1-scale) + (nxt.color.red or 0) * scale,
+						(data.color.green or 0) * (1-scale) + (nxt.color.green or 0) * scale,
+						(data.color.blue or 0) * (1-scale) + (nxt.color.blue or 0) * scale)
+					break
+				end
+			end
+		end
+
+		return color
 	end
 
 	local _setup_player_info_hud_pd2_original = HUDManager._setup_player_info_hud_pd2
@@ -470,11 +498,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		return self._lists[name]
 	end
 
+	function HUDListManager:lists()
+		return self._lists
+	end
+
 	function HUDListManager:change_setting(setting, value)
 		local clbk = "_set_" .. setting
 		if HUDListManager[clbk] and HUDListManager.ListOptions[setting] ~= value then
 			HUDListManager.ListOptions[setting] = value
-			self[clbk](self)
+			self[clbk](self, value)
 			return true
 		end
 	end
@@ -534,51 +566,51 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local x = 0
 		local y = HUDListManager.ListOptions.left_list_height_offset or 40
 		local scale = HUDListManager.ListOptions.left_list_scale or 1
-		local list = self:register_list("left_side_list", HUDList.VerticalList, { align = "left", x = x, y = y, w = list_width, h = list_height, top_to_bottom = true, item_margin = 5 })
+		local list = self:register_list("left_side_list", HUDList.VerticalList, { align = "left", x = x, y = y, w = list_width, h = list_height, scale = scale, top_to_bottom = true, item_margin = 5 })
 
 		--Timers
 		local timer_list = list:register_item("timers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 3 })
 		timer_list:set_static_item(HUDList.LeftListIcon, 1, 4/5, {
-			{ atlas = {3, 6}, color = HUDListManager.ListOptions.list_color },
+			{ skills = {3, 6}, color = HUDListManager.ListOptions.list_color },
 		})
 
 		--Deployables
 		local equipment_list = list:register_item("equipment", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 1 })
 		equipment_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-			{ atlas = HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.atlas, h = 0.55, w = 0.55, valign = "top", halign = "right", color = HUDListManager.ListOptions.list_color },
-			{ atlas = HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.atlas, h = 0.55, w = 0.55, valign = "top", halign = "left", color = HUDListManager.ListOptions.list_color },
-			{ atlas = HUDList.EquipmentItem.EQUIPMENT_TABLE.sentry.atlas, h = 0.55, w = 0.55, valign = "bottom", halign = "right", color = HUDListManager.ListOptions.list_color },
-			{ atlas = HUDList.EquipmentItem.EQUIPMENT_TABLE.body_bag.atlas, h = 0.55, w = 0.55, valign = "bottom", halign = "left", color = HUDListManager.ListOptions.list_color },
+			{ skills = HUDList.EquipmentItem.EQUIPMENT_TABLE.ammo_bag.skills, h = 0.55, w = 0.55, valign = "top", halign = "right", color = HUDListManager.ListOptions.list_color },
+			{ skills = HUDList.EquipmentItem.EQUIPMENT_TABLE.doc_bag.skills, h = 0.55, w = 0.55, valign = "top", halign = "left", color = HUDListManager.ListOptions.list_color },
+			{ skills = HUDList.EquipmentItem.EQUIPMENT_TABLE.sentry.skills, h = 0.55, w = 0.55, valign = "bottom", halign = "right", color = HUDListManager.ListOptions.list_color },
+			{ skills = HUDList.EquipmentItem.EQUIPMENT_TABLE.body_bag.skills, h = 0.55, w = 0.55, valign = "bottom", halign = "left", color = HUDListManager.ListOptions.list_color },
 		})
 
 		--Minions
 		local minion_list = list:register_item("minions", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, left_to_right = true, item_margin = 5, priority = 4 })
 		minion_list:set_static_item(HUDList.LeftListIcon, 1, 4/5, {
-			{ atlas = {6, 8} },
+			{ skills = {6, 8} },
 		})
 
 		--Pagers
 		local pager_list = list:register_item("pagers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 2 })
 		pager_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-			{ spec = {1, 4}, color = HUDListManager.ListOptions.list_color },
+			{ perks = {1, 4}, color = HUDListManager.ListOptions.list_color },
 		})
 
 		--ECMs
 		local ecm_list = list:register_item("ecms", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5, priority = 5 })
 		ecm_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-			{ atlas = {1, 4}, color = HUDListManager.ListOptions.list_color },
+			{ skills = {1, 4}, color = HUDListManager.ListOptions.list_color },
 		})
 
 		--ECM trigger
 		local retrigger_list = list:register_item("ecm_retrigger", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5, priority = 6 })
 		retrigger_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-			{ atlas = {6, 2}, color = HUDListManager.ListOptions.list_color },
+			{ skills = {6, 2}, color = HUDListManager.ListOptions.list_color },
 		})
 
 		--Tape loop
 		local tape_loop_list = list:register_item("tape_loop", HUDList.HorizontalList, { align = "top", w = list_width, h = 30 * scale, left_to_right = true, item_margin = 5, priority = 7 })
 		tape_loop_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
-			{ atlas = {4, 2}, color = HUDListManager.ListOptions.list_color },
+			{ skills = {4, 2}, color = HUDListManager.ListOptions.list_color },
 		})
 
 		self:_set_show_timers()
@@ -601,7 +633,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local x = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel:right() - list_width
 		local y = HUDListManager.ListOptions.right_list_height_offset or 0
 		local scale = HUDListManager.ListOptions.right_list_scale or 1
-		local list = self:register_list("right_side_list", HUDList.VerticalList, { align = "right", x = x, y = y, w = list_width, h = list_height, top_to_bottom = true, item_margin = 5 })
+		local list = self:register_list("right_side_list", HUDList.VerticalList, { align = "right", x = x, y = y, w = list_width, h = list_height, scale = scale, top_to_bottom = true, item_margin = 5 })
 
 		local unit_count_list = list:register_item("unit_count_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 1 })
 		local stealth_list = list:register_item("stealth_list", HUDList.HorizontalList, { align = "top", w = list_width, h = 50 * scale, right_to_left = true, item_margin = 3, priority = 4 })
@@ -649,6 +681,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			y = y ,
 			w = list_width,
 			h = list_height,
+			scale = scale,
 			centered = true,
 			item_margin = 0,
 			item_move_speed = 300,
@@ -959,19 +992,30 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	--General config
-	function HUDListManager:_set_right_list_scale()
-		self:unregister_list("right_side_list", true)
-		self:_setup_right_list()
+	function HUDListManager:_set_right_list_scale(scale)
+		--self:unregister_list("right_side_list", true)
+		--self:_setup_right_list()
+		local list = self:list("right_side_list")
+		list:rescale(scale or HUDListManager.ListOptions.right_list_scale)
 	end
 
 	function HUDListManager:_set_left_list_scale()
-		self:unregister_list("left_side_list", true)
-		self:_setup_left_list()
+		local list = self:list("left_side_list")
+		list:rescale(scale or HUDListManager.ListOptions.left_list_scale)
 	end
 
 	function HUDListManager:_set_buff_list_scale()
-		self:unregister_list("buff_list", true)
-		self:_setup_buff_list()
+		local list = self:list("buff_list")
+		local bottom = list:bottom()
+		list:rescale(scale or HUDListManager.ListOptions.buff_list_scale)
+
+		list:set_bottom(bottom)
+		if managers.subtitle then
+			local sub_presenter = managers.subtitle:presenter()
+			if sub_presenter and sub_presenter.set_bottom then
+				sub_presenter:set_bottom(list:top() - 10)
+			end
+		end
 	end
 
 	function HUDListManager:_set_right_list_height_offset()
@@ -995,30 +1039,30 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
-	function HUDListManager:_set_list_color()
-		self:unregister_list("right_side_list", true)
-		self:unregister_list("left_side_list", true)
-		self:unregister_list("buff_list", true)
-		self:_setup_right_list()
-		self:_setup_left_list()
-		self:_setup_buff_list()
+	function HUDListManager:_set_list_color(color)
+		for _, list in pairs(self:lists()) do
+			for _, item in pairs(list:items()) do
+				item:set_color(color)
+			end
+		end
 	end
 
-	function HUDListManager:_set_list_color_bg()
-		self:unregister_list("right_side_list", true)
-		self:unregister_list("left_side_list", true)
-		self:unregister_list("buff_list", true)
-		self:_setup_right_list()
-		self:_setup_left_list()
-		self:_setup_buff_list()
+	function HUDListManager:_set_list_color_bg(color)
+		for _, list in pairs(self:lists()) do
+			for _, item in pairs(list:items()) do
+				item:set_bg_color(color)
+			end
+		end
 	end
 
 	function HUDListManager:_set_civilian_color(color)
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
-			for id, data in pairs(list:items()) do
-				if data._id == "civ" and data._icon then
-					data._icon:set_color(color or HUDListManager.ListOptions.civilian_color)
+			local map = HUDList.UnitCountItem.MAP
+			for _, item in pairs(list:items()) do
+				local u_id = item:unit_id()
+				if map[u_id] and map[u_id].color_id == "civilian_color" then
+					item:set_icon_color(color or HUDListManager.ListOptions.civilian_color)
 				end
 			end
 		end
@@ -1028,9 +1072,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_set_hostage_color(color)
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
-			for id, data in pairs(list:items()) do
-				if data._id:find("hostage") and data._icon then
-					data._icon:set_color(color or HUDListManager.ListOptions.hostage_color)
+			local map = HUDList.UnitCountItem.MAP
+			for _, item in pairs(list:items()) do
+				local u_id = item:unit_id()
+				if map[u_id] and map[u_id].color_id == "hostage_color" then
+					item:set_icon_color(color or HUDListManager.ListOptions.hostage_color)
 				end
 			end
 		end
@@ -1039,9 +1085,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_set_thug_color(color)
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
-			for id, data in pairs(list:items()) do
-				if data._id:find("thug") and data._icon then
-					data._icon:set_color(color or HUDListManager.ListOptions.thug_color)
+			local map = HUDList.UnitCountItem.MAP
+			for _, item in pairs(list:items()) do
+				local u_id = item:unit_id()
+				if map[u_id] and map[u_id].color_id == "thug_color" then
+					item:set_icon_color(color or HUDListManager.ListOptions.thug_color)
 				end
 			end
 		end
@@ -1050,12 +1098,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_set_enemy_color(color)
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
-			for id, data in pairs(list:items()) do
-				if data._id:find("cop") and data._icon then
-					data._icon:set_color(color or HUDListManager.ListOptions.enemy_color)
-					if data._shield_filler then
-						data._shield_filler:set_color(color or HUDListManager.ListOptions.enemy_color)
-					end
+			local map = HUDList.UnitCountItem.MAP
+			for _, item in pairs(list:items()) do
+				local u_id = item:unit_id()
+				if map[u_id] and map[u_id].color_id == "enemy_color" then
+					item:set_icon_color(color or HUDListManager.ListOptions.enemy_color)
 				end
 			end
 		end
@@ -1065,9 +1112,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_set_guard_color(color)
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
-			for id, data in pairs(list:items()) do
-				if data._id:find("security") and data._icon then
-					data._icon:set_color(color or HUDListManager.ListOptions.guard_color)
+			local map = HUDList.UnitCountItem.MAP
+			for _, item in pairs(list:items()) do
+				local u_id = item:unit_id()
+				if map[u_id] and map[u_id].color_id == "guard_color" then
+					item:set_icon_color(color or HUDListManager.ListOptions.guard_color)
 				end
 			end
 		end
@@ -1076,9 +1125,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_set_special_color(color)
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
-			for id, data in pairs(list:items()) do
-				if not(data._id:find("security") or data._id:find("cop") or data._id:find("thug") or data._id:find("hostage") or data._id == "civ") and data._icon then
-					data._icon:set_color(color or HUDListManager.ListOptions.special_color)
+			local map = HUDList.UnitCountItem.MAP
+			for _, item in pairs(list:items()) do
+				local u_id = item:unit_id()
+				if map[u_id] and map[u_id].color_id == "special_color" then
+					item:set_icon_color(color or HUDListManager.ListOptions.special_color)
 				end
 			end
 		end
@@ -1088,9 +1139,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDListManager:_set_turret_color(color)
 		local list = self:list("right_side_list"):item("unit_count_list")
 		if list then
-			for id, data in pairs(list:items()) do
-				if data._id == "turret" and data._icon then
-					data._icon:set_color(color  or HUDListManager.ListOptions.turret_color)
+			local map = HUDList.UnitCountItem.MAP
+			for _, item in pairs(list:items()) do
+				local u_id = item:unit_id()
+				if map[u_id] and map[u_id].color_id == "turret_color" then
+					data:set_icon_color(color or HUDListManager.ListOptions.turret_color)
 				end
 			end
 		end
@@ -1379,7 +1432,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("stealth_list")
 
 		if HUDListManager.ListOptions.show_pager_count then
-			list:register_item("PagerCount", HUDList.UsedPagersItem, { spec = {1, 4} }, { priority = 1 })
+			list:register_item("PagerCount", HUDList.UsedPagersItem, { perks = {1, 4} }, { priority = 1 })
 		else
 			list:unregister_item("PagerCount", true)
 		end
@@ -1389,7 +1442,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("stealth_list")
 
 		if HUDListManager.ListOptions.show_cam_count then
-			list:register_item("CamCount", HUDList.CamCountItem, { atlas = {4, 2} }, { priority = 2 })
+			list:register_item("CamCount", HUDList.CamCountItem, { skills = {4, 2} }, { priority = 2 })
 		else
 			list:unregister_item("CamCount", true)
 		end
@@ -1399,7 +1452,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("right_side_list"):item("stealth_list")
 
 		if HUDListManager.ListOptions.show_bodybags_count then
-			list:register_item("BodyBagInv", HUDList.BodyBagsInvItem, { atlas = { 5, 11 } }, { priority = 3 })
+			list:register_item("BodyBagInv", HUDList.BodyBagsInvItem, { skills = { 5, 11 } }, { priority = 3 })
 		else
 			list:unregister_item("BodyBagInv", true)
 		end
@@ -1597,6 +1650,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._fade_time = params.fade_time or 0.25
 		self._move_speed = params.move_speed or 150
 		self._priority = params.priority
+		self._scale = params.scale or self._parent_list and self._parent_list:scale() or 1
 		self._listener_clbks = {}
 		self._disable_reason = {}
 
@@ -1628,18 +1682,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
-	function HUDList.ItemBase:name() return self._name end
-	function HUDList.ItemBase:panel() return self._panel end
-	function HUDList.ItemBase:parent_list() return self._parent_list end
-	function HUDList.ItemBase:align() return self._align end
-	function HUDList.ItemBase:is_active() return self._active end
-	function HUDList.ItemBase:priority() return self._priority end
-	function HUDList.ItemBase:fade_time() return self._fade_time end
-	function HUDList.ItemBase:enabled() return next(self._disable_reason) == nil end
-
 	function HUDList.ItemBase:_set_item_visible(status)
 		self._panel:set_visible(status and self:enabled())
 	end
+
+	function HUDList.ItemBase:rescale(new_scale)
+		local diff = self._scale - new_scale
+		if math.abs(diff) > 0.01 then
+			local size_mult = new_scale / self._scale
+			self:set_size(self:w() * size_mult, self:h() * size_mult)
+			self._scale = new_scale
+			return true, size_mult
+		end
+	end
+	
+	function HUDList.ItemBase:enabled() return next(self._disable_reason) == nil end
 
 	function HUDList.ItemBase:set_disabled(reason, status, instant)
 		if self._parent_list then
@@ -1819,33 +1876,45 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
-	--TODO: Move this stuff. Good to have, but has nothing to do with the list and should be localized to subclasses where it is used
-	HUDList.ItemBase.DEFAULT_COLOR_TABLE = {
-		{ ratio = 0.0, color = Color(1, 0.9, 0.1, 0.1) }, --Red
-		{ ratio = 0.5, color = Color(1, 0.9, 0.9, 0.1) }, --Yellow
-		{ ratio = 1.0, color = Color(1, 0.1, 0.9, 0.1) } --Green
-	}
-	function HUDList.ItemBase:_get_color_from_table(value, max_value, color_table, default_color)
-		local color_table = color_table or HUDList.ItemBase.DEFAULT_COLOR_TABLE
-		local ratio = math.clamp(value / max_value, 0 , 1)
-		local tmp_color = color_table[#color_table].color
-		local color = default_color or Color(tmp_color.alpha, tmp_color.red, tmp_color.green, tmp_color.blue)
-
-		for i, data in ipairs(color_table) do
-			if ratio < data.ratio then
-				local nxt = color_table[math.clamp(i-1, 1, #color_table)]
-				local scale = (ratio - data.ratio) / (nxt.ratio - data.ratio)
-				color = Color(
-					(data.color.alpha or 1) * (1-scale) + (nxt.color.alpha or 1) * scale,
-					(data.color.red or 0) * (1-scale) + (nxt.color.red or 0) * scale,
-					(data.color.green or 0) * (1-scale) + (nxt.color.green or 0) * scale,
-					(data.color.blue or 0) * (1-scale) + (nxt.color.blue or 0) * scale)
-				break
-			end
-		end
-
-		return color
-	end
+	function HUDList.ItemBase:name() return self._name end
+	function HUDList.ItemBase:panel() return self._panel end
+	function HUDList.ItemBase:alpha() return self._panel:alpha() end
+	function HUDList.ItemBase:w() return self._panel:w() end
+	function HUDList.ItemBase:h() return self._panel:h() end
+	function HUDList.ItemBase:x() return self._panel:x() end
+	function HUDList.ItemBase:y() return self._panel:y() end
+	function HUDList.ItemBase:left() return self._panel:left() end
+	function HUDList.ItemBase:right() return self._panel:right() end
+	function HUDList.ItemBase:top() return self._panel:top() end
+	function HUDList.ItemBase:bottom() return self._panel:bottom() end
+	function HUDList.ItemBase:center() return self._panel:center() end
+	function HUDList.ItemBase:center_x() return self._panel:center_x() end
+	function HUDList.ItemBase:center_y() return self._panel:center_y() end
+	function HUDList.ItemBase:visible() return self._panel:visible() end
+	function HUDList.ItemBase:layer() return self._panel:layer() end
+	function HUDList.ItemBase:text_rect() return self:x(), self:y(), self:w(), self:h() end
+	function HUDList.ItemBase:set_alpha(v) self._panel:set_alpha(v) end
+	function HUDList.ItemBase:set_x(v) self._panel:set_x(v) end
+	function HUDList.ItemBase:set_y(v) self._panel:set_y(v) end
+	function HUDList.ItemBase:set_w(v) self._panel:set_w(v)	end
+	function HUDList.ItemBase:set_h(v) self._panel:set_h(v)	end
+	function HUDList.ItemBase:set_size(w, h) self._panel:set_size(w, h)	end
+	function HUDList.ItemBase:set_left(v) self._panel:set_left(v) end
+	function HUDList.ItemBase:set_right(v) self._panel:set_right(v) end
+	function HUDList.ItemBase:set_top(v) self._panel:set_top(v) end
+	function HUDList.ItemBase:set_bottom(v) self._panel:set_bottom(v) end
+	function HUDList.ItemBase:set_center(x, y) self._panel:set_center(x, y) end
+	function HUDList.ItemBase:set_center_x(v) self._panel:set_center_x(v) end
+	function HUDList.ItemBase:set_center_y(v) self._panel:set_center_y(v) end
+	function HUDList.ItemBase:set_layer(v) self._panel:set_layer(v) end
+	function HUDList.ItemBase:parent_list() return self._parent_list end
+	function HUDList.ItemBase:align() return self._align end
+	function HUDList.ItemBase:is_active() return self._active end
+	function HUDList.ItemBase:priority() return self._priority end
+	function HUDList.ItemBase:scale() return self._scale end
+	function HUDList.ItemBase:fade_time() return self._fade_time end
+	function HUDList.ItemBase:set_color(color) end
+	function HUDList.ItemBase:set_bg_color(color) end
 
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1909,6 +1978,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
+	function HUDList.ListBase:rescale(new_scale)
+		local diff = self._scale - new_scale
+		if math.abs(diff) > 0.01 then
+			local size_mult = new_scale / self._scale
+			self._scale = new_scale
+			
+			for _, item in pairs(self:items()) do
+				item:rescale(new_scale)
+			end
+
+			self:_update_item_positions(nil, true)
+			return true, size_mult
+		end
+	end
+
 	function HUDList.ListBase:register_item(name, class, ...)
 		if not self._items[name] then
 			class = type(class) == "string" and _G.HUDList[class] or class
@@ -1920,6 +2004,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				end
 				if self._item_move_speed then
 					new_item:set_move_speed(self._item_move_speed)
+				end
+				if self._scale then
+					new_item:rescale(self._scale)
 				end
 				new_item:post_init(...)
 				self:_set_default_item_position(new_item)
@@ -2025,6 +2112,17 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.ListBase:_remove_item(item)
 		self._items[item:name()] = nil
 	end
+	
+	function HUDList.ListBase:set_color(color)
+		for _, item in pairs(self:items()) do
+			item:set_color(color)
+		end
+	end
+	function HUDList.ListBase:set_bg_color(color)
+		for _, item in pairs(self:items()) do
+			item:set_bg_color(color)
+		end
+	end
 
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -2042,6 +2140,51 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._next_recheck = self._recheck_interval
 		
 		self:setup_expansion_item()
+	end
+
+	function HUDList.HorizontalList:rescale(new_scale)
+		local diff = self._scale - new_scale
+		if math.abs(diff) > 0.01 then
+			local size_mult = new_scale / self._scale
+			self:set_h(self:h() * size_mult)
+			self._scale = new_scale
+
+			if self._static_item then
+				self._static_item:rescale(new_scale)
+			end
+			for _, item in pairs(self:items()) do
+				item:rescale(new_scale)
+			end
+			if self._expansion_indicator then
+				self._expansion_indicator:rescale(new_scale)
+			end
+
+			self:_update_item_positions(nil, true)
+			return true, size_mult
+		end
+	end
+
+	function HUDList.HorizontalList:set_color(color)
+		if self._static_item then
+			self._static_item:set_color(color)
+		end
+		for _, item in pairs(self:items()) do
+			item:set_color(color)
+		end
+		if self._expansion_indicator then
+			self._expansion_indicator:set_color(color)
+		end
+	end
+	function HUDList.HorizontalList:set_bg_color(color)
+		if self._static_item then
+			self._static_item:set_bg_color(color)
+		end
+		for _, item in pairs(self:items()) do
+			item:set_bg_color(color)
+		end
+		if self._expansion_indicator then
+			self._expansion_indicator:set_bg_color(color)
+		end
 	end
 
 	function HUDList.HorizontalList:_set_default_item_position(item)
@@ -2322,7 +2465,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		HUDList.RightListItem.super.init(self, parent, name, params)
 
 		self._default_text_color = HUDListManager.ListOptions.list_color or Color.white
-		self._default_icon_color = icon.color or self._default_text_color
+		self._default_icon_color = icon.color or icon.color_id and HUDListManager.ListOptions[icon.color_id]
 		self._change_increase_color = Color.green
 		self._change_decrease_color = Color.red
 
@@ -2337,7 +2480,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			w = self._panel:w() * (icon.w_ratio or 1),
 			alpha = icon.alpha or 1,
 			blend_mode = icon.blend_mode or "normal",
-			color = self._default_icon_color,
+			color = self._default_icon_color or self._default_text_color,
 		})
 		self._icon:set_center(self._panel:w() * 0.5, self._panel:w() * 0.5)
 
@@ -2372,6 +2515,39 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		})
 
 		self._count = 0
+	end
+
+	function HUDList.RightListItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.RightListItem.super.rescale(self, new_scale)
+
+		if enabled then
+			self._icon:set_size(self._icon:w() * size_mult, self._icon:h() * size_mult)
+			self._icon:set_center(self._panel:w() * 0.5, self._panel:w() * 0.5)
+
+			self._progress_bar:set_size(self._panel:w(), self._panel:w())
+			self._progress_bar:set_bottom(self._panel:bottom())
+			
+			self._text:set_size(self._progress_bar:w(), self._progress_bar:h())
+			self._text:set_font_size(self._progress_bar:h() * 0.6)
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.RightListItem:set_color(color)
+		self._default_text_color = HUDListManager.ListOptions.list_color or Color.white
+		self._icon:set_color(self._default_icon_color or self._default_text_color)
+		self._progress_bar:set_color(self._default_text_color)
+		self._text:set_color(self._default_text_color)
+	end
+
+	function HUDList.RightListItem:set_bg_color(color)
+		self._progress_bar:set_bg_color(color)
+	end
+
+	function HUDList.RightListItem:set_icon_color(color)
+		self._default_icon_color = color
+		self._icon:set_color(self._default_icon_color or self._default_text_color)
 	end
 
 	function HUDList.RightListItem:change_count(diff)
@@ -2421,26 +2597,26 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	HUDList.UnitCountItem = HUDList.UnitCountItem or class(HUDList.RightListItem)
 	HUDList.UnitCountItem.MAP = {
-		enemies =		{ atlas = {6, 1}, 	color = HUDListManager.ListOptions.enemy_color, 	priority = 1, subtract = { "cop_hostage", "sec_hostage", "minions" } },	--Aggregated enemies
-		cop =			{ atlas = {0, 5}, 	color = HUDListManager.ListOptions.enemy_color, 	priority = 5, subtract = { "cop_hostage", "cop_minion" } },	--Non-special police
-		security =		{ spec = {1, 4}, 	color = HUDListManager.ListOptions.guard_color, 	priority = 4, subtract = { "sec_hostage", "sec_minion" }  },
-		thug =			{ atlas = {4, 12}, 	color = HUDListManager.ListOptions.thug_color, 		priority = 4 },
-		tank =			{ atlas = {3, 1}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
-		spooc =			{ atlas = {1, 3}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
-		taser =			{ atlas = {3, 5}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
-		shield =		{ texture = "guis/textures/pd2/hud_buff_shield", color = HUDListManager.ListOptions.special_color, priority = 6 },
-		sniper =		{ atlas = {6, 5}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
-		medic = 		{ atlas = {5, 8}, 	color = HUDListManager.ListOptions.special_color, 	priority = 6 },
-		thug_boss =		{ atlas = {1, 1}, 	color = HUDListManager.ListOptions.thug_color, 		priority = 4 },
-		phalanx =		{ texture = "guis/textures/pd2/hud_buff_shield", color = HUDListManager.ListOptions.special_color, priority = 7 },
+		enemies =		{ skills = {6, 1}, 	color_id = "enemy_color", 		priority = 1, subtract = { "cop_hostage", "sec_hostage", "minions" } },	--Aggregated enemies
+		cop =			{ skills = {0, 5}, 	color_id = "enemy_color", 		priority = 5, subtract = { "cop_hostage", "cop_minion" } },	--Non-special police
+		security =		{ perks = {1, 4}, 	color_id = "guard_color", 		priority = 4, subtract = { "sec_hostage", "sec_minion" }  },
+		thug =			{ skills = {4, 12}, color_id = "thug_color", 		priority = 4 },
+		tank =			{ skills = {3, 1}, 	color_id = "special_color", 	priority = 6 },
+		spooc =			{ skills = {1, 3}, 	color_id = "special_color", 	priority = 6 },
+		taser =			{ skills = {3, 5}, 	color_id = "special_color", 	priority = 6 },
+		shield =		{ texture = "guis/textures/pd2/hud_buff_shield", color_id = "special_color", priority = 6 },
+		sniper =		{ skills = {6, 5}, 	color_id = "special_color", 	priority = 6 },
+		medic = 		{ skills = {5, 8}, 	color_id = "special_color", 	priority = 6 },
+		thug_boss =		{ skills = {1, 1}, 	color_id = "thug_color", 		priority = 4 },
+		phalanx =		{ texture = "guis/textures/pd2/hud_buff_shield", color_id = "special_color", priority = 7 },
 
-		turret =		{ atlas = {7, 5}, 	color = HUDListManager.ListOptions.turret_color, 	priority = 5 },
-		unique =		{ atlas = {3, 8}, 	color = HUDListManager.ListOptions.civilian_color, 	priority = 3 },
-		cop_hostage =	{ atlas = {2, 8}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 2 },
-		civ_hostage =	{ atlas = {4, 7}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 1 },
-		hostages =		{ atlas = {4, 7}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 1 },
-		minion =		{ atlas = {6, 8}, 	color = HUDListManager.ListOptions.hostage_color, 	priority = 0 },
-		civ =			{ atlas = {6, 7}, 	color = HUDListManager.ListOptions.civilian_color, 	priority = 3, subtract = { "civ_hostage" } },
+		turret =		{ skills = {7, 5}, 	color_id = "turret_color", 		priority = 5 },
+		unique =		{ skills = {3, 8}, 	color_id = "civilian_color", 	priority = 3 },
+		cop_hostage =	{ skills = {2, 8}, 	color_id = "hostage_color", 	priority = 2 },
+		civ_hostage =	{ skills = {4, 7}, 	color_id = "hostage_color", 	priority = 1 },
+		hostages =		{ skills = {4, 7}, 	color_id = "hostage_color", 	priority = 1 },
+		minion =		{ skills = {6, 8}, 	color_id = "hostage_color", 	priority = 0 },
+		civ =			{ skills = {6, 7}, 	color_id = "civilian_color", 	priority = 3, subtract = { "civ_hostage" } },
 	}
 	function HUDList.UnitCountItem:init(parent, name, id, unit_types)
 		local unit_data = HUDList.UnitCountItem.MAP[id]
@@ -2495,6 +2671,28 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 
 		self:set_count(total_count)
+	end
+
+	function HUDList.UnitCountItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.UnitCountItem.super.rescale(self, new_scale)
+
+		if enabled and alive(self._shield_filler) then
+			self._shield_filler:set_size(self._icon:w() * 0.4, self._icon:h() * 0.4)
+			self._shield_filler:set_center(self._icon:center())
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.UnitCountItem:set_icon_color(color)
+		HUDList.UnitCountItem.super.set_icon_color(self, color)
+		if self._shield_filler then
+			self._shield_filler:set_color(self._default_icon_color or self._default_text_color)
+		end
+	end
+
+	function HUDList.UnitCountItem:unit_id()
+		return self._id
 	end
 
 	function HUDList.UnitCountItem:_change_count_clbk(event, unit_type, value)
@@ -2736,8 +2934,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		thermite = 					{ hudpickups = { 64, 64, 32, 32 }, 												priority = 1, category = "mission_pickups", ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "mission_pickups"}, true) 	},
 		c4 = 						{ hudicons	 = { 36, 242, 32, 32 }, 											priority = 1, category = "mission_pickups", ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "mission_pickups"}, true) 	},
 		small_loot = 				{ hudpickups = { 32, 224, 32, 32}, 												priority = 3, category = "valuables", 		ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "valuables"}, true) 		},
-		courier = 					{ atlas 	 = { 6, 0 }, 														priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},			--{ texture = "guis/textures/contact_vlad", texture_rect = {1920, 0, 64, 64}, priority = 3 },
-		gage_case = 				{ atlas 	 = { 1, 0 }, 														priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
+		courier = 					{ skills 	 = { 6, 0 }, 														priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},			--{ texture = "guis/textures/contact_vlad", texture_rect = {1920, 0, 64, 64}, priority = 3 },
+		gage_case = 				{ skills 	 = { 1, 0 }, 														priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
 		gage_key = 					{ hudpickups = { 32, 64, 32, 32 }, 												priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
 		paycheck_masks = 			{ hudpickups = { 128, 32, 32, 32 }, 											priority = 4, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
 		secret_item =				{ waypoints  = { 96, 64, 32, 32 }, 												priority = 4, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
@@ -2879,6 +3077,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:update_value()
 	end
 
+	function HUDList.LootItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.LootItem.super.rescale(self, new_scale)
+
+		if enabled then			
+			self._name_text:set_size(self._panel:w(), self._panel:h())
+			local _, _, w, h = self._name_text:text_rect()
+			local font_size = math.min(self._name_text:font_size() * (self._name_text:w() / w) * 0.9, self._name_text:font_size())
+			self._name_text:set_font_size(font_size)
+			self._name_text:set_center(self._icon:center())
+			self._name_text:set_y(self._name_text:y() + self._icon:h() * 0.1)
+		end
+
+		return enabled, size_mult
+	end
+
 	function HUDList.LootItem:update_value()
 		local total_unbagged = 0
 		local total_bagged = 0
@@ -2980,7 +3193,69 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
-	HUDList.TimerItem = HUDList.TimerItem or class(HUDList.ItemBase)
+	function HUDList.LeftListIcon:rescale(new_scale)
+		local enabled, size_mult = HUDList.LeftListIcon.super.rescale(self, new_scale)
+
+		if enabled then			
+			for _, icon in ipairs(self._icons) do
+				icon:set_size(icon:w() * size_mult, icon:h() * size_mult)
+				icon:set_x(icon:x() * size_mult)
+				icon:set_y(icon:y() * size_mult)
+			end
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.LeftListIcon:set_color(color)
+		HUDList.LeftListIcon.super.set_color(self, color)
+		for _, icon in ipairs(self._icons) do
+			icon:set_color(color)
+		end
+	end
+	
+	HUDList.LeftListItem = HUDList.LeftListItem or class(HUDList.ItemBase)
+	function HUDList.LeftListItem:init(parent, name, params)
+		params = params or {}
+		params.align = params.align or "left"
+		params.w = params.w or parent:panel():h()
+		params.h = params.h or parent:panel():h()
+		HUDList.LeftListItem.super.init(self, parent, name, params)
+
+		self._progress_bar = PanelFrame:new(self._panel, {
+			w = params.progress_w or self._panel:w(),
+			h = params.progress_h or self._panel:h(),
+			invert_progress = params.invert_progress ~= false,
+			bar_w = 2,
+			bar_color = params.progress_color or (HUDListManager.ListOptions.list_color or Color.white),
+			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
+			bar_alpha = params.progress_alpha or 0.4,
+			add_bg = true,
+		})
+		self._progress_bar:set_ratio(1)
+	end
+
+	function HUDList.LeftListItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.LeftListItem.super.rescale(self, new_scale)
+
+		if enabled then
+			self._progress_bar:set_size(self._progress_bar:w() * size_mult, self._progress_bar:h() * size_mult)
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.LeftListItem:set_color(color)
+		HUDList.LeftListItem.super.set_color(self, color)
+		self._progress_bar:set_color(color)
+	end
+
+	function HUDList.LeftListItem:set_bg_color(color)
+		HUDList.LeftListItem.super.set_bg_color(self, color)
+		self._progress_bar:set_bg_color(color)
+	end
+
+	HUDList.TimerItem = HUDList.TimerItem or class(HUDList.LeftListItem)
 	HUDList.TimerItem.DEVICE_TYPES = {
 		digital 		= { class = "TimerItem", 			name = "wolfhud_hudlist_device_timer" 	},
 		drill 			= { class = "UpgradeableTimerItem", name = "wolfhud_hudlist_device_drill" 	},
@@ -3021,48 +3296,31 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			font_size = self._panel:h() * 0.3
 		})
 
-		--self._box = HUDBGBox_create(self._panel, {
-		--	w = self._panel:w(),
-		--	h = self._panel:h() * 0.7,
-		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
-		--self._box:set_bottom(self._panel:bottom())
-
-		self._progress_bar = PanelFrame:new(self._panel, {
-			w = self._panel:w(),
-			h = self._panel:h() * 0.7,
-			invert_progress = true,
-			bar_w = 2,
-			bar_color = (self.STANDARD_COLOR or Color.white),
-			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
-			bar_alpha = 0.4,
-			add_bg = true,
-		})
-
-		local box = self._progress_bar:panel()
-		box:set_bottom(self._panel:bottom())
+		self._progress_bar:set_h(self._panel:h() * 0.7)
+		self._progress_bar:set_bottom(self._panel:bottom())
 
 		self._distance_text = self._panel:text({
 			name = "distance",
 			align = "center",
 			vertical = "top",
-			y = box:y() + 2,
-			w = box:w(),
-			h = box:h() - 2,
+			y = self._progress_bar:y() + 2,
+			w = self._progress_bar:w(),
+			h = self._progress_bar:h() - 2,
 			color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = box:h() * 0.4
+			font_size = self._progress_bar:h() * 0.4
 		})
 
 		self._time_text = self._panel:text({
 			name = "time",
 			align = "center",
 			vertical = "bottom",
-			y = box:y(),
-			w = box:w(),
-			h = box:h(),
+			y = self._progress_bar:y(),
+			w = self._progress_bar:w(),
+			h = self._progress_bar:h(),
 			color = self.STANDARD_COLOR or Color.white,
 			font = tweak_data.hud_corner.assault_font,
-			font_size = box:h() * 0.6
+			font_size = self._progress_bar:h() * 0.6
 		})
 
 		self._flash_color_table = {
@@ -3087,6 +3345,28 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			table.insert(self._listener_clbks, { name = id, source = "timer", event = { event }, clbk = clbk, keys = { key }, data_only = true })
 		end
 	end
+
+	function HUDList.TimerItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.TimerItem.super.rescale(self, new_scale)
+
+		if enabled then
+			self._type_text:set_size(self._panel:w(), self._panel:h() * 0.3)
+
+			self._distance_text:set_size(self._progress_bar:w(), self._progress_bar:h() - 2)
+			self._distance_text:set_y(self._progress_bar:y() + 2)
+
+			self._time_text:set_size(self._progress_bar:w(), self._progress_bar:h())
+			self._time_text:set_y(self._progress_bar:y())
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.TimerItem:set_color(color)
+		HUDList.TimerItem.super.set_color(self, color)
+		self.STANDARD_COLOR = color
+		self:_set_colors(self.STANDARD_COLOR)
+	end
 	
 	function HUDList.TimerItem:priority()
 		return self._remaining or self._priority
@@ -3101,7 +3381,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._distance_text:set_text(get_distance_to_player(self._unit))
 
 		if self._jammed or not self._powered then
-			local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
+			local new_color = get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
 			self:_set_colors(new_color)
 		end
 	end
@@ -3194,6 +3474,29 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
+	function HUDList.UpgradeableTimerItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.TimerItem.super.rescale(self, new_scale)
+
+		if enabled then
+			local y = self._time_text:y() + 3
+			local icon_size = (self._panel:h() - self._type_text:h() - 5) / #self._upgrade_types
+			for i, icon in ipairs(self._upgrade_icons) do
+				icon:set_size(icon_size, icon_size)
+				icon:set_right(self._panel:w() - 3)
+				icon:set_y(y + icon_size * (i-1))
+			end
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.UpgradeableTimerItem:set_color(color)
+		HUDList.UpgradeableTimerItem.super.set_color(self, color)
+		local current_color = self._auto_repair and self.AUTOREPAIR_COLOR or self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
+		self._flash_color_table[2].color = current_color
+		self:_set_colors(current_color)
+	end
+
 	function HUDList.UpgradeableTimerItem:_set_upgradable(data)
 		self._upgradable = data.upgradable
 
@@ -3255,13 +3558,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
-	HUDList.EquipmentItem = HUDList.EquipmentItem or class(HUDList.ItemBase)
+	HUDList.EquipmentItem = HUDList.EquipmentItem or class(HUDList.LeftListItem)
 	HUDList.EquipmentItem.EQUIPMENT_TABLE = {
-		sentry 			= {	atlas 		= { 7,  5 }, priority = 0 },
-		ammo_bag 		= {	atlas 		= { 1,  0 }, priority = 3 },
-		doc_bag 		= {	atlas 		= { 2,  7 }, priority = 4 },
-		first_aid_kit	= {	atlas 		= { 3, 10 }, priority = 5 },
-		body_bag 		= {	atlas 		= { 5, 11 }, priority = 6 },
+		sentry 			= {	skills 		= { 7,  5 }, priority = 0 },
+		ammo_bag 		= {	skills 		= { 1,  0 }, priority = 3 },
+		doc_bag 		= {	skills 		= { 2,  7 }, priority = 4 },
+		first_aid_kit	= {	skills 		= { 3, 10 }, priority = 5 },
+		body_bag 		= {	skills 		= { 5, 11 }, priority = 6 },
 		grenade_crate 	= {	preplanning = { 1,  0 }, priority = 2 },
 	}
 	function HUDList.EquipmentItem:init(parent, name, data, equipment_type)
@@ -3275,23 +3578,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		local texture, texture_rect = get_icon_data(icon_data)
 
-		--self._box = HUDBGBox_create(self._panel, {
-		--	name = "bg_box",
-		--	w = self._panel:w(),
-		--	h = self._panel:h(),
-		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
-
-		self._progress_bar = PanelFrame:new(self._panel, {
-			w = self._panel:w(),
-			h = self._panel:h(),
-			invert_progress = true,
-			bar_w = 2,
-			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
-			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
-			bar_alpha = 0.4,
-			add_bg = true,
-		})
-
 		self._icon = self._panel:bitmap({
 			name = "icon",
 			texture = texture,
@@ -3303,7 +3589,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDListManager.ListOptions.list_color or Color.white,
 		})
 		self._icon:set_center(self._panel:center())
-		self._icon:set_top(self._panel:top())
+		self._icon:set_top(0)
 		self:_set_owner(data)
 
 		local id = string.format("HUDList_equipment_listener_%s", self._key)
@@ -3317,6 +3603,25 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		if not self._defer_activation then
 			self:activate()
+		end
+	end
+
+	function HUDList.EquipmentItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.EquipmentItem.super.rescale(self, new_scale)
+
+		if enabled then
+			self._icon:set_size(self:panel():w() * 0.8, self:panel():w() * 0.8)
+			self._icon:set_center_x(self:panel():w() * 0.5)
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.EquipmentItem:set_color(color)
+		HUDList.EquipmentItem.super.set_color(self, color)
+		
+		if not self._owner then
+			self._icon:set_color(color)
 		end
 	end
 
@@ -3336,7 +3641,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.EquipmentItem:_set_color()
-		local color = self._owner and self._owner > 0 and tweak_data.chat_colors[self._owner]:with_alpha(1) or Color.white
+		local color = self._owner and self._owner > 0 and tweak_data.chat_colors[self._owner]:with_alpha(1) or HUDListManager.ListOptions.list_color or Color.white
 		self._icon:set_color(color)
 	end
 
@@ -3371,6 +3676,18 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		for event, clbk in pairs(events) do
 			table.insert(self._listener_clbks, { name = id, source = self._equipment_type, event = { event }, clbk = clbk, keys = { self._key }, data_only = true })
 		end
+	end
+
+	function HUDList.BagEquipmentItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.BagEquipmentItem.super.rescale(self, new_scale)
+
+		if enabled then
+			self._info_text:set_font_size(self._panel:h() * 0.4)
+			self._info_text:set_size(self._panel:w(), self._panel:h() * 0.4)
+			self._info_text:set_bottom(self._panel:h())
+		end
+
+		return enabled, size_mult
 	end
 
 	function HUDList.BagEquipmentItem:priority()
@@ -3415,7 +3732,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local offset = self._amount_offset or 0
 			self._info_text:set_text(string.format("%.0f", self._amount + offset))
 			self._progress_bar:set_ratio((self._amount + offset) / (self._max_amount + offset))
-			local new_color = self:_get_color_from_table(self._amount + offset, self._max_amount + offset)
+			local new_color = get_color_from_table(self._amount + offset, self._max_amount + offset)
 			self._info_text:set_color(new_color)
 			self._progress_bar:set_color(new_color)
 		end
@@ -3427,7 +3744,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local offset = self._amount_offset or 0
 			self._info_text:set_text(string.format("%.0f%%", (self._amount + offset) * 100))
 			self._progress_bar:set_ratio((self._amount + offset) / (self._max_amount + offset))
-			local new_color = self:_get_color_from_table(self._amount + offset, self._max_amount + offset)
+			local new_color = get_color_from_table(self._amount + offset, self._max_amount + offset)
 			self._info_text:set_color(new_color)
 			self._progress_bar:set_color(math.lerp(new_color, (HUDListManager.ListOptions.list_color or Color.white), 0.4))
 		end
@@ -3518,6 +3835,29 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
+	function HUDList.SentryEquipmentItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.SentryEquipmentItem.super.rescale(self, new_scale)
+
+		if enabled then
+			self._bar_bg:set_size(self._panel:w() * 0.8, self._panel:h() * 0.3)
+			self._bar_bg:set_x(self._panel:w() * 0.1)
+			self._bar_bg:set_bottom(self._panel:h() * 0.9)
+
+			self._health_bar:set_size(self._health_bar:w() * size_mult, self._bar_bg:h() * 0.5)
+			self._health_bar:set_x(self._bar_bg:x())
+			self._health_bar:set_y(self._bar_bg:y())
+
+			self._ammo_bar:set_size(self._ammo_bar:w() * size_mult, self._bar_bg:h() * 0.5)
+			self._ammo_bar:set_x(self._bar_bg:x())
+			self._ammo_bar:set_y(self._bar_bg:y() + self._bar_bg:h() * 0.5)
+
+			self._kills:set_size(self._panel:w(), self._panel:h())
+			self._kills:set_font_size(self._panel:h() * 0.3)
+		end
+
+		return enabled, size_mult
+	end
+
 	function HUDList.SentryEquipmentItem:_set_ammo_ratio(data)
 		if data.ammo_ratio then
 			self._ammo_ratio = data.ammo_ratio or 0
@@ -3534,7 +3874,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if data.health_ratio then
 			self._health_ratio = data.health_ratio or 0
 			self._health_bar:set_w(self._bar_bg:w() * self._health_ratio)
-			self._progress_bar:set_color(math.lerp(self:_get_color_from_table(self._health_ratio, 1), (HUDListManager.ListOptions.list_color or Color.white), 0.4))
+			self._progress_bar:set_color(math.lerp(get_color_from_table(self._health_ratio, 1), (HUDListManager.ListOptions.list_color or Color.white), 0.4))
 
 			if self._health_ratio <= 0 then
 				self:_set_inactive(nil)
@@ -3700,6 +4040,35 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
+	function HUDList.MinionItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.MinionItem.super.rescale(self, new_scale)
+
+		if enabled then
+			self._health_bar:set_size(self._panel:w(), self._panel:w())
+			self._health_bar:set_bottom(self._panel:h())
+			self._hit_indicator:set_size(self._panel:w(), self._panel:w())
+			self._hit_indicator:set_center(self._health_bar:center())
+			self._outline:set_size(self._panel:w() * 0.95, self._panel:w() * 0.95)
+			self._outline:set_center(self._health_bar:center())
+			self._damage_upgrade_text:set_size(self._panel:w(), self._panel:w())
+			self._damage_upgrade_text:set_font_size(self._panel:w() * 0.4)
+			self._damage_upgrade_text:set_bottom(self._panel:h())
+			self._unit_type:set_size(self._panel:w(), self._panel:w() * 0.3)
+			self._kills:set_size(self._panel:w(), self._panel:w())
+			self._kills:set_font_size(self._kills:font_size() * size_mult)
+			self._kills:set_center(self._health_bar:center())
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.MinionItem:set_color(color)
+		HUDList.MinionItem.super.set_color(self, color)
+		if not self._owner then
+			self._unit_type:set_color(color)
+		end
+	end
+
 	function HUDList.MinionItem:owner()
 		return self._owner
 	end
@@ -3754,7 +4123,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		icon:set_alpha(0)
 	end
 
-	HUDList.PagerItem = HUDList.PagerItem or class(HUDList.ItemBase)
+	HUDList.PagerItem = HUDList.PagerItem or class(HUDList.LeftListItem)
 	function HUDList.PagerItem:init(parent, name, data)
 		HUDList.PagerItem.super.init(self, parent, name, { align = "left", w = parent:panel():h(), h = parent:panel():h() })
 
@@ -3763,22 +4132,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._expire_t = data.expire_t
 		self._remaining = data.expire_t - Application:time()
 		self._duration = data.expire_t - data.start_t
-
-		--self._box = HUDBGBox_create(self._panel, {
-		--	w = self._panel:w(),
-		--	h = self._panel:h(),
-		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
-
-		self._progress_bar = PanelFrame:new(self._panel, {
-			w = self._panel:w(),
-			h = self._panel:w(),
-			invert_progress = true,
-			bar_w = 2,
-			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
-			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
-			bar_alpha = 0.4,
-			add_bg = true,
-		})
 
 		self._timer_text = self._panel:text({
 			name = "time",
@@ -3829,6 +4182,28 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		})
 	end
 
+	function HUDList.PagerItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.PagerItem.super.rescale(self, new_scale)
+
+		if enabled then
+			self._timer_text:sei_size(self._panel:w(), self._panel:h() * 0.6)
+
+			self._distance_text:sei_size(self._panel:w() * 0.65, self._panel:h() * 0.4)
+			self._distance_text:set_y(self._timer_text:bottom())
+			
+			self._direction_icon:set_size(self._panel:h() * 0.3, self._panel:h() * 0.2)
+			self._direction_icon:set_center(self._panel:w() * 0.8, self._panel:h() * 0.75)
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.PagerItem:set_color(color)
+		HUDList.PagerItem.super.set_color(self, color)
+		self._distance_text:set_color(color)
+		self._direction_icon:set_color(color)
+	end
+
 	function HUDList.PagerItem:priority()
 		return self._remaining
 	end
@@ -3845,7 +4220,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if not self._answered then
 			self._remaining = math.max(self._remaining - dt, 0)
 			self._timer_text:set_text(format_time_string(self._remaining))
-			self._timer_text:set_color(self:_get_color_from_table(self._remaining, self._duration))
+			self._timer_text:set_color(get_color_from_table(self._remaining, self._duration))
 			self._progress_bar:set_ratio(self._remaining / self._duration)
 		end
 
@@ -3854,7 +4229,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._direction_icon:set_rotation(270 - rotation)
 	end
 
-	HUDList.ECMItem = HUDList.ECMItem or class(HUDList.ItemBase)
+	HUDList.ECMItem = HUDList.ECMItem or class(HUDList.LeftListItem)
 	function HUDList.ECMItem:init(parent, name, data)
 		HUDList.ECMItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
 
@@ -3868,22 +4243,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			{ ratio = 0.0, color = self.DISABLED_COLOR },
 			{ ratio = 1.0, color = self.STANDARD_COLOR }
 		}
-
-		--self._box = HUDBGBox_create(self._panel, {
-		--	w = self._panel:w(),
-		--	h = self._panel:h(),
-		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
-
-		self._progress_bar = PanelFrame:new(self._panel, {
-			w = self._panel:w(),
-			h = self._panel:w(),
-			invert_progress = true,
-			bar_w = 2,
-			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
-			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
-			bar_alpha = 0.4,
-			add_bg = true,
-		})
 
 		self._text = self._panel:text({
 			name = "text",
@@ -3908,8 +4267,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = Color(1, 0.2, 0),
 			visible = false,
 		})
-		self._upgrade_lvl3:set_left(self._panel:left())
-		self._upgrade_lvl3:set_bottom(self._panel:bottom() - 2)
+		self._upgrade_lvl3:set_bottom(self._panel:h() - 2)
 
 		self._level = self._panel:text({
 			name = "text",
@@ -3943,6 +4301,32 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
+	function HUDList.ECMItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.ECMItem.super.rescale(self, new_scale)
+
+		if enabled then
+			self._text:set_size(self._panel:w(), self._panel:h() * 0.7)
+			self._text:set_font_size(self._panel:h() * 0.6)
+			self._upgrade_lvl3:set_size(self._panel:w() * 0.4, self._panel:w() * 0.4)
+			self._upgrade_lvl3:set_bottom(self._panel:h() - 2)
+			self._level:set_size(self._panel:w() * (self._blocks_pager and 0.6 or 1), self._panel:h())
+			self._level:set_font_size(self._panel:h() * 0.4)
+			self._level:set_x(self._blocks_pager and (self._upgrade_lvl3:w() - 2) or 0)
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.ECMItem:set_color(color)
+		HUDList.ECMItem.super.set_color(self, color)
+		if not self._owner then
+			self._text:set_color(color)
+			self.STANDARD_COLOR = color
+			self._flash_color_table[2].color = color
+		end
+		self._level:set_color(color)
+	end
+
 	function HUDList.ECMItem:priority()
 		return self._remaining
 	end
@@ -3951,7 +4335,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local t = Application:time()
 		while self._animating_low_battery do
 			t = t + coroutine.yield()
-			local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
+			local new_color = get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
 			text:set_color(new_color)
 			if progress_bar then
 				progress_bar:set_color(new_color)
@@ -3965,7 +4349,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDList.ECMItem:_set_owner(data)
 		if data.owner then
-			local color = data.owner > 0 and tweak_data.chat_colors[data.owner]:with_alpha(1) or Color.white
+			self._owner = data.owner
+			local color = self._owner > 0 and tweak_data.chat_colors[self._owner]:with_alpha(1) or Color.white
 			self._text:set_color(color)
 			self.STANDARD_COLOR = color
 			self._flash_color_table[2].color = color
@@ -4002,7 +4387,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
-	HUDList.ECMRetriggerItem = HUDList.ECMRetriggerItem or class(HUDList.ItemBase)
+	HUDList.ECMRetriggerItem = HUDList.ECMRetriggerItem or class(HUDList.LeftListItem)
 	function HUDList.ECMRetriggerItem:init(parent, name, data)
 		HUDList.ECMRetriggerItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
 
@@ -4014,22 +4399,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			{ ratio = 0.75, color = self.STANDARD_COLOR },
 			{ ratio = 1.00, color = Color('00FF00') }
 		}
-
-		--self._box = HUDBGBox_create(self._panel, {
-		--	w = self._panel:w(),
-		--	h = self._panel:h(),
-		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
-
-		self._progress_bar = PanelFrame:new(self._panel, {
-			w = self._panel:w(),
-			h = self._panel:w(),
-			invert_progress = true,
-			bar_w = 2,
-			bar_color = self.STANDARD_COLOR,
-			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
-			bar_alpha = 0.4,
-			add_bg = true,
-		})
 
 		self._text = self._panel:text({
 			name = "text",
@@ -4055,6 +4424,25 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		})
 	end
 
+	function HUDList.ECMRetriggerItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.ECMRetriggerItem.super.rescale(self, new_scale)
+
+		if enabled then
+			self._text:set_size(self._panel:w(), self._panel:h())
+			self._text:set_font_size(self._panel:h() * 0.6)
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.ECMRetriggerItem:set_color(color)
+		HUDList.ECMRetriggerItem.super.set_color(self, color)
+		self._text:set_color(color)
+		self.STANDARD_COLOR = color
+		self._flash_color_table[1].color = color
+		self._flash_color_table[2].color = color
+	end
+
 	function HUDList.ECMRetriggerItem:priority()
 		return self._remaining
 	end
@@ -4065,13 +4453,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._text:set_text(format_time_string(data.retrigger_delay))
 			self._progress_bar:set_ratio(data.retrigger_delay / self._max_duration)
 
-			local new_color = self:_get_color_from_table(self._max_duration - data.retrigger_delay, self._max_duration, self._flash_color_table, self.STANDARD_COLOR)
+			local new_color = get_color_from_table(self._max_duration - data.retrigger_delay, self._max_duration, self._flash_color_table, self.STANDARD_COLOR)
 			self._text:set_color(new_color)
 			--self._progress_bar:set_color(new_color)
 		end
 	end
 
-	HUDList.ECMFeedbackItem = HUDList.ECMFeedbackItem or class(HUDList.ItemBase)
+	HUDList.ECMFeedbackItem = HUDList.ECMFeedbackItem or class(HUDList.LeftListItem)
 	function HUDList.ECMFeedbackItem:init(parent, name, data)
 		HUDList.ECMFeedbackItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h(), priority = 0 })
 
@@ -4086,22 +4474,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			{ ratio = 0.0, color = self.DISABLED_COLOR },
 			{ ratio = 1.0, color = self.STANDARD_COLOR }
 		}
-
-		--self._box = HUDBGBox_create(self._panel, {
-		--	w = self._panel:w(),
-		--	h = self._panel:h(),
-		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
-
-		self._progress_bar = PanelFrame:new(self._panel, {
-			w = self._panel:w(),
-			h = self._panel:w(),
-			invert_progress = true,
-			bar_w = 2,
-			bar_color = (HUDListManager.ListOptions.list_color or Color.white),
-			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
-			bar_alpha = 0.4,
-			add_bg = true,
-		})
 
 		self._text = self._panel:text({
 			name = "text",
@@ -4148,6 +4520,24 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		})
 	end
 
+	function HUDList.ECMFeedbackItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.ECMFeedbackItem.super.rescale(self, new_scale)
+
+		if enabled then
+			self._text:set_size(self._panel:w(), self._panel:h() * 0.7)
+			self._text:set_font_size(self._panel:h() * 0.5)
+			self._distance_text:set_size(self._panel:w(), self._panel:h())
+			self._distance_text:set_font_size(self._panel:h() * 0.4)
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.ECMFeedbackItem:set_color(color)
+		HUDList.ECMFeedbackItem.super.set_color(self, color)
+		self._distance_text:set_color(color)
+	end
+
 	function HUDList.ECMFeedbackItem:priority()
 		return self._remaining or self._priority
 	end
@@ -4156,7 +4546,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local t = Application:time()
 		while self._animating_low_battery do
 			t = t + coroutine.yield()
-			local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
+			local new_color = get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
 			text:set_color(new_color)
 			if progress_bar then
 				progress_bar:set_color(new_color)
@@ -4196,7 +4586,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._distance_text:set_text(get_distance_to_player(self._unit))
 	end
 
-	HUDList.TapeLoopItem = HUDList.TapeLoopItem or class(HUDList.ItemBase)
+	HUDList.TapeLoopItem = HUDList.TapeLoopItem or class(HUDList.LeftListItem)
 	function HUDList.TapeLoopItem:init(parent, name, data)
 		HUDList.TapeLoopItem.super.init(self, parent, name, { align = "right", w = parent:panel():h(), h = parent:panel():h() })
 
@@ -4210,22 +4600,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			{ ratio = 1.0, color = self.STANDARD_COLOR }
 		}
 
-		--self._box = HUDBGBox_create(self._panel, {
-		--	w = self._panel:w(),
-		--	h = self._panel:h(),
-		--}, { color = HUDListManager.ListOptions.list_color, bg_color = HUDListManager.ListOptions.list_color_bg })
-
-		self._progress_bar = PanelFrame:new(self._panel, {
-			w = self._panel:w(),
-			h = self._panel:w(),
-			invert_progress = true,
-			bar_w = 2,
-			bar_color = (self.STANDARD_COLOR or Color.white),
-			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
-			bar_alpha = 0.4,
-			add_bg = true,
-		})
-
 		self._text = self._panel:text({
 			name = "text",
 			align = "center",
@@ -4237,9 +4611,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			font_size = self._panel:h() * 0.6,
 		})
 
-		if data.tape_loop_expire_t then
-			self:_set_expire_t(data)
-		end
+		self:_set_expire_t(data)
 
 		local key = tostring(self._unit:key())
 		local id = string.format("HUDList_tape_loop_listener_%s", key)
@@ -4253,6 +4625,23 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
+	function HUDList.TapeLoopItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.TapeLoopItem.super.rescale(self, new_scale)
+
+		if enabled then
+			self._text:set_size(self._panel:w(), self._panel:h())
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.TapeLoopItem:set_color(color)
+		HUDList.TapeLoopItem.super.set_color(self, color)
+		self._text:set_color(color)
+		self.STANDARD_COLOR = color
+		self._flash_color_table[2].color = color
+	end
+
 	function HUDList.TapeLoopItem:priority()
 		return self._remaining
 	end
@@ -4261,7 +4650,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local t = Application:time()
 		while self._animating_restart do
 			t = t + coroutine.yield()
-			local new_color = self:_get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
+			local new_color = get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
 			text:set_color(new_color)
 			if progress_bar then
 				progress_bar:set_color(new_color)
@@ -4310,35 +4699,35 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDList.BuffItemBase.MAP = {
 		--Buffs
 		aggressive_reload_aced = {
-			atlas_new = tweak_data.skilltree.skills.speedy_reload.icon_xy,
+			skills_new = tweak_data.skilltree.skills.speedy_reload.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "aggressive_reload_aced"}, true),
 		},
 		ammo_efficiency = {
-			atlas_new = tweak_data.skilltree.skills.single_shot_ammo_return.icon_xy,
+			skills_new = tweak_data.skilltree.skills.single_shot_ammo_return.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "ammo_efficiency"}, true)
 		},
 		armor_break_invulnerable = {
-			spec = {6, 1},
+			perks = {6, 1},
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "armor_break_invulnerable"}, true),
 		},
 		berserker = {
-			atlas_new = tweak_data.skilltree.skills.wolverine.icon_xy,
+			skills_new = tweak_data.skilltree.skills.wolverine.icon_xy,
 			class = "BerserkerBuffItem",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "berserker"}, true),
 		},
 		biker = {
-			spec = {0, 0},
+			perks = {0, 0},
 			texture_bundle_folder = "wild",
 			class = "BikerBuffItem",
 			priority = 4,
@@ -4346,7 +4735,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "biker"}, true),
 		},
 		bloodthirst_aced = {
-			atlas_new = tweak_data.skilltree.skills.bloodthirst.icon_xy,
+			skills_new = tweak_data.skilltree.skills.bloodthirst.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
@@ -4356,7 +4745,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "bloodthirst_aced"}, true),
 		},
 		bloodthirst_basic = {
-			atlas_new = tweak_data.skilltree.skills.bloodthirst.icon_xy,
+			skills_new = tweak_data.skilltree.skills.bloodthirst.icon_xy,
 			class = "BuffItemBase",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
@@ -4365,77 +4754,77 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "bloodthirst_basic"}, false),
 		},
 		bullet_storm = {
-			atlas_new = tweak_data.skilltree.skills.ammo_reservoir.icon_xy,
+			skills_new = tweak_data.skilltree.skills.ammo_reservoir.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "bullet_storm"}, true),
 		},
 		close_contact = {
-			spec = {5, 4},
+			perks = {5, 4},
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "close_contact"}, true),
 		},
 		combat_medic = {
-			atlas_new = tweak_data.skilltree.skills.combat_medic.icon_xy,
+			skills_new = tweak_data.skilltree.skills.combat_medic.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "combat_medic"}, true),
 		},
 		combat_medic_passive = {
-			atlas_new = tweak_data.skilltree.skills.combat_medic.icon_xy,
+			skills_new = tweak_data.skilltree.skills.combat_medic.icon_xy,
 			class = "BuffItemBase",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "combat_medic_passive"}, false),
 		},
 		desperado = {
-			atlas_new = tweak_data.skilltree.skills.expert_handling.icon_xy,
+			skills_new = tweak_data.skilltree.skills.expert_handling.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "desperado"}, true),
 		},
 		die_hard = {
-			atlas_new = tweak_data.skilltree.skills.show_of_force.icon_xy,
+			skills_new = tweak_data.skilltree.skills.show_of_force.icon_xy,
 			class = "BuffItemBase",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "die_hard"}, false),
 		},
 		dire_need = {
-			atlas_new = tweak_data.skilltree.skills.dire_need.icon_xy,
+			skills_new = tweak_data.skilltree.skills.dire_need.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GHOST_BUFFS", "dire_need"}, true),
 		},
 		frenzy = {
-			atlas_new = tweak_data.skilltree.skills.frenzy.icon_xy,
+			skills_new = tweak_data.skilltree.skills.frenzy.icon_xy,
 			class = "FrenzyBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "frenzy"}, false),
 		},
 		grinder = {
-			spec = {4, 6},
+			perks = {4, 6},
 			class = "TimedStacksBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "grinder"}, true),
 		},
 		hostage_situation = {
-			spec = {0, 1},
+			perks = {0, 1},
 			class = "BuffItemBase",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "hostage_situation"}, false),
 		},
 		hostage_taker = {
-			atlas_new = tweak_data.skilltree.skills.black_marketeer.icon_xy,
+			skills_new = tweak_data.skilltree.skills.black_marketeer.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
@@ -4443,7 +4832,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "hostage_taker"}, false),
 		},
 		chico_injector = {
-			spec = {0, 0},
+			perks = {0, 0},
 			texture_bundle_folder = "chico",
 			class = "TimedBuffItem",
 			priority = 4,
@@ -4451,21 +4840,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "chico_injector"}, false) and (WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true) or WolfHUD:getSetting({"CustomHUD", "ENABLED"}, false)),
 		},
 		inspire = {
-			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
+			skills_new = tweak_data.skilltree.skills.inspire.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "inspire"}, true),
 		},
 		lock_n_load = {
-			atlas_new = tweak_data.skilltree.skills.shock_and_awe.icon_xy,
+			skills_new = tweak_data.skilltree.skills.shock_and_awe.icon_xy,
 			class = "ShockAndAweBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "TECHNICIAN_BUFFS", "lock_n_load"}, true),
 		},
 		maniac = {
-			spec = {0, 0},
+			perks = {0, 0},
 			texture_bundle_folder = "coco",
 			class = "TimedBuffItem",
 			priority = 4,
@@ -4475,21 +4864,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "maniac"}, false) and (WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true) or WolfHUD:getSetting({"CustomHUD", "ENABLED"}, false)),
 		},
 		messiah = {
-			atlas_new = tweak_data.skilltree.skills.messiah.icon_xy,
+			skills_new = tweak_data.skilltree.skills.messiah.icon_xy,
 			class = "BuffItemBase",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "messiah"}, true)
 		},
 		melee_stack_damage = {
-			spec = {5, 4},
+			perks = {5, 4},
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "melee_stack_damage"}, false),
 		},
 		muscle_regen = {
-			spec = { 4, 1 },
+			perks = { 4, 1 },
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
@@ -4497,112 +4886,112 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "muscle_regen"}, false),
 		},
 		overdog = {
-			spec = {6, 4},
+			perks = {6, 4},
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "overdog"}, false)
 		},
 		overkill = {
-			atlas_new = tweak_data.skilltree.skills.overkill.icon_xy,
+			skills_new = tweak_data.skilltree.skills.overkill.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "overkill"}, false),
 		},
 		painkiller = {
-			atlas_new = tweak_data.skilltree.skills.fast_learner.icon_xy,
+			skills_new = tweak_data.skilltree.skills.fast_learner.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "painkiller"}, false),
 		},
 		partner_in_crime = {
-			atlas_new = tweak_data.skilltree.skills.control_freak.icon_xy,
+			skills_new = tweak_data.skilltree.skills.control_freak.icon_xy,
 			class = "BuffItemBase",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "partner_in_crime"}, false),
 		},
 		running_from_death = {
-			atlas_new = tweak_data.skilltree.skills.running_from_death.icon_xy,
+			skills_new = tweak_data.skilltree.skills.running_from_death.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "running_from_death"}, true),
 		},
 		quick_fix = {
-			atlas_new = tweak_data.skilltree.skills.tea_time.icon_xy,
+			skills_new = tweak_data.skilltree.skills.tea_time.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "quick_fix"}, false),
 		},
 		second_wind = {
-			atlas_new = tweak_data.skilltree.skills.scavenger.icon_xy,
+			skills_new = tweak_data.skilltree.skills.scavenger.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GHOST_BUFFS", "second_wind"}, true),
 		},
 		sixth_sense = {
-			atlas_new = tweak_data.skilltree.skills.chameleon.icon_xy,
+			skills_new = tweak_data.skilltree.skills.chameleon.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GHOST_BUFFS", "sixth_sense"}, true),
 		},
 		swan_song = {
-			atlas_new = tweak_data.skilltree.skills.perseverance.icon_xy,
+			skills_new = tweak_data.skilltree.skills.perseverance.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "swan_song"}, false) and (WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true) or WolfHUD:getSetting({"CustomHUD", "ENABLED"}, false)),
 		},
 		tooth_and_claw = {
-			spec = {0, 3},
+			perks = {0, 3},
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "tooth_and_claw"}, true),
 		},
 		trigger_happy = {
-			atlas_new = tweak_data.skilltree.skills.trigger_happy.icon_xy,
+			skills_new = tweak_data.skilltree.skills.trigger_happy.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "trigger_happy"}, false),
 		},
 		underdog = {
-			atlas_new = tweak_data.skilltree.skills.underdog.icon_xy,
+			skills_new = tweak_data.skilltree.skills.underdog.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "underdog"}, false),
 		},
 		unseen_strike = {
-			atlas_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
+			skills_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GHOST_BUFFS", "unseen_strike"}, true),
 		},
 		up_you_go = {
-			atlas_new = tweak_data.skilltree.skills.up_you_go.icon_xy,
+			skills_new = tweak_data.skilltree.skills.up_you_go.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "up_you_go"}, false),
 		},
 		uppers = {
-			atlas_new = tweak_data.skilltree.skills.tea_cookies.icon_xy,
+			skills_new = tweak_data.skilltree.skills.tea_cookies.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "uppers"}, true),
 		},
 		yakuza = {
-			spec = {2, 7},
+			perks = {2, 7},
 			class = "BerserkerBuffItem",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
@@ -4611,7 +5000,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		--Debuffs
 		anarchist_armor_recovery_debuff = {
-			spec = {0, 1},
+			perks = {0, 1},
 			texture_bundle_folder = "opera",
 			class = "TimedBuffItem",
 			priority = 8,
@@ -4619,35 +5008,35 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "anarchist_armor_recovery_debuff"}, true),
 		},
 		ammo_give_out_debuff = {
-			spec = {5, 5},
+			perks = {5, 5},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "ammo_give_out_debuff"}, true),
 		},
 		armor_break_invulnerable_debuff = {
-			spec = {6, 1},
+			perks = {6, 1},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = true,	--Composite debuff
 		},
 		bullseye_debuff = {
-			atlas_new = tweak_data.skilltree.skills.prison_wife.icon_xy,
+			skills_new = tweak_data.skilltree.skills.prison_wife.icon_xy,
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "bullseye_debuff"}, true),
 		},
 		grinder_debuff = {
-			spec = {4, 6},
+			perks = {4, 6},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = true,	--Composite debuff
 		},
 		chico_injector_debuff = {
-			spec = {0,0},
+			perks = {0,0},
 			texture_bundle_folder = "chico",
 			class = "TimedBuffItem",
 			priority = 8,
@@ -4655,7 +5044,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = true,	--Composite debuff
 		},
 		inspire_debuff = {
-			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
+			skills_new = tweak_data.skilltree.skills.inspire.icon_xy,
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
@@ -4664,7 +5053,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "inspire_debuff"}, true),
 		},
 		inspire_revive_debuff = {
-			atlas_new = tweak_data.skilltree.skills.inspire.icon_xy,
+			skills_new = tweak_data.skilltree.skills.inspire.icon_xy,
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
@@ -4674,14 +5063,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "inspire_revive_debuff"}, true),
 		},
 		life_drain_debuff = {
-			spec = {7, 4},
+			perks = {7, 4},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "life_drain_debuff"}, true),
 		},
 		maniac_debuff = {
-			spec = {0, 0},
+			perks = {0, 0},
 			texture_bundle_folder = "coco",
 			class = "TimedBuffItem",
 			priority = 8,
@@ -4689,28 +5078,28 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = true,	--Composite debuff
 		},
 		medical_supplies_debuff = {
-			spec = {4, 5},
+			perks = {4, 5},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "medical_supplies_debuff"}, true),
 		},
 		sociopath_debuff = {
-			spec = {3, 5},
+			perks = {3, 5},
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "sociopath_debuff"}, true),
 		},
 		unseen_strike_debuff = {
-			atlas_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
+			skills_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = true,	--Composite debuff
 		},
 		uppers_debuff = {
-			atlas_new = tweak_data.skilltree.skills.tea_cookies.icon_xy,
+			skills_new = tweak_data.skilltree.skills.tea_cookies.icon_xy,
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
@@ -4719,36 +5108,36 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		--Team buffs
 		armorer = {
-			spec = {6, 0},
+			perks = {6, 0},
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "armorer"}, true),
 		},
 		bulletproof = {						--TODO: Needs new icon (Faster Team armor recovery)
-			--atlas_new = tweak_data.skilltree.skills.iron_man.icon_xy,
-			spec = {6, 2},
+			--skills_new = tweak_data.skilltree.skills.iron_man.icon_xy,
+			perks = {6, 2},
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "bulletproof"}, true),
 		},
 		crew_chief = {
-			spec = {2, 0},
+			perks = {2, 0},
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "crew_chief"}, true),
 		},
 		endurance = {
-			atlas_new = tweak_data.skilltree.skills.triathlete.icon_xy,
+			skills_new = tweak_data.skilltree.skills.triathlete.icon_xy,
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
 			ignore = true,
 		},
 		forced_friendship = {
-			atlas = tweak_data.skilltree.skills.triathlete.icon_xy,
+			skills = tweak_data.skilltree.skills.triathlete.icon_xy,
 			class = "TeamBuffItem",
 			priority = 1,
 			color = HUDList.BuffItemBase.ICON_COLOR.TEAM,
@@ -4773,7 +5162,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		--Composite buffs
 		damage_increase = {
-			atlas_new = tweak_data.skilltree.skills.prison_wife.icon_xy,
+			skills_new = tweak_data.skilltree.skills.prison_wife.icon_xy,
 			class = "DamageIncreaseBuff",
 			priority = 2,
 			color = Color(1, 1, 0),
@@ -4782,7 +5171,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "damage_increase"}, true),
 		},
 		damage_reduction = {
-			atlas_new = tweak_data.skilltree.skills.disguise.icon_xy,
+			skills_new = tweak_data.skilltree.skills.disguise.icon_xy,
 			class = "DamageReductionBuff",
 			priority = 2,
 			color = Color(0, 1, 1),
@@ -4791,7 +5180,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "damage_reduction"}, true),
 		},
 		melee_damage_increase = {
-			atlas_new = tweak_data.skilltree.skills.hidden_blade.icon_xy,
+			skills_new = tweak_data.skilltree.skills.hidden_blade.icon_xy,
 			class = "MeleeDamageIncreaseBuff",
 			priority = 2,
 			color = Color(1, 0, 1),
@@ -4802,7 +5191,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		--Player actions
 		anarchist_armor_regeneration = {
-			spec = {0, 0},
+			perks = {0, 0},
 			texture_bundle_folder = "opera",
 			class = "TimedBuffItem",
 			priority = 12,
@@ -4811,7 +5200,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = false,
 		},
 		standard_armor_regeneration = {
-			spec = {6, 0},
+			perks = {6, 0},
 			class = "TimedBuffItem",
 			priority = 12,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
@@ -4827,23 +5216,23 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = false,
 		},
 		melee_charge = {
-			--atlas_new = tweak_data.skilltree.skills.hidden_blade.icon_xy,
-			atlas = tweak_data.skilltree.skills.hidden_blade.icon_xy,
+			--skills_new = tweak_data.skilltree.skills.hidden_blade.icon_xy,
+			skills = tweak_data.skilltree.skills.hidden_blade.icon_xy,
 			class = "TimedBuffItem",
 			priority = 15,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = WolfHUD:getSetting({"INTERACTION", "SHOW_MELEE"}, true)
 		},
 		reload = {
-			--atlas_new = tweak_data.skilltree.skills.speedy_reload.icon_xy,
-			atlas = {0, 9},
+			--skills_new = tweak_data.skilltree.skills.speedy_reload.icon_xy,
+			skills = {0, 9},
 			class = "TimedBuffItem",
 			priority = 15,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = WolfHUD:getSetting({"INTERACTION", "SHOW_RELOAD"}, true)
 		},
 		interact = {
-			--atlas_new = tweak_data.skilltree.skills.second_chances.icon_xy,
+			--skills_new = tweak_data.skilltree.skills.second_chances.icon_xy,
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
 			class = "TimedInteractionItem",
 			priority = 15,
@@ -4851,7 +5240,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = (WolfHUD:getSetting({"INTERACTION", "SHOW_CIRCLE"}, true) or WolfHUD:getSetting({"INTERACTION", "SHOW_TIME_REMAINING"}, true))
 		},
 		interact_debuff = {
-			--atlas_new = tweak_data.skilltree.skills.second_chances.icon_xy,
+			--skills_new = tweak_data.skilltree.skills.second_chances.icon_xy,
 			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
 			class = "TimedInteractionItem",
 			priority = 15,
@@ -5003,6 +5392,48 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.BuffItemBase:post_init()
 		self:set_fade_time(0)
 		self:set_move_speed(0)
+	end
+
+	function HUDList.BuffItemBase:rescale(new_scale)
+		local enabled, size_mult = HUDList.BuffItemBase.super.rescale(self, new_scale)
+
+		if enabled then
+			local progress_bar_width = self._panel:w() * 0.05
+			local icon_size = self._panel:w() - progress_bar_width * 4
+			self._icon:set_size(icon_size, icon_size)
+			self._icon:set_center(self:w() * 0.5, self:h() * 0.5)
+			self._ace_icon:set_size(icon_size * 1.5, icon_size * 1.5)
+			self._ace_icon:set_center(self:w() * 0.5, self:h() * 0.5)
+			self._bg:set_size(self._icon:w(), self._icon:h())
+			self._bg:set_center(self._icon:center())
+			self._title:set_size(self._panel:w(), (self._panel:h() - icon_size) / 2)
+			self._title:set_font_size(0.7 * (self._panel:h() - icon_size) / 2)
+			self._value:set_size(self._panel:w(), (self._panel:h() - icon_size) / 2)
+			self._value:set_font_size(0.7 * (self._panel:h() - icon_size) / 2)
+			self._value:set_bottom(self._panel:h() + progress_bar_width)
+			self._progress_bar_debuff:set_size(self._panel:w(), self._panel:w())
+			self._progress_bar_debuff:set_center(self._icon:center())
+			self._progress_bar_debuff:set_width(progress_bar_width)
+			self._progress_bar:set_size(self._panel:w() - (progress_bar_width+1), self._panel:w() - (progress_bar_width+1))
+			self._progress_bar:set_center(self._icon:center())
+			self._progress_bar:set_width(progress_bar_width)
+			self._progress_bar_inner:set_size(self._panel:w() - (progress_bar_width+1) * 2, self._panel:w() - (progress_bar_width+1) * 2)
+			self._progress_bar_inner:set_center(self._icon:center())
+			self._progress_bar_inner:set_width(progress_bar_width)
+			self._stack_bg:set_size(self._icon:w() * 0.4, self._icon:h() * 0.4)
+			self._stack_bg:set_right(self._icon:right())
+			self._stack_bg:set_bottom(self._icon:bottom())
+			self._stack_text:set_size(self._stack_bg:w(), self._stack_bg:h())
+			self._stack_text:set_font_size(self._stack_bg:h() * 0.85)
+			self._stack_text:set_center(self._stack_bg:center())
+		end
+
+		return enabled, size_mult
+	end
+
+	function HUDList.BuffItemBase:set_bg_color(color)
+		HUDList.BuffItemBase.super.set_bg_color(self, color)
+		self._bg:set_color(color)
 	end
 
 	function HUDList.BuffItemBase:activate(id)
@@ -5553,16 +5984,16 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	HUDList.TimedInteractionItem = HUDList.TimedInteractionItem or class(HUDList.TimedBuffItem)
 	HUDList.TimedInteractionItem.INTERACT_ID_TO_ICON = {
-		default 					= { texture = "guis/textures/pd2/skilltree/drillgui_icon_faster" 														},
-		mask_up 					= { texture = "guis/textures/contact_vlad", 									 texture_rect = {1920, 256, 128, 130}	},
-		ammo_bag 					= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 1*64, 0, 64, 64 } 	},
-		doc_bag 					= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 2*64, 7*64, 64, 64 } 	},
-		first_aid_kit 				= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 3*64, 10*64, 64, 64 } },
-		body_bag 					= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 5*64, 11*64, 64, 64 } },
-		grenade_crate 				= { texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_icon_types", texture_rect = { 1*48, 0, 48, 48 } 	},
-		ecm_jammer 					= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 1*64, 4*64, 64, 64 } 	},
-		corpse_alarm_pager			= { texture = "guis/textures/pd2/specialization/icons_atlas", 					 texture_rect = { 1*64, 4*64, 64, 64 }	},
-		pick_lock_easy_no_skill 	= { texture = "guis/textures/pd2/skilltree/icons_atlas", 						 texture_rect = { 5*64, 4*64, 64, 64 } 	},
+		default 					= { texture = "guis/textures/pd2/skilltree/drillgui_icon_faster" 					},
+		mask_up 					= { texture = "guis/textures/contact_vlad", texture_rect = {1920, 256, 128, 130}	},
+		ammo_bag 					= { skills 		= {1, 0}				},
+		doc_bag 					= { skills 		= {2, 7}				},
+		first_aid_kit 				= { skills 		= {3, 10}, 				},
+		body_bag 					= { skills 		= {5, 11}, 				},
+		grenade_crate 				= { preplanning = {1, 0}			 	},
+		ecm_jammer 					= { skills 		= {1, 4}, 				},
+		corpse_alarm_pager			= { skills 		= {1, 4}, 				},
+		pick_lock_easy_no_skill 	= { skills 		= {5, 4} 				},
 		intimidate					= { hud_tweak = "equipment_cable_ties" 	},
 		c4_consume 					= { hud_tweak = "equipment_c4" 			},
 		drill 						= { hud_tweak = "pd2_drill" 			},
@@ -5627,8 +6058,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if settings.add_bg then
 			self._bg = self._panel:rect({
 				name = "bg",
-				h = self._panel:h(),
-				w = self._panel:w(),
+				valign = "grow",
+				halign = "grow",
 				blend_mode = "normal",
 				layer = self._panel:layer() - 1,
 				color = settings.bg_color or settings.color or Color.black,
@@ -5701,6 +6132,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function PanelFrame:set_ratio(r)
 		r = math.clamp(r, 0, 1)
+		self._current_ratio = r
 		if self._invert_progress then
 			r = 1-r
 		end
@@ -5738,6 +6170,44 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._left:set_h(self._panel:h() * (1-stage_progress))
 		end
 	end
+	
+	function PanelFrame:alpha() return self._panel:alpha() end
+	function PanelFrame:w() return self._panel:w() end
+	function PanelFrame:h() return self._panel:h() end
+	function PanelFrame:x() return self._panel:x() end
+	function PanelFrame:y() return self._panel:y() end
+	function PanelFrame:left() return self._panel:left() end
+	function PanelFrame:right() return self._panel:right() end
+	function PanelFrame:top() return self._panel:top() end
+	function PanelFrame:bottom() return self._panel:bottom() end
+	function PanelFrame:center() return self._panel:center() end
+	function PanelFrame:center_x() return self._panel:center_x() end
+	function PanelFrame:center_y() return self._panel:center_y() end
+	function PanelFrame:visible() return self._panel:visible() end
+	function PanelFrame:layer() return self._panel:layer() end
+	function PanelFrame:text_rect() return self:x(), self:y(), self:w(), self:h() end
+	function PanelFrame:set_alpha(v) self._panel:set_alpha(v) end
+	function PanelFrame:set_x(v) self._panel:set_x(v) end
+	function PanelFrame:set_y(v) self._panel:set_y(v) end
+	function PanelFrame:set_w(v) self:set_size(v, nil)	end
+	function PanelFrame:set_h(v) self:set_size(nil, v)	end
+	function PanelFrame:set_size(w, h) 
+		w = w or self:w()
+		h = h or self:h()
+
+		self._panel:set_size(w, h)
+		self:set_width(self._bar_w)
+		self:reset()
+		self:set_ratio(self._current_ratio or 1)
+	end
+	function PanelFrame:set_left(v) self._panel:set_left(v) end
+	function PanelFrame:set_right(v) self._panel:set_right(v) end
+	function PanelFrame:set_top(v) self._panel:set_top(v) end
+	function PanelFrame:set_bottom(v) self._panel:set_bottom(v) end
+	function PanelFrame:set_center(x, y) self._panel:set_center(x, y) end
+	function PanelFrame:set_center_x(v) self._panel:set_center_x(v) end
+	function PanelFrame:set_center_y(v) self._panel:set_center_y(v) end
+	function PanelFrame:set_layer(v) self._panel:set_layer(v) end
 end
 
 if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
