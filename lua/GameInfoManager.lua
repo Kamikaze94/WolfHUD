@@ -1644,8 +1644,7 @@ if string.lower(RequiredScript) == "lib/units/props/timergui" then
 	function TimerGui:init(unit, ...)
 		self._info_key = tostring(unit:key())
 		local device_type = unit:base().is_drill and "drill" or unit:base().is_hacking_device and "hack" or unit:base().is_saw and "saw" or "timer"
-		local can_have_upgrades = (unit:base().is_drill or unit:base().is_saw) and not unit:base()._disable_upgrades
-		if not can_have_upgrades then
+		if (unit:base().is_drill or unit:base().is_saw) and unit:base()._disable_upgrades then
 			device_type = string.format("%s_noupgrade", device_type)
 		end
 		managers.gameinfo:event("timer", "create", self._info_key, unit, self, device_type)

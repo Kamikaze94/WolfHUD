@@ -562,7 +562,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 			local panel = self._player_slots[peer_id]
 			if panel and panel:enabled() then
 				panel:set_x(x)
-				panel:set_center_y(self._panel:h() / 2)
+				--panel:set_center_y(self._panel:h() / 2)
 				x = x + panel:w()
 			else
 				x = x + width

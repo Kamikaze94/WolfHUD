@@ -569,7 +569,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:register_list("left_side_list", HUDList.VerticalList, { align = "left", x = x, y = y, w = list_width, h = list_height, scale = scale, top_to_bottom = true, item_margin = 5 })
 
 		--Timers
-		local timer_list = list:register_item("timers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 3 })
+		local timer_list = list:register_item("timers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 3, recheck_interval = 1 })
 		timer_list:set_static_item(HUDList.LeftListIcon, 1, 4/5, {
 			{ skills = {3, 6}, color = HUDListManager.ListOptions.list_color },
 		})
@@ -590,7 +590,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		})
 
 		--Pagers
-		local pager_list = list:register_item("pagers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 2 })
+		local pager_list = list:register_item("pagers", HUDList.HorizontalList, { align = "top", w = list_width, h = 40 * scale, left_to_right = true, item_margin = 5, priority = 2, recheck_interval = 1 })
 		pager_list:set_static_item(HUDList.LeftListIcon, 1, 1, {
 			{ perks = {1, 4}, color = HUDListManager.ListOptions.list_color },
 		})
@@ -2136,7 +2136,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		self._max_shown_items = params.max_items
 
-		self._recheck_interval = params.recheck_interval or 1
+		self._recheck_interval = params.recheck_interval
 		self._next_recheck = self._recheck_interval
 		
 		self:setup_expansion_item()
@@ -2210,10 +2210,113 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.HorizontalList:update(t, dt)
-		self._next_recheck = self._next_recheck - dt
+		if self._recheck_interval ~= nil then
+			self._next_recheck = self._next_recheck - dt
 
-		if self:shown_items() > 0 and self._next_recheck <= 0 then
-			local order_changed = false
+			if self:shown_items() > 0 and self._next_recheck <= 0 then
+				self:reapply_item_priorities(true, self._recheck_interval / 2)
+				self._next_recheck = self._recheck_interval
+			end
+		end
+
+		HUDList.HorizontalList.super.update(self, t, dt)
+	end
+
+	function HUDList.HorizontalList:_update_item_positions(insert_item, instant_move, move_timer)
+		local total_shown_items = 0
+		local show_expansion = false
+		if self._centered then
+			local total_width = self._static_item and (self._static_item:panel():w() + self._item_margin) or 0
+			local prev_disabled_i = {}
+			for i, item in ipairs(self._shown_items) do
+				local next_total_width = total_width + item:panel():w() + self._item_margin
+				show_expansion = show_expansion or (next_total_width > self:w())
+				if self._max_shown_items then
+					show_expansion = show_expansion or (total_shown_items >= self._max_shown_items)
+				end
+				if not item:enabled() then
+					table.insert(prev_disabled_i, i)
+				end
+				item:_set_disabled("max_items_reached", show_expansion)
+
+				if item:enabled() then
+					total_width = next_total_width
+					total_shown_items = total_shown_items + 1
+				end
+			end
+			total_width = total_width - self._item_margin
+
+			local left = (self._panel:w() - math.min(total_width, self._panel:w())) / 2
+
+			if self._static_item then
+				self._static_item:move(left, item:panel():y(), instant_move, move_timer)
+				left = left + self._static_item:panel():w() + self._item_margin
+			end
+
+			for i, item in ipairs(self._shown_items) do
+				if item:enabled() then
+					if insert_item and item == insert_item or table.contains(prev_disabled_i, i) then
+						if item:panel():x() ~= left then
+							item:panel():set_x(left - item:panel():w() / 2)
+							item:move(left, item:panel():y(), instant_move, move_timer)
+						end
+					else
+						item:move(left, item:panel():y(), instant_move, move_timer)
+					end
+					left = left + item:panel():w() + self._item_margin
+				else
+					item:panel():set_x(left)
+				end
+			end
+
+			if self._expansion_indicator then
+				self._expansion_indicator:set_active(show_expansion)
+				self._expansion_indicator:panel():set_x(left)
+				self._expansion_indicator:cancel_move()
+			end
+		else
+			local prev_width = self._static_item and (self._static_item:panel():w() + self._item_margin) or 0
+			for i, item in ipairs(self._shown_items) do
+				local next_width = prev_width + item:panel():w() + self._item_margin
+				show_expansion = show_expansion or (next_width > self:w())
+				if self._max_shown_items then
+					show_expansion = show_expansion or (total_shown_items >= self._max_shown_items)
+				end
+				local was_disabled = not item:enabled()
+				item:_set_disabled("max_items_reached", show_expansion)
+
+				if item:enabled() then
+					local width = item:panel():w()
+					local new_x = (self._left_to_right and prev_width) or (self._panel:w() - (width+prev_width))
+					if insert_item and item == insert_item or was_disabled then
+						item:panel():set_x(new_x)
+						item:cancel_move()
+					else
+						item:move(new_x, item:panel():y(), instant_move, move_timer)
+					end
+
+					prev_width = prev_width + width + self._item_margin
+					total_shown_items = total_shown_items + 1
+				end
+			end
+
+			if self._expansion_indicator then
+				self._expansion_indicator:set_active(show_expansion)
+				local width = self._expansion_indicator:panel():w()
+				local new_x = (self._left_to_right and math.min(prev_width, self._panel:w() - width)) or math.max(self._panel:w() - (width+prev_width), 0)
+				self._expansion_indicator:panel():set_x(new_x)
+				self._expansion_indicator:cancel_move()
+			end
+
+			self:set_disabled("no_visible_items", total_shown_items <= 0)
+		end
+	end
+	
+	function HUDList.HorizontalList:reapply_item_priorities(update_positions, move_time_override)
+		local order_changed = false
+		if not self._reorder_in_progress then
+			self._reorder_in_progress = true
+
 			local swapped = false
 			repeat
 				swapped = false
@@ -2233,104 +2336,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				order_changed = order_changed or swapped
 			until not swapped
 
-			if order_changed then
-				self:_update_item_positions(nil, false, self._recheck_interval / 2)
+			self._reorder_in_progress = nil
+			
+			if update_positions and order_changed then
+				self:_update_item_positions(nil, false, move_time_override)
 			end
-			self._next_recheck = self._recheck_interval
 		end
 
-		HUDList.HorizontalList.super.update(self, t, dt)
-	end
-
-	function HUDList.HorizontalList:_update_item_positions(insert_item, instant_move, move_timer)
-		local total_shown_items = 0
-		local max_width_reached = false
-		if self._centered then
-			local total_width = self._static_item and (self._static_item:panel():w() + self._item_margin) or 0
-			for i, item in ipairs(self._shown_items) do
-				if self._max_shown_items then
-					item:_set_disabled("max_items_reached", total_shown_items >= self._max_shown_items)
-				end
-				if total_width + item:panel():w() + self._item_margin >= self._panel:w() then
-					item:_set_disabled("max_width_reached", true)
-					max_width_reached = true
-				else
-					item:_set_disabled("max_width_reached", false)
-				end
-
-				if item:enabled() then
-					total_width = total_width + item:panel():w() + self._item_margin
-					total_shown_items = total_shown_items + 1
-				end
-			end
-			total_width = total_width - self._item_margin
-
-			local left = (self._panel:w() - math.min(total_width, self._panel:w())) / 2
-
-			if self._static_item then
-				self._static_item:move(left, item:panel():y(), instant_move, move_timer)
-				left = left + self._static_item:panel():w() + self._item_margin
-			end
-
-			for i, item in ipairs(self._shown_items) do
-				if item:enabled() then
-					if insert_item and item == insert_item then
-						if item:panel():x() ~= left then
-							item:panel():set_x(left - item:panel():w() / 2)
-							item:move(left, item:panel():y(), instant_move, move_timer)
-						end
-					else
-						item:move(left, item:panel():y(), instant_move, move_timer)
-					end
-					left = left + item:panel():w() + self._item_margin
-				else
-					item:panel():set_x(left)
-				end
-			end
-
-			if self._expansion_indicator then
-				self._expansion_indicator:set_active(max_width_reached or self._max_shown_items and self:shown_items() > self._max_shown_items)
-				self._expansion_indicator:panel():set_x(left)
-				self._expansion_indicator:cancel_move()
-			end
-		else
-			local prev_width = self._static_item and (self._static_item:panel():w() + self._item_margin) or 0
-			for i, item in ipairs(self._shown_items) do
-				if self._max_shown_items then
-					item:_set_disabled("max_items_reached", total_shown_items >= self._max_shown_items)
-				end
-				if prev_width + item:panel():w() + self._item_margin >= self._panel:w() then
-					item:_set_disabled("max_width_reached", true)
-					max_width_reached = true
-				else
-					item:_set_disabled("max_width_reached", false)
-				end
-
-				if item:enabled() then
-					local width = item:panel():w()
-					local new_x = (self._left_to_right and prev_width) or (self._panel:w() - (width+prev_width))
-					if insert_item and item == insert_item then
-						item:panel():set_x(new_x)
-						item:cancel_move()
-					else
-						item:move(new_x, item:panel():y(), instant_move, move_timer)
-					end
-
-					prev_width = prev_width + width + self._item_margin
-					total_shown_items = total_shown_items + 1
-				end
-			end
-
-			if self._expansion_indicator then
-				self._expansion_indicator:set_active(max_width_reached or self._max_shown_items and self:shown_items() > self._max_shown_items)
-				local width = self._expansion_indicator:panel():w()
-				local new_x = (self._left_to_right and math.min(prev_width, self._panel:w() - width)) or math.max(self._panel:w() - (width+prev_width), 0)
-				self._expansion_indicator:panel():set_x(new_x)
-				self._expansion_indicator:cancel_move()
-			end
-
-			self:set_disabled("no_visible_items", total_shown_items <= 0)
-		end
+		return order_changed
 	end
 
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2448,6 +2461,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if alive(self._panel) then
 			self:_fade(0, instant)
 		end
+	end
+
+	function HUDList.ExpansionIndicator:set_color(color)
+		self._icon:set_color(color)
 	end
 
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -3283,7 +3300,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		HUDList.TimerItem.super.init(self, parent, name, { align = "left", w = data.w or (parent:panel():h() * 4/5), h = parent:panel():h() })
 
-		local txt = self.DEVICE_TYPES[self._device_type] and managers.localization:text(self.DEVICE_TYPES[self._device_type].name or "N/A") or "N/A"
+		local txt = HUDList.TimerItem.DEVICE_TYPES[self._device_type] and managers.localization:text(HUDList.TimerItem.DEVICE_TYPES[self._device_type].name or "N/A") or tostring(self._device_type)
 		self._type_text = self._panel:text({
 			name = "type_text",
 			text = txt,
@@ -3369,7 +3386,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.TimerItem:priority()
-		return self._remaining or self._priority
+		return self._remaining and Utl.round(self._remaining, 1) or self._priority
 	end
 
 	function HUDList.TimerItem:update(t, dt)
@@ -3735,6 +3752,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local new_color = get_color_from_table(self._amount + offset, self._max_amount + offset)
 			self._info_text:set_color(new_color)
 			self._progress_bar:set_color(new_color)
+
+			if self._parent_list then
+				self._parent_list:reapply_item_priorities(true, 0.5)
+			end
 		end
 	end
 
@@ -3747,6 +3768,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local new_color = get_color_from_table(self._amount + offset, self._max_amount + offset)
 			self._info_text:set_color(new_color)
 			self._progress_bar:set_color(math.lerp(new_color, (HUDListManager.ListOptions.list_color or Color.white), 0.4))
+
+			if self._parent_list then
+				self._parent_list:reapply_item_priorities(true, 0.5)
+			end
 		end
 	end
 
@@ -4205,7 +4230,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.PagerItem:priority()
-		return self._remaining
+		return self._remaining and Utl.round(self._remaining, 1) + (self._answered and 0.5 or 0)
 	end
 
 	function HUDList.PagerItem:_set_answered()
@@ -4328,7 +4353,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.ECMItem:priority()
-		return self._remaining
+		return self._remaining and Utl.round(self._remaining, 1)
 	end
 
 	function HUDList.ECMItem:_animate_battery_low(text, progress_bar)
@@ -4444,7 +4469,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.ECMRetriggerItem:priority()
-		return self._remaining
+		return self._remaining and Utl.round(self._remaining, 1)
 	end
 
 	function HUDList.ECMRetriggerItem:_set_retrigger_delay(data)
@@ -4539,7 +4564,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.ECMFeedbackItem:priority()
-		return self._remaining or self._priority
+		return self._remaining and Utl.round(self._remaining, 1) or self._priority
 	end
 
 	function HUDList.ECMFeedbackItem:_animate_battery_low(text, progress_bar)
@@ -4643,7 +4668,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.TapeLoopItem:priority()
-		return self._remaining
+		return self._remaining and Utl.round(self._remaining, 1)
 	end
 
 	function HUDList.TapeLoopItem:_animate_restart_active(text, progress_bar)
