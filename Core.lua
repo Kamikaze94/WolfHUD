@@ -399,9 +399,15 @@ if not _G.WolfHUD then
 				SHOW_ECMS								= false,
 				SHOW_TIMERS			 					= false,
 				SHOW_MINIONS							= true,
-				SHOW_LOOT								= true,
 				SHOW_PAGER								= false,
 				SHOW_SPECIAL_EQUIPMENT					= false,
+				LOOT = {
+					SHOW								= true,
+					ICON								= true,
+					OFFSET								= 15,
+					BAGGED_OFFSET						= 30,
+					ANGLE								= 25,
+				},
 			},
 			INTERACTION = {
 				LOCK_MODE 								= 3,			--Disabled (1, Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time (2), or current interaction time(3)
