@@ -330,6 +330,8 @@
 	"wolfhud_susp_eye_desc" : "기본 의심미터를 표시합니다.",
 	"wolfhud_susp_numberic_title" : "의심미터 숫자 표시",
 	"wolfhud_susp_numberic_desc" : "의심도를 숫자로 표시합니다.",
+	"wolfhud_susp_numberic_outline_title" : "Black outline",
+	"wolfhud_susp_numberic_outline_desc" : "Show a black outline around the numeric Suspicion text.",
 
 	"wolfhud_killcounter_options_name" : "킬 카운터 옵션",
 	"wolfhud_killcounter_options_help" : "화면에 표시되는 킬 카운터를 설정합니다.",

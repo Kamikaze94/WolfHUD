@@ -231,6 +231,7 @@ if not _G.WolfHUD then
 			HUDSuspicion = {
 				SCALE									= 0.8,
 				SHOW_PERCENTAGE							= true,
+				SHOW_PERCENTAGE_OUTLINE					= true,
 				SHOW_BARS								= true,
 				SHOW_PACIFIED_CIVILIANS					= true,
 				REMOVE_ANSWERED_PAGER_CONTOUR 			= true,
