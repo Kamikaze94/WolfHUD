@@ -2260,7 +2260,7 @@ if string.lower(RequiredScript) == "lib/units/equipment/doctor_bag/doctorbagbase
 	end
 
 	function DoctorBagBase:init(unit, ...)
-		local key = tostring(self._unit:key())
+		local key = tostring(unit:key())
 		managers.gameinfo:event("doc_bag", "create", key, { unit = unit })
 		managers.gameinfo:event("doc_bag", "set_max_amount", key, { max_amount = self._max_amount })
 		init_original(self, unit, ...)
