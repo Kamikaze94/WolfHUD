@@ -686,7 +686,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 						scale = 1.25,
 						icon = {
 							type = "icon",
-							show = WolfHUD:getSetting({"CustomWaypoints", "LOOT", "ICON"}, true),
+							show = data.bagged and WolfHUD:getSetting({"CustomWaypoints", "LOOT", "ICON"}, true),
 							std_wp = "wp_bag",
 							alpha = 0.5,
 							on_minimap = true,
