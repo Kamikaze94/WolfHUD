@@ -221,7 +221,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				managers.gameinfo:register_listener("minion_waypoint_listener", "minion", "set_damage_resistance", callback(self, self, "custom_waypoint_minion_clbk"))
 			end
 
-			if WolfHUD:getSetting({"CustomWaypoints", "SHOW_LOOT"}, true) then
+			if WolfHUD:getSetting({"CustomWaypoints", "LOOT", "SHOW"}, true) then
 				managers.gameinfo:register_listener("loot_waypoint_listener", "loot", "add", callback(self, self, "custom_waypoint_loot_clbk"))
 				managers.gameinfo:register_listener("loot_waypoint_listener", "loot", "remove", callback(self, self, "custom_waypoint_loot_clbk"))
 				managers.gameinfo:register_listener("loot_waypoint_listener", "loot", "interact", callback(self, self, "custom_waypoint_loot_clbk"))
@@ -673,19 +673,20 @@ if RequiredScript == "lib/managers/hudmanager" then
 				local name_id = data.carry_id and tweak_data.carry[data.carry_id] and tweak_data.carry[data.carry_id].name_id
 				local bag_name = name_id and managers.localization:to_upper_text(name_id)
 				local count = data.count or 1
+				local angle = WolfHUD:getSetting({"CustomWaypoints", "LOOT", "ANGLE"}, 25)
 				if bag_name then
 					local params = {
 						unit = data.unit,
-						offset = data.bagged and Vector3(0, 0, 30) or Vector3(0, 0, 15),
+						offset = data.bagged and Vector3(0, 0, WolfHUD:getSetting({"CustomWaypoints", "LOOT", "BAGGED_OFFSET"}, 30)) or Vector3(0, 0, WolfHUD:getSetting({"CustomWaypoints", "LOOT", "OFFSET"}, 15)),
 						visible_through_walls = data.bagged,
 						alpha = 0.1,
-						visible_angle = { max = 25 },
+						visible_angle = { max = angle },
 						visible_distance = { max = 2000 },
-						fade_angle = { start_angle = 25, end_angle = 20, final_scale = 8 },
+						fade_angle = { start_angle = angle, end_angle = angle - 5, final_scale = 8 },
 						scale = 1.25,
 						icon = {
 							type = "icon",
-							show = data.bagged,
+							show = WolfHUD:getSetting({"CustomWaypoints", "LOOT", "ICON"}, true),
 							std_wp = "wp_bag",
 							alpha = 0.5,
 							on_minimap = true,
