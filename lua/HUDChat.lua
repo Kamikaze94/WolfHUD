@@ -349,8 +349,8 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 
 	function HUDChat:_animate_fade_output()
 		local wait_t = WolfHUD:getSetting({"HUDChat", "CHAT_WAIT_TIME"}, 10)
-		local fade_t = 1
 		if wait_t <= 0 then return end
+		local fade_t = 1
 		local t = 0
 		while wait_t > t do
 			local dt = coroutine.yield()
@@ -427,9 +427,9 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 	end
 
 	function HUDChat:update_key_down(o, k)
-		wait(0.6)
+		local first_wait_done = false
 		local text = self._input_panel:child("input_text")
-		while self._key_pressed == k do
+		repeat
 			local s, e = text:selection()
 			local n = utf8.len(text:text())
 			local d = math.abs(e - s)
@@ -473,8 +473,9 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 				self._key_pressed = false
 			end
 			self:update_caret()
-			wait(0.03)
-		end
+			wait(first_wait_done and 0.03 or 0.6)
+			first_wait_done = true
+		until (self._key_pressed ~= k)
 	end
 
 	function HUDChat:key_press(o, k)
@@ -487,49 +488,10 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 			self._enter_text_set = true
 		end
 		local text = self._input_panel:child("input_text")
-		local s, e = text:selection()
-		local n = utf8.len(text:text())
-		local d = math.abs(e - s)
 		self._key_pressed = k
 		text:stop()
-		text:animate(callback(self, self, "update_key_down"), k)
-		if k == Idstring("backspace") then
-			if s == e and s > 0 then
-				text:set_selection(s - 1, e)
-			end
-			text:replace_text("")
-			if not (utf8.len(text:text()) < 1) or type(self._esc_callback) ~= "number" then
-			end
-			self:_set_input_lines(#(text:line_breaks()))
-		elseif k == Idstring("delete") then
-			if s == e and s < n then
-				text:set_selection(s, e + 1)
-			end
-			text:replace_text("")
-			if not (utf8.len(text:text()) < 1) or type(self._esc_callback) ~= "number" then
-			end
-			self:_set_input_lines(#(text:line_breaks()))
-		elseif k == Idstring("left") then
-			if s < e then
-				text:set_selection(s, s)
-			elseif s > 0 then
-				text:set_selection(s - 1, s - 1)
-			end
-		elseif k == Idstring("right") then
-			if s < e then
-				text:set_selection(e, e)
-			elseif s < n then
-				text:set_selection(s + 1, s + 1)
-			end
-		elseif self._key_pressed == Idstring("up") then
-			self:_change_line_offset(1)
-		elseif self._key_pressed == Idstring("down") then
-			self:_change_line_offset(-1)
-		elseif self._key_pressed == Idstring("page up") then
-			self:_change_line_offset(HUDChat.MAX_OUTPUT_LINES - self._current_input_lines)
-		elseif self._key_pressed == Idstring("page down") then
-			self:_change_line_offset(-(HUDChat.MAX_OUTPUT_LINES - self._current_input_lines))
-		elseif self._key_pressed == Idstring("end") then
+		if self._key_pressed == Idstring("end") then
+			local n = utf8.len(text:text())
 			text:set_selection(n, n)
 		elseif self._key_pressed == Idstring("home") then
 			text:set_selection(0, 0)
@@ -541,6 +503,8 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 			text:set_text("")
 			text:set_selection(0, 0)
 			self._esc_callback()
+		else
+			text:animate(callback(self, self, "update_key_down"), k)
 		end
 		self:update_caret()
 	end
@@ -559,7 +523,7 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 	end
 
 	function HUDChat:_on_focus(...)
-		if not self._mouse_connected and HUDChat.MOUSE_SUPPORT then
+		if HUDChat.MOUSE_SUPPORT then
 			self:connect_mouse()
 		end
 
@@ -575,20 +539,23 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 	end
 
 	function HUDChat:connect_mouse()
-		self._mouse_connected = true
+		if not self._mouse_connected then
+			self._mouse_connected = true
 
-		managers.mouse_pointer:use_mouse({
-			mouse_move = callback(self, self, "_mouse_move"),
-			mouse_press = callback(self, self, "_mouse_press"),
-			mouse_release = callback(self, self, "_mouse_release"),
-			mouse_click = callback(self, self, "_mouse_click"),
-			id = "ingame_chat_mouse",
-		})
+			managers.mouse_pointer:use_mouse({
+				mouse_move = callback(self, self, "_mouse_move"),
+				mouse_press = callback(self, self, "_mouse_press"),
+				mouse_release = callback(self, self, "_mouse_release"),
+				mouse_click = callback(self, self, "_mouse_click"),
+				id = "ingame_chat_mouse",
+			})
+		end
 	end
 
 	function HUDChat:disconnect_mouse()
 		if self._mouse_connected then
 			managers.mouse_pointer:remove_mouse("ingame_chat_mouse")
+			self._mouse_connected = nil
 		end
 	end
 

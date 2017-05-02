@@ -1075,7 +1075,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			if color_range then
 				local color, alpha = self._text:color(), self._text:alpha()
 				for _, range in ipairs(color_range) do
-					self._text:set_range_color(range[1], range[2], color:with_alpha(alpha * 0.65))
+					self._text:set_range_color(range[1], range[2], color:with_alpha(alpha * 0.75))
 				end
 			end
 
@@ -1184,7 +1184,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			if color_range then
 				local color, alpha = self._text:color(), self._text:alpha()
 				for _, range in ipairs(color_range) do
-					self._text:set_range_color(range[1], range[2], color:with_alpha(alpha * 0.65))
+					self._text:set_range_color(range[1], range[2], color:with_alpha(alpha * 0.75))
 				end
 			end
 
@@ -1479,7 +1479,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			self:set_enabled("outfit", true)
 
 			local skill_data = outfit.skills.skills
-			local skill_str = json.encode(skill_data)
+			local skill_str = skill_data and table.concat(skill_data, "_")
 			if skill_data and skill_str ~= self._loadout then
 				self._loadout = skill_str
 				local subtree_amt = math.floor(#skill_data / #self._tree_names)

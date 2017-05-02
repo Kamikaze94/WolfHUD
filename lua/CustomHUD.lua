@@ -4151,7 +4151,6 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 			if self._hud_chat_ingame and self._hud_chat_ingame.set_offset then
 				self._hud_chat_ingame:set_offset(teammate_offset[align_id] + HUDChat.LINE_HEIGHT, align_id < 2 and "left" or "right")
-
 			end
 		end
 	end

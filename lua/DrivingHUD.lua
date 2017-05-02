@@ -598,7 +598,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		if unit and (not self._unit or self._unit:key() ~= unit:key()) then
 			local peer = managers.network:session():peer_by_unit(unit)
 			local outfit = peer and peer:blackmarket_outfit()
-			local mask_id = outfit and outfit.mask and outfit.mask.mask_id or "alienware"
+			local character_data = managers.criminals:character_static_data_by_unit(unit)
+			local mask_id = outfit and outfit.mask and outfit.mask.mask_id or character_data and character_data.ai_mask_id or "alienware"
 			local color_id = managers.criminals:character_color_id_by_unit(unit) or 5
 			local color = tweak_data.chat_colors[color_id]
 
@@ -874,15 +875,15 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 	CloneClass(IngameDriving)
 
-	function IngameDriving:_number_in_the_vehicle(vehicle_driving, total)
-		local count = 0
+	function IngameDriving:_number_in_the_vehicle(vehicle_driving)
+		local used, total = 0, 0
 		for _, seat in pairs(vehicle_driving._seats) do
-
-			if alive(seat.occupant) or total then
-				count = count + 1
+			total = total + 1
+			if alive(seat.occupant) then
+				used = used + 1
 			end
 		end
-		return count
+		return used, total
 	end
 
 	function IngameDriving:_update_driving_hud()
@@ -894,8 +895,7 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 			local rpm = vehicle_state:get_rpm()
 			local gear = vehicle_state:get_gear() - 1
 			local vehicle_driving = vehicle_unit:vehicle_driving()
-			local no_used_seats = self:_number_in_the_vehicle(vehicle_driving, false)
-			local no_total_seats = self:_number_in_the_vehicle(vehicle_driving, true)
+			local no_used_seats, no_total_seats = self:_number_in_the_vehicle(vehicle_driving)
 			local vehicle_name = vehicle_driving._tweak_data.name
 			local seats_table = vehicle_driving._seats
 			local health_total = math.min(vehicle_unit:character_damage()._current_max_health, 999999999)
@@ -903,7 +903,7 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 			local loot_current = #vehicle_driving._loot
 			local loot_total = vehicle_driving._tweak_data.max_loot_bags
 
-			if gear == 0 then
+			if gear == 0 or rpm == 0 then
 				gear = "N"
 			elseif gear < 0 then
 				gear = "R"

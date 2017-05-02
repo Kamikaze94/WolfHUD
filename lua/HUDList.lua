@@ -2587,7 +2587,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.RightListItem:_animate_change(item, diff, progress_bar)
-		if alive(item) and diff ~= 0 then
+		if self:is_active() and alive(item) and diff ~= 0 then
 			local duration = 0.5
 			local t = duration
 			local color = diff > 0 and self._change_increase_color or self._change_decrease_color
@@ -2616,7 +2616,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDList.UnitCountItem.MAP = {
 		enemies =		{ skills = {6, 1}, 	color_id = "enemy_color", 		priority = 1, subtract = { "cop_hostage", "sec_hostage", "minions" } },	--Aggregated enemies
 		cop =			{ skills = {0, 5}, 	color_id = "enemy_color", 		priority = 5, subtract = { "cop_hostage", "cop_minion" } },	--Non-special police
-		security =		{ perks = {1, 4}, 	color_id = "guard_color", 		priority = 4, subtract = { "sec_hostage", "sec_minion" }  },
+		security =		{ perks = {1, 4}, 	color_id = "guard_color", 		priority = 4, subtract = { "sec_hostage", "sec_minion" } },
 		thug =			{ skills = {4, 12}, color_id = "thug_color", 		priority = 4 },
 		tank =			{ skills = {3, 1}, 	color_id = "special_color", 	priority = 6 },
 		spooc =			{ skills = {1, 3}, 	color_id = "special_color", 	priority = 6 },
@@ -3720,7 +3720,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.BagEquipmentItem:amount_ratio()
-		return self:amount() / self:max_amount()
+		return math.clamp(self:amount() / self:max_amount(), 0, 1)
 	end
 
 	function HUDList.BagEquipmentItem:_set_max_amount(data)
@@ -3733,6 +3733,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.BagEquipmentItem:_set_amount(data)
 		if data.amount then
 			self._amount = data.amount
+			self._max_amount = self._max_amount or self._amount
 			self:_update_info_text()
 		end
 	end
@@ -3745,11 +3746,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.BagEquipmentItem:_update_info_text()
-		if self._amount and self._max_amount then
-			local offset = self._amount_offset or 0
-			self._info_text:set_text(string.format("%.0f", self._amount + offset))
-			self._progress_bar:set_ratio((self._amount + offset) / (self._max_amount + offset))
-			local new_color = get_color_from_table(self._amount + offset, self._max_amount + offset)
+		if self._amount then
+			self._info_text:set_text(string.format("%.0f", self:amount()))
+			self._progress_bar:set_ratio(self:amount_ratio())
+			local new_color = get_color_from_table(self:amount(), self:max_amount())
 			self._info_text:set_color(new_color)
 			self._progress_bar:set_color(new_color)
 
@@ -3761,13 +3761,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	HUDList.AmmoBagItem = HUDList.AmmoBagItem or class(HUDList.BagEquipmentItem)
 	function HUDList.AmmoBagItem:_update_info_text()
-		if self._amount and self._max_amount then
-			local offset = self._amount_offset or 0
-			self._info_text:set_text(string.format("%.0f%%", (self._amount + offset) * 100))
-			self._progress_bar:set_ratio((self._amount + offset) / (self._max_amount + offset))
-			local new_color = get_color_from_table(self._amount + offset, self._max_amount + offset)
+		if self._amount then
+			self._info_text:set_text(string.format("%.0f%%", self:amount() * 100))
+			self._progress_bar:set_ratio(self:amount_ratio())
+			local new_color = get_color_from_table(self:amount(), self:max_amount())
 			self._info_text:set_color(new_color)
-			self._progress_bar:set_color(math.lerp(new_color, (HUDListManager.ListOptions.list_color or Color.white), 0.4))
+			self._progress_bar:set_color(new_color)
 
 			if self._parent_list then
 				self._parent_list:reapply_item_priorities(true, 0.5)

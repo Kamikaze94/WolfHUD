@@ -2260,7 +2260,9 @@ if string.lower(RequiredScript) == "lib/units/equipment/doctor_bag/doctorbagbase
 	end
 
 	function DoctorBagBase:init(unit, ...)
-		managers.gameinfo:event("doc_bag", "create", tostring(unit:key()), { unit = unit })
+		local key = tostring(self._unit:key())
+		managers.gameinfo:event("doc_bag", "create", key, { unit = unit })
+		managers.gameinfo:event("doc_bag", "set_max_amount", key, { max_amount = self._max_amount })
 		init_original(self, unit, ...)
 	end
 
@@ -2359,6 +2361,7 @@ if string.lower(RequiredScript) == "lib/units/equipment/ammo_bag/ammobagbase" th
 	function AmmoBagBase:init(unit, ...)
 		local key = tostring(unit:key())
 		managers.gameinfo:event("ammo_bag", "create", key, { unit = unit })
+		managers.gameinfo:event("ammo_bag", "set_max_amount", key, { max_amount = self._max_ammo_amount })
 		init_original(self, unit, ...)
 	end
 
