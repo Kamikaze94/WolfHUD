@@ -3143,14 +3143,16 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 				managers.gameinfo:event("buff", "deactivate", "uppers")
 			end
 
-			local longest_smoke, smoke_dodge, smoked_units = nil, 0, 0
+			local longest_smoke, smoke_dodge, smoked_units = nil, 0, {}
 			for _, smoke_screen in ipairs(managers.player:smoke_screens() or {}) do
 				if smoke_screen:alive() and smoke_screen:is_in_smoke(self._unit) then
 					if not longest_smoke or (longest_smoke:get_time_remaining() < smoke_screen:get_time_remaining()) then
 						longest_smoke = smoke_screen
 					end
 					smoke_dodge = smoke_dodge + smoke_screen:dodge_bonus()
-					smoked_units = smoked_units + table.size(smoke_screen._unit_list or {})
+					for key, _ in pairs(smoke_screen._unit_list or {}) do
+						smoked_units[key] = smoked_units[key] or true
+					end
 				end
 			end
 
@@ -3160,7 +3162,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 					managers.gameinfo:event("buff", "activate", "smoke_screen_grenade")
 					managers.gameinfo:event("buff", "set_duration", "smoke_screen_grenade", { duration = longest_smoke:get_time_remaining() })
 				end
-				managers.gameinfo:event("buff", "set_stack_count", "smoke_screen_grenade", { stack_count = smoked_units })
+				managers.gameinfo:event("buff", "set_stack_count", "smoke_screen_grenade", { stack_count = table.size(smoked_units) })
 				managers.gameinfo:event("buff", "set_value", "smoke_screen_grenade", { value = smoke_dodge })
 			elseif IN_SMOKE_SCREEN then
 				IN_SMOKE_SCREEN = false
