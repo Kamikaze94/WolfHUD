@@ -48,6 +48,7 @@ if not _G.WolfHUD then
 		["lib/managers/menu/skilltreeguinew"] 						= { "MenuTweaks.lua" },
 		["lib/managers/menu/renderers/menunodeskillswitchgui"] 		= { "MenuTweaks.lua" },
 		["lib/managers/objectinteractionmanager"] 					= { "GameInfoManager.lua", "HUDList.lua", "Interaction.lua" },
+		["lib/managers/player/smokescreeneffect"] 					= { "GameInfoManager.lua" },
 		["lib/modifiers/boosts/gagemodifiermeleeinvincibility"] 	= { "GameInfoManager.lua" },
 		["lib/modifiers/boosts/gagemodifierlifesteal"] 				= { "GameInfoManager.lua" },
 		["lib/network/handlers/unitnetworkhandler"] 				= { "GameInfoManager.lua", "NetworkHandler.lua", "DownCounter.lua" },
@@ -379,6 +380,7 @@ if not _G.WolfHUD then
 						overdog								= false,
 						maniac								= false,
 						muscle_regen						= false,
+						smoke_screen_grenade 				= true,
 						sociopath_debuff					= true,
 						yakuza								= false,
 					},
@@ -535,29 +537,33 @@ if not _G.WolfHUD then
 		}
 	end
 
-	function WolfHUD:print_log(text, msg_type)
-		if msg_type and self.LOG_MODE[msg_type] then
-			local function log_table(userdata)
-				local text = ""
-				for id, data in pairs(userdata) do
-					if type(data) == "table" then
-						log( id .. " = {")
-						log_table(data)
-						log("}")
-					elseif type(data) ~= "function" then
-						log( id .. " = " .. tostring(data) .. "")
-					else
-						log( "function " .. id .. "(...)")
+	function WolfHUD:print_log(...)
+		local params = {...}
+		local msg_type, text = table.remove(params, #params), table.remove(params, 1)
+		if msg_type and self.LOG_MODE[tostring(msg_type)] then
+			if type(text) == "table" or type(text) == "userdata" then
+				local function log_table(userdata)
+					local text = ""
+					for id, data in pairs(userdata) do
+						if type(data) == "table" then
+							log( id .. " = {")
+							log_table(data)
+							log("}")
+						elseif type(data) ~= "function" then
+							log( id .. " = " .. tostring(data) .. "")
+						else
+							log( "function " .. id .. "(...)")
+						end
 					end
 				end
-			end
-			if type(text) == "table" or type(text) == "userdata" then
 				log(string.format("[WolfHUD] %s:", string.upper(type(text))))
 				log_table(text)
 				return
 			elseif type(text) == "function" then
 				msg_type = "error"
 				text = "Cannot log function... "
+			elseif type(text) == "string" then
+				text = string.format(text, unpack(params))
 			end
 			log(string.format("[WolfHUD] %s: %s", string.upper(msg_type), text))
 		end
@@ -566,22 +572,24 @@ if not _G.WolfHUD then
 	function WolfHUD:Load()
 		local file = io.open(self.settings_path, "r")
 		if file then
-			local function parse_settings(table_dst, table_src)
+			local function parse_settings(table_dst, table_src, setting_path)
 				for k, v in pairs(table_src) do
 					if type(table_dst[k]) == type(v) then
 						if type(v) == "table" then
-							parse_settings(table_dst[k], v)
+							table.insert(setting_path, k)
+							parse_settings(table_dst[k], v, setting_path)
+							table.remove(setting_path, #setting_path)
 						else
 							table_dst[k] = v
 						end
 					else
-						self:print_log("Error while loading, Setting types don't match (" .. k .. ")", "error")
+						self:print_log("Error while loading, Setting types don't match (%s->%s)", table.concat(setting_path, "->") or "", k or "N/A", "error")
 					end
 				end
 			end
 
 			local settings = json.decode(file:read("*all"))
-			parse_settings(self.settings, settings)
+			parse_settings(self.settings, settings, {})
 			file:close()
 		else
 			self:print_log("Error while loading, settings file could not be opened (" .. self.settings_path .. ")", "error")
@@ -1308,15 +1316,15 @@ if not _G.WolfHUD then
 				for _, filename in pairs(file.GetFiles(loc_path)) do
 					local str = filename:match('^(.*).json$')
 					if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
-						loc:load_localization_file(WolfHUD.mod_path .. "loc/" .. filename)
+						loc:load_localization_file(loc_path .. filename)
 						break
 					end
 				end
 			end
-			loc:load_localization_file(WolfHUD.mod_path .. "loc/english.json", false)
+			loc:load_localization_file(loc_path .. "english.json", false)
 
 			if WolfHUD:getSetting({"INVENTORY", "USE_REAL_WEAPON_NAMES"}, false) then
-				loc:load_localization_file(WolfHUD.mod_path .. "loc/RealWeaponNames.json")
+				loc:load_localization_file(loc_path .. "RealWeaponNames.json")
 			end
 		else
 			WolfHUD:print_log("Localization folder seems to be missing!", "error")

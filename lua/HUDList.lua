@@ -471,6 +471,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			chico_injector_debuff = "chico_injector",
 			unseen_strike_debuff = "unseen_strike",
 			uppers_debuff = "uppers",
+			smoke_screen_grenade_debuff = "smoke_screen_grenade",
 			interact_debuff = "interact",
 		},
 	}
@@ -5014,6 +5015,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "uppers"}, true),
 		},
+		smoke_screen_grenade = {
+			perks = {0, 0},
+			texture_bundle_folder = "max",
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "smoke_screen_grenade"}, true),
+		},
 		yakuza = {
 			perks = {2, 7},
 			class = "BerserkerBuffItem",
@@ -5107,6 +5116,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "medical_supplies_debuff"}, true),
+		},
+		smoke_screen_grenade_debuff = {
+			perks = {0, 0},
+			texture_bundle_folder = "max",
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = true,	--Composite debuff
 		},
 		sociopath_debuff = {
 			perks = {3, 5},
@@ -5515,6 +5532,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._start_t = data.t
 		self._expire_t = data.expire_t
 		self._progress_bar:panel():set_visible(true)
+
+		if self._debuff_active and self._debuff_expire_t and self._expire_t < self._debuff_expire_t then
+			self._icon:set_color(self._default_icon_color)
+			self._ace_icon:set_color(self._default_icon_color)
+		end
 	end
 
 	function HUDList.BuffItemBase:set_duration_debuff(id, data)
@@ -5971,7 +5993,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			value = value * (clbk and clbk(data.value) or (data.value or 1))
 		end
 
-		self:_set_text(string.format("+%.0f%%", (value-1)*100))
+		self:_set_text(string.format("x%.0f", (value-1)))
 	end
 
 	HUDList.DamageReductionBuff = HUDList.DamageReductionBuff or class(HUDList.CompositeBuff)

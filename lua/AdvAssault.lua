@@ -203,19 +203,28 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDManager:_create_downed_hud(...)
 		_create_downed_hud_original(self, ...)
 		local banner_pos = math.clamp(WolfHUD:getSetting({"AssaultBanner", "POSITION"}, 2), 1, 3)
-		if banner_pos == 2 then
-			local timer_msg = self._hud_player_downed._hud_panel:child("downed_panel"):child("timer_msg")
-			timer_msg:set_y(50)
-			self._hud_player_downed._hud.timer:set_y(math.round(timer_msg:bottom() - 6))
+		if banner_pos == 2 and self._hud_player_downed then
+			local downed_panel = self._hud_player_downed._hud_panel
+			local downed_hud = self._hud_player_downed._hud
+			local timer_msg = downed_panel and downed_panel:child("downed_panel"):child("timer_msg")
+			local timer = downed_hud and downed_hud.timer
+			if timer_msg and timer then
+				timer_msg:set_y(50)
+				timer:set_y(math.round(timer_msg:bottom() - 6))
+			end
 		end
 	end
 	function HUDManager:_create_custody_hud(...)
 		_create_custody_hud_original(self, ...)
 		local banner_pos = math.clamp(WolfHUD:getSetting({"AssaultBanner", "POSITION"}, 2), 1, 3)
-		if banner_pos == 2 then
-			local timer_msg = self._hud_player_custody._hud_panel:child("custody_panel"):child("timer_msg")
-			timer_msg:set_y(50)
-			self._hud_player_custody._timer:set_y(math.round(timer_msg:bottom() - 6))
+		if banner_pos == 2 and self._hud_player_custody then
+			local custody_panel = self._hud_player_custody._hud_panel
+			local timer_msg = custody_panel and custody_panel:child("custody_panel") and custody_panel:child("custody_panel"):child("timer_msg")
+			local timer = self._hud_player_custody._timer
+			if timer_msg and timer then
+				timer_msg:set_y(50)
+				timer:set_y(math.round(timer_msg:bottom() - 6))
+			end
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/localizationmanager" then
@@ -233,24 +242,36 @@ elseif string.lower(RequiredScript) == "lib/managers/localizationmanager" then
 			if managers.hud and managers.hud:_locked_assault() then
 				return self:text("wolfhud_locked_assault")
 			else
-				local assault_task_data = Network:is_server() and managers.groupai:state()._task_data.assault or WolfHUD.Sync and WolfHUD.Sync:getCache("assault_task_data")
-				if assault_task_data then
-					if WolfHUD.Sync and Network:is_server() then
-						WolfHUD.Sync:send("WolfHUD_Sync_Cache", { event = "assault_task_data", data = { phase = assault_task_data.phase, force_spawned = assault_task_data.force_spawned, phase_end_t = assault_task_data.phase_end_t } })
-					end
+				local tweak = tweak_data.group_ai.besiege.assault
+				local gai_state = managers.groupai:state()
+				local assault_data = Network:is_server() and gai_state and gai_state._task_data.assault
+				if tweak and gai_state and assault_data and assault_data.active then
+					local get_value = gai_state._get_difficulty_dependent_value or function() return 0 end
+					local get_mult = gai_state._get_balancing_multiplier or function() return 0 end
+					local phase = self:text("wolfhud_advassault_phase_title") .. "  " .. self:text("wolfhud_advassault_phase_" .. assault_data.phase)
 
-					local phase = self:text("wolfhud_advassault_phase_title") .. "  " .. self:text("wolfhud_advassault_phase_" .. assault_task_data.phase)
-					local spawns = managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.force_pool) * managers.groupai:state():_get_balancing_multiplier(tweak_data.group_ai.besiege.assault.force_pool_balance_mul)
-					local spawns_left = self:text("wolfhud_advassault_spawns_title") .. "  " .. math.round(math.max(spawns - assault_task_data.force_spawned, 0))
-					local time_left = assault_task_data.phase_end_t + math.lerp(managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.sustain_duration_min), managers.groupai:state():_get_difficulty_dependent_value(tweak_data.group_ai.besiege.assault.sustain_duration_max), math.random()) * managers.groupai:state():_get_balancing_multiplier(tweak_data.group_ai.besiege.assault.sustain_duration_balance_mul) + tweak_data.group_ai.besiege.assault.fade_duration * 2
+					local spawns = get_value(gai_state, tweak.force_pool) * get_mult(gai_state, tweak.force_pool_balance_mul)
+					local spawns_left = self:text("wolfhud_advassault_spawns_title") .. "  " .. math.round(math.max(spawns - assault_data.force_spawned, 0))
+
+					local time_left = assault_data.phase_end_t - gai_state._t + 350
+					if assault_data.phase == "build" then
+						local sustain_duration = math.lerp(get_value(gai_state, tweak.sustain_duration_min), get_value(gai_state, tweak.sustain_duration_max), 0.5) * get_mult(gai_state, tweak.sustain_duration_balance_mul)
+						time_left = time_left + sustain_duration + tweak.fade_duration
+					elseif assault_data.phase == "sustain" then
+						time_left = time_left + tweak.fade_duration
+					end
+					--if gai_state:_count_police_force("assault") > 7 then -- 350 = additional duration, if more than 7 assault groups are active (hardcoded values in gai_state).
+					--	time_left = time_left + 350
+					--end
 					if time_left < 0 then
 						time_left = self:text("wolfhud_advassault_time_overdue")
 					else
-						time_left = self:text("wolfhud_advassault_time_title") .. "  " .. string.format("%.2f", time_left + 350 - managers.groupai:state()._t)
+						time_left = self:text("wolfhud_advassault_time_title") .. "  " .. string.format("%.2f", time_left)
 					end
-					local sep = "          " .. self:text("hud_assault_end_line") .. "          "
-					local text = phase .. sep .. spawns_left .. sep .. time_left
-					return text
+
+					local spacer = string.rep(" ", 10)
+					local sep = string.format("%s%s%s", spacer, self:text("hud_assault_end_line"), spacer)
+					return string.format("%s%s%s%s%s", phase, sep, spawns_left, sep, time_left)
 				end
 			end
 		end

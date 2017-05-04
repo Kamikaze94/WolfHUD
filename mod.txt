@@ -43,6 +43,7 @@
 		{ "hook_id" : "lib/managers/menu/lootdropscreengui", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/menu/skilltreeguinew", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/menu/renderers/menunodeskillswitchgui", 	"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/managers/player/smokescreeneffect", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/modifiers/boosts/gagemodifiermeleeinvincibility", 	"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/modifiers/boosts/gagemodifierlifesteal", 			"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/network/handlers/unitnetworkhandler", 				"script_path" : "Core.lua" },

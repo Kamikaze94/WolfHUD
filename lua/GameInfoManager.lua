@@ -2661,6 +2661,7 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	local add_to_temporary_property_original = PlayerManager.add_to_temporary_property
 	local chk_wild_kill_counter_original = PlayerManager.chk_wild_kill_counter
 	local set_synced_cocaine_stacks_original = PlayerManager.set_synced_cocaine_stacks
+	local on_throw_grenade_original = PlayerManager.on_throw_grenade
 	local activate_ability_original = PlayerManager.activate_ability
 	local speed_up_ability_cooldown_original = PlayerManager.speed_up_ability_cooldown
 	local _set_body_bags_amount_original = PlayerManager._set_body_bags_amount
@@ -3004,6 +3005,17 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		end
 	end
 
+	function PlayerManager:on_throw_grenade(...)
+		on_throw_grenade_original(self, ...)
+
+		local equipped_grenade = managers.blackmarket:equipped_grenade()
+		if self["_cooldown_" .. equipped_grenade] then
+			local t = TimerManager:game():time()
+			local duration = self["_cooldown_" .. equipped_grenade] - t
+			managers.gameinfo:event("timed_buff", "activate", equipped_grenade .. "_debuff", { duration = duration })
+		end
+	end
+
 	function PlayerManager:activate_ability(ability, ...)
 		activate_ability_original(self, ability, ...)
 
@@ -3025,6 +3037,26 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	function PlayerManager:_set_body_bags_amount(body_bags_amount)
 		managers.gameinfo:event("bodybags", "set", nil, body_bags_amount)
 		_set_body_bags_amount_original(self, body_bags_amount)
+	end
+
+end
+
+if string.lower(RequiredScript) == "lib/managers/player/smokescreeneffect" then
+
+	local init_original = SmokeScreenEffect.init
+	
+	function SmokeScreenEffect:init(position, normal, time, has_dodge_bonus, grenade_unit, ...)
+		init_original(self, position, normal, time, has_dodge_bonus, grenade_unit, ...)
+		
+		self._unit_key = grenade_unit and tostring(grenade_unit:key())
+	end
+
+	function SmokeScreenEffect:get_key()
+		return self._unit_key
+	end
+
+	function SmokeScreenEffect:get_time_remaining()
+		return self._timer or 0
 	end
 
 end
@@ -3083,9 +3115,9 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 	local update_original = PlayerMovement.update
 	local on_morale_boost_original = PlayerMovement.on_morale_boost
 
-	function PlayerMovement:update(unit, t, ...)
-		self:_update_uppers_buff(t)
-		return update_original(self, unit, t, ...)
+	function PlayerMovement:update(unit, t, dt, ...)
+		self:_update_position_buffs(t, dt)
+		return update_original(self, unit, t, dt, ...)
 	end
 
 	function PlayerMovement:on_morale_boost(...)
@@ -3093,12 +3125,14 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 		return on_morale_boost_original(self, ...)
 	end
 
-	local FAK_IN_RANGE = false
-	local FAK_RECHECK_T = 0
-	local FAK_RECHECK_INTERVAL = 0.25
+	local BUFFS_RECHECK_T = 0
+	local BUFFS_RECHECK_INTERVAL = 0.25
 
-	function PlayerMovement:_update_uppers_buff(t)
-		if t > FAK_RECHECK_T and alive(self._unit) then
+	local FAK_IN_RANGE = false
+	local IN_SMOKE_SCREEN = false
+
+	function PlayerMovement:_update_position_buffs(t, dt)
+		if t > BUFFS_RECHECK_T and alive(self._unit) then
 			if FirstAidKitBase.GetFirstAidKit(self._unit:position()) then
 				if not FAK_IN_RANGE then
 					FAK_IN_RANGE = true
@@ -3108,10 +3142,36 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 				FAK_IN_RANGE = false
 				managers.gameinfo:event("buff", "deactivate", "uppers")
 			end
-			FAK_RECHECK_T = t + FAK_RECHECK_INTERVAL
+
+			local longest_smoke, smoke_dodge, smoked_units = nil, 0, 0
+			for _, smoke_screen in ipairs(managers.player:smoke_screens() or {}) do
+				if smoke_screen:alive() and smoke_screen:is_in_smoke(self._unit) then
+					if not longest_smoke or (longest_smoke:get_time_remaining() < smoke_screen:get_time_remaining()) then
+						longest_smoke = smoke_screen
+					end
+					smoke_dodge = smoke_dodge + smoke_screen:dodge_bonus()
+					smoked_units = smoked_units + table.size(smoke_screen._unit_list or {})
+				end
+			end
+
+			if longest_smoke and longest_smoke:alive() then
+				if not IN_SMOKE_SCREEN or type(IN_SMOKE_SCREEN) == "string" and IN_SMOKE_SCREEN ~= longest_smoke:get_key() then
+					IN_SMOKE_SCREEN = longest_smoke:get_key() or true
+					managers.gameinfo:event("buff", "activate", "smoke_screen_grenade")
+					managers.gameinfo:event("buff", "set_duration", "smoke_screen_grenade", { duration = longest_smoke:get_time_remaining() })
+				end
+				managers.gameinfo:event("buff", "set_stack_count", "smoke_screen_grenade", { stack_count = smoked_units })
+				managers.gameinfo:event("buff", "set_value", "smoke_screen_grenade", { value = smoke_dodge })
+			elseif IN_SMOKE_SCREEN then
+				IN_SMOKE_SCREEN = false
+				managers.gameinfo:event("buff", "set_stack_count", "smoke_screen_grenade", { stack_count = nil })
+				managers.gameinfo:event("buff", "set_value", "smoke_screen_grenade", { value = 0 })
+				managers.gameinfo:event("buff", "deactivate", "smoke_screen_grenade")
+			end
+
+			BUFFS_RECHECK_T = t + BUFFS_RECHECK_INTERVAL
 		end
 	end
-
 end
 
 if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
