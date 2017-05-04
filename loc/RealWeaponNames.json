@@ -41,6 +41,7 @@
 	"bm_w_x_g22c" 				: "Akimbo Glock 22C",
 	"bm_w_x_usp" 				: "Akimbo USP Tactical .45",
 	"bm_w_x_packrat" 			: "Akimbo H&K P30L",
+	"bm_w_x_chinchilla" 		: "Akimbo S&W Model 29",
 
 	"bm_w_gre_m79" 				: "M79 Grenade Launcher",
 	"bm_w_saw" 					: "OVE9000",
@@ -85,6 +86,7 @@
 	"bm_w_pl14" 				: "PL-14 Lebedev",
 	"bm_w_packrat" 				: "H&K P30L",
 	"bm_w_lemming" 				: "FN Five-Seven",
+	"bm_w_chinchilla" 			: "S&W Model 29",
 
 	"bm_w_m1928" 				: "Thompson M1928A1",
 	"bm_w_mac10" 				: "Ingram MAC-10",
