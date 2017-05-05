@@ -2647,6 +2647,16 @@ if WolfHUD then
 									},
 									{
 										type = "toggle",
+										name_id = "wolfhud_hudlist_sicario_dodge_buff_title",
+										desc_id = "wolfhud_hudlist_sicario_dodge_buff_desc",
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "sicario_dodge"},
+										visible_reqs = {
+											{ setting = { "HUDList", "ENABLED" }, invert = false },
+											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
+										},
+									},
+									{
+										type = "toggle",
 										name_id = "wolfhud_hudlist_smoke_screen_buff_title",
 										desc_id = "wolfhud_hudlist_smoke_screen_buff_desc",
 										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "smoke_screen_grenade"},

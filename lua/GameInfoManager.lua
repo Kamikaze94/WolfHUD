@@ -1305,7 +1305,6 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			elseif event == "set_progress" then
 				self._buffs[id].progress = data.progress
 			elseif event == "set_value" then
-				self._buffs[id].show_value = data.show_value
 				self._buffs[id].value = data.value
 			elseif event == "decrease_duration" then
 				self._buffs[id].expire_t = self._buffs[id].expire_t - data.decrease
@@ -2664,6 +2663,7 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	local on_throw_grenade_original = PlayerManager.on_throw_grenade
 	local activate_ability_original = PlayerManager.activate_ability
 	local speed_up_ability_cooldown_original = PlayerManager.speed_up_ability_cooldown
+	local _dodge_shot_gain_original = PlayerManager._dodge_shot_gain
 	local _set_body_bags_amount_original = PlayerManager._set_body_bags_amount
 
 	local PLAYER_HAS_SPAWNED = false
@@ -2688,9 +2688,9 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 			end
 
 			if self:has_category_upgrade("player", "health_damage_reduction") then
-				local value = self:upgrade_value("player", "health_damage_reduction", 1)
+				local value = (1 - self:upgrade_value("player", "health_damage_reduction", 1))
 				managers.gameinfo:event("buff", "activate", "frenzy")
-				managers.gameinfo:event("buff", "set_value", "frenzy", { value = value, show_value = true })
+				managers.gameinfo:event("buff", "set_value", "frenzy", { value = value })
 			end
 
 			if self:has_category_upgrade("player", "headshot_regen_armor_bonus") then
@@ -2806,9 +2806,9 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 			local value = (self:team_upgrade_value("damage", "hostage_absorption", 0) * 10) * count
 			managers.gameinfo:event("buff", "set_stack_count", "forced_friendship", { stack_count = count })
 			if value ~= 0 then
-				managers.gameinfo:event("buff", "set_value", "forced_friendship", { value = value, show_value = false })
+				managers.gameinfo:event("buff", "set_value", "forced_friendship", { value = value })
 			else
-				managers.gameinfo:event("buff", "set_value", "forced_friendship", { value = value, show_value = false })
+				managers.gameinfo:event("buff", "set_value", "forced_friendship", { value = value })
 			end
 		end
 		]]
@@ -2984,20 +2984,26 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	function PlayerManager:set_synced_cocaine_stacks(...)
 		set_synced_cocaine_stacks_original(self, ...)
 
-		local max_stack = 0
+		local max_stack_data = { amount = 0 }
 		for peer_id, data in pairs(self._global.synced_cocaine_stacks) do
-			if data.in_use and data.amount > max_stack then
-				max_stack = data.amount
+			if data.in_use and data.amount > max_stack_data.amount then
+				max_stack_data = data
 			end
 		end
 
-		local ratio = max_stack / tweak_data.upgrades.max_total_cocaine_stacks
+		local ratio = max_stack_data.amount / tweak_data.upgrades.max_total_cocaine_stacks
 		if ratio > 0 then
 			managers.gameinfo:event("buff", "activate", "maniac")
+			managers.gameinfo:event("buff", "set_progress", "maniac", { progress = ratio } )
+
+			local my_id = managers.network:session() and managers.network:session():local_peer():id()
+			local mult_level = my_id and self._global.synced_cocaine_stacks[my_id] and self._global.synced_cocaine_stacks[my_id].power_level or 0
+			local damage_absorb = self:_get_cocaine_damage_absorption_from_data(max_stack_data) * self:upgrade_value_by_level("player", "cocaine_stack_absorption_multiplier", mult_level or 0, 1)
+			managers.gameinfo:event("buff", "set_value", "maniac", { value = damage_absorb * 10 } )
+
 			if (self._last_stack_decay or 0) < (self._damage_dealt_to_cops_decay_t or tweak_data.upgrades.cocaine_stacks_decay_t or 5) then
-				managers.gameinfo:event("buff", "set_duration", "maniac", { expire_t = self._damage_dealt_to_cops_decay_t })
+				managers.gameinfo:event("timed_buff", "activate", "maniac_debuff", { expire_t = self._damage_dealt_to_cops_decay_t })
 			end
-			managers.gameinfo:event("buff", "set_value", "maniac", { value = string.format("%.0f%%", ratio*100), show_value = true } )
 
 			self._last_stack_decay = (self._damage_dealt_to_cops_decay_t or 0)
 		else
@@ -3032,6 +3038,20 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		if self["_cooldown_" .. ability] then
 			managers.gameinfo:event("timed_buff", "decrease_duration", ability .. "_debuff", { decrease = time })
 		end
+	end
+
+	function PlayerManager:_dodge_shot_gain(gain_value, ...)
+		if gain_value then
+			if gain_value > 0 then
+				managers.gameinfo:event("buff", "activate", "sicario_dodge")
+				managers.gameinfo:event("buff", "set_value", "sicario_dodge", { value = gain_value * self:upgrade_value("player", "sicario_multiplier", 1) })
+				managers.gameinfo:event("timed_buff", "activate", "sicario_dodge_debuff", { duration = self:upgrade_value("player", "dodge_shot_gain")[2] })
+			else
+				managers.gameinfo:event("buff", "deactivate", "sicario_dodge")
+			end
+		end
+		
+		return _dodge_shot_gain_original(self, gain_value, ...)
 	end
 
 	function PlayerManager:_set_body_bags_amount(body_bags_amount)
@@ -3126,7 +3146,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 	end
 
 	local BUFFS_RECHECK_T = 0
-	local BUFFS_RECHECK_INTERVAL = 0.25
+	local BUFFS_RECHECK_INTERVAL = 0.5
 
 	local FAK_IN_RANGE = false
 	local IN_SMOKE_SCREEN = false
@@ -3525,7 +3545,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 					local bonus_ratio = managers.player:get_damage_health_ratio(health_ratio, data.category)
 					if bonus_ratio > 0 then
 						managers.gameinfo:event("buff", "activate", data.buff_id)
-						managers.gameinfo:event("buff", "set_value", data.buff_id, { value = bonus_ratio, show_value = true })
+						managers.gameinfo:event("buff", "set_value", data.buff_id, { value = bonus_ratio })
 					else
 						managers.gameinfo:event("buff", "deactivate", data.buff_id)
 					end
@@ -3699,7 +3719,7 @@ if string.lower(RequiredScript) == "lib/player_actions/skills/playeractionshocka
 					local ammo = weapon_unit:base():get_ammo_max_per_clip()
 					local bonus = math.clamp(max_reload_increase * math.pow(penalty, ammo - min_threshold), min_reload_increase, max_reload_increase)
 					managers.gameinfo:event("buff", "activate", "lock_n_load")
-					managers.gameinfo:event("buff", "set_value", "lock_n_load", { value = bonus, show_value = true })
+					managers.gameinfo:event("buff", "set_value", "lock_n_load", { value = bonus })
 					managers.player:unregister_message(Message.OnEnemyKilled, "lock_n_load_buff_listener")
 				end
 			end

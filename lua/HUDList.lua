@@ -439,7 +439,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		die_hard = { "die_hard", "damage_reduction" },
 		frenzy = { "frenzy", "damage_reduction" },
 		hostage_situation = { "hostage_situation", "damage_reduction" },
-		maniac = { "maniac", "damage_reduction" },
+		maniac = { "maniac", "damage_reduction" }, 
 		melee_stack_damage = { "melee_stack_damage", "melee_damage_increase" },
 		overdog = { "overdog", "damage_reduction" },
 		overkill = { "overkill", "damage_increase" },
@@ -469,9 +469,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			armor_break_invulnerable_debuff = "armor_break_invulnerable",
 			grinder_debuff = "grinder",
 			chico_injector_debuff = "chico_injector",
+			maniac_debuff = "maniac",
+			sicario_dodge_debuff = "sicario_dodge",
+			smoke_screen_grenade_debuff = "smoke_screen_grenade",
 			unseen_strike_debuff = "unseen_strike",
 			uppers_debuff = "uppers",
-			smoke_screen_grenade_debuff = "smoke_screen_grenade",
 			interact_debuff = "interact",
 		},
 	}
@@ -1574,6 +1576,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				"activate",
 				"deactivate",
 				"set_duration",
+				"set_progress",
 				"set_stack_count",
 				"add_timed_stack",
 				"remove_timed_stack",
@@ -4721,6 +4724,18 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		TEAM 		= Color('75FF75'),
 	}
 
+	HUDList.BuffItemBase.VALUE_FUNC = {
+		IN_PERCENT = function(value)
+			return string.format(str_format or "%.0f%%", value * 100)
+		end,
+		IN_PERCENT_INVERTED = function(value)
+			return string.format(str_format or "%.0f%%", (1 - value) * 100)
+		end,
+		MULT_IN_PERCENT = function(value)
+			return string.format(str_format or "%.0f%%", (value - 1) * 100)
+		end,
+	}
+
 	HUDList.BuffItemBase.MAP = {
 		--Buffs
 		aggressive_reload_aced = {
@@ -4746,9 +4761,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		},
 		berserker = {
 			skills_new = tweak_data.skilltree.skills.wolverine.icon_xy,
-			class = "BerserkerBuffItem",
+			class = "BuffItemBase",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			show_value = HUDList.BuffItemBase.VALUE_FUNC.IN_PERCENT,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "berserker"}, true),
 		},
 		biker = {
@@ -4829,9 +4845,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		},
 		frenzy = {
 			skills_new = tweak_data.skilltree.skills.frenzy.icon_xy,
-			class = "FrenzyBuffItem",
+			class = "BuffItemBase",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			show_value = HUDList.BuffItemBase.VALUE_FUNC.IN_PERCENT,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "frenzy"}, false),
 		},
 		grinder = {
@@ -4873,9 +4890,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		},
 		lock_n_load = {
 			skills_new = tweak_data.skilltree.skills.shock_and_awe.icon_xy,
-			class = "ShockAndAweBuffItem",
+			class = "BuffItemBase",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			show_value = HUDList.BuffItemBase.MULT_IN_PERCENT,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "TECHNICIAN_BUFFS", "lock_n_load"}, true),
 		},
 		maniac = {
@@ -4884,8 +4902,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			progress_color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
-			invert_timers = true,
+			show_value = "-%.1f",
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "maniac"}, false) and (WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true) or WolfHUD:getSetting({"CustomHUD", "ENABLED"}, false)),
 		},
 		messiah = {
@@ -4959,12 +4976,29 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GHOST_BUFFS", "second_wind"}, true),
 		},
+		sicario_dodge = {
+			perks = {1, 0}, 
+			texture_bundle_folder = "max",
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			show_value = HUDList.BuffItemBase.VALUE_FUNC.IN_PERCENT,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "sicario_dodge"}, true),
+		},
 		sixth_sense = {
 			skills_new = tweak_data.skilltree.skills.chameleon.icon_xy,
 			class = "TimedBuffItem",
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GHOST_BUFFS", "sixth_sense"}, true),
+		},
+		smoke_screen_grenade = {
+			perks = {0, 0},
+			texture_bundle_folder = "max",
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "smoke_screen_grenade"}, true),
 		},
 		swan_song = {
 			skills_new = tweak_data.skilltree.skills.perseverance.icon_xy,
@@ -5015,19 +5049,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "uppers"}, true),
 		},
-		smoke_screen_grenade = {
-			perks = {0, 0},
-			texture_bundle_folder = "max",
-			class = "TimedBuffItem",
-			priority = 4,
-			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "smoke_screen_grenade"}, true),
-		},
 		yakuza = {
 			perks = {2, 7},
-			class = "BerserkerBuffItem",
+			class = "BuffItemBase",
 			priority = 3,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			show_value = HUDList.BuffItemBase.VALUE_FUNC.IN_PERCENT,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "yakuza"}, false),
 		},
 
@@ -5116,6 +5143,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "medical_supplies_debuff"}, true),
+		},
+		sicario_dodge_debuff = {
+			perks = {1, 0}, 
+			texture_bundle_folder = "max",
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = true,	--Composite debuff
 		},
 		smoke_screen_grenade_debuff = {
 			perks = {0, 0},
@@ -5296,6 +5331,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local texture, texture_rect = get_icon_data(icon)
 
 		self._default_icon_color = icon.color or HUDList.BuffItemBase.ICON_COLOR.STANDARD or Color.white
+		self._show_value = icon.show_value
 		local progress_bar_width = self._panel:w() * 0.05
 		local icon_size = self._panel:w() - progress_bar_width * 4
 
@@ -5367,14 +5403,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._value:set_bottom(self._panel:h() + progress_bar_width)
 
 		self._progress_bar_debuff = PanelFrame:new(self._panel, {
-			--invert_progress = icon.invert_timers, 
+			invert_progress = icon.invert_debuff, 
 			bar_w = progress_bar_width,
 			w = self._panel:w(),
 			h = self._panel:w(),
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 		})
-		self._progress_bar_debuff:panel():set_center(self._icon:center())
-		self._progress_bar_debuff:panel():set_visible(false)
+		self._progress_bar_debuff:set_center(self._icon:center())
+		self._progress_bar_debuff:set_visible(false)
 		self._progress_bar_debuff:set_ratio(1)
 
 		self._progress_bar = PanelFrame:new(self._panel, {
@@ -5384,8 +5420,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			h = self._panel:w() - (progress_bar_width+1),
 			color = icon.progress_color or self._default_icon_color,
 		})
-		self._progress_bar:panel():set_center(self._icon:center())
-		self._progress_bar:panel():set_visible(false)
+		self._progress_bar:set_center(self._icon:center())
+		self._progress_bar:set_visible(false)
 		self._progress_bar:set_ratio(1)
 
 		self._progress_bar_inner = PanelFrame:new(self._panel, {
@@ -5395,8 +5431,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			h = self._panel:w() - (progress_bar_width+1) * 2,
 			color = icon.progress_color or self._default_icon_color,
 		})
-		self._progress_bar_inner:panel():set_center(self._icon:center())
-		self._progress_bar_inner:panel():set_visible(false)
+		self._progress_bar_inner:set_center(self._icon:center())
+		self._progress_bar_inner:set_visible(false)
 		self._progress_bar_inner:set_ratio(1)
 
 		self._stack_bg = self._panel:bitmap({
@@ -5518,10 +5554,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 			self._debuff_expire_t = nil
 			self._debuff_start_t = nil
-			self._progress_bar_debuff:panel():set_visible(false)
+			self._progress_bar_debuff:set_visible(false)
 			self._icon:set_color(self._default_icon_color)
 			self._ace_icon:set_color(self._default_icon_color)
-			self._value:set_text("")
 			if not self._buff_active then
 				HUDList.BuffItemBase.super.deactivate(self)
 			end
@@ -5531,7 +5566,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.BuffItemBase:set_duration(id, data)
 		self._start_t = data.t
 		self._expire_t = data.expire_t
-		self._progress_bar:panel():set_visible(true)
+		self._progress_bar:set_visible(true)
 
 		if self._debuff_active and self._debuff_expire_t and self._expire_t < self._debuff_expire_t then
 			self._icon:set_color(self._default_icon_color)
@@ -5543,7 +5578,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._debuff_start_t = data.t
 		self._debuff_expire_t = data.expire_t
 
-		self._progress_bar_debuff:panel():set_visible(true)
+		self._progress_bar_debuff:set_visible(true)
 
 		if self._buff_active and self._expire_t and self._expire_t < self._debuff_expire_t then
 			self._icon:set_color(self._default_icon_color)
@@ -5552,7 +5587,17 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.BuffItemBase:set_progress(id, data)
-		self:_set_progress(data.progress)
+		if self._buff_active and not self._expire_t then
+			self._progress_bar:set_visible(true)
+			self:_set_progress(data.progress)
+		end
+	end
+
+	function HUDList.BuffItemBase:set_progress_debuff(id, data)
+		if self._debuff_active and not self._debuff_expire_t then
+			self._progress_bar_debuff:set_visible(true)
+			self:_set_progress_debuff(data.progress)
+		end
 	end
 
 	function HUDList.BuffItemBase:set_stack_count(id, data)
@@ -5560,13 +5605,22 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.BuffItemBase:set_value(id, data)
-		if data.show_value then
-			self:_set_text(tostring(data.value))
+		if self._show_value then
+			local str = ""
+			if type(self._show_value) == "function" then
+				str = self._show_value(data.value, self._value_frmt)
+			elseif type(self._show_value) == "string" then
+				str = string.format(self._show_value, data.value)
+			else
+				str = tostring(data.value)
+			end
+			self:_set_text(str)
 		end
 	end
 
 	function HUDList.BuffItemBase:set_data(id, data)
 		-- Unused, only called for interact Item...
+		self._data = data.data
 	end
 
 	function HUDList.BuffItemBase:_update_debuff(t, dt)
@@ -5575,7 +5629,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if t > self._debuff_expire_t then
 			self._debuff_start_t = nil
 			self._debuff_expire_t = nil
-			self._progress_bar_debuff:panel():set_visible(false)
+			self._progress_bar_debuff:set_visible(false)
 		end
 	end
 
@@ -5598,30 +5652,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.BuffItemBase:_set_text(str)
-		self._has_text = str and true or false
+		self._has_text = str and str:len() > 0 and true or false
 		if alive(self._value) then
-			self._value:set_text(tostring(str))
-		end
-	end
-
-	HUDList.BerserkerBuffItem = HUDList.BerserkerBuffItem or class(HUDList.BuffItemBase)
-	function HUDList.BerserkerBuffItem:set_value(id, data)
-		if data.show_value then
-			self:_set_text(string.format("%.0f%%", data.value * 100))
-		end
-	end
-
-	HUDList.FrenzyBuffItem = HUDList.FrenzyBuffItem or class(HUDList.BuffItemBase)
-	function HUDList.FrenzyBuffItem:set_value(id, data)
-		if data.show_value then
-			self:_set_text(string.format("%.0f%%", (1-data.value) * 100))
-		end
-	end
-
-	HUDList.ShockAndAweBuffItem = HUDList.ShockAndAweBuffItem or class(HUDList.BuffItemBase)
-	function HUDList.ShockAndAweBuffItem:set_value(id, data)
-		if data.show_value then
-			self:_set_text(string.format("+%.0f%%", (data.value-1) * 100))
+			self._value:set_text(tostring(str or ""))
 		end
 	end
 
@@ -5649,7 +5682,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			if t > self._expire_t then
 				self._start_t = nil
 				self._expire_t = nil
-				self._progress_bar:panel():set_visible(false)
+				self._progress_bar:set_visible(false)
 			end
 
 			if self._expire_t and self._expire_t > t then
@@ -5756,8 +5789,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.TimedStacksBuffItem:_update_stacks(stacks)
 		self._stacks = stacks
 		self:_set_stack_count(#self._stacks)
-		self._progress_bar:panel():set_visible(#self._stacks > 0)
-		self._progress_bar_inner:panel():set_visible(#self._stacks > 1)
+		self._progress_bar:set_visible(#self._stacks > 0)
+		self._progress_bar_inner:set_visible(#self._stacks > 1)
 	end
 
 	HUDList.BikerBuffItem = HUDList.BikerBuffItem or class(HUDList.TimedStacksBuffItem)
@@ -5801,8 +5834,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.CompositeBuff:init(...)
 		HUDList.CompositeBuff.super.init(self, ...)
 		self._member_buffs = {}
-		self._progress_bar:panel():set_visible(true)
-		self._progress_bar_inner:panel():set_visible(true)
+		self._progress_bar:set_visible(true)
+		self._progress_bar_inner:set_visible(true)
 	end
 
 	function HUDList.CompositeBuff:activate(id)
@@ -6009,10 +6042,21 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				end
 				return 1 - value
 			end,
+			frenzy = function(value)
+				return 1 - value
+			end,
 			maniac = function(value)
-				local tweak = tweak_data.upgrades
-				local max_absorb = (tweak.cocaine_stacks_dmg_absorption_value * tweak.values.player.cocaine_stack_absorption_multiplier[1] * tweak.max_total_cocaine_stacks  / tweak.cocaine_stacks_convert_levels[2])
-				return 1 - (managers.player:get_best_cocaine_damage_absorption() / max_absorb)
+				local new_value = 1
+				local player = managers.player:player_unit()
+				local player_damage = alive(player) and player:character_damage()
+				if player_damage then
+					if player_damage:get_real_armor() > 0 then
+						new_value = value / (player_damage:_total_armor() * 10)
+					else
+						new_value = value / (player_damage:_max_health() * 10)
+					end
+				end
+				return 1 - new_value
 			end
 		}
 	end
@@ -6216,6 +6260,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._left:set_h(self._panel:h() * (1-stage_progress))
 		end
 	end
+
+	function PanelFrame:ratio()
+		local r = self._current_ratio or 0
+		if self._invert_progress then
+			r = 1-r
+		end
+		return r 
+	end
 	
 	function PanelFrame:alpha() return self._panel:alpha() end
 	function PanelFrame:w() return self._panel:w() end
@@ -6253,6 +6305,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function PanelFrame:set_center(x, y) self._panel:set_center(x, y) end
 	function PanelFrame:set_center_x(v) self._panel:set_center_x(v) end
 	function PanelFrame:set_center_y(v) self._panel:set_center_y(v) end
+	function PanelFrame:set_visible(v) self._panel:set_visible(v) end
 	function PanelFrame:set_layer(v) self._panel:set_layer(v) end
 end
 

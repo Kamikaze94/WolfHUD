@@ -380,6 +380,7 @@ if not _G.WolfHUD then
 						overdog								= false,
 						maniac								= false,
 						muscle_regen						= false,
+						sicario_dodge 						= true,
 						smoke_screen_grenade 				= true,
 						sociopath_debuff					= true,
 						yakuza								= false,
