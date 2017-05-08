@@ -86,7 +86,7 @@ if WolfHUD then
 					desc_id = "wolfhud_gadgets_beam_r_desc",
 					value = {"GADGETS", "laser", theme, "beam", "r"},
 					visible_reqs = {
-						hide_on_disabled = true,
+						hide_on_disabled = false,
 						{ setting = { "GADGETS", "laser", theme, "rainbow", "enabled" }, invert = true },
 					},
 					min_value = 0,
@@ -99,7 +99,7 @@ if WolfHUD then
 					desc_id = "wolfhud_gadgets_beam_g_desc",
 					value = {"GADGETS", "laser", theme, "beam", "g"},
 					visible_reqs = {
-						hide_on_disabled = true,
+						hide_on_disabled = false,
 						{ setting = { "GADGETS", "laser", theme, "rainbow", "enabled" }, invert = true },
 					},
 					min_value = 0,
@@ -112,7 +112,7 @@ if WolfHUD then
 					desc_id = "wolfhud_gadgets_beam_b_desc",
 					value = {"GADGETS", "laser", theme, "beam", "b"},
 					visible_reqs = {
-						hide_on_disabled = true,
+						hide_on_disabled = false,
 						{ setting = { "GADGETS", "laser", theme, "rainbow", "enabled" }, invert = true },
 					},
 					min_value = 0,
@@ -264,7 +264,7 @@ if WolfHUD then
 					desc_id = "wolfhud_gadgets_light_r_desc",
 					value = {"GADGETS", "flashlight", theme, "light", "r"},
 					visible_reqs = {
-						hide_on_disabled = true,
+						hide_on_disabled = false,
 						{ setting = { "GADGETS", "flashlight", theme, "rainbow", "enabled" }, invert = true },
 					},
 					min_value = 0,
@@ -277,7 +277,7 @@ if WolfHUD then
 					desc_id = "wolfhud_gadgets_light_g_desc",
 					value = {"GADGETS", "flashlight", theme, "light", "g"},
 					visible_reqs = {
-						hide_on_disabled = true,
+						hide_on_disabled = false,
 						{ setting = { "GADGETS", "flashlight", theme, "rainbow", "enabled" }, invert = true },
 					},
 					min_value = 0,
@@ -290,7 +290,7 @@ if WolfHUD then
 					desc_id = "wolfhud_gadgets_light_b_desc",
 					value = {"GADGETS", "flashlight", theme, "light", "b"},
 					visible_reqs = {
-						hide_on_disabled = true,
+						hide_on_disabled = false,
 						{ setting = { "GADGETS", "flashlight", theme, "rainbow", "enabled" }, invert = true },
 					},
 					min_value = 0,
@@ -2070,6 +2070,26 @@ if WolfHUD then
 								},
 							},
 							{
+								type = "toggle",
+								name_id = "wolfhud_hudlist_passive_health_regen_compbuff_title",
+								desc_id = "wolfhud_hudlist_passive_health_regen_compbuff_desc",
+								value = {"HUDList", "BUFF_LIST", "passive_health_regen"},
+								visible_reqs = {
+									{ setting = { "HUDList", "ENABLED" }, invert = false },
+									{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
+								},
+							},
+							{
+								type = "toggle",
+								name_id = "wolfhud_hudlist_total_dodge_chance_compbuff_title",
+								desc_id = "wolfhud_hudlist_total_dodge_chance_compbuff_desc",
+								value = {"HUDList", "BUFF_LIST", "total_dodge_chance"},
+								visible_reqs = {
+									{ setting = { "HUDList", "ENABLED" }, invert = false },
+									{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
+								},
+							},
+							{
 								type = "divider",
 								size = 16,
 							},
@@ -2708,6 +2728,44 @@ if WolfHUD then
 										name_id = "wolfhud_hudlist_invulnerable_gage_buff_title",
 										desc_id = "wolfhud_hudlist_invulnerable_gage_buff_desc",
 										value = {"HUDList", "BUFF_LIST", "GAGE_BOOSTS", "invulnerable_buff"},
+										visible_reqs = {
+											{ setting = { "HUDList", "ENABLED" }, invert = false },
+											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
+										},
+									},
+								},
+							},
+							{
+								type = "menu",
+								menu_id = "wolfhud_hudlist_buffs_henchmen_options_menu",
+								name_id = "wolfhud_infopanels_buff_henchmen_options_name",
+								desc_id = "wolfhud_infopanels_buff_henchmen_options_help",
+								options = {
+									{
+										type = "toggle",
+										name_id = "wolfhud_hudlist_crew_inspire_debuff_title",
+										desc_id = "wolfhud_hudlist_crew_inspire_debuff_desc",
+										value = {"HUDList", "BUFF_LIST", "AI_SKILLS", "crew_inspire_debuff"},
+										visible_reqs = {
+											{ setting = { "HUDList", "ENABLED" }, invert = false },
+											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
+										},
+									},
+									{
+										type = "toggle",
+										name_id = "wolfhud_hudlist_crew_throwable_regen_buff_title",
+										desc_id = "wolfhud_hudlist_crew_throwable_regen_buff_desc",
+										value = {"HUDList", "BUFF_LIST", "AI_SKILLS", "crew_throwable_regen"},
+										visible_reqs = {
+											{ setting = { "HUDList", "ENABLED" }, invert = false },
+											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
+										},
+									},
+									{
+										type = "toggle",
+										name_id = "wolfhud_hudlist_crew_health_regen_buff_title",
+										desc_id = "wolfhud_hudlist_crew_health_regen_buff_desc",
+										value = {"HUDList", "BUFF_LIST", "AI_SKILLS", "crew_health_regen"},
 										visible_reqs = {
 											{ setting = { "HUDList", "ENABLED" }, invert = false },
 											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },

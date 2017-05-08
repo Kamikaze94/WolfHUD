@@ -318,6 +318,8 @@ if not _G.WolfHUD then
 					damage_increase							= true,
 					damage_reduction						= true,
 					melee_damage_increase					= true,
+					passive_health_regen 					= true,
+					total_dodge_chance 						= true,
 					MASTERMIND_BUFFS = {
 						forced_friendship					= true,
 						aggressive_reload_aced				= true,
@@ -388,6 +390,11 @@ if not _G.WolfHUD then
 					GAGE_BOOSTS = {
 						invulnerable_buff					= true,
 						life_steal_debuff					= true,
+					},
+					AI_SKILLS = {
+						crew_inspire_debuff 				= true,
+						crew_throwable_regen 				= true,
+						crew_health_regen 					= false,
 					},
 				},
 			},

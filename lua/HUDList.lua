@@ -1,3 +1,4 @@
+--TODO: Passive Health Regen: check percentages, substract berserker reduction, calculate frenzy reduction
 if not (WolfHUD and WolfHUD:getSetting({"HUDList", "ENABLED"}, true)) then return end
 
 if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
@@ -436,11 +437,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		close_contact_3 = { "close_contact", "damage_reduction" },
 		combat_medic = { "combat_medic", "damage_reduction" },
 		combat_medic_passive = { "combat_medic_passive", "damage_reduction" },
+		crew_health_regen = { "crew_health_regen", "passive_health_regen" },
 		die_hard = { "die_hard", "damage_reduction" },
 		frenzy = { "frenzy", "damage_reduction" },
 		hostage_situation = { "hostage_situation", "damage_reduction" },
+		hostage_taker = { "hostage_taker", "passive_health_regen" },
 		maniac = { "maniac", "damage_reduction" }, 
 		melee_stack_damage = { "melee_stack_damage", "melee_damage_increase" },
+		movement_dodge = { "total_dodge_chance" },
+		muscle_regen = { "muscle_regen", "passive_health_regen" },
 		overdog = { "overdog", "damage_reduction" },
 		overkill = { "overkill", "damage_increase" },
 		overkill_aced = { "overkill", "damage_increase" },
@@ -450,6 +455,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		quick_fix = { "quick_fix", "damage_reduction" },
 		running_from_death_basic = { "running_from_death" },
 		running_from_death_aced = { "running_from_death" },
+		sicario_dodge = { "sicario_dodge", "total_dodge_chance" },
+		smoke_screen_grenade = { "smoke_screen_grenade", "total_dodge_chance" },
 		swan_song_aced = { "swan_song" },
 		trigger_happy = { "trigger_happy", "damage_increase" },
 		underdog = { "underdog", "damage_increase" },
@@ -1146,7 +1153,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			for _, item in pairs(list:items()) do
 				local u_id = item:unit_id()
 				if map[u_id] and map[u_id].color_id == "turret_color" then
-					data:set_icon_color(color or HUDListManager.ListOptions.turret_color)
+					item:set_icon_color(color or HUDListManager.ListOptions.turret_color)
 				end
 			end
 		end
@@ -5236,6 +5243,32 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GAGE_BOOSTS", "life_steal_debuff"}, true),
 		},
 
+		--Henchman boosts
+		crew_inspire_debuff = {
+			hud_tweak = "ability_1",
+			class = "TimedBuffItem",
+			priority = 10,
+			title = "wolfhud_hudlist_buff_crew_inspire_debuff",
+			localized = true,
+			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "AI_SKILLS", "crew_inspire_debuff"}, true),
+		},
+		crew_throwable_regen = {
+			hud_tweak = "skill_7",
+			class = "BuffItemBase",
+			priority = 10,
+			color = HUDList.BuffItemBase.ICON_COLOR.BUFF,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "AI_SKILLS", "crew_throwable_regen"}, true),
+		},
+		crew_health_regen = {
+			hud_tweak = "skill_5",
+			class = "TimedBuffItem",
+			priority = 10,
+			color = HUDList.BuffItemBase.ICON_COLOR.BUFF,
+			invert_timers = true,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "AI_SKILLS", "crew_health_regen"}, true),
+		},
+
 		--Composite buffs
 		damage_increase = {
 			skills_new = tweak_data.skilltree.skills.prison_wife.icon_xy,
@@ -5263,6 +5296,28 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			title = "wolfhud_hudlist_buff_mdmg_inc",
 			localized = true,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "melee_damage_increase"}, true),
+		},
+		passive_health_regen = {
+			--perks = {4, 1},
+			skills_new = {1, 11},
+			class = "PassiveHealthRegenBuff",
+			priority = 2,
+			color = Color(0.1, 1, 0.1),
+			title = "wolfhud_hudlist_buff_phealth_reg",
+			localized = true,
+			invert_timers = true,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "passive_health_regen"}, true),
+		},
+		total_dodge_chance = {	--missing some skills: 
+			--perks = {1, 0},
+			skills_new = {1, 12},
+			texture_bundle_folder = "max",
+			class = "TotalDodgeChanceBuff",
+			priority = 2,
+			color = Color(1, 0.5, 0),
+			title = "wolfhud_hudlist_buff_tot_dodge",
+			localized = true,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "total_dodge_chance"}, true),
 		},
 
 		--Player actions
@@ -5880,7 +5935,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if self._member_buffs[id] then
 			self._member_buffs[id].start_t = data.t
 			self._member_buffs[id].expire_t = data.expire_t
-			--self:_check_buffs()
+			self:_check_buffs()
 		end
 	end
 
@@ -5918,12 +5973,16 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._min_expire_buff = min_expire
 
 		if not self._max_expire_buff then
-			self._progress_bar:set_ratio(1)
+			self._progress_bar:set_visible(false)
+		else
+			self._progress_bar:set_visible(true)
 		end
 
 		if not self._min_expire_buff or self._member_buffs[self._min_expire_buff].expire_t == self._member_buffs[self._max_expire_buff].expire_t then
 			self._min_expire_buff = nil
-			self._progress_bar_inner:set_ratio(1)
+			self._progress_bar_inner:set_visible(false)
+		else
+			self._progress_bar_inner:set_visible(true)
 		end
 
 		self:_update_value()
@@ -5995,7 +6054,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 					if not self._buff_weapon_requirements[id] or self._buff_weapon_requirements[id][weapon_category] then
 						if not (self._buff_weapon_exclusions[id] and self._buff_weapon_exclusions[id][weapon_category]) then
 							local clbk = self._buff_effects[id]
-							value = value * (clbk and clbk(data.value) or (data.value or 1))
+							value = value * (data.value and (clbk and  clbk(data.value) or data.value) or 1)
 						end
 					end
 				end
@@ -6023,7 +6082,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		for id, data in pairs(self._member_buffs) do
 			local clbk = self._buff_effects[id]
-			value = value * (clbk and clbk(data.value) or (data.value or 1))
+			value = value * (data.value and (clbk and  clbk(data.value) or data.value) or 1)
 		end
 
 		self:_set_text(string.format("x%.0f", (value-1)))
@@ -6066,10 +6125,87 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		for id, data in pairs(self._member_buffs) do
 			local clbk = self._buff_effects[id]
-			value = value * (clbk and clbk(data.value) or (data.value or 1))
+			value = value * (data.value and (clbk and  clbk(data.value) or data.value) or 1)
 		end
 
 		self:_set_text(string.format("-%.0f%%", math.min(1 - value, 1) * 100))
+	end
+
+	HUDList.PassiveHealthRegenBuff = HUDList.PassiveHealthRegenBuff or class(HUDList.CompositeBuff)
+	function HUDList.PassiveHealthRegenBuff:init(...)
+		HUDList.PassiveHealthRegenBuff.super.init(self, ...)
+		self._buff_effects = {
+			crew_health_regen = function(value)
+				local new_value = 0
+				local player = managers.player:player_unit()
+				local player_damage = alive(player) and player:character_damage()
+				if player_damage then
+					new_value = value / (player_damage:_max_health() * 10)
+				end
+				return new_value
+			end
+		}
+	end
+
+	function HUDList.PassiveHealthRegenBuff:_update_value()
+		local value = 0
+
+		for id, data in pairs(self._member_buffs) do
+			local clbk = self._buff_effects[id]
+			value = value + (data.value and (clbk and  clbk(data.value) or data.value) or 0)
+		end
+
+		self:_set_text(string.format("%.1f%%", value * 100))
+	end
+
+	HUDList.TotalDodgeChanceBuff = HUDList.TotalDodgeChanceBuff or class(HUDList.CompositeBuff)
+	function HUDList.TotalDodgeChanceBuff:init(...)
+		HUDList.TotalDodgeChanceBuff.super.init(self, ...)
+
+		self._member_buffs["crook_dodge"] = { value = (managers.player:upgrade_value("player", "passive_dodge_chance", 0) * managers.player:upgrade_value("player", "sicario_multiplier", 1))
+												+ managers.player:upgrade_value("player", tostring(managers.blackmarket:equipped_armor(true, true)) .. "_dodge_addend", 0) -- Crook Perk
+											}
+		self._member_buffs["burglar_dodge"] = { value = managers.player:upgrade_value("player", "tier_dodge_chance", 0) }	 -- Burglar Perk
+		self._member_buffs["jail_diet"] = { value = managers.player:get_value_from_risk_upgrade(managers.player:upgrade_value("player", "detection_risk_add_dodge_chance"))}
+		
+		self._buff_effects = {
+		}
+
+		self:_update_value()
+	end
+
+	function HUDList.TotalDodgeChanceBuff:_update_value()
+		local value = 0
+
+		for id, data in pairs(self._member_buffs) do
+			local clbk = self._buff_effects[id]
+			value = value + (data.value and (clbk and  clbk(data.value) or data.value) or 0)
+		end
+
+		if self._member_buffs["smoke_screen_grenade"] then
+			value = 1 - (1 - value) * (1 - tweak_data.projectiles.smoke_screen_grenade.dodge_chance)
+		end
+
+		self:_set_text(string.format("%.0f%%", math.max(value * 100, 0)))
+		
+		if value <= 0 then
+			HUDList.TotalDodgeChanceBuff.super.super.deactivate(self, "nil")
+		else
+			HUDList.TotalDodgeChanceBuff.super.super.activate(self, "nil")
+		end
+	end
+
+	function HUDList.TotalDodgeChanceBuff:activate(id)
+		if not self._member_buffs[id] then
+			self._member_buffs[id] = {}
+		end
+	end
+
+	function HUDList.TotalDodgeChanceBuff:deactivate(id)
+		if self._member_buffs[id] then
+			self._member_buffs[id] = nil
+			self:_check_buffs()
+		end
 	end
 
 	HUDList.TimedInteractionItem = HUDList.TimedInteractionItem or class(HUDList.TimedBuffItem)

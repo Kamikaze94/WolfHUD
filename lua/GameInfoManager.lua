@@ -2660,10 +2660,12 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	local add_to_temporary_property_original = PlayerManager.add_to_temporary_property
 	local chk_wild_kill_counter_original = PlayerManager.chk_wild_kill_counter
 	local set_synced_cocaine_stacks_original = PlayerManager.set_synced_cocaine_stacks
+	local add_grenade_amount_original = PlayerManager.add_grenade_amount
 	local on_throw_grenade_original = PlayerManager.on_throw_grenade
 	local activate_ability_original = PlayerManager.activate_ability
 	local speed_up_ability_cooldown_original = PlayerManager.speed_up_ability_cooldown
 	local _dodge_shot_gain_original = PlayerManager._dodge_shot_gain
+	local start_custom_cooldown_original = PlayerManager.start_custom_cooldown
 	local _set_body_bags_amount_original = PlayerManager._set_body_bags_amount
 
 	local PLAYER_HAS_SPAWNED = false
@@ -2800,26 +2802,8 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 				managers.gameinfo:event("buff", "deactivate", "hostage_situation")
 			end
 		end
-		--[[
-		if self:has_team_category_upgrade("damage", "hostage_absorption") then
-			local count = math.min(self:team_upgrade_value("damage", "hostage_absorption_limit", 8), stack_count)
-			local value = (self:team_upgrade_value("damage", "hostage_absorption", 0) * 10) * count
-			managers.gameinfo:event("buff", "set_stack_count", "forced_friendship", { stack_count = count })
-			if value ~= 0 then
-				managers.gameinfo:event("buff", "set_value", "forced_friendship", { value = value })
-			else
-				managers.gameinfo:event("buff", "set_value", "forced_friendship", { value = value })
-			end
-		end
-		]]
-		if self:has_category_upgrade("player", "hostage_health_regen_addend") then
-			if stack_count > 0 then
-				managers.gameinfo:event("buff", "activate", "hostage_taker")
-				--managers.gameinfo:event("buff", "set_stack_count", "hostage_taker", { stack_count = stack_count })
-			else
-				managers.gameinfo:event("buff", "deactivate", "hostage_taker")
-			end
-		end
+
+		self._HAS_HOSTAGES = (stack_count > 0)
 
 		return update_hostage_skills_original(self, ...)
 	end
@@ -2839,6 +2823,11 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 
 		if self._is_sociopath and self._on_killshot_t ~= last_killshot then
 			managers.gameinfo:event("timed_buff", "activate", "sociopath_debuff", { expire_t = self._on_killshot_t })
+		end
+
+		local gain_throwable_per_kill = managers.player:upgrade_value("team", "crew_throwable_regen", 0)
+		if gain_throwable_per_kill > 0 then
+			managers.gameinfo:event("buff", "set_stack_count", "crew_throwable_regen", { stack_count = (gain_throwable_per_kill - (self._throw_regen_kills or 0)) })
 		end
 
 		return result
@@ -3011,6 +3000,18 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		end
 	end
 
+	function PlayerManager:add_grenade_amount(...)
+		add_grenade_amount_original(self, ...)
+		
+		local gain_throwable_per_kill = managers.player:upgrade_value("team", "crew_throwable_regen", 0)
+		if gain_throwable_per_kill > 0 and not self:got_max_grenades() then
+			managers.gameinfo:event("buff", "activate", "crew_throwable_regen")
+			managers.gameinfo:event("buff", "set_stack_count", "crew_throwable_regen", { stack_count = (gain_throwable_per_kill - (self._throw_regen_kills or 0)) })
+		else
+			managers.gameinfo:event("buff", "deactivate", "crew_throwable_regen")
+		end
+	end
+
 	function PlayerManager:on_throw_grenade(...)
 		on_throw_grenade_original(self, ...)
 
@@ -3045,13 +3046,18 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 			if gain_value > 0 then
 				managers.gameinfo:event("buff", "activate", "sicario_dodge")
 				managers.gameinfo:event("buff", "set_value", "sicario_dodge", { value = gain_value * self:upgrade_value("player", "sicario_multiplier", 1) })
-				managers.gameinfo:event("timed_buff", "activate", "sicario_dodge_debuff", { duration = self:upgrade_value("player", "dodge_shot_gain")[2] })
+				managers.gameinfo:event("timed_buff", "activate", "sicario_dodge_debuff", { duration = tweak_data.upgrades.values.player.dodge_shot_gain[1][2] })	--self:upgrade_value("player", "dodge_shot_gain")[2]
 			else
 				managers.gameinfo:event("buff", "deactivate", "sicario_dodge")
 			end
 		end
 		
 		return _dodge_shot_gain_original(self, gain_value, ...)
+	end
+
+	function PlayerManager:start_custom_cooldown(category, upgrade, ...)
+		start_custom_cooldown_original(self, category, upgrade, ...)
+		managers.gameinfo:event("timed_buff", "activate", tostring(upgrade) .. "_debuff", { expire_t = self["_cooldown_" .. category .. "_" .. upgrade] })
 	end
 
 	function PlayerManager:_set_body_bags_amount(body_bags_amount)
@@ -3137,6 +3143,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 
 	function PlayerMovement:update(unit, t, dt, ...)
 		self:_update_position_buffs(t, dt)
+		self:_update_base_dodge(t, dt)
 		return update_original(self, unit, t, dt, ...)
 	end
 
@@ -3192,6 +3199,30 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 			end
 
 			BUFFS_RECHECK_T = t + BUFFS_RECHECK_INTERVAL
+		end
+	end
+
+	local LAST_BASE_DODGE = 0
+	local DODGE_RECHECK_T = 0
+	local DODGE_RECHECK_INTERVAL = 0.5
+	function PlayerMovement:_update_base_dodge(t, dt)
+		if t > DODGE_RECHECK_T and alive(self._unit) then
+			local base_dodge = (tweak_data.player.damage.DODGE_INIT or 0) + managers.player:body_armor_value("dodge")
+			if self:running() then
+				base_dodge = base_dodge + managers.player:upgrade_value("player", "run_dodge_chance", 0)
+			elseif self:crouching() then
+				base_dodge = base_dodge + managers.player:upgrade_value("player", "crouch_dodge_chance", 0)
+			elseif self:zipline_unit() then
+				base_dodge = base_dodge + managers.player:upgrade_value("player", "on_zipline_dodge_chance", 0)
+			end
+
+			if LAST_BASE_DODGE ~= base_dodge then
+				managers.gameinfo:event("buff", "activate", "movement_dodge")
+				managers.gameinfo:event("buff", "set_value", "movement_dodge", { value = base_dodge })
+				LAST_BASE_DODGE = base_dodge
+			end
+			
+			DODGE_RECHECK_T = t + DODGE_RECHECK_INTERVAL
 		end
 	end
 end
@@ -3488,11 +3519,18 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 	local _check_bleed_out_original = PlayerDamage._check_bleed_out
 
 	local HEALTH_RATIO_BONUSES = {
-		melee_damage_health_ratio_multiplier = { category = "melee", buff_id = "berserker" },
-		damage_health_ratio_multiplier = { category = "damage", buff_id = "berserker_aced" },
-		armor_regen_damage_health_ratio_multiplier = { category = "armor_regen", buff_id = "yakuza_recovery" },
-		movement_speed_damage_health_ratio_multiplier = { category = "movement_speed", buff_id = "yakuza_speed" },
+		melee_damage_health_ratio_multiplier 			= { category = "melee", buff_id = "berserker" },
+		damage_health_ratio_multiplier 					= { category = "damage", buff_id = "berserker_aced" },
+		armor_regen_damage_health_ratio_multiplier 		= { category = "armor_regen", buff_id = "yakuza_recovery" },
+		movement_speed_damage_health_ratio_multiplier 	= { category = "movement_speed", buff_id = "yakuza_speed" },
 	}
+
+	local PASSIVE_HEALTH_REGEN = {
+		muscle_regen 		= { category = "player", 	upgrade = "passive_health_regen" },
+		crew_health_regen 	= { category = "team", 		upgrade = "crew_health_regen"	 },
+		hostage_taker 		= { category = "player", 	upgrade = "hostage_health_regen_addend", 	check_clbk = function() return managers.player._HAS_HOSTAGES end },
+	}
+
 	local LAST_HEALTH_RATIO = 0
 	local LAST_ARMOR_REGEN_BUFF_RESET = 0
 	local LAST_CHECK_T = 0
@@ -3562,12 +3600,13 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 			end
 		end
 
-		if not self:full_health() then
-			if managers.player:has_category_upgrade("player", "passive_health_regen") then
-				managers.gameinfo:event("buff", "activate", "muscle_regen")
+		for buff_id, data in pairs(PASSIVE_HEALTH_REGEN) do
+			if not self:full_health() and managers.player:has_category_upgrade(data.category, data.upgrade) and (not data.check_clbk or data.check_clbk()) then
+				managers.gameinfo:event("buff", "activate", buff_id)
+				managers.gameinfo:event("buff", "set_value", buff_id, { value = managers.player:upgrade_value(data.category, data.upgrade, 0) })
+			else
+				managers.gameinfo:event("buff", "deactivate", buff_id)
 			end
-		else
-			managers.gameinfo:event("buff", "deactivate", "muscle_regen")
 		end
 	end
 
@@ -3578,8 +3617,9 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 
 		if self._health_regen_update_timer then
 			if self._health_regen_update_timer > (old_timer or 0) and not self:full_health() then
-				managers.gameinfo:event("buff", "set_duration", "muscle_regen", { duration = self._health_regen_update_timer })
-				managers.gameinfo:event("buff", "set_duration", "hostage_taker", { duration = self._health_regen_update_timer })
+				for buff_id, data in pairs(PASSIVE_HEALTH_REGEN) do
+					managers.gameinfo:event("buff", "set_duration", buff_id, { duration = self._health_regen_update_timer })
+				end
 			end
 		end
 	end
@@ -3672,6 +3712,12 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 			ARMOR_GRIND_ACTIVE = false
 			managers.gameinfo:event("player_action", "deactivate", "anarchist_armor_regeneration")
 			managers.gameinfo:event("player_action", "deactivate", "standard_armor_regeneration")
+
+			for buff_id, data in pairs(PASSIVE_HEALTH_REGEN) do
+				if not data.skip_activation then
+					managers.gameinfo:event("buff", "deactivate", buff_id)
+				end
+			end
 		end
 	end
 end
