@@ -1,14 +1,14 @@
 
 local print_info = function(...)
-	WolfHUD:print_log(string.format(...), "info")
+	WolfHUD:print_log(..., "info")
 end
 
 local print_warning = function(...)
-	WolfHUD:print_log(string.format(...), "warning")
+	WolfHUD:print_log(..., "warning")
 end
 
 local print_error = function(...)
-	WolfHUD:print_log(string.format(...), "error")
+	WolfHUD:print_log(..., "error")
 end
 
 if string.lower(RequiredScript) == "lib/setups/setup" then
@@ -3176,7 +3176,11 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 					if not longest_smoke or (longest_smoke:get_time_remaining() < smoke_screen:get_time_remaining()) then
 						longest_smoke = smoke_screen
 					end
-					smoke_dodge = smoke_dodge + smoke_screen:dodge_bonus()
+
+					if not smoke_screen:mine() then
+						smoke_dodge = smoke_dodge + smoke_screen:dodge_bonus()
+					end
+
 					for key, _ in pairs(smoke_screen._unit_list or {}) do
 						smoked_units[key] = smoked_units[key] or true
 					end
@@ -3184,7 +3188,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 			end
 
 			if longest_smoke and longest_smoke:alive() then
-				if not IN_SMOKE_SCREEN or type(IN_SMOKE_SCREEN) == "string" and IN_SMOKE_SCREEN ~= longest_smoke:get_key() then
+				if not IN_SMOKE_SCREEN or type(IN_SMOKE_SCREEN) == "string" and IN_SMOKE_SCREEN ~= (longest_smoke:get_key() or "") then
 					IN_SMOKE_SCREEN = longest_smoke:get_key() or true
 					managers.gameinfo:event("buff", "activate", "smoke_screen_grenade")
 					managers.gameinfo:event("buff", "set_duration", "smoke_screen_grenade", { duration = longest_smoke:get_time_remaining() })

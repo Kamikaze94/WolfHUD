@@ -76,7 +76,7 @@ function WolfHUDTweakData:init()
 										{ "secondary" }, 
 										{ "melee_weapon", "grenade" }, 
 										{ "armor", "mask" }, 
-										{"deployable", "secondary_deployable"} 
+										{ "deployable", "secondary_deployable" } 
 									}
 	self.TAB_LOADOUT_LAYOUT = 		{ 
 										{ "name", "ping" }, 
@@ -104,7 +104,7 @@ function WolfHUDTweakData:init()
 		{ color = '0000FF', name = "blue" 			},
 		{ color = '808080', name = "gray" 			},
 		{ color = '000000', name = "black" 			},
-		{ color = nil, 		name = "rainbow" 		},
+		{ color = nil, name = "rainbow" 			},
 	}
 
 	self:post_init()
@@ -113,4 +113,13 @@ end
 ----------------------------------------- DONT EDIT BELOW THIS LINE!!! ----------------------------------------- DONT EDIT BELOW THIS LINE!!! ----------------------------------------- DONT EDIT BELOW THIS LINE!!! -----------------------------------------
 
 function WolfHUDTweakData:post_init()
+	for _, data in ipairs(self.color_table) do
+		if data.name == "rainbow" then
+			data.color_func = function(frequency)
+				local r = Application:time() * 360 * (frequency or 1)
+				local r, g, b = (1 + math.sin(r + 0)) / 2, (1 + math.sin(r + 120)) / 2, (1 + math.sin(r + 240)) / 2
+				return Color(r, g, b)
+			end
+		end
+	end
 end

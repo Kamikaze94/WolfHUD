@@ -175,11 +175,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	HUDListManager.ListOptions = {
 		--General settings (Offsets get updated by Objective/Assault or CustomHUD)
 		right_list_height_offset = 0,   										--Margin from top for the right list
-		right_list_scale = WolfHUD:getSetting({"HUDList", "right_list_scale"}, 1),   	--Size scale of right list
 		left_list_height_offset = 40,   										--Margin from top for the left list
-		left_list_scale = WolfHUD:getSetting({"HUDList", "left_list_scale"}, 1),    	--Size scale of left list
 		buff_list_height_offset = 90,   										--Margin from bottom for the buff list
-		buff_list_scale = WolfHUD:getSetting({"HUDList", "buff_list_scale"}, 1),    	--Size scale of buff list
+		right_list_scale 				= WolfHUD:getSetting({"HUDList", "right_list_scale"}, 1),   	--Size scale of right list
+		left_list_scale 				= WolfHUD:getSetting({"HUDList", "left_list_scale"}, 1),    	--Size scale of left list
+		buff_list_scale 				= WolfHUD:getSetting({"HUDList", "buff_list_scale"}, 1),    	--Size scale of buff list
+		right_list_progress_alpha 		= WolfHUD:getSetting({"HUDList", "right_list_progress_alpha"}, 0.4),
+		left_list_progress_alpha 		= WolfHUD:getSetting({"HUDList", "left_list_progress_alpha"}, 0.4),
+		buff_list_progress_alpha 		= WolfHUD:getSetting({"HUDList", "buff_list_progress_alpha"}, 1.0),
 
 		--Left side list
 		show_timers 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_timers"}, true),     				--Drills, time locks, hacking etc.
@@ -192,26 +195,26 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		show_ecms 						= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_ecms"}, true),       				--Active ECMs
 		show_ecm_retrigger 				= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_ecm_retrigger"}, true),      		--Countdown for player owned ECM feedback retrigger delay
 		show_minions 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_minions"}, true),    				--Converted enemies, type and health
-		show_own_minions_only 		= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_own_minions_only"}, true),			--Only show player-owned minions
+			show_own_minions_only 		= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_own_minions_only"}, true),			--Only show player-owned minions
 		show_pagers 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_pagers"}, true),     				--Show currently active pagers
 		show_tape_loop 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_tape_loop"}, true),  				--Show active tape loop duration
 
 		--Right side list
 		show_enemies 					= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_enemies"}, true),            		--Currently spawned enemies
-		aggregate_enemies 			= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "aggregate_enemies"}, false),      			--Aggregate all enemies into a single item
+			aggregate_enemies 			= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "aggregate_enemies"}, false),      			--Aggregate all enemies into a single item
 		show_turrets 					= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_turrets"}, true),    				--Show active SWAT turrets
 		show_civilians 					= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_civilians"}, true),  				--Currently spawned, untied civs
 		show_hostages 					= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_hostages"}, true),   				--Currently tied civilian and dominated cops
-		aggregate_hostages 			= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "aggregate_hostages"}, false),															--Aggregate all hostages into a single item
+			aggregate_hostages 			= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "aggregate_hostages"}, false),															--Aggregate all hostages into a single item
 		show_minion_count 				= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_minion_count"}, true),       		--Current number of jokered enemies
 		show_pager_count 				= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_pager_count"}, true),        		--Show number of triggered pagers (only counts pagers triggered while you were present)
 		show_cam_count					= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_cam_count"}, true),
 		show_bodybags_count				= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_bodybags_count"}, true),
 		show_corpse_count				= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_corpse_count"}, true),
 		show_loot 						= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_loot"}, true),       				--Show spawned and active loot bags/piles (may not be shown if certain mission parameters has not been met)
-		aggregate_loot 				= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "aggregate_loot"}, false), 					--Aggregate all loot into a single item
-		separate_bagged_loot 		= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "separate_bagged_loot"}, true),     		--Show bagged/unbagged loot as separate values
-		show_potential_loot			= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_potential_loot"}, false),
+			aggregate_loot 				= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "aggregate_loot"}, false), 					--Aggregate all loot into a single item
+			separate_bagged_loot 		= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "separate_bagged_loot"}, true),     		--Show bagged/unbagged loot as separate values
+			show_potential_loot			= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_potential_loot"}, false),
 		show_special_pickups 			= WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "show_special_pickups"}, true),    		--Show number of special equipment/items
 
 		--Buff list
@@ -1003,8 +1006,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	--General config
 	function HUDListManager:_set_right_list_scale(scale)
-		--self:unregister_list("right_side_list", true)
-		--self:_setup_right_list()
 		local list = self:list("right_side_list")
 		list:rescale(scale or HUDListManager.ListOptions.right_list_scale)
 	end
@@ -1046,6 +1047,37 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local list = self:list("buff_list")
 		if list then
 			list:move(list:panel():x(), HUDListManager.ListOptions.buff_list_height_offset or 90, false)
+		end
+	end
+
+	function HUDListManager:_set_right_list_progress_alpha(alpha)
+		local list = self:list("right_side_list")
+		if list then
+			for _, sub_list in pairs(list:items()) do
+				for _, item in pairs(sub_list:items()) do
+					item:set_progress_alpha(alpha or HUDListManager.ListOptions.right_list_progress_alpha)
+				end
+			end
+		end
+	end
+
+	function HUDListManager:_set_left_list_progress_alpha(alpha)
+		local list = self:list("left_side_list")
+		if list then
+			for _, sub_list in pairs(list:items()) do
+				for _, item in pairs(sub_list:items()) do
+					item:set_progress_alpha(alpha or HUDListManager.ListOptions.left_list_progress_alpha)
+				end
+			end
+		end
+	end
+
+	function HUDListManager:_set_buff_list_progress_alpha(alpha)
+		local list = self:list("buff_list")
+		if list then
+			for _, item in pairs(list:items()) do
+				item:set_progress_alpha(alpha or HUDListManager.ListOptions.buff_list_progress_alpha)
+			end
 		end
 	end
 
@@ -1926,6 +1958,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.ItemBase:fade_time() return self._fade_time end
 	function HUDList.ItemBase:set_color(color) end
 	function HUDList.ItemBase:set_bg_color(color) end
+	function HUDList.ItemBase:set_progress_alpha(alpha) end
 
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -2522,7 +2555,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			bar_w = 2,
 			bar_color = self._default_text_color,
 			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
-			bar_alpha = 0.4,
+			bar_alpha = HUDListManager.ListOptions.right_list_progress_alpha or 0.4,
 			add_bg = true,
 		})
 		self._progress_bar:set_ratio(1)
@@ -2576,6 +2609,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.RightListItem:set_icon_color(color)
 		self._default_icon_color = color
 		self._icon:set_color(self._default_icon_color or self._default_text_color)
+	end
+
+	function HUDList.RightListItem:set_progress_alpha(alpha)
+		self._progress_bar:set_alpha(alpha)
 	end
 
 	function HUDList.RightListItem:change_count(diff)
@@ -3257,7 +3294,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			bar_w = 2,
 			bar_color = params.progress_color or (HUDListManager.ListOptions.list_color or Color.white),
 			bg_color = (HUDListManager.ListOptions.list_color_bg or Color.black),
-			bar_alpha = params.progress_alpha or 0.4,
+			bar_alpha = params.progress_alpha or HUDListManager.ListOptions.left_list_progress_alpha or 0.4,
 			add_bg = true,
 		})
 		self._progress_bar:set_ratio(1)
@@ -3281,6 +3318,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.LeftListItem:set_bg_color(color)
 		HUDList.LeftListItem.super.set_bg_color(self, color)
 		self._progress_bar:set_bg_color(color)
+	end
+
+	function HUDList.LeftListItem:set_progress_alpha(alpha)
+		self._progress_bar:set_alpha(alpha)
 	end
 
 	HUDList.TimerItem = HUDList.TimerItem or class(HUDList.LeftListItem)
@@ -5463,6 +5504,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			w = self._panel:w(),
 			h = self._panel:w(),
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			alpha = HUDListManager.ListOptions.buff_list_progress_alpha or 1,
 		})
 		self._progress_bar_debuff:set_center(self._icon:center())
 		self._progress_bar_debuff:set_visible(false)
@@ -5474,6 +5516,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			w = self._panel:w() - (progress_bar_width+1),
 			h = self._panel:w() - (progress_bar_width+1),
 			color = icon.progress_color or self._default_icon_color,
+			alpha = HUDListManager.ListOptions.buff_list_progress_alpha or 1,
 		})
 		self._progress_bar:set_center(self._icon:center())
 		self._progress_bar:set_visible(false)
@@ -5485,6 +5528,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			w = self._panel:w() - (progress_bar_width+1) * 2,
 			h = self._panel:w() - (progress_bar_width+1) * 2,
 			color = icon.progress_color or self._default_icon_color,
+			alpha = HUDListManager.ListOptions.buff_list_progress_alpha or 1,
 		})
 		self._progress_bar_inner:set_center(self._icon:center())
 		self._progress_bar_inner:set_visible(false)
@@ -5566,6 +5610,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.BuffItemBase:set_bg_color(color)
 		HUDList.BuffItemBase.super.set_bg_color(self, color)
 		self._bg:set_color(color)
+	end
+
+	function HUDList.BuffItemBase:set_progress_alpha(alpha)
+		self._progress_bar_debuff:set_alpha(alpha)
+		self._progress_bar:set_alpha(alpha)
+		self._progress_bar_inner:set_alpha(alpha)
 	end
 
 	function HUDList.BuffItemBase:activate(id)
@@ -6047,14 +6097,17 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			if self._weapon_tweak.ignore_damage_upgrades then
 				text = "(0%)"
 			else
-				local weapon_category = self._weapon_tweak.category
+				local weapon_categories = self._weapon_tweak.categories
 				local value = 1
 
 				for id, data in pairs(self._member_buffs) do
-					if not self._buff_weapon_requirements[id] or self._buff_weapon_requirements[id][weapon_category] then
-						if not (self._buff_weapon_exclusions[id] and self._buff_weapon_exclusions[id][weapon_category]) then
-							local clbk = self._buff_effects[id]
-							value = value * (data.value and (clbk and  clbk(data.value) or data.value) or 1)
+					for _, category in ipairs(weapon_categories) do
+						if not self._buff_weapon_requirements[id] or self._buff_weapon_requirements[id][category] then
+							if not (self._buff_weapon_exclusions[id] and self._buff_weapon_exclusions[id][category]) then
+								local clbk = self._buff_effects[id]
+								value = value * (data.value and (clbk and clbk(data.value) or data.value) or 1)
+								break
+							end
 						end
 					end
 				end
@@ -6082,7 +6135,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		for id, data in pairs(self._member_buffs) do
 			local clbk = self._buff_effects[id]
-			value = value * (data.value and (clbk and  clbk(data.value) or data.value) or 1)
+			value = value * (data.value and (clbk and clbk(data.value) or data.value) or 1)
 		end
 
 		self:_set_text(string.format("x%.0f", (value-1)))
@@ -6125,7 +6178,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		for id, data in pairs(self._member_buffs) do
 			local clbk = self._buff_effects[id]
-			value = value * (data.value and (clbk and  clbk(data.value) or data.value) or 1)
+			value = value * (data.value and (clbk and clbk(data.value) or data.value) or 1)
 		end
 
 		self:_set_text(string.format("-%.0f%%", math.min(1 - value, 1) * 100))
@@ -6152,7 +6205,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		for id, data in pairs(self._member_buffs) do
 			local clbk = self._buff_effects[id]
-			value = value + (data.value and (clbk and  clbk(data.value) or data.value) or 0)
+			value = value + (data.value and (clbk and clbk(data.value) or data.value) or 0)
 		end
 
 		self:_set_text(string.format("%.1f%%", value * 100))
@@ -6162,7 +6215,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.TotalDodgeChanceBuff:init(...)
 		HUDList.TotalDodgeChanceBuff.super.init(self, ...)
 
-		self._member_buffs["crook_dodge"] = { value = (managers.player:upgrade_value("player", "passive_dodge_chance", 0) * managers.player:upgrade_value("player", "sicario_multiplier", 1))
+		self._member_buffs["crook_dodge"] = { value = managers.player:upgrade_value("player", "passive_dodge_chance", 0)
 												+ managers.player:upgrade_value("player", tostring(managers.blackmarket:equipped_armor(true, true)) .. "_dodge_addend", 0) -- Crook Perk
 											}
 		self._member_buffs["burglar_dodge"] = { value = managers.player:upgrade_value("player", "tier_dodge_chance", 0) }	 -- Burglar Perk
@@ -6345,6 +6398,19 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 	end
 
+	function PanelFrame:set_alpha(alpha)
+		self._top:set_alpha(alpha)
+		self._bottom:set_alpha(alpha)
+		self._left:set_alpha(alpha)
+		self._right:set_alpha(alpha)
+	end
+	
+	function PanelFrame:set_bg_alpha(alpha)
+		if alive(self._bg) then
+			self._bg:set_alpha(alpha)
+		end
+	end
+
 	function PanelFrame:reset()
 		self._current_stage = 1
 		self._top:set_w(self._panel:w() - 2 * self._bar_w)
@@ -6420,7 +6486,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function PanelFrame:visible() return self._panel:visible() end
 	function PanelFrame:layer() return self._panel:layer() end
 	function PanelFrame:text_rect() return self:x(), self:y(), self:w(), self:h() end
-	function PanelFrame:set_alpha(v) self._panel:set_alpha(v) end
 	function PanelFrame:set_x(v) self._panel:set_x(v) end
 	function PanelFrame:set_y(v) self._panel:set_y(v) end
 	function PanelFrame:set_w(v) self:set_size(v, nil)	end

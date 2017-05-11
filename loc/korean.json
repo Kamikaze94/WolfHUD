@@ -409,6 +409,12 @@
 	"wolfhud_hudlist_copcolor_desc" : "적 카운터 에 표시될 스왓, 헤비스왓 등의 색을 바꿉니다.",
 	"wolfhud_hudlist_specialcolor_title" : "스페셜 색",
 	"wolfhud_hudlist_specialcolor_desc" : "적 카운터 에 표시될 스페셜의 색을 바꿉니다.",
+	"wolfhud_hudlist_progress_alpha_left_title" : "Left Progress Alpha",
+	"wolfhud_hudlist_progress_alpha_left_desc" : "Alpha value for the progress bars on left list items.",
+	"wolfhud_hudlist_progress_alpha_right_title" : "Right Progress Alpha",
+	"wolfhud_hudlist_progress_alpha_right_desc" : "Alpha value for the progress bars on right list items.",
+	"wolfhud_hudlist_progress_alpha_buff_title" : "Buff Progress Alpha",
+	"wolfhud_hudlist_progress_alpha_buff_desc" : "Alpha value for the progress bars on buff list items.",
 
 	"wolfhud_infopanels_left_options_name" : "왼쪽 리스트 옵션",
 	"wolfhud_infopanels_left_options_help" : "왼쪽에 표시될 리스트들을 설정합니다.",

@@ -357,12 +357,6 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 	function NewSkillTreeTierItem:init(...)
 		local val = orig_newskilltreetieritem_init(self, ...)
 		if WolfHUD:getSetting({"INVENTORY", "SHOW_SKILL_NAMES"}, true) then
-			if self._tier_points_needed and self._tier_points_needed_curr and self._tier_points_needed_zero then
-				--self._tier_points_needed_zero:set_left(self._text_space)
-				--self._tier_points_needed_curr:set_left(self._tier_points_needed_zero:right())
-				--self._tier_points_needed:set_left(self._tier_points_needed_curr:right())	
-			end
-
 			if self._tier_points_total and self._tier_points_total_zero and self._tier_points_total_curr then
 				local font_size = tweak_data.menu.pd2_small_font_size * 0.75
 				self._tier_points_total:set_font_size(font_size)
@@ -384,6 +378,10 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/skilltreeguinew" then
 				self._tier_points_total:set_y(self._text_space or 10)
 				self._tier_points_total_zero:set_y(self._text_space or 10)
 				self._tier_points_total_curr:set_y(self._text_space or 10)
+			end
+			if alive(self._tier_points_0) and alive(self._tier_points) then
+				self._tier_points:set_visible(not self._tier_points_needed:visible())
+				self._tier_points_0:set_visible(not self._tier_points_needed:visible())
 			end
 		end
 	end

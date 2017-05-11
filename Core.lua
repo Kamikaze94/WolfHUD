@@ -268,6 +268,9 @@ if not _G.WolfHUD then
 				right_list_scale						= 1,
 				left_list_scale							= 1,
 				buff_list_scale							= 1,
+				right_list_progress_alpha 				= 0.4,
+				left_list_progress_alpha 				= 0.4,
+				buff_list_progress_alpha 				= 1.0,
 				list_color	 							= "white",		--Left and Right List font color
 				list_color_bg	 						= "black",		--Left and Right List BG color
 				civilian_color 							= "white", 		--EnemyCounter Civillian and Hostage icon color
@@ -578,6 +581,7 @@ if not _G.WolfHUD then
 	end
 
 	function WolfHUD:Load()
+		local corrupted = false
 		local file = io.open(self.settings_path, "r")
 		if file then
 			local function parse_settings(table_dst, table_src, setting_path)
@@ -592,6 +596,7 @@ if not _G.WolfHUD then
 						end
 					else
 						self:print_log("Error while loading, Setting types don't match (%s->%s)", table.concat(setting_path, "->") or "", k or "N/A", "error")
+						corrupted = corrupted or true
 					end
 				end
 			end
@@ -601,6 +606,10 @@ if not _G.WolfHUD then
 			file:close()
 		else
 			self:print_log("Error while loading, settings file could not be opened (" .. self.settings_path .. ")", "error")
+		end
+		if corrupted then
+			self:Save()
+			self:print_log("Settings file appears to be corrupted, resaving...", "error")
 		end
 	end
 
@@ -762,13 +771,13 @@ if not _G.WolfHUD then
 		end
 	end
 
-	function WolfHUD:getColorSetting(id_table, default)
+	function WolfHUD:getColorSetting(id_table, default, ...)
 		local color_name = self:getSetting(id_table, default)
-		return self:getColor(color_name) or default and self:getColor(default)
+		return self:getColor(color_name, ...) or default and self:getColor(default, ...)
 	end
 
 	function WolfHUD:getColorID(name)
-		if tweak_data and type(name) == "string" then
+		if self.tweak_data and type(name) == "string" then
 			for i, data in ipairs(self:getTweakEntry("color_table", "table")) do
 				if name == data.name then
 					return i
@@ -777,11 +786,11 @@ if not _G.WolfHUD then
 		end
 	end
 
-	function WolfHUD:getColor(name)
-		if tweak_data and type(name) == "string" then
+	function WolfHUD:getColor(name, ...)
+		if self.tweak_data and type(name) == "string" then
 			for i, data in ipairs(self:getTweakEntry("color_table", "table")) do
 				if name == data.name then
-					return data.color and Color(data.color) or nil
+					return data.color and Color(data.color) or data.color_func and data.color_func(...) or nil
 				end
 			end
 		end
@@ -989,6 +998,7 @@ if not _G.WolfHUD then
 						item._enabled_callback_name_list = { enabled_clbk_id }
 					end
 					item._create_data = data
+					break
 				end
 			end
 		end
@@ -1143,6 +1153,7 @@ if not _G.WolfHUD then
 							for __, clbk in pairs( item:parameters().callback ) do
 								clbk(item)
 							end
+							break
 						end
 					end
 				end
@@ -1176,12 +1187,23 @@ if not _G.WolfHUD then
 			divider = function(menu_id, offset, data)
 				local id = string.format("%s_divider_%d", menu_id, offset)
 
-				MenuHelper:AddDivider({
-					id = id,
-					size = data.size,
-					menu_id = menu_id,
-					priority = offset,
-				})
+				local item_data = {
+					type = "MenuItemDivider"
+				}
+				local params = {
+					name = id,
+					no_text = not data.text_id,
+					text_id = data.text_id,
+					localize = "true",
+					size = data.size or 8,
+					color = tweak_data.screen_colors.text
+				}
+
+				local menu = MenuHelper:GetMenu( menu_id )
+				local item = menu:create_item( item_data, params )
+				item._priority = offset or 0
+				menu._items_list = menu._items_list or {}
+				table.insert( menu._items_list, item )
 			end,
 		}
 
@@ -1308,18 +1330,20 @@ if not _G.WolfHUD then
 	Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", function(loc)
 		local loc_path = WolfHUD.mod_path .. "loc/"
 		if file.DirectoryExists( loc_path ) then
-			local chinese = false
-			for k, v in pairs(LuaModManager.Mods) do
-				local info = v.definition
-				if info["name"] == "ChnMod" then
-					chinese = true
-					break
+			local custom_lang
+			if _G.PD2KR then
+				custom_lang = "korean"
+			else
+				for k, v in pairs(LuaModManager.Mods) do
+					local info = v.definition
+					if info["name"] == "ChnMod" then
+						custom_lang = "chinese"
+						break
+					end
 				end
 			end
-			if chinese then
-				loc:load_localization_file(loc_path .. "chinese.json")
-			elseif _G.PD2KR then
-				loc:load_localization_file(loc_path .. "korean.json")
+			if custom_lang then
+				loc:load_localization_file(string.format("%s%s.json", loc_path, custom_lang))
 			else
 				for _, filename in pairs(file.GetFiles(loc_path)) do
 					local str = filename:match('^(.*).json$')

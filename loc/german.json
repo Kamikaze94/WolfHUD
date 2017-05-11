@@ -416,6 +416,12 @@
 	"wolfhud_hudlist_copcolor_desc" : "Farbe der Polizisten, SWATs und Schwere SWATs des Gegner Zählers.",
 	"wolfhud_hudlist_specialcolor_title" : "Spezialgegner Farbe",
 	"wolfhud_hudlist_specialcolor_desc" : "Farbe für Spezialgegner und Geschützwagen des Gegner Zählers.",
+	"wolfhud_hudlist_progress_alpha_left_title" : "Linkes Fortschritts-Alpha",
+	"wolfhud_hudlist_progress_alpha_left_desc" : "Alphawert der Fortschrittsanzeigen der linken Liste.",
+	"wolfhud_hudlist_progress_alpha_right_title" : "Rechtes Fortschritts-Alpha",
+	"wolfhud_hudlist_progress_alpha_right_desc" : "Alphawert der Fortschrittsanzeigen der rechten Liste.",
+	"wolfhud_hudlist_progress_alpha_buff_title" : "Buff Fortschritts-Alpha",
+	"wolfhud_hudlist_progress_alpha_buff_desc" : "Alphawert der Fortschrittsanzeigen der Buff Liste.",
 
 	"wolfhud_infopanels_left_options_name" : "Linke Info Liste",
 	"wolfhud_infopanels_left_options_help" : "Optionen der linken Liste.",
