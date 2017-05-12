@@ -968,7 +968,7 @@ elseif string.lower(RequiredScript) == "lib/managers/crimespreemanager" then
 
 		return rewards_table
 	end
-	
+
 	function CrimeSpreeManager:get_current_reward_multiplier()
 		if self:has_failed() then
 			return 0
@@ -977,7 +977,7 @@ elseif string.lower(RequiredScript) == "lib/managers/crimespreemanager" then
 		local mission_id = self:current_mission()
 		local mission_data = mission_id and self:get_mission(mission_id)
 		local reward_add = mission_data and mission_data.add or 0
-		
+
 		if not self:_is_host() and reward_add > 0 then
 			if self:server_spree_level() > self:spree_level() then
 				local diff = self:server_spree_level() - self:spree_level()
@@ -997,7 +997,7 @@ elseif string.lower(RequiredScript) == "lib/managers/crimespreemanager" then
 			end
 			reward_add = math.max(math.floor(reward_add * streak_bonus), 0)
 		end
-		
+
 		return reward_add
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanager" then

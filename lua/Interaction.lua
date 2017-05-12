@@ -25,7 +25,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 
 	function PlayerStandard:_check_interaction_locked(t)
 		PlayerStandard.LOCK_MODE = WolfHUD:getSetting({"INTERACTION", "LOCK_MODE"}, 3)						--Lock interaction, if MIN_TIMER_DURATION is longer then total interaction time, or current interaction time
-		PlayerStandard.MIN_TIMER_DURATION = WolfHUD:getSetting({"INTERACTION", "MIN_TIMER_DURATION"}, 5)			--Min interaction duration (in seconds) for the toggle behavior to activate	
+		PlayerStandard.MIN_TIMER_DURATION = WolfHUD:getSetting({"INTERACTION", "MIN_TIMER_DURATION"}, 5)			--Min interaction duration (in seconds) for the toggle behavior to activate
 		local is_locked = false
 		if self._interact_params ~= nil then
 			local tweak_data = self._interact_params.tweak_data or ""

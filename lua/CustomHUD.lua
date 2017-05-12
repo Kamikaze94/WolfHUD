@@ -3938,7 +3938,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			local teammate = HUDTeammateCustom:new(i, teammates_panel, is_player, align)
 
 			self._hud.teammate_panels_data[i] = {
-				--taken = is_player and (num_panels > HUDManager.PLAYER_PANEL), 
+				--taken = is_player and (num_panels > HUDManager.PLAYER_PANEL),
 				taken = false,
 				special_equipments = {},
 			}

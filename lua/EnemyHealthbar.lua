@@ -212,7 +212,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 
 		if not current or not total then return end
 
-		local enemy 
+		local enemy
 		local NameTable = self.CharacterData[ tweak_table ]
 		if NameTable then
 			local level_id = managers.job:current_level_id()
@@ -312,7 +312,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 					visible = false
 				end
 			end
-			
+
 			if not visible and self._last_unit and alive( self._last_unit ) then
 				health = self._last_unit:character_damage()._health * 10 or 0
 				max_health = self._last_unit:character_damage()._HEALTH_INIT * 10 or 0

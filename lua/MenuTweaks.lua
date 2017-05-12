@@ -464,7 +464,7 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 
 		row_item.gui_text:set_color(row_item.color)
 		row_item.gui_slider_text:set_color(row_item.color)
-		
+
 		return val
 	end
 elseif string.lower(RequiredScript) == "lib/states/ingamewaitingforplayers" then

@@ -62,7 +62,7 @@
 	"wolfhud_preplanning_msg_deleted_failed" : "저장된 계획을 삭제하는 도중에 오류가 발생하였습니다.",
 
 	"wolfhud_inv_tab_rename_hint" : "Double click the selected Inventory tab to rename it.",
-	
+
 	"wolfhud_loadout_hours_played" : "$HOURS hrs.",
 
 	"victory_most_damage" : "Highest Damage:",

@@ -197,7 +197,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			first_aid_kit = 					"_deployable_interaction_handler",
 			bodybags_bag =						"_deployable_interaction_handler",
 			grenade_crate =						"_deployable_interaction_handler",
-			
+
 			pku_scubagear_vest = 				"_special_equipment_interaction_handler",	--TMP: Where is this used...?
 			pku_scubagear_tank = 				"_special_equipment_interaction_handler",	--TMP: Where is this used...?
 		},
@@ -412,7 +412,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			},
 		},
 	}
-	
+
 	GameInfoManager._UNITS = {
 		TWEAK_ID_BY_NAME = {
 			[tostring(Idstring("units/pd2_dlc_born/characters/npc_male_mechanic/npc_male_mechanic"))] = "mechanic",
@@ -1856,7 +1856,7 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 			end
 		end
 	end
-	
+
 	function GroupAIStateBase:remove_minion(minion_key, ...)
 		remove_minion_original(self, minion_key, ...)
 
@@ -2116,7 +2116,7 @@ if string.lower(RequiredScript) == "lib/units/interactions/interactionext" then
 			managers.interaction:add_unit_clbk(self._unit)
 		end
 	end
-	
+
 end
 
 if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase" then
@@ -2176,7 +2176,7 @@ if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase
 		end
 		return val
 	end
-	
+
 	function ECMJammerBase:clbk_feedback(...)
 		clbk_feedback_original(self, ...)
 		if self._feedback_expire_t - TimerManager:game():time() < self._feedback_duration * 0.1 then
@@ -2186,7 +2186,7 @@ if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase
 
 	function ECMJammerBase:sync_net_event(event_id, ...)
 		sync_net_event_original(self, event_id, ...)
-		
+
 		if self._NET_EVENTS and event_id == self._NET_EVENTS.feedback_flash then
 			managers.gameinfo:event("ecm", "set_feedback_low", self._ecm_unit_key, { feedback_low = true })
 		end
@@ -3002,7 +3002,7 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 
 	function PlayerManager:add_grenade_amount(...)
 		add_grenade_amount_original(self, ...)
-		
+
 		local gain_throwable_per_kill = managers.player:upgrade_value("team", "crew_throwable_regen", 0)
 		if gain_throwable_per_kill > 0 and not self:got_max_grenades() then
 			managers.gameinfo:event("buff", "activate", "crew_throwable_regen")
@@ -3051,7 +3051,7 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 				managers.gameinfo:event("buff", "deactivate", "sicario_dodge")
 			end
 		end
-		
+
 		return _dodge_shot_gain_original(self, gain_value, ...)
 	end
 
@@ -3070,10 +3070,10 @@ end
 if string.lower(RequiredScript) == "lib/managers/player/smokescreeneffect" then
 
 	local init_original = SmokeScreenEffect.init
-	
+
 	function SmokeScreenEffect:init(position, normal, time, has_dodge_bonus, grenade_unit, ...)
 		init_original(self, position, normal, time, has_dodge_bonus, grenade_unit, ...)
-		
+
 		self._unit_key = grenade_unit and tostring(grenade_unit:key())
 	end
 
@@ -3126,7 +3126,7 @@ if string.lower(RequiredScript) == "lib/modifiers/boosts/gagemodifierlifesteal" 
 
 	function GageModifierLifeSteal:OnPlayerManagerKillshot(...)
 		local last_kill_t = self._last_killshot_t or 0
-		
+
 		OnPlayerManagerKillshot_original(self, ...)
 
 		if (self._last_killshot_t or 0) > last_kill_t then
@@ -3225,7 +3225,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 				managers.gameinfo:event("buff", "set_value", "movement_dodge", { value = base_dodge })
 				LAST_BASE_DODGE = base_dodge
 			end
-			
+
 			DODGE_RECHECK_T = t + DODGE_RECHECK_INTERVAL
 		end
 	end
@@ -3874,18 +3874,18 @@ end
 
 --[[
 if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
-	
+
 	local init_original = ObjectInteractionManager.init
 	local update_original = ObjectInteractionManager.update
 	local add_unit_original = ObjectInteractionManager.add_unit
 	local remove_unit_original = ObjectInteractionManager.remove_unit
-	
-	
+
+
 	ObjectInteractionManager.TRIGGERS = {
 		[136843] = {
 			136844, 136845, 136846, 136847, --HB armory ammo shelves
 			136859, 136860, 136864, 136865, 136866, 136867, 136868, 136869, 136870, --HB armory grenades
-		},	
+		},
 		[151868] = { 151611 }, --GGC armory ammo shelf 1
 		[151869] = {
 			151612, --GGC armory ammo shelf 2
@@ -3893,7 +3893,7 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 		},
 		--[101835] = { 101470, 101472, 101473 },	--HB infirmary med boxes (not needed, triggers on interaction activation)
 	}
-	
+
 	ObjectInteractionManager.INTERACTION_TRIGGERS = {
 		requires_ecm_jammer_double = {
 			[Vector3(-2217.05, 2415.52, -354.502)] = 136843,	--HB armory door 1
@@ -3906,34 +3906,34 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 			[Vector3(3445, 1547, -195.5)] = 151869,	--GGC armory cage Y alt 2	(may be reversed)
 		},
 	}
-	
+
 	function ObjectInteractionManager:init(...)
 		init_original(self, ...)
-		
+
 		self._queued_units = {}
 		self._unit_triggers = {}
 		self._trigger_blocks = {}
-		
+
 		GroupAIStateBase.register_listener_clbk("ObjectInteractionManager_cancel_pager_listener", "on_whisper_mode_change", callback(self, self, "_whisper_mode_change"))
 	end
-	
+
 	function ObjectInteractionManager:update(t, ...)
 		update_original(self, t, ...)
 		self:_check_queued_units(t)
 	end
-	
-	function ObjectInteractionManager:add_unit(unit, ...)		
+
+	function ObjectInteractionManager:add_unit(unit, ...)
 		for pos, trigger_id in pairs(ObjectInteractionManager.INTERACTION_TRIGGERS[unit:interaction().tweak_data] or {}) do
 			if mvector3.distance(unit:position(), pos) <= 10 then
 				self:block_trigger(trigger_id, true)
 				break
 			end
 		end
-	
+
 		table.insert(self._queued_units, unit)
 		return add_unit_original(self, unit, ...)
 	end
-	
+
 	function ObjectInteractionManager:remove_unit(unit, ...)
 		for pos, trigger_id in pairs(ObjectInteractionManager.INTERACTION_TRIGGERS[unit:interaction().tweak_data] or {}) do
 			if mvector3.distance(unit:position(), pos) <= 10 then
@@ -3941,14 +3941,14 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 				break
 			end
 		end
-	
+
 		self:_check_remove_unit(unit)
 		return remove_unit_original(self, unit, ...)
 	end
-	
+
 	function ObjectInteractionManager:_check_queued_units(t)
 		local level_id = managers.job:current_level_id()
-		
+
 		for i, unit in ipairs(self._queued_units) do
 			if alive(unit) then
 				local editor_id = unit:editor_id()
@@ -3957,26 +3957,26 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 				if false then --ObjectInteractionManager.EQUIPMENT_INTERACTION_ID[interaction_id] then
 					local data = ObjectInteractionManager.EQUIPMENT_INTERACTION_ID[interaction_id]
 					local blocked
-					
+
 					for trigger_id, editor_ids in pairs(ObjectInteractionManager.TRIGGERS) do
-						if table.contains(editor_ids, editor_id) then							
+						if table.contains(editor_ids, editor_id) then
 							blocked = self._trigger_blocks[trigger_id]
 							self._unit_triggers[trigger_id] = self._unit_triggers[trigger_id] or {}
 							table.insert(self._unit_triggers[trigger_id], { unit = unit, class = data.class, offset = data.offset })
 							break
 						end
 					end
-					
+
 					unit:base():set_equipment_active(data.class, not blocked, data.offset)
 				end
-				
+
 				self._do_listener_callback("on_unit_added", unit)
 			end
 		end
-		
+
 		self._queued_units = {}
 	end
-	
+
 	function ObjectInteractionManager:_check_remove_unit(unit)
 		for i, queued_unit in ipairs(self._queued_units) do
 			if queued_unit:key() == unit:key() then
@@ -3984,22 +3984,22 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 				return
 			end
 		end
-		
+
 		local editor_id = unit:editor_id()
 		local interaction_id = unit:interaction().tweak_data
-		
+
 		if false then --ObjectInteractionManager.EQUIPMENT_INTERACTION_ID[interaction_id] then
 			unit:base():set_equipment_active(ObjectInteractionManager.EQUIPMENT_INTERACTION_ID[interaction_id].class, false)
 		end
-		
+
 		self._do_listener_callback("on_unit_removed", unit)
 	end
-	
+
 	function ObjectInteractionManager:block_trigger(trigger_id, status)
 		if ObjectInteractionManager.TRIGGERS[trigger_id] then
 			--io.write("ObjectInteractionManager:block_trigger(" .. tostring(trigger_id) .. ", " .. tostring(status) .. ")\n")
 			self._trigger_blocks[trigger_id] = status
-			
+
 			for id, data in ipairs(self._unit_triggers[trigger_id] or {}) do
 				if alive(data.unit) then
 					--io.write("Set active " .. tostring(data.unit:editor_id()) .. ": " .. tostring(not status) .. "\n")
@@ -4008,17 +4008,17 @@ if string.lower(RequiredScript) == "lib/managers/objectinteractionmanager" then
 			end
 		end
 	end
-	
+
 end
 
 if string.lower(RequiredScript) == "lib/units/props/missiondoor" then
 
 	local deactivate_original = MissionDoor.deactivate
-	
+
 	function MissionDoor:deactivate(...)
 		managers.interaction:block_trigger(self._unit:editor_id(), false)
 		return deactivate_original(self, ...)
 	end
-	
+
 end
 ]]

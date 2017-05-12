@@ -161,7 +161,7 @@ elseif RequiredScript == "lib/managers/statisticsmanager" then
 		shot_fired_original(self, data, ...)
 
 		--[[
-			This does not work well for HE rounds. It would be almost correct if you halved number of shots, 
+			This does not work well for HE rounds. It would be almost correct if you halved number of shots,
 			but would not take into account shots that goes into the void or compensate for direct hits
 		]]
 

@@ -174,7 +174,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 
 		self:set_loadout_enabled(self._enabled and WolfHUD:getSetting({"CrewLoadout", "SHOW_IN_LOBBY"}, true) and managers.menu:is_pc_controller())
 	end
-	
+
 	function ContractBoxGui:set_loadout_enabled(status)
 		if self._loadout_enabled ~= status then
 			if self._loadout_visible and not status then
@@ -202,18 +202,18 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 		for i, peer_id in ipairs({3, 2, 1, 4}) do
 			if not self._peer_loadout[peer_id] then
 				self._peer_loadout[peer_id] = LoadoutPanel:new(self._loadout_data, self, peer_id, width, ContractBoxGui._LOADOUT_H + 8, {
-					component_layout = WolfHUD:getTweakEntry("STD_LOBBY_LOADOUT_LAYOUT", "table", 
-						{ 
-							{ "playtime", "ping" }, 
-							{ "name" }, 
-							{ "character" }, 
-							{ "skills" }, 
-							{ "perk" }, 
-							{ "primary" }, 
-							{ "secondary" }, 
-							{ "melee_weapon" }, 
-							{ "grenade", "armor" }, 
-							{ "deployable", "secondary_deployable" } 
+					component_layout = WolfHUD:getTweakEntry("STD_LOBBY_LOADOUT_LAYOUT", "table",
+						{
+							{ "playtime", "ping" },
+							{ "name" },
+							{ "character" },
+							{ "skills" },
+							{ "perk" },
+							{ "primary" },
+							{ "secondary" },
+							{ "melee_weapon" },
+							{ "grenade", "armor" },
+							{ "deployable", "secondary_deployable" }
 						}),
 					name = 		{ alpha = 1, use_peer_color = true },
 					character = { alpha = 1, use_peer_color = true },
@@ -356,7 +356,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 			self._tabs_scroll_panel:set_w(self._panel:w())
 		end
 	end
-	
+
 	function CrimeSpreeDetailsMenuComponent:update(t, dt, ...)
 		update_original(self, t, dt, ...)
 
@@ -368,9 +368,9 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 			end
 		end
 	end
-	
+
 	CrimeSpreeEmptyPage = CrimeSpreeEmptyPage or class(CrimeSpreeDetailsPage)
-	
+
 	CrimeSpreeCrewLoadoutPage = CrimeSpreeCrewLoadoutPage or class(CrimeSpreeDetailsPage)
 
 	function CrimeSpreeCrewLoadoutPage:init(...)
@@ -403,7 +403,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 		self._borders = BoxGuiObject:new(self._loadout_data, {
 			sides = { 1, 1, 2, 1 }
 		})
-		
+
 		self._peer_loadout = self._peer_loadout or {}
 		self._next_loadout_update_t = self._next_loadout_update_t or {}
 		self:populate_loadout_panel()
@@ -415,7 +415,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 				if panel:enabled() then
 					panel:update(t, dt)
 				end
-				
+
 				local peer_id = panel:get_peer_id()
 				if (self._next_loadout_update_t[peer_id] or 0) <= t then
 					self:update_loadout_panel(peer_id)
@@ -424,7 +424,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 			end
 		end
 	end
-	
+
 	function CrimeSpreeCrewLoadoutPage:populate_loadout_panel()
 		for peer_id, panel in ipairs(self._peer_loadout or {}) do
 			if panel then
@@ -437,15 +437,15 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 		for i, peer_id in ipairs({3, 2, 1, 4}) do
 			if not self._peer_loadout[peer_id] then
 				self._peer_loadout[peer_id] = LoadoutPanel:new(self._loadout_data, self, peer_id, width, math.floor(self._loadout_data:h() + 9), {
-					component_layout = WolfHUD:getTweakEntry("CS_LOBBY_LOADOUT_LAYOUT", "table", 
-						{ 
-							{ "playtime", "ping" }, 
-							{ "name" }, 
-							{ "skills" }, 
-							{ "perk" }, 
-							{ "primary", "secondary" }, 
-							{ "grenade", "armor" }, 
-							{ "deployable", "secondary_deployable" } 
+					component_layout = WolfHUD:getTweakEntry("CS_LOBBY_LOADOUT_LAYOUT", "table",
+						{
+							{ "playtime", "ping" },
+							{ "name" },
+							{ "skills" },
+							{ "perk" },
+							{ "primary", "secondary" },
+							{ "grenade", "armor" },
+							{ "deployable", "secondary_deployable" }
 						}),
 					name = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.95, height = tweak_data.menu.pd2_medium_font_size * 1.00, align = "center", margin = 3, use_peer_color = true, alpha = 1 },
 					level = 	{ font_size = tweak_data.menu.pd2_medium_font_size * 0.9,  height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "right",  margin = 3, use_peer_color = true, alpha = 1 },
@@ -500,15 +500,15 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 		local quarter_width = math.floor(self._panel:w() / 4)
 		for peer_id = 1, 4 do
 			self._player_slots[peer_id] = LoadoutPanel:new(self._panel, self, peer_id, quarter_width, self._panel:h() + 7, {
-				component_layout = WolfHUD:getTweakEntry("BRIEFING_LOADOUT_LAYOUT", "table", 
-					{ 
-						{ "perk" }, 
-						{ "skills" }, 
-						{ "primary" }, 
-						{ "secondary" }, 
-						{ "melee_weapon", "grenade" }, 
-						{ "armor", "mask" }, 
-						{ "deployable", "secondary_deployable" } 
+				component_layout = WolfHUD:getTweakEntry("BRIEFING_LOADOUT_LAYOUT", "table",
+					{
+						{ "perk" },
+						{ "skills" },
+						{ "primary" },
+						{ "secondary" },
+						{ "melee_weapon", "grenade" },
+						{ "armor", "mask" },
+						{ "deployable", "secondary_deployable" }
 					}),
 				name = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.95, height = tweak_data.menu.pd2_medium_font_size * 1.00, align = "center", margin = 3, use_peer_color = true },
 				level = 	{ font_size = tweak_data.menu.pd2_medium_font_size * 0.9,  height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "right",  margin = 3, use_peer_color = true },
@@ -546,7 +546,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 			self._player_slots[slot]:set_outfit(outfit)
 		end
 	end
-	
+
 	function TeamLoadoutCustom:update(t, dt)
 		for _, panel in ipairs(self._player_slots) do
 			if panel:enabled() then
@@ -581,11 +581,11 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 	if WolfHUD:getSetting({"CrewLoadout", "REPLACE_IN_BRIEFING"}, true) then
 		CoreClass.override_class(TeamLoadoutItem, TeamLoadoutCustom)
 	end
-	
+
 	local BriefingGUI_update = MissionBriefingGui.update
 	function MissionBriefingGui:update(t, dt, ...)
 		BriefingGUI_update(self, t, dt, ...)
-		
+
 		if self._team_loadout_item and self._team_loadout_item.update then
 			self._team_loadout_item:update(t, dt)
 		end
@@ -608,10 +608,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 				w = right_panel:w() - 20,
 				h = HUDStatsScreen._LOADOUT_H,
 			})
-			
+
 			self._peer_loadout = self._peer_loadout or {}
 			self:populate_loadout_panel()
-			
+
 			local left_panel = self._full_hud_panel:child("left_panel")
 			local loot_wrapper_panel = alive(left_panel) and left_panel:child("loot_wrapper_panel")
 			local secured_loot_title = alive(loot_wrapper_panel) and loot_wrapper_panel:child("secured_loot_title")
@@ -635,7 +635,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			end
 		end
 	end
-	
+
 	function HUDStatsScreen:show(...)
 		show_original(self, ...)
 
@@ -653,7 +653,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			if managers.hud then
 				managers.hud:add_updator("WolfHUD_CrewLoadout_Ping", callback(self, self, "update_ping"))
 			end
-			
+
 			local left_panel = self._full_hud_panel:child("left_panel")
 			local left_mutator_panel = alive(left_panel) and left_panel:child("mutators_panel")
 			if alive(left_mutator_panel) then
@@ -661,14 +661,14 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			end
 		end
 	end
-	
+
 	function HUDStatsScreen:hide(...)
 		hide_original(self, ...)
 		if managers.hud then
 			managers.hud:remove_updator("WolfHUD_CrewLoadout_Ping")
 		end
 	end
-	
+
 	function HUDStatsScreen:populate_loadout_panel()
 		for peer_id, panel in ipairs(self._peer_loadout or {}) do
 			if panel then
@@ -681,9 +681,9 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		for peer_id = 1, 4  do
 			if not self._peer_loadout[peer_id] then
 				self._peer_loadout[peer_id] = LoadoutPanel:new(self._loadout_data, self, peer_id, self._loadout_data:w(), self._loadout_data:h() * 0.17, {
-					component_layout = WolfHUD:getTweakEntry("TAB_LOADOUT_LAYOUT", "table", 
-						{ 
-							{ "name", "ping" }, 
+					component_layout = WolfHUD:getTweakEntry("TAB_LOADOUT_LAYOUT", "table",
+						{
+							{ "name", "ping" },
 							{ "skills", "perk" },
 						}),
 					name = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.90, height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "left",  margin = 0, use_peer_color = true },
@@ -725,7 +725,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			y = y + height + (self._loadout_data:h() * 0.08)
 		end
 	end
-	
+
 	function HUDStatsScreen:update_ping(t, dt)
 		for peer_id = 1, 4 do
 			self._peer_loadout[peer_id]:update(t, dt)
@@ -790,7 +790,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 	function LoadoutBaseItem:set_h(h)
 		return self:set_size(nil, h)
 	end
-	
+
 	function LoadoutBaseItem:update(t, dt)
 
 	end
@@ -798,7 +798,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 	function LoadoutBaseItem:arrange()
 
 	end
-	
+
 	function LoadoutBaseItem:set_outfit(outfit)
 		return table.size(outfit) > 0
 	end
@@ -910,7 +910,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 		self._borders = BoxGuiObject:new(self._panel, {
 			sides = self._border_config
 		})
-		
+
 		if params.add_bg then
 			self._panel:rect({
 				color = self._peer_color,
@@ -950,7 +950,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			end
 		end
 	end
-	
+
 	function LoadoutPanel:update(t, dt)
 		for name, component in pairs(self._components) do
 			component:update(t, dt)
@@ -1025,7 +1025,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 	function LoadoutPanel:local_peer()
 		return self._local_peer
 	end
-	
+
 	function LoadoutPanel:items(name)
 		if name then
 			return self._components[name]
@@ -1351,16 +1351,16 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			self:set_enabled("peer", false)
 		end
 	end
-	
+
 	LoadoutPingItem = LoadoutPingItem or class(LoadoutTextItem)
-	
+
 	function LoadoutPingItem:init(base_panel, owner, name, width, height, params)
 
 		LoadoutPingItem.super.init(self, base_panel, owner, name, width, height, params)
 
 		self:set_enabled("distant_peer", not self._owner:local_peer())
 	end
-	
+
 	function LoadoutPingItem:update(t, dt)
 		if not self._owner:local_peer() then
 			if (self._next_update_t or 0) <= t then
@@ -1394,9 +1394,9 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			self._text:set_color(color)
 		end
 	end
-	
+
 	LoadoutPlaytimeItem = LoadoutPlaytimeItem or class(LoadoutTextItem)
-	
+
 	function LoadoutPlaytimeItem:set_outfit(outfit)
 		local peer = self._owner:get_peer()
 		local steam_id = peer and tostring(peer:user_id())
@@ -1404,10 +1404,10 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			self:set_enabled("peer", true)
 			if steam_id ~= self._loadout then
 				self._loadout = steam_id
-				
+
 				self:set_text("...")
 				self:arrange()
-				
+
 				--local profile_url = string.format("http://steamcommunity.com/profiles/%s/?xml=1", tostring(steam_id))
 				local all_games_url = string.format("http://steamcommunity.com/profiles/%s/games/?xml=1", tostring(steam_id))
 				Steam:http_request(all_games_url, callback(self, self, "set_playtime_clbk"))
@@ -1416,7 +1416,7 @@ elseif string.lower(RequiredScript) == "lib/setups/setup" then
 			self:set_enabled("peer", false)
 		end
 	end
-	
+
 	function LoadoutPlaytimeItem:set_playtime_clbk(success, page)
 		local text = "No Data."
 		if success then

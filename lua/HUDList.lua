@@ -37,7 +37,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 		return distance_str, rotation
 	end
-	
+
 	local function get_icon_data(icon)
 		local texture = icon.texture
 		local texture_rect = icon.texture_rect
@@ -302,7 +302,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		sec_hostage =				{ type_id = "cop_hostage",	category = "hostages",	force_update = { "security", "enemies" } 			},
 		civ_hostage =				{ type_id = "civ_hostage",	category = "hostages",	force_update = { "civ" } 							},
 		cop_minion =				{ type_id = "minion",		category = "minions",	force_update = { "cop", "enemies" } 				},
-		sec_minion =				{ type_id = "minion",		category = "minions",	force_update = { "security", "enemies" }			},	
+		sec_minion =				{ type_id = "minion",		category = "minions",	force_update = { "security", "enemies" }			},
 	}
 
 	HUDListManager.SPECIAL_PICKUP_TYPES = {
@@ -420,7 +420,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local level_id = managers.job:current_level_id()
 			local disabled_lvls = {
 				"election_day_3", 		-- Election Day Day 2 Warehouse
-				"election_day_3_skip1", 
+				"election_day_3_skip1",
 				"election_day_3_skip2",
 				"mia_1",		 		-- Hotline Miami Day 1
 				"pal" 					-- Counterfeit
@@ -445,7 +445,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		frenzy = { "frenzy", "damage_reduction" },
 		hostage_situation = { "hostage_situation", "damage_reduction" },
 		hostage_taker = { "hostage_taker", "passive_health_regen" },
-		maniac = { "maniac", "damage_reduction" }, 
+		maniac = { "maniac", "damage_reduction" },
 		melee_stack_damage = { "melee_stack_damage", "melee_damage_increase" },
 		movement_dodge = { "total_dodge_chance" },
 		muscle_regen = { "muscle_regen", "passive_health_regen" },
@@ -709,11 +709,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		for _, item in pairs(self:list("right_side_list"):item("stealth_list"):items()) do
 			item:set_active(item:get_count() > 0 and status)
 		end
-		
+
 		for _, item in pairs(self:list("left_side_list"):item("pagers"):items()) do
 			item:set_active(status)
 		end
-		
+
 		for _, item in pairs(self:list("left_side_list"):item("equipment"):items()) do
 			if item:get_type() == "body_bag" then
 				item:set_active(item:current_amount() > 0 and status)
@@ -1738,7 +1738,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			return true, size_mult
 		end
 	end
-	
+
 	function HUDList.ItemBase:enabled() return next(self._disable_reason) == nil end
 
 	function HUDList.ItemBase:set_disabled(reason, status, instant)
@@ -2027,7 +2027,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if math.abs(diff) > 0.01 then
 			local size_mult = new_scale / self._scale
 			self._scale = new_scale
-			
+
 			for _, item in pairs(self:items()) do
 				item:rescale(new_scale)
 			end
@@ -2143,7 +2143,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.ListBase:update_item_positions()
 		self:_update_item_positions(nil, true)
 	end
-	
+
 	function HUDList.ListBase:_update_item_positions(insert_item, instant_move, move_timer)
 	end
 
@@ -2156,7 +2156,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.ListBase:_remove_item(item)
 		self._items[item:name()] = nil
 	end
-	
+
 	function HUDList.ListBase:set_color(color)
 		for _, item in pairs(self:items()) do
 			item:set_color(color)
@@ -2182,7 +2182,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		self._recheck_interval = params.recheck_interval
 		self._next_recheck = self._recheck_interval
-		
+
 		self:setup_expansion_item()
 	end
 
@@ -2355,7 +2355,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self:set_disabled("no_visible_items", total_shown_items <= 0)
 		end
 	end
-	
+
 	function HUDList.HorizontalList:reapply_item_priorities(update_positions, move_time_override)
 		local order_changed = false
 		if not self._reorder_in_progress then
@@ -2364,11 +2364,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local swapped = false
 			repeat
 				swapped = false
-				
+
 				for i = 2, #self._shown_items, 1 do
 					local prev = self._shown_items[i-1]
 					local cur = self._shown_items[i]
-					
+
 					local prev_prio, cur_prio = prev and prev:priority(), cur and cur:priority()
 					if cur_prio then
 						if not prev_prio or prev_prio > cur_prio then
@@ -2381,7 +2381,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			until not swapped
 
 			self._reorder_in_progress = nil
-			
+
 			if update_positions and order_changed then
 				self:_update_item_positions(nil, false, move_time_override)
 			end
@@ -2468,7 +2468,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	HUDList.ExpansionIndicator = HUDList.ExpansionIndicator or class(HUDList.ItemBase)
-	
+
 	function HUDList.ExpansionIndicator:init(parent, name, ratio_w, ratio_h, params)
 		HUDList.ExpansionIndicator.super.init(self, parent, name, { align = "center", w = parent:panel():h() * (ratio_w or 1), h = parent:panel():h() * (ratio_h or 1) })
 
@@ -2530,7 +2530,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._change_increase_color = Color.green
 		self._change_decrease_color = Color.red
 
-		
+
 		local texture, texture_rect = get_icon_data(icon)
 
 		self._icon = self._panel:bitmap({
@@ -2587,7 +2587,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 			self._progress_bar:set_size(self._panel:w(), self._panel:w())
 			self._progress_bar:set_bottom(self._panel:bottom())
-			
+
 			self._text:set_size(self._progress_bar:w(), self._progress_bar:h())
 			self._text:set_font_size(self._progress_bar:h() * 0.6)
 		end
@@ -3145,7 +3145,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.LootItem:rescale(new_scale)
 		local enabled, size_mult = HUDList.LootItem.super.rescale(self, new_scale)
 
-		if enabled then			
+		if enabled then
 			self._name_text:set_size(self._panel:w(), self._panel:h())
 			local _, _, w, h = self._name_text:text_rect()
 			local font_size = math.min(self._name_text:font_size() * (self._name_text:w() / w) * 0.9, self._name_text:font_size())
@@ -3261,7 +3261,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.LeftListIcon:rescale(new_scale)
 		local enabled, size_mult = HUDList.LeftListIcon.super.rescale(self, new_scale)
 
-		if enabled then			
+		if enabled then
 			for _, icon in ipairs(self._icons) do
 				icon:set_size(icon:w() * size_mult, icon:h() * size_mult)
 				icon:set_x(icon:x() * size_mult)
@@ -3278,7 +3278,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			icon:set_color(color)
 		end
 	end
-	
+
 	HUDList.LeftListItem = HUDList.LeftListItem or class(HUDList.ItemBase)
 	function HUDList.LeftListItem:init(parent, name, params)
 		params = params or {}
@@ -3436,7 +3436,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self.STANDARD_COLOR = color
 		self:_set_colors(self.STANDARD_COLOR)
 	end
-	
+
 	function HUDList.TimerItem:priority()
 		return self._remaining and Utl.round(self._remaining, 1) or self._priority
 	end
@@ -3487,7 +3487,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._distance_text:set_color(color)
 		self._progress_bar:set_color(color)
 	end
-	
+
 	HUDList.UpgradeableTimerItem = HUDList.UpgradeableTimerItem or class(HUDList.TimerItem)
 	function HUDList.UpgradeableTimerItem:init(parent, name, data)
 		self.UPGRADE_COLOR = Color(1, 0.0, 0.8, 1.0)
@@ -3688,7 +3688,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDList.EquipmentItem:set_color(color)
 		HUDList.EquipmentItem.super.set_color(self, color)
-		
+
 		if not self._owner then
 			self._icon:set_color(color)
 		end
@@ -3991,7 +3991,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		self:_set_color()
 		self._animating = nil
-		
+
 		if expire_clbk then
 			expire_clbk()
 		end
@@ -4266,7 +4266,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 			self._distance_text:sei_size(self._panel:w() * 0.65, self._panel:h() * 0.4)
 			self._distance_text:set_y(self._timer_text:bottom())
-			
+
 			self._direction_icon:set_size(self._panel:h() * 0.3, self._panel:h() * 0.2)
 			self._direction_icon:set_center(self._panel:w() * 0.8, self._panel:h() * 0.75)
 		end
@@ -5025,7 +5025,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "GHOST_BUFFS", "second_wind"}, true),
 		},
 		sicario_dodge = {
-			perks = {1, 0}, 
+			perks = {1, 0},
 			texture_bundle_folder = "max",
 			class = "TimedBuffItem",
 			priority = 4,
@@ -5193,7 +5193,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "medical_supplies_debuff"}, true),
 		},
 		sicario_dodge_debuff = {
-			perks = {1, 0}, 
+			perks = {1, 0},
 			texture_bundle_folder = "max",
 			class = "TimedBuffItem",
 			priority = 8,
@@ -5349,7 +5349,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			invert_timers = true,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "passive_health_regen"}, true),
 		},
-		total_dodge_chance = {	--missing some skills: 
+		total_dodge_chance = {	--missing some skills:
 			--perks = {1, 0},
 			skills_new = {1, 12},
 			texture_bundle_folder = "max",
@@ -5499,7 +5499,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._value:set_bottom(self._panel:h() + progress_bar_width)
 
 		self._progress_bar_debuff = PanelFrame:new(self._panel, {
-			invert_progress = icon.invert_debuff, 
+			invert_progress = icon.invert_debuff,
 			bar_w = progress_bar_width,
 			w = self._panel:w(),
 			h = self._panel:w(),
@@ -6220,7 +6220,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 											}
 		self._member_buffs["burglar_dodge"] = { value = managers.player:upgrade_value("player", "tier_dodge_chance", 0) }	 -- Burglar Perk
 		self._member_buffs["jail_diet"] = { value = managers.player:get_value_from_risk_upgrade(managers.player:upgrade_value("player", "detection_risk_add_dodge_chance"))}
-		
+
 		self._buff_effects = {
 		}
 
@@ -6240,7 +6240,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 
 		self:_set_text(string.format("%.0f%%", math.max(value * 100, 0)))
-		
+
 		if value <= 0 then
 			HUDList.TotalDodgeChanceBuff.super.super.deactivate(self, "nil")
 		else
@@ -6388,7 +6388,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self._right:set_alpha(alpha)
 		end
 	end
-	
+
 	function PanelFrame:set_bg_color(c, alpha)
 		if alive(self._bg) then
 			self._bg:set_color(c)
@@ -6404,7 +6404,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._left:set_alpha(alpha)
 		self._right:set_alpha(alpha)
 	end
-	
+
 	function PanelFrame:set_bg_alpha(alpha)
 		if alive(self._bg) then
 			self._bg:set_alpha(alpha)
@@ -6468,9 +6468,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if self._invert_progress then
 			r = 1-r
 		end
-		return r 
+		return r
 	end
-	
+
 	function PanelFrame:alpha() return self._panel:alpha() end
 	function PanelFrame:w() return self._panel:w() end
 	function PanelFrame:h() return self._panel:h() end
@@ -6490,7 +6490,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function PanelFrame:set_y(v) self._panel:set_y(v) end
 	function PanelFrame:set_w(v) self:set_size(v, nil)	end
 	function PanelFrame:set_h(v) self:set_size(nil, v)	end
-	function PanelFrame:set_size(w, h) 
+	function PanelFrame:set_size(w, h)
 		w = w or self:w()
 		h = h or self:h()
 
