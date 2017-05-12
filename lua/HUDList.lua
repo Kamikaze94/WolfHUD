@@ -961,14 +961,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDListManager:_buff_event(event, id, data)
-		WolfHUD:print_log(string.format("(%.3f) HUDListManager:_buff_event(%s, %s)", Application:time(), tostring(event), tostring(id)), "info")
+		WolfHUD:print_log("(%.3f) HUDListManager:_buff_event(%s, %s)", Application:time(), tostring(event), tostring(id), "info")
 		local items = self:_get_buff_items(id)
 
 		for _, item in ipairs(items) do
 			if item[event] then
 				item[event](item, id, data)
 			else
-				WolfHUD:print_log(string.format("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s", Application:time(), tostring(event), tostring(id)), "warning")
+				WolfHUD:print_log("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s", Application:time(), tostring(event), tostring(id), "warning")
 			end
 		end
 
@@ -5998,7 +5998,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDList.CompositeBuff:set_value(id, data)
 		if self._member_buffs[id] and self._member_buffs[id].value ~= data.value then
-			WolfHUD:print_log(string.format("HUDList.CompositeBuff:set_value(%s, %s)", tostring(id), tostring(data.value)), "info")
+			WolfHUD:print_log("HUDList.CompositeBuff:set_value(%s, %s)", tostring(id), tostring(data.value), "info")
 			self._member_buffs[id].value = data.value
 			self:_check_buffs()
 		end

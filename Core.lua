@@ -574,7 +574,7 @@ if not _G.WolfHUD then
 				msg_type = "error"
 				text = "Cannot log function... "
 			elseif type(text) == "string" then
-				text = string.format(text, unpack(params))
+				text = string.format(text, unpack(params or {}))
 			end
 			log(string.format("[WolfHUD] %s: %s", string.upper(msg_type), text))
 		end

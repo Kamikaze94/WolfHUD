@@ -1,14 +1,20 @@
 
 local print_info = function(...)
-	WolfHUD:print_log(..., "info")
+	local params = {...}
+	table.insert(params, #params + 1, "info")
+	WolfHUD:print_log(unpack(params))
 end
 
 local print_warning = function(...)
-	WolfHUD:print_log(..., "warning")
+	local params = {...}
+	table.insert(params, #params + 1, "warning")
+	WolfHUD:print_log(unpack(params))
 end
 
 local print_error = function(...)
-	WolfHUD:print_log(..., "error")
+	local params = {...}
+	table.insert(params, #params + 1, "error")
+	WolfHUD:print_log(unpack(params))
 end
 
 if string.lower(RequiredScript) == "lib/setups/setup" then
@@ -444,6 +450,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 
 		--Temporary upgrades
 		temporary = {
+			bullet_storm = "bullet_storm",
 			chico_injector = "chico_injector",
 			damage_speed_multiplier = "second_wind",
 			dmg_multiplier_outnumbered = "underdog",
@@ -1241,7 +1248,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				self:_buff_event("set_value", id, { value = data.value })
 			end
 		else
-			print_warning("Unknown temporary buff event: %s, %s, %s", event, data.category, data.upgrade)
+			print_info("Unknown temporary buff event: %s, %s, %s", tostring(event), tostring(data.category), tostring(data.upgrade))
 		end
 	end
 
@@ -1358,7 +1365,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				end
 			end
 		else
-			print_warning("Unknown team buff event: %s, %s, %s", event, data.category, data.upgrade)
+			print_info("Unknown team buff event: %s, %s, %s", event, data.category, data.upgrade)
 		end
 	end
 
@@ -1469,8 +1476,6 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 		local t = Application:time()
 		local dt = t - self._t
 		self._t = t
-
-		print_info("_update_player_timer_expiration: %f - %f / %f - %f", ut, udt, t, dt)
 
 		while self._auto_expire_timers.expire_t[1] and self._auto_expire_timers.expire_t[1].expire_t < t do
 			local data = self._auto_expire_timers.expire_t[1]
@@ -2657,7 +2662,6 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	local mul_to_property_original = PlayerManager.mul_to_property
 	local set_property_original = PlayerManager.set_property
 	local remove_property_original = PlayerManager.remove_property
-	local add_to_temporary_property_original = PlayerManager.add_to_temporary_property
 	local chk_wild_kill_counter_original = PlayerManager.chk_wild_kill_counter
 	local set_synced_cocaine_stacks_original = PlayerManager.set_synced_cocaine_stacks
 	local add_grenade_amount_original = PlayerManager.add_grenade_amount
@@ -2915,15 +2919,6 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 
 		if name == "revive_damage_reduction" then
 			managers.gameinfo:event("buff", "deactivate", "combat_medic_passive")
-		end
-	end
-
-	function PlayerManager:add_to_temporary_property(name, time, ...)
-		add_to_temporary_property_original(self, name, time, ...)
-
-		if name == "bullet_storm" then
-			local t = self._temporary_properties._properties[name][2]
-			managers.gameinfo:event("timed_buff", "activate", name, { expire_t = t })
 		end
 	end
 
