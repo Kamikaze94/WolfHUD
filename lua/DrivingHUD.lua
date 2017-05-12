@@ -689,11 +689,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	function HUDDriving.LegendItem:_set_value()
 		if self._value then
 			local text = tostring(self._value)
-			
+
 			if self._show_decimal_marks then
 				text = managers.money:add_decimal_marks_to_string(text)
 			end
-			
+
 			if self._max_value then
 				if self._show_max_value then
 					local max_str = tostring(self._max_value)

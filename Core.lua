@@ -660,7 +660,7 @@ if not _G.WolfHUD then
 				string.format("%s\n\n%s", managers.localization:text(string.format("wolfhud_dialog_install_%s_desc", data["identifier"])), managers.localization:text("wolfhud_dialog_install_desc", { NAME = data["display_name"]})) ,
 				menu_options, true )
 	end
-	
+
 	function WolfHUD:getVersion()
 		if not self.version then
 			for k, v in pairs(LuaModManager.Mods) do

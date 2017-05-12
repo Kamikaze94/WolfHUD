@@ -22,7 +22,7 @@ Waypoint settings:
 										"alpha" 		(boolean)	for it to affect alpha of the whole waypoint,
 										"color"			(table)		"start"/"stop"	(color)	Color for the whole waypoint on 0/100% progress. (Component color settings have higher priority)
 										"position" 		(vector)	to change the position offset of the whole waypoint
-	component_order: 		(table) 	row tables		(table)		Row definition of components (top-2-bottom). 
+	component_order: 		(table) 	row tables		(table)		Row definition of components (top-2-bottom).
 																	column tables 		(table) 	Column definition of coponents by names (left-2-right).
 
 Component settings:			(table)		Component definition as subtable of the Waypoint settings. the key will be that components name.

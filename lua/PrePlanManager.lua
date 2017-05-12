@@ -159,7 +159,7 @@ if requiredScript == "lib/managers/menumanager" then
 						display_name = display_name:gsub("<SKULL>", "")
 						plan_icon = "risklevel_blackscreen"
 					end
-					
+
 					local item_data = {
 						type = "CoreMenuItem.Item",
 					}

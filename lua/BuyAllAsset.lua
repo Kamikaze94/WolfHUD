@@ -6,15 +6,15 @@ if string.lower(RequiredScript) == "lib/managers/missionassetsmanager" then
 			end
 		end
 	end
-	
+
 	function MissionAssetsManager:asset_is_buyable(asset)
 		return self:asset_is_locked(asset) and (Network:is_server() and asset.can_unlock or Network:is_client() and self:get_asset_can_unlock_by_id(asset.id))
 	end
-	
+
 	function MissionAssetsManager:asset_is_locked(asset)
 		return asset.show and not asset.unlocked
 	end
-	
+
 	function MissionAssetsManager:has_locked_assets()
 		local level_id = managers.job:current_level_id()
 		if not tweak_data.preplanning or not tweak_data.preplanning.locations or not tweak_data.preplanning.locations[level_id] then
@@ -26,7 +26,7 @@ if string.lower(RequiredScript) == "lib/managers/missionassetsmanager" then
 		end
 		return false
 	end
-	
+
 	function MissionAssetsManager:has_buyable_assets()
 		local level_id = managers.job:current_level_id()
 		if self:is_unlock_asset_allowed() and not tweak_data.preplanning or not tweak_data.preplanning.locations or not tweak_data.preplanning.locations[level_id] then
@@ -37,7 +37,7 @@ if string.lower(RequiredScript) == "lib/managers/missionassetsmanager" then
 		end
 		return false
 	end
-	
+
 	function MissionAssetsManager:get_total_assets_costs()
 		local total_costs = 0
 		for _, asset in ipairs(self._global.assets) do
@@ -72,16 +72,16 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 			blend_mode = "add",
 			visible = managers.assets:has_locked_assets(),
 		})
-		
+
 		self:update_buy_all_btn()
 	end
-	
+
 	function AssetsItem:unlock_asset_by_id(...)
 		unlock_asset_by_id_original(self, ...)
 
 		self:update_buy_all_btn()
 	end
-	
+
 	function AssetsItem:move_up(...)
 		if self._asset_selected and (self._asset_selected % 2 > 0) and managers.assets:has_buyable_assets() and self:can_afford_all_assets() then
 			self._buy_all_highlighted = true
@@ -93,7 +93,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 			move_up_original(self, ...)
 		end
 	end
-	
+
 	function AssetsItem:move_down(...)
 		if self._buy_all_highlighted then
 			self._buy_all_highlighted = nil
@@ -104,19 +104,19 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 			move_down_original(self, ...)
 		end
 	end
-	
+
 	function AssetsItem:move_left(...)
 		if not self._buy_all_highlighted then
 			move_left_original(self, ...)
 		end
 	end
-	
+
 	function AssetsItem:move_right(...)
 		if not self._buy_all_highlighted then
 			move_right_original(self, ...)
 		end
 	end
-	
+
 	function AssetsItem:confirm_pressed(...)
 		if self._buy_all_highlighted then
 			if self:can_afford_all_assets() then
@@ -128,7 +128,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 			return confirm_pressed_original(self, ...)
 		end
 	end
-	
+
 	function AssetsItem:mouse_moved(x, y, ...)
 		if alive(self._buy_all_btn) and managers.assets:has_buyable_assets() then
 			if self._buy_all_btn:inside(x, y) then
@@ -149,7 +149,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 
 		return mouse_moved_original(self, x, y, ...)
 	end
-	
+
 	function AssetsItem:mouse_pressed(button, x, y, ...)
 		if alive(self._buy_all_btn) and self:can_afford_all_assets() and button == Idstring("0") and self._buy_all_btn:inside(x, y) then
 			managers.assets:unlock_all_buyable_assets()
@@ -158,7 +158,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 
 		return mouse_pressed_original(self, button, x, y, ...)
 	end
-	
+
 	function AssetsItem:update_buy_all_btn(colors_only)
 		if alive(self._buy_all_btn) then
 			local asset_costs = managers.assets:get_total_assets_costs()
@@ -185,7 +185,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 			end
 		end
 	end
-	
+
 	function AssetsItem:can_afford_all_assets()
 		return (managers.assets:get_total_assets_costs() <= managers.money:total())
 	end

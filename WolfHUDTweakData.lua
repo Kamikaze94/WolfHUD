@@ -27,7 +27,7 @@ function WolfHUDTweakData:init()
 	self.STEALTH_SHAPED_CHARGE_TIMEOUT = 0.25
 	-- Time between 2 automatical pickups, when the interaction button remains pressed.
 	self.AUTO_PICKUP_DELAY = 0.2
-	
+
 	-- Component Layouts  for Lobby and briefing loadout panels.
 	-- The total width and height of those panels are fixed, so adding too many components into a row or column will make them incredibly small.
 	-- Available components:
@@ -48,38 +48,38 @@ function WolfHUDTweakData:init()
 		deployable 				-> The equipped deployable
 		secondary_deployable 	-> The eqipped secondary deployable (in case of Jack of all trades)
 --]]
-	self.STD_LOBBY_LOADOUT_LAYOUT = { 
-										{ "playtime", "ping" }, 
-										{ "name" }, 
-										{ "character" }, 
-										{ "skills" }, 
-										{ "perk" }, 
-										{ "primary" }, 
-										{ "secondary" }, 
-										{ "melee_weapon" }, 
-										{ "grenade", "armor" }, 
-										{ "deployable", "secondary_deployable" } 
+	self.STD_LOBBY_LOADOUT_LAYOUT = {
+										{ "playtime", "ping" },
+										{ "name" },
+										{ "character" },
+										{ "skills" },
+										{ "perk" },
+										{ "primary" },
+										{ "secondary" },
+										{ "melee_weapon" },
+										{ "grenade", "armor" },
+										{ "deployable", "secondary_deployable" }
 									}
-	self.CS_LOBBY_LOADOUT_LAYOUT = { 
-										{ "playtime", "ping" }, 
-										{ "name" }, 
-										{ "skills" }, 
-										{ "perk" }, 
-										{ "primary", "secondary" }, 
-										{ "grenade", "armor" }, 
-										{ "deployable", "secondary_deployable" } 
+	self.CS_LOBBY_LOADOUT_LAYOUT = {
+										{ "playtime", "ping" },
+										{ "name" },
+										{ "skills" },
+										{ "perk" },
+										{ "primary", "secondary" },
+										{ "grenade", "armor" },
+										{ "deployable", "secondary_deployable" }
 									}
-	self.BRIEFING_LOADOUT_LAYOUT = 	{ 
-										{ "perk" }, 
-										{ "skills" }, 
-										{ "primary" }, 
-										{ "secondary" }, 
-										{ "melee_weapon", "grenade" }, 
-										{ "armor", "mask" }, 
-										{ "deployable", "secondary_deployable" } 
+	self.BRIEFING_LOADOUT_LAYOUT = 	{
+										{ "perk" },
+										{ "skills" },
+										{ "primary" },
+										{ "secondary" },
+										{ "melee_weapon", "grenade" },
+										{ "armor", "mask" },
+										{ "deployable", "secondary_deployable" }
 									}
-	self.TAB_LOADOUT_LAYOUT = 		{ 
-										{ "name", "ping" }, 
+	self.TAB_LOADOUT_LAYOUT = 		{
+										{ "name", "ping" },
 										{ "skills", "perk" },
 									}
 

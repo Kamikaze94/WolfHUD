@@ -1,14 +1,14 @@
 # WolfHUD
 ####Development Version
-  
-This is a Mod collection of several useful HUD altering mods.  
-I've modified them and added features, I felt were needed or useful.  
-It was originally a recreated and updated version of GageHUD, since it was really painful to maintain with all the mixxed up files.  
-Over time I added more and more useful Scripts and currently it becomes kind of an All-in-One solution...  
-Not sure if I want it to become that, but at least I added ingame Options to turn off functions you don't like. ;)  
-__I got the permission from _Seven_, _ViciousWalrus_, _Undeadsewer_, _FishTaco_, _friendIyfire_ and _Terminator01_ for the use of their scripts and from _Nervatel Hanging Closet Monster_ for using his icons.__  
+
+This is a Mod collection of several useful HUD altering mods.
+I've modified them and added features, I felt were needed or useful.
+It was originally a recreated and updated version of GageHUD, since it was really painful to maintain with all the mixxed up files.
+Over time I added more and more useful Scripts and currently it becomes kind of an All-in-One solution...
+Not sure if I want it to become that, but at least I added ingame Options to turn off functions you don't like. ;)
+__I got the permission from _Seven_, _ViciousWalrus_, _Undeadsewer_, _FishTaco_, _friendIyfire_ and _Terminator01_ for the use of their scripts and from _Nervatel Hanging Closet Monster_ for using his icons.__
 **Big thanks to [Kampfhörnchen](http://forums.lastbullet.net/member.php?action=profile&uid=19364) for creating a better logo and a banner, ^^**
-  
+
 __Preview:__
 --
 _(Outdated, need to take some new ones soon... :P )_
@@ -24,18 +24,18 @@ __Installation:__
 2. Click on the __'Download .ZIP'__-Button.
 2. Open the downloaded archive, using WinRAR or 7zip.
 3. Extract the __'WolfHUD-master'__-folder into your 'Payday 2/mods'-folder.
-4. Rename __'WolfHUD-master'__-folder to __'WolfHUD'__. 
+4. Rename __'WolfHUD-master'__-folder to __'WolfHUD'__.
 5. Start the game once. It will promt you to update Federal Inventory and WolfHUD_Textures. Update both.
 6. _(Optional)_ If you don't like the Inventory Icons, go to your "Payday 2/assets/mod_overrides/Federal Inventory"-folder and delete the "guis"-folder. Then open revision.txt and change the number to a higher one, to prevent future updates.
-  
-__(You need the [Better Lua injecTor](http://paydaymods.com/download/) for this mod to work)__  
-__(Keep in mind, that this is a development version. For a more stable release, get your version [here](http://paydaymods.com/mods/298/wolfhud).)__  
+
+__(You need the [Better Lua injecTor](http://paydaymods.com/download/) for this mod to work)__
+__(Keep in mind, that this is a development version. For a more stable release, get your version [here](http://paydaymods.com/mods/298/wolfhud).)__
 
 __Bug reports:__
 --
-__If you encounter any bugs, feel free to post about it on the issues tab!  
-Please try to provide information from your crashlog and the actions you and your teammates were doing, when you crashed.  ;)__  
-The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.  
+__If you encounter any bugs, feel free to post about it on the issues tab!
+Please try to provide information from your crashlog and the actions you and your teammates were doing, when you crashed.  ;)__
+The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
 The BLT log can be found at 'Payday 2/mods/logs/'.
 
 __Included Mods:__
@@ -45,7 +45,7 @@ __Included Mods:__
 - __[KillCounter](https://bitbucket.org/pjal3urb/customhud/src)__, made by _Seven_, modified by _me_
 - __[Accuracy Plugin](https://bitbucket.org/pjal3urb/customhud/src)__, made by _Seven_, modified by _me_
 - __[ToggleInteract](https://bitbucket.org/pjal3urb/toggleinteract/src)__, made by _Seven_, modified by _Iron Predator_ and _me_
-- __[DoubleTap Granades](https://bitbucket.org/pjal3urb/doubletapgrenades/src)__, made by Seven 
+- __[DoubleTap Granades](https://bitbucket.org/pjal3urb/doubletapgrenades/src)__, made by Seven
 - __[AutoPickup](https://bitbucket.org/pjal3urb/autopickup/src)__, made by _Seven_
 - __[WeaponLaserColor](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13508)__, made by _Seven_
 - __[Remember Gadget State](https://bitbucket.org/pjal3urb/persistentgadgets/src)__, by _Seven_
@@ -74,7 +74,7 @@ __Included Mods:__
   - __Federal Inventory__ (Mod Override), made by _Nervatel Hanging Closet Monster_ and _Luffy_, updated by _me_
     - [weapon icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=14240), [melee icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13910) and [mask icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13911) made by _Nervatel Hanging Closet Monster_
     - [throwables, equipment, armor and heister portraits](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13916) made by _Luffy_
-	
+
 __Localizations:__
 --
 - __English__, made by _me_
@@ -84,6 +84,6 @@ __Localizations:__
 - __Chinese__, made by _小熊饼干_
 
 ###Big credit goes to all of you!
-####Without your awesome mods, I would have quitted this game a long time ago! 
-__If I forgot to mention you, I'm really sorry.  
+####Without your awesome mods, I would have quitted this game a long time ago!
+__If I forgot to mention you, I'm really sorry.
 Please feel free to contact me, so I can credit you, for the awesome stuff you have made :)__

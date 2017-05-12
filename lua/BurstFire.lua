@@ -4,14 +4,14 @@ Weapon tweak data attributes:
 		<number>		-	Force enable burst fire using the specified number as the burst size (if weapon does not have a fire mode mod installed)
 		nil	/undef		-	If the weapon can toggle fire mode and does not have a fire mode mod installed, enable burst fire with default burst size (3)
 		false			-	Force disable burst fire even if weapon can toggle fire mode
-		
+
 	ADAPTIVE_BURST_SIZE:
 		nil/true		-	Allow abortion of ongoing burst if trigger is released
 		false			-	Force entire burst to be fired before resetting
-		
+
 	BURST_FIRE_RATE_MULTIPLIER:
 		<number>		-	Apply specified multiplier to fire rate when firing in burst mode
-		
+
 	DELAYED_BURST_RECOIL:
 		true/false	-	Build up and delay recoil until last shot in burst is fired
 ]]
