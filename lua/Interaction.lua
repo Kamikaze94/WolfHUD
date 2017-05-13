@@ -332,7 +332,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 				self._interact_time:set_font_size(fontSize)
 			end
 			local text = string.format("%.1fs", total)
-			self._interact_time:set_y(self._hud_panel:center_y() + self._circle_radius - (2 * self._interact_time:font_size()))
+			self._interact_time:set_y(self._hud_panel:center_y() + self._circle_radius - (1.5 * self._interact_time:font_size()))
 			self._interact_time:set_text(text)
 			self._interact_time:show()
 			if not self._interact_time_bgs then
