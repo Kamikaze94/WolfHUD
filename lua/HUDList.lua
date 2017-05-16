@@ -6148,10 +6148,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			chico_injector = function(value)
 				local player = managers.player:player_unit()
 				local health_ratio = alive(player) and player:character_damage():health_ratio() or 1
-				local upg_values = managers.player:upgrade_value("player", "chico_injector_low_health_multiplier")
-				if health_ratio < upg_values[1] then
-					value = value + upg_values[2]
-				end
+                if managers.player:has_category_upgrade("player", "chico_injector_low_health_multiplier") then
+                    local upg_values = managers.player:upgrade_value("player", "chico_injector_low_health_multiplier")
+                    if health_ratio < upg_values[1] then
+                        value = value + upg_values[2]
+                    end
+                end
 				return 1 - value
 			end,
 			frenzy = function(value)

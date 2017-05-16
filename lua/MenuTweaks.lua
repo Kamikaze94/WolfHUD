@@ -590,6 +590,10 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/renderers/menunodeskil
 				end
 				row_item.skill_points_gui:set_text(	managers.localization:to_upper_text( tweak_data.skilltree.trees[pt].name_id	) .." / "..	managers.localization:to_upper_text( tweak_data.skilltree.trees[st].name_id	) )
 			end
+        elseif row_item.type == "divider" and row_item.name == "divider_title" then
+            if alive(row_item.status_gui) then
+                row_item.status_gui:set_text(managers.localization:to_upper_text("menu_specialization", {}) .. ":")
+            end
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then

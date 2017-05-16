@@ -67,6 +67,9 @@
 
 	"wolfhud_loadout_hours_played" : "$HOURS Std.",
 
+    "wolfhud_profile_switch_title" : "Profil Ändern",
+    "wolfhud_profile_switch_title_profiles" : "Profil:",
+
 	"victory_most_damage" : "Höchster Schaden:",
 	"victory_session_damage" : "Gesamtzahl Schaden:",
 

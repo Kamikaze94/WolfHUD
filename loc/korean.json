@@ -65,6 +65,9 @@
 
 	"wolfhud_loadout_hours_played" : "$HOURS hrs.",
 
+    "wolfhud_profile_switch_title" : "Switch Profiles",
+    "wolfhud_profile_switch_title_profiles" : "Profile:",
+
 	"victory_most_damage" : "Highest Damage:",
 	"victory_session_damage" : "Total Damage:",
 

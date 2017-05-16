@@ -11,13 +11,14 @@ if not _G.WolfHUD then
 	WolfHUD.tweak_data = {}
 
 	WolfHUD.hook_files = WolfHUD.hook_files or {
-		["lib/setups/setup"] 										= { "GameInfoManager.lua", "WaypointsManager.lua", "EnhancedCrewLoadout.lua" },
-		["lib/managers/menumanager"] 								= { "PrePlanManager.lua", "MenuTweaks.lua" },
+		["lib/setups/setup"] 										= { "GameInfoManager.lua", "WaypointsManager.lua" },
+		["lib/managers/menumanager"] 								= { "PrePlanManager.lua", "MenuTweaks.lua", "ProfileMenu.lua"  },
 		["lib/managers/menumanagerdialogs"] 						= { "MenuTweaks.lua" },
 		["lib/managers/chatmanager"] 								= { "MenuTweaks.lua" },
 		["lib/managers/localizationmanager"] 						= { "AdvAssault.lua" },
 		["lib/managers/experiencemanager"] 							= { "Scripts.lua" },
 		["lib/managers/moneymanager"] 								= { "Scripts.lua" },
+        ["lib/managers/multiprofilemanager"]                        = { "ProfileMenu.lua" },
 		["lib/managers/crimespreemanager"]							= { "TabStats.lua" },
 		["lib/managers/hudmanager"] 								= { "EnemyHealthbar.lua", "TabStats.lua", "CustomWaypoints.lua" },
 		["lib/managers/hudmanagerpd2"] 								= { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "WaypointsManager.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
@@ -42,11 +43,13 @@ if not _G.WolfHUD then
 		["lib/managers/menu/contractboxgui"]						= { "MenuTweaks.lua", "EnhancedCrewLoadout.lua" },
 		["lib/managers/menu/crimespreecontractboxgui"] 				= { "EnhancedCrewLoadout.lua" },
 		["lib/managers/menu/crimespreedetailsmenucomponent"]		= { "EnhancedCrewLoadout.lua" },
-		["lib/managers/menu/missionbriefinggui"]					= { "BuyAllAsset.lua", "EnhancedCrewLoadout.lua" },
+		["lib/managers/menu/missionbriefinggui"]					= { "BuyAllAsset.lua", "EnhancedCrewLoadout.lua", "ProfileMenu.lua"  },
+        ["lib/managers/menu/multiprofileitemgui"]                   = { "ProfileMenu.lua" },
 		["lib/managers/menu/stageendscreengui"] 					= { "MenuTweaks.lua", "TabStats.lua" },
 		["lib/managers/menu/lootdropscreengui"] 					= { "MenuTweaks.lua" },
 		["lib/managers/menu/skilltreeguinew"] 						= { "MenuTweaks.lua" },
-		["lib/managers/menu/renderers/menunodeskillswitchgui"] 		= { "MenuTweaks.lua" },
+        ["lib/managers/menu/playerinventorygui"]                    = { "ProfileMenu.lua" },
+		["lib/managers/menu/renderers/menunodeskillswitchgui"] 		= { "MenuTweaks.lua", "ProfileMenu.lua"  },
 		["lib/managers/objectinteractionmanager"] 					= { "GameInfoManager.lua", "HUDList.lua", "Interaction.lua" },
 		["lib/managers/player/smokescreeneffect"] 					= { "GameInfoManager.lua" },
 		["lib/modifiers/boosts/gagemodifiermeleeinvincibility"] 	= { "GameInfoManager.lua" },
@@ -105,7 +108,7 @@ if not _G.WolfHUD then
 		["core/lib/managers/subtitle/coresubtitlepresenter"] 		= { "EnhancedObjective.lua" },
 
 		--Utils and custom classes...
-		["lib/entry"]												= { "Utils/QuickInputMenu.lua" },
+		["lib/entry"]												= { "Utils/QuickInputMenu.lua", "Utils/LoadoutPanel.lua" },
 		["lib/managers/systemmenumanager"] 							= { "Utils/InputDialog.lua" },
 		["lib/managers/dialogs/specializationdialog"] 				= { "Utils/InputDialog.lua" },
 		["lib/managers/menu/specializationboxgui"] 					= { "Utils/InputDialog.lua" },
