@@ -65,8 +65,8 @@
 
 	"wolfhud_loadout_hours_played" : "$HOURS ч.",
 
-    "wolfhud_profile_switch_title" : "Switch Profiles",
-    "wolfhud_profile_switch_title_profiles" : "Profile:",
+    "wolfhud_profile_switch_title" : "Смена профилей",
+    "wolfhud_profile_switch_title_profiles" : "Профиль:",
 
 	"victory_most_damage" : "Наибольший урон:",
 	"victory_session_damage" : "Общий урон:",
