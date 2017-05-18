@@ -20,6 +20,8 @@ function WolfHUDTweakData:init()
 	self.MAX_WEAPON_NAME_LENGTH = 30
 	-- Maximum Length of custom Skill set names.
 	self.MAX_SKILLSET_NAME_LENGTH = 25
+    -- Maximum Length of Profile names.
+    self.MAX_PROFILE_NAME_LENGTH = 20
 
 	-- Time within 2 presses of the nade button, to throw a nade in stealth.
 	self.STEALTH_NADE_TIMEOUT = 0.25

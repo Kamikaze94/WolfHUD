@@ -8,11 +8,10 @@ if RequiredScript == "lib/managers/menumanager" then
             help_id = "menu_skill_switch_help",
             menu_components = "", --"inventory",
             modifier = "ProfileSwitchInitiator",
-            name = "profile_switch",
+            name = PROFILE_MENU_ID,
             no_item_parent = false,
             no_menu_wrapper = true,
             refresh = "ProfileSwitchInitiator",
-            type = "MenuNodeTable",
             scene_state = "standard", --"inventory",
             sync_state = "inventory",
             topic_id = "menu_inventory",
@@ -26,7 +25,7 @@ if RequiredScript == "lib/managers/menumanager" then
             },
         }
 
-        node_class = CoreSerialize.string_to_classtable(arugements.type)
+        node_class = CoreSerialize.string_to_classtable("MenuNodeTable")
         if node_class then
             nodes[menu_id] = node_class:new(arugements)
 
@@ -134,7 +133,7 @@ if RequiredScript == "lib/managers/menumanager" then
     end
 elseif RequiredScript == "lib/managers/menu/renderers/menunodeskillswitchgui" then
     MenuNodeProfileSwitchGui = MenuNodeProfileSwitchGui or class(MenuNodeSkillSwitchGui)
-    MenuNodeProfileSwitchGui.SKILL_POINTS_X = 0.22
+    MenuNodeProfileSwitchGui.SKILL_POINTS_X = 0.24
     MenuNodeProfileSwitchGui.STATUS_X = 0.52
     MenuNodeProfileSwitchGui.PROFILE_PREVIEW_W = 195
 
@@ -356,6 +355,8 @@ elseif RequiredScript == "lib/managers/menu/multiprofileitemgui" then
     
     function MultiProfileItemGui:init(...)
         init_orig(self, ...)
+
+        self._max_length = WolfHUD:getTweakEntry("MAX_PROFILE_NAME_LENGTH", "number", 20)
         
         self._profile_menu_btn = self._panel:bitmap({
             name = "profile_menu_btn",

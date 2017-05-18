@@ -224,7 +224,7 @@ if requiredScript == "lib/managers/menumanager" then
 	end
 
 	function MenuCallbackHandler:saved_plan_clbk(item)
-		local params = item:parameters()
+		local params = item:parameters() or {}
 		local plan_name = params.name or ""
 		if managers.preplanning then
 			if PrePlanningManager._PREPLANNING_DELETE_MODE then
@@ -320,39 +320,41 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 	end
 
 	function PrePlanningManager:save_preplanning()
-		if PrePlanningManager._SAVED_PLANS then
-			if not PrePlanningManager.has_free_save_slot() then
-				managers.preplanning:notify_user("wolfhud_preplanning_msg_no_save_slot", {}, true)
-			elseif not PrePlanningManager.has_current_plan() then
-				managers.preplanning:notify_user("wolfhud_preplanning_msg_no_current_plan", {}, true)
-			else
+		if not PrePlanningManager._SAVED_PLANS then
+			PrePlanningManager.set_path()
+			PrePlanningManager.load_plans()
+		end
 
-				local default_name = ""
-				for i = 1, #PrePlanningManager._DEFAULT_PLAN_NAMES do
-					local name = PrePlanningManager._DEFAULT_PLAN_NAMES[i]
-					if not PrePlanningManager._SAVED_PLANS[name] then
-						default_name = name
-						break
-					end
+		if not PrePlanningManager.has_free_save_slot() then
+			managers.preplanning:notify_user("wolfhud_preplanning_msg_no_save_slot", {}, true)
+		elseif not PrePlanningManager.has_current_plan() then
+			managers.preplanning:notify_user("wolfhud_preplanning_msg_no_current_plan", {}, true)
+		else
+			local default_name = ""
+			for i = 1, #PrePlanningManager._DEFAULT_PLAN_NAMES do
+				local name = PrePlanningManager._DEFAULT_PLAN_NAMES[i]
+				if not PrePlanningManager._SAVED_PLANS[name] then
+					default_name = name
+					break
 				end
-
-				local menu_options = {
-					[1] = {
-						text = managers.localization:text("wolfhud_dialog_save"),
-						callback = function(cb_data, button_id, button, text)
-							if managers.preplanning then
-								managers.preplanning:save_preplanning_clbk(text)
-							end
-						end,
-					},
-					[2] = {
-						text = managers.localization:text("dialog_cancel"),
-						is_cancel_button = true,
-					}
-				}
-				local plan_str = managers.preplanning and managers.preplanning:current_assets_name() or ""
-				QuickInputMenu:new(managers.localization:text("wolfhud_preplanning_dialog_save"), managers.localization:text("wolfhud_preplanning_dialog_save_desc", {PLAN = plan_str}), default_name, menu_options, true)
 			end
+
+			local menu_options = {
+				[1] = {
+					text = managers.localization:text("wolfhud_dialog_save"),
+					callback = function(cb_data, button_id, button, text)
+						if managers.preplanning then
+							managers.preplanning:save_preplanning_clbk(text)
+						end
+					end,
+				},
+				[2] = {
+					text = managers.localization:text("dialog_cancel"),
+					is_cancel_button = true,
+				}
+			}
+			local plan_str = managers.preplanning and managers.preplanning:current_assets_name() or ""
+			QuickInputMenu:new(managers.localization:text("wolfhud_preplanning_dialog_save"), managers.localization:text("wolfhud_preplanning_dialog_save_desc", {PLAN = plan_str}), default_name, menu_options, true)
 		end
 	end
 
@@ -395,7 +397,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 			local saved_assets = PrePlanningManager._SAVED_PLANS[name].assets or {}
 			local saved_votes = PrePlanningManager._SAVED_PLANS[name].votes or {}
 
-			local missing_skill, missing_favours, missing_money = false, false, false
+			local missing_skill, missing_favours, missing_money, something_loaded = false, false, false, false
 			local peer_id = managers.network:session():local_peer():id()
 			for i, data in ipairs(saved_assets) do
 				local id = data.id or self:get_mission_element_id(data.type, data.index)
@@ -405,6 +407,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 						local available, err_code = self:can_reserve_mission_element(data.type, peer_id)
 						if available then
 							self:reserve_mission_element(data.type, id)
+                            something_loaded = true
 						elseif err_code == 1 then
 							missing_money = true
 						elseif err_code == 2 then
@@ -414,7 +417,8 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 						missing_skill = true
 					end
 				else
-					--Asset not found...
+					-- Asset already unlocked
+                    something_loaded = true
 				end
 			end
 
@@ -423,9 +427,9 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 				self:vote_on_plan(data.type, id)
 			end
 
-			if not (missing_skill or missing_favours or missing_money) then
+			if something_loaded and not (missing_skill or missing_favours or missing_money) then
 				managers.preplanning:notify_user("wolfhud_preplanning_msg_loaded_success", {}, false)
-			else
+			elseif something_loaded then
 				local error_msg = ""
 				if missing_skill then
 					error_msg = managers.localization:text("wolfhud_preplanning_msg_loaded_missing_skill")
@@ -437,6 +441,8 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 					error_msg = string.format("%s%s %s", error_msg, ((missing_skill or missing_favours) and ";" or ""), managers.localization:text("wolfhud_preplanning_msg_loaded_missing_money"))
 				end
 				managers.preplanning:notify_user("wolfhud_preplanning_msg_loaded_partitially", {ERRORMSG = error_msg}, true)
+            else
+				managers.preplanning:notify_user("wolfhud_preplanning_msg_loaded_failed", {}, true)
 			end
 		end
 	end
