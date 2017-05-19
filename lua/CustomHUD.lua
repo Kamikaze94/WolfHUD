@@ -432,8 +432,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammateCustom:update(t, dt)
-		if not self._is_player and self._peer_id and t > self._next_latency_update_t then
-			local peer = managers.network:session():peer(self._peer_id)
+		if self:peer_id() and t > self._next_latency_update_t then
+            local net_session = managers.network:session()
+			local peer = net_session and net_session:peer(self:peer_id())
 			local latency = peer and Network:qos(peer:rpc()).ping or "n/a"
 
 			self:set_latency(latency)
@@ -576,8 +577,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			self._center_panel,
 		}
 
+        local local_peer = managers.network:session():local_peer()
 		for i, component in ipairs(self._all_components) do
-			component:set_is_local_player(self._is_player)
+			component:set_is_local_player(self:is_local_player()) --self._is_player
 		end
 		self:update_settings()
 	end
@@ -663,7 +665,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammateCustom:peer_id()
-		return self._peer_id
+        return self._peer_id
+	end
+
+    function HUDTeammateCustom:is_local_player()
+        return not (self:peer_id() or self:is_ai())
 	end
 
 	function HUDTeammateCustom:name()
@@ -894,12 +900,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammateCustom:set_callsign(id)
-		if self._is_player then
-			self:set_character(managers.criminals:character_name_by_panel_id(self._id))
+        if self:is_local_player() then
+			self:set_character(managers.criminals:character_name_by_peer_id(id))
 			self:set_rank(managers.experience:current_rank(), managers.experience:current_level())
-			local detection = managers.blackmarket:get_suspicion_offset_of_local(tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
-			self:set_detection(tonumber(string.format("%.0f", detection * 100)))
-		end
+            local detection = managers.blackmarket:get_suspicion_offset_of_local(tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
+			self:set_detection(math.round(detection * 100))
+        end
 
 		self:call_listeners("callsign", id)
 	end
@@ -934,7 +940,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if peer_id then
 			local peer = managers.network:session():peer(peer_id)
 			managers.hud:_parse_outfit_string(self._id, peer_id)
-			self:set_character(managers.criminals:character_name_by_panel_id(self._id))
+			self:set_character(managers.criminals:character_name_by_peer_id(peer_id))
 			self:set_rank(peer:rank(), peer:level())
         else
             local character = managers.criminals:character_name_by_panel_id(self._id)
@@ -956,7 +962,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function HUDTeammateCustom:set_waiting(status, peer)
 		self._is_waiting = status
         self:reset()
-        self:set_ai(not status)
+        self:set_ai(not (self._is_player or status))
         self:_set_layout(self._is_player or status)
         if status then
             self:set_name(peer:name())
@@ -4500,11 +4506,10 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 	function HUDManager:_parse_outfit_string(panel_id, peer_id)
 		local outfit
 
-		if peer_id == managers.network:session():local_peer():id() then
+        local local_peer = managers.network:session():local_peer()
+		if peer_id == local_peer:id() then
 			--outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string())
 			--Weapons handled by HUDManager:add_weapon()
-
-			-- Detection, gets set on set_callsign for local player
 		else
 			local peer = managers.network:session():peer(peer_id)
 			outfit = peer and peer:blackmarket_outfit()
@@ -4533,7 +4538,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 
 				-- Detection
 				local detection = managers.blackmarket:get_suspicion_offset_of_peer(peer, tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
-				self:set_teammate_detection(panel_id, tonumber(string.format("%.0f", detection * 100)))
+				self:set_teammate_detection(panel_id, math.round(detection * 100))
 			end
 		end
 
