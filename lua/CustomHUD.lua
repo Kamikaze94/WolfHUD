@@ -4512,9 +4512,17 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			if outfit then
 				--Weapon
 				for selection, data in ipairs({ outfit.secondary, outfit.primary }) do
-					local weapon_id = data.cosmetics and data.cosmetics.id or managers.weapon_factory:get_weapon_id_by_factory_id(data.factory_id)
+                    local cosmetics_id = data.cosmetics and data.cosmetics.id
+					local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(data.factory_id)
 					local silencer = managers.weapon_factory:has_perk("silencer", data.factory_id, data.blueprint)
-					self:set_teammate_weapon(panel_id, selection, weapon_id, silencer)
+					self:set_teammate_weapon(panel_id, selection, cosmetics_id or weapon_id, silencer)
+                    
+                    local tweak = tweak_data.weapon[weapon_id]
+                    if tweak then
+                        local clip_max = tweak.CLIP_AMMO_MAX
+                        local total_max = tweak.AMMO_MAX
+                        self:set_teammate_ammo_amount(panel_id, selection, clip_max, clip_max, total_max, total_max)
+                    end
 				end
 
 				--Perk deck
