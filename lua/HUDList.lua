@@ -6217,16 +6217,18 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.TotalDodgeChanceBuff:init(...)
 		HUDList.TotalDodgeChanceBuff.super.init(self, ...)
 
+        self._member_buffs["base_dodge"] = { value = (tweak_data.player.damage.DODGE_INIT or 0) + managers.player:body_armor_value("dodge") }
 		self._member_buffs["crook_dodge"] = { value = managers.player:upgrade_value("player", "passive_dodge_chance", 0)
 												+ managers.player:upgrade_value("player", tostring(managers.blackmarket:equipped_armor(true, true)) .. "_dodge_addend", 0) -- Crook Perk
 											}
 		self._member_buffs["burglar_dodge"] = { value = managers.player:upgrade_value("player", "tier_dodge_chance", 0) }	 -- Burglar Perk
 		self._member_buffs["jail_diet"] = { value = managers.player:get_value_from_risk_upgrade(managers.player:upgrade_value("player", "detection_risk_add_dodge_chance"))}
+        self._member_buffs["henchman_dodge"] = { value = managers.player:upgrade_value("team", "crew_add_dodge", 0) }
 
 		self._buff_effects = {
 		}
 
-		self:_update_value()
+		self:_check_buffs()
 	end
 
 	function HUDList.TotalDodgeChanceBuff:_update_value()

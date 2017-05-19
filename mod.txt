@@ -34,6 +34,7 @@
 		{ "hook_id" : "lib/managers/hud/hudinteraction", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/hud/hudsuspicion", 							"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/hud/hudhitdirection", 						"script_path" : "Core.lua" },
+        { "hook_id" : "lib/managers/hud/hudwaitinglegend", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/group_ai_states/groupaistatebase", 			"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/menu/blackmarketgui", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/menu/contractboxgui", 						"script_path" : "Core.lua" },

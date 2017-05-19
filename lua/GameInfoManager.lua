@@ -3201,12 +3201,12 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 		end
 	end
 
-	local LAST_BASE_DODGE = 0
+	local LAST_BASE_DODGE
 	local DODGE_RECHECK_T = 0
 	local DODGE_RECHECK_INTERVAL = 0.5
 	function PlayerMovement:_update_base_dodge(t, dt)
 		if t > DODGE_RECHECK_T and alive(self._unit) then
-			local base_dodge = (tweak_data.player.damage.DODGE_INIT or 0) + managers.player:body_armor_value("dodge")
+			local base_dodge = 0
 			if self:running() then
 				base_dodge = base_dodge + managers.player:upgrade_value("player", "run_dodge_chance", 0)
 			elseif self:crouching() then
@@ -3215,9 +3215,13 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playermovement" then
 				base_dodge = base_dodge + managers.player:upgrade_value("player", "on_zipline_dodge_chance", 0)
 			end
 
-			if LAST_BASE_DODGE ~= base_dodge then
-				managers.gameinfo:event("buff", "activate", "movement_dodge")
-				managers.gameinfo:event("buff", "set_value", "movement_dodge", { value = base_dodge })
+			if not LAST_BASE_DODGE or LAST_BASE_DODGE ~= base_dodge then
+                if base_dodge > 0 then
+                    managers.gameinfo:event("buff", "activate", "movement_dodge")
+                    managers.gameinfo:event("buff", "set_value", "movement_dodge", { value = base_dodge })
+                else
+                    managers.gameinfo:event("buff", "deactivate", "movement_dodge")
+                end
 				LAST_BASE_DODGE = base_dodge
 			end
 

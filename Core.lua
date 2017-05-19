@@ -36,6 +36,7 @@ if not _G.WolfHUD then
 		["lib/managers/hud/hudinteraction"] 						= { "Interaction.lua" },
 		["lib/managers/hud/hudsuspicion"] 							= { "NumbericSuspicion.lua" },
 		["lib/managers/hud/hudhitdirection"] 						= { "DamageIndicator.lua" },
+        ["lib/managers/hud/hudwaitinglegend"] 						= { "CustomHUD.lua" },
 		["lib/managers/enemymanager"] 								= { "GameInfoManager.lua" },
 		["lib/managers/group_ai_states/groupaistatebase"] 			= { "GameInfoManager.lua", "PacifiedCivs.lua" },
 		["lib/managers/missionassetsmanager"] 						= { "BuyAllAsset.lua" },

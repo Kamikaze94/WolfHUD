@@ -15,6 +15,7 @@ if RequiredScript == "lib/managers/menumanager" then
             scene_state = "standard", --"inventory",
             sync_state = "inventory",
             topic_id = "menu_inventory",
+            --back_callback = "profile_menu_back",
             {
                 ["_meta"] = "legend",
                 ["name"] = "menu_legend_select"
@@ -113,18 +114,21 @@ if RequiredScript == "lib/managers/menumanager" then
             self:refresh_node()
         else
             managers.menu:open_node(PROFILE_MENU_ID, {})    -- Because SoundTrack Item always closes the last node
+            --self:refresh_node()
         end
     end
     
     function MenuCallbackHandler:profile_menu_back(item)    -- Hacky workaround, to restore working node order when soundtrack closes us...
         if BRIEFING_PROFILE_MENU then
-            managers.menu:open_node("kit")
-            
             local mcm = managers.menu_component
             if mcm._mission_briefing_gui then
                 local briefing_gui = mcm._mission_briefing_gui
                 if briefing_gui._selected_item == briefing_gui._jukebox_item:index() then
+                    managers.menu:open_node("kit")
                     managers.menu:open_node("jukebox")
+                    --self:menu_back(item)
+                else
+                    self:menu_back(item)
                 end
             end
         else
@@ -184,7 +188,7 @@ elseif RequiredScript == "lib/managers/menu/renderers/menunodeskillswitchgui" th
             local mpm = managers.multi_profile
             local profile_id = row_item.name
             local profile = mpm:profile(profile_id)
-            local skill_name, perk_id = "", ""
+            local skill_name, perk_name = "", ""
 
             skill_name = profile.skillset and managers.skilltree:get_skill_switch_name(profile.skillset, false) or managers.localization:to_upper_text("menu_st_locked_skill_switch")
             if profile.perk_deck then
@@ -410,7 +414,7 @@ end
 
 do return end
 -- Potential solution for controller support. Doesn't seem that useable...  :(
-if RequiredScript == "lib/managers/menu/missionbriefinggui" then
+if RequiredScript:lower() == "lib/managers/menu/missionbriefinggui" then
     local special_btn_pressed_orig = MissionBriefingGui.special_btn_pressed
     function MissionBriefingGui:special_btn_pressed(button, ...)
         local active_menu = managers.menu:active_menu()
@@ -420,6 +424,24 @@ if RequiredScript == "lib/managers/menu/missionbriefinggui" then
         end
 
         return special_btn_pressed_orig(self, button, ...)
+    end
+    
+    -- Doesn't get executed...?
+    local select_orig = JukeboxItem.select
+    local deselect_orig = JukeboxItem.deselect
+    function JukeboxItem:select(...)
+        local active_menu = managers.menu:active_menu()
+        local selected_node = active_menu and active_menu.logic:selected_node()
+        if not selected_node or selected_node:parameters().name ~= "jukebox" then
+            select_orig(self, ...)
+        end
+    end
+    function JukeboxItem:deselect(...)
+        local active_menu = managers.menu:active_menu()
+        local selected_node = active_menu and active_menu.logic:selected_node()
+        if not selected_node or selected_node:parameters().name == "jukebox" then
+            deselect_orig(self, ...)
+        end
     end
 elseif RequiredScript == "lib/managers/menu/playerinventorygui" then
     local special_btn_pressed_orig = PlayerInventoryGui.special_btn_pressed

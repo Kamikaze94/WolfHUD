@@ -132,16 +132,18 @@ if not WolfHUD:getSetting({"CustomHUD", "ENABLED"}, true) then
 		end
 
 		function HUDTeammate:set_max_stamina(value)
-			self._max_stamina = value
-			local radial_health_panel = self._panel:child("player"):child("radial_health_panel")
-			local w = self._stamina_bar:w()
-			local threshold = tweak_data.player.movement_state.stamina.MIN_STAMINA_THRESHOLD
-			local angle = 360 * (threshold/self._max_stamina) - 90
-			local x = 0.48 * w * math.cos(angle) + w * 0.5 + self._stamina_bar:x()
-			local y = 0.48 * w * math.sin(angle) + w * 0.5 + self._stamina_bar:y()
-			self._stamina_line:set_x(x)
-			self._stamina_line:set_y(y)
-			self._stamina_line:set_rotation(angle)
+            if not self._max_stamina or self._max_stamina ~= value then
+                self._max_stamina = value
+                local radial_health_panel = self._panel:child("player"):child("radial_health_panel")
+                local w = self._stamina_bar:w()
+                local threshold = tweak_data.player.movement_state.stamina.MIN_STAMINA_THRESHOLD
+                local angle = 360 * (threshold/self._max_stamina) - 90
+                local x = 0.48 * w * math.cos(angle) + w * 0.5 + self._stamina_bar:x()
+                local y = 0.48 * w * math.sin(angle) + w * 0.5 + self._stamina_bar:y()
+                self._stamina_line:set_x(x)
+                self._stamina_line:set_y(y)
+                self._stamina_line:set_rotation(angle)
+            end
 		end
 
 		function HUDTeammate:set_current_stamina(value)
@@ -432,7 +434,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function HUDTeammateCustom:update(t, dt)
 		if not self._is_player and self._peer_id and t > self._next_latency_update_t then
 			local peer = managers.network:session():peer(self._peer_id)
-			local latency = Network:qos(peer:rpc()).ping
+			local latency = peer and Network:qos(peer:rpc()).ping or "n/a"
 
 			self:set_latency(latency)
 			self._next_latency_update_t = t + 1
@@ -474,6 +476,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 
 		self._latency:set_right(w)
+        self._waiting_input:set_right(w)
 
 		if not (self._latency:visible() or self._player_info:visible()) and self._player_status:visible() then
 			self._callsign:set_center(self._player_status:center())
@@ -552,8 +555,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._build = PlayerInfoComponent.Build:new(self._panel, self, name_size, self._settings)
 		self._callsign = PlayerInfoComponent.Callsign:new(self._panel, self, name_size, self._settings)
 		self._player_status = PlayerInfoComponent.PlayerStatus:new(self._panel, self, size, size, self._settings)
+        self._waiting_status = PlayerInfoComponent.WaitingStatus:new(self._panel, self, size, size, self._settings)
 		self._accuracy = PlayerInfoComponent.AccuracyCounter:new(self._panel, self, name_size * 0.8, self._settings)
 		self._kills = PlayerInfoComponent.KillCounter:new(self._panel, self, name_size * 0.8, self._settings)
+        self._waiting_input = PlayerInfoComponent.WaitingInput:new(self._panel, self, name_size * 0.8, self._settings)
 		self._carry = PlayerInfoComponent.Carry:new(self._panel, self, name_size, size, self._settings)
 		self._center_panel = PlayerInfoComponent.CenterPanel:new(self._panel, self, size, self._settings)
 
@@ -563,8 +568,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			self._build,
 			self._accuracy,
 			self._kills,
+            self._waiting_input,
 			self._callsign,
 			self._player_status,
+            self._waiting_status,
 			self._carry,
 			self._center_panel,
 		}
@@ -581,6 +588,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 			for i, component in ipairs(self._all_components) do
 				component:set_is_ai(not self._human_layout)
+			end
+
+            for i, component in ipairs(self._all_components) do
+				component:set_is_waiting(self._is_waiting)
 			end
 
 			self:_rebuild_layout()
@@ -604,13 +615,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 		table.insert(self._component_layout, { self._build })	--3rd row
 
-		local center_components = { self._player_status, self._center_panel }
+		local center_components = { self._player_status, self._waiting_status, self._center_panel }
 		if not self._is_player then
 			table.insert(center_components, self._carry)
 		end
 		table.insert(self._component_layout, center_components)	--4th row
 
-		table.insert(self._component_layout, { self._kills, self._accuracy })	--5th row
+		table.insert(self._component_layout, { self._kills, self._accuracy, self._waiting_input })	--5th row
 
 		self:arrange()
 	end
@@ -665,6 +676,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	function HUDTeammateCustom:is_ai_stopped()
 		return self._ai and self._ai_stopped or false
+	end
+
+	function HUDTeammateCustom:is_waiting()
+		return self._is_waiting or false
 	end
 
 	function HUDTeammateCustom:alignment()
@@ -743,6 +758,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function HUDTeammateCustom:set_info_meter(data)
 		--print_info("(DEBUG) set_info_meter: c: %s, t: %s, m: %s", tostring(data.current), tostring(data.total), tostring(data.max))
 		--Used to set hysteria stacks. Unused in this HUD at the moment
+        self:call_listeners("absorb_stacks", data.current, data.total, data.max)
 	end
 
 	function HUDTeammateCustom:set_absorb_active(amount)
@@ -879,8 +895,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	function HUDTeammateCustom:set_callsign(id)
 		if self._is_player then
-			local local_peer = managers.network:session():local_peer()
-			self:set_character(managers.criminals:character_name_by_peer_id(local_peer:id()))
+			self:set_character(managers.criminals:character_name_by_panel_id(self._id))
 			self:set_rank(managers.experience:current_rank(), managers.experience:current_level())
 			local detection = managers.blackmarket:get_suspicion_offset_of_local(tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
 			self:set_detection(tonumber(string.format("%.0f", detection * 100)))
@@ -919,8 +934,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if peer_id then
 			local peer = managers.network:session():peer(peer_id)
 			managers.hud:_parse_outfit_string(self._id, peer_id)
-			self:set_character(managers.criminals:character_name_by_peer_id(peer_id))
+			self:set_character(managers.criminals:character_name_by_panel_id(self._id))
 			self:set_rank(peer:rank(), peer:level())
+        else
+            local character = managers.criminals:character_name_by_panel_id(self._id)
+            if character then
+                self:set_name(managers.localization:text("menu_" .. character))
+            end
 		end
 	end
 
@@ -930,6 +950,39 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	function HUDTeammateCustom:set_ai_stopped(status)
 		self._ai_stopped = self:is_ai() and status
+        self:set_callsign(5)
+	end
+
+	function HUDTeammateCustom:set_waiting(status, peer)
+		self._is_waiting = status
+        self:reset()
+        self:set_ai(not status)
+        self:_set_layout(self._is_player or status)
+        if status then
+            self:set_name(peer:name())
+            self:set_peer_id(peer:id())
+            self:set_callsign(peer:id())
+
+            local outfit = peer:profile().outfit
+			outfit = outfit or managers.blackmarket:unpack_outfit_from_string(peer:profile().outfit_string) or {}
+            if outfit.deployable then
+                local amount = outfit.deployable_amount or 0
+                if type(amount) == "table" then
+                    amount = amount[1]
+                end
+                self:set_deployable_equipment({ icon = tweak_data.equipments[outfit.deployable].icon, amount = amount })
+            end
+            if outfit.secondary_deployable then
+                local amount = outfit.secondary_deployable_amount or 0
+                if type(amount) == "table" then
+                    amount = amount[1]
+                end
+                self:set_cable_tie({ icon = tweak_data.equipments[outfit.secondary_deployable].icon, amount = amount })
+            end
+            if outfit.grenade then
+                self:set_grenades({ icon = tweak_data.blackmarket.projectiles[outfit.grenade].icon, amount = managers.player:get_max_grenades(peer:grenade_id()) })
+            end
+        end
 	end
 
 	function HUDTeammateCustom:set_state(state)
@@ -1082,6 +1135,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 		if self._is_local_player ~= state then
 			self._is_local_player = state
+			return true
+		end
+	end
+    
+    function PlayerInfoComponent.Base:set_is_waiting(state)	--Override for classes that change behavior for player/teammate
+		local state = state and true or false
+
+		if self._is_waiting ~= state then
+			self._is_waiting = state
 			return true
 		end
 	end
@@ -1293,7 +1355,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._text = self._panel:text({
 			name = "latency",
 			text = "n/a",
-			color = Color.white,
+			color = Color('E24E4E'),
 			halign = "grow",
 			align = "center",
 			vertical = "center",
@@ -1337,8 +1399,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function PlayerInfoComponent.Latency:set_latency(value)
-		self._text:set_text(string.format("%.0fms", value))
-		self._text:set_color(value < 75 and Color('C2FC97') or value < 150 and Color('CEA168') or Color('E24E4E'))
+        if type(value) == "number" then
+            self._text:set_text(string.format("%.0fms", value))
+            self._text:set_color(value < 75 and Color('C2FC97') or value < 150 and Color('CEA168') or Color('E24E4E'))
+        else
+            self._text:set_text(value)
+            self._text:set_color(Color('E24E4E'))
+        end
 	end
 
 	PlayerInfoComponent.Build = PlayerInfoComponent.Build or class(PlayerInfoComponent.Base)
@@ -1564,6 +1631,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 
+	function PlayerInfoComponent.KillCounter:set_is_waiting(state)
+		if PlayerInfoComponent.KillCounter.super.set_is_waiting(self, state) and self:set_enabled("waiting", not self._is_waiting) then
+			self._owner:arrange()
+		end
+	end
+
 	function PlayerInfoComponent.KillCounter:increment(is_special, headshot)
 		self._kills = self._kills + 1
 		self._special_kills = self._special_kills + (is_special and 1 or 0)
@@ -1659,6 +1732,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 
+	function PlayerInfoComponent.AccuracyCounter:set_is_waiting(state)
+		if PlayerInfoComponent.AccuracyCounter.super.set_is_waiting(self, state) and self:set_enabled("waiting", not self._is_waiting) then
+			self._owner:arrange()
+		end
+	end
+
 	function PlayerInfoComponent.AccuracyCounter:set_accuracy(value)
 		self._text:set_text(string.format("%.0f%%", value))
 
@@ -1669,6 +1748,103 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			self._owner:arrange()
 		end
 	end
+
+    PlayerInfoComponent.WaitingInput = PlayerInfoComponent.WaitingInput or class(PlayerInfoComponent.Base)
+	function PlayerInfoComponent.WaitingInput:init(panel, owner, height, settings)
+		PlayerInfoComponent.WaitingInput.super.init(self, panel, owner, "waiting_input", 0, height)
+
+		self._settings = settings
+        
+        local buttons = {
+            { text = "hud_waiting_accept",  binding = "drop_in_accept"  },
+            { text = "hud_waiting_return",  binding = "drop_in_return"  },
+            { text = "hud_waiting_kick",    binding = "drop_in_kick"    }
+        }
+        local text = ""
+        for i, btn in ipairs(buttons or {}) do
+            local button_text = managers.localization:btn_macro(btn.binding, true, true)
+            if button_text then
+                text = string.format("%s%s%s", text, managers.localization:text(btn.text, {MY_BTN = button_text}), i < #buttons and "   |   " or "")
+            end
+        end
+        if text:len() <= 0 then
+            text = managers.localization:text("hud_waiting_no_binding_text")
+        end
+
+        local PADDING = 5
+
+		self._text = self._panel:text({
+			name = "text",
+			layer = 1,
+            text = text,
+			color = Color.white,
+			vertical = "center",
+			align = "center",
+            x = PADDING,
+            y = PADDING * 0.5,
+			h = self._panel:h(),
+			font_size = height * 0.9,
+			font = tweak_data.hud.medium_font_noshadow,
+		})
+        local _, _, w, _ = self._text:text_rect()
+		self._text:set_w(w)
+
+		if self:set_size(self._text:right() + (2 * PADDING), self._panel:h() + PADDING) then
+            self._panel:rect({
+                name = "bg",
+                color = Color.black,
+                alpha = 0.5,
+                h = self._panel:h(),
+                w = self._panel:w(),
+            })
+
+			self._owner:arrange()
+		end
+
+        self:set_enabled("waiting", false)
+	end
+
+	function PlayerInfoComponent.WaitingInput:rescale(factor)
+		if PlayerInfoComponent.WaitingInput.super.rescale(self, factor) then
+			self._text:set_font_size(self._text:font_size() * factor)
+			self._owner:arrange()
+		end
+	end
+
+	function PlayerInfoComponent.WaitingInput:set_is_ai(state)
+		if PlayerInfoComponent.WaitingInput.super.set_is_ai(self, state) and self:set_enabled("ai", not self._is_ai) then
+			self._owner:arrange()
+		end
+	end
+
+	function PlayerInfoComponent.WaitingInput:set_is_local_player(state)
+		if PlayerInfoComponent.WaitingInput.super.set_is_local_player(self, state) and self:set_enabled("player", not self._is_local_player) then
+			self._owner:arrange()
+		end
+	end
+
+	function PlayerInfoComponent.WaitingInput:set_is_waiting(state)
+		if PlayerInfoComponent.WaitingInput.super.set_is_waiting(self, state) and self:set_enabled("waiting", self._is_waiting) then
+			self._owner:arrange()
+            if self:enabled() and not self._animating_input_required then
+                self._animating_input_required = true
+                self._text:animate(callback(self, self, "_animate_input_required"))
+            elseif self._animating_input_required then
+                self._animating_input_required = nil
+                self._text:stop()
+            end
+		end
+	end
+
+    function PlayerInfoComponent.WaitingInput:_animate_input_required(text)
+		local t = 0
+		text:set_color(Color(1, 1, 1, 1))
+		while self._animating_input_required do
+			t = t + coroutine.yield()
+			text:set_color(Color(1, 1 , 1, 1 - (0.5 * math.sin(t * 240 * 2) + 0.5)))
+		end
+		text:set_color(Color(1, 1, 1, 1))
+    end
 
 	PlayerInfoComponent.Callsign = PlayerInfoComponent.Callsign or class(PlayerInfoComponent.Base)
 	function PlayerInfoComponent.Callsign:init(panel, owner, size, settings)
@@ -1719,7 +1895,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function PlayerInfoComponent.Callsign:set_is_ai(state)
-		if PlayerInfoComponent.PlayerStatus.super.set_is_ai(self, state) then
+		if PlayerInfoComponent.Callsign.super.set_is_ai(self, state) then
 
 			self._owner:arrange()
 		end
@@ -2093,6 +2269,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 
+	function PlayerInfoComponent.PlayerStatus:set_is_waiting(state)
+		if PlayerInfoComponent.PlayerStatus.super.set_is_waiting(self, state) and self:set_enabled("waiting", not self._is_waiting) then
+			self._owner:arrange()
+		end
+	end
+
 	function PlayerInfoComponent.PlayerStatus:set_health(current, total)
 		local ratio = current / total
 		--self:set_stored_health_max(1-ratio)
@@ -2363,6 +2545,126 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		timer:set_text("0")
 	end
 
+    PlayerInfoComponent.WaitingStatus = PlayerInfoComponent.WaitingStatus or class(PlayerInfoComponent.Base)
+	function PlayerInfoComponent.WaitingStatus:init(panel, owner, width, height, settings)
+		PlayerInfoComponent.WaitingStatus.super.init(self, panel, owner, "waiting_status", width, height)
+
+		self._settings = settings
+
+		self._size = height
+        
+        local detection_texture = "guis/textures/pd2/mission_briefing/inv_detection_meter"
+
+        local detection_left_bg = self._panel:bitmap({
+            name = "detection_left_bg",
+            texture = detection_texture,
+            alpha = 0.2,
+            blend_mode = "add",
+            w = self._size,
+            h = self._size,
+        })
+        local detection_right_bg = self._panel:bitmap({
+            name = "detection_right_bg",
+            texture = detection_texture,
+            alpha = 0.2,
+            blend_mode = "add",
+            w = self._size,
+            h = self._size,
+        })
+        detection_right_bg:set_texture_rect(detection_right_bg:texture_width(), 0, -detection_right_bg:texture_width(), detection_right_bg:texture_height())
+        local detection_left = self._panel:bitmap({
+            name = "detection_left",
+            texture = detection_texture,
+            render_template = "VertexColorTexturedRadial",
+            blend_mode = "add",
+            layer = 1,
+            w = self._size,
+            h = self._size,
+        })
+        local detection_right = self._panel:bitmap({
+            name = "detection_right",
+            texture = detection_texture,
+            render_template = "VertexColorTexturedRadial",
+            blend_mode = "add",
+            layer = 1,
+            w = self._size,
+            h = self._size,
+        })
+        detection_right:set_texture_rect(detection_right:texture_width(), 0, -detection_right:texture_width(), detection_right:texture_height())
+        self._detection_value = self._panel:text({
+            name = "detection_value",
+            font_size = tweak_data.menu.pd2_medium_font_size,
+            font = tweak_data.menu.pd2_medium_font,
+            align = "center",
+            vertical = "center"
+        })
+		self._detection_value:set_center(self._panel:w() / 2, self._panel:h() / 2 + 2)
+        
+        self._detection_ring = { detection_left, detection_right }
+        self._components = { detection_left_bg, detection_right_bg, detection_left, detection_right }
+        
+		self:set_enabled("waiting", false)
+
+		self._owner:register_listener("WaitingStatus", { "detection" }, callback(self, self, "set_detection"), false)
+	end
+
+	function PlayerInfoComponent.WaitingStatus:destroy()
+		self._owner:unregister_listener("WaitingStatus", { "detection" })
+		PlayerInfoComponent.WaitingStatus.super.destroy(self)
+	end
+
+    function PlayerInfoComponent.WaitingStatus:set_is_local_player(state)
+		if PlayerInfoComponent.WaitingStatus.super.set_is_local_player(self, state) and self:set_enabled("player", not self._is_local_player) then
+			self._owner:arrange()
+		end
+	end
+
+    function PlayerInfoComponent.WaitingStatus:set_is_ai(state)
+		if PlayerInfoComponent.WaitingStatus.super.set_is_ai(self, state) and self:set_enabled("ai", not self._is_ai) then
+			self._owner:arrange()
+		end
+	end
+
+    function PlayerInfoComponent.WaitingStatus:set_is_waiting(state)
+		if PlayerInfoComponent.WaitingStatus.super.set_is_waiting(self, state) and self:set_enabled("waiting", self._is_waiting) then
+			self._owner:arrange()
+		end
+	end
+
+	function PlayerInfoComponent.WaitingStatus:rescale(factor)
+		if PlayerInfoComponent.WaitingStatus.super.rescale(self, factor) then
+			self._size = self._size * factor
+			for _, comp in ipairs(self._components) do
+                comp:set_w(self._size)
+                comp:set_h(self._size)
+            end
+            
+            local max_w = self._size * 0.7
+            self._detection_value:set_center(self._panel:w() / 2, self._panel:h() / 2 + 2)
+            local _, _, w, h = self._detection_value:text_rect()
+            self._detection_value:set_font_size(math.min(self._detection_value:font_size() * (max_w / w), tweak_data.menu.pd2_medium_font_size))
+
+			self:arrange()
+		end
+	end
+
+	function PlayerInfoComponent.WaitingStatus:arrange()
+		local w = self._panel:w()
+		local h = self._panel:h()
+
+		self._detection_value:set_center(w / 2, h / 2 + 2)
+
+		self:set_size(w, h)
+		self._owner:arrange()
+	end
+
+	function PlayerInfoComponent.WaitingStatus:set_detection(value)
+        for _, image in ipairs(self._detection_ring) do
+            image:set_color(Color(0.5 + (value / 100) * 0.5, 1, 1))
+        end
+		self._detection_value:set_text(value)
+	end
+
 	PlayerInfoComponent.Carry = PlayerInfoComponent.Carry or class(PlayerInfoComponent.Base)
 	function PlayerInfoComponent.Carry:init(panel, owner, player_height, team_height, settings)
 		PlayerInfoComponent.Carry.super.init(self, panel, owner, "carry", 0, 0)
@@ -2495,7 +2797,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	PlayerInfoComponent.CenterPanel = PlayerInfoComponent.CenterPanel or class(PlayerInfoComponent.Base)
 	function PlayerInfoComponent.CenterPanel:init(panel, owner, height, settings)
-		PlayerInfoComponent.Weapon.super.init(self, panel, owner, "center_panel", 0, height)
+		PlayerInfoComponent.CenterPanel.super.init(self, panel, owner, "center_panel", 0, height)
 
 		self._settings = settings
 
@@ -2564,6 +2866,14 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if PlayerInfoComponent.CenterPanel.super.set_is_ai(self, state) then
 			for _, component in pairs(self._components) do
 				component:set_is_ai(state)
+			end
+		end
+	end
+
+	function PlayerInfoComponent.CenterPanel:set_is_waiting(state)
+		if PlayerInfoComponent.CenterPanel.super.set_is_waiting(self, state) then
+			for _, component in pairs(self._components) do
+				component:set_is_waiting(state)
 			end
 		end
 	end
@@ -2708,7 +3018,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			self._aggregate_ammo_panel:set_w(math.max(w, self._aggregate_ammo_panel:w()))
 		end
 
-		self:_weapon_selected(1)
+		--self:_weapon_selected(1)
 
 		self._owner:register_listener("Weapons", { "weapon_selected" }, callback(self, self, "_weapon_selected"), false)
 		self._owner:register_listener("Weapons", { "ammo_amount" }, callback(self, self, "_ammo_amount"), false)
@@ -4393,4 +4703,13 @@ if RequiredScript == "lib/managers/hud/hudtemp" then
 		end
 	end
 
+end
+
+if RequiredScript == "lib/managers/hud/hudwaitinglegend" then
+    local update_buttons_orig = HUDWaitingLegend.update_buttons
+    function HUDWaitingLegend:update_buttons(...)
+        update_buttons_orig(self, ...)
+        self._panel:set_visible(false)
+        self._box:stop()
+    end
 end

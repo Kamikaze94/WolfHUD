@@ -112,6 +112,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "DOWNCOUNTER"}, true) and not self._ai or false,
 		})
 
+        self:set_detection()
+
 		if managers.gameinfo then
 			managers.gameinfo:register_listener("HealthRadial_whisper_mode_listener" .. tostring(self._id), "whisper_mode", "change", callback(self, self, "_whisper_mode_change"))
 		end
@@ -123,6 +125,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 
 	Hooks:PostHook( HUDTeammate, "set_health", "WolfHUD_DownCounter_HUDTeammate_set_health", function(self, ...)
 		self:set_detection()
+        Hooks:RemovePostHook("WolfHUD_DownCounter_HUDTeammate_set_health")
 	end)
 
 	Hooks:PreHook( HUDTeammate, "set_name", "WolfHUD_DownCounter_HUDTeammate_set_name", function(self, teammate_name, ...)
@@ -167,14 +170,15 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 	end
 
 	HUDTeammate.set_detection = HUDTeammate.set_detection or function(self, risk)
-		if risk or not self._risk then
-			if risk then
-				self._risk = risk
-			elseif self._main_player then
-				self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_local(tweak_data.player.SUSPICION_OFFSET_LERP or 0.75) * 100))
+        if not risk then
+            if self._main_player then
+				risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_local(tweak_data.player.SUSPICION_OFFSET_LERP or 0.75) * 100))
 			elseif self:peer_id() then
-				self._risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_peer(managers.network:session():peer(self:peer_id()), tweak_data.player.SUSPICION_OFFSET_LERP or 0.75) * 100))
+				risk = tonumber(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_peer(managers.network:session():peer(self:peer_id()), tweak_data.player.SUSPICION_OFFSET_LERP or 0.75) * 100))
 			end
+        end
+		if not self._risk or risk and risk ~= self._risk then
+            self._risk = risk
 			if self._risk then
 				local color = self._risk < 50 and Color(1, 0, 0.8, 1) or Color(1, 1, 0.2, 0)
 				self._detection_counter:set_text(utf8.char(57363) .. tostring(self._risk))
