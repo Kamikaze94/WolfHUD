@@ -16,6 +16,64 @@ if string.lower(RequiredScript) == "lib/managers/menumanager" then
 
 		return new_node
 	end
+
+	function MenuCallbackHandler:save_lobby_settings()
+		--Save lobby settings
+		local lobby_settings = WolfHUD:getSetting({"LOBBY_SETTINGS"}, {})
+		for _, id in ipairs({ "job_plan", "kick_option", "permission", "reputation_permission", "drop_in_option", "team_ai", "team_ai_option", "auto_kick" }) do
+			if Global.game_settings[id] ~= nil then
+				lobby_settings[id] = Global.game_settings[id]
+			end
+		end
+		WolfHUD:setSetting({"LOBBY_SETTINGS"}, lobby_settings)
+		WolfHUD:Save()
+	end
+
+	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_lobby_job_plan" , "MenuCallbackHandlerPostSaveJobPlan_WolfHUD" , function( self, ... )
+		self:save_lobby_settings()
+	end)
+	Hooks:PostHook( MenuCallbackHandler , "choice_kicking_option" , "MenuCallbackHandlerPostSaveKickOption_WolfHUD" , function( self, ... )
+		self:save_lobby_settings()
+	end)
+	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_lobby_permission" , "MenuCallbackHandlerPostSavePermission_WolfHUD" , function( self, ... )
+		self:save_lobby_settings()
+	end)
+	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_lobby_reputation_permission" , "MenuCallbackHandlerPostSaveReputationPermission_WolfHUD" , function( self, ... )
+		self:save_lobby_settings()
+	end)
+	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_drop_in" , "MenuCallbackHandlerPostSaveDropInOption_WolfHUD" , function( self, ... )
+		self:save_lobby_settings()
+	end)
+	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_team_ai" , "MenuCallbackHandlerPostSaveTeamAIOption_WolfHUD" , function( self, ... )
+		self:save_lobby_settings()
+	end)
+	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_auto_kick" , "MenuCallbackHandlerPostSaveAutoKick_WolfHUD" , function( self, ... )
+		self:save_lobby_settings()
+	end)
+
+	local LOBBY_SETTINGS_LOADED = false
+	local function load_lobby_settings()
+		if not LOBBY_SETTINGS_LOADED then
+			local lobby_settings = WolfHUD:getSetting({"LOBBY_SETTINGS"}, {})
+			for _, id in ipairs({"job_plan", "kick_option", "permission", "reputation_permission", "drop_in_option", "team_ai_option", "auto_kick" }) do
+				if lobby_settings[id] ~= nil then
+					Global.game_settings[id] = lobby_settings[id]
+				end
+			end
+			LOBBY_SETTINGS_LOADED = true
+		end
+	end
+
+	local open_contract_node_orig = MenuCallbackHandler.open_contract_node
+	function MenuCallbackHandler:open_contract_node(...)	-- Contract Broker
+		load_lobby_settings()
+		return open_contract_node_orig(self, ...)
+	end
+	local MenuCrimeNetContractInitiator_modify_node_orig = MenuCrimeNetContractInitiator.modify_node
+	function MenuCrimeNetContractInitiator:modify_node(...)	-- Crimenet free contracts
+		load_lobby_settings()
+		return MenuCrimeNetContractInitiator_modify_node_orig(self, ...)
+	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	--Always enable mod mini icons, put ghost icon behind silent weapon names
 	local populate_weapon_category_new_original = BlackMarketGui.populate_weapon_category_new

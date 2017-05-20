@@ -375,5 +375,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" then
 				self:_truncate_name()
 			end
 		end
+
+		HUDTeammate._truncate_name = HUDTeammate._truncate_name or function() end
 	end
 end

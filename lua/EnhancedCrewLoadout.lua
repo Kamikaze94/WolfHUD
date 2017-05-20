@@ -489,8 +489,6 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/crimespreedetailsmenuc
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" then
-	core:import("CoreClass")
-
 	TeamLoadoutCustom = TeamLoadoutCustom or class(MissionBriefingTabItem)
 
 	function TeamLoadoutCustom:init(panel, text, i)
@@ -578,7 +576,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 			end
 		end
 	end
-	if WolfHUD:getSetting({"CrewLoadout", "REPLACE_IN_BRIEFING"}, true) then
+	if CoreClass and WolfHUD:getSetting({"CrewLoadout", "REPLACE_IN_BRIEFING"}, true) then
 		CoreClass.override_class(TeamLoadoutItem, TeamLoadoutCustom)
 	end
 

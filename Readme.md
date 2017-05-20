@@ -35,7 +35,7 @@ __Bug reports:__
 --
 __If you encounter any bugs, feel free to post about it on the issues tab!
 Please try to provide information from your crashlog and the actions you and your teammates were doing, when you crashed.  ;)__
-The Crashlog can be found at '%localappdata'%/Payday 2/crashlog.txt'.
+The Crashlog can be found at '%localappdata%/Payday 2/crashlog.txt'.
 The BLT log can be found at 'Payday 2/mods/logs/'.
 
 __Included Mods:__
@@ -47,22 +47,23 @@ __Included Mods:__
 - __[ToggleInteract](https://bitbucket.org/pjal3urb/toggleinteract/src)__, made by _Seven_, modified by _Iron Predator_ and _me_
 - __[DoubleTap Granades](https://bitbucket.org/pjal3urb/doubletapgrenades/src)__, made by Seven
 - __[AutoPickup](https://bitbucket.org/pjal3urb/autopickup/src)__, made by _Seven_
-- __[WeaponLaserColor](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13508)__, made by _Seven_
+- __[WeaponGadgets](https://bitbucket.org/pjal3urb/gadgets)__, made by _Seven_
 - __[Remember Gadget State](https://bitbucket.org/pjal3urb/persistentgadgets/src)__, by _Seven_
 - __[TabStats](https://steamcommunity.com/app/218620/discussions/15/618463738399320805/)__, made by _friendIyfire_
 - __[Numeric Suspicion](https://github.com/cjur3/GageHud)__, made by _friendIyfire_, updated by _me_
-- __FlashlightExtender__, made by _Seven_, color and brightness options made by _me_
 - __Angeled Sight Visualisation__, made by _me_ (based on HoxHUD P4.1)
 - __[EnemyHealthbar](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15127)__, made by _Undeadsewer_, modified by _me_
 - __AdvAssault__, made by _me_ (based on HoxHUD P4.1)
 - __Dynamic Damage Indicator__, made by _me_
-- __DamagePopups__, made by me (Uses __[WaypointsManager](https://bitbucket.org/pjal3urb/waypoints)__, made by _Seven_)
+- __DamagePopups__, made by _me_ (Uses [WaypointsManager](https://bitbucket.org/pjal3urb/waypoints), made by _Seven_)
 - __[BurstFire](https://bitbucket.org/pjal3urb/burstfire/src)__, made by _Seven_
 - __[Real Ammo](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15108)__, made by _FishTaco_, modified by _me_
 - __[No Spam](http://steamcommunity.com/app/218620/discussions/15/618457398976607330/)__, made by _Ahab_, _Seven_, _AmEyeBlind_ & _money123451_, updated by _me_
 - __[DrivingHUD](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=12982)__, made by _ViciousWalrus_ and _Great Big Bushy Beard_, rewritten by _me_
 - __[Real Weapon Names](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=15433)__, made by _(AD) Jaqueto_, updated by _Terminator01_
-- __[Buy all Assets](http://steamcommunity.com/app/218620/discussions/15/618458030689719683/)__, made by _=TBM= BangL_
+- __[Buy all Assets](http://steamcommunity.com/app/218620/discussions/15/618458030689719683/)__, made by _=TBM= BangL_, rewritten by _me_
+- __PrePlanManager__, made by _me_
+- __ProfileMenu__, made by _me_
 - __Equipment Tweaks__, made by _me_
 - __Smaller Menu Tweaks__
   - __[Always show Mod Icons](http://forums.lastbullet.net/mydownloads.php?action=view_down&did=13975)__, made by _Slippai~_, updated by _me_

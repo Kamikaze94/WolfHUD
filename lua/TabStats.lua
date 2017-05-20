@@ -73,6 +73,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			texture = "guis/dlcs/chico/textures/pd2/blackmarket/icons/characters/chico",
 			color = Color(1, 0.65, 0.05, 0.02)
 		},
+		max = {
+			texture = "guis/dlcs/max/textures/pd2/blackmarket/icons/characters/max",
+			color = Color(1, 0.65, 0.05, 0.02)
+		},
 	}
 
 	HUDStatsScreen.STAT_ITEMS = {
@@ -957,7 +961,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" the
 elseif string.lower(RequiredScript) == "lib/managers/crimespreemanager" then
 	function CrimeSpreeManager:get_potential_payout_from_current_stage(reward_id)
 		local multi = self:get_current_reward_multiplier()
-		rewards_table = {}
+		local rewards_table = {}
 		for _, reward in ipairs(tweak_data.crime_spree.rewards) do
 			if not reward_id then
 				rewards_table[reward.id] = reward.amount * multi
@@ -991,7 +995,7 @@ elseif string.lower(RequiredScript) == "lib/managers/crimespreemanager" then
 		reward_add = math.max(math.floor(reward_add), 0)
 
 		if self:server_spree_level() >= self:spree_level() and reward_add > 0 then
-			streak_bonus = (self._global.winning_streak or 1) + reward_add * tweak_data.crime_spree.winning_streak
+			local streak_bonus = (self._global.winning_streak or 1) + reward_add * tweak_data.crime_spree.winning_streak
 			if 1 > streak_bonus then
 				streak_bonus = streak_bonus + 1
 			end

@@ -18,15 +18,15 @@ if not _G.WolfHUD then
 		["lib/managers/localizationmanager"] 						= { "AdvAssault.lua" },
 		["lib/managers/experiencemanager"] 							= { "Scripts.lua" },
 		["lib/managers/moneymanager"] 								= { "Scripts.lua" },
-        ["lib/managers/multiprofilemanager"]                        = { "ProfileMenu.lua" },
+		["lib/managers/multiprofilemanager"]						= { "ProfileMenu.lua" },
 		["lib/managers/crimespreemanager"]							= { "TabStats.lua" },
 		["lib/managers/hudmanager"] 								= { "EnemyHealthbar.lua", "TabStats.lua", "CustomWaypoints.lua" },
-		["lib/managers/hudmanagerpd2"] 								= { "CustomHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "WaypointsManager.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
+		["lib/managers/hudmanagerpd2"] 								= { "CustomHUD.lua", "VanillaHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "WaypointsManager.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
 		["lib/managers/statisticsmanager"] 							= { "KillCounter.lua", "TabStats.lua" },
 		["lib/managers/playermanager"] 								= { "GameInfoManager.lua" },
 		["lib/managers/preplanningmanager"] 						= { "PrePlanManager.lua" },
 		["lib/managers/hud/huddriving"] 							= { "DrivingHUD.lua" },
-		["lib/managers/hud/hudteammate"] 							= { "CustomHUD.lua", "KillCounter.lua", "DownCounter.lua", "BurstFire.lua" },
+		["lib/managers/hud/hudteammate"] 							= { "CustomHUD.lua", "VanillaHUD.lua", "KillCounter.lua", "DownCounter.lua", "BurstFire.lua" },
 		["lib/managers/hud/hudtemp"] 								= { "CustomHUD.lua" },
 		["lib/managers/hud/hudassaultcorner"] 						= { "HUDList.lua", "AdvAssault.lua" },
 		["lib/managers/hud/hudobjectives"] 							= { "EnhancedObjective.lua" },
@@ -36,7 +36,7 @@ if not _G.WolfHUD then
 		["lib/managers/hud/hudinteraction"] 						= { "Interaction.lua" },
 		["lib/managers/hud/hudsuspicion"] 							= { "NumbericSuspicion.lua" },
 		["lib/managers/hud/hudhitdirection"] 						= { "DamageIndicator.lua" },
-        ["lib/managers/hud/hudwaitinglegend"] 						= { "CustomHUD.lua" },
+		["lib/managers/hud/hudwaitinglegend"] 						= { "CustomHUD.lua" },
 		["lib/managers/enemymanager"] 								= { "GameInfoManager.lua" },
 		["lib/managers/group_ai_states/groupaistatebase"] 			= { "GameInfoManager.lua", "PacifiedCivs.lua" },
 		["lib/managers/missionassetsmanager"] 						= { "BuyAllAsset.lua" },
@@ -44,12 +44,12 @@ if not _G.WolfHUD then
 		["lib/managers/menu/contractboxgui"]						= { "MenuTweaks.lua", "EnhancedCrewLoadout.lua" },
 		["lib/managers/menu/crimespreecontractboxgui"] 				= { "EnhancedCrewLoadout.lua" },
 		["lib/managers/menu/crimespreedetailsmenucomponent"]		= { "EnhancedCrewLoadout.lua" },
-		["lib/managers/menu/missionbriefinggui"]					= { "BuyAllAsset.lua", "EnhancedCrewLoadout.lua", "ProfileMenu.lua"  },
-        ["lib/managers/menu/multiprofileitemgui"]                   = { "ProfileMenu.lua" },
+		["lib/managers/menu/missionbriefinggui"]					= { "BuyAllAsset.lua", "EnhancedCrewLoadout.lua", "ProfileMenu.lua" },
+		["lib/managers/menu/multiprofileitemgui"]					= { "ProfileMenu.lua" },
 		["lib/managers/menu/stageendscreengui"] 					= { "MenuTweaks.lua", "TabStats.lua" },
 		["lib/managers/menu/lootdropscreengui"] 					= { "MenuTweaks.lua" },
 		["lib/managers/menu/skilltreeguinew"] 						= { "MenuTweaks.lua" },
-        ["lib/managers/menu/playerinventorygui"]                    = { "ProfileMenu.lua" },
+		["lib/managers/menu/playerinventorygui"]					= { "ProfileMenu.lua" },
 		["lib/managers/menu/renderers/menunodeskillswitchgui"] 		= { "MenuTweaks.lua", "ProfileMenu.lua"  },
 		["lib/managers/objectinteractionmanager"] 					= { "GameInfoManager.lua", "HUDList.lua", "Interaction.lua" },
 		["lib/managers/player/smokescreeneffect"] 					= { "GameInfoManager.lua" },
@@ -548,6 +548,16 @@ if not _G.WolfHUD then
 			},
 			MOD_OVERRIDES = {
 				fed_inv									= true,
+			},
+			LOBBY_SETTINGS = {
+				job_plan = -1,
+				kick_option = 1,
+				permission = "public",
+				reputation_permission = 0,
+				drop_in_option = 1,
+				team_ai = true,
+				team_ai_option = 1,
+				auto_kick = true,
 			},
 		}
 	end
@@ -1234,7 +1244,7 @@ if not _G.WolfHUD then
 		local reset_clbk = "wolfhud_reset_clbk"
 
 		-- Add menu back callback
-		MenuCallbackHandler[back_clbk] = function(self, item)
+		MenuCallbackHandler[back_clbk] = function(node)
 			if WolfHUD.settings_changed then
 				WolfHUD.settings_changed = nil
 				WolfHUD:Save()
@@ -1250,7 +1260,7 @@ if not _G.WolfHUD then
 						local enabled = true
 
 						for _, clbk in ipairs(option_item._enabled_callback_name_list or {}) do
-							enabled = enabled and MenuCallbackHandler[clbk](self, option_item)
+							enabled = enabled and MenuCallbackHandler[clbk](node.callback_handler, option_item)
 						end
 
 						option_item:set_enabled(enabled)
