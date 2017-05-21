@@ -112,10 +112,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 			visible = HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "DOWNCOUNTER"}, true) and not self._ai or false,
 		})
 
-        self:set_detection()
+		self:set_detection()
 
 		if managers.gameinfo then
-			managers.gameinfo:register_listener("HealthRadial_whisper_mode_listener" .. tostring(self._id), "whisper_mode", "change", callback(self, self, "_whisper_mode_change"))
+			managers.gameinfo:register_listener("HealthRadial_whisper_mode_listener" .. tostring(self._id), "whisper_mode", "change", callback(self, self, "_whisper_mode_change"), nil, true)
 		end
 	end)
 
@@ -123,9 +123,14 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 		managers.gameinfo:unregister_listener("HealthRadial_whisper_mode_listener" .. tostring(self._id), "whisper_mode", "change")
 	end)
 
-	Hooks:PostHook( HUDTeammate, "set_health", "WolfHUD_DownCounter_HUDTeammate_set_health", function(self, ...)
+	Hooks:PostHook( HUDTeammate, "set_peer_id", "WolfHUD_DownCounter_HUDTeammate_set_peer_id", function(self, ...)
 		self:set_detection()
-        Hooks:RemovePostHook("WolfHUD_DownCounter_HUDTeammate_set_health")
+	end)
+
+	Hooks:PostHook( HUDTeammate, "set_callsign", "WolfHUD_DownCounter_HUDTeammate_set_callsign", function(self, ...)
+		if self._main_player then
+			self:set_detection()
+		end
 	end)
 
 	Hooks:PreHook( HUDTeammate, "set_name", "WolfHUD_DownCounter_HUDTeammate_set_name", function(self, teammate_name, ...)
@@ -135,7 +140,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudteammate" and not HU
 		end
 	end)
 
-	function HUDTeammate:_whisper_mode_change(event, key, status)
+	function HUDTeammate:_whisper_mode_change(status)
 		local disabled = self._condition_icon:visible() or not (HUDManager.DOWNS_COUNTER_PLUGIN and WolfHUD:getSetting({"CustomHUD", self._setting_prefix, "DOWNCOUNTER"}, true)) or self._ai
 		self._downs_counter:set_visible(not disabled and (not status or self:down_amount() > 0))
 		self._detection_counter:set_visible(not disabled and not self._downs_counter:visible())

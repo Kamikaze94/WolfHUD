@@ -238,14 +238,15 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 		if inv_name_tweak then
 			for i, tab_data in ipairs(component_data) do
 				if not tab_data.prev_node_data then
-					local custom_tab_name = inv_name_tweak[tab_data.category] and inv_name_tweak[tab_data.category][i] or ""
+					local category_tab_names = inv_name_tweak[tab_data.category]
+					local custom_tab_name = category_tab_names and category_tab_names[i] or ""
 					for key, subst in pairs(BlackMarketGui._SUB_TABLE) do
 						custom_tab_name = custom_tab_name:upper():gsub(key, subst)
 					end
 					if string.len(custom_tab_name or "") > 0 then
 						tab_data.name_localized = custom_tab_name or tab_data.name_localized
-						self._renameable_tabs = true
 					end
+					self._renameable_tabs = self._renameable_tabs or category_tab_names and true or false
 				end
 			end
 		end
