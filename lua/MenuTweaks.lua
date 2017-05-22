@@ -50,6 +50,10 @@ if string.lower(RequiredScript) == "lib/managers/menumanager" then
 	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_auto_kick" , "MenuCallbackHandlerPostSaveAutoKick_WolfHUD" , function( self, ... )
 		self:save_lobby_settings()
 	end)
+	Hooks:PostHook( MenuCallbackHandler , "change_contract_difficulty" , "MenuCallbackHandlerPostSaveDifficulty_WolfHUD" , function( self, item, ... )
+		WolfHUD:setSetting({"LOBBY_SETTINGS", "difficulty"}, tweak_data:index_to_difficulty(item:value()))
+		WolfHUD:Save()
+	end)
 
 	local LOBBY_SETTINGS_LOADED = false
 	local function load_lobby_settings()
@@ -64,15 +68,19 @@ if string.lower(RequiredScript) == "lib/managers/menumanager" then
 		end
 	end
 
-	local open_contract_node_orig = MenuCallbackHandler.open_contract_node
-	function MenuCallbackHandler:open_contract_node(...)	-- Contract Broker
-		load_lobby_settings()
-		return open_contract_node_orig(self, ...)
-	end
 	local MenuCrimeNetContractInitiator_modify_node_orig = MenuCrimeNetContractInitiator.modify_node
-	function MenuCrimeNetContractInitiator:modify_node(...)	-- Crimenet free contracts
+	function MenuCrimeNetContractInitiator:modify_node(original_node, data, ...)
 		load_lobby_settings()
-		return MenuCrimeNetContractInitiator_modify_node_orig(self, ...)
+		local node = MenuCrimeNetContractInitiator_modify_node_orig(self, original_node, data, ...)
+		if data.customize_contract then
+			data.difficulty = WolfHUD:getSetting({"LOBBY_SETTINGS", "difficulty"}, "normal")
+			data.difficulty_id = tweak_data:difficulty_to_index(data.difficulty)
+			node:item("difficulty"):set_value(data.difficulty_id)
+			local can_afford = managers.money:can_afford_buy_premium_contract(data.job_id, data.difficulty_id)
+			node:item("buy_contract"):parameters().text_id = can_afford and "menu_cn_premium_buy_accept" or "menu_cn_premium_cannot_buy"
+			node:item("buy_contract"):set_enabled(can_afford)
+		end
+		return node
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	--Always enable mod mini icons, put ghost icon behind silent weapon names
