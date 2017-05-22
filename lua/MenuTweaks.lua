@@ -17,70 +17,75 @@ if string.lower(RequiredScript) == "lib/managers/menumanager" then
 		return new_node
 	end
 
-	function MenuCallbackHandler:save_lobby_settings()
+	function MenuCallbackHandler:save_lobby_settings(setting, value)
 		--Save lobby settings
-		local lobby_settings = WolfHUD:getSetting({"LOBBY_SETTINGS"}, {})
-		for _, id in ipairs({ "job_plan", "kick_option", "permission", "reputation_permission", "drop_in_option", "team_ai", "team_ai_option", "auto_kick" }) do
-			if Global.game_settings[id] ~= nil then
-				lobby_settings[id] = Global.game_settings[id]
+		if setting then
+			if value == nil then
+				value = Global.game_settings[setting]
 			end
+			WolfHUD:setSetting({"LOBBY_SETTINGS", setting}, value)
+		else
+			local lobby_settings = WolfHUD:getSetting({"LOBBY_SETTINGS"}, {})
+			for id, value in pairs(lobby_settings) do
+				if Global.game_settings[id] ~= nil then
+					lobby_settings[id] = Global.game_settings[id]
+				end
+			end
+			WolfHUD:setSetting({"LOBBY_SETTINGS"}, lobby_settings)
 		end
-		WolfHUD:setSetting({"LOBBY_SETTINGS"}, lobby_settings)
 		WolfHUD:Save()
 	end
 
 	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_lobby_job_plan" , "MenuCallbackHandlerPostSaveJobPlan_WolfHUD" , function( self, ... )
-		self:save_lobby_settings()
+		self:save_lobby_settings("job_plan")
 	end)
 	Hooks:PostHook( MenuCallbackHandler , "choice_kicking_option" , "MenuCallbackHandlerPostSaveKickOption_WolfHUD" , function( self, ... )
-		self:save_lobby_settings()
+		self:save_lobby_settings("kick_option")
 	end)
 	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_lobby_permission" , "MenuCallbackHandlerPostSavePermission_WolfHUD" , function( self, ... )
-		self:save_lobby_settings()
+		self:save_lobby_settings("permission")
 	end)
 	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_lobby_reputation_permission" , "MenuCallbackHandlerPostSaveReputationPermission_WolfHUD" , function( self, ... )
-		self:save_lobby_settings()
+		self:save_lobby_settings("reputation_permission")
 	end)
 	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_drop_in" , "MenuCallbackHandlerPostSaveDropInOption_WolfHUD" , function( self, ... )
-		self:save_lobby_settings()
+		self:save_lobby_settings("drop_in_option")
 	end)
 	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_team_ai" , "MenuCallbackHandlerPostSaveTeamAIOption_WolfHUD" , function( self, ... )
-		self:save_lobby_settings()
+		self:save_lobby_settings("team_ai")
+		self:save_lobby_settings("team_ai_option")
 	end)
 	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_auto_kick" , "MenuCallbackHandlerPostSaveAutoKick_WolfHUD" , function( self, ... )
-		self:save_lobby_settings()
+		self:save_lobby_settings("auto_kick")
 	end)
 	Hooks:PostHook( MenuCallbackHandler , "change_contract_difficulty" , "MenuCallbackHandlerPostSaveDifficulty_WolfHUD" , function( self, item, ... )
-		WolfHUD:setSetting({"LOBBY_SETTINGS", "difficulty"}, tweak_data:index_to_difficulty(item:value()))
-		WolfHUD:Save()
+		self:save_lobby_settings("difficulty", tweak_data:index_to_difficulty(item:value()))
 	end)
 
-	local LOBBY_SETTINGS_LOADED = false
-	local function load_lobby_settings()
-		if not LOBBY_SETTINGS_LOADED then
-			local lobby_settings = WolfHUD:getSetting({"LOBBY_SETTINGS"}, {})
-			for _, id in ipairs({"job_plan", "kick_option", "permission", "reputation_permission", "drop_in_option", "team_ai_option", "auto_kick" }) do
-				if lobby_settings[id] ~= nil then
-					Global.game_settings[id] = lobby_settings[id]
-				end
-			end
-			LOBBY_SETTINGS_LOADED = true
-		end
-	end
-
+	local WOLFHUD_LOBBY_SETTINGS_LOADED = false
 	local MenuCrimeNetContractInitiator_modify_node_orig = MenuCrimeNetContractInitiator.modify_node
 	function MenuCrimeNetContractInitiator:modify_node(original_node, data, ...)
-		load_lobby_settings()
-		local node = MenuCrimeNetContractInitiator_modify_node_orig(self, original_node, data, ...)
+		if not WOLFHUD_LOBBY_SETTINGS_LOADED then
+			local lobby_settings = WolfHUD:getSetting({"LOBBY_SETTINGS"}, {})
+			for id, value in pairs(lobby_settings) do
+				if Global.game_settings[id] ~= nil then
+					Global.game_settings[id] = value
+				end
+			end
+			WOLFHUD_LOBBY_SETTINGS_LOADED = true
+		end
+
 		if data.customize_contract then
 			data.difficulty = WolfHUD:getSetting({"LOBBY_SETTINGS", "difficulty"}, "normal")
 			data.difficulty_id = tweak_data:difficulty_to_index(data.difficulty)
-			node:item("difficulty"):set_value(data.difficulty_id)
-			local can_afford = managers.money:can_afford_buy_premium_contract(data.job_id, data.difficulty_id)
-			node:item("buy_contract"):parameters().text_id = can_afford and "menu_cn_premium_buy_accept" or "menu_cn_premium_cannot_buy"
-			node:item("buy_contract"):set_enabled(can_afford)
+
+			local diff_item = original_node:item("difficulty")
+			if diff_item then
+				diff_item:set_value(data.difficulty_id)
+			end
 		end
-		return node
+
+		return MenuCrimeNetContractInitiator_modify_node_orig(self, original_node, data, ...)
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	--Always enable mod mini icons, put ghost icon behind silent weapon names
@@ -90,9 +95,9 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 		local show_icons = not WolfHUD:getSetting({"INVENTORY", "SHOW_WEAPON_MINI_ICONS"}, true)
 		for id, w_data in ipairs(data) do
 			if tweak_data.weapon[w_data.name] then	--Filter out locked or empty slots
-				local category = tweak_data.weapon[w_data.name].category
-				local is_saw = (category == "saw")
-				local has_silencer = (category == "bow" or category == "crossbow")
+				local categories = tweak_data.weapon[w_data.name].categories
+				local is_saw = table.contains(categories, "saw")
+				local has_silencer = table.contains(categories, "bow") or table.contains(categories, "crossbow")
 				local has_explosive = false
 				for id, i_data in pairs(w_data.mini_icons) do	--Needs to handle silent motor saw
 					if i_data.alpha == 1 then		--Icon enabled
@@ -115,7 +120,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	local populate_mods_original = BlackMarketGui.populate_mods
 	function BlackMarketGui:populate_mods(data, ...)
 		if managers.dlc:has_dlc("gage_pack_shotgun") then
-			for index, mod_t in ipairs(data.on_create_data) do
+			for index, mod_t in ipairs(data.on_create_data or {}) do
 				if mod_t[1] == "wpn_fps_upg_a_custom_free"  then
 					table.remove(data.on_create_data, index)
 					break
