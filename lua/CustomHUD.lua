@@ -2022,15 +2022,17 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if PlayerInfoComponent.PlayerStatus.super.set_is_local_player(self, state) then
 			self._stamina_radial:set_visible(self._is_local_player and self._settings.STAMINA)
 			self._max_downs = managers.crime_spree:modify_value("PlayerDamage:GetMaximumLives", (Global.game_settings.difficulty == "sm_wish" and 2 or tweak_data.player.damage.LIVES_INIT)) - 1
-			self._max_downs = self._max_downs + (self._is_local_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
-			self._downs = self._is_local_player and self._max_downs or 0
-			self:set_revives(self._downs)
+			if self._is_local_player then
+				self._max_downs = self._max_downs + managers.player:upgrade_value("player", "additional_lives", 0)
+				self:set_revives(self._max_downs)
+			else
+				self:set_downs(0)
+			end
 		end
 	end
 
 	function PlayerInfoComponent.PlayerStatus:set_is_ai(state)
-		if PlayerInfoComponent.PlayerStatus.super.set_is_ai(self, state) then
-			self:set_enabled("ai", not self._is_ai)
+		if PlayerInfoComponent.PlayerStatus.super.set_is_ai(self, state) and self:set_enabled("ai", not self._is_ai) then
 			self._owner:arrange()
 		end
 	end
@@ -2043,9 +2045,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	function PlayerInfoComponent.PlayerStatus:set_health(current, total)
 		local ratio = current / total
-		--self:set_stored_health_max(1-ratio)
-		--self._health_radial:set_color(Color(ratio, 1, 1))
-		--self._stored_health_radial:set_rotation(-ratio * 360)
 		self._health_radial:stop()
 		self._health_radial:animate(callback(self, self, "_animate_set_health"), self._stored_health_radial, ratio)
 	end
@@ -2444,8 +2443,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			texture = "guis/textures/pd2/hud_tabs",
 			texture_rect = { 32, 33, 32, 31 },
 			color = Color.white,
-			--h = is_player and height or (height / 2),
-			--w = is_player and height or (height / 2),
 		})
 
 		self._text = self._panel:text({
@@ -2454,12 +2451,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			color = Color.white,
 			vertical = "center",
 			align = "center",
-			--h = is_player and height or (height / 2),
-			--font_size = (is_player and height or (height / 2)) * 0.8,
 			font = tweak_data.hud.medium_font_noshadow,
 		})
 
+		local component_size = self._owner._is_player and self._player_height or self._team_height / 2
+		self._icon:set_size(component_size, component_size)
+		self._text:set_h(component_size)
+		self._text:set_font_size(component_size * 0.8)
 		self:set_enabled("active", false)
+		self:arrange()
 
 		self._owner:register_listener("Carry", { "set_carry" }, callback(self, self, "set"), false)
 		self._owner:register_listener("Carry", { "clear_carry" }, callback(self, self, "clear"), false)
@@ -2480,45 +2480,43 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if PlayerInfoComponent.Carry.super.rescale(self, factor) then
 			self._player_height = self._player_height * factor
 			self._team_height = self._team_height * factor
-			local component_size = self._panel:h() / (self._is_local_player and 1 or 2)
+
+			local component_size = self._owner._is_player and self._player_height or self._team_height / 2
 			self._icon:set_size(component_size, component_size)
 			self._text:set_h(component_size)
 			self._text:set_font_size(component_size * 0.8)
 			self:arrange()
 		end
 	end
-
+--[[
 	function PlayerInfoComponent.Carry:set_is_local_player(state)
 		if PlayerInfoComponent.Carry.super.set_is_local_player(self, state) then
-			self:set_size(self._panel:w(), self._is_local_player and self._player_height or self._team_height)
-
-			local component_size = self._panel:h() / (self._is_local_player and 1 or 2)
+			local component_size = self._is_local_player and self._player_height or self._team_height / 2
 			self._icon:set_size(component_size, component_size)
 			self._text:set_h(component_size)
 			self._text:set_font_size(component_size * 0.8)
 			self:arrange()
 		end
 	end
-
+]]
 	function PlayerInfoComponent.Carry:set_is_ai(state)
 		if PlayerInfoComponent.Carry.super.set_is_ai(self, state) then
-			self:set_enabled("ai", not self._is_ai)
-			self._owner:arrange()
+			if self:set_enabled("ai", not self._is_ai) then
+				self._owner:arrange()
+			end
 		end
 	end
 
 	function PlayerInfoComponent.Carry:arrange()
 		local w = self._panel:w()
-		local h = self._panel:h()
+		local h = self._owner._is_player and self._player_height or self._team_height
 
-		if self._is_local_player then
+		if self._owner._is_player then
 			self._icon:set_left(0)
-			self._text:set_left(self._icon:w() + self._icon:w() * 0.25)
+			self._text:set_left(self._icon:w() * 1.25)
 
-			h = self._panel:h()
 			w = self._text:right()
 		else
-			h = self._panel:h()
 			w = self._text:w()
 
 			self._icon:set_top(0)
@@ -2527,8 +2525,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			self._text:set_x(0)
 		end
 
-		self:set_size(w, h)
-		self._owner:arrange()
+		if self:set_size(w, h) then
+			self._owner:arrange()
+		end
 	end
 
 	function PlayerInfoComponent.Carry:set(id, value)
