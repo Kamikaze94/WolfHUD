@@ -69,11 +69,11 @@ elseif string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammer
 elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" then
 	BaseInteractionExt.SHAPED_CHARGE_TIMEOUT = WolfHUD:getTweakEntry("STEALTH_SHAPED_CHARGE_TIMEOUT", "number", 0.25)		--Timeout for 2 InteractKey pushes, to prevent accidents in stealth
 
-	local BaseInteraction_can_interact_original = BaseInteractionExt.can_interact
+	local BaseInteraction_interact_start_original = BaseInteractionExt.interact_start
 	local ECMJammerInteaction_can_interact_original = ECMJammerInteractionExt.can_interact
 	local ECMJammerInteraction_can_select_original = ECMJammerInteractionExt.can_select
 
-	function BaseInteractionExt:can_interact(player, ...)
+	function BaseInteractionExt:interact_start(player, data, ...)
 		local t = Application:time()
 		if WolfHUD:getSetting({"EQUIPMENT", "SHAPED_CHARGE_STEALTH_DISABLED"}, true) and managers.groupai:state():whisper_mode()
 				and self._tweak_data.required_deployable and self._tweak_data.required_deployable == "trip_mine"
@@ -81,7 +81,7 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 			self._last_shaped_charge_t = t
 			return false
 		end
-		return BaseInteraction_can_interact_original(self, player, ...)
+		return BaseInteraction_interact_start_original(self, player, data, ...)
 	end
 
 	function ECMJammerInteractionExt:can_interact(...)
