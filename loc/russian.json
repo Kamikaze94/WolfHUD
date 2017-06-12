@@ -823,6 +823,8 @@
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_desc" : "Обратная связь генератора помех будет отключена во время стелса.",
 	"wolfhud_equipment_shaped_charge_disabled_stealth_title" : "Подавление заряда мины",
 	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "Если выбрано, вам нужно дважды нажать, чтобы установить кумулятивный заряд во время стелса. \n Для предотвращения случайных нажатий",
+	"wolfhud_equipment_keycard_doors_disabled_title" : "Key-card Door Suppression",
+	"wolfhud_equipment_keycard_doors_disabled_desc" : "When checked, you need to doubletap to close doors in hoxton breakout day 2. \nOnly to prevent accidents.",
 
 	"wolfhud_gadget_options_name" : "Настройки гаджетов оружия",
 	"wolfhud_gadget_options_help" : "Настройте пользовательские цвета лазеров.",
