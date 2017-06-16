@@ -43,7 +43,7 @@ The BLT log can be found at **PAYDAY 2/mods/logs/**.
 
 ## Included Mods
 
-* [CustomHUD](https://bitbucket.org/pjal3urb/customhud/src) made by **Seven** modified by** me**
+* [CustomHUD](https://bitbucket.org/pjal3urb/customhud/src) made by **Seven** modified by **me**
 * [HudPanelList](https://bitbucket.org/pjal3urb/hudlist/src/) made by **Seven**, modified by **me**
 * [KillCounter](https://bitbucket.org/pjal3urb/customhud/src) made by **Seven**, modified by **me**
 * [Accuracy Plugin](https://bitbucket.org/pjal3urb/customhud/src) made by **Seven**, modified by **me**
@@ -83,7 +83,7 @@ The BLT log can be found at **PAYDAY 2/mods/logs/**.
 * English made by **me**
 * German made by **me**
 * Russian made by **chrom[K]a** & **Magic3000**
-* Korean made by *Я!zu**
+* Korean made by **Я!zu**
 * Chinese made by **小熊饼干**
 
 Big credit goes to all of you!
