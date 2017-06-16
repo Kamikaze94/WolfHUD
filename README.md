@@ -1,5 +1,5 @@
 # WolfHUD
-####Development Version
+## Description
 
 This is a Mod collection of several useful HUD altering mods.
 I've modified them and added features, I felt were needed or useful.
@@ -9,9 +9,7 @@ Not sure if I want it to become that, but at least I added ingame Options to tur
 __I got the permission from _Seven_, _ViciousWalrus_, _Undeadsewer_, _FishTaco_, _friendIyfire_ and _Terminator01_ for the use of their scripts and from _Nervatel Hanging Closet Monster_ for using his icons.__
 **Big thanks to [Kampfhörnchen](http://forums.lastbullet.net/member.php?action=profile&uid=19364) for creating a better logo and a banner, ^^**
 
-__Preview:__
---
-_(Outdated, need to take some new ones soon... :P )_
+## Preview
 <p align="center">
   <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_1.jpg" width="420"/>
   <img src="http://www.imghost.eu/images/2016/03/03/WolfHUD_2.jpg" width="420"/><br>
