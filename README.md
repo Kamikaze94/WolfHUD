@@ -29,7 +29,7 @@ To make this mod work you will need to install [Better Lua injecTor](http://payd
 2. Open the downloaded archive, using WinRAR or 7Zip
 3. Extract the **WolfHUD-master** folder into your 'PAYDAY 2/mods' folder
 4. Rename the folder **WolfHUD-master** to **WolfHUD**
-5. Start the game once. It will promt you to update Federal Inventory and WolfHUD_Textures. Update both.
+5. Start the game once. It will promt you to update Federal Inventory and WolfHUD_Textures. Update both
 
 ## If yoy don't want/like Inventory Icons
 To remove "Federal Inventory" go to your **PAYDAY 2/assets/mod_overrides/Federal Inventory** folder and delete the **guis** folder. Then open **revision.txt** and change the number to a higher one, to prevent future updates.
