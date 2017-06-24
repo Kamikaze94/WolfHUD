@@ -119,9 +119,9 @@
 	"wolfhud_tabstats_tasers_killed" : "Tasers eliminados:",
 	"wolfhud_tabstats_gensec_killed" : "GENSEC eliminados:",
 	"wolfhud_tabstats_medic_killed" : "Medicos eliminados:",
-	"wolfhud_tabstats_melee_kills" : "Eliminaciones Cuerpo a Cuerpo:",
-	"wolfhud_tabstats_explosion_kills" : "Eliminaciones por Explosion:",
-	"wolfhud_tabstats_nonspecial_kills" : "Eliminaciones no Especiales:",
+	"wolfhud_tabstats_melee_kills" : "Elim. Cuerpo a Cuerpo:",
+	"wolfhud_tabstats_explosion_kills" : "Elim. con Explosiones:",
+	"wolfhud_tabstats_nonspecial_kills" : "Elim. no Especiales:",
 	"wolfhud_tabstats_total_revives" : "Revividos Totales (P/AI):",
 	"wolfhud_tabstats_alltime_stat" : "Todo el Tiempo:",
 
