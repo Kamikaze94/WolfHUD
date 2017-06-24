@@ -78,7 +78,7 @@
 	"wolfhud_advassault_phase_sustain" : "Mantener",
 	"wolfhud_advassault_phase_fade" : "Disolver",
 	"wolfhud_advassault_time_overdue" : "ATRASADO",
-	"wolfhud_locked_assault" : "¡¡¡Asalto Policial sin Limite!!!  ¡¡¡Sal lo mas rapido posible!!!",
+	"wolfhud_locked_assault" : "¡Asalto Policial sin Limite!  ¡Sal lo mas rapido posible!",
 
 	"wolfhud_customhud_interaction_done" : "COMPLETADO",
 	"wolfhud_customhud_interaction_aborted" : "ABORTADO",
