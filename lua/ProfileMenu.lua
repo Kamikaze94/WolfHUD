@@ -162,10 +162,12 @@ elseif RequiredScript == "lib/managers/menu/renderers/menunodeskillswitchgui" th
 
 			if alive(row_item.skill_points_gui) then
 				row_item.skill_points_gui:set_text(utf8.to_upper(skill_name))
+                row_item.skill_points_gui:set_alpha(1)
 			end
 			if alive(row_item.status_gui) then
 				row_item.status_gui:set_text(perk_name)
 			end
+            row_item.distribution_after_text = false
 		elseif row_item.type == "divider" and row_item.name == "divider_title" then
 
 			if alive(row_item.skill_points_gui) then

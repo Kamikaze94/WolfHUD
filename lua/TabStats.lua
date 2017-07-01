@@ -796,6 +796,8 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 				+ self:session_enemy_killed_by_type("tank_green", "count")
 				+ self:session_enemy_killed_by_type("tank_black", "count")
 				+ self:session_enemy_killed_by_type("tank_skull", "count")
+				+ self:session_enemy_killed_by_type("tank_medic", "count")
+				+ self:session_enemy_killed_by_type("tank_mini", "count")
 				+ self:session_enemy_killed_by_type("tank_hw", "count")
 	end
 
@@ -804,6 +806,8 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 				+ self:enemy_killed_by_type("tank_green", "count")
 				+ self:enemy_killed_by_type("tank_black", "count")
 				+ self:enemy_killed_by_type("tank_skull", "count")
+				+ self:enemy_killed_by_type("tank_medic", "count")
+				+ self:enemy_killed_by_type("tank_mini", "count")
 				+ self:enemy_killed_by_type("tank_hw", "count")
 	end
 

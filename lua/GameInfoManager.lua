@@ -1,4 +1,4 @@
-
+--TODO: Fix Client Minion Damage upgrade sync (line: 1919)
 local print_info = function(...)
 	local params = {...}
 	table.insert(params, #params + 1, "info")
@@ -1851,8 +1851,8 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 		if unit:brain()._logic_data.is_converted then
 			local key = tostring(unit:key())
 			local peer_id = peer_unit and managers.network:session():peer_by_unit(peer_unit):id() or managers.network:session():local_peer():id()
-			local owner_base = peer_unit and peer_unit:base() or managers.player
-			local damage_mult = (owner_base:upgrade_value("player", "convert_enemies_damage_multiplier", 1) or 1)
+			local owner_base = peer_id and peer_unit and peer_id ~= managers.network:session():local_peer():id() and peer_unit:base() or managers.player
+			local damage_mult = (owner_base:upgrade_value("player", "convert_enemies_damage_multiplier", 1) or 1) --* (owner_base:upgrade_value("player", "passive_convert_enemies_damage_multiplier", 1) or 1)
 
 			managers.gameinfo:event("minion", "add", key, { unit = unit })
 			managers.gameinfo:event("minion", "set_owner", key, { owner = peer_id })
@@ -1881,6 +1881,8 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 	end
 
 	function GroupAIStateBase:_update_hostage_count()
+        managers.player:update_hostage_situation(self._hostage_headcount)
+    
 		local police_hostages = 0
 		local security_hostages = 0
 		local civilian_hostages = self._hostage_headcount
@@ -1911,12 +1913,14 @@ if string.lower(RequiredScript) == "lib/network/handlers/unitnetworkhandler" the
 	local interaction_set_active_original = UnitNetworkHandler.interaction_set_active
 	local alarm_pager_interaction_original = UnitNetworkHandler.alarm_pager_interaction
 
-	function UnitNetworkHandler:mark_minion(unit, owner_id, joker_level, ...)
-		mark_minion_original(self, unit, owner_id, joker_level, ...)
+	function UnitNetworkHandler:mark_minion(unit, owner_id, ...)
+		mark_minion_original(self, unit, owner_id, ...)
 
 		if self._verify_character(unit) then
 			local key = tostring(unit:key())
-			local damage_mult = managers.player:upgrade_value_by_level("player", "convert_enemies_damage_multiplier", joker_level, 1)
+            local peer = owner_id and owner_id ~= managers.network:session():local_peer():id() and managers.network:session():peer(owner_id)
+			local owner_base = peer and peer:unit() and peer:unit():base() or managers.player
+			local damage_mult = (owner_base:upgrade_value("player", "convert_enemies_damage_multiplier", 1) or 1) --* (owner_base:upgrade_value("player", "passive_convert_enemies_damage_multiplier", 1) or 1)
 
 			managers.gameinfo:event("minion", "add", key, { unit = unit })
 			managers.gameinfo:event("minion", "set_owner", key, { owner = owner_id })
@@ -2648,7 +2652,6 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	local deactivate_temporary_upgrade_original = PlayerManager.deactivate_temporary_upgrade
 	local count_up_player_minions_original = PlayerManager.count_up_player_minions
 	local count_down_player_minions_original = PlayerManager.count_down_player_minions
-	local update_hostage_skills_original = PlayerManager.update_hostage_skills
 	local set_melee_dmg_multiplier_original = PlayerManager.set_melee_dmg_multiplier
 	local mul_to_accuracy_multiplier_original = PlayerManager.mul_to_accuracy_multiplier
 	local on_killshot_original = PlayerManager.on_killshot
@@ -2789,8 +2792,8 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		return result
 	end
 
-	function PlayerManager:update_hostage_skills(...)
-		local hostages = managers.groupai and managers.groupai:state():hostage_count() or 0
+	function PlayerManager:update_hostage_situation(num_hostages)
+		local hostages = num_hostages or (managers.groupai and managers.groupai:state():hostage_count()) or 0
 		local minions = self:num_local_minions() or 0
 		local stack_count = hostages + minions
 
@@ -2808,8 +2811,6 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		end
 
 		self._HAS_HOSTAGES = (stack_count > 0)
-
-		return update_hostage_skills_original(self, ...)
 	end
 
 	function PlayerManager:set_melee_dmg_multiplier(...)

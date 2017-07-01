@@ -106,6 +106,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				[ "heavy_swat" ] 					= { default = "wolfhud_enemy_heavy_swat" },
 				[ "fbi_swat" ] 						= { default = "wolfhud_enemy_swat" },
 				[ "fbi_heavy_swat" ] 				= { default = "wolfhud_enemy_heavy_swat" },
+                [ "heavy_swat_sniper" ]             = { default = "wolfhud_enemy_heavy_swat_sniper" },
 				[ "city_swat" ] 					= { default = "wolfhud_enemy_city_swat" },
 				[ "shield" ] 						= { default = "wolfhud_enemy_shield" },
 				[ "spooc" ] 						= { default = "wolfhud_enemy_spook" },
@@ -603,7 +604,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				name = {
 					type = "label",
 					show = true,
-					text = managers.localization:to_upper_text(name_table[level_id] or name_table.default),
+					text = name_table and (managers.localization:to_upper_text(name_table[level_id] or name_table.default)) or "JOKER",
 				},
 				kills = {
 					type = "label",

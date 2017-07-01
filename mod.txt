@@ -10,6 +10,7 @@
 		{ "hook_id" : "lib/managers/menumanager", 								"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/menumanagerdialogs", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/chatmanager", 								"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/managers/crimenetmanager", 							"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/localizationmanager", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/experiencemanager", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/moneymanager", 								"script_path" : "Core.lua" },

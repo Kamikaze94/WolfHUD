@@ -490,10 +490,52 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/guitweakdata" then
 		GuiTweakData_init_orig(self, ...)
 		self.rename_max_letters = WolfHUD:getTweakEntry("MAX_WEAPON_NAME_LENGTH", "number", 30)
 		self.rename_skill_set_max_letters = WolfHUD:getTweakEntry("MAX_SKILLSET_NAME_LENGTH", "number", 25)
+
+		if false then
+			table.insert(self.crime_net.special_contracts, {
+				id = "random_contract",
+				name_id = "menu_cn_random_contract",
+				desc_id = "menu_cn_random_contract_desc",
+				menu_node = nil,
+				x = 550,
+				y = 640,
+				icon = "guis/textures/pd2/crimenet_challenge"
+			})
+		end
+	end
+elseif string.lower(RequiredScript) == "lib/managers/crimenetmanager" then
+	local check_job_pressed = CrimeNetGui.check_job_pressed
+	function CrimeNetGui:check_job_pressed(...)
+		if self._jobs["random_contract"] and self._jobs["random_contract"].mouse_over == 1 then
+			local job_id = tweak_data.narrative._jobs_index[math.random(#tweak_data.narrative._jobs_index)]
+			local job_tweak = tweak_data.narrative:job_data(job_id)
+			local data = {
+				job_id = job_id,
+				difficulty = "normal",
+				difficulty_id = 2,
+				professional = job_tweak.professional or false,
+				competitive = job_tweak.competitive or false,
+				customize_contract = true,
+				contract_visuals = job_tweak.contract_visuals,
+				server = false,
+				special_node = Global.game_settings.single_player and "crimenet_contract_singleplayer" or "crimenet_contract_host",
+			}
+			for k, v in pairs(data) do
+				self._jobs["random_contract"][k] = v
+			end
+		end
+
+		return check_job_pressed(self, ...)
+	end
+
+	local _get_job_location_orig = CrimeNetGui._get_job_location
+	function CrimeNetGui:_get_job_location(data, ...)
+		-- Assign job pos per difficulty?
+		return _get_job_location_orig(self, data, ...)
 	end
 elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuitemslider" then
 	core:module("CoreMenuItemSlider")
-	core:import("CoreMenuItem")
+	--core:import("CoreMenuItem")
 	local init_actual = ItemSlider.init
 	local highlight_row_item_actual = ItemSlider.highlight_row_item
 	local set_value_original = ItemSlider.set_value
@@ -662,10 +704,10 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/renderers/menunodeskil
 				end
 				row_item.skill_points_gui:set_text(	managers.localization:to_upper_text( tweak_data.skilltree.trees[pt].name_id	) .." / "..	managers.localization:to_upper_text( tweak_data.skilltree.trees[st].name_id	) )
 			end
-        elseif row_item.type == "divider" and row_item.name == "divider_title" then
-            if alive(row_item.status_gui) then
-                row_item.status_gui:set_text(managers.localization:to_upper_text("menu_specialization", {}) .. ":")
-            end
+		elseif row_item.type == "divider" and row_item.name == "divider_title" then
+			if alive(row_item.status_gui) then
+				row_item.status_gui:set_text(managers.localization:to_upper_text("menu_specialization", {}) .. ":")
+			end
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/chatmanager" then
@@ -756,61 +798,61 @@ elseif string.lower(RequiredScript) == "lib/managers/menumanagerdialogs" then
 		if self.peer_join_start_t then
 			self.peer_join_start_t[id] = nil
 		end
---[[
-		if managers.chat and managers.system_menu:is_active_by_id("user_dropin" .. id) then
-			local peer = managers.network:session() and managers.network:session():peer(id)
-			local text = ""
-			if peer then
-				local name = peer:name()
-				local level = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "-" or "") .. (peer:level() or "")
-				local outfit_skills = (peer:blackmarket_outfit() or {}).skills
-				local perk = "[Unknown Perkdeck]"
-				local skill_str = "[No Skilldata available]"
+		--[[
+				if managers.chat and managers.system_menu:is_active_by_id("user_dropin" .. id) then
+					local peer = managers.network:session() and managers.network:session():peer(id)
+					local text = ""
+					if peer then
+						local name = peer:name()
+						local level = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "-" or "") .. (peer:level() or "")
+						local outfit_skills = (peer:blackmarket_outfit() or {}).skills
+						local perk = "[Unknown Perkdeck]"
+						local skill_str = "[No Skilldata available]"
 
-				if outfit_skills then
-					if outfit_skills.specializations then
-						local deck_index, deck_level = unpack(outfit_skills.specializations or {})
-						local data = tweak_data.skilltree.specializations[tonumber(deck_index)]
-						local name_id = data and data.name_id
-						if name_id then
-							perk = string.format("%s%s", managers.localization:text(name_id), tonumber(deck_level) < 9 and string.format(" (%d/9)", deck_level) or "")
-						end
-					end
-
-					local skill_data = outfit_skills.skills
-					if skill_data then
-						local tree_names = {}
-						for i, tree in ipairs(tweak_data.skilltree.skill_pages_order) do
-							local tree = tweak_data.skilltree.skilltree[tree]
-							if tree then
-								table.insert(tree_names, tree.name_id and utf8.sub(managers.localization:text(tree.name_id), 1, 1) or "?")
+						if outfit_skills then
+							if outfit_skills.specializations then
+								local deck_index, deck_level = unpack(outfit_skills.specializations or {})
+								local data = tweak_data.skilltree.specializations[tonumber(deck_index)]
+								local name_id = data and data.name_id
+								if name_id then
+									perk = string.format("%s%s", managers.localization:text(name_id), tonumber(deck_level) < 9 and string.format(" (%d/9)", deck_level) or "")
+								end
 							end
-						end
 
-						local subtree_amt = math.floor(#skill_data / #tree_names)
-						skill_str = ""
+							local skill_data = outfit_skills.skills
+							if skill_data then
+								local tree_names = {}
+								for i, tree in ipairs(tweak_data.skilltree.skill_pages_order) do
+									local tree = tweak_data.skilltree.skilltree[tree]
+									if tree then
+										table.insert(tree_names, tree.name_id and utf8.sub(managers.localization:text(tree.name_id), 1, 1) or "?")
+									end
+								end
 
-						for tree = 1, #tree_names, 1 do
-							local tree_has_points = false
-							local tree_sum = 0
+								local subtree_amt = math.floor(#skill_data / #tree_names)
+								skill_str = ""
 
-							for sub_tree = 1, subtree_amt, 1 do
-								local skills = skill_data[(tree-1) * subtree_amt + sub_tree] or 0
-								tree_sum = tree_sum + skills
+								for tree = 1, #tree_names, 1 do
+									local tree_has_points = false
+									local tree_sum = 0
+
+									for sub_tree = 1, subtree_amt, 1 do
+										local skills = skill_data[(tree-1) * subtree_amt + sub_tree] or 0
+										tree_sum = tree_sum + skills
+									end
+									skill_str = string.format("%s%s:%02d ", skill_str, tree_names[tree] or "?", tree_sum)
+								end
 							end
-							skill_str = string.format("%s%s:%02d ", skill_str, tree_names[tree] or "?", tree_sum)
-						end
-					end
 
-					text = string.format("%s, %s", skill_str, perk)
-				else
-					text = "[invalid outfit]"
+							text = string.format("%s, %s", skill_str, perk)
+						else
+							text = "[invalid outfit]"
+						end
+
+						managers.chat:feed_system_message(ChatManager.GAME, string.format("(%s) %s: %s", level, name, text))
+					end
 				end
-
-				managers.chat:feed_system_message(ChatManager.GAME, string.format("(%s) %s: %s", level, name, text))
-			end
-		end
-]]
+		]]
 		close_person_joining_original(self, id, ...)
 	end
 end

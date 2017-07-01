@@ -15,6 +15,7 @@ if not _G.WolfHUD then
 		["lib/managers/menumanager"] 								= { "PrePlanManager.lua", "MenuTweaks.lua", "ProfileMenu.lua"  },
 		["lib/managers/menumanagerdialogs"] 						= { "MenuTweaks.lua" },
 		["lib/managers/chatmanager"] 								= { "MenuTweaks.lua" },
+		["lib/managers/crimenetmanager"]							= { "MenuTweaks.lua" },
 		["lib/managers/localizationmanager"] 						= { "AdvAssault.lua" },
 		["lib/managers/experiencemanager"] 							= { "Scripts.lua" },
 		["lib/managers/moneymanager"] 								= { "Scripts.lua" },

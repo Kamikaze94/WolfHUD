@@ -254,6 +254,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		fbi = 						{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_fbi" 					},
 		swat = 						{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_swat" 					},
 		heavy_swat = 				{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_heavy_swat" 				},
+        heavy_swat_sniper =         { type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_heavy_swat_sniper"   	},
 		fbi_swat = 					{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_swat" 					},
 		fbi_heavy_swat = 			{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_heavy_swat" 				},
 		city_swat = 				{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_city_swat" 				},
@@ -2999,7 +3000,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		thermite = 					{ hudpickups = { 64, 64, 32, 32 }, 												priority = 1, category = "mission_pickups", ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "mission_pickups"}, true) 	},
 		c4 = 						{ hudicons	 = { 36, 242, 32, 32 }, 											priority = 1, category = "mission_pickups", ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "mission_pickups"}, true) 	},
 		small_loot = 				{ hudpickups = { 32, 224, 32, 32}, 												priority = 3, category = "valuables", 		ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "valuables"}, true) 		},
-		courier = 					{ skills 	 = { 6, 0 }, 														priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},			--{ texture = "guis/textures/contact_vlad", texture_rect = {1920, 0, 64, 64}, priority = 3 },
+		courier = 					{ texture = "guis/dlcs/gage_pack_jobs/textures/pd2/endscreen/gage_assignment", 	priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},			--{ texture = "guis/textures/contact_vlad", texture_rect = {1920, 0, 64, 64}, priority = 3 }, --[[skills 	 = { 6, 0 }]] 
 		gage_case = 				{ skills 	 = { 1, 0 }, 														priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
 		gage_key = 					{ hudpickups = { 32, 64, 32, 32 }, 												priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
 		paycheck_masks = 			{ hudpickups = { 128, 32, 32, 32 }, 											priority = 4, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
@@ -4043,7 +4044,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			w = self._panel:w() * 0.95,
 			h = self._panel:w() * 0.95,
 			layer = 1,
-			alpha = 0,
+			alpha = 0.3,
 			color = Color(0.8, 0.8, 1.0),
 		})
 		self._outline:set_center(self._health_bar:center())
@@ -4059,7 +4060,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			layer = 3,
 			font = tweak_data.hud_corner.assault_font,
 			font_size = self._panel:w() * 0.4,
-			alpha  = 0.5
+			alpha  = 0.3
 		})
 		self._damage_upgrade_text:set_bottom(self._panel:bottom())
 
@@ -4177,12 +4178,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDList.MinionItem:_set_damage_resistance(data)
 		local max_mult = tweak_data.upgrades.values.player.convert_enemies_health_multiplier[1] * tweak_data.upgrades.values.player.passive_convert_enemies_health_multiplier[2]
-		local alpha = math.clamp(1 - (data.damage_resistance - max_mult) / (1 - max_mult), 0, 1) * 0.8 + 0.2
+		local alpha = math.clamp(1 - (data.damage_resistance - max_mult) / (1 - max_mult), 0, 1) * 0.7 + 0.3
 		self._outline:set_alpha(alpha)
 	end
 
 	function HUDList.MinionItem:_set_damage_multiplier(data)
-		self._damage_upgrade_text:set_alpha(data.damage_multiplier > 1 and 1 or 0.5)
+		local max_mult = tweak_data.upgrades.values.player.convert_enemies_damage_multiplier[1] --* tweak_data.upgrades.values.player.passive_convert_enemies_damage_multiplier[1]
+		local alpha = math.clamp(1 - (data.damage_multiplier - max_mult) / (1 - max_mult), 0, 1) * 0.7 + 0.3
+		self._damage_upgrade_text:set_alpha(alpha)
 	end
 
 	function HUDList.MinionItem:_animate_damage(icon)
