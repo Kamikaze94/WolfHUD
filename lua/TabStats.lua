@@ -406,7 +406,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		end
 
 		local difficulty_text
-		if managers.crime_spree:_is_active() then
+		if managers.crime_spree:is_active() then
 			difficulty_text = managers.localization:text("menu_cs_level", {level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")})
 		else
 			local difficulty_stars = managers.job:current_difficulty_stars()
@@ -488,7 +488,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	function HUDStatsScreen:update(day_wrapper_panel, item)
 		if not (self._use_tab_stats and day_wrapper_panel) then return end
 		if managers.money and managers.statistics and managers.experience and not item then
-			local money_current_stage 	= managers.crime_spree:_is_active() and managers.crime_spree:get_potential_payout_from_current_stage("cash") or managers.money:get_potential_payout_from_current_stage() or 0
+			local money_current_stage 	= managers.crime_spree:is_active() and managers.crime_spree:get_potential_payout_from_current_stage("cash") or managers.money:get_potential_payout_from_current_stage() or 0
 			local offshore_rate 		= managers.money:get_tweak_value("money_manager", "offshore_rate") or 0
 			local civilian_kills 		= managers.statistics:session_total_civilian_kills() or 0
 			local cleaner_costs			= (managers.money:get_civilian_deduction() or 0) * civilian_kills

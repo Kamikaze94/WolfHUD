@@ -485,7 +485,7 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 		if self._unit:carry_data() then
 			local carry_id = self._unit:carry_data():carry_id()
 			macros.BAG = managers.localization:text(tweak_data.carry[carry_id].name_id)
-			if not (managers.crimespree and managers.crime_spree:_is_active()) then
+			if not (managers.crime_spree and managers.crime_spree:is_active()) then
 				macros.VALUE = not tweak_data.carry[carry_id].skip_exit_secure and " (" .. managers.experience:cash_string(self:get_unsecured_bag_value(carry_id, 1)) .. ")" or ""
 			else
 				macros.VALUE = ""
