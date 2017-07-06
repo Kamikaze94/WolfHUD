@@ -524,6 +524,7 @@ if not _G.WolfHUD then
 				SENTRY_AUTO_AP 							= true,
 				ECM_FEEDBACK_STEALTH_DISABLED			= true,
 				SHAPED_CHARGE_STEALTH_DISABLED			= true,
+				KEYCARD_DOORS_DISABLED					= true,
 				ENABLE_BURSTMODE						= true,
 			},
 			INVENTORY = {

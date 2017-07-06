@@ -3464,6 +3464,13 @@ if WolfHUD then
 						value = {"EQUIPMENT", "SHAPED_CHARGE_STEALTH_DISABLED"},
 						visible_reqs = {},
 					},
+					{
+						type = "toggle",
+						name_id = "wolfhud_equipment_keycard_doors_disabled_title",
+						desc_id = "wolfhud_equipment_keycard_doors_disabled_desc",
+						value = {"EQUIPMENT", "KEYCARD_DOORS_DISABLED"},
+						visible_reqs = {},
+					},
 				},
 			},
 			{

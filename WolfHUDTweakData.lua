@@ -27,6 +27,8 @@ function WolfHUDTweakData:init()
 	self.STEALTH_NADE_TIMEOUT = 0.25
 	-- Time within 2 presses of the interact button, to deploy a shaped charge in stealth.
 	self.STEALTH_SHAPED_CHARGE_TIMEOUT = 0.25
+	-- Time within 2 presses of the interact button, to close a door using a keycard. (hoxton breakout day 2)
+	self.KEYCARD_DOORS_TIMEOUT = 0.25
 	-- Time between 2 automatical pickups, when the interaction button remains pressed.
 	self.AUTO_PICKUP_DELAY = 0.2
 
