@@ -2,15 +2,17 @@
 
 if string.lower(RequiredScript) == "lib/units/beings/player/huskplayermovement" then
 
-	local _start_bleedout_original = HuskPlayerMovement._start_bleedout
+	local _perform_movement_action_enter_bleedout_original = HuskPlayerMovement._perform_movement_action_enter_bleedout
 
-	function HuskPlayerMovement:_start_bleedout(...)
-		local crim_data = managers.criminals:character_data_by_unit(self._unit)
-		if crim_data and crim_data.panel_id then
-			managers.hud:increment_teammate_downs(crim_data.panel_id)
-		end
+	function HuskPlayerMovement:_perform_movement_action_enter_bleedout(...)
+		if not self._bleedout then
+            local crim_data = managers.criminals:character_data_by_unit(self._unit)
+            if crim_data and crim_data.panel_id then
+                managers.hud:increment_teammate_downs(crim_data.panel_id)
+            end
+        end
 
-		return _start_bleedout_original(self, ...)
+		return _perform_movement_action_enter_bleedout_original(self, ...)
 	end
 elseif string.lower(RequiredScript) == "lib/network/handlers/unitnetworkhandler" then
 

@@ -68,6 +68,7 @@ elseif string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammer
 	end
 elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" then
 	BaseInteractionExt.SHAPED_CHARGE_TIMEOUT = WolfHUD:getTweakEntry("STEALTH_SHAPED_CHARGE_TIMEOUT", "number", 0.25)		--Timeout for 2 InteractKey pushes, to prevent accidents in stealth
+	BaseInteractionExt.KEYCARD_DOORS_TIMEOUT = WolfHUD:getTweakEntry("KEYCARD_DOORS_TIMEOUT", "number", 0.25)		--Timeout for 2 InteractKey pushes, to prevent accidents in hoxton breakout day 2
 
 	local BaseInteraction_interact_start_original = BaseInteractionExt.interact_start
 	local ECMJammerInteaction_can_interact_original = ECMJammerInteractionExt.can_interact
@@ -79,6 +80,12 @@ elseif string.lower(RequiredScript) == "lib/units/interactions/interactionext" t
 				and self._tweak_data.required_deployable and self._tweak_data.required_deployable == "trip_mine"
 				and (t - (self._last_shaped_charge_t or 0) >= BaseInteractionExt.SHAPED_CHARGE_TIMEOUT) then
 			self._last_shaped_charge_t = t
+			return false
+		end
+		if WolfHUD:getSetting({"EQUIPMENT", "KEYCARD_DOORS_DISABLED"}, true)
+				and self.tweak_data and self.tweak_data == "hold_close_keycard"
+				and (t - (self._last_hold_close_keycard_t or 0) >= BaseInteractionExt.KEYCARD_DOORS_TIMEOUT) then
+			self._last_hold_close_keycard_t = t
 			return false
 		end
 		return BaseInteraction_interact_start_original(self, player, data, ...)

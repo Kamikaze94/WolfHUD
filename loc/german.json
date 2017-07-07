@@ -76,6 +76,7 @@
 	"wolfhud_advassault_phase_title" : "Ansturms Phase:",
 	"wolfhud_advassault_spawns_title" : "Verbleibende Spawns:",
 	"wolfhud_advassault_time_title" : "Verbleibende Zeit:",
+	"wolfhud_advassault_phase_anticipation" : "Erwartung",
 	"wolfhud_advassault_phase_build" : "Aufbau",
 	"wolfhud_advassault_phase_sustain" : "Angriff",
 	"wolfhud_advassault_phase_fade" : "Abklang",
@@ -722,6 +723,8 @@
 	"wolfhud_crewloadout_briefing_desc" : "Ersetzt das standart Crew Loadout Panel im Missions Briefing.",
 	"wolfhud_crewloadout_tabscreen_title" : "Zeige auf dem Tab Panel",
 	"wolfhud_crewloadout_tabscreen_desc" : "Zeigt die Fähigkeiten, Perk und aktuellen Ping der Spieler in deiner Lobby. \n(Deaktiviert, wenn diese feature von Lobby Player Info genutzt wird.)",
+    "wolfhud_profilemenu_replace_title" : "Ersetze Profil Menü",
+    "wolfhud_profilemenu_replace_desc" : "Ersetzt die standart Profil-Auswahl mit WolfHUDs verbessertem Menü.",
 
 	"wolfhud_dmgindicator_options_name" : "Schadens Indikator",
 	"wolfhud_dmgindicator_options_help" : "Setzte die Zeit, Größe und Farben des Schadensindikators.",
@@ -830,6 +833,8 @@
 	"wolfhud_equipment_ecm_feedback_disabled_stealth_desc" : "ECM Feedback wird deaktiviert, solange du unentdeckt bleibst.",
 	"wolfhud_equipment_shaped_charge_disabled_stealth_title" : "Stealth Sprengladung Unterdrückung",
 	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "Wenn ausgewählt, musst du im stealth 2x schnell die Interaktionstaste drücken, um eine Sprengladung zu platzieren. (Zur Vorbeugung von Unfällen.)",
+	"wolfhud_equipment_keycard_doors_disabled_title" : "Key-card Door Suppression",
+	"wolfhud_equipment_keycard_doors_disabled_desc" : "When checked, you need to doubletap to close doors in hoxton breakout day 2. \nOnly to prevent accidents.",
 
 	"wolfhud_gadget_options_name" : "Waffen Gadget Optionen",
 	"wolfhud_gadget_options_help" : "Wähle die Laserfarben und Taschenlampen-Parameter.",

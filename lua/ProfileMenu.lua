@@ -230,6 +230,16 @@ elseif RequiredScript == "lib/managers/menu/renderers/menunodeskillswitchgui" th
 		end
 	end
 elseif RequiredScript == "lib/managers/multiprofilemanager" then
+    local open_quick_select_original = MultiProfileManager.open_quick_select
+    function MultiProfileManager:open_quick_select(...)
+        if WolfHUD:getSetting({"CrewLoadout", "REPLACE_PROFILE_MENU"}, true) then
+            managers.menu:open_node(PROFILE_MENU_ID, {})
+        else
+            open_quick_select_original(self, ...)
+        end
+    end
+
+
 	function MultiProfileManager:current_profile_id()
 		return self._global._current_profile or 1
 	end
@@ -318,62 +328,12 @@ elseif RequiredScript == "lib/managers/multiprofilemanager" then
 		return amount
 	end
 elseif RequiredScript == "lib/managers/menu/multiprofileitemgui" then
-	local init_orig = MultiProfileItemGui.init
-	local mouse_moved_orig = MultiProfileItemGui.mouse_moved
-	local mouse_pressed_orig = MultiProfileItemGui.mouse_pressed
+    local init_orig = MultiProfileItemGui.init
 
 	function MultiProfileItemGui:init(...)
 		init_orig(self, ...)
 
 		self._max_length = WolfHUD:getTweakEntry("MAX_PROFILE_NAME_LENGTH", "number", 20)
-
-		self._profile_menu_btn = self._panel:bitmap({
-			name = "profile_menu_btn",
-			texture = "guis/textures/pd2/shared_skillpoint_symbol",
-			w = tweak_data.menu.pd2_small_font_size * 1.10,
-			h = tweak_data.menu.pd2_small_font_size * 1.10,
-			color = tweak_data.screen_colors.button_stage_3,
-			visible = managers.menu:is_pc_controller(),
-		})
-		local arrow = self._panel:child("arrow_right")
-		self._profile_menu_btn:set_right(arrow and arrow:left() or self._panel:w() - 25)
-		self._profile_menu_btn:set_center_y(self._panel:h() / 2)
-	end
-
-	function MultiProfileItemGui:mouse_moved(x, y, ...)
-		local used, icon = mouse_moved_orig(self, x, y, ...)
-		if self._profile_menu_btn:visible() then
-			if self._profile_menu_btn:inside(x, y) then
-				if not self._profile_menu_btn_highlighted then
-					self._profile_menu_btn:set_color(tweak_data.screen_colors.button_stage_2)
-					managers.menu_component:post_event("highlight")
-					self._profile_menu_btn_highlighted = true
-				end
-				if self._name_selection then
-					self._name_text:set_color(tweak_data.screen_colors.button_stage_3)
-				end
-				used, icon =  true, "pointer"
-			elseif self._profile_menu_btn_highlighted then
-				self._profile_menu_btn:set_color(tweak_data.screen_colors.button_stage_3)
-				self._profile_menu_btn_highlighted = nil
-				if self._name_selection and self._name_text:inside(x, y) then
-					self._name_text:set_color(tweak_data.screen_colors.button_stage_2)
-					managers.menu_component:post_event("highlight")
-				end
-			end
-		end
-
-		return used, icon
-	end
-
-	function MultiProfileItemGui:mouse_pressed(button, x, y, ...)
-		if button == Idstring("0") then
-			if self._profile_menu_btn:visible() and self._profile_menu_btn:inside(x, y) then
-				managers.menu:open_node(PROFILE_MENU_ID, {})
-				return
-			end
-		end
-		return mouse_pressed_orig(self, button, x, y, ...)
 	end
 elseif RequiredScript == "lib/managers/menu/missionbriefinggui" then
 	local special_btn_pressed_orig = MissionBriefingGui.special_btn_pressed
@@ -400,10 +360,8 @@ elseif RequiredScript == "lib/managers/menu/missionbriefinggui" then
 		return focus
 	end
 
-	-- Doesn't get executed...?
 	JukeboxItemNew = JukeboxItemNew or class(JukeboxItem)
 	function JukeboxItemNew:select(...)
-		log("Jukebox selected")
 		local active_menu = managers.menu:active_menu()
 		local selected_node = active_menu and active_menu.logic:selected_node()
 		if not selected_node or selected_node:parameters().name == "kit" then
@@ -414,7 +372,6 @@ elseif RequiredScript == "lib/managers/menu/missionbriefinggui" then
 		end
 	end
 	function JukeboxItemNew:deselect(...)
-		log("Jukebox deselected")
 		local active_menu = managers.menu:active_menu()
 		local selected_node = active_menu and active_menu.logic:selected_node()
 		if not selected_node or selected_node:parameters().name == "jukebox" then

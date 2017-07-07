@@ -267,6 +267,7 @@ if not _G.WolfHUD then
 				SHOW_IN_LOBBY							= true,
 				SHOW_IN_CS_LOBBY 						= true,
 				SHOW_ON_STATS_PANEL						= true,
+                REPLACE_PROFILE_MENU                    = true,
 			},
 			HUDList = {
 				ENABLED	 								= true,
@@ -524,6 +525,7 @@ if not _G.WolfHUD then
 				SENTRY_AUTO_AP 							= true,
 				ECM_FEEDBACK_STEALTH_DISABLED			= true,
 				SHAPED_CHARGE_STEALTH_DISABLED			= true,
+				KEYCARD_DOORS_DISABLED					= true,
 				ENABLE_BURSTMODE						= true,
 			},
 			INVENTORY = {

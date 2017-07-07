@@ -3391,6 +3391,17 @@ if WolfHUD then
 						value = {"CrewLoadout", "SHOW_ON_STATS_PANEL"},
 						visible_reqs = {},
 					},
+					{
+						type = "divider",
+						size = 16,
+					},
+					{
+						type = "toggle",
+						name_id = "wolfhud_profilemenu_replace_title",
+						desc_id = "wolfhud_profilemenu_replace_desc",
+						value = {"CrewLoadout", "REPLACE_PROFILE_MENU"},
+						visible_reqs = {},
+					},
 				},
 			},
 			{
@@ -3462,6 +3473,13 @@ if WolfHUD then
 						name_id = "wolfhud_equipment_shaped_charge_disabled_stealth_title",
 						desc_id = "wolfhud_equipment_shaped_charge_disabled_stealth_desc",
 						value = {"EQUIPMENT", "SHAPED_CHARGE_STEALTH_DISABLED"},
+						visible_reqs = {},
+					},
+					{
+						type = "toggle",
+						name_id = "wolfhud_equipment_keycard_doors_disabled_title",
+						desc_id = "wolfhud_equipment_keycard_doors_disabled_desc",
+						value = {"EQUIPMENT", "KEYCARD_DOORS_DISABLED"},
 						visible_reqs = {},
 					},
 				},
