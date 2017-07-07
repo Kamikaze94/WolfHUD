@@ -74,6 +74,7 @@
 	"wolfhud_advassault_phase_title" : "Assault Phase: ",
 	"wolfhud_advassault_spawns_title" : "Spawns Left: ",
 	"wolfhud_advassault_time_title" : "Time Left: ",
+	"wolfhud_advassault_phase_anticipation" : "Anticipation",
 	"wolfhud_advassault_phase_build" : "Build",
 	"wolfhud_advassault_phase_sustain" : "Sustain",
 	"wolfhud_advassault_phase_fade" : "Fade",
