@@ -716,6 +716,8 @@
 	"wolfhud_crewloadout_briefing_desc" : "Replaces the default Crew Loadout Panel in Mission briefing.",
 	"wolfhud_crewloadout_tabscreen_title" : "Show on Tabscreen",
 	"wolfhud_crewloadout_tabscreen_desc" : "Displays the Skills, Perk and current Ping of players in your lobby. \n(Disabled if you use this feature of LobbyPlayerInfo)",
+    "wolfhud_profilemenu_replace_title" : "Replace Profile Menu",
+    "wolfhud_profilemenu_replace_desc" : "Replaces the default Profile-Selector with WolfHUDs advanced one.",
 
 	"wolfhud_dmgindicator_options_name" : "Damage Indicator",
 	"wolfhud_dmgindicator_options_help" : "Set the fade time, size and colors or your damage indicators.",

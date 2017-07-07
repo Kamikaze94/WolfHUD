@@ -267,6 +267,7 @@ if not _G.WolfHUD then
 				SHOW_IN_LOBBY							= true,
 				SHOW_IN_CS_LOBBY 						= true,
 				SHOW_ON_STATS_PANEL						= true,
+                REPLACE_PROFILE_MENU                    = true,
 			},
 			HUDList = {
 				ENABLED	 								= true,

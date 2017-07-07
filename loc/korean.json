@@ -74,6 +74,7 @@
 	"wolfhud_advassault_phase_title" : "습격 타입: ",
 	"wolfhud_advassault_spawns_title" : "남은 스폰: ",
 	"wolfhud_advassault_time_title" : "남은 시간: ",
+	"wolfhud_advassault_phase_anticipation" : "Anticipation",
 	"wolfhud_advassault_phase_build" : "빌드",
 	"wolfhud_advassault_phase_sustain" : "지속",
 	"wolfhud_advassault_phase_fade" : "페이드",
@@ -715,6 +716,8 @@
 	"wolfhud_crewloadout_briefing_desc" : "Replaces the default Crew Loadout Panel in Mission briefing.",
 	"wolfhud_crewloadout_tabscreen_title" : "Show on Tabscreen",
 	"wolfhud_crewloadout_tabscreen_desc" : "Displays the Skills, Perk and current Ping of players in your lobby. \n(Disabled if you use this feature of LobbyPlayerInfo)",
+    "wolfhud_profilemenu_replace_title" : "Replace Profile Menu",
+    "wolfhud_profilemenu_replace_desc" : "Replaces the default Profile-Selector with WolfHUDs advanced one.",
 
 	"wolfhud_dmgindicator_options_name" : "데미지 인디케이터",
 	"wolfhud_dmgindicator_options_help" : "데미지 인디케이터의 페이드 시간, 크기 등을 설정합니다.",

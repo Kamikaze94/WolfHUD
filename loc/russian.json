@@ -74,6 +74,7 @@
 	"wolfhud_advassault_phase_title" : "Стадия Штурма: ",
 	"wolfhud_advassault_spawns_title" : "Осталось Спаунов: ",
 	"wolfhud_advassault_time_title" : "Осталось Времени: ",
+	"wolfhud_advassault_phase_anticipation" : "Anticipation",
 	"wolfhud_advassault_phase_build" : "Нарастание",
 	"wolfhud_advassault_phase_sustain" : "Подкрепление",
 	"wolfhud_advassault_phase_fade" : "Затихание",
@@ -715,6 +716,8 @@
 	"wolfhud_crewloadout_briefing_desc" : "Заменяет панель экипировки команды по умолчанию в брифинге миссии.",
 	"wolfhud_crewloadout_tabscreen_title" : "Показывать на экране TAB",
 	"wolfhud_crewloadout_tabscreen_desc" : "Показывает навыки, перки и текущий пинг игроков в вашем лобби. \n(Отключено если вы используете данную функцию в Lobby Player Info)",
+    "wolfhud_profilemenu_replace_title" : "Replace Profile Menu",
+    "wolfhud_profilemenu_replace_desc" : "Replaces the default Profile-Selector with WolfHUDs advanced one.",
 
 	"wolfhud_dmgindicator_options_name" : "Индикатор попадания",
 	"wolfhud_dmgindicator_options_help" : "Установите время исчезания, размер и цвета для индикаторов попадания.",

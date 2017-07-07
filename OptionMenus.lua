@@ -3391,6 +3391,17 @@ if WolfHUD then
 						value = {"CrewLoadout", "SHOW_ON_STATS_PANEL"},
 						visible_reqs = {},
 					},
+					{
+						type = "divider",
+						size = 16,
+					},
+					{
+						type = "toggle",
+						name_id = "wolfhud_profilemenu_replace_title",
+						desc_id = "wolfhud_profilemenu_replace_desc",
+						value = {"CrewLoadout", "REPLACE_PROFILE_MENU"},
+						visible_reqs = {},
+					},
 				},
 			},
 			{
