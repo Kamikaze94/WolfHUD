@@ -1442,6 +1442,30 @@ if WolfHUD then
 								step_size = 0.1,
 							},
 							{
+								type = "slider",
+								name_id = "wolfhud_dmg_popup_height_title",
+								desc_id = "wolfhud_dmg_popup_height_desc",
+								visible_reqs = {
+									{ setting = { "DamagePopup", "DISPLAY_MODE" }, min = 2 },
+								},
+								value = {"DamagePopup", "HEIGHT"},
+								min_value = 0,
+								max_value = 500,
+								step_size = 10,
+							},
+							{
+								type = "slider",
+								name_id = "wolfhud_dmg_popup_alpha_title",
+								desc_id = "wolfhud_dmg_popup_alpha_desc",
+								visible_reqs = {
+									{ setting = { "DamagePopup", "DISPLAY_MODE" }, min = 2 },
+								},
+								value = {"DamagePopup", "ALPHA"},
+								min_value = 0,
+								max_value = 1,
+								step_size = 0.05,
+							},
+							{
 								type = "multi_choice",
 								name_id = "wolfhud_dmg_popup_color_title",
 								desc_id = "wolfhud_dmg_popup_color_desc",
@@ -3582,6 +3606,21 @@ if WolfHUD then
 						desc_id = "wolfhud_loot_screen_pick_card_desc",
 						value = {"SkipIt", "AUTOPICK_CARD"},
 						visible_reqs = {},
+					},
+					{
+						type = "multi_choice",
+						name_id = "wolfhud_loot_screen_pick_specific_card_title",
+						desc_id = "wolfhud_loot_screen_pick_specific_card_desc",
+						options = {
+							"wolfhud_multiselect_left",
+							"wolfhud_multiselect_center",
+							"wolfhud_multiselect_right",
+							"wolfhud_multiselect_random",
+						},
+						visible_reqs = {
+							{ setting = {"SkipIt", "AUTOPICK_CARD"}, invert = false },
+						},
+						value = {"SkipIt", "AUTOPICK_CARD_SPECIFIC"},
 					},
 					{
 						type = "slider",
