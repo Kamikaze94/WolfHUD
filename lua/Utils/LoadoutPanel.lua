@@ -926,7 +926,7 @@ function LoadoutPerkItem:set_outfit(outfit)
 			self._loadout = deck_id
 			local text = managers.localization:text(name_id)
 			local color_range = {}
-			if tonumber(deck_level) < 9 then
+			if deck_level ~= nil and tonumber(deck_level) < 9 then
 				local l = text:len()
 				text = string.format("%s%s", text, string.format(" (%d/9)", deck_level))
 				table.insert(color_range, {l, text:len()})
