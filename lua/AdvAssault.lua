@@ -209,7 +209,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local timer_msg = downed_panel and downed_panel:child("downed_panel"):child("timer_msg")
 			local timer = downed_hud and downed_hud.timer
 			if timer_msg and timer then
-				timer_msg:set_y(50)
+				timer_msg:set_y(65)
 				timer:set_y(math.round(timer_msg:bottom() - 6))
 			end
 		end
@@ -222,7 +222,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local timer_msg = custody_panel and custody_panel:child("custody_panel") and custody_panel:child("custody_panel"):child("timer_msg")
 			local timer = self._hud_player_custody._timer
 			if timer_msg and timer then
-				timer_msg:set_y(50)
+				timer_msg:set_y(65)
 				timer:set_y(math.round(timer_msg:bottom() - 6))
 			end
 		end
