@@ -63,7 +63,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 				point_of_no_return_panel:set_right(80 + self._bg_box:w() + 3 + point_of_no_return_panel:child("icon_noreturnbox"):w())
 				casing_panel:set_right(80 + self._bg_box:w() + 3 + casing_panel:child("icon_casingbox"):w())
 			elseif banner_pos == 2 then
-				assault_panel:set_right(hud_w / 2 + (self._bg_box:w() + assault_panel:child("icon_assaultbox"):w()) / 2 + (buffs_panel:visible() and (self._vip_bg_box:w() + 3) / 2 or 0))
+				assault_panel:set_right(hud_w / 2 + self._bg_box:w() / 2 + assault_panel:child("icon_assaultbox"):w() + 3)
 				buffs_panel:set_x(assault_panel:left() + self._bg_box:left() - 3 - buffs_panel:w())
 				point_of_no_return_panel:set_right(hud_w / 2 + (self._bg_box:w() + point_of_no_return_panel:child("icon_noreturnbox"):w()) / 2)
 				casing_panel:set_right(hud_w / 2 + (self._bg_box:w() + casing_panel:child("icon_casingbox"):w()) / 2)
