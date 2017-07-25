@@ -275,15 +275,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		sniper = 					{ type_id = "sniper",		category = "enemies",	long_name = "wolfhud_enemy_sniper" 					},
 		medic = 					{ type_id = "medic",		category = "enemies",	long_name = "wolfhud_enemy_medic" 					},
 		biker_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_biker_boss" 				},
-		boom = 				{ type_id = "boom",	category = "enemies",	long_name = "wolfhud_enemy_boom" 				},
-		omnia_lpf = 				{ type_id = "omnia_lpf",	category = "enemies",	long_name = "wolfhud_enemy_omnia_lpf" 				},
-		summers = 				{ type_id = "summers",	category = "enemies",	long_name = "wolfhud_enemy_summers" 				},
-		boom_summers = 				{ type_id = "boom_summers",	category = "enemies",	long_name = "wolfhud_enemy_boom_summers" 				},
-		taser_summers = 				{ type_id = "taser_summers",	category = "enemies",	long_name = "wolfhud_enemy_taser_summers" 				},
-		medic_summers = 				{ type_id = "medic_summers",	category = "enemies",	long_name = "wolfhud_enemy_medic_summers" 				},
-		spring = 				{ type_id = "spring",	category = "enemies",	long_name = "wolfhud_enemy_spring" 				},
-		fbi_vet = 				{ type_id = "fbi_vet",	category = "enemies",	long_name = "wolfhud_enemy_fbi_vet" 				},
-
 		chavez_boss = 				{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_chavez_boss" 			},
 		drug_lord_boss =			{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_druglord_boss" 			},
 		drug_lord_boss_stealth =	{ type_id = "thug_boss",	category = "enemies",	long_name = "wolfhud_enemy_druglord_boss_stealth" 	},
@@ -313,6 +304,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		civ_hostage =				{ type_id = "civ_hostage",	category = "hostages",	force_update = { "civ" } 							},
 		cop_minion =				{ type_id = "minion",		category = "minions",	force_update = { "cop", "enemies" } 				},
 		sec_minion =				{ type_id = "minion",		category = "minions",	force_update = { "security", "enemies" }			},
+
+		boom = 						{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_boom" 					},
+		omnia_lpf = 				{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_omnia_lpf" 				},
+		summers = 					{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_summers" 				},
+		boom_summers = 				{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_boom_summers" 			},
+		taser_summers = 			{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_taser_summers" 			},
+		medic_summers = 			{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_medic_summers" 			},
+		spring = 					{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_spring" 					},
+		fbi_vet = 					{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_fbi_vet" 				},
 	}
 
 	HUDListManager.SPECIAL_PICKUP_TYPES = {
@@ -2694,7 +2694,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		civ =			{ skills = {6, 7}, 	color_id = "civilian_color", 	priority = 3, subtract = { "civ_hostage" } },
 	}
 	function HUDList.UnitCountItem:init(parent, name, id, unit_types)
-		local unit_data = HUDList.UnitCountItem.MAP[id]
+		local unit_data = HUDList.UnitCountItem.MAP[id] or {}
 		local params = { priority = unit_data.priority }
 
 		HUDList.UnitCountItem.super.init(self, parent, name, unit_data, params)
@@ -3009,7 +3009,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		thermite = 					{ hudpickups = { 64, 64, 32, 32 }, 												priority = 1, category = "mission_pickups", ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "mission_pickups"}, true) 	},
 		c4 = 						{ hudicons	 = { 36, 242, 32, 32 }, 											priority = 1, category = "mission_pickups", ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "mission_pickups"}, true) 	},
 		small_loot = 				{ hudpickups = { 32, 224, 32, 32}, 												priority = 3, category = "valuables", 		ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "valuables"}, true) 		},
-		courier = 					{ texture = "guis/dlcs/gage_pack_jobs/textures/pd2/endscreen/gage_assignment", 	priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},			--{ texture = "guis/textures/contact_vlad", texture_rect = {1920, 0, 64, 64}, priority = 3 }, --[[skills 	 = { 6, 0 }]] 
+		courier = 					{ texture = "guis/dlcs/gage_pack_jobs/textures/pd2/endscreen/gage_assignment", 	priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},			--{ texture = "guis/textures/contact_vlad", texture_rect = {1920, 0, 64, 64}, priority = 3 }, --[[skills 	 = { 6, 0 }]]
 		gage_case = 				{ skills 	 = { 1, 0 }, 														priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
 		gage_key = 					{ hudpickups = { 32, 64, 32, 32 }, 												priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
 		paycheck_masks = 			{ hudpickups = { 128, 32, 32, 32 }, 											priority = 4, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
