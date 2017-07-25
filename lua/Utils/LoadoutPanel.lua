@@ -919,16 +919,16 @@ function LoadoutPerkItem:set_outfit(outfit)
 	if outfit.skills and outfit.skills.specializations then
 		self:set_enabled("outfit", true)
 		local deck_index, deck_level = unpack(outfit.skills.specializations or {})
-		local data = tweak_data.skilltree.specializations[tonumber(deck_index)]
+		local data = tweak_data.skilltree.specializations[tonumber(deck_index) or 0]
 		local name_id = data and data.name_id
 		local deck_id = string.format("%s_%s", name_id or "", tostring(deck_level))
 		if name_id and self._loadout ~= deck_id then
 			self._loadout = deck_id
 			local text = managers.localization:text(name_id)
 			local color_range = {}
-			if tonumber(deck_level) < 9 then
+			if (tonumber(deck_level) or 0) < 9 then
 				local l = text:len()
-				text = string.format("%s%s", text, string.format(" (%d/9)", deck_level))
+				text = string.format("%s (%d/9)", text, deck_level or 0)
 				table.insert(color_range, {l, text:len()})
 			end
 			self:set_text(text, color_range)

@@ -177,6 +177,15 @@
 	"wolfhud_enemy_butler" : "Aldstone",
 	"wolfhud_enemy_vlad" : "Vlad",
 
+	"wolfhud_enemy_boom" : "Grenadier",
+	"wolfhud_enemy_omnia_lpf" : "OMNIA L.P.F.",
+	"wolfhud_enemy_summers" : "Captain Summers",
+	"wolfhud_enemy_boom_summers" : "Major Molly",
+	"wolfhud_enemy_taser_summers" : "Engineer Electrika",
+	"wolfhud_enemy_medic_summers" : "Sergeant Doc",
+	"wolfhud_enemy_spring" : "Captain Spring",
+	"wolfhud_enemy_fbi_vet" : "Veteran Cop",
+
 	"wolfhud_multiselect_all" : "Todos",
 	"wolfhud_multiselect_none" : "Ninguno",
 	"wolfhud_multiselect_disabled" : "Desactivado",

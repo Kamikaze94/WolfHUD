@@ -313,7 +313,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 			end)
 
 			for i, part_id in ipairs(gadgets) do
-				local base = self._parts[part_id] and self._parts[part_id].unit:base()
+                local base = self._parts[part_id] and self._parts[part_id].unit and self._parts[part_id].unit:base()
 				if base and base.GADGET_TYPE and base.GADGET_TYPE == (WeaponLaser.GADGET_TYPE or "") then
 					self:set_gadget_on(i or 0, false)
 					break
@@ -430,6 +430,7 @@ elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playersta
 	PlayerStandard.ANGELED_SIGHTS = {
 		wpn_fps_upg_o_45iron = true,
 		wpn_fps_upg_o_45rds = true,
+        wpn_fps_upg_o_45rds_v2 = true,
 	}
 
 	function PlayerStandard:_stance_entered(...)

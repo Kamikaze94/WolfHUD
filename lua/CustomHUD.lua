@@ -4187,7 +4187,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			player_panel:set_center_x(getCenterX(hud_w, player_w, player_pos))
 			player_panel:set_bottom(hud_h - teammate_offset[player_pos])
 			player_hud:set_alignment((player_pos < 3) and "left" or "right")
-			teammate_offset[player_pos] = teammate_offset[player_pos] + player_panel:h() + MARGIN
+			teammate_offset[player_pos] = math.round(teammate_offset[player_pos] + player_panel:h() + MARGIN)
 
 			local j = 0
 			local MAX_STACK_SIZE = math.max(math.ceil(#self._teammate_panels / 2), 7)
@@ -4204,7 +4204,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 					panel:set_bottom(hud_h - teammate_offset[teammate_pos[team_stack]])
 					teammate:set_alignment((teammate_pos[team_stack] < 3) and "left" or "right")
 
-					teammate_offset[teammate_pos[team_stack]] = teammate_offset[teammate_pos[team_stack]] + panel:h() + MARGIN
+					teammate_offset[teammate_pos[team_stack]] = math.round(teammate_offset[teammate_pos[team_stack]] + panel:h() + MARGIN)
 					j = j + 1
 				end
 			end
@@ -4224,7 +4224,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			local align_id = teammate_offset[1] < teammate_offset[3] and 1 or 3
 			if self._hud_driving and self._hud_driving.set_offset and self._hud_driving:panel():visible() then
 				self._hud_driving:set_offset(teammate_offset[align_id] + HUDDriving._MARGIN, align_id < 2 and "left" or "right")
-				teammate_offset[align_id] = self._hud_driving:panel():top()
+				teammate_offset[align_id] = math.round(self._hud_driving:panel():top())
 				align_id = teammate_offset[1] < teammate_offset[3] and 1 or 3
 			end
 			if self._hud_chat_ingame and self._hud_chat_ingame.set_offset then
