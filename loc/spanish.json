@@ -120,6 +120,12 @@
 	"wolfhud_tabstats_tasers_killed" : "Tasers eliminados:",
 	"wolfhud_tabstats_gensec_killed" : "GENSEC eliminados:",
 	"wolfhud_tabstats_medic_killed" : "Medicos eliminados:",
+
+	"wolfhud_tabstats_booms_killed" : "Grenadiers eliminados:",
+	"wolfhud_tabstats_vets_killed" : "Veteran Cops eliminados:",
+	"wolfhud_tabstats_captains_killed" : "Captains eliminados:",
+	"wolfhud_tabstats_omnia_killed" : "OMNIA eliminados:",
+	
 	"wolfhud_tabstats_melee_kills" : "Elim. Cuerpo a Cuerpo:",
 	"wolfhud_tabstats_explosion_kills" : "Elim. por Explosion:",
 	"wolfhud_tabstats_nonspecial_kills" : "Elim. no Especiales:",
