@@ -14,10 +14,12 @@ end
 if RequiredScript == "lib/managers/hud/hudchat" then
 
 	HUDChat.LINE_HEIGHT = WolfHUD:getSetting({"HUDChat", "LINE_HEIGHT"}, 15)			--Size of each line in chat (and hence the text size)
-	HUDChat.WIDTH = 380															--Width of the chat window
+	HUDChat.WIDTH = WolfHUD:getSetting({"HUDChat", "WIDTH"}, 380)						--Width of the chat window
 	HUDChat.MAX_OUTPUT_LINES = WolfHUD:getSetting({"HUDChat", "MAX_OUTPUT_LINES"}, 8)	--Number of chat lines to show
-	HUDChat.MAX_INPUT_LINES = 5													--Number of lines of text you can type
-	HUDChat.MOUSE_SUPPORT = false												--For scolling and stuff. Experimental, you have been warned
+	HUDChat.MAX_INPUT_LINES = WolfHUD:getSetting({"HUDChat", "MAX_INPUT_LINES"}, 5)		--Number of lines of text you can type
+	HUDChat.MOUSE_SUPPORT = false														--For scolling and stuff. Experimental, you have been warned
+	HUDChat.COLORED_BG = WolfHUD:getSetting({"HUDChat", "COLORED_BG"}, true)			--Colorize the line bg based on the message source
+	HUDChat.SCROLLBAR_ALIGN = WolfHUD:getSetting({"HUDChat", "SCROLLBAR_ALIGN"}, 2)		--Alignment of the scroll bar (1 = left, 2 = right)
 
 	local enter_key_callback_original = HUDChat.enter_key_callback
 	local esc_key_callback_original = HUDChat.esc_key_callback
@@ -153,6 +155,7 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 			w = self._panel:w(),
 			layer = 1,
 		})
+
 		local scroll_bar_bg = output_panel:rect({
 			name = "scroll_bar_bg",
 			color = Color.black,
@@ -163,8 +166,6 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 			w = 8,
 			h = HUDChat.LINE_HEIGHT * HUDChat.MAX_OUTPUT_LINES,
 		})
-		scroll_bar_bg:set_right(output_panel:w())
-
 		local scroll_bar_up = output_panel:bitmap({
 			name = "scroll_bar_up",
 			texture = "guis/textures/pd2/scrollbar_arrows",
@@ -175,8 +176,6 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 			blend_mode = "add",
 			color = Color.white,
 		})
-		scroll_bar_up:set_right(output_panel:w())
-
 		local scroll_bar_down = output_panel:bitmap({
 			name = "scroll_bar_down",
 			texture = "guis/textures/pd2/scrollbar_arrows",
@@ -188,7 +187,11 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 			color = Color.white,
 			rotation = 180,
 		})
-		scroll_bar_down:set_right(output_panel:w())
+		if HUDChat.SCROLLBAR_ALIGN == 2 then
+			scroll_bar_bg:set_right(output_panel:w())
+			scroll_bar_up:set_right(output_panel:w())
+			scroll_bar_down:set_right(output_panel:w())
+		end
 		scroll_bar_down:set_bottom(output_panel:h())
 
 		local scroll_bar_position = output_panel:rect({
@@ -202,16 +205,21 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 		})
 		scroll_bar_position:set_center_x(scroll_bar_bg:center_x())
 
-		output_panel:gradient({
-			name = "output_bg",
-			--gradient_points = { 0, Color.white:with_alpha(0), 0.2, Color.white:with_alpha(0.25), 1, Color.white:with_alpha(0) },
-			--gradient_points = { 0, Color.white:with_alpha(0.4), 0.2, Color.white:with_alpha(0.3), 1, Color.white:with_alpha(0.2) },
-			gradient_points = { 0, Color.white:with_alpha(0.3), 0.3, Color.white:with_alpha(0.1), 0.5, Color.white:with_alpha(0.2) , 0.7, Color.white:with_alpha(0.1), 1, Color.white:with_alpha(0.3) },
-			layer = -1,
-			valign = "grow",
-			blend_mode = "sub",
-			w = output_panel:w() - scroll_bar_bg:w() ,
-		})
+		if HUDChat.COLORED_BG then
+			output_panel:gradient({
+				name = "output_bg",
+				--gradient_points = { 0, Color.white:with_alpha(0), 0.2, Color.white:with_alpha(0.25), 1, Color.white:with_alpha(0) },
+				--gradient_points = { 0, Color.white:with_alpha(0.4), 0.2, Color.white:with_alpha(0.3), 1, Color.white:with_alpha(0.2) },
+				gradient_points = { 0, Color.white:with_alpha(0.3), 0.3, Color.white:with_alpha(0.1), 0.5, Color.white:with_alpha(0.2) , 0.7, Color.white:with_alpha(0.1), 1, Color.white:with_alpha(0.3) },
+				layer = -1,
+				valign = "grow",
+				blend_mode = "sub",
+				w = output_panel:w() - scroll_bar_bg:w() ,
+			})
+			if HUDChat.SCROLLBAR_ALIGN == 1 then
+				output_panel:set_left(scroll_bar_bg:w())
+			end
+		end
 
 		output_panel:set_bottom(self._panel:h())
 	end
@@ -249,18 +257,32 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 	function HUDChat:receive_message(name, message, color, icon)
 		local output_panel = self._panel:child("output_panel")
 		local scroll_bar_bg = output_panel:child("scroll_bar_bg")
-		local x_offset = 0
+		local x_offset = HUDChat.COLORED_BG and 2 or 0
 
 		local msg_panel = output_panel:panel({
 			name = "msg_" .. tostring(#self._messages),
 			w = output_panel:w() - scroll_bar_bg:w(),
 		})
-		local msg_panel_bg = msg_panel:rect({
-			name = "bg",
-			alpha = 0.25,
-			color = color,
-			w = msg_panel:w(),
-		})
+		if HUDChat.SCROLLBAR_ALIGN == 1 then
+			msg_panel:set_left(scroll_bar_bg:w())
+		end
+		local msg_panel_bg
+		if HUDChat.COLORED_BG then
+			msg_panel_bg = msg_panel:rect({
+				name = "bg",
+				alpha = 0.25,
+				color = color,
+				w = msg_panel:w(),
+			})
+		else
+			msg_panel_bg = msg_panel:bitmap({
+				name = "bg",
+				alpha = 1,
+				color = Color.white / 3,
+				texture = "guis/textures/pd2/hud_tabs",
+				texture_rect = {84, 0, 44, 32},
+			})
+		end
 
 		local heisttime = managers.game_play_central and managers.game_play_central:get_heist_timer() or 0
 		local hours = math.floor(heisttime / (60*60))
@@ -334,6 +356,10 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 		message_text:set_kern(message_text:kern())
 		msg_panel:set_h(HUDChat.LINE_HEIGHT * no_lines)
 		msg_panel_bg:set_h(HUDChat.LINE_HEIGHT * no_lines)
+		if not HUDChat.COLORED_BG then
+			local _, _, msg_w, _ = message_text:text_rect()
+			msg_panel_bg:set_width(x_offset + msg_w + 2)
+		end
 
 		self._total_message_lines = self._total_message_lines + no_lines
 		table.insert(self._messages, { panel = msg_panel, name = name, lines = no_lines })
