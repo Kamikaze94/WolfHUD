@@ -301,6 +301,7 @@ if not _G.WolfHUD then
 						show_own_minions_only				= false,	--Only show player-owned minions
 					show_pagers 							= true,  	--Show currently active pagers
 					show_tape_loop 							= true,  	--Show active tape loop duration
+					timer_in_seconds						= false,	--Timer format in just seconds, as opposed to minutes and seconds									
 				},
 				RIGHT_LIST = {
 					show_enemies 							= true,		--Currently spawned enemies

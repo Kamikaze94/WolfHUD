@@ -5,7 +5,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local format_time_string = function(value)
 		local time_str
 
-		if math.floor(value) > 60 then
+		if math.floor(value) > 60 and not WolfHUD:getSetting({"HUDList", "LEFT_LIST", "timer_in_seconds"}, true) then
 			time_str = string.format("%d:%02d", math.floor(value / 60), math.floor(value % 60))
 		elseif math.floor(value) > 9.9 then
 			time_str = string.format("%d", math.floor(value))

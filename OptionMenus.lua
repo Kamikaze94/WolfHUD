@@ -1898,6 +1898,19 @@ if WolfHUD then
 									{ setting = { "HUDList", "ENABLED" }, invert = false },
 								},
 							},
+							{
+								type = "divider",
+								size = 8,
+							},
+							{
+								type = "toggle",
+								name_id = "wolfhud_hudlist_timer_format_title",
+								desc_id = "wolfhud_hudlist_timer_format_desc",
+								value = {"HUDList", "LEFT_LIST", "timer_in_seconds"},
+								visible_reqs = {
+									{ setting = { "HUDList", "ENABLED" }, invert = false },
+								},
+							},
 						},
 					},
 					{	--HUDList Right List

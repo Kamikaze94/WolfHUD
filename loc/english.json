@@ -665,6 +665,9 @@
 	"wolfhud_hudlist_crew_health_regen_buff_title" : "Healer",
 	"wolfhud_hudlist_crew_health_regen_buff_desc" : "",
 
+	"wolfhud_hudlist_timer_format_title" : "Show timer in seconds",
+	"wolfhud_hudlist_timer_format_desc" : "Format timer in seconds only",
+
 	"wolfhud_waypoints_options_name" : "Custom Waypoints Options",
 	"wolfhud_waypoints_options_help" : "Options to control Custom Waypoints.",
 
