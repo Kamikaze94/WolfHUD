@@ -597,7 +597,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	function HUDStatsScreen:init(...)
 		init_original(self, ...)
 
-		self._USING_CREW_LOADOUT = WolfHUD:getSetting({"CrewLoadout", "SHOW_ON_STATS_PANEL"}, true) and (not _G.LobbyPlayerInfo or not LobbyPlayerInfo.settings.show_skills_in_stats_screen)
+		self._USING_CREW_LOADOUT = WolfHUD:getSetting({"CrewLoadout", "SHOW_ON_STATS_PANEL"}, true) and not (_G.LobbyPlayerInfo and LobbyPlayerInfo.settings.show_skills_in_stats_screen)
 		local right_panel = self._full_hud_panel:child("right_panel")
 		if alive(right_panel) and self._USING_CREW_LOADOUT then
 			self._loadout_data = right_panel:panel({

@@ -89,7 +89,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 				killer = attacker:base():thrower_unit()
 			end
 
-			if alive(killer) then
+			if alive(killer) and self._unit then
 				local tweak_id = self._unit:base()._tweak_table
 				local special_unit_ids = managers.statistics and managers.statistics.special_unit_ids or {}
 				local is_special = managers.groupai:state():is_enemy_special(self._unit) or table.contains(special_unit_ids, tweak_id)

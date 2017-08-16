@@ -3310,7 +3310,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			local panel = self._panel:child(name)
 			local panel_w = 0
 
-			if panel:visible() then
+			if panel and panel:visible() then
 				local icon = panel:child("icon")
 				local amount = panel:child("amount")
 				local _, _, text_w, _ = amount:text_rect()
@@ -3324,7 +3324,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		for _, name in ipairs(self._equipment_types) do
 			local panel = self._panel:child(name)
 
-			if panel:visible() then
+			if panel and panel:visible() then
 				local icon = panel:child("icon")
 				local amount = panel:child("amount")
 
