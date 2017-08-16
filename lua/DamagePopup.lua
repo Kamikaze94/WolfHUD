@@ -82,6 +82,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 			local id = "damage_wp_" .. tostring(self._unit:key())
 			local waypoint = managers.waypoints:get_waypoint(id)
 			local waypoint_color = color_id and ((color_id == 5 and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, false)) and WolfHUD:getColorSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"}, Color.white) or tweak_data.chat_colors[color_id]) or WolfHUD:getColorSetting({"DamagePopup", headshot and "HEADSHOT_COLOR" or "COLOR"}, "yellow")
+			waypoint_color = waypoint_color:with_alpha(WolfHUD:getSetting({"DamagePopup", "ALPHA"}, 1))
 			local waypoint_duration = WolfHUD:getSetting({"DamagePopup", "DURATION"}, 3)
 			if waypoint and not waypoint:is_deleted() then
 				managers.waypoints:set_waypoint_duration(id, "duration", waypoint_duration)
@@ -91,7 +92,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 			else
 				local params = {
 					unit = self._unit,
-					offset = Vector3(10, 10, 20),
+					offset = Vector3(10, 10, WolfHUD:getSetting({"DamagePopup", "HEIGHT"}, 20)),
 					scale = 2 * WolfHUD:getSetting({"DamagePopup", "SCALE"}, 1),
 					color = waypoint_color,
 					visible_distance = {
