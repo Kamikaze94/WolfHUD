@@ -620,7 +620,7 @@ if not _G.WolfHUD then
 							table_dst[k] = v
 						end
 					else
-						self:print_log("Error while loading, Setting types don't match (%s->%s)", table.concat(setting_path, "->") or "", k or "N/A", "error")
+						self:print_log("Error while loading, Setting types don't match (%s->%s)", self:SafeTableConcat(setting_path, "->") or "", k or "N/A", "error")
 						corrupted = corrupted or true
 					end
 				end
@@ -665,13 +665,22 @@ if not _G.WolfHUD then
 		return tostring(mod and mod:GetVersion() or "(n/a)")
 	end
 
+	function WolfHUD:SafeTableConcat(tbl, str)
+		local res
+		for i = 1, #tbl do
+			local val = tbl[i] and tostring(tbl[i]) or "[nil]"
+			res = res and res .. str .. val or val
+		end
+		return res
+	end
+
 	function WolfHUD:getSetting(id_table, default)
 		if type(id_table) == "table" then
 			local entry = self.settings
 			for i = 1, #id_table do
 				entry = entry[id_table[i]]
 				if entry == nil then
-					self:print_log("Requested setting doesn't exists!  (id='" .. table.concat(id_table, "->") .. "', type='" .. tostring(default) .. "') ", "error")
+					self:print_log("Requested setting doesn't exists!  (id='" .. self:SafeTableConcat(id_table, "->") .. "', type='" .. tostring(default) .. "') ", "error")
 					return default
 				end
 			end
@@ -960,7 +969,7 @@ if not _G.WolfHUD then
 		-- Called on setting change
 		local function change_setting(setting, value)
 			if WolfHUD:getSetting(setting, nil) ~= value and WolfHUD:setSetting(setting, value) then
-				WolfHUD:print_log(string.format("Change setting: %s = %s", table.concat(setting, "->"), tostring(value)), "info")	-- Change type back!
+				WolfHUD:print_log(string.format("Change setting: %s = %s", WolfHUD:SafeTableConcat(setting, "->"), tostring(value)), "info")	-- Change type back!
 				WolfHUD.settings_changed = true
 
 				local script = table.remove(setting, 1)
