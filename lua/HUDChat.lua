@@ -256,7 +256,7 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 
 	function HUDChat:receive_message(name, message, color, icon)
 		local output_panel = self._panel:child("output_panel")
-		local scroll_bar_bg = output_panel:child("scroll_bar_bg")
+		local scroll_bar_bg = output_panel and output_panel:child("scroll_bar_bg")
 		local x_offset = HUDChat.COLORED_BG and 2 or 0
 
 		local msg_panel = output_panel:panel({

@@ -686,21 +686,13 @@ if not _G.WolfHUD then
 				menu_options, true )
 	end
 
-	function WolfHUD:getVersion()
-		if not self.version then
-			for k, v in pairs(LuaModManager.Mods) do
-				local info = v.definition
-				if info["name"] == "WolfHUD" then
-					self.version = info["version"] or self.version
-					break
-				end
-			end
-		end
-
-		return self.version
+	function WolfHUD:getVersion()    
+        local mod = BLT.Mods:GetMod("WolfHUD")
+		return tostring(mod and mod:GetVersion() or "(n/a)")
 	end
 
 	function WolfHUD:checkOverrides()
+        do return end   -- TODO: Needs to be redone with new BLT system!
 		local updates = {}
 		for k, v in pairs(LuaModManager.Mods) do
 			local info = v.definition
@@ -960,7 +952,7 @@ if not _G.WolfHUD then
 			end
 		end
 
-		create_menu({menu_options}, "lua_mod_options_menu")
+		create_menu({menu_options}, "blt_options")
 	end)
 
 	--Populate options menus
@@ -1245,7 +1237,7 @@ if not _G.WolfHUD then
 			end
 		end
 
-		populate_menu({menu_options}, "lua_mod_options_menu")
+		populate_menu({menu_options}, "blt_options")
 	end)
 
 	-- Create callbacks and finalize menus
@@ -1348,7 +1340,7 @@ if not _G.WolfHUD then
 			end
 		end
 
-		finalize_menu({menu_options}, "lua_mod_options_menu")
+		finalize_menu({menu_options}, "blt_options") -- BLT.Mods.Constants:LuaModOptionsMenuID() -- Linking to wrong menu ID
 	end)
 
 	--Add localiszation strings

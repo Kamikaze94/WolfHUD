@@ -342,7 +342,7 @@ if WolfHUD then
 	WolfHUD.options_menu_data = {
 		type = "menu",
 		menu_id = "wolfhud_main_options_menu",
-		parent_id = "lua_mod_options_menu",
+		parent_id = "blt_options",
 		name_id = "wolfhud_options_name",
 		desc_id = "wolfhud_options_help",
 		position = 3,
