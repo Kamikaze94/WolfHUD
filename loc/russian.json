@@ -9,7 +9,7 @@
 	"wolfhud_dialog_remind_later" : "Спросить позже",
 	"wolfhud_dialog_install_fed_inv_desc" : "Federal Inventory является override модом, дающим вам цветные иконки для вашего оружия, масок и снаряжения.\nОтлично смотрится при включенном CustomHUD и использует BLT Менеджер Обновлений.",
 	"wolfhud_dialog_rename_inv_tab" : "Переименовать страницу инвентаря",
-	"wolfhud_dialog_rename_inv_tab_desc" : "Введите новое имя для страны инвентаря.",
+	"wolfhud_dialog_rename_inv_tab_desc" : "Введите новое имя для страницы инвентаря.",
 	"wolfhud_dialog_save" : "Сохранить",
 	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME в настоящее время отключен.",
 	"woldhud_notification_disabled_override_desc" : "Если вы передумали, нажмите сюда, чтобы спросить потом.",
