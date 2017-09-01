@@ -116,18 +116,15 @@
 	],
 	"updates" : [
 		{
-			"revision" : 21,
 			"identifier" : "wolfhud"
 		},
 		{
-			"revision" : "./assets/mod_overrides/WolfHUD_Textures/revision.txt",
 			"identifier" : "wolfhud_textures",
 			"install_dir" : "assets/mod_overrides/",
 			"install_folder" : "WolfHUD_Textures",
 			"display_name" : "WolfHUD Textures"
 		},
 		{
-			"revision" : "./assets/mod_overrides/Federal Inventory/revision.txt",
 			"identifier" : "fed_inv",
 			"install_dir" : "assets/mod_overrides/",
 			"install_folder" : "Federal Inventory",
