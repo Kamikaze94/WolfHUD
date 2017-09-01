@@ -32,6 +32,7 @@
 	"bm_w_aa12" 				: "MPS AA-12 CQB",
 	"bm_w_boot"					: "Winchester Model 1887",
 	"bm_w_rota"					: "Six12",
+	"bm_w_ching"				: "M1 Garand",
 
 	"bm_w_jowi" 				: "Akimbo Glock 26",
 	"bm_w_x_1911" 				: "Akimbo M1911 Lightweight Operator",
@@ -87,6 +88,7 @@
 	"bm_w_packrat" 				: "H&K P30L",
 	"bm_w_lemming" 				: "FN Five-Seven",
 	"bm_w_chinchilla" 			: "S&W Model 29",
+	"bm_w_breech" 			    : "Luger P08",
 
 	"bm_w_m1928" 				: "Thompson M1928A1",
 	"bm_w_mac10" 				: "Ingram MAC-10",
@@ -111,6 +113,7 @@
 	"bm_w_hajk"					: "CZ 805 BREN A1",
 	"bm_w_schakal" 				: "UMP 45",
 	"bm_w_coal" 				: "PP-19 Bizon",
+	"bm_w_erma" 				: "MP40",
 
 	"bm_w_judge" 				: "Taurus 4510PLYFS",
 	"bm_w_serbu" 				: "Remington M870 Short-Barreled",
@@ -121,17 +124,5 @@
 	"bm_w_hunter" 				: "Avalanche Pistol Crossbow",
 	"bm_w_china" 				: "China Lake Grenade Launcher",
 	"bm_w_arbiter" 				: "H&K XM-25",
-	"bm_w_ray" 					: "M202 FLASH",
-
-	"bm_grenade_frag" 			: "M67 Fragmentation Hand Grenade",
-	"bm_grenade_frag_desc" 		: "The M67 grenade is a fragmentation hand grenade used by the United States military. The M67 is a further development of the M33 grenade, a replacement for the M26-series grenades used during the Korean and Vietnam Wars.",
-
-	"bm_dynamite" 				: "Dynamite",
-	"bm_dynamite_desc" 			: "Dynamite is an explosive material based on nitroglycerin, using diatomaceous earth or another adsorbent substance such as powdered shells or clay. Dynamite was invented by the Swedish chemist and engineer Alfred Nobel in Geesthacht, Germany, and patented in 1867.",
-
-	"bm_grenade_molotov" 		: "Molotov Cocktail",
-	"bm_grenade_molotov_desc" 	: "A Molotov cocktail, also known as a petrol bomb, poor man's grenade and fire bomb is a generic name used for a variety of bottle-based improvised incendiary weapons. They are primarily intended to set targets ablaze rather than instantly destroy them.",
-
-	"bm_melee_model24" 			: "Model 24 Stielhandgranate",
-	"bm_melee_ballistic"		: "Dual Wield Ballistic Knife"
+	"bm_w_ray" 					: "M202 FLASH"
 }

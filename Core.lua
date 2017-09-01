@@ -815,7 +815,7 @@ if not _G.WolfHUD then
 		end
 
 		local mod = BLT.Mods:GetMod(WolfHUD.identifier or "WolfHUD")
-        local updates = mod and mod:GetUpdates() or {}
+		local updates = mod and mod:GetUpdates() or {}
 
 		local directory = Application:nice_path( "./assets/mod_overrides/", true )
 		if table.size(updates) > 0 and not file.DirectoryExists(directory) then
@@ -1282,7 +1282,7 @@ if not _G.WolfHUD then
 
 	--Add localiszation strings
 	Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", function(loc)
-		local loc_path = WolfHUD.mod_path .. "loc/"
+        local loc_path = WolfHUD.mod_path .. "loc/"
 		if file.DirectoryExists( loc_path ) then
 			local custom_lang
 			if _G.PD2KR then
