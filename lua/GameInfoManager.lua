@@ -197,6 +197,8 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			glc_hold_take_handcuffs = 			"_special_equipment_interaction_handler",	-- Green Bridge Handcuffs
 			pickup_tablet = 					"_special_equipment_interaction_handler",	-- Stealing Xmas Tablet
 			pickup_phone = 						"_special_equipment_interaction_handler",	-- Stealing Xmas Phone
+			press_take_folder = 				"_special_equipment_interaction_handler",
+			take_jfr_briefcase = 				"_special_equipment_interaction_handler",
 			firstaid_box =						"_deployable_interaction_handler",
 			ammo_bag =							"_deployable_interaction_handler",
 			doctor_bag =						"_deployable_interaction_handler",
@@ -227,6 +229,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			hold_take_diamond_necklace =	"diamond_necklace",
 			hold_take_vr_headset = 			"vr_headset",
 			hold_take_shoes = 				"women_shoes",
+			hold_take_old_wine = 			"old_wine",
 		},
 		BAGGED_IDS = {
 			painting_carry_drop = true,
@@ -330,7 +333,10 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				[102052] = true,
 				[102402] = true,
 			},
-			chill_combat = { -- Ammo shelves
+			chill = {	-- Custom Safehouse (1x Painting)
+				[150416] = true
+			},
+			chill_combat = { -- Safehouse Raid (2x Ammo shelves)
 				[100751] = true,
 				[101242] = true,
 			},
@@ -3400,9 +3406,10 @@ if string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandar
 	end
 
 	function PlayerStandard:_update_equip_weapon_timers(...)
+		local old_equip_weapon_expire_t = self._equip_weapon_expire_t
 		local value = _update_equip_weapon_timers_original(self, ...)
 
-		if not self._equip_weapon_expire_t then
+		if old_equip_weapon_expire_t and not self._equip_weapon_expire_t then
 			managers.gameinfo:event("player_action", "deactivate", "interact_debuff")
 		end
 

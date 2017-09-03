@@ -353,6 +353,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		ring_band = 						"rings",
 		glc_hold_take_handcuffs = 			"handcuffs",
 		hold_take_missing_animal_poster = 	"poster",
+		press_take_folder = 				"poster",
+		take_jfr_briefcase = 				"briefcase",
 	}
 
 	HUDListManager.LOOT_TYPES = {
@@ -391,6 +393,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		money =						"money",
 		mus_artifact =				"artifact",
 		mus_artifact_paint =		"painting",
+		old_wine = 					"wine",
 		ordinary_wine = 			"wine",
 		painting =					"painting",
 		person =					"body",
@@ -3009,6 +3012,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		thermite = 					{ hudpickups = { 64, 64, 32, 32 }, 												priority = 1, category = "mission_pickups", ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "mission_pickups"}, true) 	},
 		c4 = 						{ hudicons	 = { 36, 242, 32, 32 }, 											priority = 1, category = "mission_pickups", ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "mission_pickups"}, true) 	},
 		small_loot = 				{ hudpickups = { 32, 224, 32, 32}, 												priority = 3, category = "valuables", 		ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "valuables"}, true) 		},
+		briefcase = 				{ hudpickups = { 96, 224, 32, 32}, 												priority = 4, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
 		courier = 					{ texture = "guis/dlcs/gage_pack_jobs/textures/pd2/endscreen/gage_assignment", 	priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},			--{ texture = "guis/textures/contact_vlad", texture_rect = {1920, 0, 64, 64}, priority = 3 }, --[[skills 	 = { 6, 0 }]]
 		gage_case = 				{ skills 	 = { 1, 0 }, 														priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
 		gage_key = 					{ hudpickups = { 32, 64, 32, 32 }, 												priority = 3, category = "collectables", 	ignore = not WolfHUD:getSetting({"HUDList", "RIGHT_LIST", "SHOW_PICKUP_CATEGORIES", "collectables"}, true) 		},
