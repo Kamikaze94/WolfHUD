@@ -345,6 +345,21 @@ function LoadoutPanel:local_peer()
 	return self._local_peer
 end
 
+function LoadoutPanel:mark_cheater(status, reason)
+	for _, item_name in ipairs({"name", "character", "level"}) do
+		local item = self:items(item_name)
+		if item then
+			item:set_color(status and tweak_data.screen_colors.pro_color or item._default_color or Color.white)
+		end
+	end
+--[[
+	if status and managers.chat then	-- TODO: Needs localization
+		local message = string.format("[WolfHUD] %s is cheating: %s", self:get_peer():name(), reason or "N/A")
+		managers.chat:feed_system_message(ChatManager.GAME, message)
+	end
+]]
+end
+
 function LoadoutPanel:items(name)
 	if name then
 		return self._components[name]
@@ -359,12 +374,13 @@ function LoadoutTextItem:init(base_panel, owner, name, width, height, params)
 	LoadoutTextItem.super.init(self, base_panel, owner, name, width, height, params)
 
 	self._font_size = math.min(params.font_size or tweak_data.menu.pd2_medium_font_size, self._panel:h() - 2 * self._margin)
+	self._default_color = params.color or Color.white
 	self._loadout = ""
 
 	self._text = self._panel:text({
 		name = name,
 		text = params.text or "",
-		color = params.color or Color.white,
+		color = self._default_color,
 		alpha = params.alpha or 1,
 		align = params.align or "center",
 		vertical = "center",
@@ -424,12 +440,13 @@ function LoadoutImageItem:init(base_panel, owner, name, width, height, params)
 
 	self._hide_name = params.hide_name
 	self._font_size = params.font_size or tweak_data.menu.pd2_small_font_size
+	self._default_color = params.color or Color.white
 	self._loadout = ""
 
 	self._text = self._panel:text({
 		name = name .. "_title",
 		text = params.text or "",
-		color = params.color or Color.white,
+		color = self._default_color,
 		alpha = params.alpha or 1,
 		align = "left",
 		vertical = "center",
@@ -463,7 +480,7 @@ function LoadoutImageItem:init(base_panel, owner, name, width, height, params)
 		h = tweak_data.menu.pd2_small_font_size,
 		font_size = tweak_data.menu.pd2_small_font_size * 0.9,
 		font = tweak_data.menu.pd2_small_font,
-		color = params.color or Color.white,
+		color = self._default_color,
 		alpha = params.alpha or 1,
 		blend_mode = params.blend_mode or "normal",
 		align = "right",
@@ -775,9 +792,9 @@ function LoadoutPingItem:set_outfit(outfit)
 	else
 		self:set_enabled("peer", false)
 	end
-	end
+end
 
-	function LoadoutPingItem:set_text(text, color)
+function LoadoutPingItem:set_text(text, color)
 	LoadoutPingItem.super.set_text(self, text)
 
 	if alive(self._text) then
@@ -875,6 +892,7 @@ function LoadoutSkillsItem:set_outfit(outfit)
 			local subtree_amt = math.floor(#skill_data / #self._tree_names)
 			local text = ""
 			local color_range = {}
+			local points_total = 0
 
 			for tree = 1, #self._tree_names, 1 do
 				local tree_has_points = false
@@ -902,7 +920,12 @@ function LoadoutSkillsItem:set_outfit(outfit)
 					end
 					text = string.format("%s%s:%02d ", text, tree_name, tree_sum)
 				end
+				points_total = points_total + tree_sum
 			end
+
+			local is_cheating = points_total > self:get_max_skillpoints()
+			self:set_color(is_cheating and tweak_data.screen_colors.pro_color or self._default_color)
+			self._owner:mark_cheater(is_cheating, is_cheating and "Too many skillpoints used." or "")
 
 			self:set_text(text, color_range)
 
@@ -911,6 +934,19 @@ function LoadoutSkillsItem:set_outfit(outfit)
 	else
 		self:set_enabled("outfit", false)
 	end
+end
+
+LoadoutSkillsItem.POINTS_MAP = {
+	{1, 1},
+	{10, 2}
+}
+function LoadoutSkillsItem:get_max_skillpoints()
+	local level = self._owner:local_peer() and managers.experience:current_level() or self._owner:get_peer():level()
+	local max_points = 0
+	for _, data in ipairs(self.POINTS_MAP) do
+		max_points = max_points + math.floor(level / data[1]) * data[2]
+	end
+	return max_points
 end
 
 LoadoutPerkItem = LoadoutPerkItem or class(LoadoutTextItem)

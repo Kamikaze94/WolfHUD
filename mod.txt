@@ -8,8 +8,6 @@
 	"blt_version" : 2,
 	"image" : "wolfhud.png",
 	"color" : "0 255 128",
-	"undisablable" : false,
-	"disable_safe_mode" : false,
 	"hooks" : [
 		{ "hook_id" : "lib/setups/setup", 										"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/menumanager", 								"script_path" : "Core.lua" },

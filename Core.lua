@@ -653,10 +653,17 @@ if not _G.WolfHUD then
 	end
 
 	function WolfHUD:createDirectory(path)
-		if SystemFS and SystemFS.make_dir then
-			SystemFS:make_dir(path)
-		elseif file and file.CreateDirectory then
-			file.CreateDirectory(path)
+		local current = ""
+		path = Application:nice_path(path, true):gsub("\\", "/")
+		for folder in string.gmatch(path, "([^/]*)/") do
+			current = Application:nice_path(current .. folder, true)
+			if not file.DirectoryExists(current) then
+				if SystemFS and SystemFS.make_dir then
+					SystemFS:make_dir(path)
+				elseif file and file.CreateDirectory then
+					file.CreateDirectory(path)
+				end
+			end
 		end
 	end
 
@@ -680,7 +687,7 @@ if not _G.WolfHUD then
 			for i = 1, #id_table do
 				entry = entry[id_table[i]]
 				if entry == nil then
-					self:print_log("Requested setting doesn't exists!  (id='" .. self:SafeTableConcat(id_table, "->") .. "', type='" .. tostring(default) .. "') ", "error")
+					self:print_log("Requested setting doesn't exists!  (id='" .. self:SafeTableConcat(id_table, "->") .. "', type='" .. (default and type(default) or "n/a") .. "') ", "error")
 					return default
 				end
 			end
@@ -816,11 +823,6 @@ if not _G.WolfHUD then
 
 		local mod = BLT.Mods:GetMod(WolfHUD.identifier or "WolfHUD")
 		local updates = mod and mod:GetUpdates() or {}
-
-		local directory = Application:nice_path( "./assets/mod_overrides/", true )
-		if table.size(updates) > 0 and not file.DirectoryExists(directory) then
-			WolfHUD:createDirectory("./" .. directory)
-		end
 
 		for _, override in ipairs(updates) do
 			local directory = Application:nice_path( override:GetInstallDirectory() .. "/" .. override:GetInstallFolder(), true )
