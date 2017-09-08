@@ -923,7 +923,7 @@ function LoadoutSkillsItem:set_outfit(outfit)
 				points_total = points_total + tree_sum
 			end
 
-			local is_cheating = points_total > self:get_max_skillpoints()
+			local is_cheating = points_total > (self:get_max_skillpoints() or points_total)
 			self:set_color(is_cheating and tweak_data.screen_colors.pro_color or self._default_color)
 			self._owner:mark_cheater(is_cheating, is_cheating and "Too many skillpoints used." or "")
 
@@ -941,12 +941,20 @@ LoadoutSkillsItem.POINTS_MAP = {
 	{10, 2}
 }
 function LoadoutSkillsItem:get_max_skillpoints()
-	local level = self._owner:local_peer() and managers.experience:current_level() or self._owner:get_peer():level()
-	local max_points = 0
-	for _, data in ipairs(self.POINTS_MAP) do
-		max_points = max_points + math.floor(level / data[1]) * data[2]
+	local level = 100
+	if managers.experience and self._owner:local_peer() then
+		level = tonumber(managers.experience:current_level())
+	elseif self._owner:get_peer() then
+		level = tonumber(self._owner:get_peer():level())
 	end
-	return max_points
+
+	if level then
+		local max_points = 0
+		for _, data in ipairs(self.POINTS_MAP) do
+			max_points = max_points + math.floor(level / data[1]) * data[2]
+		end
+		return max_points
+	end
 end
 
 LoadoutPerkItem = LoadoutPerkItem or class(LoadoutTextItem)

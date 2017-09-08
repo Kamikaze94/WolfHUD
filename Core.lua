@@ -816,22 +816,6 @@ if not _G.WolfHUD then
 		end
 	end
 
-	function WolfHUD:checkOverrides()
-		if SystemInfo:platform() ~= Idstring("WIN32") then -- Abort here while Linux doesn't support 'mod_overrides', TODO: Linux seems to return WIN32 as well...
-			return
-		end
-
-		local mod = BLT.Mods:GetMod(WolfHUD.identifier or "WolfHUD")
-		local updates = mod and mod:GetUpdates() or {}
-
-		for _, override in ipairs(updates) do
-			local directory = Application:nice_path( override:GetInstallDirectory() .. "/" .. override:GetInstallFolder(), true )
-			if not file.DirectoryExists(directory) then
-				WolfHUD:createDirectory("./" .. directory)
-			end
-		end
-	end
-
 	-- Table with all menu IDs
 	WolfHUD.menu_ids = WolfHUD.menu_ids or {}
 
@@ -1348,10 +1332,6 @@ if not _G.WolfHUD then
 end
 
 if MenuNodeMainGui then
-	Hooks:PostHook( MenuNodeMainGui , "_setup_item_rows" , "MenuNodeMainGuiPostSetupItemRows_WolfHUD" , function( self, node )
-		WolfHUD:checkOverrides()
-	end)
-
 	Hooks:PostHook( MenuNodeMainGui , "_add_version_string" , "MenuNodeMainGuiPostAddVersionString_WolfHUD" , function( self )
 		if alive(self._version_string) then
 			self._version_string:set_text("Payday 2 v" .. Application:version() .. " | WolfHUD v" .. WolfHUD:getVersion())
