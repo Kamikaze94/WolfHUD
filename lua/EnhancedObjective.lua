@@ -6,8 +6,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 	HUDObjectives._BOUNCE = 12
 
 	function HUDObjectives:init(hud)
-		if hud.panel:child("objectives_panel") then
-			hud.panel:remove(self._panel:child("objectives_panel"))
+		if alive(self._panel) then
+			hud.panel:remove(self._panel)
 		end
 
 		self._panel = hud.panel:panel({
