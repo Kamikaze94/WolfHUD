@@ -2886,11 +2886,20 @@ if WolfHUD then
 				desc_id = "wolfhud_waypoints_options_help",
 				options = {
 					{
+						type = "toggle",
+						name_id = "wolfhud_waypoints_color_enable_title",
+						desc_id = "wolfhud_waypoints_color_enable_desc",
+						value = {"CustomWaypoints", "WAYPOINTS_COLOR_ENABLE"},
+						visible_reqs = {},
+					},
+					{
 						type = "multi_choice",
 						name_id = "wolfhud_waypoints_color_title",
 						desc_id = "wolfhud_waypoints_color_desc",
 						value = {"CustomWaypoints", "WAYPOINTS_COLOR"},
-						visible_reqs = {},
+						visible_reqs = {
+							{ setting = {"CustomWaypoints", "WAYPOINTS_COLOR_ENABLE"}, invert = false }
+						},
 						options = {},
 						add_color_options = true,
 						add_rainbow = false,

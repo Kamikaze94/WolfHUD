@@ -414,6 +414,7 @@ if not _G.WolfHUD then
 				},
 			},
 			CustomWaypoints = {
+				WAYPOINTS_COLOR_ENABLE					= true,
 				WAYPOINTS_COLOR							= "white",
 				SHOW_AMMO_BAG 							= true,
 				SHOW_DOC_BAG		 					= true,

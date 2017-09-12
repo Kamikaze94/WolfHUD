@@ -4,7 +4,9 @@ if RequiredScript == "lib/managers/hudmanager" then
 
 	function HUDManager:add_waypoint(id, data, ...)
 		add_waypoint_original(self, id, data, ...)
-		if data.distance then
+		local enable_waypoints_color = WolfHUD:getSetting({"CustomWaypoints", "WAYPOINTS_COLOR_ENABLE"})
+		local waypoints_available = id and self._hud and self._hud.waypoints and self._hud.waypoints[id]
+		if waypoints_available and data.distance and enable_waypoints_color then
 			local color = WolfHUD:getColorSetting({"CustomWaypoints", "WAYPOINTS_COLOR"}, "white")
 			self._hud.waypoints[id].bitmap:set_color(color)
 			self._hud.waypoints[id].distance:set_color(color)
