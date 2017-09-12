@@ -2,7 +2,7 @@
 ## Description
 
 This is a Mod collection of several useful HUD altering mods.
-I've modified them and added features, I felt were needed or useful.
+I've modified them and added features which I felt that were either needed or useful, or both.
 It was originally a recreated and updated version of GageHUD, since it was really painful to maintain with all the mixed up files.
 Over time I added more and more useful Scripts and currently it becomes kind of an All-in-One solution...
 Not sure if I want it to become that, but at least I added ingame Options to turn off functions you don't like. ;)
@@ -20,8 +20,8 @@ Keep in mind, that this is a development version. For a more stable release, get
   <i>(Click to view bigger version)</i>
 </p>
 
-## Requerimients:
-To make this mod work you will need to install [Better Lua injecTor](http://paydaymods.com/download/) aka BLT
+## Requirements:
+To make this mod work you will need to install either [Better Lua injecTor](http://paydaymods.com/download/) aka BLT. Linux/ SteamOS users need to use [BLT4L](https://github.com/blt4linux/blt4l/releases) instead.
 
 ## Installation (Direct Download):
 1. Click on the **Clone or Download** Button at the top of this site
@@ -29,9 +29,9 @@ To make this mod work you will need to install [Better Lua injecTor](http://payd
 2. Open the downloaded archive, using WinRAR or 7Zip
 3. Extract the **WolfHUD-master** folder into your 'PAYDAY 2/mods' folder
 4. Rename the folder **WolfHUD-master** to **WolfHUD**
-5. Start the game once. It will promt you to update Federal Inventory and WolfHUD_Textures. Update both
+5. Start the game once. It will prompt you to update Federal Inventory and WolfHUD_Textures. Update both.
 
-## If yoy don't want/like Inventory Icons
+## If you don't want/like Inventory Icons
 To remove "Federal Inventory" go to your **PAYDAY 2/assets/mod_overrides/Federal Inventory** folder and delete the **guis** folder. Then open **revision.txt** and change the number to a higher one, to prevent future updates.
 
 ## Bug reports
