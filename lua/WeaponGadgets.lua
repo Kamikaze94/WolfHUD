@@ -315,7 +315,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 			for i, part_id in ipairs(gadgets) do
                 local base = self._parts[part_id] and self._parts[part_id].unit and self._parts[part_id].unit:base()
 				if base and base.GADGET_TYPE and base.GADGET_TYPE == (WeaponLaser.GADGET_TYPE or "") then
-					self:set_gadget_on(i or 0, false)
+					self:set_gadget_on(i or 0, false, gadgets)
 					break
 				end
 			end
@@ -323,32 +323,14 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 	end
 
 	local on_enabled_original = NewRaycastWeaponBase.on_enabled
-	local on_equip_original = NewRaycastWeaponBase.on_equip
-	local toggle_gadget_original = NewRaycastWeaponBase.toggle_gadget
 
 	function NewRaycastWeaponBase:on_enabled(...)
 		on_enabled_original(self, ...)
 
-		if WolfHUD:getSetting({"GADGETS", "LASER_AUTO_ON"}, true) and not self._saved_gadget_state then
+		if WolfHUD:getSetting({"GADGETS", "LASER_AUTO_ON"}, true) and not self._init_laser_state then
 			self:_setup_laser()
-
-			--if alive(self._second_gun) then
-			--	self._second_gun:base():_setup_laser()
-			--end
-
-			self._saved_gadget_state = self._gadget_on or 0
+			self._init_laser_state = true
 		end
-	end
-
-	-- Save Gadget State, until the games code gets fixed...
-	function NewRaycastWeaponBase:on_equip(...)
-		on_equip_original(self, ...)
-		self:set_gadget_on(self._saved_gadget_state or 0, false)
-	end
-
-	function NewRaycastWeaponBase:toggle_gadget(...)
-		toggle_gadget_original(self, ...)
-		self._saved_gadget_state = self._gadget_on or 0
 	end
 end
 
