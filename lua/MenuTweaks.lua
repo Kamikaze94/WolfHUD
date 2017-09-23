@@ -1,5 +1,5 @@
 if string.lower(RequiredScript) == "lib/managers/menumanager" then
-	function MenuCallbackHandler:is_dlc_latest_locked(...) return false end
+	function MenuCallbackHandler:is_dlc_latest_locked(...) return false end		--Hide DLC ad in the main menu
 
 	local modify_controls_original = MenuOptionInitiator.modify_controls
 	function MenuOptionInitiator:modify_controls(...)
@@ -7,7 +7,7 @@ if string.lower(RequiredScript) == "lib/managers/menumanager" then
 
 		-- Give sensitivity sliders a step size of 1%.
 		local item
-		for i, name in ipairs({"camera_sensitivity", "camera_sensitivity_horizontal", "camera_sensitivity_vertical", "camera_zoom_sensitivity"}) do
+		for i, name in ipairs({"camera_sensitivity", "camera_sensitivity_horizontal", "camera_sensitivity_vertical", "camera_zoom_sensitivity", "camera_zoom_sensitivity_horizontal", "camera_zoom_sensitivity_vertical"}) do
 			item = new_node:item(name)
 			if item then
 				item:set_step((tweak_data.player.camera.MAX_SENSITIVITY - tweak_data.player.camera.MIN_SENSITIVITY) * 0.01)

@@ -659,9 +659,9 @@ if not _G.WolfHUD then
 			current = Application:nice_path(current .. folder, true)
 			if not file.DirectoryExists(current) then
 				if SystemFS and SystemFS.make_dir then
-					SystemFS:make_dir(path)
+					SystemFS:make_dir(current)
 				elseif file and file.CreateDirectory then
-					file.CreateDirectory(path)
+					file.CreateDirectory(current)
 				end
 			end
 		end

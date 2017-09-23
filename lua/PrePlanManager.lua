@@ -255,7 +255,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 				if level_id then
 					level_id = PrePlanningManager._LEVEL_ID_OVERWRITES[level_id] or level_id
 					for _, str in pairs(PrePlanningManager._LEVEL_ID_SUB) do
-						level_id:gsub(str, "")
+						level_id = level_id:gsub(str, "")
 					end
 
 					PrePlanningManager._SAVE_FILE = string.format("%s%s.json", PrePlanningManager._SAVE_FOLDER, level_id or "Unknown")
