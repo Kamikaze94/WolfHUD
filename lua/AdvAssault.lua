@@ -44,7 +44,43 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 				self._wave_text:set_right(self._bg_box and self._bg_box:right() or 575)
 			end
 		end
-
+		if restoration and restoration.Options:GetValue("SC/SC") then
+			local job = Global.level_data and Global.level_data.level_id
+			local found_shit = false
+			for _,j in ipairs(restoration.captain_teamwork) do
+				if job == j then
+					buff_icon = "guis/textures/pd2/hud_buff_fire"
+					found_shit = true
+					break
+				end
+			end
+			for _,j2 in ipairs(restoration.captain_murderdozer) do
+				if job == j2 then
+					buff_icon = "guis/textures/pd2/hud_buff_skull"
+					found_shit = true
+					break
+				end
+			end
+			if not found_shit then
+				buff_icon = "guis/textures/pd2/hud_buff_shield"
+			end
+			local vip_icon = self._vip_bg_box:bitmap({
+				halign = "center",
+				valign = "center",
+				color = Color.white,
+				name = "vip_icon",
+				blend_mode = "add",
+				visible = true,
+				layer = 0,
+				texture = buff_icon,
+				x = 0,
+				y = 0,
+				w = 38,
+				h = 38
+			})
+			vip_icon:set_center(self._vip_bg_box:w() / 2, self._vip_bg_box:h() / 2)
+		end
+		
 		self:update_banner_pos()
 	end
 

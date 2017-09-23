@@ -88,6 +88,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		{ name = "snipers_killed", 		text_id = "wolfhud_tabstats_snipers_killed", 	color = Color(1, 0.67, 0.84, 0.90),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"sniper", "count"}		}, 	},
 		{ name = "tasers_killed", 		text_id = "wolfhud_tabstats_tasers_killed", 	color = Color(1, 0, 0.55, 0.55), 	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"taser", "count"}			}, 	},
 		{ name = "medic_killed", 		text_id = "wolfhud_tabstats_medic_killed", 		color = Color(1, 1, 0.55, 0.24),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"medic", "count"}			}, 	},
+		{ name = "boom_killed", 		text_id = "wolfhud_tabstats_booms_killed", 		color = Color.green, 				update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"boom", "count"}			}, 	},
+		{ name = "vets_killed", 		text_id = "wolfhud_tabstats_vets_killed", 		color = Color.red, 					update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"fbi_vet", "count"}		}, 	},
+		{ name = "captains_killed", 	text_id = "wolfhud_tabstats_captains_killed", 	color = Color.yellow, 				update = {func = "session_total_captains_killed", 	func_alltime = "total_captains_killed", params = {}							}, 	},
+		{ name = "omnia_killed", 		text_id = "wolfhud_tabstats_omnia_killed", 		color = Color.green,				update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"omnia_lpf", "count"}		}, 	},
+
 		{ name = "gensec_killed", 		text_id = "wolfhud_tabstats_gensec_killed", 	color = Color(1, 0.75, 1, 0.24),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"gensec", "count"}		}, 	},
 		{ name = "melee_killed", 		text_id = "wolfhud_tabstats_melee_kills", 		color = Color(1, 0.54, 0.02, 0.02),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"total", "melee"}			}, 	},
 		{ name = "explosion_killed", 	text_id = "wolfhud_tabstats_explosion_kills", 	color = Color(1, 1, 0.5, 0),		update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"total", "explosion"}		}, 	},
@@ -799,6 +804,7 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 				+ self:session_enemy_killed_by_type("tank_medic", "count")
 				+ self:session_enemy_killed_by_type("tank_mini", "count")
 				+ self:session_enemy_killed_by_type("tank_hw", "count")
+				+ self:session_enemy_killed_by_type("tank_titan", "count")
 	end
 
 	function StatisticsManager:total_tanks_killed()
@@ -809,8 +815,21 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 				+ self:enemy_killed_by_type("tank_medic", "count")
 				+ self:enemy_killed_by_type("tank_mini", "count")
 				+ self:enemy_killed_by_type("tank_hw", "count")
+				+ self:enemy_killed_by_type("tank_titan", "count")
 	end
 
+	function StatisticsManager:session_total_captains_killed()
+		return self:session_enemy_killed_by_type("phalanx_vip", "count")
+				+ self:session_enemy_killed_by_type("spring", "count")
+				+ self:session_enemy_killed_by_type("summers", "count")
+	end
+
+	function StatisticsManager:total_captains_killed()
+		return self:enemy_killed_by_type("phalanx_vip", "count")
+				+ self:enemy_killed_by_type("spring", "count")
+				+ self:enemy_killed_by_type("summers", "count")
+	end
+	
 	function StatisticsManager:total_downed_alltime()
 		return self._global.downed.bleed_out + self._global.downed.incapacitated
 	end
