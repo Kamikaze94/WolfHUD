@@ -2244,9 +2244,7 @@ if string.lower(RequiredScript) == "lib/units/equipment/ecm_jammer/ecmjammerbase
 	end
 
 	function ECMJammerBase:contour_interaction(...)
-		local owner_unit = self:owner()
-		local player_unit = managers.player:player_unit()
-		if alive(owner_unit) and alive(player_unit) and owner_unit:key() == player_unit:key() and managers.player:has_category_upgrade("ecm_jammer", "can_activate_feedback") then
+		if managers.network:session() and self._owner_id == managers.network:session():local_peer():id() and managers.player:has_category_upgrade("ecm_jammer", "can_activate_feedback") then
 			self._retrigger_delay = nil
 			managers.gameinfo:event("ecm", "set_retrigger_active", self._ecm_unit_key, { retrigger_active = false })
 		end
@@ -2685,9 +2683,9 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	local chk_wild_kill_counter_original = PlayerManager.chk_wild_kill_counter
 	local set_synced_cocaine_stacks_original = PlayerManager.set_synced_cocaine_stacks
 	local add_grenade_amount_original = PlayerManager.add_grenade_amount
-	local on_throw_grenade_original = PlayerManager.on_throw_grenade
-	local activate_ability_original = PlayerManager.activate_ability
-	local speed_up_ability_cooldown_original = PlayerManager.speed_up_ability_cooldown
+	local start_ability_timer_original = PlayerManager.start_ability_timer
+	local stop_ability_timer_original = PlayerManager.stop_ability_timer
+	local speed_up_ability_timer_original = PlayerManager.speed_up_ability_timer
 	local _dodge_shot_gain_original = PlayerManager._dodge_shot_gain
 	local start_custom_cooldown_original = PlayerManager.start_custom_cooldown
 	local _set_body_bags_amount_original = PlayerManager._set_body_bags_amount
@@ -3024,35 +3022,27 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 			managers.gameinfo:event("buff", "deactivate", "crew_throwable_regen")
 		end
 	end
-
-	function PlayerManager:on_throw_grenade(...)
-		on_throw_grenade_original(self, ...)
-
-		local equipped_grenade = managers.blackmarket:equipped_grenade()
-		if self["_cooldown_" .. equipped_grenade] then
-			local t = TimerManager:game():time()
-			local duration = self["_cooldown_" .. equipped_grenade] - t
-			managers.gameinfo:event("timed_buff", "activate", equipped_grenade .. "_debuff", { duration = duration })
-		end
+	
+	function PlayerManager:start_ability_timer(ability, t, ...)
+		local duration = t - TimerManager:game():time()
+		managers.gameinfo:event("timed_buff", "activate", ability .. "_debuff", { duration = duration })
+		
+		return start_ability_timer_original(self, ability, t, ...)
 	end
+	
+	function PlayerManager:stop_ability_timer(ability, ...)
+		managers.gameinfo:event("buff", "deactivate", ability .. "_debuff")
 
-	function PlayerManager:activate_ability(ability, ...)
-		activate_ability_original(self, ability, ...)
-
-		if self["_cooldown_" .. ability] then
-			local t = TimerManager:game():time()
-			local duration = self["_cooldown_" .. ability] - t
-			managers.gameinfo:event("timed_buff", "activate", ability .. "_debuff", { duration = duration })
-		end
+		return stop_ability_timer_original(self, ability, ...)
 	end
-
-	function PlayerManager:speed_up_ability_cooldown(ability, time, ...)
-		speed_up_ability_cooldown_original(self, ability, time, ...)
-
-		if self["_cooldown_" .. ability] then
-			managers.gameinfo:event("timed_buff", "decrease_duration", ability .. "_debuff", { decrease = time })
+	
+	function PlayerManager:speed_up_ability_timer(ability, dt, ...)
+		if self._timers[ability] then
+			managers.gameinfo:event("buff", "decrease_duration", ability .. "_debuff", { decrease = dt })
 		end
-	end
+		
+		return speed_up_ability_timer_original(self, ability, dt, ...)
+ 	end
 
 	function PlayerManager:_dodge_shot_gain(gain_value, ...)
 		if gain_value then

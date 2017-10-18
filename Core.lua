@@ -903,7 +903,7 @@ if not _G.WolfHUD then
 					if type(req) == "table" then
 						local a = WolfHUD:getSetting(req.setting, nil)
 						if req.equal then
-							if a ~= b then
+							if a ~= req.equal then
 								return false
 							end
 						elseif type(a) == "boolean" then
