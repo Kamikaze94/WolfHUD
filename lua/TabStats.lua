@@ -1,3 +1,5 @@
+do return end
+
 if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 	local update_stats_screen_loot_original = HUDStatsScreen._update_stats_screen_loot
 	local update_stats_screen_day_original = HUDStatsScreen._update_stats_screen_day
@@ -1013,7 +1015,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanager" then
 
 	function HUDManager:feed_heist_time(time, ...)
 		HUDManager_feed_heist_time_original(self, time, ...)
-		if self._hud_statsscreen then
+		if self._hud_statsscreen and self._hud_statsscreen.feed_heist_time then
 			self._hud_statsscreen:feed_heist_time(time)
 		end
 	end

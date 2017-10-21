@@ -343,9 +343,10 @@ lounge		100421		100448			102049
 			chill = {	-- Custom Safehouse (1x Painting)
 				[150416] = true
 			},
-			chill_combat = { -- Safehouse Raid (2x Ammo shelves)
+			chill_combat = { -- Safehouse Raid (2x Ammo shelves, 1x Painting)
 				[100751] = true,
 				[101242] = true,
+				[150416] = true
 			},
 			short2_stage1 = {	-- Keycard
 				[104102] = true,
