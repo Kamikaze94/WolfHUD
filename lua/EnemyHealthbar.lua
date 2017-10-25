@@ -2,6 +2,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	HUDManager.CharacterData = {
 		[ "civilian" ] 						= { default = "wolfhud_enemy_civilian" },
 		[ "civilian_female" ] 				= { default = "wolfhud_enemy_civilian" },
+		[ "captain" ] 						= { default = "wolfhud_enemy_civilian" },
 		[ "gangster" ] 						= { default = "wolfhud_enemy_gangster" },
 		[ "biker" ] 						= { default = "wolfhud_enemy_biker" },
 		[ "biker_escape" ] 					= { default = "wolfhud_enemy_biker" },

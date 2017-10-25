@@ -89,6 +89,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 			CHARACTER_NAMES = {
 				[ "civilian" ] 						= { default = "wolfhud_enemy_civilian" },
 				[ "civilian_female" ] 				= { default = "wolfhud_enemy_civilian" },
+				[ "captain" ] 						= { default = "wolfhud_enemy_civilian" },
 				[ "gangster" ] 						= { default = "wolfhud_enemy_gangster" },
 				[ "biker" ] 						= { default = "wolfhud_enemy_biker" },
 				[ "biker_escape" ] 					= { default = "wolfhud_enemy_biker" },
@@ -794,6 +795,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 					fade_angle = { start_angle = 35, end_angle = 25, final_scale = 8 },
 					visible_angle = { max = 35 },
 					visible_distance = { max = 3000 },
+					color = icon_data.color,
 					icon = {
 						type = "icon",
 						show = true,
