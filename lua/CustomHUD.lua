@@ -556,7 +556,18 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammateCustom:set_delayed_damage(damage)
-		self:call_listeners("delayed_damage", damage)
+		local player_unit = managers.player:player_unit()
+		local player_damage = player_unit and player_unit:character_damage()
+		if player_damage then
+			local data = {
+				damage = damage, 
+				health = player_damage:get_real_health(),
+				armor = player_damage:get_real_armor(),
+				total_health = player_damage:_max_health(),
+				total_armor = player_damage:_max_armor(),
+			}
+			self:call_listeners("delayed_damage", data)
+		end
 		
 		if self:is_local_player() then
 			managers.network:session():send_to_peers("sync_delayed_damage_hud", damage)
@@ -2245,7 +2256,24 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		--self._maniac_stack_radial:set_color(Color(r, 1, 1))
 	end
 	
-	function PlayerInfoComponent.PlayerStatus:set_delayed_damage(damage)
+	function PlayerInfoComponent.PlayerStatus:set_delayed_damage(data)
+		local damage = data.damage or 0
+		local armor_max = data.total_armor or 1
+		local armor_current = data.armor or 0
+		local armor_ratio = (data.armor / data.total_armor)
+		local health_max = data.total_health or 1
+		local health_current = data.health or 0
+		local health_ratio = (data.health / data.total_health)
+		local armor_damage = damage < armor_current and damage or armor_current
+		damage = damage - armor_damage
+		local health_damage = damage < health_current and damage or health_current
+		local armor_damage_ratio = armor_damage > 0 and armor_damage / armor_max or 0
+		local health_damage_ratio = health_damage / health_max
+
+		self.radial_delayed_damage_armor:set_visible(armor_damage_ratio > 0)
+		self.radial_delayed_damage_health:set_visible(health_damage_ratio > 0)
+		self.radial_delayed_damage_armor:set_color(Color(1, armor_damage_ratio, 1 - armor_ratio, 0))
+		self.radial_delayed_damage_health:set_color(Color(1, health_damage_ratio, 1 - health_ratio, 0))
 		
 	end
 
