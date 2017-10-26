@@ -354,6 +354,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		glc_hold_take_handcuffs = 			"handcuffs",
 		hold_take_missing_animal_poster = 	"poster",
 		press_take_folder = 				"poster",
+		--take_confidential_folder_icc = 		"poster",
 		take_jfr_briefcase = 				"briefcase",
 	}
 
@@ -5301,7 +5302,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		},
 
 		--Henchman boosts
-		crew_inspire_debuff = {
+		team_crew_inspire_debuff = {
 			hud_tweak = "ability_1",
 			class = "TimedBuffItem",
 			priority = 10,
@@ -5924,7 +5925,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self:deactivate_debuff()
 		end
 
-		HUDList.BikerBuffItem.super._set_stack_count(self, charges)
+		HUDList.BikerBuffItem.super._set_stack_count(self, math.max(charges, 0))
 	end
 
 	HUDList.TeamBuffItem = HUDList.TeamBuffItem or class(HUDList.BuffItemBase)

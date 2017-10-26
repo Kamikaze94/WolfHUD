@@ -199,6 +199,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			pickup_phone = 						"_special_equipment_interaction_handler",	-- Stealing Xmas Phone
 			press_take_folder = 				"_special_equipment_interaction_handler",
 			take_jfr_briefcase = 				"_special_equipment_interaction_handler",
+			take_confidential_folder_icc = 		"_special_equipment_interaction_handler",
 			firstaid_box =						"_deployable_interaction_handler",
 			ammo_bag =							"_deployable_interaction_handler",
 			doctor_bag =						"_deployable_interaction_handler",
@@ -1276,6 +1277,12 @@ lounge		100421		100448			102049
             if data.expire_t or (data.t and data.duration) then
                 self:_add_player_timer_expiration(id, id, data.expire_t or (data.t + data.duration), self._timed_buff_expire_clbk)
             end
+		elseif event == "set_expire" then
+			self:_remove_player_timer_expiration(id)
+			self:_add_player_timer_expiration(id, id, self._buffs[id].expire_t, self._timed_buff_expire_clbk)
+		elseif event == "change_expire" then
+			self:_remove_player_timer_expiration(id)
+			self:_add_player_timer_expiration(id, id, self._buffs[id].expire_t, self._timed_buff_expire_clbk)
 		elseif event == "deactivate" then
 			self:_remove_player_timer_expiration(id)
 		end
@@ -1325,17 +1332,21 @@ lounge		100421		100448			102049
 			elseif event == "set_stack_count" then
 				self._buffs[id].stack_count = data.stack_count
 			elseif event == "change_stack_count" then
-				self._buffs[id].stack_count = (self._buffs[id].stack_count or 0) + data.difference
-				event = "set_stack_count"
+				return self:_buff_event("set_stack_count", id, { stack_count = (self._buffs[id].stack_count or 0) + data.difference })
+			elseif event == "increment_stack_count" then
+				return self:_buff_event("set_stack_count", id, { stack_count = (self._buffs[id].stack_count or 0) + 1 })
+			elseif event == "decrement_stack_count" then
+				return self:_buff_event("set_stack_count", id, { stack_count = (self._buffs[id].stack_count or 0) - 1 })
 			elseif event == "set_progress" then
 				self._buffs[id].progress = data.progress
 			elseif event == "set_value" then
 				self._buffs[id].value = data.value
-			elseif event == "decrease_duration" then
-				self._buffs[id].expire_t = self._buffs[id].expire_t - data.decrease
-				event = "set_duration"
-				self:_remove_player_timer_expiration(id)
-				self:_add_player_timer_expiration(id, id, self._buffs[id].expire_t, self._timed_buff_expire_clbk)
+			elseif event == "set_expire" then
+				local expire_t = data.duration and (data.duration + Application:time()) or data.expire_t
+				return self:_buff_event("set_duration", id, { t = self._buffs[id].t, expire_t = expire_t })
+			elseif event == "change_expire" then
+				local expire_t = data.difference and (self._buffs[id].expire_t + data.difference) or data.expire_t
+				return self:_buff_event("set_duration", id, { t = self._buffs[id].t, expire_t = expire_t })
 			end
 		else
 			return
@@ -1409,6 +1420,12 @@ lounge		100421		100448			102049
 				local expire_t = data.expire_t or data.duration and (data.duration + t) or t
 				self._player_actions[id].t = t
 				self._player_actions[id].expire_t = expire_t
+			elseif event == "set_expire" then
+				local expire_t = data.duration and (data.duration + Application:time()) or data.expire_t
+				return self:_player_action_event("set_duration", id, { t = self._player_actions[id].t, expire_t = expire_t })
+			elseif event == "change_expire" then
+				local expire_t = data.difference and (self._player_actions[id].expire_t + data.difference) or data.expire_t
+				return self:_player_action_event("set_duration", id, { t = self._player_actions[id].t, expire_t = expire_t })
 			elseif event == "set_data" then
 				self._player_actions[id].data = self._player_actions[id].data or {}
 				for k, v in pairs(data) do
@@ -2688,7 +2705,8 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	local stop_ability_timer_original = PlayerManager.stop_ability_timer
 	local speed_up_ability_timer_original = PlayerManager.speed_up_ability_timer
 	local _dodge_shot_gain_original = PlayerManager._dodge_shot_gain
-	local start_custom_cooldown_original = PlayerManager.start_custom_cooldown
+	local start_timer_original = PlayerManager.start_timer
+	local speed_up_grenade_cooldown_original = PlayerManager.speed_up_grenade_cooldown
 	local _set_body_bags_amount_original = PlayerManager._set_body_bags_amount
 
 	local PLAYER_HAS_SPAWNED = false
@@ -3016,34 +3034,13 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		add_grenade_amount_original(self, ...)
 
 		local gain_throwable_per_kill = managers.player:upgrade_value("team", "crew_throwable_regen", 0)
-		if gain_throwable_per_kill > 0 and not self:got_max_grenades() then
+		if gain_throwable_per_kill > 0 and not self:got_ability() and not self:got_max_grenades() then
 			managers.gameinfo:event("buff", "activate", "crew_throwable_regen")
-			managers.gameinfo:event("buff", "set_stack_count", "crew_throwable_regen", { stack_count = (gain_throwable_per_kill - (self._throw_regen_kills or 0)) })
+			managers.gameinfo:event("buff", "set_stack_count", "crew_throwable_regen", { stack_count = (gain_throwable_per_kill - (self._throw_regen_kills or 0) + 1) })
 		else
 			managers.gameinfo:event("buff", "deactivate", "crew_throwable_regen")
 		end
 	end
-	
-	function PlayerManager:start_ability_timer(ability, t, ...)
-		local duration = t - TimerManager:game():time()
-		managers.gameinfo:event("timed_buff", "activate", ability .. "_debuff", { duration = duration })
-		
-		return start_ability_timer_original(self, ability, t, ...)
-	end
-	
-	function PlayerManager:stop_ability_timer(ability, ...)
-		managers.gameinfo:event("buff", "deactivate", ability .. "_debuff")
-
-		return stop_ability_timer_original(self, ability, ...)
-	end
-	
-	function PlayerManager:speed_up_ability_timer(ability, dt, ...)
-		if self._timers[ability] then
-			managers.gameinfo:event("buff", "decrease_duration", ability .. "_debuff", { decrease = dt })
-		end
-		
-		return speed_up_ability_timer_original(self, ability, dt, ...)
- 	end
 
 	function PlayerManager:_dodge_shot_gain(gain_value, ...)
 		if gain_value then
@@ -3059,14 +3056,31 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		return _dodge_shot_gain_original(self, gain_value, ...)
 	end
 
-	function PlayerManager:start_custom_cooldown(category, upgrade, ...)
-		start_custom_cooldown_original(self, category, upgrade, ...)
-		managers.gameinfo:event("timed_buff", "activate", tostring(upgrade) .. "_debuff", { expire_t = self["_cooldown_" .. category .. "_" .. upgrade] })
+	function PlayerManager:start_timer(key, duration, ...)
+		start_timer_original(self, key, duration, ...)
+		if key == "replenish_grenades" then
+			key = managers.blackmarket:equipped_grenade()
+		end
+		managers.gameinfo:event("timed_buff", "activate", tostring(key) .. "_debuff", { duration = duration })
+	end
+	
+	function PlayerManager:speed_up_grenade_cooldown(time, ...)
+		if self._timers.replenish_grenades then
+			local equipped_grenade = managers.blackmarket:equipped_grenade()
+			managers.gameinfo:event("timed_buff", "change_expire", equipped_grenade .. "_debuff", { difference = -time })
+		end
+		
+		return speed_up_grenade_cooldown_original(self, time, ...)
 	end
 
 	function PlayerManager:_set_body_bags_amount(body_bags_amount)
 		managers.gameinfo:event("bodybags", "set", nil, body_bags_amount)
 		_set_body_bags_amount_original(self, body_bags_amount)
+	end
+	
+	function PlayerManager:got_ability()
+		local equipped_grenade = managers.blackmarket:equipped_grenade()
+		return tweak_data.blackmarket.projectiles[equipped_grenade].ability
 	end
 
 end
@@ -3518,7 +3532,6 @@ end
 
 if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 
-	local init_original = PlayerDamage.init
 	local add_damage_to_hot_original = PlayerDamage.add_damage_to_hot
 	local set_health_original = PlayerDamage.set_health
 	local _upd_health_regen_original = PlayerDamage._upd_health_regen
@@ -3527,7 +3540,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 	local _update_armor_grinding_original = PlayerDamage._update_armor_grinding
 	local _on_damage_armor_grinding_original = PlayerDamage._on_damage_armor_grinding
 	local change_regenerate_speed_original = PlayerDamage.change_regenerate_speed
-	local build_suppression_original = PlayerDamage.build_suppression
+	local _on_damage_event_original = PlayerDamage._on_damage_event
 	local set_armor_original = PlayerDamage.set_armor
 	local _check_bleed_out_original = PlayerDamage._check_bleed_out
 
@@ -3548,26 +3561,6 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 	local LAST_ARMOR_REGEN_BUFF_RESET = 0
 	local LAST_CHECK_T = 0
 	local ARMOR_GRIND_ACTIVE = false
-
-	function PlayerDamage:init(...)
-		init_original(self, ...)
-
-		if managers.player:has_category_upgrade("player", "damage_to_armor") then
-			local function on_damage(dmg_info)
-				if self._unit == dmg_info.attacker_unit then
-					local t = Application:time()
-					if (self._damage_to_armor.elapsed == t) or (t - self._damage_to_armor.elapsed > self._damage_to_armor.target_tick) then
-						managers.gameinfo:event("timed_buff", "activate", "anarchist_armor_recovery_debuff", { t = t, duration = self._damage_to_armor.target_tick })
-					end
-				end
-			end
-
-			CopDamage.register_listener("anarchist_debuff_listener", {"on_damage"}, on_damage)
-		end
-
-		self._listener_holder:add("custom_on_damage", { "on_damage" }, callback(self, self, "_custom_on_damage_clbk"))
-		self._listener_holder:add("custom_on_enter_bleedout", { "on_enter_bleedout" }, callback(self, self, "_custom_on_enter_bleedout_clbk"))
-	end
 
 	function PlayerDamage:add_damage_to_hot(...)
 		local num_old_stacks = #self._damage_to_hot_stack or 0
@@ -3667,23 +3660,30 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 		change_regenerate_speed_original(self, ...)
 		self:_check_armor_regen_timer()
 	end
-
-	function PlayerDamage:build_suppression(...)
-		build_suppression_original(self, ...)
-		if self:get_real_armor() < self:_max_armor() then
-			LAST_ARMOR_REGEN_BUFF_RESET = managers.player:player_timer():time() --Application:time()	--TMP: Test
-			self:_check_armor_regen_timer()
-		end
+	
+	function PlayerDamage:_on_damage_event(...)
+		_on_damage_event_original(self, ...)
+		self:_check_armor_regen_timer(true)
 	end
 
 	function PlayerDamage:set_armor(armor, ...)
-		set_armor_original(self, armor, ...)
-
-		if armor >= self:_total_armor() then
+		if armor >= self:_max_armor() then
 			ARMOR_GRIND_ACTIVE = false
 			managers.gameinfo:event("player_action", "deactivate", "anarchist_armor_regeneration")
 			managers.gameinfo:event("player_action", "deactivate", "standard_armor_regeneration")
+		elseif self._armor_grinding then
+			if not ARMOR_GRIND_ACTIVE then
+				ARMOR_GRIND_ACTIVE = true
+				local t = Application:time()
+				local t_start = t - self._armor_grinding.elapsed
+				local expire_t = t_start + self._armor_grinding.target_tick
+				managers.gameinfo:event("player_action", "activate", "anarchist_armor_regeneration")
+				managers.gameinfo:event("player_action", "set_value", "anarchist_armor_regeneration", { value = self._armor_grinding.armor_value })
+				managers.gameinfo:event("player_action", "set_duration", "anarchist_armor_regeneration", { t = t_start, expire_t = expire_t })
+			end
 		end
+		
+		return set_armor_original(self, armor, ...)
 	end
 
 	function PlayerDamage:_check_bleed_out(...)
@@ -3695,31 +3695,28 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 			managers.gameinfo:event("timed_buff", "activate", "uppers_debuff", { duration = self._UPPERS_COOLDOWN })
 		end
 	end
-
-	function PlayerDamage:_custom_on_damage_clbk()
-		if not self:is_downed() then
-			LAST_ARMOR_REGEN_BUFF_RESET = managers.player:player_timer():time() --Application:time()	--TMP: Test
-			self:_check_armor_regen_timer()
-		end
-	end
-
-	function PlayerDamage:_check_armor_regen_timer()
-		if self._regenerate_timer and not self:is_downed() then
+	
+	local REGEN_EXPIRE_T = 0
+	function PlayerDamage:_check_armor_regen_timer(reset)
+		if not self._armor_grinding and not self:is_downed() and self._regenerate_timer and self:get_real_armor() < self:_max_armor() then
 			local t = managers.player:player_timer():time()
-			local duration = self._regenerate_timer / (self._regenerate_speed or 1)
-
-			if self._supperssion_data.decay_start_t and self._supperssion_data.decay_start_t > t then
-				duration = duration + (self._supperssion_data.decay_start_t - t)
+			local armor_regen_delay = self._regenerate_timer / (self._regenerate_speed or 1)
+			local suppression_delay = 0
+			
+			if self._supperssion_data.decay_start_t and self._supperssion_data.value == tweak_data.player.suppression.max_value then
+				suppression_delay = self._supperssion_data.decay_start_t - t
 			end
-
-			if duration > 0 and t > LAST_CHECK_T then
-				LAST_CHECK_T = t
+			
+			local expire_t = t + armor_regen_delay + suppression_delay
+			
+			if expire_t ~= REGEN_EXPIRE_T then
+				REGEN_EXPIRE_T = expire_t
 				managers.gameinfo:event("player_action", "activate", "standard_armor_regeneration")
-				managers.gameinfo:event("player_action", "set_duration", "standard_armor_regeneration", { t = LAST_ARMOR_REGEN_BUFF_RESET, duration = duration })
+				managers.gameinfo:event("player_action", reset and "set_duration" or "set_expire", "standard_armor_regeneration", { duration = armor_regen_delay + suppression_delay })
 			end
 		end
 	end
-
+	
 	function PlayerDamage:_custom_on_enter_bleedout_clbk()
 		if self:is_downed() then
 			ARMOR_GRIND_ACTIVE = false
