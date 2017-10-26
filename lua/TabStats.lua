@@ -1,11 +1,251 @@
-do return end
+if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
+	local massive_font = tweak_data.menu.pd2_massive_font
+	local large_font = tweak_data.menu.pd2_large_font
+	local medium_font = tweak_data.menu.pd2_medium_font
+	local small_font = tweak_data.menu.pd2_small_font
+	local tiny_font = tweak_data.menu.pd2_tiny_font
+	local massive_font_size = tweak_data.menu.pd2_massive_font_size
+	local large_font_size = tweak_data.menu.pd2_large_font_size
+	local medium_font_size = tweak_data.menu.pd2_medium_font_size
+	local small_font_size = tweak_data.menu.pd2_small_font_size
+	local tiny_font_size = tweak_data.menu.pd2_tiny_font_size
 
-if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
-	local update_stats_screen_loot_original = HUDStatsScreen._update_stats_screen_loot
-	local update_stats_screen_day_original = HUDStatsScreen._update_stats_screen_day
-	local init_original = HUDStatsScreen.init
-	local show_original = HUDStatsScreen.show
-	local hide_original = HUDStatsScreen.hide
+	local update_original = HUDStatsScreen.update
+	local recreate_left_original = HUDStatsScreen.recreate_left
+	local recreate_right_original = HUDStatsScreen.recreate_right
+	local _create_mutators_list_original = HUDStatsScreen._create_mutators_list
+	local _create_tracked_list_original = HUDStatsScreen._create_tracked_list
+	local loot_value_updated_original = HUDStatsScreen.loot_value_updated
+
+	function HUDStatsScreen:recreate_left(...)
+		recreate_left_original(self, ...)
+
+		if WolfHUD:getSetting({"TabStats", "ENABLED"}, true) then
+			self._use_tab_stats = true
+			self._left:clear()
+			self._left:bitmap({
+				texture = "guis/textures/test_blur_df",
+				layer = -1,
+				render_template = "VertexColorTexturedBlur3D",
+				valign = "grow",
+				w = self._left:w(),
+				h = self._left:h()
+			})
+
+			local l_bg = HUDBGBox_create(self._left, {}, {
+				blend_mode = "normal",
+				color = Color.white,
+				bg_color = Color.black:with_alpha(0.75)
+			})
+			if l_bg:child("bg") then
+				l_bg:child("bg"):set_color(Color(0, 0, 0):with_alpha(0.75))
+				l_bg:child("bg"):set_alpha(1)
+			end
+
+			local placer = UiPlacer:new(10, 10, 0, 8)
+			local row_w = self._left:w() - placer:current_left() * 2
+			local y = 0
+			
+			for i, data in pairs(managers.objectives:get_active_objectives()) do
+				placer:add_bottom(self._left:fine_text({
+					word_wrap = true,
+					wrap = true,
+					align = "left",
+					text = utf8.to_upper(data.text),
+					font = tweak_data.hud.medium_font,
+					font_size = tweak_data.hud.active_objective_title_font_size,
+					w = row_w
+				}))
+				placer:new_row(8)
+				local item = placer:add_bottom(self._left:fine_text({
+					word_wrap = true,
+					wrap = true,
+					font_size = tweak_data.hud.active_objective_title_font_size * 0.9,
+					align = "left",
+					text = data.description,
+					font = tweak_data.hud_stats.objective_desc_font,
+					w = row_w
+				}), 0)
+				y = math.max(y, item:bottom())
+			end
+				
+			local list_panel = ExtendedPanel:new(self._left, {
+				y = y + self._leftpos[2],
+				w = self._left:w(),
+				h = self._left:h() * 0.6
+			})
+			y = list_panel:bottom()
+
+			if managers.mutators:are_mutators_active() then
+				self:_create_mutators_list(list_panel)
+			elseif table.size(managers.achievment:get_tracked_fill()) > 0 then
+				self:_create_tracked_list(list_panel)
+			end
+			
+			self:_create_sidejobs_list(ExtendedPanel:new(self._left, {
+				y = y + self._leftpos[2],
+				w = self._left:w(),
+				h = self._left:h() * 0.3
+			}))
+			
+			local placer = UiPlacer:new(0, 0)
+			local ext_inv_panel = ExtendedPanel:new(self._left, {
+				x = self._leftpos[2],
+				y = self._left:h() - self._leftpos[2] - medium_font_size * 2 - 10,
+				w = self._left:w() - 2 * self._leftpos[2],
+				h = medium_font_size * 2 + 10
+			})
+			
+			local body_text = placer:add_row(ext_inv_panel:fine_text({
+				keep_w = true,
+				text = managers.localization:to_upper_text("hud_body_bags"),
+				font = medium_font,
+				font_size = medium_font_size
+			}))
+
+			placer:add_right(nil, 0)
+
+			local body_texture, body_rect = tweak_data.hud_icons:get_icon_data("equipment_body_bag")
+			local body_icon = placer:add_left(ext_inv_panel:fit_bitmap({
+				w = 17,
+				h = 17,
+				texture = body_texture,
+				texture_rect = body_rect
+			}))
+			body_icon:set_center_y(body_text:center_y())
+
+			placer:add_left(ext_inv_panel:fine_text({
+				text = tostring(managers.player:get_body_bags_amount()),
+				font = medium_font,
+				font_size = medium_font_size
+			}), 7)
+
+			placer:new_row(0, 8)
+
+			local track_text = placer:add_bottom(ext_inv_panel:fine_text({
+				text = managers.localization:to_upper_text("menu_es_playing_track") .. " " .. managers.music:current_track_string(),
+				font_size = tweak_data.menu.pd2_small_font_size,
+				font = tweak_data.menu.pd2_small_font,
+				color = tweak_data.screen_colors.text,
+				align = "right",
+				keep_w = true
+			}))
+		end
+	end
+
+
+	
+	function HUDStatsScreen:recreate_right(...)
+		recreate_right_original(self, ...)
+			
+		if WolfHUD:getSetting({"TabStats", "ENABLED"}, true) then	
+			self._use_tab_stats = true	
+			self._right:clear()
+			self._right:bitmap({
+				texture = "guis/textures/test_blur_df",
+				layer = -1,
+				render_template = "VertexColorTexturedBlur3D",
+				valign = "grow",
+				w = self._right:w(),
+				h = self._right:h()
+			})
+
+			local r_bg = HUDBGBox_create(self._right, {}, {
+				blend_mode = "normal",
+				color = Color.white,
+			})
+			if r_bg:child("bg") then
+				r_bg:child("bg"):set_color(Color(0, 0, 0):with_alpha(0.75))
+				r_bg:child("bg"):set_alpha(1)
+			end
+			
+			local stats_panel = ExtendedPanel:new(self._right, { w = self._right:w(), h = self._right:h() })
+			self:_create_stat_list(stats_panel)
+			self:_update_stats_list(stats_panel)
+		end
+		
+		local clock_panel = self:_create_clock(self._right)
+		clock_panel:set_right(self._right:w() - self._rightpos[2])
+		clock_panel:set_y(self._rightpos[2])
+	end
+
+	function HUDStatsScreen:_create_tracked_list(panel, ...)
+		local right_panel = self._right
+		self._right = panel
+		_create_tracked_list_original(self, panel)
+		self._right = right_panel
+	end
+	
+	function HUDStatsScreen:_create_mutators_list(panel, ...)
+		local right_panel = self._right
+		self._right = panel
+		_create_mutators_list_original(self, panel)
+		self._right = right_panel
+	end
+	
+	function HUDStatsScreen:update(t, ...)
+		update_original(self, t, ...)
+		
+		if self._clock_panel and (self._last_update_t or 0) + 1 < t then
+			local text = ""
+			local mode = WolfHUD:getSetting({"TabStats", "CLOCK_MODE"}, 3)
+			if mode == 4 then
+				local time = math.floor(self._last_heist_time or 0)
+				local hours = math.floor(time / 3600)
+				time = time - hours * 3600
+				local minutes = math.floor(time / 60)
+				time = time - minutes * 60
+				local seconds = math.round(time)
+				text = hours > 0 and string.format("%02d:%02d:%02d", hours, minutes, seconds) or string.format("%02d:%02d", minutes, seconds)
+			elseif mode == 3 then
+				text = os.date("%X")
+			elseif mode == 2 then
+				text = os.date("%I:%M:%S %p")
+			end
+			self._clock_panel:child("time_text"):set_text(text)
+			self._clock_panel:set_visible(mode > 1)
+		end
+		self._last_update_t = t
+	end
+
+	--OVERRIDE!!!
+	function HUDStatsScreen:loot_value_updated(...)
+		--loot_value_updated_original(self, ...)
+		self:update_stats()
+	end
+	
+	function HUDStatsScreen:_create_clock(panel)
+		local clock_panel = ExtendedPanel:new(panel, { w = panel:w() * 0.5, h = tweak_data.hud_stats.objectives_font })
+		local placer = UiPlacer:new(0, 0)
+		
+		placer:add_row(clock_panel:fine_text({
+			name = "time_text",
+			color = Color.white,
+			alpha = 0.8,
+			font_size = tweak_data.hud_stats.loot_size,
+			font = tweak_data.hud_stats.objectives_font,
+			text = "00:00:00",
+			align = "right",
+			w = clock_panel:w() - tweak_data.hud_stats.loot_size - 5,
+			keep_w = true
+		}))
+		placer:add_right(clock_panel:fit_bitmap({
+			name = "time_icon",
+			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
+			alpha = 0.8,
+			w = tweak_data.hud_stats.loot_size,
+			h = tweak_data.hud_stats.loot_size,
+		}), 5)
+		
+		self._clock_panel = clock_panel
+		return clock_panel
+	end
+	
+	function HUDStatsScreen:_create_sidejobs_list(panel, ...)
+		
+	end
+	
+	
 	HUDStatsScreen.CHARACTERS = {
 		female_1 = {
 			texture = "guis/dlcs/character_pack_clover/textures/pd2/blackmarket/icons/characters/female_1",
@@ -115,369 +355,214 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		return mask_icon
 	end
 
-	function HUDStatsScreen:init(...)
-		init_original(self, ...)
-		local right_panel = self._full_hud_panel:child("right_panel")
-		local day_wrapper_panel = right_panel:child("day_wrapper_panel")
-
-		local time_icon = right_panel:bitmap({
-			name = "time_icon",
-			texture = "guis/textures/pd2/skilltree/drillgui_icon_faster",
-			x = 0,
-			y = 0,
-			alpha = 0.8,
-			w = tweak_data.hud_stats.loot_size,
-			h = tweak_data.hud_stats.loot_size,
-		})
-		local time_text = right_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "time_text",
-			color = Color.white,
-			alpha = 0.8,
-			font_size = tweak_data.hud_stats.loot_size,
-			font = tweak_data.hud_stats.objectives_font,
-			text = "00:00:00",
-			align = "right",
-			vertical = "top",
-			w = right_panel:w()/4,
-			h = tweak_data.hud_stats.loot_size
-		})
-		time_text:set_y(math.round(right_panel:child("days_title"):y()))
-		time_text:set_right(right_panel:w() - 20)
-		time_icon:set_y(time_text:y())
-		time_icon:set_right(time_text:left())
-
-		if managers.job:is_current_job_professional() then
-			day_wrapper_panel:child("day_title"):set_color(Color.red)
-		end
-
-		self._use_tab_stats = WolfHUD:getSetting({"TabStats", "ENABLED"}, true)
-		if not self._use_tab_stats then return end
-
-		local blank1 = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "blank1",
-			color = Color.white,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = 2*(day_wrapper_panel:w()/3),
-			h = 18
-		})
-		blank1:set_y(math.round(day_wrapper_panel:child("day_title"):bottom()))
-		local paygrade_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "paygrade_text",
-			color = Color.yellow,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "0",
-			align = "right",
-			vertical = "top",
-			w = 2*(day_wrapper_panel:w()/3),
-			h = 18
-		})
-		local paygrade_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "paygrade_title",
-			color = Color.white,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("menu_lobby_difficulty_title"),
-			align = "left",
-			vertical = "top",
-			w = 2*(day_wrapper_panel:w()/3),
-			h = 18
-		})
-		paygrade_text:set_y(math.round(blank1:bottom()))
-		paygrade_title:set_top(paygrade_text:top())
-		local offshore_payout_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "offshore_payout_text",
-			color = Color.white,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "0",
-			align = "right",
-			vertical = "top",
-			w = 2*(day_wrapper_panel:w()/3),
-			h = 18
-		})
-		local offshore_payout_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "offshore_payout_title",
-			color = Color.white,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("hud_offshore_account") .. ":",
-			align = "left",
-			vertical = "top",
-			w = 2*(day_wrapper_panel:w()/3),
-			h = 18
-		})
-		offshore_payout_text:set_y(math.round(paygrade_text:bottom()))
-		offshore_payout_title:set_top(offshore_payout_text:top())
-		local cleaner_costs_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "cleaner_costs_text",
-			color = Color.white,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "0",
-			align = "right",
-			vertical = "top",
-			w = 2*(day_wrapper_panel:w()/3),
-			h = 18
-		})
-		local cleaner_costs_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "cleaner_costs_title",
-			color = Color.white,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("victory_civilians_killed_penalty"),
-			align = "left",
-			vertical = "top",
-			w = 2*(day_wrapper_panel:w()/3),
-			h = 18
-		})
-		cleaner_costs_text:set_y(math.round(offshore_payout_text:bottom()))
-		cleaner_costs_title:set_top(cleaner_costs_text:top())
-		local spending_cash_text = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "spending_cash_text",
-			color = Color.white,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = "0",
-			align = "right",
-			vertical = "top",
-			w = 2*(day_wrapper_panel:w()/3),
-			h = 18
-		})
-		local spending_cash_title = day_wrapper_panel:text({
-			layer = 0,
-			x = 0,
-			y = 0,
-			name = "spending_cash_title",
-			color = Color.white,
-			font_size = 18,
-			font = tweak_data.menu.pd2_small_font,
-			text = managers.localization:to_upper_text("hud_instant_cash") .. ":",
-			align = "left",
-			vertical = "top",
-			w = 2*(day_wrapper_panel:w()/3),
-			h = 18
-		})
-		spending_cash_text:set_y(math.round(cleaner_costs_text:bottom()))
-		spending_cash_title:set_top(spending_cash_text:top())
-
-		local blank2 = day_wrapper_panel:text({
-			layer = 0,
-			x =  0,
-			y = 0,
-			name = "blank2",
-			color = Color.white,
-			font_size = font_size,
-			font = tweak_data.menu.pd2_small_font,
-			text = "",
-			align = "right",
-			vertical = "top",
-			w = day_wrapper_panel:w()/2-5,
-			h = 18
-		})
-		blank2:set_y(math.round(spending_cash_text:bottom()))
-
-		local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
-		local mask_color = WolfHUD:getColorSetting({"TabStats", "COLOR"}, "red")
-		local char_data = HUDStatsScreen.CHARACTERS[managers.criminals:local_character_name()]
-		if char_data then
-			mask_icon = char_data.texture or mask_icon
-			mask_color = WolfHUD:getSetting({"TabStats", "COLOR"}, "rainbow") == "rainbow" and char_data.color or mask_color
-		end
-		self._actual_mask = WolfHUD:getSetting({"TabStats", "SHOW_MASK"}, true)
-		if self._actual_mask then
-			mask_icon = self.getMaskImage()
-		end
-
-		local logo = right_panel:bitmap({
-			name = "character_icon",
-			texture = mask_icon,
-			w = day_wrapper_panel:w()/2-5,
-			h = day_wrapper_panel:w()/2-5,
-			blend_mode = "add",
-			color = mask_color
-		})
-		logo:set_left(2.1*(day_wrapper_panel:w()/3))
-		logo:set_top(day_wrapper_panel:child("paygrade_title"):top() + 20)
-
-		local y = blank2:bottom()
-		self._tabstats_font_size = WolfHUD:getSetting({"TabStats", "FONT_SIZE"}, 18)
-		self._tabstats_color = WolfHUD:getSetting({"TabStats", "COLOR"}, "rainbow")
-		local items_color = self._tabstats_color ~= "rainbow" and WolfHUD:getColorSetting({"TabStats", "COLOR"}, "red") or false
-		for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
-			local name = data.name
-			local color = items_color or data.color
-			local killed_text = day_wrapper_panel:text({
-				layer = 0,
-				x =  0,
-				y = 0,
-				name = name .. "_text",
-				color = color,
-				font_size = self._tabstats_font_size,
-				font = tweak_data.menu.pd2_small_font,
-				text = "",
-				align = "right",
-				vertical = "top",
-				w = day_wrapper_panel:w()/2-5,
-				h = self._tabstats_font_size
-			})
-			local killed_title = day_wrapper_panel:text({
-				layer = 0,
-				x = 0,
-				y = 0,
-				name = name .. "_title",
-				color = color,
-				font_size = self._tabstats_font_size,
-				font = tweak_data.menu.pd2_small_font,
-				text = managers.localization:to_upper_text(data.text_id or ""),
-				align = "left",
-				vertical = "top",
-				w = day_wrapper_panel:w()/2-5,
-				h = self._tabstats_font_size
-			})
-			killed_text:set_y(math.round(y))
-			killed_title:set_top(killed_text:top())
-			killed_title:set_left(0)
-
-			if not data.no_alltime then
-				local killed_alltime_text = day_wrapper_panel:text({
-					layer = 0,
-					x =  0,
-					y = 0,
-					name = name .. "_alltime_text",
-					color = color,
-					font_size = self._tabstats_font_size,
-					font = tweak_data.menu.pd2_small_font,
-					text = "",
-					align = "right",
-					vertical = "top",
-					w = day_wrapper_panel:w()/2-5,
-					h = self._tabstats_font_size
-				})
-				local killed_alltime_title = day_wrapper_panel:text({
-					layer = 0,
-					x =  0,
-					y = 0,
-					name = name .. "_alltime_title",
-					color = color,
-					font_size = self._tabstats_font_size,
-					font = tweak_data.menu.pd2_small_font,
-					text = managers.localization:to_upper_text("wolfhud_tabstats_alltime_stat"),
-					align = "left",
-					vertical = "top",
-					w = day_wrapper_panel:w()/2-5,
-					h = self._tabstats_font_size
-				})
-				killed_alltime_text:set_top(killed_text:top())
-				killed_alltime_title:set_top(killed_text:top())
-				killed_alltime_text:set_left(killed_text:right()+10)
-				killed_alltime_title:set_left(killed_text:right()+10)
-			end
-			y = killed_text:bottom()
-		end
-
-		local difficulty_text
+	function HUDStatsScreen:_create_stat_list(panel, ...)
+		self._tabstats_settings = {
+			FONT_SIZE = WolfHUD:getSetting({"TabStats", "FONT_SIZE"}, 18),
+			COLOR = WolfHUD:getSetting({"TabStats", "COLOR"}, "rainbow"),
+			SHOW_MASK = WolfHUD:getSetting({"TabStats", "SHOW_MASK"}, true)
+		}
+		
+		local placer = UiPlacer:new(10, 10, 0, 0)
+		local difficulty_text, difficulty_color = "", Color.white
+	
 		if managers.crime_spree:is_active() then
+			local level_data = managers.job:current_level_data()
+			local mission = managers.crime_spree:get_mission(managers.crime_spree:current_played_mission())
+
+			if mission then
+				local level_str = managers.localization:to_upper_text(tweak_data.levels[mission.level.level_id].name_id) or ""
+
+				placer:add_row(panel:fine_text({
+					font = large_font,
+					font_size = tweak_data.hud_stats.objectives_title_size,
+					text = level_str,
+				}))
+			end
+			
 			difficulty_text = managers.localization:text("menu_cs_level", {level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")})
+			difficulty_color = tweak_data.screen_colors.crime_spree_risk
 		else
+			local job_chain = managers.job:current_job_chain_data()
+			local is_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id())
+			local day = managers.job:current_stage()
+			local days = job_chain and #job_chain or 0
+			local day_title = placer:add_bottom(panel:fine_text({
+				font = tweak_data.hud_stats.objectives_font,
+				font_size = tweak_data.hud_stats.loot_size,
+				text = managers.localization:to_upper_text("hud_days_title", {
+					DAY = day,
+					DAYS = days
+				})
+			}))
+
+			if managers.job:is_level_ghostable(managers.job:current_level_id()) then
+				local is_whisper_mode = managers.groupai and managers.groupai:state():whisper_mode()
+				local ghost_color = is_whisper_mode and Color.white or tweak_data.screen_colors.important_1
+				local ghost = placer:add_right(panel:bitmap({
+					texture = "guis/textures/pd2/cn_minighost",
+					name = "ghost_icon",
+					h = 16,
+					blend_mode = "add",
+					w = 16,
+					color = ghost_color,
+				}))
+
+				ghost:set_center_y(day_title:center_y())
+			end
+
+			placer:new_row(8)
+
+			local level_data = managers.job:current_level_data()
+
+			if level_data then
+				placer:add_bottom(panel:fine_text({
+					font = large_font,
+					font_size = tweak_data.hud_stats.objectives_title_size,
+					text = managers.localization:to_upper_text(tostring(level_data.name_id)) or "Unknown",
+					color = (managers.job:is_current_job_professional() and tweak_data.screen_colors.important_1 or tweak_data.screen_colors.text)
+				}))
+			end
+			
 			local difficulty_stars = managers.job:current_difficulty_stars()
 			local difficulty = tweak_data.difficulties[difficulty_stars + 2] or 1
 			local difficulty_string_id = tweak_data.difficulty_name_ids[difficulty]
 			difficulty_text = managers.localization:to_upper_text(difficulty_string_id)
+			difficulty_color = difficulty_stars > 0 and tweak_data.screen_colors.risk or tweak_data.screen_colors.text
 		end
-		paygrade_text:set_text(difficulty_text)
 
-		self:_update_stats_screen_day(right_panel)
+		local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
+		local mask_color = WolfHUD:getColorSetting({"TabStats", "COLOR"}, "red")
+		if self._tabstats_settings.SHOW_MASK then
+			mask_icon = self.getMaskImage()
+		else
+			local char_data = HUDStatsScreen.CHARACTERS[managers.criminals:local_character_name()]
+			if char_data then
+				mask_icon = char_data.texture or mask_icon
+				mask_color = WolfHUD:getSetting({"TabStats", "COLOR"}, "rainbow") == "rainbow" and char_data.color or mask_color
+			end
+		end
+
+
+		local padding = 10
+		local list_w = panel:w() - 4 * self._rightpos[2]
+		local small_list_w = list_w * 0.6
+		placer:new_row(0, 12)
+		local paygrade_title = self:_create_stat_list_entry(placer, panel, self._rightpos[2], small_list_w, "paygrade", managers.localization:to_upper_text("menu_lobby_difficulty_title"), difficulty_text, nil, self._tabstats_settings.FONT_SIZE or 18, nil, difficulty_color, nil)		
+		placer:new_row()
+		self:_create_stat_list_entry(placer, panel, self._rightpos[2], small_list_w, "offshore_payout", managers.localization:to_upper_text("hud_offshore_account") .. ":", "0", nil, self._tabstats_settings.FONT_SIZE or 18, nil, nil, nil)
+		placer:new_row()
+		self:_create_stat_list_entry(placer, panel, self._rightpos[2], small_list_w, "spending_cash", managers.localization:to_upper_text("menu_cash_spending"), "0", nil, self._tabstats_settings.FONT_SIZE or 18, nil, nil, nil)
+		placer:new_row()
+		self:_create_stat_list_entry(placer, panel, self._rightpos[2], small_list_w, "cleaner_costs", managers.localization:to_upper_text("victory_civilians_killed_penalty"), "0", nil, self._tabstats_settings.FONT_SIZE or 18, nil, nil, nil)
+		placer:new_row(0, 12)
+		self:_create_stat_list_entry(placer, panel, self._rightpos[2], small_list_w, "bag_amount", managers.localization:to_upper_text("hud_stats_bags_secured") .. ":", "0", nil, self._tabstats_settings.FONT_SIZE or 18, nil, nil, nil)
+		placer:new_row()
+		self:_create_stat_list_entry(placer, panel, self._rightpos[2], small_list_w, "bag_cash", utf8.to_upper("Secured Bags value:"), "0", nil, self._tabstats_settings.FONT_SIZE or 18, nil, nil, nil)
+		placer:new_row()
+		self:_create_stat_list_entry(placer, panel, self._rightpos[2], small_list_w, "instant_cash", managers.localization:to_upper_text("hud_instant_cash") .. ":", "0", nil, self._tabstats_settings.FONT_SIZE or 18, nil, nil, nil)
+		placer:new_row(0, 12)
+		
+		if paygrade_title then
+			panel:bitmap({
+				name = "character_icon",
+				texture = mask_icon,
+				x = paygrade_title:right() + padding,
+				y = paygrade_title:top(),
+				w = list_w - small_list_w,
+				h = list_w - small_list_w,
+				blend_mode = "add",
+				color = mask_color,
+				align = "center",
+				vertical = "center",
+				valign = "center",
+				--keep_w = true
+			})
+		end
+		
+
+		local items_color = self._tabstats_settings.COLOR ~= "rainbow" and WolfHUD:getColor(self._tabstats_settings.COLOR or "red") or false
+		for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
+			local name = data.name
+			local color = items_color or data.color
+			self:_create_stat_list_entry(placer, panel, self._rightpos[2], (data.no_alltime and small_list_w or list_w), name, managers.localization:to_upper_text(data.text_id or ""), "0", not data.no_alltime and "0" or nil, self._tabstats_settings.FONT_SIZE or 18, color, color, false)
+			placer:new_row()
+		end
+
+		self._stats_panel = panel
 	end
 
-	function HUDStatsScreen:show(...)
-		show_original(self, ...)
+	local add_bg = false
+	function HUDStatsScreen:_create_stat_list_entry(placer, panel, offset, w, name, title, text, alltime_text, font_size, title_color, text_color, skip_toggle_bg)
+		if placer and panel then
+			local value_w = w * 0.4
+			local title = placer:add_right(panel:text({
+				name = name and string.format("%s_title", name) or nil,
+				color = title_color or tweak_data.screen_colors.text,
+				font_size = font_size or 18,
+				font = tweak_data.menu.pd2_small_font,
+				text = title,
+				w = w,
+				h = font_size or 18,
+				keep_w = true
+			}), offset)
+			placer:add_right(nil, 0)
+			if alltime_text then
+				local text = placer:add_left(panel:text({
+					name = name and string.format("%s_alltime_text", name) or nil,
+					color = text_color or tweak_data.screen_colors.text,
+					font_size = font_size or 18,
+					font = tweak_data.menu.pd2_small_font,
+					text = alltime_text,
+					align = "right",
+					vertical = "top",
+					w = value_w,
+					h = font_size or 18
+				}))
+			end
+			local text = placer:add_left(panel:text({
+				name = name and string.format("%s_text", name) or nil,
+				color = text_color or tweak_data.screen_colors.text,
+				font_size = font_size or 18,
+				font = tweak_data.menu.pd2_small_font,
+				text = text,
+				align = "right",
+				vertical = "top",
+				w = value_w,
+				h = font_size or 18
+			}))
 
-		if managers.hud then
-			managers.hud:add_updator("WolfHUD_TabStats_Clock", callback(self, self, "update_time"))
+			if not alltime_text then
+				placer:add_left(nil, value_w)
+			end
+			
+			local bg
+			if add_bg then
+				placer:add_left(nil, w - (2 * value_w) + (offset * 0.5))
+				bg = placer:add_right(panel:rect({
+					name = name and string.format("%s_bg", name) or nil,
+					w = w + offset,
+					h = font_size or 18,
+					color = Color.white:with_alpha(0.1),
+					layer = -1
+				}))
+				placer:add_right(nil, -offset * 0.5)
+			end
+			
+			if not skip_toggle_bg then
+				add_bg = not add_bg
+			end
+			
+			return title, text, bg
 		end
 	end
 
-	function HUDStatsScreen:hide(...)
-		hide_original(self, ...)
-		if managers.hud then
-			managers.hud:remove_updator("WolfHUD_TabStats_Clock")
-		end
-	end
-
-	function HUDStatsScreen:stats_visible()
-		return self._showing_stats_screen or false
-	end
-
-	function HUDStatsScreen:update_stats(item)
+	function HUDStatsScreen:update_stats(item_list)
 		if self._use_tab_stats then
-			local dwp = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel"):child("day_wrapper_panel")
-			if dwp then
-				self:update(dwp, item)
+			if type(item_list) == "string" then
+				item_list = { item_list }
 			end
-		end
-	end
-
-	function HUDStatsScreen:update_time(t, dt)
-		if (self._last_update_t or 0) + 1 < t then
-			local right_panel = self._full_hud_panel:child("right_panel")
-			if right_panel then
-				local text = ""
-				local x = 0
-				local mode = WolfHUD:getSetting({"TabStats", "CLOCK_MODE"}, 3)
-				if mode == 4 then
-					local time = math.floor(self._last_heist_time or 0)
-					local hours = math.floor(time / 3600)
-					time = time - hours * 3600
-					local minutes = math.floor(time / 60)
-					time = time - minutes * 60
-					local seconds = math.round(time)
-
-					text = string.format("%02d:%02d:%02d", hours, minutes, seconds)
-					x = 1.3 * right_panel:child("time_icon"):w()
-				elseif mode == 3 then
-					text = os.date("%X")
-					x = right_panel:child("time_icon"):w()
-				elseif mode == 2 then
-					text = os.date("%I:%M:%S %p")
-				end
-				right_panel:child("time_text"):set_text(text)
-				right_panel:child("time_icon"):set_center_x(right_panel:child("time_text"):left() + x)
-				right_panel:child("time_text"):set_visible(mode > 1)
-				right_panel:child("time_icon"):set_visible(mode > 1)
-			end
-			self._last_update_t = t
+			
+			self:_update_stats_list(self._stats_panel, item)
 		end
 	end
 
@@ -487,8 +572,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		end
 	end
 
-	function HUDStatsScreen:update(day_wrapper_panel, item)
-		if not (self._use_tab_stats and day_wrapper_panel) then return end
+	function HUDStatsScreen:_update_stats_list(panel, item)
+		if not (self._use_tab_stats and panel) then return end
 		if managers.money and managers.statistics and managers.experience and not item then
 			local money_current_stage 	= managers.crime_spree:is_active() and managers.crime_spree:get_potential_payout_from_current_stage("cash") or managers.money:get_potential_payout_from_current_stage() or 0
 			local offshore_rate 		= managers.money:get_tweak_value("money_manager", "offshore_rate") or 0
@@ -496,14 +581,26 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 			local cleaner_costs			= (managers.money:get_civilian_deduction() or 0) * civilian_kills
 			local offshore_money 		= money_current_stage - math.round(money_current_stage * offshore_rate)
 			local spending_cash 		= money_current_stage * offshore_rate - cleaner_costs
-			day_wrapper_panel:child("offshore_payout_text"):set_text(managers.experience:cash_string(offshore_money))
-			day_wrapper_panel:child("spending_cash_text"):set_text(managers.experience:cash_string(spending_cash))
+			panel:child("offshore_payout_text"):set_text(managers.experience:cash_string(offshore_money))
+			panel:child("spending_cash_text"):set_text(managers.experience:cash_string(spending_cash))
 			if spending_cash >= 0 then
-				day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.friend_color)
+				panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.friend_color)
 			else
-				day_wrapper_panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.heat_cold_color)
+				panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.heat_cold_color)
 			end
-			day_wrapper_panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(cleaner_costs) .. " (" .. tostring(civilian_kills) .. ")")
+			panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(cleaner_costs) .. " (" .. tostring(civilian_kills) .. ")")
+			
+			local mandatory_bags_data = managers.loot:get_mandatory_bags_data()
+			local mandatory_amount = mandatory_bags_data and mandatory_bags_data.amount or 0
+			local secured_amount = managers.loot:get_secured_mandatory_bags_amount() or 0
+			local bonus_amount = managers.loot:get_secured_bonus_bags_amount() or 0
+			local bags_amount_str = tostring(bonus_amount or 0)
+			if mandatory_amount > 0 then
+				bags_amount_str = string.format("%i / %i%s", secured_amount, mandatory_amount, bonus_amount > 0 and string.format(" + %i", bonus_amount) or "")
+			end
+			panel:child("bag_amount_text"):set_text(bags_amount_str)
+			panel:child("bag_cash_text"):set_text(managers.experience:cash_string((managers.money:get_secured_mandatory_bags_money() or 0) + (managers.money:get_secured_bonus_bags_money() or 0)))
+			panel:child("instant_cash_text"):set_text(managers.experience:cash_string(managers.loot:get_real_total_small_loot_value() or 0))
 		end
 
 		for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
@@ -513,7 +610,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 					local suffix_table = { func = "_text"}
 					if not data.no_alltime then suffix_table.func_alltime = "_alltime_text" end
 					for func, suffix in pairs(suffix_table) do
-						local item = day_wrapper_panel:child(data.name .. suffix)
+						local item = panel:child(data.name .. suffix)
 						if item and update_data[func] and managers.statistics[update_data[func]] then
 							local value = managers.statistics[update_data[func]](managers.statistics, unpack(update_data.params or {}))
 							local value_str = ""
@@ -532,228 +629,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		end
 	end
 
-	function HUDStatsScreen:clean_up(right_panel)
-		local dwp = right_panel:child("day_wrapper_panel")
-		if alive(dwp) then
-			local panels = {"ghostable_text", "paygrade_title", "risk_text", "day_payout", "day_description", "bains_plan"}
-			for i, p_name in ipairs(panels) do
-				local item = dwp:child(p_name)
-				if alive(item) then
-					item:set_visible(false)
-				end
-			end
-
-			local day_description = dwp:child("day_description")
-			local last_stat_name = HUDStatsScreen.STAT_ITEMS[#HUDStatsScreen.STAT_ITEMS].name
-			local last_stat_item = dwp:child(last_stat_name .. "_title")
-			if day_description and last_stat_item then
-				day_description:set_bottom(last_stat_item:bottom() + 15)
-			end
-
-			if alive(self._box_gui) then
-				self._box_gui:close()
-				self._box_gui = nil
-			end
-		end
-	end
-
-	function HUDStatsScreen:_update_stats_screen_day(right_panel)
-		update_stats_screen_day_original(self, right_panel)
-
-		if not self._use_tab_stats then return end
-
-		self:clean_up(right_panel)
-		local dwp = right_panel:child("day_wrapper_panel")
-		if dwp then
-			self:update(dwp)
-		end
-	end
-
 	function HUDStatsScreen:update_setting(setting, value)
-		if self._use_tab_stats then
-			local font_size = (setting == "FONT_SIZE" and value) or self._tabstats_font_size
-			local color_name = (setting == "COLOR" and value) or self._tabstats_color
-			local actual_mask = (setting == "SHOW_MASK" and value) or setting ~= "SHOW_MASK" and self._actual_mask
-			local dwp = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel"):child("day_wrapper_panel")
-			if self._tabstats_font_size ~= font_size then
-				local last_item = dwp:child("blank2")
-				local sub_items = {"_title", "_text", "_alltime_title", "_alltime_text"}
-				for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
-					for j, suffix in ipairs(sub_items) do
-						local item = dwp:child(data.name .. suffix)
-						if item then
-							item:set_font_size(font_size)
-							item:set_h(font_size)
-							item:top(last_item:bottom())
-							last_item = item
-						end
-					end
-				end
+		if self._tabstats_settings[setting] ~= value then
+			self._tabstats_settings[setting] = value
+			if self._stats_panel then
+			--	self._stats_panel:clear()
+			--	self:_create_stat_list(self._stats_panel)
 			end
-			if self._tabstats_color ~= color_name then
-				local color = WolfHUD:getColor(color_name)
-				local sub_items = {"_title", "_text", "_alltime_title", "_alltime_text"}
-				for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
-					for j, suffix in ipairs(sub_items) do
-						local item = dwp:child(data.name .. suffix)
-						if item then
-							item:set_color(color or data.color or Color.white)
-						end
-					end
-				end
-				local item = dwp:parent():child("character_icon")
-				if item then
-					local char_table = HUDStatsScreen.CHARACTERS[managers.criminals:local_character_name()]
-					item:set_color(color or char_table.color or Color.white)
-				end
-			end
-			if actual_mask ~= self._actual_mask then
-				local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
-				if not actual_mask then
-					local char_table = HUDStatsScreen.CHARACTERS[managers.criminals:local_character_name()]
-					mask_icon = char_table and char_table.texture or mask_icon
-				else
-					mask_icon = self.getMaskImage()
-				end
-				local item = dwp:parent():child("character_icon")
-				if item then item:set_image(mask_icon) end
-			end
-			self._tabstats_font_size = font_size
-			self._tabstats_color = color_name
-			self._actual_mask = actual_mask
-		end
-	end
-
-	Hooks:PostHook( HUDStatsScreen, "init", "WolfHUD_LPI_Compatability", function(self)
-		if _G.LobbyPlayerInfo and LobbyPlayerInfo.settings.show_skills_in_stats_screen and self._use_tab_stats then
-			local right_panel = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel:child("right_panel")
-			local dwp = right_panel and right_panel:child("day_wrapper_panel")
-			if not dwp then
-				return
-			end
-
-			local y = math.round(dwp:child("total_revives_text"):bottom() + 10)
-			for i = 1, 4 do
-				local txt_name = "lpi_team_text_name" .. tostring(i)
-				local name_text = dwp:child(txt_name) or dwp:text({
-					name = txt_name,
-					text = "",
-					align = "left",
-					vertical = "top",
-					blend_mode = "add",
-					font_size = tweak_data.menu.pd2_small_font_size,
-					font = tweak_data.menu.pd2_small_font,
-					color = tweak_data.chat_colors[i],
-					w = right_panel:w(),
-					x = 0,
-					y = y
-				})
-
-				txt_name = "lpi_team_text_skills" .. tostring(i)
-				local skill_text = dwp:child(txt_name) or dwp:text({
-					name = txt_name,
-					text = "",
-					align = "left",
-					vertical = "top",
-					blend_mode = "add",
-					font_size = tweak_data.menu.pd2_small_font_size - 4,
-					font = tweak_data.menu.pd2_small_font,
-					color = tweak_data.screen_colors.text,
-					w = right_panel:w(),
-					x = 10,
-					y = y + 20
-				})
-
-				txt_name = "lpi_team_text_perk" .. tostring(i)
-				local perk_text = dwp:child(txt_name) or dwp:text({
-					name = txt_name,
-					text = "",
-					align = "left",
-					vertical = "top",
-					blend_mode = "add",
-					font_size = tweak_data.menu.pd2_small_font_size - 4,
-					font = tweak_data.menu.pd2_small_font,
-					color = tweak_data.screen_colors.text,
-					w = right_panel:w(),
-					x = 10,
-					y = y + 38
-				})
-				y = math.round(name_text:top() + 60)
-			end
-		end
-		--Hooks:RemovePostHook( "WolfHUD_LPI_Compatability" )
-	end )
-
-	Hooks:PostHook( HUDStatsScreen, "_create_stats_ext_inventory", "WolfHUD_LPI_Compatability", function(self, ext_inv_panel)
-		local ext_inv_title = ext_inv_panel and ext_inv_panel:child("title")
-		if ext_inv_title then
-			ext_inv_title:hide()
-		end
-	end)
-
-	function HUDStatsScreen:_update_stats_screen_loot(loot_wrapper_panel)
-		update_stats_screen_loot_original(self, loot_wrapper_panel)
-		if not WolfHUD:getSetting({"TabStats", "SHOW_LOOT_NUMBERS"}, true) then return end
-		local mandatory_bags_data = managers.loot:get_mandatory_bags_data()
-		local mission_amount = managers.loot:get_secured_mandatory_bags_amount()
-		local bonus_amount = managers.loot:get_secured_bonus_bags_amount()
-
-		local bag_texture, bag_rect = tweak_data.hud_icons:get_icon_data("bag_icon")
-		local mission_bags_panel = loot_wrapper_panel:child("mission_bags_panel")
-		local bonus_bags_panel = loot_wrapper_panel:child("bonus_bags_panel")
-		mission_bags_panel:clear()
-		bonus_bags_panel:clear()
-		if mandatory_bags_data and mandatory_bags_data.amount then
-			local bag = mission_bags_panel:bitmap({
-				name = "bag1",
-				texture = bag_texture,
-				texture_rect = bag_rect,
-				x = 0,
-				alpha = 0.25
-			})
-			local bag_text = mission_bags_panel:text({
-				name = "bag_amount",
-				text = " x" .. tostring(mandatory_bags_data.amount - mission_amount),
-				alpha = 0.75,
-				font = tweak_data.menu.pd2_small_font,
-				font = tweak_data.menu.pd2_small_font
-			})
-			managers.hud:make_fine_text(bag_text)
-			bag_text:set_left(bag:right())
-			bag_text:set_center_y(math.round(bag:center_y()))
-			if mission_amount > 0 then
-				local bag_gotten = mission_bags_panel:bitmap({
-					name = "bag1",
-					texture = bag_texture,
-					texture_rect = bag_rect,
-					x = 0
-				})
-				local bag_text_gotten = mission_bags_panel:text({
-					name = "bag_amount",
-					text = " x" .. tostring(mission_amount),
-					font = tweak_data.menu.pd2_small_font
-				})
-				managers.hud:make_fine_text(bag_text_gotten)
-				bag_gotten:set_left(bag_text:right() + 10)
-				bag_text_gotten:set_left(bag_gotten:right())
-				bag_text_gotten:set_center_y(math.round(bag_gotten:center_y()))
-			end
-		end
-		if bonus_amount > 0 then
-			local bag = bonus_bags_panel:bitmap({
-				name = "bag1",
-				texture = bag_texture,
-				texture_rect = bag_rect,
-				x = 0
-			})
-			local bag_text = bonus_bags_panel:text({
-				name = "bag_amount",
-				text = " x" .. tostring(bonus_amount),
-				font = tweak_data.menu.pd2_small_font
-			})
-			managers.hud:make_fine_text(bag_text)
-			bag_text:set_left(bag:right())
-			bag_text:set_center_y(math.round(bag:center_y()))
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then

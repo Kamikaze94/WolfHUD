@@ -34,7 +34,7 @@
 		{ "hook_id" : "lib/managers/hud/hudobjectives", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/hud/hudheisttimer", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/hud/hudchat", 								"script_path" : "Core.lua" },
-		{ "hook_id" : "lib/managers/hud/hudstatsscreen", 						"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/managers/hud/newhudstatsscreen", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/hud/hudinteraction", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/hud/hudsuspicion", 							"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/managers/hud/hudhitdirection", 						"script_path" : "Core.lua" },

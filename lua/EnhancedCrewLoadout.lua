@@ -588,86 +588,60 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 			self._team_loadout_item:update(t, dt)
 		end
 	end
-elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
-	local init_original = HUDStatsScreen.init
+elseif string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
+	local recreate_right_original = HUDStatsScreen.recreate_right
 	local show_original = HUDStatsScreen.show
 	local hide_original = HUDStatsScreen.hide
+	local update_original = HUDStatsScreen.update
 
 	HUDStatsScreen._LOADOUT_H = 215
-	function HUDStatsScreen:init(...)
-		init_original(self, ...)
+	function HUDStatsScreen:recreate_right(...)
+		if self._loadout_data then
+			for _, panel in ipairs(self._peer_loadout or {}) do
+				if not panel:destroyed() then
+					panel:destroy()
+				end
+			end
+
+			self._right:remove(self._loadout_data)
+			self._loadout_data = nil
+		end
+
+		recreate_right_original(self, ...)
 
 		self._USING_CREW_LOADOUT = WolfHUD:getSetting({"CrewLoadout", "SHOW_ON_STATS_PANEL"}, true) and not (_G.LobbyPlayerInfo and LobbyPlayerInfo.settings.show_skills_in_stats_screen)
-		local right_panel = self._full_hud_panel:child("right_panel")
-		if alive(right_panel) and self._USING_CREW_LOADOUT then
-			self._loadout_data = right_panel:panel({
-				name = "crew_loadout",
-				x = 5,
-				w = right_panel:w() - 20,
-				h = HUDStatsScreen._LOADOUT_H,
-			})
-
-			self._peer_loadout = self._peer_loadout or {}
-			self:populate_loadout_panel()
-
-			local left_panel = self._full_hud_panel:child("left_panel")
-			local loot_wrapper_panel = alive(left_panel) and left_panel:child("loot_wrapper_panel")
-			local secured_loot_title = alive(loot_wrapper_panel) and loot_wrapper_panel:child("secured_loot_title")
-			if alive(left_panel) and alive(secured_loot_title) then
-				local _, _, w, _ = secured_loot_title:text_rect()
-				local xPos = loot_wrapper_panel:x() + w
-				local mutators_panel = left_panel:panel({
-					layer = 1,
-					valign = {0.5, 0.5},
-					name = "mutators_panel",
-					x = xPos,
-					y = left_panel:h(),
-					h = 0,
-					w = left_panel:w() - xPos - 10
+		if self._USING_CREW_LOADOUT then
+			if alive(self._right) and not self._loadout_data then
+				self._loadout_data = self._right:panel({
+					name = "crew_loadout",
+					w = self._right:w() - 20,
+					h = HUDStatsScreen._LOADOUT_H,
+					visible = true
 				})
 
-				local right_mutators = right_panel:child("mutators_panel")
-				if alive(right_mutators) then
-					right_mutators:hide()
+				self._peer_loadout = self._peer_loadout or {}
+				self:populate_loadout_panel(self._loadout_data)
+				
+				for peer_id = 1, 4  do
+					self:update_loadout_panel(peer_id)
 				end
 			end
 		end
 	end
 
-	function HUDStatsScreen:show(...)
-		show_original(self, ...)
-
-		if self._USING_CREW_LOADOUT then
-			local right_panel = self._full_hud_panel:child("right_panel")
-			local day_wrapper_panel = alive(right_panel) and right_panel:child("day_wrapper_panel")
-			if alive(day_wrapper_panel) then
-				self._loadout_data:set_top(day_wrapper_panel:bottom())
-			end
-
-			for peer_id = 1, 4  do
-				self:update_loadout_panel(peer_id)
-			end
-
-			if managers.hud then
-				managers.hud:add_updator("WolfHUD_CrewLoadout_Ping", callback(self, self, "update_ping"))
-			end
-
-			local left_panel = self._full_hud_panel:child("left_panel")
-			local left_mutator_panel = alive(left_panel) and left_panel:child("mutators_panel")
-			if alive(left_mutator_panel) then
-				self:_create_mutators_list(left_mutator_panel)
+	function HUDStatsScreen:update(t, dt, ...)
+		if self._USING_CREW_LOADOUT and table.size(self._peer_loadout or {}) > 0 then
+			for peer_id = 1, 4 do
+				if self._peer_loadout[peer_id] and not self._peer_loadout[peer_id]:destroyed() then
+					self._peer_loadout[peer_id]:update(t, dt)
+				end
 			end
 		end
+		
+		return update_original(self, t, dt, ...)
 	end
 
-	function HUDStatsScreen:hide(...)
-		hide_original(self, ...)
-		if managers.hud then
-			managers.hud:remove_updator("WolfHUD_CrewLoadout_Ping")
-		end
-	end
-
-	function HUDStatsScreen:populate_loadout_panel()
+	function HUDStatsScreen:populate_loadout_panel(parent_panel)
 		for peer_id, panel in ipairs(self._peer_loadout or {}) do
 			if panel then
 				panel:destroy()
@@ -678,7 +652,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		local width = math.floor(self._loadout_data:w() / 2)
 		for peer_id = 1, 4  do
 			if not self._peer_loadout[peer_id] then
-				self._peer_loadout[peer_id] = LoadoutPanel:new(self._loadout_data, self, peer_id, self._loadout_data:w(), self._loadout_data:h() * 0.17, {
+				self._peer_loadout[peer_id] = LoadoutPanel:new(parent_panel, self, peer_id, parent_panel:w(), parent_panel:h() * 0.17, {
 					component_layout = WolfHUD:getTweakEntry("TAB_LOADOUT_LAYOUT", "table",
 						{
 							{ "name", "ping" },
@@ -696,11 +670,11 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 				})
 			end
 		end
-		self:arrange_loadout_panels()
+		self:arrange_loadout_panels(parent_panel)
 	end
 
 	function HUDStatsScreen:update_loadout_panel(peer_id)
-		if self._peer_loadout[peer_id] then
+		if self._peer_loadout[peer_id] and not self._peer_loadout[peer_id]:destroyed() then
 			local outfit
 			if self._peer_loadout[peer_id]:local_peer() then
 				outfit = managers.blackmarket:unpack_outfit_from_string(managers.blackmarket:outfit_string())
@@ -712,21 +686,17 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudstatsscreen" then
 		end
 	end
 
-	function HUDStatsScreen:arrange_loadout_panels()
-		local y = 0
-		local height = math.floor(self._loadout_data:h() * 0.17)
-		for peer_id = 1, 4 do
+	function HUDStatsScreen:arrange_loadout_panels(parent_panel)
+		local y = parent_panel:h()
+		local height = math.floor(parent_panel:h() * 0.17)
+		for peer_id = 4, 1, -1 do
 			local panel = self._peer_loadout[peer_id]
-			if panel and panel:enabled() then
+			if panel and panel:enabled() and not panel:destroyed() then
+				y = y - panel:h() - (parent_panel:h() * 0.08)
 				panel:set_y(y)
 			end
-			y = y + height + (self._loadout_data:h() * 0.08)
 		end
-	end
-
-	function HUDStatsScreen:update_ping(t, dt)
-		for peer_id = 1, 4 do
-			self._peer_loadout[peer_id]:update(t, dt)
-		end
+		
+		parent_panel:set_leftbottom(10, self._right:h() - (WolfHUD:getSetting({"TabStats", "ENABLED"}, true) and 10 or 40))
 	end
 end

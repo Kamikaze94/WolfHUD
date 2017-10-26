@@ -33,7 +33,7 @@ if not _G.WolfHUD then
 		["lib/managers/hud/hudobjectives"] 							= { "EnhancedObjective.lua" },
 		["lib/managers/hud/hudheisttimer"] 							= { "EnhancedObjective.lua" },
 		["lib/managers/hud/hudchat"] 								= { "HUDChat.lua" },
-		["lib/managers/hud/hudstatsscreen"] 						= { "TabStats.lua", "EnhancedCrewLoadout.lua" },
+		["lib/managers/hud/newhudstatsscreen"] 						= { "TabStats.lua", "EnhancedCrewLoadout.lua" },
 		["lib/managers/hud/hudinteraction"] 						= { "Interaction.lua" },
 		["lib/managers/hud/hudsuspicion"] 							= { "NumbericSuspicion.lua" },
 		["lib/managers/hud/hudhitdirection"] 						= { "DamageIndicator.lua" },
@@ -592,9 +592,13 @@ if not _G.WolfHUD then
 						end
 					end
 				end
-				log(string.format("[WolfHUD] %s:", string.upper(type(text))))
-				log_table(text)
-				return
+				if not text[1] or type(text[1]) ~= "string" then
+					log(string.format("[WolfHUD] %s:", string.upper(type(msg_type))))
+					log_table(text)
+					return
+				else
+					text = string.format(unpack(text))
+				end
 			elseif type(text) == "function" then
 				msg_type = "error"
 				text = "Cannot log function... "

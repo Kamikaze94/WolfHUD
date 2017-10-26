@@ -515,7 +515,7 @@ if RequiredScript == "lib/setups/setup" then
 		if not self._visible_through_walls then
 			local raycast_position = self._position + self._offset / 2
 			local r = World:raycast( "ray", cam:position(), raycast_position, "slot_mask", self._slot_mask or managers.slot:get_mask( 'explosion_targets'))
-			is_enabled = (not r or not r.unit or self._unit and (self._unit:key() == r.unit:key()))
+			is_enabled = (not r or not r.unit or type(r.unit) ~= "userdata" or self._unit and (self._unit:key() == r.unit:key()))
 		end
 
 		if is_enabled and self._hide_on_uninteractable and self._unit:interaction() then

@@ -308,7 +308,7 @@ function LoadoutPanel:arrange()
 	end
 
 	if self:set_h(total_y + self._margin) and not self:destroyed() then
-		self._owner:arrange_loadout_panels()
+		self._owner:arrange_loadout_panels(self._owner_panel)
 	end
 
 end
@@ -327,7 +327,7 @@ function LoadoutPanel:set_outfit(outfit)
 	local outfit_changed = self:set_enabled("outfit", outfit and true or false)
 	local active_comp_changed = self:set_enabled("active_components", enabled)
 	if not self:destroyed() and outfit_changed or active_comp_changed then
-		self._owner:arrange_loadout_panels()
+		self._owner:arrange_loadout_panels(self._owner_panel)
 	end
 end
 
@@ -1050,12 +1050,12 @@ function LoadoutWeaponItem:set_outfit(outfit)
 end
 
 function LoadoutWeaponItem:set_rarity(texture)
-if texture then
-	self._rarity:set_image(texture)
-	self._rarity:set_visible(true)
-else
-	self._rarity:set_visible(false)
-end
+	if texture then
+		self._rarity:set_image(texture)
+		self._rarity:set_visible(true)
+	else
+		self._rarity:set_visible(false)
+	end
 end
 
 function LoadoutWeaponItem:update_weapon(outfit)
