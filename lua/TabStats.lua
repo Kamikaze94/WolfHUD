@@ -45,7 +45,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			local placer = UiPlacer:new(10, 10, 0, 8)
 			local row_w = self._left:w() - placer:current_left() * 2
 			local y = 0
-			
+
 			for i, data in pairs(managers.objectives:get_active_objectives()) do
 				placer:add_bottom(self._left:fine_text({
 					word_wrap = true,
@@ -68,7 +68,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 				}), 0)
 				y = math.max(y, item:bottom())
 			end
-				
+
 			local list_panel = ExtendedPanel:new(self._left, {
 				y = y + self._leftpos[2],
 				w = self._left:w(),
@@ -81,13 +81,13 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			elseif table.size(managers.achievment:get_tracked_fill()) > 0 then
 				self:_create_tracked_list(list_panel)
 			end
-			
+
 			self:_create_sidejobs_list(ExtendedPanel:new(self._left, {
 				y = y + self._leftpos[2],
 				w = self._left:w(),
 				h = self._left:h() * 0.3
 			}))
-			
+
 			local placer = UiPlacer:new(0, 0)
 			local ext_inv_panel = ExtendedPanel:new(self._left, {
 				x = self._leftpos[2],
@@ -95,7 +95,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 				w = self._left:w() - 2 * self._leftpos[2],
 				h = medium_font_size * 2 + 10
 			})
-			
+
 			local body_text = placer:add_row(ext_inv_panel:fine_text({
 				keep_w = true,
 				text = managers.localization:to_upper_text("hud_body_bags"),
@@ -134,12 +134,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 	end
 
 
-	
+
 	function HUDStatsScreen:recreate_right(...)
 		recreate_right_original(self, ...)
-			
-		if WolfHUD:getSetting({"TabStats", "ENABLED"}, true) then	
-			self._use_tab_stats = true	
+
+		if WolfHUD:getSetting({"TabStats", "ENABLED"}, true) then
+			self._use_tab_stats = true
 			self._right:clear()
 			self._right:bitmap({
 				texture = "guis/textures/test_blur_df",
@@ -158,12 +158,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 				r_bg:child("bg"):set_color(Color(0, 0, 0):with_alpha(0.75))
 				r_bg:child("bg"):set_alpha(1)
 			end
-			
+
 			local stats_panel = ExtendedPanel:new(self._right, { w = self._right:w(), h = self._right:h() })
 			self:_create_stat_list(stats_panel)
 			self:_update_stats_list(stats_panel)
 		end
-		
+
 		local clock_panel = self:_create_clock(self._right)
 		clock_panel:set_right(self._right:w() - self._rightpos[2])
 		clock_panel:set_y(self._rightpos[2])
@@ -175,18 +175,18 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 		_create_tracked_list_original(self, panel)
 		self._right = right_panel
 	end
-	
+
 	function HUDStatsScreen:_create_mutators_list(panel, ...)
 		local right_panel = self._right
 		self._right = panel
 		_create_mutators_list_original(self, panel)
 		self._right = right_panel
 	end
-	
+
 	function HUDStatsScreen:update(t, ...)
 		update_original(self, t, ...)
-		
-		if self._clock_panel and (self._last_update_t or 0) + 1 < t then
+
+		if self._clock_panel and (self._last_clock_update_t or 0) + 1 < t then
 			local text = ""
 			local mode = WolfHUD:getSetting({"TabStats", "CLOCK_MODE"}, 3)
 			if mode == 4 then
@@ -213,11 +213,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 		--loot_value_updated_original(self, ...)
 		self:update_stats()
 	end
-	
+
 	function HUDStatsScreen:_create_clock(panel)
 		local clock_panel = ExtendedPanel:new(panel, { w = panel:w() * 0.5, h = tweak_data.hud_stats.objectives_font })
 		local placer = UiPlacer:new(0, 0)
-		
+
 		placer:add_row(clock_panel:fine_text({
 			name = "time_text",
 			color = Color.white,
@@ -236,16 +236,17 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			w = tweak_data.hud_stats.loot_size,
 			h = tweak_data.hud_stats.loot_size,
 		}), 5)
-		
+
 		self._clock_panel = clock_panel
+		self._last_clock_update_t = 0
 		return clock_panel
 	end
-	
+
 	function HUDStatsScreen:_create_sidejobs_list(panel, ...)
-		
+
 	end
-	
-	
+
+
 	HUDStatsScreen.CHARACTERS = {
 		female_1 = {
 			texture = "guis/dlcs/character_pack_clover/textures/pd2/blackmarket/icons/characters/female_1",
@@ -361,10 +362,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			COLOR = WolfHUD:getSetting({"TabStats", "COLOR"}, "rainbow"),
 			SHOW_MASK = WolfHUD:getSetting({"TabStats", "SHOW_MASK"}, true)
 		}
-		
+
 		local placer = UiPlacer:new(10, 10, 0, 0)
 		local difficulty_text, difficulty_color = "", Color.white
-	
+
 		if managers.crime_spree:is_active() then
 			local level_data = managers.job:current_level_data()
 			local mission = managers.crime_spree:get_mission(managers.crime_spree:current_played_mission())
@@ -378,7 +379,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 					text = level_str,
 				}))
 			end
-			
+
 			difficulty_text = managers.localization:text("menu_cs_level", {level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")})
 			difficulty_color = tweak_data.screen_colors.crime_spree_risk
 		else
@@ -422,7 +423,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 					color = (managers.job:is_current_job_professional() and tweak_data.screen_colors.important_1 or tweak_data.screen_colors.text)
 				}))
 			end
-			
+
 			local difficulty_stars = managers.job:current_difficulty_stars()
 			local difficulty = tweak_data.difficulties[difficulty_stars + 2] or 1
 			local difficulty_string_id = tweak_data.difficulty_name_ids[difficulty]
@@ -447,7 +448,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 		local list_w = panel:w() - 4 * self._rightpos[2]
 		local small_list_w = list_w * 0.6
 		placer:new_row(0, 12)
-		local paygrade_title = self:_create_stat_list_entry(placer, panel, self._rightpos[2], small_list_w, "paygrade", managers.localization:to_upper_text("menu_lobby_difficulty_title"), difficulty_text, nil, self._tabstats_settings.FONT_SIZE or 18, nil, difficulty_color, nil)		
+		local paygrade_title = self:_create_stat_list_entry(placer, panel, self._rightpos[2], small_list_w, "paygrade", managers.localization:to_upper_text("menu_lobby_difficulty_title"), difficulty_text, nil, self._tabstats_settings.FONT_SIZE or 18, nil, difficulty_color, nil)
 		placer:new_row()
 		self:_create_stat_list_entry(placer, panel, self._rightpos[2], small_list_w, "offshore_payout", managers.localization:to_upper_text("hud_offshore_account") .. ":", "0", nil, self._tabstats_settings.FONT_SIZE or 18, nil, nil, nil)
 		placer:new_row()
@@ -461,7 +462,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 		placer:new_row()
 		self:_create_stat_list_entry(placer, panel, self._rightpos[2], small_list_w, "instant_cash", managers.localization:to_upper_text("hud_instant_cash") .. ":", "0", nil, self._tabstats_settings.FONT_SIZE or 18, nil, nil, nil)
 		placer:new_row(0, 12)
-		
+
 		if paygrade_title then
 			panel:bitmap({
 				name = "character_icon",
@@ -478,7 +479,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 				--keep_w = true
 			})
 		end
-		
+
 
 		local items_color = self._tabstats_settings.COLOR ~= "rainbow" and WolfHUD:getColor(self._tabstats_settings.COLOR or "red") or false
 		for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
@@ -534,7 +535,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			if not alltime_text then
 				placer:add_left(nil, value_w)
 			end
-			
+
 			local bg
 			if add_bg then
 				placer:add_left(nil, w - (2 * value_w) + (offset * 0.5))
@@ -547,11 +548,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 				}))
 				placer:add_right(nil, -offset * 0.5)
 			end
-			
+
 			if not skip_toggle_bg then
 				add_bg = not add_bg
 			end
-			
+
 			return title, text, bg
 		end
 	end
@@ -561,7 +562,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			if type(item_list) == "string" then
 				item_list = { item_list }
 			end
-			
+
 			self:_update_stats_list(self._stats_panel, item)
 		end
 	end
@@ -589,7 +590,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 				panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.heat_cold_color)
 			end
 			panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(cleaner_costs) .. " (" .. tostring(civilian_kills) .. ")")
-			
+
 			local mandatory_bags_data = managers.loot:get_mandatory_bags_data()
 			local mandatory_amount = mandatory_bags_data and mandatory_bags_data.amount or 0
 			local secured_amount = managers.loot:get_secured_mandatory_bags_amount() or 0
