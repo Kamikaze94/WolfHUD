@@ -107,7 +107,7 @@ elseif RequiredScript == "lib/managers/hud/hudteammate" then
 		self._stamina_bar = radial_health_panel:bitmap({
 			name = "radial_stamina",
 			texture = "guis/textures/pd2/hud_radial_rim",
-			texture_rect = { 0, 0, 64, 64 },
+			texture_rect = { 0, 0, 128, 128 },
 			render_template = "VertexColorTexturedRadial",
 			blend_mode = "add",
 			alpha = 1,

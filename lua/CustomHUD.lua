@@ -555,8 +555,16 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:call_listeners("ability_radial", data.current, data.total)
 	end
 
-	function HUDTeammateCustom:set_ability_cooldown(data)
-		self:call_listeners("ability_cooldown", math.ceil(data.cooldown or 0))
+	function HUDTeammateCustom:set_delayed_damage(damage)
+		self:call_listeners("delayed_damage", damage)
+		
+		if self:is_local_player() then
+			managers.network:session():send_to_peers("sync_delayed_damage_hud", damage)
+		end
+	end
+
+	function HUDTeammateCustom:set_ability_icon(icon)
+		self:call_listeners("throwable", icon)
 	end
 
 	function HUDTeammateCustom:set_weapon_firemode(index, fire_mode)
@@ -578,12 +586,21 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammateCustom:set_grenades_amount(data)
-		if data.has_cooldown then
-			self:set_ability_cooldown(data)
-		elseif data.amount then
+		if data.amount then
 			self:call_listeners("throwable_amount", data.amount)
 		end
 	end
+
+	function HUDTeammateCustom:set_grenade_cooldown(data)
+		local time_left = (data.end_time - managers.game_play_central:get_heist_timer())
+		self:call_listeners("ability_cooldown", time_left, data.duration)
+
+		if self:is_local_player() then
+			managers.network:session():send_to_peers("sync_grenades_cooldown", data.end_time, data.duration)
+		end
+	end
+	
+	function HUDTeammateCustom:animate_grenade_flash(...) end
 
 	function HUDTeammateCustom:set_cable_tie(data)
 		self:call_listeners("cable_tie", data.icon)
@@ -1769,7 +1786,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._health_radial = self._panel:bitmap({
 			name = "health_radial",
 			texture = "guis/textures/pd2/hud_health",
-			texture_rect = { 64, 0, -64, 64 },
 			render_template = "VertexColorTexturedRadial",
 			blend_mode = "add",
 			color = Color(1, 1, 1),
@@ -1777,11 +1793,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			w = self._size,
 			layer = health_bg:layer() + 1,
 		})
+		self._health_radial:set_texture_rect(self._health_radial:texture_width(), 0, -self._health_radial:texture_width(), self._health_radial:texture_height())
 
 		self._stored_health_radial = self._panel:bitmap({
 			name = "stored_health_radial",
 			texture = "guis/textures/pd2/hud_health",
-			texture_rect = { 64, 0, -64, 64 },
 			render_template = "VertexColorTexturedRadial",
 			blend_mode = "add",
 			color = Color(0, 0, 0),
@@ -1790,11 +1806,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			w = self._size,
 			layer = self._health_radial:layer() - 1,
 		})
+		self._stored_health_radial:set_texture_rect(self._stored_health_radial:texture_width(), 0, -self._stored_health_radial:texture_width(), self._stored_health_radial:texture_height())
 
 		self._armor_radial = self._panel:bitmap({
 			name = "armor_radial",
 			texture = "guis/textures/pd2/hud_shield",
-			texture_rect = { 64, 0, -64, 64 },
 			render_template = "VertexColorTexturedRadial",
 			blend_mode = "add",
 			color = Color(1, 1, 1),
@@ -1803,11 +1819,11 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			w = self._size,
 			layer = self._stored_health_radial:layer() + 1,
 		})
+		self._armor_radial:set_texture_rect(self._armor_radial:texture_width(), 0, -self._armor_radial:texture_width(), self._armor_radial:texture_height())
 
 		self._stamina_radial = self._panel:bitmap({
 			name = "radial_shield",
 			texture = "guis/textures/pd2/hud_radial_rim",
-			texture_rect = { 0, 0, 64, 64 },
 			render_template = "VertexColorTexturedRadial",
 			blend_mode = "add",
 			color = Color(1, 0, 0),
@@ -1865,7 +1881,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		local center_bg = self._panel:bitmap({
 			name = "center_bg",
 			texture = "guis/textures/pd2/crimenet_marker_glow",
-			texture_rect = { 0, 0, 64, 64 },
 			blend_mode = "normal",
 			color = Color.black,
 			alpha = 0.65,
@@ -1900,7 +1915,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._custom_radial_icon = self._panel:bitmap({
 			name = "custom_radial_icon",
 			texture = "guis/textures/pd2/hud_swansong",
-			texture_rect = { 0, 0, 64, 64 },
 			render_template = "VertexColorTexturedRadial",
 			blend_mode = "add",
 			color = Color(1, 0, 0, 0),
@@ -1913,7 +1927,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._ability_radial_icon = self._panel:bitmap({
 			name = "custom_radial_icon",
 			texture = "guis/dlcs/chico/textures/pd2/hud_fearless",
-			texture_rect = { 0, 0, 64, 64 },
 			render_template = "VertexColorTexturedRadial",
 			blend_mode = "add",
 			color = Color(1, 0, 0, 0),
@@ -1926,7 +1939,6 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._maniac_absorb_radial = self._panel:bitmap({
 			name = "maniac_absorb_radial",
 			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_shield",
-			texture_rect = { 0, 0, 64, 64 },
 			render_template = "VertexColorTexturedRadial",
 			w = self._size * 0.92,
 			h = self._size * 0.92,
@@ -1935,8 +1947,28 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		})
 		self._maniac_absorb_radial:set_center(self._size / 2, self._size / 2)
 
+		self.radial_delayed_damage_armor = self._panel:bitmap({
+			texture = "guis/textures/pd2/hud_dot_shield",
+			name = "radial_delayed_damage_armor",
+			visible = false,
+			render_template = "VertexColorTexturedRadialFlex",
+			layer = self._condition_icon:layer() - 1,
+			w = self._size,
+			h = self._size
+		})
+		
+		self.radial_delayed_damage_health = self._panel:bitmap({
+			texture = "guis/textures/pd2/hud_dot",
+			name = "radial_delayed_damage_health",
+			visible = false,
+			render_template = "VertexColorTexturedRadialFlex",
+			layer = self._condition_icon:layer() - 1,
+			w = self._size,
+			h = self._size
+		})
+
 		--self._maniac_stack_radial = ...
-		self._components = {health_bg, self._health_radial, self._stored_health_radial, self._armor_radial, --[[self._stamina_radial,]] self._damage_indicator, self._downs_counter, self._detection_counter, center_bg, self._condition_icon, self._custom_radial_icon, self._ability_radial_icon, self._maniac_absorb_radial}
+		self._components = { health_bg, self._health_radial, self._stored_health_radial, self._armor_radial, --[[self._stamina_radial,]] self._damage_indicator, self._downs_counter, self._detection_counter, center_bg, self._condition_icon, self._custom_radial_icon, self._ability_radial_icon, self._maniac_absorb_radial, self.radial_delayed_damage_armor, self.radial_delayed_damage_health }
 
 		local tweak = tweak_data.upgrades
 		self._max_absorb = tweak.cocaine_stacks_dmg_absorption_value * tweak.values.player.cocaine_stack_absorption_multiplier[1] * tweak.max_total_cocaine_stacks  / tweak.cocaine_stacks_convert_levels[2]
@@ -1966,6 +1998,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._owner:register_listener("PlayerStatus", { "ability_radial" }, callback(self, self, "set_ability_progress"), false)
 		self._owner:register_listener("PlayerStatus", { "activate_ability" }, callback(self, self, "set_ability_active"), false)
 		self._owner:register_listener("PlayerStatus", { "absorb_active" }, callback(self, self, "set_absorb"), false)
+		self._owner:register_listener("PlayerStatus", { "delayed_damage" }, callback(self, self, "set_delayed_damage"), false)
 		if managers.gameinfo then
 			local panel_id = self._owner._id
 			managers.gameinfo:register_listener("HealthRadial_whisper_mode_listener" .. tostring(panel_id), "whisper_mode", "change", callback(self, self, "_whisper_mode_change"))
@@ -1982,6 +2015,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			"custom_radial",
 			"ability_radial", "activate_ability",
 			"absorb_active",
+			"delayed_damage"
 		})
 		if managers.gameinfo then
 			local panel_id = self._owner._id
@@ -2209,6 +2243,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		--local r = math.clamp(data.current / data.max, 0, 1)
 		--self._maniac_stack_radial:set_visible(r > 0)
 		--self._maniac_stack_radial:set_color(Color(r, 1, 1))
+	end
+	
+	function PlayerInfoComponent.PlayerStatus:set_delayed_damage(damage)
+		
 	end
 
 	function PlayerInfoComponent.PlayerStatus:_animate_damage_taken(indicator)
@@ -3363,35 +3401,31 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	function PlayerInfoComponent.Equipment:set_throwable_amount(amount)
 		local panel = self._panel:child("throwables")
+		local icon = panel:child("icon")
 		local text = panel:child("amount")
 		text:set_text(string.format("%02.0f", amount))
 		text:set_range_color(0, amount < 10 and 1 or 0, Color.white:with_alpha(0.5))
-		panel:set_visible(amount > 0)
+		icon:set_color(Color(amount <= 0 and 0.5 or 1, 1, 1, 1))
+		panel:set_visible(amount > 0 or true)
 		self:arrange()
 	end
 
-	function PlayerInfoComponent.Equipment:set_ability_cooldown(amount)
+	function PlayerInfoComponent.Equipment:set_ability_cooldown(time_left, time_total)
 		local panel = self._panel:child("throwables")
 		local text = panel:child("amount")
-		text:set_text(string.format("%02.0f", math.max(amount, 1)))
-
-		if amount > 0 then
-			if not self._ability_cooldown then
-				self._ability_cooldown = true
-				text:set_color(Color('FF7575'))
-			end
-		elseif self._ability_cooldown then
-			self._ability_cooldown = nil
-			text:set_color(Color.white)
+		text:stop()
+		text:set_text(string.format("%02.0f", math.max(time_left, 1)))
+		text:set_color(Color('FF7575'))
+		if time_left < 10 then
+			text:set_range_color(0, 1, Color('FF7575'):with_alpha(0.5))
 		end
-
-		local text_color = self._ability_cooldown and Color('FF7575') or Color.white
-		text:set_range_color(0, amount < 10 and 1 or 0, text_color:with_alpha(0.5))
 
 		if not panel:visible() then
 			panel:set_visible(true)
 			self:arrange()
 		end
+
+		text:animate(callback(self, self, "_animate_ability_cooldown"), time_left)
 	end
 
 	function PlayerInfoComponent.Equipment:set_deployable(icon)
@@ -3447,6 +3481,15 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		text:set_range_color(0, amount < 10 and 1 or 0, Color.white:with_alpha(0.5))
 		panel:set_visible(amount > 0)
 		self:arrange()
+	end
+	
+	function PlayerInfoComponent.Equipment:_animate_ability_cooldown(text, amount)
+		while amount > 0 do
+			amount = amount - coroutine.yield()
+			text:set_text(string.format("%02.0f", math.ceil(amount)))
+			text:set_range_color(0, math.ceil(amount) < 10 and 1 or 0, Color('FF7575'):with_alpha(0.5))
+		end
+		text:set_color(Color.white)
 	end
 
 	PlayerInfoComponent.SpecialEquipment = PlayerInfoComponent.SpecialEquipment or class(PlayerInfoComponent.Base)
