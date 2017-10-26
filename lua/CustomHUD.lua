@@ -603,15 +603,19 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammateCustom:set_grenade_cooldown(data)
-		local time_left = (data.end_time - managers.game_play_central:get_heist_timer())
-		self:call_listeners("ability_cooldown", time_left, data.duration)
-
-		if self:is_local_player() then
-			managers.network:session():send_to_peers("sync_grenades_cooldown", data.end_time, data.duration)
+		if data and data.end_time and data.duration then
+			local time_left = data.end_time - managers.game_play_central:get_heist_timer()
+			self:call_listeners("throwable_cooldown", time_left, data.duration)
+			
+			if self:is_local_player() then
+				managers.network:session():send_to_peers("sync_grenades_cooldown", data.end_time, data.duration)
+			end
 		end
 	end
 	
-	function HUDTeammateCustom:animate_grenade_flash(...) end
+	function HUDTeammateCustom:animate_grenade_flash(...) 
+		self:call_listeners("throwable_cooldown_stop")
+	end
 
 	function HUDTeammateCustom:set_cable_tie(data)
 		self:call_listeners("cable_tie", data.icon)
@@ -3325,11 +3329,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._owner:register_listener("Equipment", { "deployable" }, callback(self, self, "set_deployable"), false)
 		self._owner:register_listener("Equipment", { "deployable_amount" }, callback(self, self, "set_deployable_amount"), false)
 		self._owner:register_listener("Equipment", { "deployable_amount_from_string" }, callback(self, self, "set_deployable_amount_from_string"), false)
-		self._owner:register_listener("Equipment", { "ability_cooldown" }, callback(self, self, "set_ability_cooldown"), false)
+		self._owner:register_listener("Equipment", { "throwable_cooldown" }, callback(self, self, "set_throwable_cooldown"), false)
+		self._owner:register_listener("Equipment", { "throwable_cooldown_stop" }, callback(self, self, "stop_throwable_cooldown"), false)
 	end
 
 	function PlayerInfoComponent.Equipment:destroy()
-		self._owner:unregister_listener("Equipment", { "deployable_amount_from_string", "deployable_amount", "deployable", "cable_tie_amount", "cable_tie", "throwable_amount", "throwable", "ability_cooldown" })
+		self._owner:unregister_listener("Equipment", { "deployable_amount_from_string", "deployable_amount", "deployable", "cable_tie_amount", "cable_tie", "throwable_amount", "throwable", "throwable_cooldown", "throwable_cooldown_stop" })
 		PlayerInfoComponent.Equipment.super.destroy(self)
 	end
 
@@ -3428,32 +3433,40 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function PlayerInfoComponent.Equipment:set_throwable_amount(amount)
+		if amount > 0 and self._animating_throwable_cooldown then
+			self:stop_throwable_cooldown(true)
+		end
+
 		local panel = self._panel:child("throwables")
 		local icon = panel:child("icon")
 		local text = panel:child("amount")
+		
 		text:set_text(string.format("%02.0f", amount))
 		text:set_range_color(0, amount < 10 and 1 or 0, Color.white:with_alpha(0.5))
-		icon:set_color(Color(amount <= 0 and 0.5 or 1, 1, 1, 1))
-		panel:set_visible(amount > 0 or true)
+		panel:set_visible(amount > 0 or self._animating_throwable_cooldown)
 		self:arrange()
 	end
 
-	function PlayerInfoComponent.Equipment:set_ability_cooldown(time_left, time_total)
+	function PlayerInfoComponent.Equipment:set_throwable_cooldown(time_left, time_total)
 		local panel = self._panel:child("throwables")
-		local text = panel:child("amount")
-		text:stop()
-		text:set_text(string.format("%02.0f", math.max(time_left, 1)))
-		text:set_color(Color('FF7575'))
-		if time_left < 10 then
-			text:set_range_color(0, 1, Color('FF7575'):with_alpha(0.5))
-		end
+		panel:stop()
+		panel:animate(callback(self, self, "_animate_throwable_cooldown"), time_left)
+	end
+	
+	function PlayerInfoComponent.Equipment:stop_throwable_cooldown(visibility)
+		if self._animating_throwable_cooldown then
+			local panel = self._panel:child("throwables")
+			local icon = panel:child("icon")
+			local text = panel:child("amount")
 
-		if not panel:visible() then
-			panel:set_visible(true)
-			self:arrange()
+			self._animating_throwable_cooldown = nil
+			text:set_color(Color.white)
+			icon:set_alpha(1)
+			if visibility ~= panel:visible() then
+				panel:set_visible(visibility)
+				self:arrange()
+			end
 		end
-
-		text:animate(callback(self, self, "_animate_ability_cooldown"), time_left)
 	end
 
 	function PlayerInfoComponent.Equipment:set_deployable(icon)
@@ -3511,13 +3524,22 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:arrange()
 	end
 	
-	function PlayerInfoComponent.Equipment:_animate_ability_cooldown(text, amount)
-		while amount > 0 do
-			amount = amount - coroutine.yield()
-			text:set_text(string.format("%02.0f", math.ceil(amount)))
-			text:set_range_color(0, math.ceil(amount) < 10 and 1 or 0, Color('FF7575'):with_alpha(0.5))
+	function PlayerInfoComponent.Equipment:_animate_throwable_cooldown(panel, time_left)
+		self._animating_throwable_cooldown = true
+		local text = panel:child("amount")
+		local icon = panel:child("icon")
+		text:set_color(Color('FF7575'))
+		icon:set_alpha(0.5)
+		panel:set_visible(true)
+		self:arrange()
+
+		while time_left > 0 and self._animating_throwable_cooldown do
+			time_left = time_left - coroutine.yield()
+			text:set_text(string.format("%02.0f", math.ceil(time_left)))
+			text:set_range_color(0, math.ceil(time_left) < 10 and 1 or 0, Color('FF7575'):with_alpha(0.5))
 		end
-		text:set_color(Color.white)
+
+		self:stop_throwable_cooldown(false)
 	end
 
 	PlayerInfoComponent.SpecialEquipment = PlayerInfoComponent.SpecialEquipment or class(PlayerInfoComponent.Base)
@@ -4166,7 +4188,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		return set_mugshot_voice_original(self, id, active, ...)
 	end
 
-	function HUDManager:teammate_progress(peer_id, type_index, enabled, tweak_data_id, timer, success, ...)
+	function HUDManager:teammate_progress(peer_id, type_index, enabled, tweak_data_id, ...)
 		local interact_tweak = {}
 		if type_index == 1 then
 			interact_tweak = tweak_data.interaction
@@ -4181,7 +4203,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			self._teammate_panels[character_data.panel_id]:set_interaction_tweak(enabled, interact_tweak)
 		end
 
-		teammate_progress_original(self, peer_id, type_index, enabled, tweak_data_id, timer, success, ...)
+		teammate_progress_original(self, peer_id, type_index, enabled, tweak_data_id, ...)
 	end
 
 	function HUDManager:set_teammate_carry_info(i, ...)
