@@ -1824,7 +1824,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			texture = "guis/textures/pd2/hud_shield",
 			render_template = "VertexColorTexturedRadial",
 			blend_mode = "add",
-			color = Color(1, 1, 1),
+			color = Color(0, 1, 1),
 			layer = self._stored_health_radial:layer() + 1,
 			h = self._size,
 			w = self._size,
