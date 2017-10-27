@@ -603,8 +603,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 				bags_amount_str = string.format("%i / %i%s", secured_amount, mandatory_amount, bonus_amount > 0 and string.format(" + %i", bonus_amount) or "")
 			end
 			panel:child("bag_amount_text"):set_text(bags_amount_str)
-			panel:child("bag_cash_text"):set_text(managers.experience:cash_string((managers.money:get_secured_mandatory_bags_money() or 0) + (managers.money:get_secured_bonus_bags_money() or 0)))
-			panel:child("instant_cash_text"):set_text(managers.experience:cash_string(managers.loot:get_real_total_small_loot_value() or 0))
+			if panel:child("bag_cash_text") and panel:child("instant_cash_text") then
+				panel:child("bag_cash_text"):set_text(managers.experience:cash_string((managers.money:get_secured_mandatory_bags_money() or 0) + (managers.money:get_secured_bonus_bags_money() or 0)))
+				panel:child("instant_cash_text"):set_text(managers.experience:cash_string(managers.loot:get_real_total_small_loot_value() or 0))
+			end
 		end
 
 		for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do

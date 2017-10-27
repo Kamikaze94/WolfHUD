@@ -2697,6 +2697,26 @@ if WolfHUD then
 									},
 									{
 										type = "toggle",
+										name_id = "wolfhud_hudlist_damage_control_debuff_title",
+										desc_id = "wolfhud_hudlist_damage_control_debuff_desc",
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "damage_control_debuff"},
+										visible_reqs = {
+											{ setting = { "HUDList", "ENABLED" }, invert = false },
+											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
+										},
+									},
+									{
+										type = "toggle",
+										name_id = "wolfhud_hudlist_delayed_damage_buff_title",
+										desc_id = "wolfhud_hudlist_delayed_damage_buff_desc",
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "delayed_damage"},
+										visible_reqs = {
+											{ setting = { "HUDList", "ENABLED" }, invert = false },
+											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
+										},
+									},
+									{
+										type = "toggle",
 										name_id = "wolfhud_hudlist_tooth_and_claw_buff_title",
 										desc_id = "wolfhud_hudlist_tooth_and_claw_buff_desc",
 										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "tooth_and_claw"},
@@ -3395,17 +3415,6 @@ if WolfHUD then
 						visible_reqs = {
 							{ setting = { "TabStats", "ENABLED" }, inverted = false }
 						},
-					},
-					{
-						type = "divider",
-						size = 16,
-					},
-					{
-						type = "toggle",
-						name_id = "wolfhud_tabstats_numberic_loot_title",
-						desc_id = "wolfhud_tabstats_numberic_loot_desc",
-						value = {"TabStats", "SHOW_LOOT_NUMBERS"},
-						visible_reqs = {},
 					},
 				},
 			},

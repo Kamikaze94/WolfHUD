@@ -493,6 +493,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			armor_break_invulnerable_debuff = "armor_break_invulnerable",
 			grinder_debuff = "grinder",
 			chico_injector_debuff = "chico_injector",
+			delayed_damage_debuff = "delayed_damage",
 			maniac_debuff = "maniac",
 			sicario_dodge_debuff = "sicario_dodge",
 			smoke_screen_grenade_debuff = "smoke_screen_grenade",
@@ -4866,6 +4867,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "ENFORCER_BUFFS", "bullet_storm"}, true),
 		},
+		chico_injector = {
+			perks = {0, 0},
+			texture_bundle_folder = "chico",
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "chico_injector"}, false) and (WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true) or WolfHUD:getSetting({"CustomHUD", "ENABLED"}, false)),
+		},
 		close_contact = {
 			perks = {5, 4},
 			class = "TimedBuffItem",
@@ -4886,6 +4895,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 4,
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "combat_medic_passive"}, false),
+		},
+		delayed_damage = {
+			perks = {3, 0},
+			texture_bundle_folder = "myh",
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			show_value = "-%.0f",
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "delayed_damage"}, true),
 		},
 		desperado = {
 			skills_new = tweak_data.skilltree.skills.expert_handling.icon_xy,
@@ -4937,14 +4955,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			invert_timers = true,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "hostage_taker"}, false),
-		},
-		chico_injector = {
-			perks = {0, 0},
-			texture_bundle_folder = "chico",
-			class = "TimedBuffItem",
-			priority = 4,
-			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
-			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "chico_injector"}, false) and (WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true) or WolfHUD:getSetting({"CustomHUD", "ENABLED"}, false)),
 		},
 		inspire = {
 			skills_new = tweak_data.skilltree.skills.inspire.icon_xy,
@@ -5161,12 +5171,20 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = true,	--Composite debuff
 		},
 		chico_injector_debuff = {
-			perks = {0,0},
+			perks = {0, 0},
 			texture_bundle_folder = "chico",
 			class = "TimedBuffItem",
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = true,	--Composite debuff
+		},
+		delayed_damage_debuff = {
+			perks = {3, 0},
+			texture_bundle_folder = "myh",
+			class = "TimedBuffItem",
+			priority = 8,
+			show_value = "-%.1f",
+			ignore = true, 	--Coposite debuff
 		},
 		inspire_debuff = {
 			skills_new = tweak_data.skilltree.skills.inspire.icon_xy,
@@ -5231,6 +5249,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "sociopath_debuff"}, true),
+		},
+		damage_control_debuff = {
+			perks = {2, 0},
+			texture_bundle_folder = "myh",
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "damage_control_debuff"}, false),
 		},
 		unseen_strike_debuff = {
 			skills_new = tweak_data.skilltree.skills.unseen_strike.icon_xy,
@@ -6182,7 +6208,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				local player_damage = alive(player) and player:character_damage()
 				if player_damage then
 					if player_damage:get_real_armor() > 0 then
-						new_value = value / (player_damage:_total_armor() * 10)
+						new_value = value / (player_damage:_max_armor() * 10)
 					else
 						new_value = value / (player_damage:_max_health() * 10)
 					end

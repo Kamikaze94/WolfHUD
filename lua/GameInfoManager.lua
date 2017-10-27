@@ -1916,7 +1916,7 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 	end
 
 	function GroupAIStateBase:_update_hostage_count()
-        managers.player:update_hostage_situation(self._hostage_headcount)
+		managers.player:update_hostage_situation(self._hostage_headcount)
 
 		local police_hostages = 0
 		local security_hostages = 0
@@ -3063,13 +3063,13 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		end
 		managers.gameinfo:event("timed_buff", "activate", tostring(key) .. "_debuff", { duration = duration })
 	end
-	
+
 	function PlayerManager:speed_up_grenade_cooldown(time, ...)
 		if self._timers.replenish_grenades then
 			local equipped_grenade = managers.blackmarket:equipped_grenade()
 			managers.gameinfo:event("timed_buff", "change_expire", equipped_grenade .. "_debuff", { difference = -time })
 		end
-		
+
 		return speed_up_grenade_cooldown_original(self, time, ...)
 	end
 
@@ -3077,7 +3077,7 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		managers.gameinfo:event("bodybags", "set", nil, body_bags_amount)
 		_set_body_bags_amount_original(self, body_bags_amount)
 	end
-	
+
 	function PlayerManager:got_ability()
 		local equipped_grenade = managers.blackmarket:equipped_grenade()
 		return tweak_data.blackmarket.projectiles[equipped_grenade].ability
@@ -3543,6 +3543,9 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 	local _on_damage_event_original = PlayerDamage._on_damage_event
 	local set_armor_original = PlayerDamage.set_armor
 	local _check_bleed_out_original = PlayerDamage._check_bleed_out
+	local _update_delayed_damage_original = PlayerDamage._update_delayed_damage
+	local delay_damage_original = PlayerDamage.delay_damage
+	local clear_delayed_damage_original = PlayerDamage.clear_delayed_damage
 
 	local HEALTH_RATIO_BONUSES = {
 		melee_damage_health_ratio_multiplier 			= { category = "melee", buff_id = "berserker" },
@@ -3660,7 +3663,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 		change_regenerate_speed_original(self, ...)
 		self:_check_armor_regen_timer()
 	end
-	
+
 	function PlayerDamage:_on_damage_event(...)
 		_on_damage_event_original(self, ...)
 		self:_check_armor_regen_timer(true)
@@ -3682,7 +3685,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 				managers.gameinfo:event("player_action", "set_duration", "anarchist_armor_regeneration", { t = t_start, expire_t = expire_t })
 			end
 		end
-		
+
 		return set_armor_original(self, armor, ...)
 	end
 
@@ -3695,20 +3698,20 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 			managers.gameinfo:event("timed_buff", "activate", "uppers_debuff", { duration = self._UPPERS_COOLDOWN })
 		end
 	end
-	
+
 	local REGEN_EXPIRE_T = 0
 	function PlayerDamage:_check_armor_regen_timer(reset)
 		if not self._armor_grinding and not self:is_downed() and self._regenerate_timer and self:get_real_armor() < self:_max_armor() then
 			local t = managers.player:player_timer():time()
 			local armor_regen_delay = self._regenerate_timer / (self._regenerate_speed or 1)
 			local suppression_delay = 0
-			
+
 			if self._supperssion_data.decay_start_t and self._supperssion_data.value == tweak_data.player.suppression.max_value then
 				suppression_delay = self._supperssion_data.decay_start_t - t
 			end
-			
+
 			local expire_t = t + armor_regen_delay + suppression_delay
-			
+
 			if expire_t ~= REGEN_EXPIRE_T then
 				REGEN_EXPIRE_T = expire_t
 				managers.gameinfo:event("player_action", "activate", "standard_armor_regeneration")
@@ -3716,7 +3719,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 			end
 		end
 	end
-	
+
 	function PlayerDamage:_custom_on_enter_bleedout_clbk()
 		if self:is_downed() then
 			ARMOR_GRIND_ACTIVE = false
@@ -3728,7 +3731,47 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 					managers.gameinfo:event("buff", "deactivate", buff_id)
 				end
 			end
+
+			managers.gameinfo:event("buff", "deactivate", "delayed_damage")
 		end
+	end
+
+	function PlayerDamage:_update_delayed_damage(t, ...)
+		local result = _update_delayed_damage_original(self, t, ...)
+
+		if self._delayed_damage.next_tick then
+			managers.gameinfo:event("buff", "set_value", "delayed_damage", { value = math.round((self:remaining_delayed_damage()) * 10) })
+		end
+
+		return result
+	end
+
+	local DELAYED_DAMAGE_DURATION = math.round(1 / (tweak_data.upgrades.values.player.damage_control_passive[1][2] * 0.01))
+	function PlayerDamage:delay_damage(damage, seconds, ...)
+		local has_calm = managers.player:has_category_upgrade("player", "damage_control_auto_shrug")
+		if not self._delayed_damage.next_tick then
+			if has_calm then
+				managers.gameinfo:event("buff", "activate", "delayed_damage")
+			end
+			managers.gameinfo:event("buff", "activate", "delayed_damage_debuff")
+		end
+
+		local t = TimerManager:game():time()
+		if has_calm then
+			managers.gameinfo:event("buff", "set_duration", "delayed_damage", { t = t, duration = managers.player:upgrade_value("player", "damage_control_auto_shrug") })
+		end
+
+		managers.gameinfo:event("buff", "set_duration", "delayed_damage_debuff", { t = t, duration = DELAYED_DAMAGE_DURATION })
+		managers.gameinfo:event("buff", "set_value", "delayed_damage", { value = math.round((self:remaining_delayed_damage() + damage) * 10) })
+
+		return delay_damage_original(self, damage, seconds, ...)
+	end
+
+	function PlayerDamage:clear_delayed_damage(...)
+		managers.gameinfo:event("buff", "deactivate", "delayed_damage_debuff")
+		managers.gameinfo:event("buff", "deactivate", "delayed_damage")
+
+		return clear_delayed_damage_original(self, ...)
 	end
 end
 
