@@ -191,9 +191,11 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			diamond_pickup_pal = 				"_special_equipment_interaction_handler",	-- Small loot
 			ring_band = 						"_special_equipment_interaction_handler",	-- BoS Rings
 			safe_loot_pickup = 					"_special_equipment_interaction_handler",	-- Small loot
+			diamond_pickup_axis = 				"_special_equipment_interaction_handler",	-- Small loot, Diamond heist
 			press_pick_up =						"_special_equipment_interaction_handler",	-- Biker Bottle
 			hold_take_missing_animal_poster = 	"_special_equipment_interaction_handler",	-- Heat Streat Posters
 			hold_pick_up_turtle = 				"_special_equipment_interaction_handler",	-- Heat Street Tutle
+			diamond_single_pickup_axis = 		"_special_equipment_interaction_handler",
 			glc_hold_take_handcuffs = 			"_special_equipment_interaction_handler",	-- Green Bridge Handcuffs
 			pickup_tablet = 					"_special_equipment_interaction_handler",	-- Stealing Xmas Tablet
 			pickup_phone = 						"_special_equipment_interaction_handler",	-- Stealing Xmas Phone
@@ -211,17 +213,22 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			pku_scubagear_tank = 				"_special_equipment_interaction_handler",	--TMP: Where is this used...?
 		},
 		INTERACTION_TO_CARRY = {
-			weapon_case =				"weapon",
-			weapon_case_axis_z =		"weapon",
-			samurai_armor =				"samurai_suit",
-			gen_pku_warhead_box =		"warhead",
-			pku_toothbrush = 			"toothbrush",
-			corpse_dispose =			"person",
-			crate_loot = 				"crate",
-			crate_loot_crowbar = 		"crate",
-			crate_weapon_crowbar = 		"crate",
-			hold_open_xmas_present = 	"xmas_present",
-			hold_open_case =			"drone_control_helmet",	--May be reused in future heists for other loot
+			weapon_case =					"weapon",
+			weapon_case_axis_z =			"weapon",
+			samurai_armor =					"samurai_suit",
+			gen_pku_warhead_box =			"warhead",
+			pku_toothbrush = 				"toothbrush",
+			corpse_dispose =				"person",
+			crate_loot = 					"crate",
+			crate_loot_crowbar = 			"crate",
+			crate_weapon_crowbar = 			"crate",
+			hold_open_xmas_present = 		"xmas_present",
+			hold_open_case =				"drone_control_helmet",	--May be reused in future heists for other loot
+
+			cut_glass = 					"showcase",
+			diamonds_pickup = 				"diamonds_dah",
+			red_diamond_pickup = 			"red_diamond",
+			red_diamond_pickup_no_axis = 	"red_diamond",
 
 			hold_open_shopping_bag = 		"shopping_bag",
 			hold_take_toy = 				"robot_toy",
@@ -355,6 +362,9 @@ lounge		100421		100448			102049
 			fish = {	--Yacht (1x artifact painting)
 				[500533] = true,
 			},
+			dah = {	-- The Diamond Heist (1x Red Diamond Showcase)
+				[100952] = true,
+			}
 		},
 	}
 	GameInfoManager._INTERACTIONS.IGNORE_IDS.watchdogs_2_day = table.deep_map_copy(GameInfoManager._INTERACTIONS.IGNORE_IDS.watchdogs_2)
@@ -2705,7 +2715,8 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	local stop_ability_timer_original = PlayerManager.stop_ability_timer
 	local speed_up_ability_timer_original = PlayerManager.speed_up_ability_timer
 	local _dodge_shot_gain_original = PlayerManager._dodge_shot_gain
-	local start_timer_original = PlayerManager.start_timer
+	local replenish_grenades_original = PlayerManager.replenish_grenades
+	local _on_grenade_cooldown_end_original = PlayerManager._on_grenade_cooldown_end
 	local speed_up_grenade_cooldown_original = PlayerManager.speed_up_grenade_cooldown
 	local _set_body_bags_amount_original = PlayerManager._set_body_bags_amount
 
@@ -3056,16 +3067,31 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		return _dodge_shot_gain_original(self, gain_value, ...)
 	end
 
-	function PlayerManager:start_timer(key, duration, ...)
-		start_timer_original(self, key, duration, ...)
-		if key == "replenish_grenades" then
-			key = managers.blackmarket:equipped_grenade()
+	function PlayerManager:replenish_grenades(cooldown, ...)
+		if not self:has_active_timer("replenish_grenades") then
+			local id = managers.blackmarket:equipped_grenade()
+
+			if id then
+				managers.gameinfo:event("buff", "activate", id .. "_debuff")
+				managers.gameinfo:event("buff", "set_duration", id .. "_debuff", { duration = cooldown })
+			end
 		end
-		managers.gameinfo:event("timed_buff", "activate", tostring(key) .. "_debuff", { duration = duration })
+
+		return replenish_grenades_original(self, cooldown, ...)
+ 	end
+
+	function PlayerManager:_on_grenade_cooldown_end(...)
+		local id = managers.blackmarket:equipped_grenade()
+
+		if id then
+			managers.gameinfo:event("buff", "deactivate", id .. "_debuff")
+		end
+
+		return _on_grenade_cooldown_end_original(self, ...)
 	end
 
 	function PlayerManager:speed_up_grenade_cooldown(time, ...)
-		if self._timers.replenish_grenades then
+		if self:has_active_timer("replenish_grenades") then
 			local equipped_grenade = managers.blackmarket:equipped_grenade()
 			managers.gameinfo:event("timed_buff", "change_expire", equipped_grenade .. "_debuff", { difference = -time })
 		end

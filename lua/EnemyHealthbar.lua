@@ -46,6 +46,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "inside_man" ] 					= { default = "wolfhud_enemy_inside_man" },
 		[ "escort_undercover" ] 			= { default = "wolfhud_enemy_escort_undercover", run = "wolfhud_enemy_escort_heatstreet" },
 		[ "escort_chinese_prisoner" ]		= { default = "wolfhud_enemy_escort_chinese_prisoner" },
+		[ "escort_cfo" ]					= { default = "wolfhud_enemy_escort_cfo" },
 		[ "drunk_pilot" ] 					= { default = "wolfhud_enemy_drunk_pilot" },
 		[ "escort" ] 						= { default = "wolfhud_enemy_escort" },
 		[ "boris" ]							= { default = "wolfhud_enemy_boris" },
