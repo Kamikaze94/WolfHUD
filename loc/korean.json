@@ -100,6 +100,7 @@
 	"wolfhud_hudlist_loot_shoes" : "Shoes",
 	"wolfhud_hudlist_loot_toy" : "Toy",
 	"wolfhud_hudlist_loot_vr" : "Headset",
+	"wolfhud_hudlist_showcase" : "Showcase",
 
 	"wolfhud_hudlist_buff_basic" : "베이직",
 	"wolfhud_hudlist_buff_aced" : "에이스",
@@ -164,6 +165,7 @@
 	"wolfhud_enemy_escort_undercover" : "택스맨",
 	"wolfhud_enemy_escort_heatstreet" : "Matt",
 	"wolfhud_enemy_escort_chinese_prisoner" : "Kazo",
+	"wolfhud_enemy_escort_cfo" : "Garnett CFO",
 	"wolfhud_enemy_drunk_pilot" : "취한 파일럿",
 	"wolfhud_enemy_escort" : "호위자",
 	"wolfhud_enemy_boris" : "보리스",

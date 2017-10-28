@@ -102,6 +102,7 @@
 	"wolfhud_hudlist_loot_shoes" : "Schuhe",
 	"wolfhud_hudlist_loot_toy" : "Spielzeug",
 	"wolfhud_hudlist_loot_vr" : "Headset",
+	"wolfhud_hudlist_showcase" : "Vitrine",
 
 	"wolfhud_hudlist_buff_basic" : "Basic",
 	"wolfhud_hudlist_buff_aced" : "Aced",
@@ -166,6 +167,7 @@
 	"wolfhud_enemy_escort_undercover" : "Taxman",
 	"wolfhud_enemy_escort_heatstreet" : "Matt",
 	"wolfhud_enemy_escort_chinese_prisoner" : "Kazo",
+	"wolfhud_enemy_escort_cfo" : "Garnett CFO",
 	"wolfhud_enemy_drunk_pilot" : "Betrunkener Pilot",
 	"wolfhud_enemy_escort" : "Escort",
 	"wolfhud_enemy_boris" : "Boris",
