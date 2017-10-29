@@ -100,7 +100,7 @@
 	"wolfhud_hudlist_loot_shoes" : "Обувь",
 	"wolfhud_hudlist_loot_toy" : "Игрушка",
 	"wolfhud_hudlist_loot_vr" : "Шлем",
-	"wolfhud_hudlist_showcase" : "Showcase",
+	"wolfhud_hudlist_showcase" : "Витрина",
 
 	"wolfhud_hudlist_buff_basic" : "Базовый",
 	"wolfhud_hudlist_buff_aced" : "Про",
@@ -165,7 +165,7 @@
 	"wolfhud_enemy_escort_undercover" : "Налогосборщик",
 	"wolfhud_enemy_escort_heatstreet" : "Мэтт",
 	"wolfhud_enemy_escort_chinese_prisoner" : "Казо",
-	"wolfhud_enemy_escort_cfo" : "Garnett CFO",
+	"wolfhud_enemy_escort_cfo" : "Фин. директор Гарнетта",
 	"wolfhud_enemy_drunk_pilot" : "Пьяный пилот",
 	"wolfhud_enemy_escort" : "Сопровождающий",
 	"wolfhud_enemy_boris" : "Борис",
