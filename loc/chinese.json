@@ -100,7 +100,7 @@
 	"wolfhud_hudlist_loot_shoes" : "鞋",
 	"wolfhud_hudlist_loot_toy" : "玩具",
 	"wolfhud_hudlist_loot_vr" : "VR",
-	"wolfhud_hudlist_showcase" : "Showcase",
+	"wolfhud_hudlist_showcase" : "展示柜",
 
 	"wolfhud_hudlist_buff_basic" : "基础",
 	"wolfhud_hudlist_buff_aced" : "精通",
@@ -165,7 +165,7 @@
 	"wolfhud_enemy_escort_undercover" : "税务官",
 	"wolfhud_enemy_escort_heatstreet" : "马特",
 	"wolfhud_enemy_escort_chinese_prisoner" : "和夫",
-	"wolfhud_enemy_escort_cfo" : "Garnett CFO",
+	"wolfhud_enemy_escort_cfo" : "加内特CFO",
 	"wolfhud_enemy_drunk_pilot" : "醉酒飞行员",
 	"wolfhud_enemy_escort" : "护送",
 	"wolfhud_enemy_boris" : "保护",
