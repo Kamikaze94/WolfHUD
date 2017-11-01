@@ -246,6 +246,27 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		help = {
 			[400003] = { ignore = true },	--Prison Nightmare Big Loot timer
 		},
+		hvh = {
+			[100007] = { ignore = true },	--Cursed kill room timer
+			[100888] = { ignore = true },	--Cursed kill room timer
+			[100889] = { ignore = true },	--Cursed kill room timer
+			[100891] = { ignore = true },	--Cursed kill room timer
+			[100892] = { ignore = true },	--Cursed kill room timer
+			[100878] = { ignore = true },	--Cursed kill room timer
+			[100176] = { ignore = true },	--Cursed kill room timer
+			[100177] = { ignore = true },	--Cursed kill room timer
+			[100029] = { ignore = true },	--Cursed kill room timer
+			[141821] = { ignore = true },	--Cursed kill room safe 1 timer
+			[141822] = { ignore = true },	--Cursed kill room safe 1 timer
+			[140321] = { ignore = true },	--Cursed kill room safe 2 timer
+			[140322] = { ignore = true },	--Cursed kill room safe 2 timer
+			[139821] = { ignore = true },	--Cursed kill room safe 3 timer
+			[139822] = { ignore = true },	--Cursed kill room safe 3 timer
+			[141321] = { ignore = true },	--Cursed kill room safe 4 timer
+			[141322] = { ignore = true },	--Cursed kill room safe 4 timer
+			[140821] = { ignore = true },	--Cursed kill room safe 5 timer
+			[140822] = { ignore = true },	--Cursed kill room safe 5 timer
+		}
 	}
 
 	HUDListManager.UNIT_TYPES = {

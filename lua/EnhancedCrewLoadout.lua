@@ -649,28 +649,30 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			end
 		end
 
-		local width = math.floor(self._loadout_data:w() / 2)
-		for peer_id = 1, 4  do
-			if not self._peer_loadout[peer_id] then
-				self._peer_loadout[peer_id] = LoadoutPanel:new(parent_panel, self, peer_id, parent_panel:w(), parent_panel:h() * 0.17, {
-					component_layout = WolfHUD:getTweakEntry("TAB_LOADOUT_LAYOUT", "table",
-						{
-							{ "name", "ping" },
-							{ "skills", "perk" },
-						}),
-					name = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.90, height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "left",  margin = 0, use_peer_color = true },
-					level = 	{ font_size = tweak_data.menu.pd2_medium_font_size * 0.90, height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "left",  margin = 0, use_peer_color = true },
-					skills = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 1.10, height = tweak_data.menu.pd2_small_font_size  * 1.15, align = "left",  margin = 3 },
-					perk = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.95, height = tweak_data.menu.pd2_medium_font_size * 1.00, align = "left",  margin = 3 },
-					ping = 		{ font_size = tweak_data.menu.pd2_small_font_size  * 0.75, height = tweak_data.menu.pd2_small_font_size  * 0.80, align = "right" 			 },
-					playtime = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 0.75, height = tweak_data.menu.pd2_small_font_size  * 0.80, align = "left" 			 },
-					default = 	{ hide_name = true },
-					margin = 5,
-					borders = { 0, 0, 0, 2 }
-				})
+		if parent_panel then
+			local width = math.floor(self._loadout_data:w() / 2)
+			for peer_id = 1, 4  do
+				if not self._peer_loadout[peer_id] then
+					self._peer_loadout[peer_id] = LoadoutPanel:new(parent_panel, self, peer_id, parent_panel:w(), parent_panel:h() * 0.17, {
+						component_layout = WolfHUD:getTweakEntry("TAB_LOADOUT_LAYOUT", "table",
+							{
+								{ "name", "ping" },
+								{ "skills", "perk" },
+							}),
+						name = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.90, height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "left",  margin = 0, use_peer_color = true },
+						level = 	{ font_size = tweak_data.menu.pd2_medium_font_size * 0.90, height = tweak_data.menu.pd2_medium_font_size * 0.95, align = "left",  margin = 0, use_peer_color = true },
+						skills = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 1.10, height = tweak_data.menu.pd2_small_font_size  * 1.15, align = "left",  margin = 3 },
+						perk = 		{ font_size = tweak_data.menu.pd2_medium_font_size * 0.95, height = tweak_data.menu.pd2_medium_font_size * 1.00, align = "left",  margin = 3 },
+						ping = 		{ font_size = tweak_data.menu.pd2_small_font_size  * 0.75, height = tweak_data.menu.pd2_small_font_size  * 0.80, align = "right" 			 },
+						playtime = 	{ font_size = tweak_data.menu.pd2_small_font_size  * 0.75, height = tweak_data.menu.pd2_small_font_size  * 0.80, align = "left" 			 },
+						default = 	{ hide_name = true },
+						margin = 5,
+						borders = { 0, 0, 0, 2 }
+					})
+				end
 			end
+			self:arrange_loadout_panels(parent_panel)
 		end
-		self:arrange_loadout_panels(parent_panel)
 	end
 
 	function HUDStatsScreen:update_loadout_panel(peer_id)
@@ -687,16 +689,18 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 	end
 
 	function HUDStatsScreen:arrange_loadout_panels(parent_panel)
-		local y = parent_panel:h()
-		local height = math.floor(parent_panel:h() * 0.17)
-		for peer_id = 4, 1, -1 do
-			local panel = self._peer_loadout[peer_id]
-			if panel and panel:enabled() and not panel:destroyed() then
-				y = y - panel:h() - (parent_panel:h() * 0.08)
-				panel:set_y(y)
+		if parent_panel then
+			local y = parent_panel:h()
+			local height = math.floor(parent_panel:h() * 0.17)
+			for peer_id = 4, 1, -1 do
+				local panel = self._peer_loadout[peer_id]
+				if panel and panel:enabled() and not panel:destroyed() then
+					y = y - panel:h() - (parent_panel:h() * 0.08)
+					panel:set_y(y)
+				end
 			end
+			
+			parent_panel:set_leftbottom(10, self._right:h() - (WolfHUD:getSetting({"TabStats", "ENABLED"}, true) and 10 or 40))
 		end
-		
-		parent_panel:set_leftbottom(10, self._right:h() - (WolfHUD:getSetting({"TabStats", "ENABLED"}, true) and 10 or 40))
 	end
 end

@@ -4,11 +4,13 @@ if RequiredScript == "lib/managers/hudmanager" then
 
 	function HUDManager:add_waypoint(id, data, ...)
 		add_waypoint_original(self, id, data, ...)
-		if data.distance then
+		
+		local wp = self._hud.waypoints[id] 
+		if wp and wp.bitmap and wp.distance and wp.arrow and data.distance then
 			local color = WolfHUD:getColorSetting({"CustomWaypoints", "WAYPOINTS_COLOR"}, "white")
-			self._hud.waypoints[id].bitmap:set_color(color)
-			self._hud.waypoints[id].distance:set_color(color)
-			self._hud.waypoints[id].arrow:set_color(color:with_alpha(0.75))
+			wp.bitmap:set_color(color)
+			wp.distance:set_color(color)
+			wp.arrow:set_color(color:with_alpha(0.75))
 		end
 	end
 
@@ -39,6 +41,25 @@ if RequiredScript == "lib/managers/hudmanager" then
 				[145557] = { ignore = true },							-- Safehouse Killhouse Timer
 				[145676] = { ignore = true },							-- Safehouse Hockeygame Timer
 				[400003] = { ignore = true },							-- Prison Nightmare Big Loot timer
+				[100007] = { ignore = true },							--Cursed kill room timer
+				[100888] = { ignore = true },							--Cursed kill room timer
+				[100889] = { ignore = true },							--Cursed kill room timer
+				[100891] = { ignore = true },							--Cursed kill room timer
+				[100892] = { ignore = true },							--Cursed kill room timer
+				[100878] = { ignore = true },							--Cursed kill room timer
+				[100176] = { ignore = true },							--Cursed kill room timer
+				[100177] = { ignore = true },							--Cursed kill room timer
+				[100029] = { ignore = true },							--Cursed kill room timer
+				[141821] = { ignore = true },							--Cursed kill room safe 1 timer
+				[141822] = { ignore = true },							--Cursed kill room safe 1 timer
+				[140321] = { ignore = true },							--Cursed kill room safe 2 timer
+				[140322] = { ignore = true },							--Cursed kill room safe 2 timer
+				[139821] = { ignore = true },							--Cursed kill room safe 3 timer
+				[139822] = { ignore = true },							--Cursed kill room safe 3 timer
+				[141321] = { ignore = true },							--Cursed kill room safe 4 timer
+				[141322] = { ignore = true },							--Cursed kill room safe 4 timer
+				[140821] = { ignore = true },							--Cursed kill room safe 5 timer
+				[140822] = { ignore = true },							--Cursed kill room safe 5 timer
 			},
 		},
 		EQUIPMENT = {
