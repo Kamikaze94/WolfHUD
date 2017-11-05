@@ -60,8 +60,8 @@
 	"wolfhud_preplanning_msg_reseted_failed" : "Произошла ошибка во время сброса текущего планирования.",
 	"wolfhud_preplanning_msg_deleted_success" : "Планирование успешно удалено.",
 	"wolfhud_preplanning_msg_deleted_failed" : "Произошла ошибка при удалении сохраненного планирования.",
-	"wolfhud_preplanning_msg_folder_creation_failed" : "Failed to create folder: $FOLDER \nPlease make sure the game has the required permissions or create it manually.",
-	"wolfhud_preplanning_msg_file_creation_failed" : "Failed to create file: $FILE \nPlease make sure the game has the required permissions or create it manually.",
+	"wolfhud_preplanning_msg_folder_creation_failed" : "Неудачное создание папки: $FOLDER \nУбедитесь, что игра имеет необходимые разрешения или создайте её вручную.",
+	"wolfhud_preplanning_msg_file_creation_failed" : "Неудачное создание файла: $FILE \nУбедитесь, что игра имеет необходимые разрешения или создайте его вручную.",
 
 	"wolfhud_inv_tab_rename_hint" : "Дважды щелкните вкладку инвентаря, чтобы переименовать ее.",
 
@@ -890,8 +890,8 @@
 	"wolfhud_gadget_team_flashlight_options_name" : "Фонарик напарников",
 	"wolfhud_gadget_team_flashlight_options_help" : "Настройки фонариков ваших напарников.",
 
-	"wolfhud_gadgets_enabled_title" : "Overwrite Color",
-	"wolfhud_gadgets_enabled_desc" : "Use this definition instead of the gadget configuration.",
+	"wolfhud_gadgets_enabled_title" : "Перезапись цвета",
+	"wolfhud_gadgets_enabled_desc" : "Используйте это определение вместо настроек гаджета.",
 	"wolfhud_gadgets_beam_r_title" : "Лазерный луч (R)",
 	"wolfhud_gadgets_beam_r_desc" : "Красный компонент цвета лазера.",
 	"wolfhud_gadgets_beam_g_title" : "Лазерный луч (G)",
