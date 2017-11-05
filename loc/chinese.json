@@ -60,6 +60,8 @@
 	"wolfhud_preplanning_msg_reseted_failed" : "重置当前计划时发生错误.",
 	"wolfhud_preplanning_msg_deleted_success" : "计划已成功删除.",
 	"wolfhud_preplanning_msg_deleted_failed" : "删除保存的计划时发生错误.",
+	"wolfhud_preplanning_msg_folder_creation_failed" : "Failed to create folder: $FOLDER \nPlease make sure the game has the required permissions or create it manually.",
+	"wolfhud_preplanning_msg_file_creation_failed" : "Failed to create file: $FILE \nPlease make sure the game has the required permissions or create it manually.",
 
 	"wolfhud_inv_tab_rename_hint" : "双击所选的“库存”选项卡将其重命名.",
 
@@ -888,6 +890,8 @@
 	"wolfhud_gadget_team_flashlight_options_name" : "队友手电筒",
 	"wolfhud_gadget_team_flashlight_options_help" : "设置队友的手电筒.",
 
+	"wolfhud_gadgets_enabled_title" : "Overwrite Color",
+	"wolfhud_gadgets_enabled_desc" : "Use this definition instead of the gadget configuration.",
 	"wolfhud_gadgets_beam_r_title" : "激光光束(红)",
 	"wolfhud_gadgets_beam_r_desc" : "激光颜色的红色分量。",
 	"wolfhud_gadgets_beam_g_title" : "激光光束(绿)",

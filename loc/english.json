@@ -60,6 +60,8 @@
 	"wolfhud_preplanning_msg_reseted_failed" : "An error occurred while resetting current plan.",
 	"wolfhud_preplanning_msg_deleted_success" : "Plan was deleted successfully.",
 	"wolfhud_preplanning_msg_deleted_failed" : "An error occurred while deleting saved plan.",
+	"wolfhud_preplanning_msg_folder_creation_failed" : "Failed to create folder: $FOLDER \nPlease make sure the game has the required permissions or create it manually.",
+	"wolfhud_preplanning_msg_file_creation_failed" : "Failed to create file: $FILE \nPlease make sure the game has the required permissions or create it manually.",
 
 	"wolfhud_inv_tab_rename_hint" : "Double click the selected Inventory tab to rename it.",
 
@@ -888,6 +890,8 @@
 	"wolfhud_gadget_team_flashlight_options_name" : "Teammate Flashlight",
 	"wolfhud_gadget_team_flashlight_options_help" : "Settings for your Teammates flashlights.",
 
+	"wolfhud_gadgets_enabled_title" : "Overwrite Color",
+	"wolfhud_gadgets_enabled_desc" : "Use this definition instead of the gadget configuration.",
 	"wolfhud_gadgets_beam_r_title" : "Laser Beam (R)",
 	"wolfhud_gadgets_beam_r_desc" : "Red component of the laser color.",
 	"wolfhud_gadgets_beam_g_title" : "Laser Beam (G)",

@@ -62,6 +62,8 @@
 	"wolfhud_preplanning_msg_reseted_failed" : "Das Zurücksetzen des aktuellen Plans ist fehlgeschlagen.",
 	"wolfhud_preplanning_msg_deleted_success" : "Der Plan wurde erfolgreich gelöscht.",
 	"wolfhud_preplanning_msg_deleted_failed" : "Das Löschen des Plans ist fehlgeschlagen.",
+	"wolfhud_preplanning_msg_folder_creation_failed" : "Fehler beim Erstellen der Ordners: $FOLDER \nBitte vergewissere dich, dass das Spiel die benötigten Rechte hat, oder erstelle ihn manuell.",
+	"wolfhud_preplanning_msg_file_creation_failed" : "Fehler beim Erstellen der Datei: $FILE \nBitte vergewissere dich, dass das Spiel die benötigten Rechte hat, oder erstelle sie manuell.",
 
 	"wolfhud_inv_tab_rename_hint" : "Klicke doppelt auf den aktiven Inventar Tab, um ihn umzubenennen.",
 
@@ -895,6 +897,8 @@
 	"wolfhud_gadget_team_flashlight_options_name" : "Mitspieler Taschenlampe",
 	"wolfhud_gadget_team_flashlight_options_help" : "Einstellungen für die Taschenlampen deiner Mitspieler.",
 
+	"wolfhud_gadgets_enabled_title" : "Überschreibe Farbe",
+	"wolfhud_gadgets_enabled_desc" : "Benutze diese Einstellungen, anstatt der gadget Konfiguration.",
 	"wolfhud_gadgets_beam_r_title" : "Laserstrahl (R)",
 	"wolfhud_gadgets_beam_r_desc" : "Rotanteil der Laserfarbe.",
 	"wolfhud_gadgets_beam_g_title" : "Laserstrahl (G)",

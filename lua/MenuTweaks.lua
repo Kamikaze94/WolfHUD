@@ -62,6 +62,10 @@ if string.lower(RequiredScript) == "lib/managers/menumanager" then
 		self:save_lobby_settings("difficulty", tweak_data:index_to_difficulty(item:value()))
 	end)
 
+	Hooks:PostHook( MenuCallbackHandler , "update_matchmake_attributes" , "MenuCallbackHandlerPostUpdateMatchmakeAttributes_WolfHUD" , function( self, item, ... )
+		self:save_lobby_settings()
+	end)
+
 	local WOLFHUD_LOBBY_SETTINGS_LOADED = false
 	local MenuCrimeNetContractInitiator_modify_node_orig = MenuCrimeNetContractInitiator.modify_node
 	function MenuCrimeNetContractInitiator:modify_node(original_node, data, ...)

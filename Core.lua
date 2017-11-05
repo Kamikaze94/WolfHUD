@@ -446,7 +446,7 @@ if not _G.WolfHUD then
 				TEXT_SCALE								= 0.8,
 				SHOW_INTERRUPT_HINT						= true,
 				SHOW_TIME_REMAINING 					= true,			--Show remaining Time in the Interaction-Circle
-				SHOW_TIME_REMAINING_OUTLINE				= false,		--Show black outline around remaining Time text
+				SHOW_TIME_REMAINING_OUTLINE				= true,		--Show black outline around remaining Time text
 				GRADIENT_COLOR_START					= "white",		--Color, which the timer starts with
 				GRADIENT_COLOR							= "light_green",--Color, which the timer reaches on completition
 				TIMER_SCALE								= 1,			--Timer scale (also takes CIRCLE_SCALE into account)
@@ -459,56 +459,56 @@ if not _G.WolfHUD then
 				LASER_AUTO_ON 							= true,
 				laser = {
 					player = {
-						beam 							= { r = 0, g = 1, b = 0, a = 0.15 },
+						beam 							= { enabled = true, r = 0, g = 1, b = 0, a = 0.15 },
 						glow 							= { match_beam = true, r = 0, g = 1, b = 0, a = 0.02 },
 						dot 							= { match_beam = true, r = 0, g = 1, b = 0, a = 1 },
 						pulse 							= { enabled = false, min = 0.5, max = 2, frequency = 0.25 },
 						rainbow 						= { enabled = false, frequency = 0.25 },
 					},
 					team = {
-						beam 							= { r = 0, g = 1, b = 0, a = 0.05 },
+						beam 							= { enabled = true, r = 0, g = 1, b = 0, a = 0.05 },
 						glow 							= { match_beam = true, r = 0, g = 1, b = 0, a = 0.02 },
 						dot 							= { match_beam = true, r = 0, g = 1, b = 0, a = 1 },
 						pulse 							= { enabled = false, min = 0.5, max = 2, frequency = 0.25 },
 						rainbow 						= { enabled = false, frequency = 0.25 },
 					},
 					player_sentry = {
-						beam 							= { r = 0, g = 1, b = 0, a = 0.05 },
+						beam 							= { enabled = true, r = 0, g = 1, b = 0, a = 0.05 },
 						glow 							= { match_beam = true, r = 0, g = 1, b = 0, a = 0.02 },
 						dot 							= { match_beam = true, r = 0, g = 1, b = 0, a = 1 },
 						pulse 							= { enabled = false, min = 0.5, max = 2, frequency = 0.25 },
-						rainbow 						= { enabled = true, frequency = 0.25 },
+						rainbow 						= { enabled = false, frequency = 0.25 },
 					},
 					team_sentry = {
-						beam 							= { r = 0, g = 1, b = 0, a = 0.05 },
+						beam 							= { enabled = true, r = 0, g = 1, b = 0, a = 0.05 },
 						glow 							= { match_beam = true, r = 0, g = 1, b = 0, a = 0.02 },
 						dot 							= { match_beam = true, r = 0, g = 1, b = 0, a = 1 },
 						pulse 							= { enabled = false, min = 0.5, max = 2, frequency = 0.25 },
 						rainbow 						= { enabled = false, frequency = 0.25 },
 					},
 					cop_sniper = {
-						beam 							= { r = 1, g = 0, b = 0, a = 0.15 },
+						beam 							= { enabled = true, r = 1, g = 0, b = 0, a = 0.15 },
 						glow 							= { match_beam = true, r = 1, g = 0, b = 0, a = 0.02 },
 						dot 							= { match_beam = true, r = 1, g = 0, b = 0, a = 1 },
 						pulse 							= { enabled = false, min = 0.5, max = 2, frequency = 0.25 },
 						rainbow 						= { enabled = false, frequency = 0.25 },
 					},
 					turret_module_active = {
-						beam 							= { r = 1, g = 0, b = 0, a = 0.15 },
+						beam 							= { enabled = true, r = 1, g = 0, b = 0, a = 0.15 },
 						glow 							= { match_beam = true, r = 1, g = 0, b = 0, a = 0.02 },
 						dot 							= { match_beam = true, r = 1, g = 0, b = 0, a = 1 },
 						pulse 							= { enabled = false, min = 0.5, max = 2, frequency = 0.25 },
 						rainbow 						= { enabled = false, frequency = 0.25 },
 					},
 					turret_module_rearming = {
-						beam 							= { r = 1, g = 1, b = 0, a = 0.11 },
+						beam 							= { enabled = true, r = 1, g = 1, b = 0, a = 0.11 },
 						glow 							= { match_beam = true, r = 1, g = 1, b = 0, a = 0.02 },
 						dot 							= { match_beam = true, r = 1, g = 1, b = 0, a = 1 },
 						pulse 							= { enabled = false, min = 0.5, max = 2, frequency = 0.25 },
 						rainbow 						= { enabled = false, frequency = 0.25 },
 					},
 					turret_module_mad = {
-						beam 							= { r = 0, g = 1, b = 0, a = 0.15 },
+						beam 							= { enabled = true, r = 0, g = 1, b = 0, a = 0.15 },
 						glow 							= { match_beam = true, r = 0, g = 1, b = 0, a = 0.02 },
 						dot 							= { match_beam = true, r = 0, g = 1, b = 0, a = 1 },
 						pulse 							= { enabled = false, min = 0.5, max = 2, frequency = 0.25 },
@@ -517,12 +517,12 @@ if not _G.WolfHUD then
 				},
 				flashlight = {
 					player = {
-						light 							= { r = 1, g = 1, b = 1, brightness = 1, range = 10, angle = 60 },
+						light 							= { enabled = true, r = 1, g = 1, b = 1, brightness = 1, range = 10, angle = 60 },
 						pulse 							= { enabled = false, min = 0.5, max = 2, frequency = 0.25 },
 						rainbow 						= { enabled = false, frequency = 0.25 },
 					},
 					team = {
-						light 							= { r = 1, g = 1, b = 1, brightness = 1, range = 10, angle = 60 },
+						light 							= { enabled = true, r = 1, g = 1, b = 1, brightness = 1, range = 10, angle = 60 },
 						pulse 							= { enabled = false, min = 0.5, max = 2, frequency = 0.25 },
 						rainbow 						= { enabled = false, frequency = 0.25 },
 					},
@@ -674,7 +674,7 @@ if not _G.WolfHUD then
 	end
 
 	function WolfHUD:getVersion()
-        local mod = BLT.Mods:GetMod(WolfHUD.identifier or "")
+        local mod = BLT and BLT.Mods:GetMod(WolfHUD.identifier or "")
 		return tostring(mod and mod:GetVersion() or "(n/a)")
 	end
 
@@ -881,7 +881,7 @@ if not _G.WolfHUD then
 			end
 		end
 
-		create_menu({menu_options}, "blt_options")
+		create_menu({menu_options}, BLT and BLT.Mods.Constants:LuaModOptionsMenuID() or "blt_options")
 	end)
 
 	--Populate options menus
@@ -905,7 +905,7 @@ if not _G.WolfHUD then
 
 			--Add visual callback
 			MenuCallbackHandler[visual_clbk_id] = function(self, item)
-				for _, req in ipairs(data.visible_reqs) do
+				for _, req in ipairs(data.visible_reqs or {}) do
 					if type(req) == "table" then
 						local a = WolfHUD:getSetting(req.setting, nil)
 						if req.equal then
@@ -924,6 +924,8 @@ if not _G.WolfHUD then
 								return false
 							end
 						end
+					elseif type(req) == "boolean" then
+						return req
 					end
 				end
 				return true
@@ -931,18 +933,38 @@ if not _G.WolfHUD then
 
 			--Add enable callback
 			MenuCallbackHandler[enabled_clbk_id] = function(self, item)
-				return MenuCallbackHandler[visual_clbk_id](self, item)
+				for _, req in ipairs(data.enabled_reqs or {}) do
+					if type(req) == "table" then
+						local a = WolfHUD:getSetting(req.setting, nil)
+						if req.equal then
+							if a ~= req.equal then
+								return false
+							end
+						elseif type(a) == "boolean" then
+							local b = req.invert and true or false
+							if a == b then
+								return false
+							end
+						elseif type(a) == "number" then
+							local min_value = req.min or a
+							local max_value = req.max or a
+							if a < min_value or a > max_value then
+								return false
+							end
+						end
+					elseif type(req) == "boolean" then
+						return req
+					end
+				end
+				return true
 			end
 
 			--Associate visual callback with item
 			local menu = MenuHelper:GetMenu(menu_id)
 			for i, item in pairs(menu._items_list) do
 				if item:parameters().name == id then
-					if data.visible_reqs.hide_on_disabled then
-						item._visible_callback_name_list = { visual_clbk_id }
-					else
-						item._enabled_callback_name_list = { enabled_clbk_id }
-					end
+					item._visible_callback_name_list = { visual_clbk_id }
+					item._enabled_callback_name_list = { enabled_clbk_id }
 					item._create_data = data
 					break
 				end
@@ -1007,7 +1029,7 @@ if not _G.WolfHUD then
 					change_setting(clone(data.value), item:value())
 				end
 
-				if data.visible_reqs then
+				if data.visible_reqs or data.enabled_reqs then
 					add_visible_reqs(menu_id, id, data)
 				end
 			end,
@@ -1041,7 +1063,7 @@ if not _G.WolfHUD then
 					change_setting(clone(data.value), value)
 				end
 
-				if data.visible_reqs then
+				if data.visible_reqs or data.enabled_reqs then
 					add_visible_reqs(menu_id, id, data)
 				end
 			end,
@@ -1104,7 +1126,30 @@ if not _G.WolfHUD then
 					end
 				end
 
-				if data.visible_reqs then
+				if data.visible_reqs or data.enabled_reqs then
+					add_visible_reqs(menu_id, id, data)
+				end
+			end,
+			input = function(menu_id, offset, data)
+				local id = string.format("%s_%s_input", menu_id, data.name_id)
+				local clbk_id = id .. "_clbk"
+
+				MenuHelper:AddInput({
+					id = id,
+					title = data.name_id,
+					desc = data.desc_id,
+					value = tostring(data.value),
+					callback = clbk_id,
+					menu_id = menu_id,
+					priority = offset,
+					disabled_color = Color(0.6, 0.6, 0.6),
+				})
+
+				MenuCallbackHandler[clbk_id] = function(self, item)
+					change_setting(clone(data.value), item:value())
+				end
+
+				if data.visible_reqs or data.enabled_reqs then
 					add_visible_reqs(menu_id, id, data)
 				end
 			end,
@@ -1126,7 +1171,32 @@ if not _G.WolfHUD then
 
 				end
 
-				if data.visible_reqs then
+				if data.visible_reqs or data.enabled_reqs then
+					add_visible_reqs(menu_id, id, data)
+				end
+			end,
+			keybind = function(menu_id, offset, data)
+				local id = string.format("%s_%s_keybind", menu_id, data.name_id)
+				local clbk_id = data.clbk or (id .. "_clbk")
+
+				MenuHelper:AddKeybinding({
+					id = id,
+					title = data.name_id,
+					desc = data.desc_id,
+					connection_name = "",
+					binding = "",
+					button = "",
+					callback = clbk_id,
+					menu_id = menu_id,
+					priority = offset,
+					--disabled_color = Color(0.6, 0.6, 0.6),
+				})
+
+				MenuCallbackHandler[clbk_id] = MenuCallbackHandler[clbk_id] or function(self, item)
+
+				end
+
+				if data.visible_reqs or data.enabled_reqs then
 					add_visible_reqs(menu_id, id, data)
 				end
 			end,
@@ -1166,7 +1236,7 @@ if not _G.WolfHUD then
 			end
 		end
 
-		populate_menu({menu_options}, "blt_options")
+		populate_menu({menu_options}, BLT and BLT.Mods.Constants:LuaModOptionsMenuID() or "blt_options")
 	end)
 
 	-- Create callbacks and finalize menus
@@ -1269,7 +1339,7 @@ if not _G.WolfHUD then
 			end
 		end
 
-		finalize_menu({menu_options}, "blt_options") -- BLT.Mods.Constants:LuaModOptionsMenuID() -- Linking to wrong menu ID
+		finalize_menu({menu_options}, BLT and BLT.Mods.Constants:LuaModOptionsMenuID() or "blt_options") -- BLT.Mods.Constants:LuaModOptionsMenuID() -- Linking to wrong menu ID
 	end)
 
 	--Add localiszation strings
@@ -1280,7 +1350,7 @@ if not _G.WolfHUD then
 			if _G.PD2KR then
 				custom_lang = "korean"
 			else
-				for _, mod in pairs(BLT.Mods:Mods()) do
+				for _, mod in pairs(BLT and BLT.Mods:Mods() or {}) do
 					if mod:GetName() == "ChnMod" then
 						custom_lang = "chinese"
 						break
@@ -1306,18 +1376,6 @@ if not _G.WolfHUD then
 		else
 			WolfHUD:print_log("Localization folder seems to be missing!", "error")
 		end
-
-		-- Fix community market links for Real Weapon Names
-		Hooks:PostHook(EconomyTweakData, "create_weapon_skin_market_search_url" ,"WolfHUD_EconomyTweakDataPostCreateWeaponSkinMarketSearchUrl", function(self, weapon_id, cosmetic_id)
-			local cosmetic_name = tweak_data.blackmarket.weapon_skins[cosmetic_id] and managers.localization:text(tweak_data.blackmarket.weapon_skins[cosmetic_id].name_id)
-			local weapon_name = managers.localization.orig.text(managers.localization, tweak_data.weapon[weapon_id].name_id) -- bypass custom localizations
-			if cosmetic_name and weapon_name then
-				cosmetic_name = string.gsub(cosmetic_name, " ", "+")
-				weapon_name = string.gsub(weapon_name, " ", "+")
-				return string.gsub("http://steamcommunity.com/market/search?appid=218620&q=" .. cosmetic_name .. "+" .. weapon_name, "++", "+")
-			end
-			return nil
-		end)
 
 		local localized_strings = {}
 		localized_strings["cash_sign"] = WolfHUD:getTweakEntry("CASH_SIGN", "string", "$")
@@ -1350,6 +1408,20 @@ if MenuItemMultiChoice then
 		if self:selected_option() and self:selected_option():parameters().color and row_item.choice_text then
 			row_item.choice_text:set_blend_mode("normal")
 		end
+	end)
+end
+
+if EconomyTweakData then
+	-- Fix community market links for Real Weapon Names
+	Hooks:PostHook(EconomyTweakData, "create_weapon_skin_market_search_url" ,"WolfHUD_EconomyTweakDataPostCreateWeaponSkinMarketSearchUrl", function(self, weapon_id, cosmetic_id)
+		local cosmetic_name = tweak_data.blackmarket.weapon_skins[cosmetic_id] and managers.localization:text(tweak_data.blackmarket.weapon_skins[cosmetic_id].name_id)
+		local weapon_name = managers.localization.orig.text(managers.localization, tweak_data.weapon[weapon_id].name_id) -- bypass custom localizations
+		if cosmetic_name and weapon_name then
+			cosmetic_name = string.gsub(cosmetic_name, " ", "+")
+			weapon_name = string.gsub(weapon_name, " ", "+")
+			return string.gsub("http://steamcommunity.com/market/search?appid=218620&q=" .. cosmetic_name .. "+" .. weapon_name, "++", "+")
+		end
+		return nil
 	end)
 end
 

@@ -295,6 +295,9 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 			if not file.DirectoryExists("./" .. PrePlanningManager._SAVE_FOLDER) then
 				WolfHUD:print_log("Preplanned folder '" .. PrePlanningManager._SAVE_FOLDER .. "' is missing!", "warning")
 				WolfHUD:createDirectory("./" .. PrePlanningManager._SAVE_FOLDER)
+				if not file.DirectoryExists("./" .. PrePlanningManager._SAVE_FOLDER) then
+					managers.preplanning:notify_user("wolfhud_preplanning_msg_folder_creation_failed", { FOLDER = PrePlanningManager._SAVE_FOLDER }, true)
+				end
 			end
 			local file = io.open(PrePlanningManager._SAVE_FILE, "w+")
 			if file then
@@ -302,8 +305,13 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 				if PrePlanningManager._SAVED_PLANS and table.size(PrePlanningManager._SAVED_PLANS) > 0 then
 					tbl_str = json.encode(PrePlanningManager._SAVED_PLANS)
 				end
+
 				file:write(tbl_str)
 				file:close()
+
+				return true
+			else
+				managers.preplanning:notify_user("wolfhud_preplanning_msg_file_creation_failed", { FILE = PrePlanningManager._SAVE_FILE }, true)
 			end
 		end
 
@@ -386,9 +394,11 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 			}
 			PrePlanningManager._SAVED_PLANS = PrePlanningManager._SAVED_PLANS or {}
 			PrePlanningManager._SAVED_PLANS[name] = (preplanning_data.assets or preplanning_data.votes) and preplanning_data or nil
-			PrePlanningManager.save_plans()
-
-			managers.preplanning:notify_user("wolfhud_preplanning_msg_saved_success", {}, false)
+			if PrePlanningManager.save_plans() then
+				managers.preplanning:notify_user("wolfhud_preplanning_msg_saved_success", {}, false)
+			else
+				PrePlanningManager._SAVED_PLANS[name] = nil
+			end
 		end
 	end
 
@@ -500,9 +510,9 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 	function PrePlanningManager:delete_preplanning_clbk(name)
 		if PrePlanningManager._SAVED_PLANS and PrePlanningManager._SAVED_PLANS[name] then
 			PrePlanningManager._SAVED_PLANS[name] = nil
-			PrePlanningManager.save_plans()
-
-			managers.preplanning:notify_user("wolfhud_preplanning_msg_deleted_success", {}, false)
+			if PrePlanningManager.save_plans() then
+				managers.preplanning:notify_user("wolfhud_preplanning_msg_deleted_success", {}, false)
+			end
 		else
 			managers.preplanning:notify_user("wolfhud_preplanning_msg_deleted_failed", {}, true)
 		end

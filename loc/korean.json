@@ -60,6 +60,8 @@
 	"wolfhud_preplanning_msg_reseted_failed" : "계획을 초기화 하는 도중에 오류가 발생하였습니다.",
 	"wolfhud_preplanning_msg_deleted_success" : "계획이 삭제되었습니다.",
 	"wolfhud_preplanning_msg_deleted_failed" : "저장된 계획을 삭제하는 도중에 오류가 발생하였습니다.",
+	"wolfhud_preplanning_msg_folder_creation_failed" : "Failed to create folder: $FOLDER \nPlease make sure the game has the required permissions or create it manually.",
+	"wolfhud_preplanning_msg_file_creation_failed" : "Failed to create file: $FILE \nPlease make sure the game has the required permissions or create it manually.",
 
 	"wolfhud_inv_tab_rename_hint" : "탭을 더블클릭 하여 이름을 바꿉니다.",
 
@@ -888,6 +890,8 @@
 	"wolfhud_gadget_team_flashlight_options_name" : "팀원 손전등 색",
 	"wolfhud_gadget_team_flashlight_options_help" : "팀원의 손전등 색을 설정합니다.",
 
+	"wolfhud_gadgets_enabled_title" : "Overwrite Color",
+	"wolfhud_gadgets_enabled_desc" : "Use this definition instead of the gadget configuration.",
 	"wolfhud_gadgets_beam_r_title" : "레이저 색 (빨간색)",
 	"wolfhud_gadgets_beam_r_desc" : "Red component of the laser color.",
 	"wolfhud_gadgets_beam_g_title" : "레이저 색 (초록색)",

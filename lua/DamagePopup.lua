@@ -59,7 +59,7 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 				killer = attacker:base():thrower_unit()
 			end
 
-			if alive(killer) and self._unit then
+			if alive(killer) and alive(self._unit) then
 				local i_body = attack_data.col_ray and attack_data.col_ray.body and self._unit:get_body_index(attack_data.col_ray.body:name()) or self._sync_ibody_popup
 				local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
 				local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false
