@@ -238,8 +238,8 @@ if requiredScript == "lib/managers/menumanager" then
 elseif requiredScript == "lib/managers/preplanningmanager" then
 
 	if not PrePlanningManager._PREPLANNING_SETUP then
-		PrePlanningManager._SAVE_FOLDER = SavePath .. "/Preplanned/"
-		PrePlanningManager._SAVE_FILE = PrePlanningManager._SAVE_FOLDER .. "Unknown.json"
+		PrePlanningManager._SAVE_FOLDER = Application:nice_path(SavePath .. "Preplanned/", true):gsub("\\", "/")
+		PrePlanningManager._SAVE_FILE = PrePlanningManager._SAVE_FOLDER .. "/Unknown.json"
 		PrePlanningManager._SAVED_PLANS = nil
 		PrePlanningManager.saved_plans_node = "preplanning_saved_plans"
 		PrePlanningManager._PREPLANNING_DELETE_MODE = false
@@ -292,10 +292,9 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 		end
 
 		function PrePlanningManager.save_plans()
-			if not file.DirectoryExists("./" .. PrePlanningManager._SAVE_FOLDER) then
+			if not WolfHUD:DirectoryExists(PrePlanningManager._SAVE_FOLDER) then
 				WolfHUD:print_log("Preplanned folder '" .. PrePlanningManager._SAVE_FOLDER .. "' is missing!", "warning")
-				WolfHUD:createDirectory("./" .. PrePlanningManager._SAVE_FOLDER)
-				if not file.DirectoryExists("./" .. PrePlanningManager._SAVE_FOLDER) then
+				if not WolfHUD:createDirectory(PrePlanningManager._SAVE_FOLDER) then
 					managers.preplanning:notify_user("wolfhud_preplanning_msg_folder_creation_failed", { FOLDER = PrePlanningManager._SAVE_FOLDER }, true)
 				end
 			end

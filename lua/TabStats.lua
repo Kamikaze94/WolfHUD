@@ -19,8 +19,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 	local loot_value_updated_original = HUDStatsScreen.loot_value_updated
 
 	function HUDStatsScreen:recreate_left(...)
-		recreate_left_original(self, ...)
-
 		if WolfHUD:getSetting({"TabStats", "ENABLED"}, true) then
 			self._use_tab_stats = true
 			self._left:clear()
@@ -125,14 +123,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			elseif managers.challenge:can_progress_challenges() then
 				self:_create_sidejobs_list(list_panel)
 			end
+		else
+			recreate_left_original(self, ...)
 		end
 	end
 
 
 
 	function HUDStatsScreen:recreate_right(...)
-		recreate_right_original(self, ...)
-
 		if WolfHUD:getSetting({"TabStats", "ENABLED"}, true) then
 			self._use_tab_stats = true
 			self._right:clear()
@@ -157,6 +155,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			local stats_panel = ExtendedPanel:new(self._right, { w = self._right:w(), h = self._right:h() })
 			self:_create_stat_list(stats_panel)
 			self:_update_stats_list(stats_panel)
+		else
+			recreate_right_original(self, ...)
 		end
 
 		local clock_panel = self:_create_clock(self._right)
@@ -165,7 +165,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 	end
 
 	function HUDStatsScreen:_create_tracked_list(panel, ...)
-		--self._update_achievs_list = Application:time() + 3
 		local right_panel = self._right
 		self._right = panel
 		_create_tracked_list_original(self, panel)
@@ -180,12 +179,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 	end
 
 	function HUDStatsScreen:update(t, ...)
-		--[[
-		if (self._update_achievs_list or t) < t then
-			update_original(self, t, ...)
-			self._update_achievs_list = t + 1
-		end
-		]]
+		update_original(self, t, ...)
 
 		if self._clock_panel and (self._next_clock_update_t or 0) < t then
 			local text = ""
@@ -214,10 +208,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 		end
 	end
 
-	--OVERRIDE!!!
 	function HUDStatsScreen:loot_value_updated(...)
-		--loot_value_updated_original(self, ...)
-		self:update_stats()
+		if self._use_tab_stats then
+			self:update_stats()
+		else
+			loot_value_updated_original(self, ...)
+		end
 	end
 
 	function HUDStatsScreen:_create_clock(panel)
@@ -879,8 +875,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			fixed_w = parent:w()
 		})
 
+		self._id = data.id
 		self._info = data
 		self._objectives = data.objectives
+		self._progress_ids = {}
 		local completed = self._info.completed
 		local placer = self:placer()
 		placer:new_row(0, 0)
@@ -943,7 +941,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 					placer:add_bottom(self.make_fine_text(desc), 0)
 				end
 				if objective.max_progress > 1 and objective.show_progress ~= false then
-					placer:add_bottom(TextProgressBar:new(self, {
+					local bar = placer:add_bottom(TextProgressBar:new(self, {
 						w = 300,
 						h = 10,
 						back_color = Color(255, 60, 60, 65) / 255,
@@ -952,6 +950,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 						font_size = 12,
 						font = tiny_font
 					}, objective.progress))
+
+					if objective.progress_id then
+						self._progress_ids[objective.progress_id] = bar
+					end
 				end
 			end
 		end
@@ -964,7 +966,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 		end
 	end
 
-	-- Lines: 50 to 58
 	function HudSidejob:update(t, dt)
 		if self._timer then
 			local current_timestamp = managers.challenge:get_timestamp()
@@ -976,6 +977,9 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 				local remaining_str = self:_create_time_string(expire_time)
 				self._timer:set_text(remaining_str)
 			end
+		end
+		for progress_id, progress_bar in pairs(self._progress_ids or {}) do
+			-- Update progress?
 		end
 	end
 

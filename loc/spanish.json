@@ -1,13 +1,13 @@
 {
 	"menu_jowi" : "Wick",
 	"hud_int_hold_grab_the_bag" : "Oprime $BTN_INTERACT para agarrar $BAG",
-	
+
 	"wolfhud_dialog_force_start_title" : "¿Forzar inicio de partida?",
 	"wolfhud_dialog_force_start_desc" : "¿Deseas forzar el inicio de la partida?Seg?\n\nPor favor solo usa esto en lobbies bugeados, o si un jugador esta afk.\nAsegurate de que todos tienen el tiempo suficiente para elegir su equipo.\n\nGracias :)",
 	"wolfhud_dialog_install_title" : "Instalar: $NAME",
 	"wolfhud_dialog_install_desc" : "Quieres instalar '$NAME'?",
 	"wolfhud_dialog_remind_later" : "Preguntar luego",
-	"wolfhud_dialog_install_fed_inv_desc" : "Federal Inventory es un mod, que te cambia los iconos de los items por sus versiones en color."
+	"wolfhud_dialog_install_fed_inv_desc" : "Federal Inventory es un mod, que te cambia los iconos de los items por sus versiones en color.",
 	"wolfhud_dialog_rename_inv_tab" : "Renombrar la pagina del inventario",
 	"wolfhud_dialog_rename_inv_tab_desc" : "Por favor ingresa el nuevo nombre para la esta pagina del inventario.",
 	"wolfhud_dialog_save" : "Guardar",
@@ -15,13 +15,13 @@
 	"woldhud_notification_disabled_override_desc" : "Si cambiaste de opinion, da click para que te pregunten nuevamente.",
 	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME esta listo para ser instalado.",
 	"woldhud_notification_restart_override_desc" : "Por favor reinicia el juego para iniciar la descarga.",
-	
+
 	"wolfhud_int_locked" : "PRESIONA $BTN_CANCEL PARA CANCELAR",
 	"wolfhud_int_locked_pager" : "PRESIONA $BTN_CANCEL PARA CANCELAR\n(ACTIVA LA ALARMA)"
 	,
 	"wolfhud_buy_all_assets" : "Comprar Todo",
 	"wolfhud_buy_all_assets_desc" : "Comprar todo lo disponible",
-	
+
 	"wolfhud_preplanning_save" : "Guardar Planeación",
 	"wolfhud_preplanning_load" : "Cargar Planeación",
 	"wolfhud_preplanning_reset" : "Reiniciar Planeación",
@@ -62,30 +62,30 @@
 	"wolfhud_preplanning_msg_deleted_failed" : "Un error ha ocurrido al borrar la planeación guardada.",
 	"wolfhud_preplanning_msg_folder_creation_failed" : "Error al crear la carpeta: $FOLDER \nAsegúrate de que el juego tiene permisos de creación o créala manualmente.",
 	"wolfhud_preplanning_msg_file_creation_failed" : "Error al crear el archivo: $FILE \nAsegúrate de que el juego tiene permisos de creación o créalo manualmente.",
-	
-	"wolfhud_inv_tab_rename_hint" : "Doble click en la pestaña del inventario seleccionada para renombrarla."
-	
+
+	"wolfhud_inv_tab_rename_hint" : "Doble click en la pestaña del inventario seleccionada para renombrarla.",
+
 	"wolfhud_loadout_hours_played" : "$HOURS horas.",
 
     "wolfhud_profile_switch_title" : "Cambiar Perfiles",
     "wolfhud_profile_switch_title_profiles" : "Perfil:",
 
 	"victory_most_damage" : "Daño más Alto:",
-	"victory_session_damage" : "Daño Total:"
-	
+	"victory_session_damage" : "Daño Total:",
+
 	"wolfhud_advassault_phase_title" : "Fase de Asalto: ",
 	"wolfhud_advassault_spawns_title" : "Apariciones Restantes: ",
-	"wolfhud_advassault_time_title" : "Tiempo Restante: "
+	"wolfhud_advassault_time_title" : "Tiempo Restante: ",
 	"wolfhud_advassault_phase_anticipation" : "Anticipo",
 	"wolfhud_advassault_phase_build" : "Inicio",
 	"wolfhud_advassault_phase_sustain" : "Carga",
 	"wolfhud_advassault_phase_fade" : "Fin",
 	"wolfhud_advassault_time_overdue" : "Atraso",
 	"wolfhud_locked_assault" : "Asalto Sin Fin!!!  Sal de una vez!!!",
-	
+
 	"wolfhud_customhud_interaction_done" : "HECHO",
 	"wolfhud_customhud_interaction_aborted" : "ABORTADO",
-	
+
 	"wolfhud_hudlist_device_timer" : "Contador",
 	"wolfhud_hudlist_device_drill" : "Taladro",
 	"wolfhud_hudlist_device_hack" : "Hackeo",
@@ -102,8 +102,8 @@
 	"wolfhud_hudlist_loot_shoes" : "Zapato",
 	"wolfhud_hudlist_loot_toy" : "Juguete",
 	"wolfhud_hudlist_loot_vr" : "Casco",
-	"wolfhud_hudlist_showcase" : "Vitrina"
-	
+	"wolfhud_hudlist_showcase" : "Vitrina",
+
 	"wolfhud_hudlist_buff_basic" : "Básico",
 	"wolfhud_hudlist_buff_aced" : "As",
 	"wolfhud_hudlist_buff_boost" : "Boost",
@@ -114,7 +114,7 @@
 	"wolfhud_hudlist_buff_mdmg_inc" : "+M.Dmg",
 	"wolfhud_hudlist_buff_phealth_reg" : "+HP",
 	"wolfhud_hudlist_buff_tot_dodge" : "%Dodge",
-	
+
 	"wolfhud_tabstats_total_damage" : "Daño Total:",
 	"wolfhud_tabstats_tanks_killed" : "Bulldozers Asesinados:",
 	"wolfhud_tabstats_cloakers_killed" : "Cloakers Asesinados:",
@@ -128,10 +128,10 @@
 	"wolfhud_tabstats_nonspecial_kills" : "Bajas no Especiales:",
 	"wolfhud_tabstats_total_revives" : "Revividos Totales (P/AI):",
 	"wolfhud_tabstats_alltime_stat" : "Todo el Tiempo:",
-	
+
 	"wolfhud_enemy_civilian" : "CIVIL",
 	"wolfhud_enemy_gangster" : "GANGSTER",
-	"wolfhud_enemy_biker" : "MOTOCILISTA"
+	"wolfhud_enemy_biker" : "MOTOCILISTA",
 	"wolfhud_enemy_bolivian_security" : "Seguridad de Sosa",
 	"wolfhud_enemy_bolivian_thug" : "Gangster de Sosa",
 	"wolfhud_enemy_mobster" : "GANGSTER RUSO",
@@ -141,7 +141,7 @@
 	"wolfhud_enemy_fbi" : "SOLDADO FBI",
 	"wolfhud_enemy_swat" : "SOLDADO SWAT",
 	"wolfhud_enemy_heavy_swat" : "SOLDADO PESADO SWAT",
-	"wolfhud_enemy_heavy_swat_sniper" : "SNIPER SWAT PESADO"
+	"wolfhud_enemy_heavy_swat_sniper" : "SNIPER SWAT PESADO",
 	"wolfhud_enemy_city_swat" : "SOLDADO ELITE",
 	"wolfhud_enemy_shield" : "ESCUDO",
 	"wolfhud_enemy_spook" : "CLOAKER",
@@ -163,10 +163,11 @@
 	"wolfhud_enemy_druglord_boss_stealth" : "ERNESTO SOSA",
 	"wolfhud_enemy_biker_boss" : "JEFE MOTOCICLISTA",
 	"wolfhud_enemy_bank_manager" : "GERENTE DE BANCO",
+	"wolfhud_enemy_dah_ralph" : "Ralph Garnet",
 	"wolfhud_enemy_inside_man" : "INTERNO",
-	"wolfhud_enemy_escort_undercover" : "HOMBRE DE IMPUESTOS"
+	"wolfhud_enemy_escort_undercover" : "HOMBRE DE IMPUESTOS",
 	"wolfhud_enemy_escort_heatstreet" : "MATT",
-	"wolfhud_enemy_escort_chinese_prisoner" : "KAZO"
+	"wolfhud_enemy_escort_chinese_prisoner" : "KAZO",
 	"wolfhud_enemy_escort_cfo" : "Garnett CFO",
 	"wolfhud_enemy_drunk_pilot" : "PILOTO BORRACHO",
 	"wolfhud_enemy_escort" : "ESCOLTA",
@@ -177,10 +178,10 @@
 	"wolfhud_enemy_locke_mission" : "Locke",
 	"wolfhud_enemy_hector_boss" : "HECTOR BLINDADO",
 	"wolfhud_enemy_hector_boss_no_armor" : "HECTOR",
-	"wolfhud_enemy_crew" : "ALIADO"
+	"wolfhud_enemy_crew" : "ALIADO",
 	"wolfhud_enemy_butler" : "Aldstone",
 	"wolfhud_enemy_vlad" : "Vlad",
-	
+
 	"wolfhud_enemy_boom" : "Granadero",
 	"wolfhud_enemy_omnia_lpf" : "OMNIA L.P.F.",
 	"wolfhud_enemy_summers" : "Capitán Summers",
@@ -197,7 +198,7 @@
 	"wolfhud_multiselect_left" : "Izquierda",
 	"wolfhud_multiselect_center" : "Centro",
 	"wolfhud_multiselect_right" : "Derecha",
-	
+
 	"wolfhud_colors_white"  : "Blanco",
 	"wolfhud_colors_light_yellow"  : "Amarillo Claro",
 	"wolfhud_colors_light_orange"  : "Naranjo Claro",
@@ -215,10 +216,10 @@
 	"wolfhud_colors_gray" : "Gris",
 	"wolfhud_colors_black" : "Blanco",
 	"wolfhud_colors_rainbow" : "Arcoíris",
-	
+
 	"wolfhud_options_name" : "Ajustes de WolfHUD",
 	"wolfhud_options_help" : "Personaliza WolfHUD a tu estilo.",
-	
+
 	"wolfhud_skip_blackscreen_title" : "Saltar Pantalla Negra",
 	"wolfhud_skip_blackscreen_desc" : "Automáticamente saltar la pantalla negra al iniciar la misión.\n(Solo Host)",
 	"wolfhud_instant_restart_title" : "Reinicio Instántaneo",
@@ -270,7 +271,7 @@
 
 	"wolfhud_teampanels_options_name" : "Panel de Compañeros",
 	"wolfhud_teampanels_options_help" : "Ajustes para los paneles de tus compañeros en la HUD.",
-	
+
 	"wolfhud_panels_position_title" : "Posición",
 	"wolfhud_panels_position_desc" : "Posición Horizontal en el panel de la HUD",
 	"wolfhud_panels_scale_title" : "Escala",
@@ -334,10 +335,10 @@
 	"wolfhud_panels_use_ai_color_desc" : "Usar color personalizado para nombres de los bots. (También afecta los popups de daño)",
 	"wolfhud_panels_ai_color_title" : "Color para los bots",
 	"wolfhud_panels_ai_color_desc" : "Elije el color personalizado para nombres de los bots. (También afecta los popups de daño)",
-	
+
 	"wolfhud_chat_options_name" : "Opciones del Chat",
 	"wolfhud_chat_options_help" : "Opciones para personalizar el comportamiento del Chat.",
-	
+
 	"wolfhud_chat_waittime_title" : "Tiempo de desaparición del Chat",
 	"wolfhud_chat_waittime_desc" : "Es el tiempo en que el chat desaparece de la pantalla\n(0 = Nunca)",
 	"wolfhud_chat_fontsize_title" : "Tamaño de la letra del Chat",
@@ -488,7 +489,7 @@
 	"wolfhud_hudlist_show_turrets_desc" : "Muestra la cantidad de Torretas (enemigas) en el mapa.",
 	"wolfhud_hudlist_show_civilians_title" : "Mostrar Civiles",
 	"wolfhud_hudlist_show_civilians_desc" : "Muestra la cantidad de civiles",
-	"wolfhud_hudlist_show_hostages_title" : "Mostrar Rehenes"
+	"wolfhud_hudlist_show_hostages_title" : "Mostrar Rehenes",
 	"wolfhud_hudlist_show_hostages_desc" : "Muestra la cantidad de rehenes que tienes.",
 	"wolfhud_hudlist_aggregate_hostages_title" : "Juntar Rehenes",
 	"wolfhud_hudlist_aggregate_hostages_desc" : "Juntar todos los tipos de rehenes en una sola caja.",
@@ -948,5 +949,5 @@
 	"wolfhud_skipit_options_name" : "Opciones para Saltar",
 	"wolfhud_skipit_options_help" : "Opciones para saltar los menús innecesarios automáticamente para guardar tiempo.",
 	"wolfhud_assaultbanner_options_name" : "Opciones del Banner de Asalto",
-	"wolfhud_assaultbanner_options_help" : "Opciones para cambiar el banner que muestra el estado del asalto.",
+	"wolfhud_assaultbanner_options_help" : "Opciones para cambiar el banner que muestra el estado del asalto."
 }

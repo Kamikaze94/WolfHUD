@@ -661,15 +661,28 @@ if not _G.WolfHUD then
 	function WolfHUD:createDirectory(path)
 		local current = ""
 		path = Application:nice_path(path, true):gsub("\\", "/")
+
 		for folder in string.gmatch(path, "([^/]*)/") do
 			current = Application:nice_path(current .. folder, true)
-			if not file.DirectoryExists(current) then
+
+			if not self:DirectoryExists(current) then
 				if SystemFS and SystemFS.make_dir then
 					SystemFS:make_dir(current)
 				elseif file and file.CreateDirectory then
 					file.CreateDirectory(current)
 				end
 			end
+		end
+		
+		return self:DirectoryExists(path)
+	end
+
+	function WolfHUD:DirectoryExists(path)
+		if SystemFS and SystemFS.exists then
+			return SystemFS:exists(path)
+		elseif file and file.DirectoryExists then
+			log("")	-- For some weird reason the function below always returns true if we don't log anything previously...
+			return file.DirectoryExists(path)
 		end
 	end
 
