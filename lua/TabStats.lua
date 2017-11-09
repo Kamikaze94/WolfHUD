@@ -308,6 +308,17 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			daily_data.rewarded = false
 			daily_data.timestamp = current_daily.timestamp
 			daily_data.interval = managers.custom_safehouse:interval_til_new_daily()
+			-- Fix missing objective progress for safehouse daily.
+			if current_daily.trophy and current_daily.trophy.objectives then
+				for _, t_objective in ipairs(current_daily.trophy.objectives) do
+					for _, objective in ipairs(daily_data.objectives) do
+						if objective.name_id == t_objective.name_id then
+							objective.progress = t_objective.progress
+							break
+						end
+					end
+				end
+			end
 			local safehouse_challenge = {
 				id = current_daily.id,
 				data = daily_data

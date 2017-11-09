@@ -1,20 +1,7 @@
 --TODO: Fix Client Minion Damage upgrade sync (line: 1919)
-local print_info = function(...)
-	local params = {...}
-	table.insert(params, #params + 1, "info")
-	WolfHUD:print_log(unpack(params))
-end
-
-local print_warning = function(...)
-	local params = {...}
-	table.insert(params, #params + 1, "warning")
-	WolfHUD:print_log(unpack(params))
-end
-
-local print_error = function(...)
-	local params = {...}
-	table.insert(params, #params + 1, "error")
-	WolfHUD:print_log(unpack(params))
+local print_debug = function(text, ...)
+	text = string.format("(GameInfo) %s", tostring(text))
+	WolfHUD:print_log(text, ...)
 end
 
 if string.lower(RequiredScript) == "lib/setups/setup" then
@@ -604,6 +591,7 @@ lounge		100421		100448			102049
 		while self._scheduled_callbacks[1] and self._scheduled_callbacks[1].t <= t do
 			local data = table.remove(self._scheduled_callbacks, 1)
 			data.clbk(unpack(data.args))
+			print_debug("Executed scheduled callback: %s", data.id, "info")
 		end
 	end
 
@@ -617,6 +605,7 @@ lounge		100421		100448			102049
 		end
 
 		table.insert(self._scheduled_callbacks, pos, { id = id, t = t, clbk = clbk, args = { ... } })
+		print_debug("Added scheduled callback: %s", id, "info")
 	end
 
 	function GameInfoManager:remove_scheduled_callback(id)
@@ -624,6 +613,7 @@ lounge		100421		100448			102049
 			if data.id == id then
 				table.remove(self._scheduled_callbacks, i)
 				i = i - 1
+				print_debug("Removed scheduled callback: %s", id, "info")
 			end
 		end
 	end
@@ -634,7 +624,7 @@ lounge		100421		100448			102049
 		if self[target] then
 			self[target](self, ...)
 		else
-			print_warning("(GameInfo) No event handler for %s", target)
+			print_debug("No event handler for %s", target, "error")
 		end
 	end
 
@@ -883,7 +873,7 @@ lounge		100421		100448			102049
 			local carry_id = data.unit:carry_data() and data.unit:carry_data():carry_id() or lookup.INTERACTION_TO_CARRY[data.interact_id] or (self._loot[key] and self._loot[key].carry_id)
 
 			if carry_id then
-				print_info("(GameInfo) %s - %s: %d", event, carry_id, data.editor_id)
+				print_debug("Loot Interaction: %s - %s (%d)", event, carry_id, data.editor_id, "info")
 				data.carry_id = carry_id
 				self:_loot_interaction_handler(event, key, data)
 			else
@@ -933,7 +923,7 @@ lounge		100421		100448			102049
 				self:_listener_callback("camera", event, key, self._cameras[key])
 
 				if not type then
-					print_warning("UNKNOWN CAMERA UNIT TYPE: %s", tostring(data.unit:name():key()))
+					print_debug("UNKNOWN CAMERA UNIT TYPE: %s", tostring(data.unit:name():key()), "warning")
 				end
 			end
 		elseif self._cameras[key] then
@@ -1153,14 +1143,14 @@ lounge		100421		100448			102049
 
 				self._deployables[type][aggregate_key][attr] = total
 				self:_listener_callback(type, "set_" .. attr, aggregate_key, self._deployables[type][aggregate_key])
-				print_info("(GameInfo) UPDATE AGGREGATE %s: %s", tostring(attr), tostring(total))
+				print_debug("UPDATE AGGREGATE %s: %s", tostring(attr), tostring(total), "info")
 			end
 
 			local lookup = GameInfoManager._EQUIPMENT.AGGREAGATE_ITEMS
 			local level_id = managers.job:current_level_id() or ""
 			local editor_id = self._deployables[type][key].unit:editor_id()
 			local aggregate_key = lookup[type] or lookup[level_id] and lookup[level_id][editor_id]
-			print_info("(GameInfo) %s | %s", type, self._deployables[type][key].unit:editor_id())
+			print_debug("_bag_deployable_event: %s | %s", type, self._deployables[type][key].unit:editor_id(), "info")
 			if event == "destroy" then
 				self:_listener_callback(type, "destroy", key, self._deployables[type][key])
 				self._deployables[type][key] = nil
@@ -1245,7 +1235,7 @@ lounge		100421		100448			102049
 	end
 
 	function GameInfoManager:_sentry_event(event, key, data)
-		print_info("GameInfoManager:_sentry_event(%s, %s)", event, key)
+		print_debug("_sentry_event(%s, %s)", event, key, "info")
 
 		if event == "create" then
 			local sentry_type = data.unit:base() and data.unit:base():get_type() or ""
@@ -1290,7 +1280,7 @@ lounge		100421		100448			102049
 				self:_buff_event("set_value", id, { value = data.value })
 			end
 		else
-			print_info("Unknown temporary buff event: %s, %s, %s", tostring(event), tostring(data.category), tostring(data.upgrade))
+			print_debug("Unknown temporary buff event: %s, %s, %s", tostring(event), tostring(data.category), tostring(data.upgrade), "warning")
 		end
 	end
 
@@ -1314,7 +1304,7 @@ lounge		100421		100448			102049
 	end
 
 	function GameInfoManager:_timed_stack_buff_event(event, id, data)
-		print_info("GameInfoManager:_timed_stack_buff_event(%s, %s)", tostring(event), tostring(id))
+		print_debug("_timed_stack_buff_event(%s, %s)", tostring(event), tostring(id), "info")
 
 		if event == "add_stack" then
 			if not self._buffs[id] then
@@ -1338,7 +1328,7 @@ lounge		100421		100448			102049
 	end
 
 	function GameInfoManager:_buff_event(event, id, data)
-		print_info("GameInfoManager:_buff_event(%s, %s)", tostring(event), tostring(id))
+		print_debug("_buff_event(%s, %s)", tostring(event), tostring(id), "info")
 
 		if event == "activate" then
 			if not self._buffs[id] then
@@ -1419,12 +1409,12 @@ lounge		100421		100448			102049
 				end
 			end
 		else
-			print_info("Unknown team buff event: %s, %s, %s", event, data.category, data.upgrade)
+			print_debug("Unknown team buff event: %s, %s, %s", event, data.category, data.upgrade, "warning")
 		end
 	end
 
 	function GameInfoManager:_player_action_event(event, id, data)
-		print_info("GameInfoManager:_player_action_event(%s, %s)", tostring(event), tostring(id))
+		print_debug("_player_action_event(%s, %s)", tostring(event), tostring(id), "info")
 
 		if event == "activate" then
 			if not self._player_actions[id] then
@@ -1569,12 +1559,13 @@ lounge		100421		100448			102049
 		local count = 0
 
 		for key, cam_data in pairs(self._cameras) do
-			if cam_data.enabled ~= false and (cam_data.active or Network:is_client()) then	-- Ukrainian Job never sets cams 'enabled', only 'active' if guard in front of console. GO Bank sets both flags.
-				print_info("Camera (%s): Drone:%s Enabled:%s Active:%s Broken:%s Loop:%s", key, tostring(cam_data.is_drone), tostring(cam_data.enabled), tostring(cam_data.active), tostring(cam_data.brokene), tostring(cam_data.tape_loop_expire_t and cam_data.tape_loop_expire_t > Application:time() and true or false))
-			end
+			if cam_data.enabled ~= false and (cam_data.active or Network:is_client()) then
+				local id = cam_data.unit and cam_data.unit:editor_id() or key
+				print_debug("Camera (%s): Drone:%s Enabled:%s Active:%s Broken:%s Loop:%s", id, tostring(cam_data.is_drone), tostring(cam_data.enabled), tostring(cam_data.active), tostring(cam_data.broken), tostring(cam_data.tape_loop_expire_t and cam_data.tape_loop_expire_t > Application:time() and string.format("%.2f", cam_data.tape_loop_expire_t - Application:time()) or false), "info")
 
-			if cam_data.enabled ~= false and (cam_data.active or Network:is_client()) and not cam_data.broken then
-				count = count + 1
+				if not cam_data.broken then
+					count = count + 1
+				end
 			end
 		end
 
@@ -3672,7 +3663,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerdamage" then
 		local result = _upd_health_regen_original(self, t, ...)
 
 		if self._health_regen_update_timer then
-			if self._health_regen_update_timer > (old_timer or 0) and not self:full_health() then
+			if self._health_regen_update_timer > (old_timer or 0) --[[and not self:full_health()]] then
 				for buff_id, data in pairs(PASSIVE_HEALTH_REGEN) do
 					managers.gameinfo:event("buff", "set_duration", buff_id, { duration = self._health_regen_update_timer })
 				end

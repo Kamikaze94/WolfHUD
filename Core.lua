@@ -4,7 +4,6 @@ if not _G.WolfHUD then
 	WolfHUD.save_path = SavePath
 	WolfHUD.settings_path = WolfHUD.save_path .. "WolfHUD_v2.json"
 	WolfHUD.tweak_file = "WolfHUDTweakData.lua"
-	WolfHUD.LOG_MODE = { error = true, warning = true, info = false }		-- error, info, warning or all
 	WolfHUD.identifier = string.match(WolfHUD.mod_path, "(%w+)[\\/]$") or "WolfHUD"
 
 	WolfHUD.settings = {}
@@ -576,9 +575,10 @@ if not _G.WolfHUD then
 	end
 
 	function WolfHUD:print_log(...)
+		local LOG_MODES = self:getTweakEntry("LOG_MODE", "table", {})
 		local params = {...}
 		local msg_type, text = table.remove(params, #params), table.remove(params, 1)
-		if msg_type and self.LOG_MODE[tostring(msg_type)] then
+		if msg_type and LOG_MODES[tostring(msg_type)] then
 			if type(text) == "table" or type(text) == "userdata" then
 				local function log_table(userdata)
 					local text = ""
@@ -607,7 +607,17 @@ if not _G.WolfHUD then
 			elseif type(text) == "string" then
 				text = string.format(text, unpack(params or {}))
 			end
-			log(string.format("[WolfHUD] %s: %s", string.upper(msg_type), text))
+			text = string.format("[WolfHUD] %s: %s", string.upper(msg_type), text)
+			log(text)
+			if LOG_MODES.to_console and con and con.print and con.error then
+				local t = Application:time()
+				text = string.format("%02d:%06.3f\t>\t%s", math.floor(t/60), t%60, text)
+				if tostring(msg_type) == "info" then
+					con:print(text)
+				else
+					con:error(text)
+				end
+			end
 		end
 	end
 
