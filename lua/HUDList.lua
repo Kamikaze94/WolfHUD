@@ -5372,7 +5372,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		},
 
 		--Henchman boosts
-		team_crew_inspire_debuff = {
+		crew_inspire_debuff = {
 			hud_tweak = "ability_1",
 			class = "TimedBuffItem",
 			priority = 10,

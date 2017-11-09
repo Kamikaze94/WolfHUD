@@ -564,11 +564,18 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 
 			if mission then
 				local level_str = managers.localization:to_upper_text(tweak_data.levels[mission.level.level_id].name_id) or ""
+				local difficulty_increase = mission and mission.add or 0
 
 				placer:add_row(panel:fine_text({
 					font = large_font,
 					font_size = tweak_data.hud_stats.objectives_title_size,
 					text = level_str,
+				}))
+				placer:add_right(panel:fine_text({
+					font = large_font,
+					font_size = tweak_data.hud_stats.objectives_title_size,
+					text = string.format("+%s", managers.localization:text("menu_cs_level", {level = difficulty_increase})),
+					color = tweak_data.screen_colors.crime_spree_risk,
 				}))
 			end
 

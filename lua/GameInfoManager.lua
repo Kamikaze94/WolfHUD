@@ -2733,6 +2733,7 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 	local replenish_grenades_original = PlayerManager.replenish_grenades
 	local _on_grenade_cooldown_end_original = PlayerManager._on_grenade_cooldown_end
 	local speed_up_grenade_cooldown_original = PlayerManager.speed_up_grenade_cooldown
+	local start_custom_cooldown_original = PlayerManager.start_custom_cooldown
 	local _set_body_bags_amount_original = PlayerManager._set_body_bags_amount
 
 	local PLAYER_HAS_SPAWNED = false
@@ -3114,9 +3115,14 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		return speed_up_grenade_cooldown_original(self, time, ...)
 	end
 
+	function PlayerManager:start_custom_cooldown(category, upgrade, cooldown, ...)
+		managers.gameinfo:event("timed_buff", "activate", upgrade .. "_debuff", { duration = cooldown })
+		return start_custom_cooldown_original(self, category, upgrade, cooldown, ...)
+	end
+
 	function PlayerManager:_set_body_bags_amount(body_bags_amount)
 		managers.gameinfo:event("bodybags", "set", nil, body_bags_amount)
-		_set_body_bags_amount_original(self, body_bags_amount)
+		return _set_body_bags_amount_original(self, body_bags_amount)
 	end
 
 	function PlayerManager:got_ability()
