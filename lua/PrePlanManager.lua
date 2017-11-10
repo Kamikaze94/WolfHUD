@@ -523,48 +523,54 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 		local peer_id = managers.network and managers.network:session():local_peer():id()
 		local current_assets, current_votes, default_votes = self._reserved_mission_elements or {}, self:get_player_votes(peer_id) or {}, self:get_default_votes() or {}
 
-		text = string.format("%s%s\n", text, managers.localization:text("wolfhud_preplanning_votes_title"))
-		for plan, data in pairs(current_votes) do
-			local element_type, element_index = unpack(data)
-			local plan_data = tweak_data and tweak_data.preplanning.types[element_type]
-			local plan_name = plan_data and plan_data.name_id and managers.localization:text(plan_data.name_id) or ""
-			text = string.format("%s - %s", text, plan_name)
-			local element = self._mission_elements_by_type[element_type] and self._mission_elements_by_type[element_type][element_index]
-			if element then
-				text = string.format("%s (%s)\n", text, self:get_element_name(element))
-			else
-				text = string.format("%s\n", text)
+		if table.size(current_votes) > 0 or table.size(default_votes) > 0 then
+			text = string.format("%s%s\n", text, managers.localization:text("wolfhud_preplanning_votes_title"))
+			for plan, data in pairs(current_votes) do
+				local element_type, element_index = unpack(data)
+				local plan_data = tweak_data and tweak_data.preplanning.types[element_type]
+				local plan_name = plan_data and plan_data.name_id and managers.localization:text(plan_data.name_id) or ""
+				text = string.format("%s - %s", text, plan_name)
+				local element = self._mission_elements_by_type[element_type] and self._mission_elements_by_type[element_type][element_index]
+				if element then
+					text = string.format("%s (%s)\n", text, self:get_element_name(element))
+				else
+					text = string.format("%s\n", text)
+				end
+				default_votes[plan] = nil
 			end
-			default_votes[plan] = nil
-		end
 
-		for plan, data in pairs(default_votes) do
-			local element_type, element_index = unpack(data)
-			local plan_data = tweak_data and tweak_data.preplanning.types[element_type]
-			local plan_name = plan_data and plan_data.name_id and managers.localization:text(plan_data.name_id) or ""
-			text = string.format("%s - %s", text, plan_name)
-			local element = self._mission_elements_by_type[element_type] and self._mission_elements_by_type[element_type][element_index]
-			local element_name = element and self:get_element_name(element)
-			if element_name and not element_name:lower():find("error") and not plan_data.pos_not_important then
-				text = string.format("%s (%s)\n", text, element_name)
-			else
-				text = string.format("%s\n", text)
-			end
-			default_votes[plan] = nil
-		end
-
-		text = string.format("%s\n%s\n", text, managers.localization:text("wolfhud_preplanning_assets_title"))
-		for id, mission_element in pairs(current_assets) do
-			if mission_element.peer_id == peer_id then
-				local element_type, index = unpack(mission_element.pack)
-				local type_name = self:get_type_name(element_type)
-				text = string.format("%s - %s", text, type_name)
-				local element = self._mission_elements_by_type[element_type] and self._mission_elements_by_type[element_type][index]
+			for plan, data in pairs(default_votes) do
+				local element_type, element_index = unpack(data)
+				local plan_data = tweak_data and tweak_data.preplanning.types[element_type]
+				local plan_name = plan_data and plan_data.name_id and managers.localization:text(plan_data.name_id) or ""
+				text = string.format("%s - %s", text, plan_name)
+				local element = self._mission_elements_by_type[element_type] and self._mission_elements_by_type[element_type][element_index]
 				local element_name = element and self:get_element_name(element)
-				if element_name and not element_name:lower():find("error") then
+				if element_name and not element_name:lower():find("error") and not plan_data.pos_not_important then
 					text = string.format("%s (%s)\n", text, element_name)
 				else
 					text = string.format("%s\n", text)
+				end
+				default_votes[plan] = nil
+			end
+
+			text = string.format("%s\n", text)
+		end
+
+		if table.size(current_assets) > 0 then
+			text = string.format("%s%s\n", text, managers.localization:text("wolfhud_preplanning_assets_title"))
+			for id, mission_element in pairs(current_assets) do
+				if mission_element.peer_id == peer_id then
+					local element_type, index = unpack(mission_element.pack)
+					local type_name = self:get_type_name(element_type)
+					text = string.format("%s - %s", text, type_name)
+					local element = self._mission_elements_by_type[element_type] and self._mission_elements_by_type[element_type][index]
+					local element_name = element and self:get_element_name(element)
+					if element_name and not element_name:lower():find("error") then
+						text = string.format("%s (%s)\n", text, element_name)
+					else
+						text = string.format("%s\n", text)
+					end
 				end
 			end
 		end
@@ -582,30 +588,35 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 		if PrePlanningManager._SAVED_PLANS and PrePlanningManager._SAVED_PLANS[plan_name] then
 			local saved_assets, saved_votes = PrePlanningManager._SAVED_PLANS[plan_name].assets or {}, PrePlanningManager._SAVED_PLANS[plan_name].votes or {}
 
-			text = string.format("%s%s\n", text, managers.localization:text("wolfhud_preplanning_votes_title"))
-			for i, data in pairs(saved_votes) do
-				local plan_data = tweak_data and tweak_data.preplanning.types[data.type]
-				local plan_name = plan_data and plan_data.name_id and managers.localization:text(plan_data.name_id) or ""
-				text = string.format("%s - %s", text, plan_name)
-				local element = self._mission_elements_by_type[element_type] and self._mission_elements_by_type[data.type][data.index]
-				local element_name = element and self:get_element_name(element)
-				if element_name and not element_name:lower():find("error") and not plan_data.pos_not_important then
-					text = string.format("%s (%s)\n", text, element_name)
-				else
-					text = string.format("%s\n", text)
+			if table.size(saved_votes) > 0 then
+				text = string.format("%s%s\n", text, managers.localization:text("wolfhud_preplanning_votes_title"))
+				for i, data in pairs(saved_votes) do
+					local plan_data = tweak_data and tweak_data.preplanning.types[data.type]
+					local plan_name = plan_data and plan_data.name_id and managers.localization:text(plan_data.name_id) or ""
+					text = string.format("%s - %s", text, plan_name)
+					local element = self._mission_elements_by_type[element_type] and self._mission_elements_by_type[data.type][data.index]
+					local element_name = element and self:get_element_name(element)
+					if element_name and not element_name:lower():find("error") and not plan_data.pos_not_important then
+						text = string.format("%s (%s)\n", text, element_name)
+					else
+						text = string.format("%s\n", text)
+					end
 				end
+				text = string.format("%s\n", text)
 			end
 
-			text = string.format("%s\n%s\n", text, managers.localization:text("wolfhud_preplanning_assets_title"))
-			for id, mission_element in pairs(saved_assets) do
-				local type_name = self:get_type_name(mission_element.type)
-				text = string.format("%s - %s", text, type_name)
-				local element = self._mission_elements_by_type[mission_element.type] and self._mission_elements_by_type[mission_element.type][mission_element.index]
-				local element_name = element and self:get_element_name(element)
-				if element_name and not element_name:lower():find("error") then
-					text = string.format("%s (%s)\n", text, element_name)
-				else
-					text = string.format("%s\n", text)
+			if table.size(saved_assets) > 0 then
+				text = string.format("%s%s\n", text, managers.localization:text("wolfhud_preplanning_assets_title"))
+				for id, mission_element in pairs(saved_assets) do
+					local type_name = self:get_type_name(mission_element.type)
+					text = string.format("%s - %s", text, type_name)
+					local element = self._mission_elements_by_type[mission_element.type] and self._mission_elements_by_type[mission_element.type][mission_element.index]
+					local element_name = element and self:get_element_name(element)
+					if element_name and not element_name:lower():find("error") then
+						text = string.format("%s (%s)\n", text, element_name)
+					else
+						text = string.format("%s\n", text)
+					end
 				end
 			end
 		end
