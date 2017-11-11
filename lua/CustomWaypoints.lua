@@ -148,7 +148,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				[ "drug_lord_boss" ]				= { default = "wolfhud_enemy_druglord_boss" },
 				[ "drug_lord_boss_stealth" ]		= { default = "wolfhud_enemy_druglord_boss_stealth" },
 				[ "biker_boss" ] 					= { default = "wolfhud_enemy_biker_boss" },
-				[ "bank_manager" ] 					= { default = "wolfhud_enemy_bank_manager" },
+				[ "bank_manager" ] 					= { default = "wolfhud_enemy_bank_manager", dah = "wolfhud_enemy_dah_ralph" },
 				[ "inside_man" ] 					= { default = "wolfhud_enemy_inside_man" },
 				[ "escort_undercover" ] 			= { default = "wolfhud_enemy_escort_undercover", run = "wolfhud_enemy_escort_heatstreet" },
 				[ "escort_chinese_prisoner" ]		= { default = "wolfhud_enemy_escort_chinese_prisoner" },

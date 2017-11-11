@@ -114,7 +114,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if managers.gameinfo then
 			managers.hudlist = HUDListManager:new()
 		else
-			WolfHUD:print_log("HUDList: GameInfoManager not present!", "error")
+			WolfHUD:print_log("(HUDList) GameInfoManager not present!", "error")
 		end
 	end
 
@@ -290,6 +290,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		biker_escape = 				{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_biker" 					},
 		tank = 						{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank" 					},
 		tank_hw = 					{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank_hw" 				},
+		tank_medic = 				{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank_medic" 				},
+		tank_mini = 				{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank_mini" 				},
 		spooc = 					{ type_id = "spooc",		category = "enemies",	long_name = "wolfhud_enemy_spook" 					},
 		taser = 					{ type_id = "taser",		category = "enemies",	long_name = "wolfhud_enemy_taser" 					},
 		shield = 					{ type_id = "shield",		category = "enemies",	long_name = "wolfhud_enemy_shield" 					},
@@ -1009,14 +1011,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDListManager:_buff_event(event, id, data)
-		WolfHUD:print_log("(%.3f) HUDListManager:_buff_event(%s, %s)", Application:time(), tostring(event), tostring(id), "info")
+		WolfHUD:print_log("(HUDList) _buff_event(%s, %s)", tostring(event), tostring(id), "info")
 		local items = self:_get_buff_items(id)
 
 		for _, item in ipairs(items) do
 			if item[event] then
 				item[event](item, id, data)
 			else
-				WolfHUD:print_log("(%.3f) HUDListManager:_buff_event: No matching function for event %s for buff %s", Application:time(), tostring(event), tostring(id), "warning")
+				WolfHUD:print_log("HUDList) _buff_event: No matching function for event %s for buff %s", tostring(event), tostring(id), "warning")
 			end
 		end
 
@@ -2709,28 +2711,31 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	HUDList.UnitCountItem = HUDList.UnitCountItem or class(HUDList.RightListItem)
-	HUDList.UnitCountItem.MAP = {
-		enemies =		{ skills = {6, 1}, 	color_id = "enemy_color", 		priority = 1, subtract = { "cop_hostage", "sec_hostage", "minions" } },	--Aggregated enemies
-		cop =			{ skills = {0, 5}, 	color_id = "enemy_color", 		priority = 5, subtract = { "cop_hostage", "cop_minion" } },	--Non-special police
-		security =		{ perks = {1, 4}, 	color_id = "guard_color", 		priority = 4, subtract = { "sec_hostage", "sec_minion" } },
-		thug =			{ skills = {4, 12}, color_id = "thug_color", 		priority = 4 },
-		tank =			{ skills = {3, 1}, 	color_id = "special_color", 	priority = 6 },
-		spooc =			{ skills = {1, 3}, 	color_id = "special_color", 	priority = 6 },
-		taser =			{ skills = {3, 5}, 	color_id = "special_color", 	priority = 6 },
-		shield =		{ texture = "guis/textures/pd2/hud_buff_shield", color_id = "special_color", priority = 6 },
-		sniper =		{ skills = {6, 5}, 	color_id = "special_color", 	priority = 6 },
-		medic = 		{ skills = {5, 8}, 	color_id = "special_color", 	priority = 6 },
-		thug_boss =		{ skills = {1, 1}, 	color_id = "thug_color", 		priority = 4 },
-		phalanx =		{ texture = "guis/textures/pd2/hud_buff_shield", color_id = "special_color", priority = 7 },
+	do
+		local buff_shield = "guis/textures/pd2/hud_buff_shield"
+		HUDList.UnitCountItem.MAP = {
+			enemies =		{ class = "UnitCountItem", 	 skills = 	{6, 1}, 	color_id = "enemy_color", 		priority = 1, subtract = { "cop_hostage", "sec_hostage", "minions" } },	--Aggregated enemies
+			cop =			{ class = "UnitCountItem",	 skills = 	{0, 5}, 	color_id = "enemy_color", 		priority = 5, subtract = { "cop_hostage", "cop_minion" } },	--Non-special police
+			security =		{ class = "UnitCountItem",	 perks = 	{1, 4}, 	color_id = "guard_color", 		priority = 4, subtract = { "sec_hostage", "sec_minion" } },
+			thug =			{ class = "UnitCountItem",	 skills = 	{4, 12}, 	color_id = "thug_color", 		priority = 4 },
+			tank =			{ class = "UnitCountItem",	 skills = 	{3, 1}, 	color_id = "special_color", 	priority = 6 },
+			spooc =			{ class = "UnitCountItem",	 skills = 	{1, 3}, 	color_id = "special_color", 	priority = 6 },
+			taser =			{ class = "UnitCountItem",	 skills = 	{3, 5}, 	color_id = "special_color", 	priority = 6 },
+			shield =		{ class = "ShieldCountItem", texture = buff_shield, color_id = "special_color", 	priority = 6 },
+			sniper =		{ class = "UnitCountItem",	 skills = 	{6, 5}, 	color_id = "special_color", 	priority = 6 },
+			medic = 		{ class = "UnitCountItem",	 skills = 	{5, 8}, 	color_id = "special_color", 	priority = 6 },
+			thug_boss =		{ class = "UnitCountItem",	 skills = 	{1, 1}, 	color_id = "thug_color", 		priority = 4 },
+			phalanx =		{ class = "UnitCountItem",	 texture = buff_shield, color_id = "special_color", 	priority = 7 },
 
-		turret =		{ skills = {7, 5}, 	color_id = "turret_color", 		priority = 5 },
-		unique =		{ skills = {3, 8}, 	color_id = "civilian_color", 	priority = 3 },
-		cop_hostage =	{ skills = {2, 8}, 	color_id = "hostage_color", 	priority = 2 },
-		civ_hostage =	{ skills = {4, 7}, 	color_id = "hostage_color", 	priority = 1 },
-		hostages =		{ skills = {4, 7}, 	color_id = "hostage_color", 	priority = 1 },
-		minion =		{ skills = {6, 8}, 	color_id = "hostage_color", 	priority = 0 },
-		civ =			{ skills = {6, 7}, 	color_id = "civilian_color", 	priority = 3, subtract = { "civ_hostage" } },
-	}
+			turret =		{ class = "UnitCountItem",	 skills = 	{7, 5}, 	color_id = "turret_color", 		priority = 5 },
+			unique =		{ class = "UnitCountItem",	 skills = 	{3, 8}, 	color_id = "civilian_color", 	priority = 3 },
+			cop_hostage =	{ class = "UnitCountItem",	 skills = 	{2, 8}, 	color_id = "hostage_color", 	priority = 2 },
+			civ_hostage =	{ class = "UnitCountItem",	 skills = 	{4, 7}, 	color_id = "hostage_color", 	priority = 1 },
+			hostages =		{ class = "UnitCountItem",	 skills = 	{4, 7}, 	color_id = "hostage_color", 	priority = 1 },
+			minion =		{ class = "UnitCountItem",	 skills = 	{6, 8}, 	color_id = "hostage_color", 	priority = 0 },
+			civ =			{ class = "UnitCountItem",	 skills = 	{6, 7}, 	color_id = "civilian_color", 	priority = 3, subtract = { "civ_hostage" } },
+		}
+	end
 	function HUDList.UnitCountItem:init(parent, name, id, unit_types)
 		local unit_data = HUDList.UnitCountItem.MAP[id] or {}
 		local params = { priority = unit_data.priority }
@@ -2771,37 +2776,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			}
 		}
 
-		if self._id == "shield" then	--Shield special case for filling the shield icon
-			self._shield_filler = self._panel:rect({
-				name = "shield_filler",
-				w = self._icon:w() * 0.4,
-				h = self._icon:h() * 0.4,
-				color = HUDListManager.ListOptions.special_color or Color.white,
-				blend_mode = "normal",
-				layer = self._icon:layer() + 1,
-			})
-			self._shield_filler:set_center(self._icon:center())
-		end
-
 		self:set_count(total_count)
-	end
-
-	function HUDList.UnitCountItem:rescale(new_scale)
-		local enabled, size_mult = HUDList.UnitCountItem.super.rescale(self, new_scale)
-
-		if enabled and alive(self._shield_filler) then
-			self._shield_filler:set_size(self._icon:w() * 0.4, self._icon:h() * 0.4)
-			self._shield_filler:set_center(self._icon:center())
-		end
-
-		return enabled, size_mult
-	end
-
-	function HUDList.UnitCountItem:set_icon_color(color)
-		HUDList.UnitCountItem.super.set_icon_color(self, color)
-		if self._shield_filler then
-			self._shield_filler:set_color(self._default_icon_color or self._default_text_color)
-		end
 	end
 
 	function HUDList.UnitCountItem:unit_id()
@@ -2815,6 +2790,40 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		else
 			self:change_count(value)
 		end
+	end
+	
+	HUDList.ShieldCountItem = HUDList.ShieldCountItem or class(HUDList.UnitCountItem)
+
+	function HUDList.ShieldCountItem:init(parent, name, id, unit_types)
+		HUDList.ShieldCountItem.super.init(self, parent, name, id, unit_types)
+
+		self._shield_filler = self._panel:rect({
+			name = "shield_filler",
+			w = self._icon:w() * 0.4,
+			h = self._icon:h() * 0.4,
+			color = self._default_icon_color or self._default_text_color,
+			blend_mode = "normal",
+			layer = self._icon:layer() + 1,
+		})
+		self._shield_filler:set_center(self._icon:center())
+	end
+
+	function HUDList.ShieldCountItem:set_icon_color(color)
+		HUDList.ShieldCountItem.super.set_icon_color(self, color)
+		if self._shield_filler then
+			self._shield_filler:set_color(self._default_icon_color or self._default_text_color)
+		end
+	end
+
+	function HUDList.ShieldCountItem:rescale(new_scale)
+		local enabled, size_mult = HUDList.ShieldCountItem.super.rescale(self, new_scale)
+
+		if enabled and alive(self._shield_filler) then
+			self._shield_filler:set_size(self._icon:w() * 0.4, self._icon:h() * 0.4)
+			self._shield_filler:set_center(self._icon:center())
+		end
+
+		return enabled, size_mult
 	end
 
 	HUDList.UsedPagersItem = HUDList.UsedPagersItem or class(HUDList.RightListItem)
@@ -2852,10 +2861,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDList.UsedPagersItem:set_count(num)
 		if managers.groupai:state():whisper_mode() then
-			HUDList.UsedPagersItem.super.set_count(self, num)
-
 			local tweak = tweak_data.player.alarm_pager.bluff_success_chance
-			self._default_text_color = math.lerp(Color(1, 0.2, 0), HUDListManager.ListOptions.list_color or Color.white, tweak[self._count + 1] or 0)
+			self._default_text_color = math.lerp(Color(1, 0.2, 0), HUDListManager.ListOptions.list_color or Color.white, tweak and tweak[num] or 0)
+
+			HUDList.UsedPagersItem.super.set_count(self, num)
 		end
 	end
 
@@ -5363,7 +5372,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		},
 
 		--Henchman boosts
-		team_crew_inspire_debuff = {
+		crew_inspire_debuff = {
 			hud_tweak = "ability_1",
 			class = "TimedBuffItem",
 			priority = 10,
@@ -6076,7 +6085,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDList.CompositeBuff:set_value(id, data)
 		if self._member_buffs[id] and self._member_buffs[id].value ~= data.value then
-			WolfHUD:print_log("HUDList.CompositeBuff:set_value(%s, %s)", tostring(id), tostring(data.value), "info")
+			WolfHUD:print_log("(HUDList) CompositeBuff:set_value(%s, %s)", tostring(id), tostring(data.value), "info")
 			self._member_buffs[id].value = data.value
 			self:_check_buffs()
 		end

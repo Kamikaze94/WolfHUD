@@ -10,6 +10,14 @@ function WolfHUDTweakData:init()
 	-- If you encounter problems, make sure the contents of this file matches the contents of your customized version.	--
 	----------------------------------------------------------------------------------------------------------------------
 
+	-- Determines which messages get logged
+	self.LOG_MODE = { 
+		error = true, 		-- log errors
+		warning = true, 	-- log warnings
+		info = false, 		-- log infos
+		to_console = true 	-- show messages in console (Requires DebugConsole mod)
+	}
+
 	-- Currency used ingame
 	self.CASH_SIGN = "$"				-- Dollar
 	--self.CASH_SIGN = "\194\128"		-- EUR
