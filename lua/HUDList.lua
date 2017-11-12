@@ -389,7 +389,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		bike_part_light = 			"bike",
 		bike_part_heavy = 			"bike",
 		circuit =					"server",
-		cloaker_cocaine = 			"coke",
+		cloaker_cocaine = 			"cloakaine",
 		cloaker_gold = 				"gold",
 		cloaker_money = 			"money",
 		coke =						"coke",
