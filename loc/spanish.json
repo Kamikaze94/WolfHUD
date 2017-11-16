@@ -791,8 +791,8 @@
 	"wolfhud_dmg_popup_alpha_desc" : "Configura la opacidad del indicador.",
 	"wolfhud_dmg_popup_color_title" : "Color de los bodyshots",
 	"wolfhud_dmg_popup_color_desc" : "Configura el color de los disparos al cuerpo del enemigo",
-	"wolfhud_dmg_popup_critical_color_title" : "Critical Popup Color",
-	"wolfhud_dmg_popup_critical_color_desc" : "Set the color of the popup for critical hits.",
+	"wolfhud_dmg_popup_critical_color_title" : "Color del disparo crítico",
+	"wolfhud_dmg_popup_critical_color_desc" : "Configura el color de los disparos críticos.",
 	"wolfhud_dmg_popup_headshot_color_title" : "Color de los headshots",
 	"wolfhud_dmg_popup_headshot_color_desc" : "Configura el color de los disparos a la cabeza del enemigo.",
 
