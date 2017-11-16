@@ -84,7 +84,7 @@ The BLT log can be found at **PAYDAY 2/mods/logs/**.
 * German made by **me**
 * Russian made by **chrom[K]a**, **Magic3000** & **MEXAHOTABOP**
 * Korean made by **Я!zu**
-* Spanish made by **papydeath95**
+* Spanish made by **papydeath95** & **ElReyZero1201**
 * Chinese made by **zhongfly**
 
 Big credit goes to all of you!
