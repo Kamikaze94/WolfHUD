@@ -1593,6 +1593,19 @@ if WolfHUD then
 							},
 							{
 								type = "multi_choice",
+								name_id = "wolfhud_dmg_popup_critical_color_title",
+								desc_id = "wolfhud_dmg_popup_critical_color_desc",
+								value = {"DamagePopup", "CRITICAL_COLOR"},
+								visible_reqs = {},
+								enabled_reqs = {
+									{ setting = { "DamagePopup", "DISPLAY_MODE" }, min = 2, max = 2 },
+								},
+								options = {},
+								add_color_options = true,
+								add_rainbow = false,
+							},
+							{
+								type = "multi_choice",
 								name_id = "wolfhud_dmg_popup_headshot_color_title",
 								desc_id = "wolfhud_dmg_popup_headshot_color_desc",
 								value = {"DamagePopup", "HEADSHOT_COLOR"},

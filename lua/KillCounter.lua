@@ -89,13 +89,12 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 				killer = attacker:base():thrower_unit()
 			end
 
-			if alive(killer) and self._unit then
+			if alive(killer) and alive(self._unit) then
 				local tweak_id = self._unit:base()._tweak_table
 				local special_unit_ids = managers.statistics and managers.statistics.special_unit_ids or {}
 				local is_special = managers.groupai:state():is_enemy_special(self._unit) or table.contains(special_unit_ids, tweak_id)
-				local i_body = data.col_ray and data.col_ray.body and self._unit:get_body_index(data.col_ray.body:name()) or self._sync_ibody_killcount
-				local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
-				local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false
+				local body = data.col_ray and data.col_ray.body or self._sync_ibody_killcount and self._unit:body(self._sync_ibody_killcount)
+				local headshot = body and self.is_head and self:is_head(body) or false
 
 				if killer:in_slot(2) then
 					managers.hud:increment_teammate_kill_count(HUDManager.PLAYER_PANEL, is_special, headshot)
@@ -132,12 +131,18 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	end
 
 	function CopDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body, ...)
-		self._sync_ibody_killcount = i_body
+		if i_body then
+			self._sync_ibody_killcount = i_body
+		end
+
 		return sync_damage_bullet_original(self, attacker_unit, damage_percent, i_body, ...)
 	end
 
 	function CopDamage:sync_damage_melee(attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
-		self._sync_ibody_killcount = i_body
+		if i_body then
+			self._sync_ibody_killcount = i_body
+		end
+
 		return sync_damage_melee_original(self, attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
 
 	end

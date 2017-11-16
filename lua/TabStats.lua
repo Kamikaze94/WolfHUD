@@ -387,7 +387,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			return not challenge.data.rewarded
 		end
 
-		local objectives = challenge.data.objectives
+		local objectives = challenge.data and challenge.data.objectives
 		for _, obj_data in ipairs(objectives or {}) do
 			if obj_data and not obj_data.completed then
 				local requirements = {}
@@ -407,6 +407,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 					--log(json.encode(requirements))
 					if (requirements.need_full_job or not requirements.is_dropin) and managers.statistics:is_dropin()then
 						is_completeable = false
+					end
+					if is_completeable and requirements.crime_spree and managers.crime_spree and not managers.crime_spree:is_active() then
+						if type(requirements.crime_spree) ~= "number" or requirements.crime_spree > managers.crime_spree:spree_level() then
+							is_completeable = false
+						end
 					end
 					if is_completeable and requirements.difficulty then
 						local difficulty_stars = managers.job:current_difficulty_stars()
@@ -560,7 +565,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 		local placer = UiPlacer:new(10, 10, 0, 0)
 		local difficulty_text, difficulty_color = "", Color.white
 		local is_crime_spree = managers.crime_spree:is_active()
-		add_bg = false
 
 		if is_crime_spree then
 			local level_data = managers.job:current_level_data()
@@ -961,10 +965,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 						font_size = 12,
 						font = tiny_font
 					}, objective.progress))
-
-					if objective.progress_id then
-						self._progress_ids[objective.progress_id] = bar
-					end
 				end
 			end
 		end
@@ -988,9 +988,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 				local remaining_str = self:_create_time_string(expire_time)
 				self._timer:set_text(remaining_str)
 			end
-		end
-		for progress_id, progress_bar in pairs(self._progress_ids or {}) do
-			-- Update progress?
 		end
 	end
 
@@ -1046,24 +1043,22 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 		return count
 	end
 
+	local TANK_IDs = { "tank", "tank_green", "tank_black", "tank_skull", "tank_medic", "tank_mini", "tank_hw" }
+
 	function StatisticsManager:session_total_tanks_killed()
-		return self:session_enemy_killed_by_type("tank", "count")
-				+ self:session_enemy_killed_by_type("tank_green", "count")
-				+ self:session_enemy_killed_by_type("tank_black", "count")
-				+ self:session_enemy_killed_by_type("tank_skull", "count")
-				+ self:session_enemy_killed_by_type("tank_medic", "count")
-				+ self:session_enemy_killed_by_type("tank_mini", "count")
-				+ self:session_enemy_killed_by_type("tank_hw", "count")
+		local count = 0
+		for _, unit_id in ipairs(TANK_IDs) do
+			count = count + self:session_enemy_killed_by_type(unit_id, "count")
+		end
+		return count
 	end
 
 	function StatisticsManager:total_tanks_killed()
-		return self:enemy_killed_by_type("tank", "count")
-				+ self:enemy_killed_by_type("tank_green", "count")
-				+ self:enemy_killed_by_type("tank_black", "count")
-				+ self:enemy_killed_by_type("tank_skull", "count")
-				+ self:enemy_killed_by_type("tank_medic", "count")
-				+ self:enemy_killed_by_type("tank_mini", "count")
-				+ self:enemy_killed_by_type("tank_hw", "count")
+		local count = 0
+		for _, unit_id in ipairs(TANK_IDs) do
+			count = count + self:enemy_killed_by_type(unit_id, "count")
+		end
+		return count
 	end
 
 	function StatisticsManager:total_downed_alltime()

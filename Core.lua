@@ -2,6 +2,7 @@ if not _G.WolfHUD then
 	_G.WolfHUD = {}
 	WolfHUD.mod_path = ModPath
 	WolfHUD.save_path = SavePath
+	WolfHUD.assets_path = "./assets/mod_overrides/"
 	WolfHUD.settings_path = WolfHUD.save_path .. "WolfHUD_v2.json"
 	WolfHUD.tweak_file = "WolfHUDTweakData.lua"
 	WolfHUD.identifier = string.match(WolfHUD.mod_path, "(%w+)[\\/]$") or "WolfHUD"
@@ -109,7 +110,7 @@ if not _G.WolfHUD then
 		["core/lib/managers/subtitle/coresubtitlepresenter"] 		= { "EnhancedObjective.lua" },
 
 		--Utils and custom classes...
-		["lib/entry"]												= { "Utils/QuickInputMenu.lua", "Utils/LoadoutPanel.lua" },
+		["lib/entry"]												= { "Utils/QuickInputMenu.lua", "Utils/LoadoutPanel.lua", "Utils/OutlinedText.lua" },
 		["lib/managers/systemmenumanager"] 							= { "Utils/InputDialog.lua" },
 		["lib/managers/dialogs/specializationdialog"] 				= { "Utils/InputDialog.lua" },
 		["lib/managers/menu/specializationboxgui"] 					= { "Utils/InputDialog.lua" },
@@ -234,6 +235,7 @@ if not _G.WolfHUD then
 				ALPHA	 								= 1,
 				COLOR									= "yellow",
 				HEADSHOT_COLOR							= "red",
+				CRITICAL_COLOR 							= "light_purple",
 			},
 			AssaultBanner = {
 				POSITION								= 2,			-- left (1), center (2) or right (3)
@@ -786,44 +788,6 @@ if not _G.WolfHUD then
 		end
 	end
 
-	function WolfHUD:makeOutlineText(panel, bg, txt)
-		bg.name = nil
-		local bgs = {}
-		for i = 1, 4 do
-			table.insert(bgs, panel:text(bg))
-		end
-		WolfHUD:refreshOutlinePos(bgs, txt)
-		return bgs
-	end
-
-	function WolfHUD:refreshOutlinePos(bgs, txt)
-		bgs[1]:set_x(txt:x() - 1)
-		bgs[1]:set_y(txt:y() - 1)
-		bgs[2]:set_x(txt:x() + 1)
-		bgs[2]:set_y(txt:y() - 1)
-		bgs[3]:set_x(txt:x() - 1)
-		bgs[3]:set_y(txt:y() + 1)
-		bgs[4]:set_x(txt:x() + 1)
-		bgs[4]:set_y(txt:y() + 1)
-	end
-
-	function WolfHUD:setOutlineText(bgs, text, show)
-		for _, bg in pairs(bgs) do
-			bg:set_text(text)
-			if show then
-				bg:show()
-			else
-				bg:set_visible(false)
-			end
-		end
-	end
-
-	function WolfHUD:setOutlineFontSize(bgs, size)
-		for _, bg in pairs(bgs) do
-			bg:set_font_size(size)
-		end
-	end
-
 	function WolfHUD:truncateNameTag(name)
 		local truncated_name = name:gsub('^%b[]',''):gsub('^%b==',''):gsub('^%s*(.-)%s*$','%1')
 		if truncated_name:len() > 0 and name ~= truncated_name then
@@ -858,13 +822,17 @@ if not _G.WolfHUD then
 				end
 			end,
 			["HUDList"] = function(setting, value)
-				if managers.hud and HUDListManager then
-					if setting[1] == "BUFF_LIST" and setting[2] ~= "show_buffs" then
-						managers.hud:change_bufflist_setting(tostring(setting[#setting]), WolfHUD:getColor(value) or value)
-					elseif setting[1] == "RIGHT_LIST" and setting[2] == "SHOW_PICKUP_CATEGORIES" then
-						managers.hud:change_pickuplist_setting(tostring(setting[#setting]), WolfHUD:getColor(value) or value)
+				if managers.hud and HUDListManager and setting then
+					local list = tostring(setting[1])
+					local category = tostring(setting[2])
+					local option = tostring(setting[#setting])
+
+					if list == "BUFF_LIST" and category ~= "show_buffs" then
+						managers.hud:change_bufflist_setting(option, WolfHUD:getColor(value) or value)
+					elseif list == "RIGHT_LIST" and category == "SHOW_PICKUP_CATEGORIES" then
+						managers.hud:change_pickuplist_setting(option, WolfHUD:getColor(value) or value)
 					else
-						managers.hud:change_list_setting(tostring(setting[#setting]), WolfHUD:getColor(value) or value)
+						managers.hud:change_list_setting(option, WolfHUD:getColor(value) or value)
 					end
 				end
 			end,
@@ -883,11 +851,27 @@ if not _G.WolfHUD then
 					WeaponGadgetBase.update_theme_setting(setting[1], setting[2], setting[3], setting[4], WolfHUD:getColor(value) or value)
 				end
 			end,
+			["MOD_OVERRIDES"] = function(setting, value)
+				local update_id = setting[#setting]
+				local mod = BLT and BLT.Mods:GetMod(WolfHUD.identifier or "")
+				if mod and update_id then
+					local update = mod:GetUpdate(update_id)
+					if update then
+						update:SetEnabled(value)
+						BLT.Mods:Save()
+					end
+				end
+			end,
 		}
+	end
+
+	if not WolfHUD:DirectoryExists(WolfHUD.assets_path) then
+		WolfHUD:print_log("Folder '%s' doesn't exist, creating....\t%s", WolfHUD.assets_path, tostring(WolfHUD:createDirectory(WolfHUD.assets_path)), "warining")
 	end
 
 	WolfHUD:Reset()	-- Populate settings table
 	WolfHUD:Load()	-- Load user settings
+
 
 	-- Create Ingame Menus
 	dofile(WolfHUD.mod_path .. "OptionMenus.lua")	-- Menu structure table in seperate file, in order to not bloat the Core file too much.

@@ -293,7 +293,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 
 		function PrePlanningManager.save_plans()
 			if not WolfHUD:DirectoryExists(PrePlanningManager._SAVE_FOLDER) then
-				WolfHUD:print_log("Preplanned folder '" .. PrePlanningManager._SAVE_FOLDER .. "' is missing!", "warning")
+				WolfHUD:print_log("Preplanned folder '%s' is missing!", PrePlanningManager._SAVE_FOLDER, "warning")
 				if not WolfHUD:createDirectory(PrePlanningManager._SAVE_FOLDER) then
 					managers.preplanning:notify_user("wolfhud_preplanning_msg_folder_creation_failed", { FOLDER = PrePlanningManager._SAVE_FOLDER }, true)
 				end
@@ -511,10 +511,10 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 			PrePlanningManager._SAVED_PLANS[name] = nil
 			if PrePlanningManager.save_plans() then
 				managers.preplanning:notify_user("wolfhud_preplanning_msg_deleted_success", {}, false)
+				return
 			end
-		else
-			managers.preplanning:notify_user("wolfhud_preplanning_msg_deleted_failed", {}, true)
 		end
+		managers.preplanning:notify_user("wolfhud_preplanning_msg_deleted_failed", {}, true)
 	end
 
 	function PrePlanningManager:current_assets_name()

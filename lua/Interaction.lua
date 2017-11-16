@@ -275,9 +275,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			self._interact_time:set_color(color)
 			self._interact_time:set_alpha(1)
 			self._interact_time:set_visible(show)
-			if self._interact_time_bgs then
-				WolfHUD:setOutlineText(self._interact_time_bgs, text, show and HUDInteraction.SHOW_TIME_REMAINING_OUTLINE)
-			end
 		end
 	end
 
@@ -316,7 +313,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		if HUDInteraction.SHOW_TIME_REMAINING then
 			local fontSize = 32 * (self._circle_scale or 1) * WolfHUD:getSetting({"INTERACTION", "TIMER_SCALE"}, 1)
 			if not self._interact_time then
-				self._interact_time = self._hud_panel:text({
+				self._interact_time = OutlinedText:new(self._hud_panel, {
 					name = "interaction_timer",
 					visible = false,
 					text = "",
@@ -334,24 +331,8 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 			local text = string.format("%.1fs", total)
 			self._interact_time:set_y(self._hud_panel:center_y() + self._circle_radius - (1.5 * self._interact_time:font_size()))
 			self._interact_time:set_text(text)
+			self._interact_time:set_outlines_visible(HUDInteraction.SHOW_TIME_REMAINING_OUTLINE)
 			self._interact_time:show()
-			if not self._interact_time_bgs then
-				self._interact_time_bgs = WolfHUD:makeOutlineText(self._hud_panel, {
-					visible = false,
-					text = "",
-					valign = "center",
-					align = "center",
-					layer = 1,
-					color = Color.black:with_alpha(0.5),
-					font = tweak_data.menu.pd2_large_font,
-					font_size = fontSize,
-					h = 64
-				}, self._interact_time)
-			else
-				WolfHUD:setOutlineFontSize(self._interact_time_bgs, fontSize)
-			end
-			WolfHUD:refreshOutlinePos(self._interact_time_bgs, self._interact_time)
-			WolfHUD:setOutlineText(self._interact_time_bgs, text, HUDInteraction.SHOW_TIME_REMAINING_OUTLINE)
 		end
 
 		return val
@@ -366,9 +347,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 		if self._interact_time then
 			self._interact_time:set_text("")
 			self._interact_time:set_visible(false)
-		end
-		if self._interact_time_bgs then
-			WolfHUD:setOutlineText(self._interact_time_bgs, "", false)
 		end
 
 		if self._old_text then
@@ -412,7 +390,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/hudinteraction" then
 
 	function HUDInteraction:destroy()
 		if self._interact_time and self._hud_panel then
-			self._hud_panel:remove(self._interact_time)
+			self._interact_time:remove()
 			self._interact_time = nil
 		end
 		if self._interact_time_bgs and self._hud_panel then

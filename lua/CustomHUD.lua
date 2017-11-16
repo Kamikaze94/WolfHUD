@@ -547,8 +547,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self:call_listeners("custom_radial", data.current, data.total)
 	end
 
-	function HUDTeammateCustom:activate_ability_radial(time)	--Teammates, handled in update function.
-		self:call_listeners("activate_ability", time)
+	function HUDTeammateCustom:activate_ability_radial(time_left, time_total)	--Teammates, handled in update function.
+		self:call_listeners("activate_ability", time_left, time_total or time_left)
+		
+		if self:is_local_player() then
+			local current_time = managers.game_play_central:get_heist_timer() or 0
+			managers.network:session():send_to_peers("sync_ability_hud", time_left + current_time, time_total or time_left)
+		end
 	end
 
 	function HUDTeammateCustom:set_ability_radial(data)		--Player
@@ -575,7 +580,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammateCustom:set_ability_icon(icon)
-		self:call_listeners("throwable", icon)
+		self:call_listeners("ability_icon", icon)
 	end
 
 	function HUDTeammateCustom:set_weapon_firemode(index, fire_mode)
@@ -1941,7 +1946,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 		self._ability_radial_icon = self._panel:bitmap({
 			name = "custom_radial_icon",
-			texture = "guis/dlcs/chico/textures/pd2/hud_fearless",
+			texture = "guis/textures/pd2/hud_fearless",
 			render_template = "VertexColorTexturedRadial",
 			blend_mode = "add",
 			color = Color(1, 0, 0, 0),
@@ -1957,12 +1962,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			render_template = "VertexColorTexturedRadial",
 			w = self._size * 0.92,
 			h = self._size * 0.92,
-			color = Color.black,
+			color = Color(1, 0, 0, 0),
+			visible = false,
 			layer = self._condition_icon:layer() - 1,
 		})
 		self._maniac_absorb_radial:set_center(self._size / 2, self._size / 2)
 
-		self.radial_delayed_damage_armor = self._panel:bitmap({
+		self._radial_delayed_damage_armor = self._panel:bitmap({
 			texture = "guis/textures/pd2/hud_dot_shield",
 			name = "radial_delayed_damage_armor",
 			visible = false,
@@ -1972,7 +1978,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			h = self._size
 		})
 		
-		self.radial_delayed_damage_health = self._panel:bitmap({
+		self._radial_delayed_damage_health = self._panel:bitmap({
 			texture = "guis/textures/pd2/hud_dot",
 			name = "radial_delayed_damage_health",
 			visible = false,
@@ -1983,7 +1989,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		})
 
 		--self._maniac_stack_radial = ...
-		self._components = { health_bg, self._health_radial, self._stored_health_radial, self._armor_radial, --[[self._stamina_radial,]] self._damage_indicator, self._downs_counter, self._detection_counter, center_bg, self._condition_icon, self._custom_radial_icon, self._ability_radial_icon, self._maniac_absorb_radial, self.radial_delayed_damage_armor, self.radial_delayed_damage_health }
+		self._components = { health_bg, self._health_radial, self._stored_health_radial, self._armor_radial, --[[self._stamina_radial,]] self._damage_indicator, self._downs_counter, self._detection_counter, center_bg, self._condition_icon, self._custom_radial_icon, self._ability_radial_icon, self._maniac_absorb_radial, self._radial_delayed_damage_armor, self._radial_delayed_damage_health }
 
 		local tweak = tweak_data.upgrades
 		self._max_absorb = tweak.cocaine_stacks_dmg_absorption_value * tweak.values.player.cocaine_stack_absorption_multiplier[1] * tweak.max_total_cocaine_stacks  / tweak.cocaine_stacks_convert_levels[2]
@@ -2243,9 +2249,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._ability_radial_icon:set_visible(ratio > 0)
 	end
 
-	function PlayerInfoComponent.PlayerStatus:set_ability_active(time)
+	function PlayerInfoComponent.PlayerStatus:set_ability_active(time_left, time_total)
 		self._ability_radial_icon:stop()
-		self._ability_radial_icon:animate(callback(self, self, "_animate_ability"), time)
+		self._ability_radial_icon:animate(callback(self, self, "_animate_ability"), time_left, time_total)
 	end
 
 	function PlayerInfoComponent.PlayerStatus:set_absorb(amount)
@@ -2274,10 +2280,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		local armor_damage_ratio = armor_damage > 0 and armor_damage / armor_max or 0
 		local health_damage_ratio = health_damage / health_max
 
-		self.radial_delayed_damage_armor:set_visible(armor_damage_ratio > 0)
-		self.radial_delayed_damage_health:set_visible(health_damage_ratio > 0)
-		self.radial_delayed_damage_armor:set_color(Color(1, armor_damage_ratio, 1 - armor_ratio, 0))
-		self.radial_delayed_damage_health:set_color(Color(1, health_damage_ratio, 1 - health_ratio, 0))
+		self._radial_delayed_damage_armor:set_visible(armor_damage_ratio > 0)
+		self._radial_delayed_damage_health:set_visible(health_damage_ratio > 0)
+		self._radial_delayed_damage_armor:set_color(Color(1, armor_damage_ratio, 1 - armor_ratio, 0))
+		self._radial_delayed_damage_health:set_color(Color(1, health_damage_ratio, 1 - health_ratio, 0))
 		
 	end
 
@@ -2334,13 +2340,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 
-	function PlayerInfoComponent.PlayerStatus:_animate_ability(radial, duration)
-		local t = duration
+	function PlayerInfoComponent.PlayerStatus:_animate_ability(radial, time_left, duration)
+		local t = duration - time_left
 		radial:show()
 
-		while t >= 0 do
+		while t < duration do
 			self._ability_radial_icon:set_color(Color(1, t / duration, 1, 1))
-			t = t - coroutine.yield()
+			t = t + coroutine.yield()
 		end
 
 		radial:hide()

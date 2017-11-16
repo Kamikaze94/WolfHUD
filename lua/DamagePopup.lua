@@ -11,21 +11,27 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 	end
 
 	function CopDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body, ...)
-		self._sync_ibody_popup = i_body
+		if i_body then
+			self._sync_ibody_popup = i_body
+		end
+
 		return sync_damage_bullet_original(self, attacker_unit, damage_percent, i_body, ...)
 	end
 
 	function CopDamage:sync_damage_melee(attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
-		self._sync_ibody_popup = i_body
+		if i_body then
+			self._sync_ibody_popup = i_body
+		end
+
 		return sync_damage_melee_original(self, attacker_unit, damage_percent, damage_effect_percent, i_body, ...)
 
 	end
 
-	function CopDamage:_process_popup_damage(attack_data)
+	function CopDamage:_process_popup_damage(data)
 		CopDamage.DMG_POPUP_SETTING = WolfHUD:getSetting({"DamagePopup", "DISPLAY_MODE"}, 2)
 
-		local attacker = alive(attack_data.attacker_unit) and attack_data.attacker_unit
-		local damage = tonumber(attack_data.damage) or 0
+		local attacker = alive(data.attacker_unit) and data.attacker_unit
+		local damage = tonumber(data.damage) or 0
 
 		if attacker and damage >= 0.1 and CopDamage.DMG_POPUP_SETTING > 1 then
 			local killer
@@ -60,28 +66,27 @@ if RequiredScript == "lib/units/enemies/cop/copdamage" then
 			end
 
 			if alive(killer) and alive(self._unit) then
-				local i_body = attack_data.col_ray and attack_data.col_ray.body and self._unit:get_body_index(attack_data.col_ray.body:name()) or self._sync_ibody_popup
-				local body_name = i_body and self._unit:body(i_body) and self._unit:body(i_body):name()
-				local headshot = self._head_body_name and body_name and body_name == self._ids_head_body_name or false
+				local body = data.col_ray and data.col_ray.body or self._sync_ibody_popup and self._unit:body(self._sync_ibody_popup)
+				local headshot = body and self.is_head and self:is_head(body) or false
 				if CopDamage.DMG_POPUP_SETTING == 2 then
 					if killer:in_slot(2) then
-						self:show_popup(damage, self._dead, headshot)
+						self:show_popup(damage, self._dead, headshot, data.critical_hit)
 					end
 				else
 					local color_id = managers.criminals:character_color_id_by_unit(killer)
 					if color_id then
-						self:show_popup(damage, self._dead, headshot, color_id)
+						self:show_popup(damage, self._dead, headshot, false, color_id)
 					end
 				end
 			end
 		end
 	end
 
-	function CopDamage:show_popup(damage, dead, headshot, color_id)
+	function CopDamage:show_popup(damage, dead, headshot, critical, color_id)
 		if managers.waypoints then
 			local id = "damage_wp_" .. tostring(self._unit:key())
 			local waypoint = managers.waypoints:get_waypoint(id)
-			local waypoint_color = color_id and ((color_id == 5 and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, false)) and WolfHUD:getColorSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"}, Color.white) or tweak_data.chat_colors[color_id]) or WolfHUD:getColorSetting({"DamagePopup", headshot and "HEADSHOT_COLOR" or "COLOR"}, "yellow")
+			local waypoint_color = color_id and ((color_id == 5 and WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "USE"}, false)) and WolfHUD:getColorSetting({"CustomHUD", "TEAMMATE", "AI_COLOR", "COLOR"}, Color.white) or tweak_data.chat_colors[color_id]) or WolfHUD:getColorSetting({"DamagePopup", critical and "CRITICAL_COLOR" or headshot and "HEADSHOT_COLOR" or "COLOR"}, "yellow")
 			waypoint_color = waypoint_color:with_alpha(WolfHUD:getSetting({"DamagePopup", "ALPHA"}, 1))
 			local waypoint_duration = WolfHUD:getSetting({"DamagePopup", "DURATION"}, 3)
 			if waypoint and not waypoint:is_deleted() then

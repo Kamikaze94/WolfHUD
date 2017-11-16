@@ -791,6 +791,8 @@
 	"wolfhud_dmg_popup_alpha_desc" : "Задайте непрозрачность всплывающей информации.",
 	"wolfhud_dmg_popup_color_title" : "Цвет выстрела в тело",
 	"wolfhud_dmg_popup_color_desc" : "Задайте цвет всплывающей информации о выстреле в тело",
+	"wolfhud_dmg_popup_critical_color_title" : "Critical Popup Color",
+	"wolfhud_dmg_popup_critical_color_desc" : "Set the color of the popup for critical hits.",
 	"wolfhud_dmg_popup_headshot_color_title" : "Цвет выстрела в голову",
 	"wolfhud_dmg_popup_headshot_color_desc" : "Задайте цвет всплывающей информации о выстреле в голову.",
 

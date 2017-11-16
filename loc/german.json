@@ -798,6 +798,8 @@
 	"wolfhud_dmg_popup_alpha_desc" : "Setzt die Sichtbarkeit des Popups.",
 	"wolfhud_dmg_popup_color_title" : "Körpertreffer Popup Farbe",
 	"wolfhud_dmg_popup_color_desc" : "Setzt die Farbe des Popups für normale Körpertreffer.",
+	"wolfhud_dmg_popup_critical_color_title" : "Kritischer Treffer farbe",
+	"wolfhud_dmg_popup_critical_color_desc" : "Setzt die Farbe des Popups für kritische Treffer.",
 	"wolfhud_dmg_popup_headshot_color_title" : "Kopfschuss Popup Farbe",
 	"wolfhud_dmg_popup_headshot_color_desc" : "Setzt die Farbe des Popups für Kopftreffer.",
 

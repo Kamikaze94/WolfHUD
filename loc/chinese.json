@@ -791,6 +791,8 @@
 	"wolfhud_dmg_popup_alpha_desc" : "设置弹窗的不透明度.",
 	"wolfhud_dmg_popup_color_title" : "击中身体弹窗颜色",
 	"wolfhud_dmg_popup_color_desc" : "设置击中敌军身体时，弹出窗口的颜色。（除头部）",
+	"wolfhud_dmg_popup_critical_color_title" : "Critical Popup Color",
+	"wolfhud_dmg_popup_critical_color_desc" : "Set the color of the popup for critical hits.",
 	"wolfhud_dmg_popup_headshot_color_title" : "爆头弹窗颜色",
 	"wolfhud_dmg_popup_headshot_color_desc" : "设置击中敌军头部时，弹出窗口的颜色。",
 

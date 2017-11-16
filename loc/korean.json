@@ -791,6 +791,8 @@
 	"wolfhud_dmg_popup_alpha_desc" : "Set the opacity of the popup.",
 	"wolfhud_dmg_popup_color_title" : "몸샷 팝업 색",
 	"wolfhud_dmg_popup_color_desc" : "몸샷으로 표시된 팝업 색을 설정합니다.",
+	"wolfhud_dmg_popup_critical_color_title" : "Critical Popup Color",
+	"wolfhud_dmg_popup_critical_color_desc" : "Set the color of the popup for critical hits.",
 	"wolfhud_dmg_popup_headshot_color_title" : "헤드샷 팝업 색",
 	"wolfhud_dmg_popup_headshot_color_desc" : "헤드샷으로 표시된 팝업 색을 설정합니다.",
 
