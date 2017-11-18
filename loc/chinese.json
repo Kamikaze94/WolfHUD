@@ -791,8 +791,8 @@
 	"wolfhud_dmg_popup_alpha_desc" : "设置弹窗的不透明度.",
 	"wolfhud_dmg_popup_color_title" : "击中身体弹窗颜色",
 	"wolfhud_dmg_popup_color_desc" : "设置击中敌军身体时，弹出窗口的颜色。（除头部）",
-	"wolfhud_dmg_popup_critical_color_title" : "Critical Popup Color",
-	"wolfhud_dmg_popup_critical_color_desc" : "Set the color of the popup for critical hits.",
+	"wolfhud_dmg_popup_critical_color_title" : "暴击弹窗颜色",
+	"wolfhud_dmg_popup_critical_color_desc" : "设置暴击时，弹出窗口的颜色。",
 	"wolfhud_dmg_popup_headshot_color_title" : "爆头弹窗颜色",
 	"wolfhud_dmg_popup_headshot_color_desc" : "设置击中敌军头部时，弹出窗口的颜色。",
 
@@ -893,8 +893,8 @@
 	"wolfhud_gadget_team_flashlight_options_name" : "队友手电筒",
 	"wolfhud_gadget_team_flashlight_options_help" : "设置队友的手电筒.",
 
-	"wolfhud_gadgets_enabled_title" : "Overwrite Color",
-	"wolfhud_gadgets_enabled_desc" : "Use this definition instead of the gadget configuration.",
+	"wolfhud_gadgets_enabled_title" : "覆盖颜色设置",
+	"wolfhud_gadgets_enabled_desc" : "使用这里的设置，覆盖游戏中原定的设置",
 	"wolfhud_gadgets_beam_r_title" : "激光光束(红)",
 	"wolfhud_gadgets_beam_r_desc" : "激光颜色的红色分量。",
 	"wolfhud_gadgets_beam_g_title" : "激光光束(绿)",
