@@ -772,7 +772,6 @@ if not _G.WolfHUD then
 		if value ~= nil and (not val_type or type(value) == val_type) then
 			return value
 		else
-			self:print_log("Requested tweak_entry doesn't exists!  (id='" .. id .. "', type='" .. tostring(val_type) .. "') ", "error")
 			if default == nil then
 				if val_type == "number" then -- Try to prevent crash by giving default value
 					default = 1
@@ -784,6 +783,8 @@ if not _G.WolfHUD then
 					default = {}
 				end
 			end
+			self.tweak_data[id] = default
+			self:print_log("Requested tweak_entry doesn't exists!  (id='" .. id .. "', type='" .. tostring(val_type) .. "') ", "error")
 			return default
 		end
 	end

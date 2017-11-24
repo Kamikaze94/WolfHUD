@@ -519,6 +519,14 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			texture = "guis/dlcs/myh/textures/pd2/blackmarket/icons/characters/myh",
 			color = Color(1, 0.05, 0.65, 0.02)
 		},
+		ecp_male = {
+			texture = "guis/dlcs/ecp/textures/pd2/blackmarket/icons/characters/ecp_male",
+			color = Color(1, 0.02, 0.05, 0.65)
+		},
+		ecp_female = {
+			texture = "guis/dlcs/ecp/textures/pd2/blackmarket/icons/characters/ecp_female",
+			color = Color(1, 0.65, 0.02, 0.05)
+		},
 	}
 
 	HUDStatsScreen.STAT_ITEMS = {
