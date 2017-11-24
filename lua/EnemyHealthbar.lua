@@ -87,6 +87,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		[ "terry" ]							= { default = "menu_chico" },
 		[ "max" ]							= { default = "menu_max" },
 		[ "myh" ]							= { default = "menu_myh" },
+		[ "ecp_male" ]                                                  = { default = "menu_ecp_male" },
+		[ "ecp_female" ]                                                = { default = "menu_ecp_female" },
 	}
 
 	Hooks:PostHook( HUDManager , "_player_hud_layout" , "WolfHUDPostHUDManagerPlayerInfoHUDLayout" , function( self )
