@@ -28,6 +28,9 @@ function HUDSuspicion:init(...)
 		h = 64
 	})
 	self._suspicion_text:set_y((math.round(self._suspicion_text_panel:h() / 4)))
+
+	-- hide the faulty half-sized background shade
+	self._misc_panel:child("hud_stealthmeter_bg"):set_visible(false)
 end
 
 function HUDSuspicion:_is_detected()
@@ -60,7 +63,7 @@ function HUDSuspicion:animate_eye(...)
 		local visible = WolfHUD:getSetting({"HUDSuspicion", "SHOW_BARS"}, true)
 		self._suspicion_panel:child("suspicion_left"):set_visible(visible)
 		self._suspicion_panel:child("suspicion_right"):set_visible(visible)
-		self._misc_panel:child("hud_stealthmeter_bg"):set_visible(visible)
+		--self._misc_panel:child("hud_stealthmeter_bg"):set_visible(visible)
 		self._misc_panel:child("hud_stealth_eye"):set_visible(visible)
 		self._misc_panel:child("hud_stealth_exclam"):set_visible(visible)
 
@@ -89,13 +92,13 @@ function HUDSuspicion:rescale()
 	if self._scale ~= scale then
 		local suspicion_left = self._suspicion_panel:child("suspicion_left")
 		local suspicion_right = self._suspicion_panel:child("suspicion_right")
-		local hud_stealthmeter_bg = self._misc_panel:child("hud_stealthmeter_bg")
+		--local hud_stealthmeter_bg = self._misc_panel:child("hud_stealthmeter_bg")
 		local suspicion_detected = self._suspicion_panel:child("suspicion_detected")
 		local hud_stealth_eye = self._misc_panel:child("hud_stealth_eye")
 		local hud_stealth_exclam = self._misc_panel:child("hud_stealth_exclam")
 		suspicion_left:set_size((suspicion_left:w() / self._scale) * scale, (suspicion_left:h() / self._scale) * scale)
 		suspicion_right:set_size((suspicion_right:w() / self._scale) * scale, (suspicion_right:h() / self._scale) * scale)
-		hud_stealthmeter_bg:set_size((hud_stealthmeter_bg:w() / self._scale) * scale, (hud_stealthmeter_bg:h() / self._scale) * scale)
+		--hud_stealthmeter_bg:set_size((hud_stealthmeter_bg:w() / self._scale) * scale, (hud_stealthmeter_bg:h() / self._scale) * scale)
 		suspicion_detected:set_font_size((suspicion_detected:font_size() / self._scale) * scale)
 		local fontSize = (self._suspicion_text:font_size() / self._scale) * scale
 		self._suspicion_text:set_font_size(fontSize)
@@ -104,7 +107,7 @@ function HUDSuspicion:rescale()
 		suspicion_left:set_center_x(self._suspicion_panel:w() / 2)
 		suspicion_left:set_center_y(self._suspicion_panel:h() / 2)
 		suspicion_right:set_center(suspicion_left:center())
-		hud_stealthmeter_bg:set_center(suspicion_left:center())
+		--hud_stealthmeter_bg:set_center(suspicion_left:center())
 		hud_stealth_eye:set_center(suspicion_left:center_x(), suspicion_left:bottom() - 4)
 		hud_stealth_exclam:set_center(suspicion_left:center_x(), suspicion_left:top() - 4)
 		self._suspicion_text:set_y(suspicion_left:top() + (suspicion_left:center_y() - suspicion_left:top()) / 2 - self._suspicion_text:font_size() / 2)
