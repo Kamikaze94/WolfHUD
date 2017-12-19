@@ -532,6 +532,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			maniac_debuff = "maniac",
 			sicario_dodge_debuff = "sicario_dodge",
 			smoke_screen_grenade_debuff = "smoke_screen_grenade",
+			tag_team_debuff = "tag_team",
 			unseen_strike_debuff = "unseen_strike",
 			uppers_debuff = "uppers",
 			interact_debuff = "interact",
@@ -4836,13 +4837,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	HUDList.BuffItemBase.VALUE_FUNC = {
 		IN_PERCENT = function(value)
-			return string.format(str_format or "%.0f%%", value * 100)
+			return string.format("%.0f%%", value * 100)
 		end,
 		IN_PERCENT_INVERTED = function(value)
-			return string.format(str_format or "%.0f%%", (1 - value) * 100)
+			return string.format("%.0f%%", (1 - value) * 100)
 		end,
 		MULT_IN_PERCENT = function(value)
-			return string.format(str_format or "%.0f%%", (value - 1) * 100)
+			return string.format("%.0f%%", (value - 1) * 100)
 		end,
 	}
 
@@ -5126,6 +5127,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "FUGITIVE_BUFFS", "swan_song"}, false) and (WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true) or WolfHUD:getSetting({"CustomHUD", "ENABLED"}, false)),
 		},
+		tag_team = {
+			perks = {0, 0},
+			texture_bundle_folder = "ecp",
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			show_value = true,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "tag_team"}, true) and (WolfHUD:getSetting({"CustomHUD", "PLAYER", "STATUS"}, true) or WolfHUD:getSetting({"CustomHUD", "ENABLED"}, false)),
+		},
 		tooth_and_claw = {
 			perks = {0, 3},
 			class = "TimedBuffItem",
@@ -5293,6 +5303,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "sociopath_debuff"}, true),
+		},
+		tag_team_debuff = {
+			perks = {0, 0},
+			texture_bundle_folder = "ecp",
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = true,	--Composite debuff
 		},
 		damage_control_debuff = {
 			perks = {2, 0},
@@ -5800,7 +5818,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if self._show_value then
 			local str = ""
 			if type(self._show_value) == "function" then
-				str = self._show_value(data.value, self._value_frmt)
+				str = self._show_value(data.value)
 			elseif type(self._show_value) == "string" then
 				str = string.format(self._show_value, data.value)
 			else

@@ -1266,7 +1266,7 @@ elseif string.lower(RequiredScript) == "lib/managers/crimespreemanager" then
 
 		return reward_add
 	end
-elseif string.lower(RequiredScript) == "lib/managers/hudmanager" then
+elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local HUDManager_feed_heist_time_original = HUDManager.feed_heist_time
 	local HUDManager_modify_heist_time_original = HUDManager.modify_heist_time
 
@@ -1277,7 +1277,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		end
 	end
 
-	function HUDHeistTimer:modify_heist_time(time)
+	function HUDManager:modify_heist_time(time)
 		HUDManager_modify_heist_time_original(self, time)
 		if self._hud_statsscreen and self._hud_statsscreen.modify_heist_time then
 			self._hud_statsscreen:modify_heist_time(time)

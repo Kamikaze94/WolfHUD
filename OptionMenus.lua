@@ -3062,6 +3062,17 @@ if WolfHUD then
 									},
 									{
 										type = "toggle",
+										name_id = "wolfhud_hudlist_tag_team_buff_title",
+										desc_id = "wolfhud_hudlist_tag_team_buff_desc",
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "tag_team"},
+										visible_reqs = {},
+										enabled_reqs = {
+											{ setting = { "HUDList", "ENABLED" }, invert = false },
+											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
+										},
+									},
+									{
+										type = "toggle",
 										name_id = "wolfhud_hudlist_yakuza_buff_title",
 										desc_id = "wolfhud_hudlist_yakuza_buff_desc",
 										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "yakuza"},

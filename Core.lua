@@ -21,8 +21,8 @@ if not _G.WolfHUD then
 		["lib/managers/moneymanager"] 								= { "Scripts.lua" },
 		["lib/managers/multiprofilemanager"]						= { "ProfileMenu.lua" },
 		["lib/managers/crimespreemanager"]							= { "TabStats.lua" },
-		["lib/managers/hudmanager"] 								= { "EnemyHealthbar.lua", "TabStats.lua", "CustomWaypoints.lua" },
-		["lib/managers/hudmanagerpd2"] 								= { "CustomHUD.lua", "VanillaHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "DamageIndicator.lua", "WaypointsManager.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
+		["lib/managers/hudmanager"] 								= { "EnemyHealthbar.lua", "CustomWaypoints.lua" },
+		["lib/managers/hudmanagerpd2"] 								= { "CustomHUD.lua", "VanillaHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "TabStats.lua", "DamageIndicator.lua", "WaypointsManager.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
 		["lib/managers/statisticsmanager"] 							= { "KillCounter.lua", "TabStats.lua" },
 		["lib/managers/playermanager"] 								= { "GameInfoManager.lua" },
 		["lib/managers/preplanningmanager"] 						= { "PrePlanManager.lua" },
@@ -100,6 +100,7 @@ if not _G.WolfHUD then
 		["lib/player_actions/skills/playeractiondireneed"] 			= { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractionunseenstrike"] 		= { "GameInfoManager.lua" },
 		["lib/player_actions/skills/playeractiontriggerhappy"] 		= { "GameInfoManager.lua" },
+		["lib/player_actions/skills/playeractiontagteam"] 			= { "GameInfoManager.lua" },
 		["lib/states/ingamedriving"] 								= { "DrivingHUD.lua" },
 		["lib/states/ingamearrested"]								= { "EnemyHealthbar.lua" },
 		["lib/states/ingamewaitingforplayers"] 						= { "MenuTweaks.lua" },
@@ -403,6 +404,7 @@ if not _G.WolfHUD then
 						sicario_dodge 						= true,
 						smoke_screen_grenade 				= true,
 						sociopath_debuff					= true,
+						tag_team 							= true,
 						yakuza								= false,
 					},
 					GAGE_BOOSTS = {
@@ -787,6 +789,20 @@ if not _G.WolfHUD then
 			self:print_log("Requested tweak_entry doesn't exists!  (id='" .. id .. "', type='" .. tostring(val_type) .. "') ", "error")
 			return default
 		end
+	end
+
+	function WolfHUD:getCharacterName(character_id, to_upper)
+		local name = character_id or "UNKNOWN"
+		local character_names = self:getTweakEntry("CHARACTER_NAMES", "table", {})
+		local name_table = character_names and character_names[character_id]
+		if name_table then
+			local level_id = managers.job and managers.job:current_level_id() or "default"
+			WolfHUD:print_log(level_id, "error")
+			local name_id = name_table[level_id] or name_table.default
+			name = to_upper and managers.localization:to_upper_text(name_id) or managers.localization:text(name_id)
+		end
+
+		return name
 	end
 
 	function WolfHUD:truncateNameTag(name)

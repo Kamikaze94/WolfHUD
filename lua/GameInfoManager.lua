@@ -1292,14 +1292,16 @@ lounge		100421		100448			102049
             if data.expire_t or (data.t and data.duration) then
                 self:_add_player_timer_expiration(id, id, data.expire_t or (data.t + data.duration), self._timed_buff_expire_clbk)
             end
-		elseif event == "set_expire" then
-			self:_remove_player_timer_expiration(id)
-			self:_add_player_timer_expiration(id, id, self._buffs[id].expire_t, self._timed_buff_expire_clbk)
-		elseif event == "change_expire" then
-			self:_remove_player_timer_expiration(id)
-			self:_add_player_timer_expiration(id, id, self._buffs[id].expire_t, self._timed_buff_expire_clbk)
 		elseif event == "deactivate" then
 			self:_remove_player_timer_expiration(id)
+		elseif self._buffs[id] then
+			if event == "set_expire" then
+				self:_remove_player_timer_expiration(id)
+				self:_add_player_timer_expiration(id, id, self._buffs[id].expire_t, self._timed_buff_expire_clbk)
+			elseif event == "change_expire" then
+				self:_remove_player_timer_expiration(id)
+				self:_add_player_timer_expiration(id, id, self._buffs[id].expire_t, self._timed_buff_expire_clbk)
+			end
 		end
 	end
 
@@ -3116,8 +3118,8 @@ if string.lower(RequiredScript) == "lib/managers/playermanager" then
 		return _set_body_bags_amount_original(self, body_bags_amount)
 	end
 
-	function PlayerManager:got_ability()
-		local equipped_grenade = managers.blackmarket:equipped_grenade()
+	function PlayerManager:got_ability(grenade_id)
+		local equipped_grenade = grenade_id or managers.blackmarket:equipped_grenade()
 		return tweak_data.blackmarket.projectiles[equipped_grenade].ability
 	end
 
@@ -3935,6 +3937,75 @@ if string.lower(RequiredScript) == "lib/player_actions/skills/playeractiontrigge
 		managers.gameinfo:event("buff", "set_duration", "trigger_happy", { expire_t = max_time })
 		trigger_happy_original(player_manager, damage_bonus, max_stacks, max_time, ...)
 		managers.gameinfo:event("buff", "deactivate", "trigger_happy")
+	end
+
+end
+
+if string.lower(RequiredScript) == "lib/player_actions/skills/playeractiontagteam" then
+
+	local tag_team_original = PlayerAction.TagTeam.Function
+	local tag_team_tagged_original = PlayerAction.TagTeamTagged.Function	
+
+	local function GetUnitName(unit)
+		local name = "N/A"
+		if unit:in_slot(3) or unit:in_slot(5) then	-- Human criminal (mask off/on)
+			local peer = managers.network:session() and managers.network:session():peer_by_unit(unit)
+			name = peer and peer:name()
+		elseif unit:in_slot(16) or unit:in_slot(24) then	-- Bot (mask on/off)/Joker
+			local key = tostring(unit:key())
+			local tweak_id
+			if managers.gameinfo:get_minions(key) then	-- Joker
+				tweak_id = unit:base()._tweak_table
+			else -- Bot
+				tweak_id = CriminalsManager.convert_new_to_old_character_workname(managers.criminals:character_name_by_unit(unit))
+			end
+			name = WolfHUD:getCharacterName(tweak_id, false)
+		end
+		return name
+	end
+
+	function PlayerAction.TagTeam.Function(tagged, owner, ...)
+		local on_dmg_listener_key = string.format("gameinfo_tag_team_on_damage_listener_%s", tostring(owner:key()))
+		local tagged_name = GetUnitName(tagged)
+		local base_values = managers.player:upgrade_value("player", "tag_team_base")
+		local duration = base_values.duration or 0
+		managers.gameinfo:event("timed_buff", "activate", "tag_team", { duration = duration })
+		managers.gameinfo:event("buff", "set_value", "tag_team", { value = tagged_name })
+		
+		CopDamage.register_listener(on_dmg_listener_key, {"on_damage"}, function(damage_info)
+			local was_killed = damage_info.result.type == "death"
+			local valid_player = damage_info.attacker_unit == owner or damage_info.attacker_unit == tagged
+
+			if was_killed and valid_player then
+				managers.gameinfo:event("timed_buff", "change_expire", "tag_team", { difference = base_values.kill_extension })
+			end
+		end)
+		tag_team_original(tagged, owner, ...)
+		CopDamage.unregister_listener(on_dmg_listener_key)
+	end
+
+	function PlayerAction.TagTeamTagged.Function(tagged, owner, ...)
+		local on_dmg_listener_key = string.format("gameinfo_tag_team_tagged_on_damage_listener_%s", tostring(owner:key()))
+
+		if tagged == managers.player:local_player() then
+			local tagged_name = GetUnitName(owner)
+			local base_values = managers.player:upgrade_value("player", "tag_team_base")
+			local duration = base_values.duration or 0
+			managers.gameinfo:event("timed_buff", "activate", "tag_team", { duration = duration })
+			managers.gameinfo:event("buff", "set_value", "tag_team", { value = tagged_name })
+			
+			CopDamage.register_listener(on_dmg_listener_key, {"on_damage"}, function(damage_info)
+				local was_killed = damage_info.result.type == "death"
+				local valid_player = damage_info.attacker_unit == owner or damage_info.attacker_unit == tagged
+
+				if was_killed and valid_player then
+					managers.gameinfo:event("timed_buff", "change_expire", "tag_team", { difference = base_values.kill_extension })
+				end
+			end)
+		end
+
+		tag_team_tagged_original(tagged, owner, ...)
+		CopDamage.unregister_listener(on_dmg_listener_key)
 	end
 
 end

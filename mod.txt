@@ -98,6 +98,7 @@
 		{ "hook_id" : "lib/player_actions/skills/playeractiondireneed", 		"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/player_actions/skills/playeractionunseenstrike", 	"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/player_actions/skills/playeractiontriggerhappy", 	"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/player_actions/skills/playeractiontagteam", 			"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/states/ingamedriving", 								"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/states/ingamearrested", 								"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/states/ingamewaitingforplayers", 					"script_path" : "Core.lua" },

@@ -1,95 +1,4 @@
 if string.lower(RequiredScript) == "lib/managers/hudmanager" then
-	HUDManager.CharacterData = {
-		[ "civilian" ] 						= { default = "wolfhud_enemy_civilian" },
-		[ "civilian_female" ] 				= { default = "wolfhud_enemy_civilian" },
-		[ "captain" ] 						= { default = "wolfhud_enemy_civilian" },
-		[ "gangster" ] 						= { default = "wolfhud_enemy_gangster" },
-		[ "biker" ] 						= { default = "wolfhud_enemy_biker" },
-		[ "biker_escape" ] 					= { default = "wolfhud_enemy_biker" },
-		[ "bolivian_indoors" ]				= { default = "wolfhud_enemy_bolivian_security" },
-		[ "bolivian" ]						= { default = "wolfhud_enemy_bolivian_thug" },
-		[ "mobster" ] 						= { default = "wolfhud_enemy_mobster" },
-		[ "security" ] 						= { default = "wolfhud_enemy_security" },
-		[ "security_undominatable" ] 		= { default = "wolfhud_enemy_security" },
-		[ "gensec" ] 						= { default = "wolfhud_enemy_gensec" },
-		[ "cop" ] 							= { default = "wolfhud_enemy_cop" },
-		[ "cop_female" ]					= { default = "wolfhud_enemy_cop" },
-		[ "cop_scared" ]					= { default = "wolfhud_enemy_cop" },
-		[ "fbi" ] 							= { default = "wolfhud_enemy_fbi" },
-		[ "swat" ] 							= { default = "wolfhud_enemy_swat" },
-		[ "heavy_swat" ] 					= { default = "wolfhud_enemy_heavy_swat" },
-		[ "fbi_swat" ] 						= { default = "wolfhud_enemy_swat" },
-		[ "fbi_heavy_swat" ] 				= { default = "wolfhud_enemy_heavy_swat" },
-        [ "heavy_swat_sniper" ]             = { default = "wolfhud_enemy_heavy_swat_sniper" },
-		[ "city_swat" ] 					= { default = "wolfhud_enemy_city_swat" },
-		[ "shield" ] 						= { default = "wolfhud_enemy_shield" },
-		[ "spooc" ] 						= { default = "wolfhud_enemy_spook" },
-		[ "taser" ] 						= { default = "wolfhud_enemy_taser" },
-		[ "sniper" ] 						= { default = "wolfhud_enemy_sniper" },
-		[ "medic" ]							= { default = "wolfhud_enemy_medic" },
-		[ "tank" ] 							= { default = "wolfhud_enemy_tank" },
-		[ "tank_hw" ]						= { default = "wolfhud_enemy_tank_hw" },
-        [ "tank_medic" ]                    = { default = "wolfhud_enemy_tank_medic" },
-        [ "tank_mini" ]                     = { default = "wolfhud_enemy_tank_mini" },
-		[ "phalanx_minion" ] 				= { default = "wolfhud_enemy_phalanx_minion" },
-		[ "phalanx_vip" ] 					= { default = "wolfhud_enemy_phalanx_vip" },
-		[ "swat_van_turret_module" ] 		= { default = "wolfhud_enemy_swat_van" },
-		[ "ceiling_turret_module" ] 		= { default = "wolfhud_enemy_ceiling_turret" },
-		[ "ceiling_turret_module_no_idle" ] = { default = "wolfhud_enemy_ceiling_turret" },
-		[ "sentry_gun" ]					= { default = "wolfhud_enemy_sentry_gun" },
-		[ "mobster_boss" ] 					= { default = "wolfhud_enemy_mobster_boss" },
-		[ "chavez_boss" ]					= { default = "wolfhud_enemy_chavez_boss" },
-		[ "drug_lord_boss" ]				= { default = "wolfhud_enemy_druglord_boss" },
-		[ "drug_lord_boss_stealth" ]		= { default = "wolfhud_enemy_druglord_boss_stealth" },
-		[ "biker_boss" ] 					= { default = "wolfhud_enemy_biker_boss" },
-		[ "bank_manager" ] 					= { default = "wolfhud_enemy_bank_manager", dah = "wolfhud_enemy_dah_ralph" },
-		[ "inside_man" ] 					= { default = "wolfhud_enemy_inside_man" },
-		[ "escort_undercover" ] 			= { default = "wolfhud_enemy_escort_undercover", run = "wolfhud_enemy_escort_heatstreet" },
-		[ "escort_chinese_prisoner" ]		= { default = "wolfhud_enemy_escort_chinese_prisoner" },
-		[ "escort_cfo" ]					= { default = "wolfhud_enemy_escort_cfo" },
-		[ "drunk_pilot" ] 					= { default = "wolfhud_enemy_drunk_pilot" },
-		[ "escort" ] 						= { default = "wolfhud_enemy_escort" },
-		[ "boris" ]							= { default = "wolfhud_enemy_boris" },
-		[ "spa_vip" ]						= { default = "wolfhud_enemy_spa_vip" },
-		[ "spa_vip_hurt" ]					= { default = "wolfhud_enemy_spa_vip_hurt" },
-		[ "old_hoxton_mission" ] 			= { default = "wolfhud_enemy_locke_mission", hox_1 = "wolfhud_enemy_old_hoxton_mission", hox_2 = "wolfhud_enemy_old_hoxton_mission" },
-		[ "hector_boss" ] 					= { default = "wolfhud_enemy_hector_boss" },
-		[ "hector_boss_no_armor" ] 			= { default = "wolfhud_enemy_hector_boss_no_armor" },
-		[ "robbers_safehouse" ]				= { default = "wolfhud_enemy_crew" },
-		[ "butler" ]						= { default = "wolfhud_enemy_butler" },
-		[ "vlad" ]							= { default = "wolfhud_enemy_vlad" },
-		[ "boom" ]					 		= { default = "wolfhud_enemy_boom" },
-		[ "omnia_lpf" ]						= { default = "wolfhud_enemy_omnia_lpf" },
-		[ "summers" ]					 	= { default = "wolfhud_enemy_summers" },
-		[ "boom_summers" ]					= { default = "wolfhud_enemy_boom_summers" },
-		[ "taser_summers" ]					= { default = "wolfhud_enemy_taser_summers" },
-		[ "medic_summers" ]					= { default = "wolfhud_enemy_medic_summers" },
-		[ "spring" ]						= { default = "wolfhud_enemy_spring" },
-		[ "fbi_vet" ]					 	= { default = "wolfhud_enemy_fbi_vet" },
-		[ "russian" ] 						= { default = "menu_russian" },
-		[ "german" ] 						= { default = "menu_german" },
-		[ "spanish" ] 						= { default = "menu_spanish" },
-		[ "american" ] 						= { default = "menu_american" },
-		[ "jowi" ] 							= { default = "menu_jowi" },
-		[ "old_hoxton" ] 					= { default = "menu_old_hoxton" },
-		[ "female_1" ] 						= { default = "menu_female_1" },
-		[ "clover" ] 						= { default = "menu_female_1" },
-		[ "dragan" ] 						= { default = "menu_dragan" },
-		[ "jacket" ] 						= { default = "menu_jacket" },
-		[ "bonnie" ] 						= { default = "menu_bonnie" },
-		[ "sokol" ] 						= { default = "menu_sokol" },
-		[ "dragon" ] 						= { default = "menu_dragon" },
-		[ "bodhi" ] 						= { default = "menu_bodhi" },
-		[ "jimmy" ] 						= { default = "menu_jimmy" },
-		[ "sydney" ] 						= { default = "menu_sydney" },
-		[ "wild" ]							= { default = "menu_wild" },
-		[ "chico" ]							= { default = "menu_chico" },
-		[ "terry" ]							= { default = "menu_chico" },
-		[ "max" ]							= { default = "menu_max" },
-		[ "myh" ]							= { default = "menu_myh" },
-		[ "ecp_male" ]                                                  = { default = "menu_ecp_male" },
-		[ "ecp_female" ]                                                = { default = "menu_ecp_female" },
-	}
 
 	Hooks:PostHook( HUDManager , "_player_hud_layout" , "WolfHUDPostHUDManagerPlayerInfoHUDLayout" , function( self )
 		self._health_text_rect = { 2 , 18 , 232 , 11 } --Green Bar
@@ -111,7 +20,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 		self._unit_bar = self._unit_health_panel:bitmap({
 			name 			= "unit_health",
 			texture 		= "guis/textures/pd2/healthshield",
-			texture_rect 	= { 2, 18, 232,	11 },
+			texture_rect 	= self._bar_text_rect,
 			blend_mode 		= "normal"
 		})
 
@@ -228,14 +137,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 
 		if not current or not total then return end
 
-		local enemy
-		local NameTable = self.CharacterData[ tweak_table ]
-		if NameTable then
-			local level_id = managers.job:current_level_id()
-			enemy = managers.localization:to_upper_text(NameTable[level_id] or NameTable.default)
-		else
-			enemy = tweak_table or "UNKNOWN"
-		end
+		local enemy = WolfHUD:getCharacterName(tweak_table, true)
 
 		total = math.min(total, 999999999)
 		current = math.clamp(current, 0, total)
@@ -282,10 +184,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanager" then
 	end
 
 	function HUDManager:set_unit_health_rotation( angle )
-
 		self._unit_health_enemy_location:set_rotation( angle )
-
 	end
+
 elseif string.lower(RequiredScript) == "lib/units/beings/player/states/playerstandard" then
 	Hooks:PostHook( PlayerStandard , "_update_fwd_ray" , "WolfHUDPostPlayerStandardUpdate" , function( self , t , dt )
 		if self._fwd_ray and self._fwd_ray.unit and type(self._fwd_ray.unit) == "userdata" then

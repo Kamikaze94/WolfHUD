@@ -614,9 +614,10 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" the
 		update_original(self, t, ...)
 		if not self._button_not_clickable and SKIP_STAT_SCREEN_DELAY > 0 then
 			self._auto_continue_t = self._auto_continue_t or (t + SKIP_STAT_SCREEN_DELAY)
-			if t >= self._auto_continue_t then
+			local gsm = game_state_machine:current_state()
+			if gsm and gsm._continue_cb and not (gsm._continue_blocked and gsm:_continue_blocked()) and t >= self._auto_continue_t then
 				managers.menu_component:post_event("menu_enter")
-				game_state_machine:current_state()._continue_cb()
+				gsm._continue_cb()
 			end
 		end
 	end
@@ -651,7 +652,8 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/lootdropscreengui" the
 
 		if not self._button_not_clickable and SKIP_LOOT_SCREEN_DELAY > 0 then
 			self._auto_continue_t = self._auto_continue_t or (t + SKIP_LOOT_SCREEN_DELAY)
-			if t >= self._auto_continue_t then
+			local gsm = game_state_machine:current_state()
+			if gsm and not (gsm._continue_blocked and gsm:_continue_blocked()) and t >= self._auto_continue_t then
 				self:continue_to_lobby()
 			end
 		end
@@ -662,7 +664,7 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 	function ContractBoxGui:create_character_text(peer_id, ...)
 		create_character_text_original(self, peer_id, ...)
 
-		if WolfHUD:getSetting({"CustomHUD", "TEAMMATE", "LATENCY"}, 3) and  managers.network:session() then
+		if managers.network:session() then
 			if managers.network:session():local_peer():id() ~= peer_id then
 				local peer_label = self._peers[peer_id]
 				if alive(peer_label) then
