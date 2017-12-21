@@ -30,7 +30,7 @@ function HUDSuspicion:init(...)
 	self._suspicion_text:set_y((math.round(self._suspicion_text_panel:h() / 4)))
 
 	-- hide the faulty half-sized background shade
-	self._misc_panel:child("hud_stealthmeter_bg"):set_visble(false)
+	self._misc_panel:child("hud_stealthmeter_bg"):set_visible(false)
 end
 
 function HUDSuspicion:_is_detected()
