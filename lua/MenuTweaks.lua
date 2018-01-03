@@ -580,8 +580,10 @@ elseif string.lower(RequiredScript) == "core/lib/managers/menu/items/coremenuite
 	function ItemSlider:reload(row_item, ...)
 		local val = reload_original(self, row_item, ...)
 
-		row_item.gui_text:set_color(row_item.color)
-		row_item.gui_slider_text:set_color(row_item.color)
+		if row_item and row_item.color then
+			row_item.gui_text:set_color(row_item.color)
+			row_item.gui_slider_text:set_color(row_item.color)
+		end
 
 		return val
 	end
