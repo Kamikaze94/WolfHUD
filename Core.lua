@@ -797,7 +797,6 @@ if not _G.WolfHUD then
 		local name_table = character_names and character_names[character_id]
 		if name_table then
 			local level_id = managers.job and managers.job:current_level_id() or "default"
-			WolfHUD:print_log(level_id, "error")
 			local name_id = name_table[level_id] or name_table.default
 			name = to_upper and managers.localization:to_upper_text(name_id) or managers.localization:text(name_id)
 		end
