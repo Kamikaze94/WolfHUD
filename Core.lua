@@ -574,6 +574,7 @@ if not _G.WolfHUD then
 				team_ai_option = 1,
 				auto_kick = true,
 				difficulty = "normal",
+				one_down = false,
 			},
 		}
 	end

@@ -62,6 +62,10 @@ if string.lower(RequiredScript) == "lib/managers/menumanager" then
 		self:save_lobby_settings("difficulty", tweak_data:index_to_difficulty(item:value()))
 	end)
 
+	Hooks:PostHook( MenuCallbackHandler , "choice_crimenet_one_down" , "MenuCallbackHandlerPostSaveOneDownMod_WolfHUD" , function( self, item, ... )
+		self:save_lobby_settings("one_down", item:value() == "on")
+	end)
+
 	Hooks:PostHook( MenuCallbackHandler , "update_matchmake_attributes" , "MenuCallbackHandlerPostUpdateMatchmakeAttributes_WolfHUD" , function( self, item, ... )
 		self:save_lobby_settings()
 	end)
@@ -82,14 +86,25 @@ if string.lower(RequiredScript) == "lib/managers/menumanager" then
 		if data.customize_contract then
 			data.difficulty = WolfHUD:getSetting({"LOBBY_SETTINGS", "difficulty"}, "normal")
 			data.difficulty_id = tweak_data:difficulty_to_index(data.difficulty)
+			data.one_down = WolfHUD:getSetting({"LOBBY_SETTINGS", "one_down"}, false)
+		end
 
-			local diff_item = original_node:item("difficulty")
+		local results = { MenuCrimeNetContractInitiator_modify_node_orig(self, original_node, data, ...) }
+		local node = table.remove(results, 1)
+		
+		if data.customize_contract then
+			local diff_item = node:item("difficulty")
 			if diff_item then
 				diff_item:set_value(data.difficulty_id)
 			end
-		end
 
-		return MenuCrimeNetContractInitiator_modify_node_orig(self, original_node, data, ...)
+			local od_item = node:item("toggle_one_down")
+			if od_item then
+				od_item:set_value(data.one_down and "on" or "off")
+			end
+		end
+		
+		return node, unpack(results or {})
 	end
 elseif string.lower(RequiredScript) == "lib/managers/menu/blackmarketgui" then
 	--Always enable mod mini icons, put ghost icon behind silent weapon names

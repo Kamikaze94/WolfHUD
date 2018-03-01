@@ -1996,7 +1996,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._stored_health = 0
 		self._stored_health_max = 0
 		self._downs = 0
-		self._max_downs = managers.crime_spree:modify_value("PlayerDamage:GetMaximumLives", (Global.game_settings.difficulty == "sm_wish" and 2 or tweak_data.player.damage.LIVES_INIT)) - 1
+		self._max_downs = managers.crime_spree:modify_value("PlayerDamage:GetMaximumLives", (Global.game_settings.one_down and 2 or tweak_data.player.damage.LIVES_INIT)) - 1
 		self._reviver_count = 0
 		self._risk = 0
 
@@ -2076,7 +2076,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function PlayerInfoComponent.PlayerStatus:set_is_local_player(state)
 		if PlayerInfoComponent.PlayerStatus.super.set_is_local_player(self, state) then
 			self._stamina_radial:set_visible(self._is_local_player and self._settings.STAMINA)
-			self._max_downs = managers.crime_spree:modify_value("PlayerDamage:GetMaximumLives", (Global.game_settings.difficulty == "sm_wish" and 2 or tweak_data.player.damage.LIVES_INIT)) - 1
+			self._max_downs = managers.crime_spree:modify_value("PlayerDamage:GetMaximumLives", (Global.game_settings.one_down and 2 or tweak_data.player.damage.LIVES_INIT)) - 1
 			if self._is_local_player then
 				self._max_downs = self._max_downs + managers.player:upgrade_value("player", "additional_lives", 0)
 				self:set_revives(self._max_downs)

@@ -643,7 +643,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			local difficulty = tweak_data.difficulties[difficulty_stars + 2] or 1
 			local difficulty_string_id = tweak_data.difficulty_name_ids[difficulty]
 			difficulty_text = managers.localization:to_upper_text(difficulty_string_id)
-			difficulty_color = difficulty_stars > 0 and tweak_data.screen_colors.risk or tweak_data.screen_colors.text
+			difficulty_color = Global.game_settings.one_down and tweak_data.screen_colors.one_down or difficulty_stars > 0 and tweak_data.screen_colors.risk or tweak_data.screen_colors.text
 		end
 
 		local mask_icon = "guis/textures/pd2/blackmarket/icons/masks/grin"
