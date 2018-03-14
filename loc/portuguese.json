@@ -952,7 +952,7 @@
 	"wolfhud_gadgets_pulse_frequency_title" : "Frequencia do pulso",
 	"wolfhud_gadgets_pulse_frequency_desc" : "Determina o tempo que o multiplicador de pulso mínimo ao máximo leva.",
 
-	"wolfhud_skipit_options_name" : "Opçes de pulo",
+	"wolfhud_skipit_options_name" : "Opções de pulo",
 	"wolfhud_skipit_options_help" : "Opções para pular menus desnecessários automaticamente e poupar seu tempo.",
 	"wolfhud_assaultbanner_options_name" : "Opçes do Assault Banner",
 "wolfhud_assaultbanner_options_help" : "Opções para mudar o Assault Banner."
