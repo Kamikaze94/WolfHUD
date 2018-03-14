@@ -715,12 +715,12 @@
 	"wolfhud_waypoints_show_special_equipment_title" : "Mostrar equipamento especial",
 	"wolfhud_waypoints_show_special_equipment_desc" : "Mostra os waypoints para vários equipamentos diferentes. Bom para aprender as diferenes localizações.",
 	"wolfhud_waypoints_show_minions_title" : "Mostrar os Minions",
-	"wolfhud_waypoints_show_minions_desc" : "Show a Minions Name above its head, in the color of the player who converted him.\nAlso shows his Killcount.",
-	"wolfhud_waypoints_show_pager_title" : "Show Pager",
-	"wolfhud_waypoints_show_pager_desc" : "Show a waypoint for activated pagers. Changes its color, when someone is answering it.",
+	"wolfhud_waypoints_show_minions_desc" : "Mostra o nome do minio acima da cabeça dele, da cor do player que o converteu.\nTambém exibe a Killcount dele.",
+	"wolfhud_waypoints_show_pager_title" : "Mostrar Pager",
+	"wolfhud_waypoints_show_pager_desc" : "Mostra um waypoint para os pagers ativos. Muda a cor dele, quando alguém está respondendo.",
 
-	"wolfhud_tabstats_options_name" : "TabStats Options",
-	"wolfhud_tabstats_options_help" : "Configure the look of your Tabscreen.",
+	"wolfhud_tabstats_options_name" : "Opções do TabStats",
+	"wolfhud_tabstats_options_help" : "Configure o visual do seu Tabscreen.",
 
 	"wolfhud_tabstats_clock_mode_title" : "Clock Mode",
 	"wolfhud_tabstats_clock_mode_desc" : "Which mode should the clock use?",
