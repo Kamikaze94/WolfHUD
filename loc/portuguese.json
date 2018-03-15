@@ -478,7 +478,7 @@
 	"wolfhud_hudlist_show_tape_loop_title" : "Mostrar o  loop da camera",
 	"wolfhud_hudlist_show_tape_loop_desc" : "Mostra a contagem regressiva do loop da camera.",
 	"wolfhud_hudlist_remove_answered_pagers_title" : "Remover o contorno do pager",
-	"wolfhud_hudlist_remove_answered_pagers_desc" : "Remove o contorno do pager, se ele já tiver sido respondido.",
+	"wolfhud_hudlist_remove_answered_pagers_desc" : "...se já estiver sendo respondido.",
 
 	"wolfhud_infopanels_right_options_name" : "Opções da lista da direita",
 	"wolfhud_infopanels_right_options_help" : "Opções para a lista de informações da direita.",
