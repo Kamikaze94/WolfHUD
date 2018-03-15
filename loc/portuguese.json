@@ -63,7 +63,7 @@
 	"wolfhud_preplanning_msg_folder_creation_failed" : "Falha ao criar pasta: $FOLDER \nCertifique-se que o jogo tem as permissões requeridas ou crie manualmente.",
 	"wolfhud_preplanning_msg_file_creation_failed" : "Falha ao criar arquivo: $FILE \nCertifique-se que o jogo tem as permissões requeridas ou crie manualmente.",
 
-	"wolfhud_inv_tab_rename_hint" : "Clique duas vezes na aba do inventário selecionada para renomeá-la.",
+	"wolfhud_inv_tab_rename_hint" : "Clique duas vezes na aba para renomeá-la.",
 
 	"wolfhud_loadout_hours_played" : "$HOURS hrs.",
 
@@ -256,7 +256,7 @@
 	"wolfhud_panels_options_help" : "Opções gerais para todos os painéis do HUD, como CustomHUD, Suspeita, Indicador de dano, DrivingHUD e muito mais.",
 
 	"wolfhud_use_customhud_title" : "Usar CustomHUD",
-	"wolfhud_use_customhud_desc" : "Substitui o HUD padrão pelo CustomHUD avançado, criado pelo Se7en.\n(Uma mudança de mapa é necessária para aplicar...)",
+	"wolfhud_use_customhud_desc" : "Substitui o HUD padrão pelo CustomHUD avançado, criado pelo Se7en.\n(Mudar de mapa é necessário para aplicar...)",
 	"wolfhud_adv_assault_title" : "Banner de Assault Avançado",
 	"wolfhud_adv_assault_desc" : "Mostra a etapa do assault, o tempo e os spawns restantes durante o assault.\n(Apenas o Host)",
 	"wolfhud_assault_position_title": "Posição do Banner de Assault",
@@ -394,13 +394,13 @@
 	"wolfhud_killcounter_team_show_ai_title" : "Killcounter da IA",
 	"wolfhud_killcounter_team_show_ai_desc" : "Os bots tem um Killcounter também?",
 	"wolfhud_corpse_limit_title" : "Limite de corpos",
-	"wolfhud_corpse_limit_desc" : "Quantos cadáveres devemos permitir ao mesmo tempo?\n(Uma mudança de mapa é necessária para aplicar...)",
+	"wolfhud_corpse_limit_desc" : "Quantos cadáveres devemos permitir ao mesmo tempo?\n(Mudar de mapa é necessário para aplicar...)",
 
 	"wolfhud_drivinghud_options_name" : "Opções do DrivingHUD",
 	"wolfhud_drivinghud_options_help" : "Algumas opções para o DrivingHUD.",
 
 	"wolfhud_show_drivinghud_title" : "Mostrar Driving HUD",
-	"wolfhud_show_drivinghud_desc" : "Mostra um pequeno HUD no canto inferior direito enquanto dirige.\n(Uma mudança de mapa é necessária para aplicar...)",
+	"wolfhud_show_drivinghud_desc" : "Mostra um pequeno HUD no canto inferior direito enquanto dirige.\n(Mudar de mapa é necessário para aplicar...)",
 	"wolfhud_drivinghud_scale_title" : "Escala",
 	"wolfhud_drivinghud_scale_desc" : "Fator de escala para o DrivingHUD.",
 	"wolfhud_drivinghud_show_vehicle_title" : "Mostrar imagem do veículo",
@@ -434,7 +434,7 @@
 	"wolfhud_hudlist_box_color_title" : "Cor da fonte da caixa",
 	"wolfhud_hudlist_box_color_desc" : "Cor da esquerda e da direita das List Boxes.\n(Atualmente uma mudança de mapa é necessária para aplicar...)",
 	"wolfhud_hudlist_box_bg_color_title" : "Cor de fundo da caixa",
-	"wolfhud_hudlist_box_bg_color_desc" : "Cor de fundo da esquerda e da direita das List Boxes.\n(Atualmente uma mudança de mapa é necessária para aplicar...)",
+	"wolfhud_hudlist_box_bg_color_desc" : "Cor de fundo da esquerda e da direita das List Boxes.\n(Atualmente mudar de mapa é necessário para aplicar...)",
 	"wolfhud_hudlist_civcolor_title" : "Cor do civil",
 	"wolfhud_hudlist_civcolor_desc" : "Cor para civis e reféns no EnemyCounter.",
 	"wolfhud_hudlist_thugcolor_title" : "Cor do bandido",
