@@ -1,8 +1,8 @@
 {
 	"menu_jowi" : "Wick",
-	"hud_int_hold_grab_the_bag" : "Segure $BTN_INTERACT para pegar o(a) $BAG",
+	"hud_int_hold_grab_the_bag" : "Segure $BTN_INTERACT para pegar a $BAG",
 
-	"wolfhud_dialog_force_start_title" : "Forçar o início do jogo?",
+	"wolfhud_dialog_force_start_title" : "Forçar início de jogo?",
 	"wolfhud_dialog_force_start_desc" : "Você tem certeza que quer forçar o início do jogo?\n\nFavor use apenas para salas bugadas, ou se um player estiver afk.\nCertifique-se que todos tiveram tempo de escolher o loadout.\n\nObrigado :)",
 	"wolfhud_dialog_install_title" : "Instalar: $NAME",
 	"wolfhud_dialog_install_desc" : "Você quer instalar '$NAME'?",
