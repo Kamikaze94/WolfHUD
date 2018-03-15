@@ -265,8 +265,8 @@
 	"wolfhud_pacified_civs_desc" : "Muda a posição dos civis desamarrados, enquanto estiverem pacificados.",
 	"wolfhud_use_realammo_title" : "Usar munição real",
 	"wolfhud_use_realammo_desc" : "Mostra a munição restante, sem considerar a contagem de balas do magazine.",
-	"wolfhud_enable_burstmode_title" : "Ativar modo Burst",
-	"wolfhud_enable_burstmode_desc" : "Ativa o modo burst fire mode para suas armas.",
+	"wolfhud_enable_burstmode_title" : "Ativar modo rajada",
+	"wolfhud_enable_burstmode_desc" : "Ativa o modo rajada para suas armas.",
 
 	"wolfhud_playerpanel_options_name" : "Painel do jogador",
 	"wolfhud_playerpanel_options_help" : "Configura seu próprio painel de HUD.",
