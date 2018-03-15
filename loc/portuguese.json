@@ -854,7 +854,7 @@
 	"wolfhud_hold_to_pick_title" : "Pickup automático",
 	"wolfhud_hold_to_pick_desc" : "Loot pequenos serão pegos automaticamente, enquanto a tecla de interação estiver pressionada.",
 
-	"wolfhud_inventory_options_name" : "Opçes de melhoria no inventário",
+	"wolfhud_inventory_options_name" : "Opções de melhoria no inventário",
 	"wolfhud_inventory_options_help" : "Opções para mudar o visual e o comportamento do seu inventário.",
 
 	"wolfhud_equipment_senty_auto_ap_title" : "Sentry Auto AP-Mode",
