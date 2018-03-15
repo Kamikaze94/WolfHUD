@@ -454,7 +454,7 @@
 	"wolfhud_infopanels_left_options_help" : "Opções para a lista de informações da esquerda.",
 
 	"wolfhud_hudlist_show_timers_title" : "Mostrar os Timers",
-	"wolfhud_hudlist_show_timers_desc" : "Exibe os Timers para as Drills, Hacks, etc.",
+	"wolfhud_hudlist_show_timers_desc" : "Exibe os tempos das Drills, Hacks, etc.",
 	"wolfhud_hudlist_show_equipment_desc" : "Determina se exibe o equipamento no lado direito da tela.",
 	"wolfhud_hudlist_show_ammo_bags_title" : "Mostrar Ammo Bags",
 	"wolfhud_hudlist_show_doc_bags_title" : "Mostrar Medic Bags",
