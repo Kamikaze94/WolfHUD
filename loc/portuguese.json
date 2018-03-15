@@ -232,7 +232,7 @@
 	"wolfhud_stat_screen_delay_desc" : "Continuar em X segundos, após a sua contagem de EXP.\n(Apenas o Host, 0 = desativado) ",
 	"wolfhud_loot_screen_pick_card_title" : "Escolha automática de carta",
 	"wolfhud_loot_screen_pick_card_desc" : "Escolhe uma carta automaticamente, quando a tela de loot aparecer.",
-	"wolfhud_loot_screen_pick_specific_card_title" : "Escolha automática de carta especfica",
+	"wolfhud_loot_screen_pick_specific_card_title" : "Escolha automática de carta específica",
 	"wolfhud_loot_screen_pick_specific_card_desc" : "Escpefica que carta pegar automaticamente.",
 	"wolfhud_loot_screen_delay_title" : "Atraso na tela de cartas",
 	"wolfhud_loot_screen_delay_desc" : "Continua em X segundos depois de pegar o seu loot drop.\n(Apenas o Host, 0 = desativado)",
@@ -812,7 +812,7 @@
 	"wolfhud_show_healthbar_pointer_title" : "Mostrar cursos",
 	"wolfhud_show_healthbar_pointer_desc" : "Mostra uma flecha abaixo da barra de vida, indicando o dono da barra de vida.",
 
-	"wolfhud_interaction_options_name" : "Opçes de interação",
+	"wolfhud_interaction_options_name" : "Opções de interação",
 	"wolfhud_interaction_options_help" : "Escolha suas preferências pessoais de interação.",
 
 	"wolfhud_press2hold_lock_mode_title" : "Modo Lock",
