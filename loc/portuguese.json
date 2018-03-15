@@ -805,7 +805,7 @@
 
 	"wolfhud_show_enemyhealthbar_title" : "Mostrar barra de vida do inimigo",
 	"wolfhud_show_enemyhealthbar_desc" : "Exibe uma barra de vida no centro da tela, ao almejar um inimigo.\n(Uma mudança de mapa é necessária para aplicar...)",
-	"wolfhud_show_civhealthbar_title" : "Barra de vida do civil",
+	"wolfhud_show_civhealthbar_title" : "Barra de vida dos civis",
 	"wolfhud_show_civhealthbar_desc" : "Também mostra uma barra de vida para os civis e a IA aliada.",
 	"wolfhud_show_carhealthbar_title" : "Mostrar barra de vida do veículo",
 	"wolfhud_show_carhealthbar_desc" : "Mostra uma barra de vida para veículos dirigíveis.",
