@@ -494,7 +494,7 @@
 	"wolfhud_hudlist_show_hostages_title" : "Mostrar reféns",
 	"wolfhud_hudlist_show_hostages_desc" : "mostrar a quantidade de civis amarrados.",
 	"wolfhud_hudlist_aggregate_hostages_title" : "Agregar reféns",
-	"wolfhud_hudlist_aggregate_hostages_desc" : "Mostrar todos os tipos de reféns numa única info box.",
+	"wolfhud_hudlist_aggregate_hostages_desc" : "Mostrar todos os tipos de reféns em uma única info box.",
 	"wolfhud_hudlist_show_minion_count_title" : "Mostrar a quantidade de minions",
 	"wolfhud_hudlist_show_minion_count_desc" : "Mostrar a quantidade de policiais reféns.",
 	"wolfhud_hudlist_show_pager_count_title" : "Mostrar a quantidade de Pagers",
