@@ -328,7 +328,7 @@
 	"wolfhud_panels_show_interaction_title" : "Mostrar interação",
 	"wolfhud_panels_show_interaction_desc" : "Mostrar a interação dos colegas de equipe.",
 	"wolfhud_panels_show_interaction_number_title" : "Timer de interação",
-	"wolfhud_panels_show_interaction_number_desc" : "Mostra um indicador numrico",
+	"wolfhud_panels_show_interaction_number_desc" : "Mostra um indicador numérico",
 	"wolfhud_panels_show_interaction_text_title" : "Texto de interação",
 	"wolfhud_panels_show_interaction_text_desc" : "Mostrar texto de interação",
 	"wolfhud_panels_interaction_time_title" : "Duração mínima de interação",
