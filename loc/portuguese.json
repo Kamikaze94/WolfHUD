@@ -26,7 +26,7 @@
 	"wolfhud_preplanning_load" : "Carregar plano",
 	"wolfhud_preplanning_reset" : "Resetar plano",
 	"wolfhud_preplanning_reset_all" : "Resetar tudo",
-	"wolfhud_preplanning_delete" : "Deletar plano",
+	"wolfhud_preplanning_delete" : "Deletar um ou mais planos",
 	"wolfhud_preplanning_save_tooltip_title" : "Gravar plano atual:",
 	"wolfhud_preplanning_save_tooltip_desc" : "Grava seu plano atual, e você fará mais facil da próxima vez nesta missão.",
 	"wolfhud_preplanning_load_tooltip_title" : "Carregar ultimo plano:",
@@ -126,7 +126,7 @@
 	"wolfhud_tabstats_melee_kills" : "Mortes com melee:",
 	"wolfhud_tabstats_explosion_kills" : "Mortes com explõses:",
 	"wolfhud_tabstats_nonspecial_kills" : "Mortes de cops não-especiais:",
-	"wolfhud_tabstats_total_revives" : "Total de Revives (P/AI):",
+	"wolfhud_tabstats_total_revives" : "Total de vezes que reviveu (P/AI):",
 	"wolfhud_tabstats_alltime_stat" : "Tempo total:",
 
 	"wolfhud_enemy_civilian" : "Civil",
