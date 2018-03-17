@@ -292,7 +292,7 @@
 	"wolfhud_panels_show_ping_desc" : "Mostra o ping entre você e os jogadores.",
 	"wolfhud_panels_show_status_title" : "Mostrar o status",
 	"wolfhud_panels_show_status_desc" : "Mostra o status dos jogadores (HP, colete, etc.)",
-	"wolfhud_panels_condition_icon_color_title" : "Cor do ícone do condição",
+	"wolfhud_panels_condition_icon_color_title" : "Ícone do condição",
 	"wolfhud_panels_condition_icon_color_desc" : "Configura a cor do ícone de condição (caído, detido, swan song, etc.)",
 	"wolfhud_panels_show_equip_title" : "Mostrar equipamento",
 	"wolfhud_panels_show_equip_desc" : "Mostra o equipamento dos jogadores.",
