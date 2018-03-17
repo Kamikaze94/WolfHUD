@@ -375,7 +375,7 @@
 
 	"wolfhud_killcounter_player_show_killcount_title" : "Exibir Killcounter do jogador",
 	"wolfhud_killcounter_player_show_killcount_desc" : "Exibie um killcounter no seu HUD.",
-	"wolfhud_killcounter_player_color_title" : "Cor do Killcounter (jogador)",
+	"wolfhud_killcounter_player_color_title" : "Killcounter (jogador)",
 	"wolfhud_killcounter_player_color_desc" : "Seleciona a cor do seu killcounter.",
 	"wolfhud_killcounter_player_show_special_title" : "Contar mortes de cops especiais (jogador)",
 	"wolfhud_killcounter_player_show_special_desc" : "Exibe as mortes de inimigos especiais separadamente.",
@@ -385,7 +385,7 @@
 	"wolfhud_killcounter_player_show_accuracy_desc" : "Exibe a precisão atual no seu HUD.",
 	"wolfhud_killcounter_team_show_killcount_title" : "Exibir Killcounter da equipe",
 	"wolfhud_killcounter_team_show_killcount_desc" : "Exibir um killcounter dos membros da equipe.",
-	"wolfhud_killcounter_team_color_title" : "Cor do Killcounter (equipe)",
+	"wolfhud_killcounter_team_color_title" : "Killcounter (equipe)",
 	"wolfhud_killcounter_team_color_desc" : "Seleciona a cor dos killcounters da sua equipe.",
 	"wolfhud_killcounter_team_show_special_title" : "Contar mortes de especiais (equipe)",
 	"wolfhud_killcounter_team_show_special_desc" : "Exibir mortes de inimigos especiais separadamente.",
