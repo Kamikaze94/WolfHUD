@@ -259,7 +259,7 @@
 	"wolfhud_use_customhud_desc" : "Substitui o HUD padrão pelo CustomHUD avançado, criado pelo Se7en.\n(Mudar de mapa é necessário para aplicar...)",
 	"wolfhud_adv_assault_title" : "Banner de Assault Avançado",
 	"wolfhud_adv_assault_desc" : "Mostra a etapa do assault, o tempo e os spawns restantes durante o assault.\n(Apenas o Host)",
-	"wolfhud_assault_position_title": "Posição do Banner de Assault",
+	"wolfhud_assault_position_title": "Banner de Assault",
 	"wolfhud_assault_position_desc" : "Posição horizontal do Banner de Assault.",
 	"wolfhud_pacified_civs_title" : "Mostrar civis pacificados",
 	"wolfhud_pacified_civs_desc" : "Muda a posição dos civis desamarrados, enquanto estiverem pacificados.",
