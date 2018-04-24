@@ -45,7 +45,7 @@ if RequiredScript == "lib/managers/menumanager" then
 	local LobbyOptionInitiator_modify_node_orig = LobbyOptionInitiator.modify_node
 	function LobbyOptionInitiator:modify_node(node, ...)
 		local active_menu = managers.menu:active_menu()
-		local briefing_nodes = active_menu.logic and active_menu.logic._data._nodes
+		local briefing_nodes = active_menu and active_menu.logic and active_menu.logic._data._nodes
 		if briefing_nodes and briefing_nodes.kit and not briefing_nodes[PROFILE_MENU_ID] then
 			create_profile_menu_node(briefing_nodes, PROFILE_MENU_ID, true)
 		end

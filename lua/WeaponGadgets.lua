@@ -287,7 +287,7 @@ elseif RequiredScript == "lib/units/weapons/raycastweaponbase" then
 
 	function RaycastWeaponBase:setup(...)
 		setup_original(self, ...)
-		self:_update_gadget_owner(self._has_gadget)
+		self:_update_gadget_owner(self._gadgets or self._has_gadget)
 	end
 
 	function RaycastWeaponBase:_update_gadget_owner(gadgets)
@@ -344,24 +344,11 @@ end
 -- Laser Auto On
 if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 	function NewRaycastWeaponBase:_setup_laser()
-		if self._has_gadget then
-			local gadgets = clone(self._has_gadget)
-			table.sort(gadgets, function(x, y)
-				local xd = self._parts[x]
-				local yd = self._parts[y]
-				if not xd or not xd.unit then
-					return false
-				end
-				if not yd or not yd.unit then
-					return true
-				end
-				return xd.unit:base().GADGET_TYPE > yd.unit:base().GADGET_TYPE
-			end)
-
-			for i, part_id in ipairs(gadgets) do
+		if self._gadgets then
+			for i, part_id in ipairs(self._gadgets) do
                 local base = self._parts[part_id] and self._parts[part_id].unit and self._parts[part_id].unit:base()
 				if base and base.GADGET_TYPE and base.GADGET_TYPE == (WeaponLaser.GADGET_TYPE or "") then
-					self:set_gadget_on(i or 0, false, gadgets)
+					self:set_gadget_on(i or 0, false, self._gadgets)
 					break
 				end
 			end
@@ -383,7 +370,7 @@ end
 -- Rotated Secondary Sight
 if string.lower(RequiredScript) == "lib/units/cameras/fpcameraplayerbase" then
 	local clbk_stance_entered_original = FPCameraPlayerBase.clbk_stance_entered
-	FPCameraPlayerBase.angled_sight_rotation    = {
+	FPCameraPlayerBase.angled_sight_rotation = {
 		wpn_fps_upg_o_45iron = Rotation(0, 0, -45),
 		wpn_fps_upg_o_45rds = Rotation(0, 0, -45),
 		wpn_fps_upg_o_45rds_v2 = Rotation(0, 0, -45),
