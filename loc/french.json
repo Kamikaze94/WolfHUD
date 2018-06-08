@@ -220,6 +220,20 @@
 	"wolfhud_options_name" : "Paramètres : WolfHUD",
 	"wolfhud_options_help" : "Personnalisez le WolfHUD selon vos goûts.",
 
+	"wolfhud_language_title" : "Language",
+	"wolfhud_language_desc" : "Select a localization for WolfHUD.\n(A Map change is needed to apply...)",
+
+	"wolfhud_languages_english" : "English",
+	"wolfhud_languages_german" : "German",
+	"wolfhud_languages_dutch" : "Dutch",
+	"wolfhud_languages_french" : "French",
+	"wolfhud_languages_italian" : "Italian",
+	"wolfhud_languages_spanish" : "Spanish",
+	"wolfhud_languages_portuguese" : "Portugese",
+	"wolfhud_languages_russian" : "Russian",
+	"wolfhud_languages_chinese" : "Chinese",
+	"wolfhud_languages_korean" : "Korean",
+
 	"wolfhud_skip_blackscreen_title" : "Passer l'écran de chargement",
 	"wolfhud_skip_blackscreen_desc" : "Passe automatiquement l'écran de chargement en début de mission.\n(Uniquement pour l'hôte)",
 	"wolfhud_instant_restart_title" : "Redémarrage instantané",

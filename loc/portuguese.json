@@ -222,6 +222,20 @@
 	"wolfhud_options_name" : "Configurações do WolfHUD",
 	"wolfhud_options_help" : "Customize o WolfHUD com as suas prefências.",
 
+	"wolfhud_language_title" : "Language",
+	"wolfhud_language_desc" : "Select a localization for WolfHUD.\n(A Map change is needed to apply...)",
+
+	"wolfhud_languages_english" : "English",
+	"wolfhud_languages_german" : "German",
+	"wolfhud_languages_dutch" : "Dutch",
+	"wolfhud_languages_french" : "French",
+	"wolfhud_languages_italian" : "Italian",
+	"wolfhud_languages_spanish" : "Spanish",
+	"wolfhud_languages_portuguese" : "Portugese",
+	"wolfhud_languages_russian" : "Russian",
+	"wolfhud_languages_chinese" : "Chinese",
+	"wolfhud_languages_korean" : "Korean",
+
 	"wolfhud_skip_blackscreen_title" : "Pular tela preta",
 	"wolfhud_skip_blackscreen_desc" : "Pular a tela preta automaticamente no início da missão.\n(Apenas o Host)",
 	"wolfhud_instant_restart_title" : "Reinício Imediato",

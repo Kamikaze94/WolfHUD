@@ -73,6 +73,7 @@
 		{ "hook_id" : "lib/units/equipment/sentry_gun/sentrygundamage", 		"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/interactions/interactionext", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/weapons/akimboweaponbase", 					"script_path" : "Core.lua" },
+		{ "hook_id" : "lib/units/weapons/akimboshotgunbase", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/weapons/sentrygunweapon", 						"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/weapons/weapongadgetbase", 					"script_path" : "Core.lua" },
 		{ "hook_id" : "lib/units/weapons/weaponlaser", 							"script_path" : "Core.lua" },

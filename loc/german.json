@@ -224,6 +224,20 @@
 	"wolfhud_options_name" : "WolfHUD Einstellungen",
 	"wolfhud_options_help" : "Passe deine WolfHUD Einstellungen deinem Geschmack an.",
 
+	"wolfhud_language_title" : "Sprache",
+	"wolfhud_language_desc" : "Wähle eine Sprache die WolfHUD nutzen soll.\n(Wird erst beim Mapwechsel aktiv...)",
+
+	"wolfhud_languages_english" : "Englisch",
+	"wolfhud_languages_german" : "Deutsch",
+	"wolfhud_languages_dutch" : "Niederländisch",
+	"wolfhud_languages_french" : "Französisch",
+	"wolfhud_languages_italian" : "Italienisch",
+	"wolfhud_languages_spanish" : "Spanisch",
+	"wolfhud_languages_portuguese" : "Portugiesisch",
+	"wolfhud_languages_russian" : "Russisch",
+	"wolfhud_languages_chinese" : "Chinesisch",
+	"wolfhud_languages_korean" : "Koreanisch",
+
 	"wolfhud_skip_blackscreen_title" : "Überspringe schwarzen Bildschirm",
 	"wolfhud_skip_blackscreen_desc" : "Überspringt den schwarzen Bildschirm beim Missionsstart.\n(Nur Host)",
 	"wolfhud_instant_restart_title" : "Sofortiger Neustart",

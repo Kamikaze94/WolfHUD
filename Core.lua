@@ -24,7 +24,7 @@ if not _G.WolfHUD then
 		["lib/managers/hudmanager"] 								= { "EnemyHealthbar.lua", "CustomWaypoints.lua" },
 		["lib/managers/hudmanagerpd2"] 								= { "CustomHUD.lua", "VanillaHUD.lua", "HUDChat.lua", "HUDList.lua", "KillCounter.lua", "DownCounter.lua", "DrivingHUD.lua", "TabStats.lua", "DamageIndicator.lua", "WaypointsManager.lua", "Interaction.lua", "Scripts.lua", "BurstFire.lua", "AdvAssault.lua" },
 		["lib/managers/statisticsmanager"] 							= { "KillCounter.lua", "TabStats.lua" },
-		["lib/managers/playermanager"] 								= { "GameInfoManager.lua" },
+		["lib/managers/playermanager"] 								= { "GameInfoManager.lua", "BurstFire.lua" },
 		["lib/managers/preplanningmanager"] 						= { "PrePlanManager.lua" },
 		["lib/managers/hud/huddriving"] 							= { "DrivingHUD.lua" },
 		["lib/managers/hud/hudteammate"] 							= { "CustomHUD.lua", "VanillaHUD.lua", "KillCounter.lua", "DownCounter.lua", "BurstFire.lua" },
@@ -74,6 +74,7 @@ if not _G.WolfHUD then
 		["lib/units/equipment/sentry_gun/sentrygundamage"] 			= { "GameInfoManager.lua" },
 		["lib/units/interactions/interactionext"] 					= { "GameInfoManager.lua", "Interaction.lua", "EquipmentTweaks.lua" },
 		["lib/units/weapons/akimboweaponbase"] 						= { "BurstFire.lua" },
+		["lib/units/weapons/akimboshotgunbase"] 					= { "BurstFire.lua" },
 		["lib/units/weapons/sentrygunweapon"] 						= { "GameInfoManager.lua", "EquipmentTweaks.lua", "WeaponGadgets.lua" },
 		["lib/units/weapons/weapongadgetbase"]						= { "WeaponGadgets.lua" },
 		["lib/units/weapons/weaponlaser"] 							= { "WeaponGadgets.lua" },
@@ -118,7 +119,17 @@ if not _G.WolfHUD then
 	}
 
 	function WolfHUD:Reset()
+		local default_lang = "english"
+		for _, filename in pairs(file.GetFiles(self.mod_path .. "/loc/")) do
+			local str = filename:match('^(.*).json$')
+			if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
+				default_lang = str
+				break
+			end
+		end
+
 		WolfHUD.settings = {
+			LANGUAGE 								= default_lang,
 			CustomHUD = {
 				ENABLED 							= true,
 				PLAYER = {
@@ -1095,7 +1106,7 @@ if not _G.WolfHUD then
 				local id = string.format("%s_%s_multi", menu_id, data.name_id)
 				local clbk_id = id .. "_clbk"
 
-				MenuHelper:AddMultipleChoice({
+				local multi_data = {
 					id = id,
 					title = data.name_id,
 					desc = data.desc_id,
@@ -1105,7 +1116,37 @@ if not _G.WolfHUD then
 					menu_id = menu_id,
 					priority = offset,
 					disabled_color = Color(0.6, 0.6, 0.6),
-				})
+				}
+				
+				do	-- Copy of MenuHelper:AddMultipleChoice (Without ipairs for options)
+					local data = {
+						type = "MenuItemMultiChoice"
+					}
+					for k, v in pairs( multi_data.items or {} ) do
+						table.insert( data, { _meta = "option", text_id = v, value = k } )
+					end
+					
+					local params = {
+						name = multi_data.id,
+						text_id = multi_data.title,
+						help_id = multi_data.desc,
+						callback = multi_data.callback,
+						filter = true,
+						localize = multi_data.localized,
+					}
+					
+					local menu = MenuHelper:GetMenu( multi_data.menu_id )
+					local item = menu:create_item(data, params)
+					item._priority = multi_data.priority
+					item:set_value( multi_data.value or 1 )
+
+					if multi_data.disabled then
+						item:set_enabled( not multi_data.disabled )
+					end
+
+					menu._items_list = menu._items_list or {}
+					table.insert( menu._items_list, item )
+				end
 
 				MenuCallbackHandler[clbk_id] = function(self, item)
 					change_setting(clone(data.value), item:value())
@@ -1370,32 +1411,11 @@ if not _G.WolfHUD then
 	Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", function(loc)
         local loc_path = WolfHUD.mod_path .. "loc/"
 		if file.DirectoryExists( loc_path ) then
-			local custom_lang
-			if _G.PD2KR then
-				custom_lang = "korean"
-			else
-				for _, mod in pairs(BLT and BLT.Mods:Mods() or {}) do
-					if mod:GetName() == "ChnMod (Patch)" and mod:IsEnabled() then
-						custom_lang = "chinese"
-						break
-					end
-				end
-			end
-			if custom_lang then
-				loc:load_localization_file(string.format("%s%s.json", loc_path, custom_lang))
-			else
-				for _, filename in pairs(file.GetFiles(loc_path)) do
-					local str = filename:match('^(.*).json$')
-					if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
-						loc:load_localization_file(loc_path .. filename)
-						break
-					end
-				end
-			end
-			loc:load_localization_file(loc_path .. "english.json", false)
+			loc:load_localization_file(string.format("%s/%s.json", loc_path, WolfHUD:getSetting({"LANGUAGE"}, "english")))
+			loc:load_localization_file(string.format("%s/english.json", loc_path), false)
 
 			if WolfHUD:getSetting({"INVENTORY", "USE_REAL_WEAPON_NAMES"}, false) then
-				loc:load_localization_file(loc_path .. "RealWeaponNames.json")
+				loc:load_localization_file(string.format("%s/RealWeaponNames.json", loc_path))
 			end
 		else
 			WolfHUD:print_log("Localization folder seems to be missing!", "error")

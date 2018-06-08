@@ -15,6 +15,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 	end
 
 	HUDManager.CUSTOM_WAYPOINTS = {
+		DEBUGGING = false,
 		UPGRADE_COLORS = {
 			[0] = Color.white:with_alpha(0),
 			[1] = Color.white,
@@ -442,7 +443,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 					},
 					debug_txt = {
 						type = "label",
-						show = false,
+						show = HUDManager.CUSTOM_WAYPOINTS.DEBUGGING,
 						text = string.format("Editor ID: %s", (data.unit:editor_id() or "N/A")),
 					},
 					component_order = { { "icon" }, { "timer" }, { "speed_upgrade", "noise_upgrade", "restart_upgrade" }, { "debug_txt" } },
@@ -616,18 +617,18 @@ if RequiredScript == "lib/managers/hudmanager" then
 
 		if event == "add" then
 			if tweak_entry and not tweak_entry.is_vehicle and not tweak_entry.skip_exit_secure and (data.carry_id ~= "person" or managers.job:current_level_id() == "mad" and (data.bagged or data.unit:editor_id() ~= -1)) then
+				local angle = HUDManager.CUSTOM_WAYPOINTS.DEBUGGING and 180 or WolfHUD:getSetting({"CustomWaypoints", "LOOT", "ANGLE"}, 25)
 				local name_id = data.carry_id and tweak_data.carry[data.carry_id] and tweak_data.carry[data.carry_id].name_id
 				local bag_name = name_id and managers.localization:to_upper_text(name_id)
 				local count = data.count or 1
-				local angle = WolfHUD:getSetting({"CustomWaypoints", "LOOT", "ANGLE"}, 25)
 				if bag_name then
 					local params = {
 						unit = data.unit,
 						offset = data.bagged and Vector3(0, 0, WolfHUD:getSetting({"CustomWaypoints", "LOOT", "BAGGED_OFFSET"}, 30)) or Vector3(0, 0, WolfHUD:getSetting({"CustomWaypoints", "LOOT", "OFFSET"}, 15)),
-						visible_through_walls = data.bagged,
-						alpha = 0.1,
+						visible_through_walls = HUDManager.CUSTOM_WAYPOINTS.DEBUGGING or data.bagged,
+						alpha = HUDManager.CUSTOM_WAYPOINTS.DEBUGGING and 1 or 0.1,
 						visible_angle = { max = angle },
-						visible_distance = { max = 2000 },
+						visible_distance = { max = HUDManager.CUSTOM_WAYPOINTS.DEBUGGING and 99999 or 2000 },
 						fade_angle = { start_angle = angle, end_angle = angle - 5, final_scale = 8 },
 						scale = 1.25,
 						icon = {
@@ -647,7 +648,12 @@ if RequiredScript == "lib/managers/hudmanager" then
 							show = true,
 							text = bag_name,
 						},
-						component_order = { { "icon", "amount", "label" } },
+						debug_txt = {
+							type = "label",
+							show = HUDManager.CUSTOM_WAYPOINTS.DEBUGGING,
+							text = string.format("Editor ID: %s", (data.unit:editor_id() or "N/A")),
+						},
+						component_order = { { "icon", "amount", "label" }, { "debug_txt" } },
 					}
 
 					managers.waypoints:add_waypoint(id, "CustomWaypoint", params)
@@ -731,12 +737,12 @@ if RequiredScript == "lib/managers/hudmanager" then
 					unit = data.unit,
 					offset = icon_data.offset or Vector3(0, 0, 15),
 					hide_on_uninteractable = true,
-					visible_through_walls = icon_data.x_ray or false,
+					visible_through_walls = HUDManager.CUSTOM_WAYPOINTS.DEBUGGING or icon_data.x_ray or false,
 					scale = 1,
-					alpha = 0.1,
+					alpha = HUDManager.CUSTOM_WAYPOINTS.DEBUGGING and 1 or 0.1,
 					fade_angle = { start_angle = 35, end_angle = 25, final_scale = 8 },
-					visible_angle = { max = 35 },
-					visible_distance = { max = 3000 },
+					visible_angle = { max = HUDManager.CUSTOM_WAYPOINTS.DEBUGGING and 180 or 35 },
+					visible_distance = { max = HUDManager.CUSTOM_WAYPOINTS.DEBUGGING and 99999 or 3000 },
 					color = icon_data.color,
 					icon = {
 						type = "icon",

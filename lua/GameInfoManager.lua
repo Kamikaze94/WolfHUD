@@ -366,6 +366,19 @@ lounge		100421		100448			102049
 			},
 			dah = {	-- The Diamond Heist (1x Red Diamond Showcase)
 				[100952] = true,
+			},
+			rvd2 = { -- Resevoir Dogs (1x money, 4x Small loot)
+				[100296] = true,
+				[100277] = true,
+				[100278] = true,
+				[100279] = true,
+				[100280] = true,
+			},
+			des = { -- Henry's Rock (2x artifact, 2x painting)
+				[101757] = true,
+				[400513] = true,
+				[400515] = true,
+				[400617] = true,
 			}
 		},
 	}

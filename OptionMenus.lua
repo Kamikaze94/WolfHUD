@@ -95,7 +95,7 @@ if WolfHUD then
 					value = {"GADGETS", "laser", theme, "beam", "enabled"},
 					visible_reqs = {
 						can_be_deactivated
-					}, 
+					},
 					enabled_reqs = {},
 				},
 				{
@@ -301,7 +301,7 @@ if WolfHUD then
 					value = {"GADGETS", "flashlight", theme, "light", "enabled"},
 					visible_reqs = {
 						can_be_deactivated
-					}, 
+					},
 					enabled_reqs = {},
 				},
 				{
@@ -400,6 +400,30 @@ if WolfHUD then
 		desc_id = "wolfhud_options_help",
 		position = 3,
 		options = {
+			{
+				type = "multi_choice",
+				name_id = "wolfhud_language_title",
+				desc_id = "wolfhud_language_desc",
+				options = {
+					["english"] = "wolfhud_languages_english",
+					["german"] = "wolfhud_languages_german",
+					["dutch"] = "wolfhud_languages_dutch",
+					["french"] = "wolfhud_languages_french",
+					["italian"] = "wolfhud_languages_italian",
+					["spanish"] = "wolfhud_languages_spanish",
+					["portuguese"] = "wolfhud_languages_portuguese",
+					["russian"] = "wolfhud_languages_russian",
+					["chinese"] = "wolfhud_languages_chinese",
+					["korean"] = "wolfhud_languages_korean"
+				},
+				visible_reqs = {},
+				enabled_reqs = {},
+				value = {"LANGUAGE"},
+			},
+			{
+				type = "divider",
+				size = 12,
+			},
 			{	--General HUD
 				type = "menu",
 				menu_id = "wolfhud_customhud_options_menu",
@@ -411,7 +435,7 @@ if WolfHUD then
 						name_id = "wolfhud_use_customhud_title",
 						desc_id = "wolfhud_use_customhud_desc",
 						value = {"CustomHUD", "ENABLED"},
-						visible_reqs = {}, enabled_reqs = {}, 
+						visible_reqs = {}, enabled_reqs = {},
 					},
 					{
 						type = "divider",
@@ -531,7 +555,7 @@ if WolfHUD then
 								name_id = "wolfhud_panels_condition_icon_color_title",
 								desc_id = "wolfhud_panels_condition_icon_color_desc",
 								value = {"CustomHUD", "PLAYER", "CONDITION_ICON_COLOR"},
-								visible_reqs = {}, enabled_reqs = {}, 
+								visible_reqs = {}, enabled_reqs = {},
 								options = {},
 								add_color_options = true,
 								add_rainbow = false,
@@ -726,14 +750,14 @@ if WolfHUD then
 								type = "toggle",
 								name_id = "wolfhud_panels_show_rank_title",
 								desc_id = "wolfhud_panels_rank_name_desc",
-								visible_reqs = {}, enabled_reqs = {}, 
+								visible_reqs = {}, enabled_reqs = {},
 								value = {"CustomHUD", "TEAMMATE", "RANK"},
 							},
 							{
 								type = "toggle",
 								name_id = "wolfhud_panels_truncate_tags_title",
 								desc_id = "wolfhud_panels_truncate_tags_desc",
-								visible_reqs = {}, enabled_reqs = {}, 
+								visible_reqs = {}, enabled_reqs = {},
 								value = {"CustomHUD", "TEAMMATE", "TRUNCATE_TAGS"},
 							},
 							{
@@ -770,7 +794,7 @@ if WolfHUD then
 								type = "toggle",
 								name_id = "wolfhud_panels_show_downcounter_title",
 								desc_id = "wolfhud_panels_show_downcounter_desc",
-								visible_reqs = {}, enabled_reqs = {}, 
+								visible_reqs = {}, enabled_reqs = {},
 								value = {"CustomHUD", "TEAMMATE", "DOWNCOUNTER"},
 							},
 							{

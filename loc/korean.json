@@ -222,6 +222,20 @@
 	"wolfhud_options_name" : "WolfHUD 설정",
 	"wolfhud_options_help" : "WolfHUD 를 설정하는 곳 입니다.",
 
+	"wolfhud_language_title" : "Language",
+	"wolfhud_language_desc" : "Select a localization for WolfHUD.\n(A Map change is needed to apply...)",
+
+	"wolfhud_languages_english" : "English",
+	"wolfhud_languages_german" : "German",
+	"wolfhud_languages_dutch" : "Dutch",
+	"wolfhud_languages_french" : "French",
+	"wolfhud_languages_italian" : "Italian",
+	"wolfhud_languages_spanish" : "Spanish",
+	"wolfhud_languages_portuguese" : "Portugese",
+	"wolfhud_languages_russian" : "Russian",
+	"wolfhud_languages_chinese" : "Chinese",
+	"wolfhud_languages_korean" : "Korean",
+
 	"wolfhud_skip_blackscreen_title" : "검은화면 스킵",
 	"wolfhud_skip_blackscreen_desc" : "자동으로 검은 화면(미션시작)을 스킵합니다.\n(방장 전용)",
 	"wolfhud_instant_restart_title" : "즉시 재시작",
