@@ -222,8 +222,8 @@
 	"wolfhud_options_name" : "WolfHUD Настройки",
 	"wolfhud_options_help" : "Настройте WolfHUD в соответветствии с вашими предпочтениями.",
 
-	"wolfhud_language_title" : "Language",
-	"wolfhud_language_desc" : "Select a localization for WolfHUD.\n(A Map change is needed to apply...)",
+	"wolfhud_language_title" : "Язык",
+	"wolfhud_language_desc" : "Выберите язык для WolfHUD.\n(Необходимо сменить карту для принятия изменений...)",
 
 	"wolfhud_languages_english" : "English",
 	"wolfhud_languages_german" : "German",
