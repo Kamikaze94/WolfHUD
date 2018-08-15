@@ -118,6 +118,7 @@
 	"bm_w_schakal" 				: "H&K UMP-45",
 	"bm_w_coal" 				: "PP-19 Bizon",
 	"bm_w_erma" 				: "MP40",
+	"bm_w_shepheard" 			: "SIG-Sauer MPX",
 
 	"bm_w_judge" 				: "Taurus Judge 4510PLYFS",
 	"bm_w_serbu" 				: "Remington M870 Short-Barreled",
@@ -160,5 +161,6 @@
 	"bm_w_x_rage" 				: "Akimbo Taurus Raging Bull.44",
 	"bm_w_x_sparrow" 			: "Akimbo Jericho 941 RPL",
 	"bm_w_x_erma" 				: "Akimbo MP40",
+	"bm_w_x_shepheard" 			: "Akimbo SIG-Sauer MPX",
 	"bm_w_x_pl14" 				: "Akimbo PL-14 Lebedev"
 }

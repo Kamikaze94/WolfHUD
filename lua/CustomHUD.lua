@@ -3288,6 +3288,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 		self._settings = settings
 		self._equipment_types = { "deployables", "cable_ties", "throwables" }
+		self._throwable_data = { amount = 0, cooldown = 0 }
 
 		local bg = self._panel:rect({
 			name = "bg",
@@ -3439,8 +3440,16 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function PlayerInfoComponent.Equipment:set_throwable_amount(amount)
-		if amount > 0 and self._animating_throwable_cooldown then
+		self._throwable_data.amount = amount
+		if amount > 0 then
 			self:stop_throwable_cooldown(true)
+		else
+			local t = managers.player:player_timer():time()
+			if self._throwable_data.cooldown > t then
+				local time_left = self._throwable_data.cooldown - t
+				self:set_throwable_cooldown(time_left, time_left)
+				return
+			end
 		end
 
 		local panel = self._panel:child("throwables")
@@ -3454,9 +3463,12 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function PlayerInfoComponent.Equipment:set_throwable_cooldown(time_left, time_total)
-		local panel = self._panel:child("throwables")
-		panel:stop()
-		panel:animate(callback(self, self, "_animate_throwable_cooldown"), time_left)
+		self._throwable_data.cooldown = managers.player:player_timer():time() + time_left
+		if self._throwable_data.amount <= 0 then
+			local panel = self._panel:child("throwables")
+			panel:stop()
+			panel:animate(callback(self, self, "_animate_throwable_cooldown"), time_left)
+		end
 	end
 	
 	function PlayerInfoComponent.Equipment:stop_throwable_cooldown(visibility)
@@ -3465,6 +3477,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			local icon = panel:child("icon")
 			local text = panel:child("amount")
 
+			panel:stop()
 			self._animating_throwable_cooldown = nil
 			text:set_color(Color.white)
 			icon:set_alpha(1)

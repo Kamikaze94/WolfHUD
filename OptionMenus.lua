@@ -3053,6 +3053,28 @@ if WolfHUD then
 									},
 									{
 										type = "toggle",
+										name_id = "wolfhud_hudlist_pocket_ecm_jammer_buff_title",
+										desc_id = "wolfhud_hudlist_pocket_ecm_jammer_buff_desc",
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "pocket_ecm_jammer"},
+										visible_reqs = {},
+										enabled_reqs = {
+											{ setting = { "HUDList", "ENABLED" }, invert = false },
+											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
+										},
+									},
+									{
+										type = "toggle",
+										name_id = "wolfhud_hudlist_pocket_ecm_kill_dodge_buff_title",
+										desc_id = "wolfhud_hudlist_pocket_ecm_kill_dodge_buff_desc",
+										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "pocket_ecm_kill_dodge"},
+										visible_reqs = {},
+										enabled_reqs = {
+											{ setting = { "HUDList", "ENABLED" }, invert = false },
+											{ setting = {"HUDList", "BUFF_LIST", "show_buffs"}, invert = false },
+										},
+									},
+									{
+										type = "toggle",
 										name_id = "wolfhud_hudlist_sicario_dodge_buff_title",
 										desc_id = "wolfhud_hudlist_sicario_dodge_buff_desc",
 										value = {"HUDList", "BUFF_LIST", "PERK_BUFFS", "sicario_dodge"},

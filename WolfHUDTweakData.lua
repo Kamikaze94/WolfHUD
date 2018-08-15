@@ -159,6 +159,7 @@ function WolfHUDTweakData:init()
 		[ "ceiling_turret_module" ] 			= { default = "wolfhud_enemy_ceiling_turret" },
 		[ "ceiling_turret_module_no_idle" ] 	= { default = "wolfhud_enemy_ceiling_turret" },
 		[ "ceiling_turret_module_longer_range" ] = { default = "wolfhud_enemy_ceiling_turret" },
+		[ "aa_turret_module" ] 					= { default = "wolfhud_enemy_aa_turret" },
 		[ "sentry_gun" ]						= { default = "wolfhud_enemy_sentry_gun" },
 		[ "mobster_boss" ] 						= { default = "wolfhud_enemy_mobster_boss" },
 		[ "chavez_boss" ]						= { default = "wolfhud_enemy_chavez_boss" },
@@ -204,6 +205,7 @@ function WolfHUDTweakData:init()
 		[ "myh" ]								= { default = "menu_myh" },
 		[ "ecp_male" ] 							= { default = "menu_ecp_male" },
 		[ "ecp_female" ] 						= { default = "menu_ecp_female" },
+		[ "joy" ] 								= { default = "menu_joy" },
 	}
 
 	self:post_init()

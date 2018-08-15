@@ -475,6 +475,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			local level_id = managers.job:current_level_id()
 			local disabled_lvls = {
 				"mus", 		-- The Diamond
+				"sah",		-- Shacklethorne Auction
 			}
 			return not (level_id and table.contains(disabled_lvls, level_id))
 		end,
@@ -506,6 +507,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		pain_killer = { "painkiller", "damage_reduction" },
 		pain_killer_aced = { "painkiller", "damage_reduction" },
 		partner_in_crime_aced = { "partner_in_crime" },
+		pocket_ecm_kill_dodge =	{ "pocket_ecm_kill_dodge", "total_dodge_chance" },
 		quick_fix = { "quick_fix", "damage_reduction" },
 		running_from_death_basic = { "running_from_death" },
 		running_from_death_aced = { "running_from_death" },
@@ -532,6 +534,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			chico_injector_debuff = "chico_injector",
 			delayed_damage_debuff = "delayed_damage",
 			maniac_debuff = "maniac",
+			pocket_ecm_jammer_debuff = "pocket_ecm_jammer",
 			sicario_dodge_debuff = "sicario_dodge",
 			smoke_screen_grenade_debuff = "smoke_screen_grenade",
 			tag_team_debuff = "tag_team",
@@ -5077,6 +5080,22 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "MASTERMIND_BUFFS", "partner_in_crime"}, false),
 		},
+		pocket_ecm_jammer = {
+			perks = {0, 0},
+			texture_bundle_folder = "joy",
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "pocket_ecm_jammer"}, true),
+		},
+		pocket_ecm_kill_dodge = {
+			perks = {3, 0}, 
+			texture_bundle_folder = "joy",
+			class = "TimedBuffItem",
+			priority = 4,
+			color = HUDList.BuffItemBase.ICON_COLOR.STANDARD,
+			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "pocket_ecm_kill_dodge"}, false),
+		},
 		running_from_death = {
 			skills_new = tweak_data.skilltree.skills.running_from_death.icon_xy,
 			class = "TimedBuffItem",
@@ -5282,6 +5301,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			priority = 8,
 			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "medical_supplies_debuff"}, true),
+		},
+		pocket_ecm_jammer_debuff = {
+			perks = {0, 0},
+			texture_bundle_folder = "joy",
+			class = "TimedBuffItem",
+			priority = 8,
+			color = HUDList.BuffItemBase.ICON_COLOR.DEBUFF,
+			ignore = true,	--Composite debuff
 		},
 		sicario_dodge_debuff = {
 			perks = {1, 0},
