@@ -210,7 +210,12 @@ if RequiredScript == "lib/managers/hudmanager" then
 				show = true,
 				text = text
 			},
-			component_order = { { "icon", "label" } },
+			debug_txt = {
+				type = "label",
+				show = HUDManager.CUSTOM_WAYPOINTS.DEBUGGING,
+				text = string.format("Editor ID: %s", (unit:editor_id() or "N/A")),
+			},
+			component_order = { { "icon", "label" }, { "debug_txt" } },
 		}
 		managers.waypoints:add_waypoint(id, "CustomWaypoint", params)
 	end
