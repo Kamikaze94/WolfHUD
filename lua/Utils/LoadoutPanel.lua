@@ -498,51 +498,48 @@ function LoadoutImageItem:init(base_panel, owner, name, width, height, params)
 end
 
 function LoadoutImageItem:arrange()
-		if self:enabled() then
-			self._text:set_font_size(self._font_size * 0.95)
-			local _, _, w, h = self._text:text_rect()
-			while w > math.max(self._panel:w() - 2 * self._margin, 1) do
-				if self._text:font_size() > 11 then
-					self._text:set_font_size(self._text:font_size() - 0.1)
-				else
-					self._text:set_text(self._text:text():sub(1, self._text:text():len() - 1))
-				end
-				_, _, w, h = self._text:text_rect()
-			end
-
-			self._text:set_top(self._margin)
-			self._text:set_left(self._margin)
-			self._text:set_w(self._panel:w() - 2 * self._margin)
-
-			local max_w, max_h = self._panel:w() - 2 * self._margin, (self._panel:h() - (self._text:visible() and self._text:h() or 0)) - 2 * self._margin
-			local texture_w, texture_h = self._icon:texture_width() or 1, self._icon:texture_height() or 1
-
-			local calc_w = max_h * (texture_w / texture_h)
-			local calc_h = max_w * (texture_h / texture_w)
-
-			if calc_w < max_w then
-				self._icon:set_size(calc_w, max_h)
+	if self:enabled() then
+		self._text:set_font_size(self._font_size * 0.95)
+		local _, _, w, h = self._text:text_rect()
+		while w > math.max(self._panel:w() - 2 * self._margin, 1) do
+			if self._text:font_size() > 11 then
+				self._text:set_font_size(self._text:font_size() - 0.1)
 			else
-				self._icon:set_size(max_w, calc_h)
+				self._text:set_text(self._text:text():sub(1, self._text:text():len() - 1))
 			end
-
-			self._icon:set_center_x(self._panel:w() / 2)
-			self._icon:set_center_y(self._panel:h() / 2 + ((self._text:visible() and self._text:h() or 0) * 0.5))
-
-			self._amount_text:set_font_size(tweak_data.menu.pd2_small_font_size * 0.9)
-			local _, _, w, h = self._amount_text:text_rect()
-			while w > ((self._panel:w() - 2 * self._margin) / 2) do
-				if self._amount_text:font_size() > 10 then
-					self._amount_text:set_font_size(self._amount_text:font_size() - 0.1)
-				else
-					break
-				end
-				_, _, w, h = self._amount_text:text_rect()
-			end
-
-			self._amount_text:set_right(self._panel:w() - self._margin)
-			self._amount_text:set_bottom(self._panel:h() - self._margin)
+			_, _, w, h = self._text:text_rect()
 		end
+
+		self._text:set_top(self._margin)
+		self._text:set_left(self._margin)
+		self._text:set_w(self._panel:w() - 2 * self._margin)
+		local max_w, max_h = self._panel:w() - 2 * self._margin, (self._panel:h() - (self._text:visible() and self._text:h() or 0)) - 2 * self._margin
+		local texture_w, texture_h = self._icon:texture_width() or 1, self._icon:texture_height() or 1
+		local calc_w = max_h * (texture_w / texture_h)
+		local calc_h = max_w * (texture_h / texture_w)
+		if calc_w < max_w then
+		self._icon:set_size(calc_w, max_h)
+		else
+			self._icon:set_size(max_w, calc_h)
+		end
+
+		self._icon:set_center_x(self._panel:w() / 2)
+		self._icon:set_center_y(self._panel:h() / 2 + ((self._text:visible() and self._text:h() or 0) * 0.5))
+
+		self._amount_text:set_font_size(tweak_data.menu.pd2_small_font_size * 0.9)
+		local _, _, w, h = self._amount_text:text_rect()
+		while w > ((self._panel:w() - 2 * self._margin) / 2) do
+			if self._amount_text:font_size() > 10 then
+				self._amount_text:set_font_size(self._amount_text:font_size() - 0.1)
+			else
+				break
+			end
+			_, _, w, h = self._amount_text:text_rect()
+		end
+
+		self._amount_text:set_right(self._panel:w() - self._margin)
+		self._amount_text:set_bottom(self._panel:h() - self._margin)
+	end
 end
 
 function LoadoutImageItem:set_text(text, color_range)
@@ -815,7 +812,7 @@ function LoadoutPlaytimeItem:set_outfit(outfit)
 			self:set_text("...")
 			self:arrange()
 
-				--local profile_url = string.format("http://steamcommunity.com/profiles/%s/?xml=1", tostring(steam_id))
+			--local profile_url = string.format("http://steamcommunity.com/profiles/%s/?xml=1", tostring(steam_id))
 			local all_games_url = string.format("http://steamcommunity.com/profiles/%s/games/?xml=1", tostring(steam_id))
 			Steam:http_request(all_games_url, callback(self, self, "set_playtime_clbk"))
 		end
@@ -1217,7 +1214,7 @@ function LoadoutMeleeItem:set_outfit(outfit)
 		if outfit.melee_weapon == "weapon" then
 			self:set_enabled("outfit", true)
 
-				local loadout_id = outfit.melee_weapon
+			local loadout_id = outfit.melee_weapon
 			local weapon_textures = {}
 			for i, name in ipairs({"primary", "secondary"}) do
 				local weapon_id = outfit[name].cosmetics and outfit[name].cosmetics.id or managers.weapon_factory:get_weapon_id_by_factory_id(outfit[name].factory_id)
@@ -1283,7 +1280,7 @@ end
 LoadoutDeployableItem = LoadoutDeployableItem or class(LoadoutImageItem)
 
 function LoadoutDeployableItem:set_outfit(outfit)
-	if outfit[self._name] and tostring(outfit[self._name]) ~= "nil" and (self._name ~= "secondary_deployable" or (outfit.skills and outfit.skills.skills and tonumber(outfit.skills.skills[7]) >= 12)) then
+	if outfit[self._name] and tostring(outfit[self._name]) ~= "nil" and (self._name ~= "secondary_deployable" or (outfit.skills and outfit.skills.skills and (tonumber(outfit.skills.skills[7]) or 0) >= 12)) then
 		self:set_enabled("outfit", true)
 		if self._loadout ~= outfit[self._name] then
 			self._loadout = outfit[self._name]

@@ -438,6 +438,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		unknown =					"dentist",
 		box_unknown = 				"dentist",
 		box_unknown_tag = 			"dentist",
+		black_tablet = 				"dentist",
 		vr_headset = 				"vr",
 		warhead =					"warhead",
 		weapon =					"weapon",
