@@ -573,6 +573,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 		local placer = UiPlacer:new(10, 10, 0, 0)
 		local difficulty_text, difficulty_color = "", Color.white
 		local is_crime_spree = managers.crime_spree:is_active()
+		local is_skirmish = managers.skirmish:is_skirmish()
 
 		if is_crime_spree then
 			local level_data = managers.job:current_level_data()
@@ -597,6 +598,28 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 
 			difficulty_text = managers.localization:text("menu_cs_level", {level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")})
 			difficulty_color = tweak_data.screen_colors.crime_spree_risk
+		elseif is_skirmish then
+			local day_title = placer:add_bottom(panel:fine_text({
+				font = tweak_data.hud_stats.objectives_font,
+				font_size = tweak_data.hud_stats.loot_size,
+				text = managers.localization:to_upper_text(managers.skirmish:is_weekly_skirmish() and "hud_weekly_skirmish" or "hud_skirmish"),
+				color = tweak_data.screen_colors.skirmish_color 
+			}))
+
+			placer:new_row(8)
+
+			local level_data = managers.job:current_level_data()
+
+			if level_data then
+				placer:add_bottom(panel:fine_text({
+					font = large_font,
+					font_size = tweak_data.hud_stats.objectives_title_size,
+					text = managers.localization:to_upper_text(tostring(level_data.name_id)) or "Unknown"
+				}))
+			end
+
+			difficulty_text = managers.localization:to_upper_text("hud_assault_waves", {current = managers.skirmish:current_wave_number(), max = #tweak_data.skirmish.ransom_amounts})
+			difficulty_color = tweak_data.screen_colors.skirmish_color 
 		else
 			local job_chain = managers.job:current_job_chain_data()
 			local is_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id())
@@ -674,15 +697,17 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 		self:_create_stat_list_entry(placer, panel, self._rightpos[2], list_w, "spending_cash",
 			{ text = managers.localization:to_upper_text("menu_cash_spending"), font_size = self._tabstats_settings.FONT_SIZE or 18 },
 			{ text = difficulty_text, font_size = self._tabstats_settings.FONT_SIZE or 18 }, nil, nil)
-		placer:new_row()
-		self:_create_stat_list_entry(placer, panel, self._rightpos[2], list_w, "cleaner_costs",
-			{ text = managers.localization:to_upper_text("victory_civilians_killed_penalty"), font_size = self._tabstats_settings.FONT_SIZE or 18 },
-			{ text = difficulty_text, font_size = self._tabstats_settings.FONT_SIZE or 18 }, nil, nil)
-		placer:new_row(0, 12)
-		self:_create_stat_list_entry(placer, panel, self._rightpos[2], list_w, "bag_amount",
-			{ text = managers.localization:to_upper_text("hud_stats_bags_secured") .. ":", font_size = self._tabstats_settings.FONT_SIZE or 18 },
-			{ text = difficulty_text, font_size = self._tabstats_settings.FONT_SIZE or 18 }, nil, nil)
-		if not is_crime_spree then
+		if not is_skirmish then
+			placer:new_row()
+			self:_create_stat_list_entry(placer, panel, self._rightpos[2], list_w, "cleaner_costs",
+				{ text = managers.localization:to_upper_text("victory_civilians_killed_penalty"), font_size = self._tabstats_settings.FONT_SIZE or 18 },
+				{ text = difficulty_text, font_size = self._tabstats_settings.FONT_SIZE or 18 }, nil, nil)
+			placer:new_row(0, 12)
+			self:_create_stat_list_entry(placer, panel, self._rightpos[2], list_w, "bag_amount",
+				{ text = managers.localization:to_upper_text("hud_stats_bags_secured") .. ":", font_size = self._tabstats_settings.FONT_SIZE or 18 },
+				{ text = difficulty_text, font_size = self._tabstats_settings.FONT_SIZE or 18 }, nil, nil)
+		end
+		if not (is_crime_spree or is_skirmish) then
 			placer:new_row()
 			self:_create_stat_list_entry(placer, panel, self._rightpos[2], list_w, "bag_cash",
 			{ text = utf8.to_upper("Secured Bags value:"), font_size = self._tabstats_settings.FONT_SIZE or 18 },
@@ -692,25 +717,26 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			{ text = managers.localization:to_upper_text("hud_instant_cash") .. ":", font_size = self._tabstats_settings.FONT_SIZE or 18 },
 			{ text = difficulty_text, font_size = self._tabstats_settings.FONT_SIZE or 18 }, nil, nil)
 		end
+
+		local size = list_w - placer:current_right()
+		local most = placer:most()
+		local cy = most.top + (most.bottom - most.top) / 2 + 36
+		panel:bitmap({
+			name = "character_icon",
+			texture = mask_icon,
+			x = paygrade_text:right() + padding,
+			y = paygrade_text:bottom(),
+			w = size,
+			h = size,
+			blend_mode = "add",
+			color = mask_color,
+			align = "center",
+			vertical = "center",
+			valign = "center",
+			--keep_w = true
+		}):set_center_y(cy)
+
 		placer:new_row(0, 12)
-
-		if paygrade_text then
-			panel:bitmap({
-				name = "character_icon",
-				texture = mask_icon,
-				x = paygrade_text:right() + padding,
-				y = paygrade_text:bottom(),
-				w = list_w - paygrade_text:right(),
-				h = list_w - paygrade_text:right(),
-				blend_mode = "add",
-				color = mask_color,
-				align = "center",
-				vertical = "center",
-				valign = "center",
-				--keep_w = true
-			})
-		end
-
 
 		local items_color = self._tabstats_settings.COLOR ~= "rainbow" and WolfHUD:getColor(self._tabstats_settings.COLOR or "red") or false
 		for i, data in ipairs(HUDStatsScreen.STAT_ITEMS) do
@@ -822,7 +848,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 	function HUDStatsScreen:_update_stats_list(panel, item)
 		if not (self._use_tab_stats and panel) then return end
 		if managers.money and managers.statistics and managers.experience and not item then
-			local money_current_stage 	= managers.crime_spree:is_active() and managers.crime_spree:get_potential_payout_from_current_stage("cash") or managers.money:get_potential_payout_from_current_stage() or 0
+			local money_current_stage 	= managers.crime_spree:is_active() and managers.crime_spree:get_potential_payout_from_current_stage("cash") or managers.skirmish:is_skirmish() and managers.skirmish:current_ransom_amount() or managers.money:get_potential_payout_from_current_stage() or 0
 			local offshore_rate 		= managers.money:get_tweak_value("money_manager", "offshore_rate") or 0
 			local civilian_kills 		= managers.statistics:session_total_civilian_kills() or 0
 			local cleaner_costs			= (managers.money:get_civilian_deduction() or 0) * civilian_kills
@@ -830,24 +856,30 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			local spending_cash 		= money_current_stage * offshore_rate - cleaner_costs
 			panel:child("offshore_payout_text"):set_text(managers.experience:cash_string(offshore_money))
 			panel:child("spending_cash_text"):set_text(managers.experience:cash_string(spending_cash))
-			if spending_cash > 0 then
-				panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.friend_color)
-			elseif spending_cash == 0 then
-				panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.text)
-			else
-				panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.heat_cold_color)
-			end
-			panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(cleaner_costs) .. " (" .. tostring(civilian_kills) .. ")")
 
-			local mandatory_bags_data = managers.loot:get_mandatory_bags_data()
-			local mandatory_amount = mandatory_bags_data and mandatory_bags_data.amount or 0
-			local secured_amount = managers.loot:get_secured_mandatory_bags_amount() or 0
-			local bonus_amount = managers.loot:get_secured_bonus_bags_amount() or 0
-			local bags_amount_str = tostring(bonus_amount or 0)
-			if mandatory_amount > 0 then
-				bags_amount_str = string.format("%i / %i%s", secured_amount, mandatory_amount, bonus_amount > 0 and string.format(" + %i", bonus_amount) or "")
+			if panel:child("cleaner_costs_text") then
+				if spending_cash > 0 then
+					panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.friend_color)
+				elseif spending_cash == 0 then
+					panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.text)
+				else
+					panel:child("spending_cash_text"):set_color(tweak_data.screen_colors.heat_cold_color)
+				end
+				panel:child("cleaner_costs_text"):set_text(managers.experience:cash_string(cleaner_costs) .. " (" .. tostring(civilian_kills) .. ")")
 			end
-			panel:child("bag_amount_text"):set_text(bags_amount_str)
+
+			if panel:child("bag_amount_text") then
+				local mandatory_bags_data = managers.loot:get_mandatory_bags_data()
+				local mandatory_amount = mandatory_bags_data and mandatory_bags_data.amount or 0
+				local secured_amount = managers.loot:get_secured_mandatory_bags_amount() or 0
+				local bonus_amount = managers.loot:get_secured_bonus_bags_amount() or 0
+				local bags_amount_str = tostring(bonus_amount or 0)
+				if mandatory_amount > 0 then
+					bags_amount_str = string.format("%i / %i%s", secured_amount, mandatory_amount, bonus_amount > 0 and string.format(" + %i", bonus_amount) or "")
+				end
+				panel:child("bag_amount_text"):set_text(bags_amount_str)
+			end
+
 			if panel:child("bag_cash_text") and panel:child("instant_cash_text") then
 				panel:child("bag_cash_text"):set_text(managers.experience:cash_string((managers.money:get_secured_mandatory_bags_money() or 0) + (managers.money:get_secured_bonus_bags_money() or 0)))
 				panel:child("instant_cash_text"):set_text(managers.experience:cash_string(managers.loot:get_real_total_small_loot_value() or 0))
@@ -1294,5 +1326,13 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		if self._hud_statsscreen then
 			self._hud_statsscreen:update_setting(setting, value)
 		end
+	end
+
+	function HUDManager:_setup_stats_screen()	-- Tmp: Currently not much useful on left skirmish stats screen...
+		if not self:alive(self.STATS_SCREEN_FULLSCREEN) then
+			return
+		end
+
+		self._hud_statsscreen = HUDStatsScreen:new()
 	end
 end

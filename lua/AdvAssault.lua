@@ -16,7 +16,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		init_original(self, ...)
 
 		-- Waves completed are visible in Objective and overlapping with HUDList.
-		if managers.job:current_level_id() == "chill_combat" then
+		if self:should_display_waves() then
 			local wave_panel = self._hud_panel:child("wave_panel")
 			if alive(wave_panel) then
 				wave_panel:set_alpha(0)
@@ -87,7 +87,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		banner_visible = banner_visible or banner_visible == nil and (self._assault or self._point_of_no_return or self._casing)
 		local banner_pos = math.clamp(WolfHUD:getSetting({"AssaultBanner", "POSITION"}, 2), 1, 3)
 		if managers.hud and banner_pos ~= 2 then
-			local offset = banner_visible and ((self._bg_box and self._bg_box:bottom() or 0) + (managers.job:current_level_id() == "chill_combat" and self._wave_text:h() or 0)+ 12) or 0
+			local offset = banner_visible and ((self._bg_box and self._bg_box:bottom() or 0) + (self:should_display_waves() and self._wave_text:h() or 0)+ 12) or 0
 			if banner_pos > 2 and HUDListManager then
 				managers.hud:change_list_setting("right_list_height_offset", offset)
 			elseif banner_pos < 2 then
