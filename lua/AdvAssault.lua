@@ -1,7 +1,6 @@
 if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 	local init_original = HUDAssaultCorner.init
 	local _start_assault_original = HUDAssaultCorner._start_assault
-	local sync_set_assault_mode_original = HUDAssaultCorner.sync_set_assault_mode
 	local _set_hostage_offseted_original = HUDAssaultCorner._set_hostage_offseted
 	local set_buff_enabled_original = HUDAssaultCorner.set_buff_enabled
 	local show_point_of_no_return_timer_original = HUDAssaultCorner.show_point_of_no_return_timer
@@ -180,6 +179,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local _change_vanillahud_setting_original = HUDManager._change_vanillahud_setting or function(...) end
 	local _create_downed_hud_original = HUDManager._create_downed_hud
 	local _create_custody_hud_original = HUDManager._create_custody_hud
+
 	function HUDManager:_locked_assault(status)
 		status = Network:is_server() and (managers.groupai:state():get_hunt_mode() or false) or status
 		self._assault_locked = self._assault_locked or false
@@ -191,6 +191,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		end
 		return self._assault_locked
 	end
+
 	function HUDManager:_change_vanillahud_setting(setting)
 		if self._hud_assault_corner then
 			if setting == "assault_banner_position" then
@@ -200,6 +201,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
+
 	function HUDManager:_create_downed_hud(...)
 		_create_downed_hud_original(self, ...)
 		local banner_pos = math.clamp(WolfHUD:getSetting({"AssaultBanner", "POSITION"}, 2), 1, 3)
@@ -214,6 +216,7 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 		end
 	end
+
 	function HUDManager:_create_custody_hud(...)
 		_create_custody_hud_original(self, ...)
 		local banner_pos = math.clamp(WolfHUD:getSetting({"AssaultBanner", "POSITION"}, 2), 1, 3)

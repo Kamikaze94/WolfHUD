@@ -471,7 +471,15 @@ lounge		100421		100448			102049
 	GameInfoManager._UNITS = {
 		TWEAK_ID_BY_NAME = {
 			[tostring(Idstring("units/pd2_dlc_born/characters/npc_male_mechanic/npc_male_mechanic"))] = "mechanic",
-			[tostring(Idstring("units/pd2_dlc_born/characters/npc_male_mechanic/npc_male_mechanic_husk"))] = "mechanic"
+			[tostring(Idstring("units/pd2_dlc_born/characters/npc_male_mechanic/npc_male_mechanic_husk"))] = "mechanic",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_male_bank_manager_hostage/civ_male_bank_manager_hostage"))] = "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_male_bank_manager_hostage/civ_male_bank_manager_hostage_husk"))] = "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_female_museum_curator_hostage/civ_female_museum_curator_hostage"))] = "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_female_museum_curator_hostage/civ_female_museum_curator_hostage_husk"))] = "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_female_drug_lord_hostage/civ_female_drug_lord_hostage"))] = "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_female_drug_lord_hostage/civ_female_drug_lord_hostage_husk"))] = "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_male_prisoner_hostage/civ_male_prisoner_hostage"))] = "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_male_prisoner_hostage/civ_male_prisoner_hostage_husk"))] = "civ_hostage"
 		}
 	}
 
@@ -3326,6 +3334,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerinventory" the
 	local _stop_jammer_effect_original = PlayerInventory._stop_jammer_effect
 	local _start_feedback_effect_original = PlayerInventory._start_feedback_effect
 	local _stop_feedback_effect_original = PlayerInventory._stop_feedback_effect
+	local get_jammer_time_original = PlayerInventory.get_jammer_time
 
 	function PlayerInventory:_start_jammer_effect(end_time, ...)
 		managers.gameinfo:event("buff", "activate", "pocket_ecm_jammer")
@@ -3355,6 +3364,17 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerinventory" the
 		end
 
 		return _stop_feedback_effect_original(self, ...)
+	end
+
+	function PlayerInventory:get_jammer_time(...)	-- TMP: Fix for non existing upgrade values causing crashes
+		local tweak = tweak_data.upgrades.values.player.pocket_ecm_jammer_base
+		local result
+
+		if self._unit:base():upgrade_value("player", "pocket_ecm_jammer_base") then
+			result = get_jammer_time_original(self, ...)
+		end
+
+		return result or tweak and tweak[1] and tweak[1].duration or 6
 	end
 end
 
