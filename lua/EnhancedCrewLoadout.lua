@@ -20,7 +20,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 			self._peer_loadout = self._peer_loadout or {}
 			self._loadout_enabled = true
 
-			self._loadout_icon = self._panel:bitmap({
+			self._loadout_icon = self._loadout_icon or self._panel:bitmap({
 				name = "toggle_loadout_icon",
 				texture = "guis/textures/pd2/mouse_buttons",
 				texture_rect = {35, 1, 17, 23},
@@ -30,7 +30,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 			self._loadout_icon:set_left(self._panel:left())
 			self._loadout_icon:set_bottom(self._panel:bottom())
 
-			self._loadout_btn = self._panel:text({
+			self._loadout_btn = self._loadout_btn or self._panel:text({
 				name = "toggle_loadout",
 				text = utf8.to_upper(managers.localization:text("menu_team_loadout") .. ": " .. managers.localization:text("menu_button_show")),
 				h = tweak_data.menu.pd2_small_font_size * 1.05,
@@ -44,14 +44,14 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 			self._loadout_btn:set_left(self._loadout_icon:right() + 5)
 			self._loadout_btn:set_bottom(self._panel:bottom() - 1)
 
-			self._loadout_panel = self._panel:panel({
+			self._loadout_panel = self._loadout_panel or self._panel:panel({
 				name = "crew_loadout",
 				w = ContractBoxGui._LOADOUT_W,
 				h = ContractBoxGui._LOADOUT_H,
 				layer = _G.tweak_data.gui.CRIMENET_CHAT_LAYER + 5,
 			})
 
-			self._loadout_data = self._loadout_panel:panel({
+			self._loadout_data = self._loadout_data or self._loadout_panel:panel({
 				name = "crew_loadout",
 				y = self._loadout_panel:bottom(),
 				w = self._loadout_panel:w(),
@@ -76,7 +76,7 @@ if string.lower(RequiredScript) == "lib/managers/menu/contractboxgui" then
 				alpha = 1
 			})
 
-			self._borders = BoxGuiObject:new(self._loadout_data, {
+			self._borders = self._borders or BoxGuiObject:new(self._loadout_data, {
 				sides = { 1, 1, 2, 2 }
 			})
 
