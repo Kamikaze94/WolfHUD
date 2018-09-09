@@ -1238,20 +1238,6 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/stageendscreengui" the
 
 		feed_statistics_original(self, new_data, ...)
 	end
-
-	-- Make broken objective counter look less weird...
-	function StatsTabItem:feed_statistics(stats_data, ...)
-		local new_stats_data = clone(stats_data) or {}
-		if managers.statistics:started_session_from_beginning() then
-			new_stats_data.completed_objectives = managers.localization:text("menu_completed_objectives_of", {
-				COMPLETED = stats_data.total_objectives,
-				TOTAL = stats_data.total_objectives,
-				PERCENT = stats_data.completed_ratio
-			})
-		end
-
-		feed_item_statistics_original(self, new_stats_data, ...)
-	end
 elseif string.lower(RequiredScript) == "lib/managers/crimespreemanager" then
 	function CrimeSpreeManager:get_potential_payout_from_current_stage(reward_id)
 		local multi = self:get_current_reward_multiplier()

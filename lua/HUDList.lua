@@ -2798,7 +2798,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self:change_count(value)
 		end
 	end
-	
+
 	HUDList.ShieldCountItem = HUDList.ShieldCountItem or class(HUDList.UnitCountItem)
 
 	function HUDList.ShieldCountItem:init(parent, name, id, unit_types)
@@ -2869,7 +2869,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.UsedPagersItem:set_count(num)
 		if managers.groupai:state():whisper_mode() then
 			local tweak = tweak_data.player.alarm_pager.bluff_success_chance
-			self._default_text_color = math.lerp(Color(1, 0.2, 0), HUDListManager.ListOptions.list_color or Color.white, tweak and tweak[num] or 0)
+			self._default_text_color = math.lerp(Color(1, 0.2, 0), HUDListManager.ListOptions.list_color or Color.white, tweak and tonumber(tweak[(num or 0) + 1]) or 0)
 
 			HUDList.UsedPagersItem.super.set_count(self, num)
 		end
@@ -3412,11 +3412,12 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self._device_type = data.device_type
 		self._jammed = data.jammed
 		self._powered = data.powered
+--[[
 		self._upgradable = data.upgradable
 		self._auto_repair = data.auto_repair
 		self._upgrades = data.upgrades or {}
 		self._show_upgrade_icons = data.can_have_upgrades or false
-
+]]
 		HUDList.TimerItem.super.init(self, parent, name, { align = "left", w = data.w or (parent:panel():h() * 4/5), h = parent:panel():h() })
 
 		local txt = HUDList.TimerItem.DEVICE_TYPES[self._device_type] and managers.localization:text(HUDList.TimerItem.DEVICE_TYPES[self._device_type].name or "N/A") or tostring(self._device_type)
@@ -5090,7 +5091,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			ignore = not WolfHUD:getSetting({"HUDList", "BUFF_LIST", "PERK_BUFFS", "pocket_ecm_jammer"}, true),
 		},
 		pocket_ecm_kill_dodge = {
-			perks = {3, 0}, 
+			perks = {3, 0},
 			texture_bundle_folder = "joy",
 			class = "TimedBuffItem",
 			priority = 4,
@@ -6019,15 +6020,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.TimedStacksBuffItem:add_timed_stack(id, data)
-		self:_update_stacks(data.stacks)
+		self:_update_stacks(data and data.stacks or {})
 	end
 
 	function HUDList.TimedStacksBuffItem:remove_timed_stack(id, data)
-		self:_update_stacks(data.stacks)
+		self:_update_stacks(data and data.stacks or {})
 	end
 
 	function HUDList.TimedStacksBuffItem:_update_stacks(stacks)
-		self._stacks = stacks
+		self._stacks = stacks or {}
 		self:_set_stack_count(#self._stacks)
 		self._progress_bar:set_visible(#self._stacks > 0)
 		self._progress_bar_inner:set_visible(#self._stacks > 1)

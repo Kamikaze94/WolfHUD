@@ -388,6 +388,39 @@ lounge		100421		100448			102049
 				[400792] = true,
 				[400178] = true,
 			},
+			skm_run = { -- Heat Street Holdout (3x posters)
+				[103636] = true,
+				[103640] = true,
+				[600479] = true,
+			},
+			skm_watchdogs_stage2 = { -- Watch Dogs Holdout (10x coke)
+				[132355] = true,
+				[100495] = true,
+				[132565] = true,
+				[132037] = true,
+				[132042] = true,
+				[132337] = true,
+				[131842] = true,
+				[100492] = true,
+				[132365] = true,
+				[100429] = true,
+				[131855] = true,
+				[100494] = true,
+				[100491] = true,
+				[132055] = true,
+				[132542] = true,
+				[131837] = true,
+				[100427] = true,
+				[132555] = true,
+				[100054] = true,
+				[131865] = true,
+				[132342] = true,
+				[100428] = true,
+				[132065] = true,
+				[100426] = true,
+				[132537] = true,
+				[100058] = true
+			}
 		},
 	}
 	GameInfoManager._INTERACTIONS.IGNORE_IDS.watchdogs_2_day = table.deep_map_copy(GameInfoManager._INTERACTIONS.IGNORE_IDS.watchdogs_2)
@@ -885,7 +918,7 @@ lounge		100421		100448			102049
 		local lookup = GameInfoManager._INTERACTIONS
 		local level_id = managers.job:current_level_id()
 
-		if lookup.IGNORE_IDS[level_id] and lookup.IGNORE_IDS[level_id][data.editor_id] then
+		if lookup.IGNORE_IDS[level_id] and (lookup.IGNORE_IDS[level_id][data.editor_id] or lookup.IGNORE_IDS[level_id][data.interact_id]) then
 			return
 		end
 
@@ -1353,9 +1386,9 @@ lounge		100421		100448			102049
 				i = i - 1
 			end
 			table.insert(self._buffs[id].stacks, i + 1, { key = key, t = t, expire_t = expire_t })
-			self:_add_player_timer_expiration(key, id, expire_t, self._timed_stack_expire_clbk)
 
 			self:_listener_callback("buff", "add_timed_stack", id, self._buffs[id])
+			self:_add_player_timer_expiration(key, id, expire_t, self._timed_stack_expire_clbk)
 		end
 	end
 
@@ -1523,7 +1556,7 @@ lounge		100421		100448			102049
 		if self._auto_expire_timers.on_expire[key] then
 			self:_remove_player_timer_expiration(key)
 		end
-		
+
 		local t = Application:time()
 		if expire_t <= t then
 			expire_clbk(t, key, id)
@@ -1744,8 +1777,8 @@ if string.lower(RequiredScript) == "lib/units/props/timergui" then
 	end
 
 	function TimerGui:set_background_icons(...)
-		local skills = self._unit:base().get_skill_upgrades and self._unit:base():get_skill_upgrades()
 		if not self._unit:base()._disable_upgrades then
+			local skills = self._unit:base().get_skill_upgrades and self._unit:base():get_skill_upgrades()
 			local player_skills = Drill.get_upgrades(self._unit, nil)
 			local function player_can_upgrade(drill_upgrades, player_upgrades)
 				local template = Drill.create_upgrades(0, 0, 0, false, false)
@@ -3342,7 +3375,7 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerinventory" the
 
 		return _start_jammer_effect_original(self, end_time, ...)
 	end
-	
+
 	function PlayerInventory:_stop_jammer_effect(...)
 		if self._jammer_data and self._jammer_data.effect == "jamming" then
 			managers.gameinfo:event("buff", "deactivate", "pocket_ecm_jammer")
@@ -3350,14 +3383,14 @@ if string.lower(RequiredScript) == "lib/units/beings/player/playerinventory" the
 
 		return _stop_jammer_effect_original(self, ...)
 	end
-	
+
 	function PlayerInventory:_start_feedback_effect(end_time, ...)
 		managers.gameinfo:event("buff", "activate", "pocket_ecm_jammer")
 		managers.gameinfo:event("buff", "set_duration", "pocket_ecm_jammer", { expire_t = end_time or ((self:get_jammer_time() or 0) + (TimerManager:game():time() or 0)) })
 
 		return _start_feedback_effect_original(self, end_time, ...)
 	end
-	
+
 	function PlayerInventory:_stop_feedback_effect(...)
 		if self._jammer_data and self._jammer_data.effect == "feedback" then
 			managers.gameinfo:event("buff", "deactivate", "pocket_ecm_jammer")
@@ -4029,7 +4062,7 @@ end
 if string.lower(RequiredScript) == "lib/player_actions/skills/playeractiontagteam" then
 
 	local tag_team_original = PlayerAction.TagTeam.Function
-	local tag_team_tagged_original = PlayerAction.TagTeamTagged.Function	
+	local tag_team_tagged_original = PlayerAction.TagTeamTagged.Function
 
 	local function GetUnitName(unit)
 		local name = "N/A"
@@ -4056,7 +4089,7 @@ if string.lower(RequiredScript) == "lib/player_actions/skills/playeractiontagtea
 		local duration = base_values.duration or 0
 		managers.gameinfo:event("timed_buff", "activate", "tag_team", { duration = duration })
 		managers.gameinfo:event("buff", "set_value", "tag_team", { value = tagged_name })
-		
+
 		CopDamage.register_listener(on_dmg_listener_key, {"on_damage"}, function(damage_info)
 			local was_killed = damage_info.result.type == "death"
 			local valid_player = damage_info.attacker_unit == owner or damage_info.attacker_unit == tagged
@@ -4078,7 +4111,7 @@ if string.lower(RequiredScript) == "lib/player_actions/skills/playeractiontagtea
 			local duration = base_values.duration or 0
 			managers.gameinfo:event("timed_buff", "activate", "tag_team", { duration = duration })
 			managers.gameinfo:event("buff", "set_value", "tag_team", { value = tagged_name })
-			
+
 			CopDamage.register_listener(on_dmg_listener_key, {"on_damage"}, function(damage_info)
 				local was_killed = damage_info.result.type == "death"
 				local valid_player = damage_info.attacker_unit == owner or damage_info.attacker_unit == tagged
