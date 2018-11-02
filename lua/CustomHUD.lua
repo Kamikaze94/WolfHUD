@@ -549,7 +549,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	function HUDTeammateCustom:activate_ability_radial(time_left, time_total)	--Teammates, handled in update function.
 		self:call_listeners("activate_ability", time_left, time_total or time_left)
-		
+
 		if self:is_local_player() then
 			local current_time = managers.game_play_central:get_heist_timer() or 0
 			managers.network:session():send_to_peers("sync_ability_hud", time_left + current_time, time_total or time_left)
@@ -565,7 +565,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		local player_damage = player_unit and player_unit:character_damage()
 		if player_damage then
 			local data = {
-				damage = damage, 
+				damage = damage,
 				health = player_damage:get_real_health(),
 				armor = player_damage:get_real_armor(),
 				total_health = player_damage:_max_health(),
@@ -573,7 +573,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			}
 			self:call_listeners("delayed_damage", data)
 		end
-		
+
 		if self:is_local_player() then
 			managers.network:session():send_to_peers("sync_delayed_damage_hud", damage)
 		end
@@ -611,14 +611,14 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		if data and data.end_time and data.duration then
 			local time_left = data.end_time - managers.game_play_central:get_heist_timer()
 			self:call_listeners("throwable_cooldown", time_left, data.duration)
-			
+
 			if self:is_local_player() then
 				managers.network:session():send_to_peers("sync_grenades_cooldown", data.end_time, data.duration)
 			end
 		end
 	end
-	
-	function HUDTeammateCustom:animate_grenade_flash(...) 
+
+	function HUDTeammateCustom:animate_grenade_flash(...)
 		self:call_listeners("throwable_cooldown_stop")
 	end
 
@@ -1977,7 +1977,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			w = self._size,
 			h = self._size
 		})
-		
+
 		self._radial_delayed_damage_health = self._panel:bitmap({
 			texture = "guis/textures/pd2/hud_dot",
 			name = "radial_delayed_damage_health",
@@ -2265,7 +2265,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		--self._maniac_stack_radial:set_visible(r > 0)
 		--self._maniac_stack_radial:set_color(Color(r, 1, 1))
 	end
-	
+
 	function PlayerInfoComponent.PlayerStatus:set_delayed_damage(data)
 		local damage = data.damage or 0
 		local armor_max = data.total_armor or 1
@@ -2284,7 +2284,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._radial_delayed_damage_health:set_visible(health_damage_ratio > 0)
 		self._radial_delayed_damage_armor:set_color(Color(1, armor_damage_ratio, 1 - armor_ratio, 0))
 		self._radial_delayed_damage_health:set_color(Color(1, health_damage_ratio, 1 - health_ratio, 0))
-		
+
 	end
 
 	function PlayerInfoComponent.PlayerStatus:_animate_damage_taken(indicator)
@@ -3421,7 +3421,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function PlayerInfoComponent.Equipment:set_cable_tie(icon)
-		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon)
+		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon, {0, 0, 32, 32})
 		self._panel:child("cable_ties"):child("icon"):set_image(texture, unpack(texture_rect))
 	end
 
@@ -3435,7 +3435,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function PlayerInfoComponent.Equipment:set_throwable(icon)
-		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon)
+		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon, {0, 0, 32, 32})
 		self._panel:child("throwables"):child("icon"):set_image(texture, unpack(texture_rect))
 	end
 
@@ -3455,7 +3455,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		local panel = self._panel:child("throwables")
 		local icon = panel:child("icon")
 		local text = panel:child("amount")
-		
+
 		text:set_text(string.format("%02.0f", amount))
 		text:set_range_color(0, amount < 10 and 1 or 0, Color.white:with_alpha(0.5))
 		panel:set_visible(amount > 0 or self._animating_throwable_cooldown)
@@ -3470,7 +3470,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			panel:animate(callback(self, self, "_animate_throwable_cooldown"), time_left)
 		end
 	end
-	
+
 	function PlayerInfoComponent.Equipment:stop_throwable_cooldown(visibility)
 		if self._animating_throwable_cooldown then
 			local panel = self._panel:child("throwables")
@@ -3489,7 +3489,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function PlayerInfoComponent.Equipment:set_deployable(icon)
-		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon)
+		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon, {0, 0, 32, 32})
 		self._panel:child("deployables"):child("icon"):set_image(texture, unpack(texture_rect))
 	end
 
@@ -3542,7 +3542,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		panel:set_visible(amount > 0)
 		self:arrange()
 	end
-	
+
 	function PlayerInfoComponent.Equipment:_animate_throwable_cooldown(panel, time_left)
 		self._animating_throwable_cooldown = true
 		local text = panel:child("amount")

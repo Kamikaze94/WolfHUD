@@ -34,6 +34,7 @@
 	"bm_w_rota"					: "Crye Precision SIX12",
 	"bm_w_ching"				: "Springfield Armory M1 Garand",
 	"bm_w_corgi"				: "FN F2000",
+	"bm_w_komodo" 				: "IWI X95",
 
 	"bm_w_jowi" 				: "Akimbo Glock 26",
 	"bm_w_x_1911" 				: "Akimbo M1911 Lightweight Operator",
@@ -55,6 +56,7 @@
 	"bm_w_m32" 					: "MGL Mk 1S",
 	"bm_w_flamethrower_mk2" 	: "Flamethrower",
 	"bm_w_plainsrider" 			: "Plainsrider Bow",
+	"bm_w_elastic" 				: "Compound Bow",
 
 	"bm_w_msr" 					: "Remington MSR",
 	"bm_w_r93" 					: "Blaser R93 LRS2",
@@ -95,6 +97,7 @@
 	"bm_w_chinchilla" 			: "S&W Model 29",
 	"bm_w_breech" 				: "Luger P08",
 	"bm_w_shrew" 				: "M1911 Colt Defender",
+	"bm_w_legacy" 				: "H&K P7M13",
 
 	"bm_w_m1928" 				: "Thompson M1928A1",
 	"bm_w_mac10" 				: "Ingram MAC-10",
@@ -125,6 +128,7 @@
 	"bm_w_striker" 				: "Sentinel Armsel Striker",
 	"bm_w_m37" 					: "Ithaca 37",
 	"bm_w_basset" 				: "CBRPS Saiga Spike X1S",
+	"bm_w_coach" 				: "Remington Exposed Hammer SxS ",
 
 	"bm_w_rpg7" 				: "RPG-7",
 	"bm_w_hunter" 				: "Avalanche Pistol Crossbow",

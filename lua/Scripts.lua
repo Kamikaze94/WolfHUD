@@ -99,6 +99,36 @@ elseif string.lower(RequiredScript) == "lib/tweak_data/timespeedeffecttweakdata"
 			disable_effect(self)
 		end
 	end
+elseif string.lower(RequiredScript) == "lib/tweak_data/economytweakdata" then
+	if EconomyTweakData then
+		-- Fix community market links for Real Weapon Names
+		Hooks:PostHook(EconomyTweakData, "create_weapon_skin_market_search_url" ,"WolfHUD_EconomyTweakDataPostCreateWeaponSkinMarketSearchUrl", function(self, weapon_id, cosmetic_id)
+			local cosmetic_name = tweak_data.blackmarket.weapon_skins[cosmetic_id] and managers.localization:text(tweak_data.blackmarket.weapon_skins[cosmetic_id].name_id)
+			local weapon_name = managers.localization.orig.text(managers.localization, tweak_data.weapon[weapon_id].name_id) -- bypass custom localizations
+			if cosmetic_name and weapon_name then
+				cosmetic_name = string.gsub(cosmetic_name, " ", "+")
+				weapon_name = string.gsub(weapon_name, " ", "+")
+				return string.gsub("http://steamcommunity.com/market/search?appid=218620&q=" .. cosmetic_name .. "+" .. weapon_name, "++", "+")
+			end
+			return nil
+		end)
+	end
+elseif string.lower(RequiredScript) == "lib/managers/menu/items/menuitemmultichoice" then
+	if MenuItemMultiChoice then
+		Hooks:PostHook( MenuItemMultiChoice , "setup_gui" , "MenuItemMultiChoicePostSetupGui_WolfHUD" , function( self, node, row_item )
+			if self:selected_option() and self:selected_option():parameters().color and row_item.choice_text then
+				row_item.choice_text:set_blend_mode("normal")
+			end
+		end)
+	end
+elseif string.lower(RequiredScript) == "lib/managers/menu/menunodegui" then
+	if MenuNodeMainGui then
+		Hooks:PostHook( MenuNodeMainGui , "_add_version_string" , "MenuNodeMainGuiPostAddVersionString_WolfHUD" , function( self )
+			if alive(self._version_string) then
+				self._version_string:set_text("Payday 2 v" .. Application:version() .. " | WolfHUD v" .. WolfHUD:getVersion())
+			end
+		end)
+	end
 elseif string.lower(RequiredScript) == "lib/managers/experiencemanager" then
 	local cash_string_original = ExperienceManager.cash_string
 

@@ -185,7 +185,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		self._legend_speed:set_value(math.round(speed))
 		self._legend_rpm:set_value(rpm)
 
-		if self._name ~= name then
+		if name and self._name ~= name then
 			self._name = name
 			self._vehicle_name:set_value(string.upper(self._name))
 
