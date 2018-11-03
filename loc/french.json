@@ -157,6 +157,7 @@
 	"wolfhud_enemy_swat_van" : "TOURELLE DU SWAT",
 	"wolfhud_enemy_ceiling_turret" : "TOURELLE",
 	"wolfhud_enemy_aa_turret" : "Anti-Air Turret",
+	"wolfhud_enemy_crate_turret" : "TOURELLE",
 	"wolfhud_enemy_sentry_gun" : "TOURELLE",
 	"wolfhud_enemy_mobster_boss" : "Le Commissaire",
 	"wolfhud_enemy_chavez_boss" : "Chavez",

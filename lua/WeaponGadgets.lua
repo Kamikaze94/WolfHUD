@@ -346,9 +346,23 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 	function NewRaycastWeaponBase:_setup_laser()
 		if self._gadgets then
 			for i, part_id in ipairs(self._gadgets) do
-                local base = self._parts[part_id] and self._parts[part_id].unit and self._parts[part_id].unit:base()
+                local unit = self._parts[part_id] and self._parts[part_id].unit
+				local base = unit and unit:base()
 				if base and base.GADGET_TYPE and base.GADGET_TYPE == (WeaponLaser.GADGET_TYPE or "") then
 					self:set_gadget_on(i or 0, false, self._gadgets)
+					self._last_gadget_idx = self._gadget_on
+					
+					local owner = managers.player:player_unit()
+					if owner then
+						owner:inventory()._was_gadget_on = self._gadget_on	-- Prevent inventory from restoring wrong gadget state
+						if owner and owner:network() then					-- Sync gadget state and laser color to other players
+							owner:network():send("set_weapon_gadget_state", self._gadget_on)
+							if base.color then
+								local col = base:color() or Color(1, 0, 1, 0)
+								owner:network():send("set_weapon_gadget_color", col.r * 255, col.g * 255, col.b * 255)
+							end
+						end
+					end
 					break
 				end
 			end
@@ -356,11 +370,10 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 	end
 
 	local on_enabled_original = NewRaycastWeaponBase.on_enabled
-
 	function NewRaycastWeaponBase:on_enabled(...)
 		on_enabled_original(self, ...)
 
-		if WolfHUD:getSetting({"GADGETS", "LASER_AUTO_ON"}, true) and not self._init_laser_state then
+		if WolfHUD:getSetting({"GADGETS", "LASER_AUTO_ON"}, true) and not self._init_laser_state and self._assembly_complete and managers.player:current_state() == "standard" then
 			self:_setup_laser()
 			self._init_laser_state = true
 		end

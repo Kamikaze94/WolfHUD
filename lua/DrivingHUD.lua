@@ -185,11 +185,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 		self._legend_speed:set_value(math.round(speed))
 		self._legend_rpm:set_value(rpm)
 
-		if name and self._name ~= name then
+		if self._name ~= name then
 			self._name = name
-			self._vehicle_name:set_value(string.upper(self._name))
+			self._vehicle_name:set_value(self._name and string.upper(tostring(self._name)))
 
-			self._vehicle_image:set_vehicle_name(self._name)
+			self._vehicle_image:set_vehicle_name(self._name or "Unknown")
 			self._people = 0
 		end
 		if self._people ~= people then
@@ -680,14 +680,15 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 	function HUDDriving.LegendItem:text_rect() return self._text:text_rect() end
 
 	function HUDDriving.LegendItem:set_value(value)
-		if value and value ~= self._value then
+		if value ~= self._value then
 			self._value = value
 			self:_set_value()
 		end
 	end
 
 	function HUDDriving.LegendItem:_set_value()
-		if self._value then
+		if self._value and tostring(self._value):len() > 0 then
+			self:set_enabled("valid_value", true)
 			local text = tostring(self._value)
 
 			if self._show_decimal_marks then
@@ -708,6 +709,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/huddriving" then
 			end
 
 			self._text:set_text(text)
+		else
+			self:set_enabled("valid_value", false)
 		end
 	end
 
@@ -887,9 +890,10 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 	end
 
 	function IngameDriving:_update_driving_hud()
-		if managers.player and managers.player:get_vehicle() and managers.player:get_vehicle().vehicle_unit and managers.player:get_vehicle().vehicle_unit:vehicle() then
-			local vehicle_unit = managers.player:get_vehicle().vehicle_unit
-			local vehicle = vehicle_unit:vehicle()
+		local pm_vehicle = managers.player and managers.player:get_vehicle()
+		local vehicle_unit = pm_vehicle and pm_vehicle.vehicle_unit
+		local vehicle = vehicle_unit and vehicle_unit:vehicle()
+		if vehicle and vehicle_unit then
 			local vehicle_state = vehicle:get_state()
 			local speed = vehicle_state:get_speed() * 3.6
 			local rpm = vehicle_state:get_rpm()
@@ -913,6 +917,7 @@ elseif string.lower(RequiredScript) == "lib/states/ingamedriving" then
 			if WolfHUD:getSetting({"DrivingHUD", "SPEED_IN_MPH"}, false) then
 				speed = speed / 1.60934
 			end
+
 			managers.hud:set_driving_vehicle_state(speed, rpm, gear, no_used_seats, no_total_seats, vehicle_name, seats_table, loot_current, loot_total, math.max(0, health_current), health_total)
 		end
 	end

@@ -157,6 +157,7 @@
 	"wolfhud_enemy_swat_van" : "ТУРЕЛЬ СПЕЦНАЗА",
 	"wolfhud_enemy_ceiling_turret" : "ТУРЕЛЬ",
 	"wolfhud_enemy_aa_turret" : "Противовоздушная турель",
+	"wolfhud_enemy_crate_turret" : "ТУРЕЛЬ",
 	"wolfhud_enemy_sentry_gun" : "ТУРЕЛЬ",
 	"wolfhud_enemy_mobster_boss" : "Комиссар",
 	"wolfhud_enemy_chavez_boss" : "Чавез",

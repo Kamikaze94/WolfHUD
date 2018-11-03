@@ -157,6 +157,7 @@
 	"wolfhud_enemy_swat_van" : "SWAT TURRET",
 	"wolfhud_enemy_ceiling_turret" : "TURRET",
 	"wolfhud_enemy_aa_turret" : "Anti-Air Turret",
+	"wolfhud_enemy_crate_turret" : "Turret",
 	"wolfhud_enemy_sentry_gun" : "SENTRY GUN",
 	"wolfhud_enemy_mobster_boss" : "O comissário",
 	"wolfhud_enemy_chavez_boss" : "Chavez",

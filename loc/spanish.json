@@ -157,6 +157,7 @@
 	"wolfhud_enemy_swat_van" : "TORRETA SWAT",
 	"wolfhud_enemy_ceiling_turret" : "TORRETA",
 	"wolfhud_enemy_aa_turret" : "TORRETA ANTI AÉREA",
+	"wolfhud_enemy_crate_turret" : "TORRETA",
 	"wolfhud_enemy_sentry_gun" : "TORRETA ALIADA",
 	"wolfhud_enemy_mobster_boss" : "EL COMISARIO",
 	"wolfhud_enemy_chavez_boss" : "CHAVEZ",

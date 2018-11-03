@@ -133,6 +133,11 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 	function HUDStatsScreen:recreate_right(...)
 		if WolfHUD:getSetting({"TabStats", "ENABLED"}, true) then
 			self._use_tab_stats = true
+
+			if self._destroy_player_info then -- Enhanced Crew Loadout compatability
+				self:_destroy_player_info()
+			end
+
 			self._right:clear()
 			self._right:bitmap({
 				texture = "guis/textures/test_blur_df",
@@ -155,6 +160,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			local stats_panel = ExtendedPanel:new(self._right, { w = self._right:w(), h = self._right:h() })
 			self:_create_stat_list(stats_panel)
 			self:_update_stats_list(stats_panel)
+		
+			if self._create_player_info then -- Enhanced Crew Loadout compatability
+				self:_create_player_info()
+			end
 		else
 			recreate_right_original(self, ...)
 		end

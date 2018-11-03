@@ -157,6 +157,7 @@
 	"wolfhud_enemy_swat_van" : "特警炮塔",
 	"wolfhud_enemy_ceiling_turret" : "炮塔",
 	"wolfhud_enemy_aa_turret" : "防空炮塔",
+	"wolfhud_enemy_crate_turret" : "炮塔",
 	"wolfhud_enemy_sentry_gun" : "哨戒机枪",
 	"wolfhud_enemy_mobster_boss" : "黑帮老大",
 	"wolfhud_enemy_chavez_boss" : "查韦斯",

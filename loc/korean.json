@@ -157,6 +157,7 @@
 	"wolfhud_enemy_swat_van" : "스왓 터렛",
 	"wolfhud_enemy_ceiling_turret" : "터렛",
 	"wolfhud_enemy_aa_turret" : "Anti-Air Turret",
+	"wolfhud_enemy_crate_turret" : "터렛",
 	"wolfhud_enemy_sentry_gun" : "센트리 건",
 	"wolfhud_enemy_mobster_boss" : "커미사르",
 	"wolfhud_enemy_chavez_boss" : "챠베즈",

@@ -596,19 +596,14 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 
 	HUDStatsScreen._LOADOUT_H = 215
 	function HUDStatsScreen:recreate_right(...)
-		if self._loadout_data then
-			for _, panel in ipairs(self._peer_loadout or {}) do
-				if not panel:destroyed() then
-					panel:destroy()
-				end
-			end
-
-			self._right:remove(self._loadout_data)
-			self._loadout_data = nil
-		end
-
+		self:_destroy_player_info()
+		
 		recreate_right_original(self, ...)
+		
+		self:_create_player_info()
+	end
 
+	function HUDStatsScreen:_create_player_info()
 		self._USING_CREW_LOADOUT = WolfHUD:getSetting({"CrewLoadout", "SHOW_ON_STATS_PANEL"}, true) and not (_G.LobbyPlayerInfo and LobbyPlayerInfo.settings.show_skills_in_stats_screen)
 		if self._USING_CREW_LOADOUT then
 			if alive(self._right) and not self._loadout_data then
@@ -626,6 +621,19 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 					self:update_loadout_panel(peer_id)
 				end
 			end
+		end
+	end
+
+	function HUDStatsScreen:_destroy_player_info()
+		if self._loadout_data then
+			for _, panel in ipairs(self._peer_loadout or {}) do
+				if not panel:destroyed() then
+					panel:destroy()
+				end
+			end
+
+			self._right:remove(self._loadout_data)
+			self._loadout_data = nil
 		end
 	end
 
@@ -699,7 +707,6 @@ elseif string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 					panel:set_y(y)
 				end
 			end
-			
 			parent_panel:set_leftbottom(10, self._right:h() - (WolfHUD:getSetting({"TabStats", "ENABLED"}, true) and 10 or 40))
 		end
 	end
