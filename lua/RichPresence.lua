@@ -98,7 +98,7 @@ if RequiredScript == "lib/managers/platformmanager" then
 	function WinPlatformManager:get_current_job_id()
 		local job_id = managers.job:current_job_id()
 
-		if not ignoreSuffix[job_id] then
+		if job_id and not ignoreSuffix[job_id] then
 			for _, suffix in ipairs(suffixList) do
 				job_id = job_id:gsub(suffix, "")
 			end
@@ -108,16 +108,15 @@ if RequiredScript == "lib/managers/platformmanager" then
 	end
 
 	function WinPlatformManager:get_current_level_id()
-		local level_name
 		local level_id = Global.game_settings.level_id
 
-		if not ignoreSuffix[level_id] then
+		if level_id and not ignoreSuffix[level_id] then
 			for _, suffix in ipairs(suffixList) do
 				level_id = level_id:gsub(suffix, "")
 			end
 		end
 
-		return level_name or self:get_current_job_id()
+		return level_id or self:get_current_job_id()
 	end
 	
 	function WinPlatformManager:build_status_string(display, state, mode, heist, day, difficulty)

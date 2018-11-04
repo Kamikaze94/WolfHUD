@@ -1972,12 +1972,12 @@ if string.lower(RequiredScript) == "lib/managers/group_ai_states/groupaistatebas
 		if unit:brain()._logic_data.is_converted then
 			local key = tostring(unit:key())
 			local peer_id = peer_unit and managers.network:session():peer_by_unit(peer_unit):id() or managers.network:session():local_peer():id()
-			local owner_base = peer_id and peer_unit and peer_id ~= managers.network:session():local_peer():id() and peer_unit:base() or managers.player
-			local damage_mult = (owner_base:upgrade_value("player", "convert_enemies_damage_multiplier", 1) or 1) --* (owner_base:upgrade_value("player", "passive_convert_enemies_damage_multiplier", 1) or 1)
+			local owner_base = peer_id and peer_id ~= managers.network:session():local_peer():id() and peer_unit:base() or managers.player
+			local damage_mult = (owner_base:upgrade_value("player", "convert_enemies_damage_multiplier", 0) or 0)
 
 			managers.gameinfo:event("minion", "add", key, { unit = unit })
 			managers.gameinfo:event("minion", "set_owner", key, { owner = peer_id })
-			if damage_mult > 1 then
+			if damage_mult > 0 then
 				managers.gameinfo:event("minion", "set_damage_multiplier", key, { damage_multiplier = damage_mult })
 			end
 		end

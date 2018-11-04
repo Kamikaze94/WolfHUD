@@ -116,11 +116,13 @@ elseif RequiredScript == "lib/units/weapons/weaponlaser" then
 	end
 
 	function WeaponLaser:color()	--OVERWRITE
-		local theme = self._themes[self._theme_type]
+		local theme = self._themes[self._theme_type] or self._themes.default
 		
 		if theme and theme.brush then
 			return Color(theme.brush:unpack())
 		end
+
+		return tweak_data.custom_colors.defaults.laser
 	end
 
 	function WeaponLaser:update(unit, t, dt, ...)

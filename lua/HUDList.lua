@@ -4244,14 +4244,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.MinionItem:_set_damage_resistance(data)
-		local max_mult = tweak_data.upgrades.values.player.convert_enemies_health_multiplier[1] * tweak_data.upgrades.values.player.passive_convert_enemies_health_multiplier[2]
-		local alpha = math.clamp(1 - (data.damage_resistance - max_mult) / (1 - max_mult), 0, 1) * 0.7 + 0.3
+		local max_mult = tweak_data.upgrades.values.player.passive_convert_enemies_health_multiplier[2]
+		local alpha = math.clamp((1 - data.damage_resistance) / (1 - max_mult), 0, 1) * 0.7 + 0.3
 		self._outline:set_alpha(alpha)
 	end
 
 	function HUDList.MinionItem:_set_damage_multiplier(data)
-		local max_mult = tweak_data.upgrades.values.player.convert_enemies_damage_multiplier[1] --* tweak_data.upgrades.values.player.passive_convert_enemies_damage_multiplier[1]
-		local alpha = math.clamp(1 - (data.damage_multiplier - max_mult) / (1 - max_mult), 0, 1) * 0.7 + 0.3
+		local min_mult = tweak_data.upgrades.values.player.convert_enemies_damage_multiplier[1] 	-- 0.65, damage multiplier if palyer has joker skill
+		local max_mult = tweak_data.upgrades.values.player.convert_enemies_damage_multiplier[2] 	-- 1.00, damage multiplier if player has 35% damage increase skill
+		local alpha = math.clamp((data.damage_multiplier - min_mult) / (max_mult - min_mult), 0, 1) * 0.7 + 0.3
 		self._damage_upgrade_text:set_alpha(alpha)
 	end
 
