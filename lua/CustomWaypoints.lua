@@ -479,12 +479,12 @@ if RequiredScript == "lib/managers/hudmanager" then
 					managers.waypoints:set_waypoint_setting(id, "color", HUDManager.CUSTOM_WAYPOINTS.TIMER.BROKEN_COLOR)
 					managers.waypoints:set_waypoint_setting(id, "show_offscreen", true)
 				else
-					managers.waypoints:set_waypoint_setting(id, "color", Color('FFFFFF'))
+					managers.waypoints:set_waypoint_setting(id, "color", Color.white)
 					managers.waypoints:set_waypoint_setting(id, "show_offscreen", false)
 				end
 			elseif event == "set_powered" then
 				if data.powered then
-					managers.waypoints:set_waypoint_setting(id, "color", Color('FFFFFF'))
+					managers.waypoints:set_waypoint_setting(id, "color", Color.white)
 					managers.waypoints:set_waypoint_setting(id, "show_offscreen", false)
 				else
 					managers.waypoints:set_waypoint_setting(id, "color", HUDManager.CUSTOM_WAYPOINTS.TIMER.BROKEN_COLOR)
