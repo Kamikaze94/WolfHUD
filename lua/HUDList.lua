@@ -293,6 +293,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		tank_medic = 				{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank_medic" 				},
 		tank_mini = 				{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank_mini" 				},
 		spooc = 					{ type_id = "spooc",		category = "enemies",	long_name = "wolfhud_enemy_spook" 					},
+		shadow_spooc = 				{ type_id = "spooc",		category = "enemies",	long_name = "wolfhud_enemy_shadow_spook" 			},
 		taser = 					{ type_id = "taser",		category = "enemies",	long_name = "wolfhud_enemy_taser" 					},
 		shield = 					{ type_id = "shield",		category = "enemies",	long_name = "wolfhud_enemy_shield" 					},
 		sniper = 					{ type_id = "sniper",		category = "enemies",	long_name = "wolfhud_enemy_sniper" 					},
@@ -324,7 +325,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		turret = 					{ type_id = "turret",		category = "turrets",	long_name = "wolfhud_enemy_swat_van" 				},
 		cop_hostage =				{ type_id = "cop_hostage",	category = "hostages",	force_update = { "cop", "enemies" } 				},
 		sec_hostage =				{ type_id = "cop_hostage",	category = "hostages",	force_update = { "security", "enemies" } 			},
-		civ_hostage =				{ type_id = "civ_hostage",	category = "hostages",	force_update = { "civ" } 							},
+		civ_hostage =				{ type_id = "civ_hostage",	category = "hostages",	force_update = { "civ", "civilians" } 				},
 		cop_minion =				{ type_id = "minion",		category = "minions",	force_update = { "cop", "enemies" } 				},
 		sec_minion =				{ type_id = "minion",		category = "minions",	force_update = { "security", "enemies" }			},
 
@@ -3400,14 +3401,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		saw_noupgrade 	= { class = "TimerItem", 			name = "wolfhud_hudlist_device_saw" 	},
 		hack 			= { class = "TimerItem", 			name = "wolfhud_hudlist_device_hack" 	},
 		timer 			= { class = "TimerItem", 			name = "wolfhud_hudlist_device_timer" 	},
-		securitylock 	= { class = "TimerItem", 			name = "wolfhud_hudlist_device_hack" 	},
+		securitylock 	= { class = "SecurityTimerItem", 	name = "wolfhud_hudlist_device_security"},
 	}
 	function HUDList.TimerItem:init(parent, name, data)
 		self.STANDARD_COLOR = HUDListManager.ListOptions.list_color or Color(1, 1, 1, 1)
 		self.DISABLED_COLOR = Color(1, 1, 0, 0)
 		self.FLASH_SPEED = 2
 
-		self._show_distance = true
+		self._show_distance = (data.show_distance ~= false)
 		self._unit = data.unit
 		self._device_type = data.device_type
 		self._jammed = data.jammed
@@ -3515,11 +3516,17 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			return
 		end
 
-		self._distance_text:set_text(get_distance_to_player(self._unit))
+		self:_update_distance()
 
 		if self._jammed or not self._powered then
 			local new_color = get_color_from_table(math.sin(t*360 * self.FLASH_SPEED) * 0.5 + 0.5, 1, self._flash_color_table, self.STANDARD_COLOR)
 			self:_set_colors(new_color)
+		end
+	end
+	
+	function HUDList.TimerItem:_update_distance()
+		if self._show_distance then
+			self._distance_text:set_text(get_distance_to_player(self._unit))
 		end
 	end
 
@@ -3612,7 +3619,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.UpgradeableTimerItem:rescale(new_scale)
-		local enabled, size_mult = HUDList.TimerItem.super.rescale(self, new_scale)
+		local enabled, size_mult = HUDList.UpgradeableTimerItem.super.rescale(self, new_scale)
 
 		if enabled then
 			local y = self._time_text:y() + 3
@@ -3659,6 +3666,46 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		local current_color = self._auto_repair and self.AUTOREPAIR_COLOR or self._upgradable and self.UPGRADE_COLOR or self.STANDARD_COLOR
 		self._flash_color_table[2].color = current_color
 		self:_set_colors(current_color)
+	end
+
+	HUDList.SecurityTimerItem = HUDList.SecurityTimerItem or class(HUDList.TimerItem)
+	function HUDList.SecurityTimerItem:init(parent, name, data)
+		data.show_distance = false	-- Disabled, we show current and total bars there.
+		
+		HUDList.SecurityTimerItem.super.init(self, parent, name, data)
+
+		self._bars = { current = data.current_bar or 1, total = data.total_bars or 3}
+		self:_update_bar_text()
+
+		local key = tostring(self._unit:key())
+		local id = string.format("HUDList_timer_listener_%s", key)
+		local events = {
+			set_current_bar = callback(self, self, "_set_current_bar"),
+			set_total_bars = callback(self, self, "_set_total_bars"),
+		}
+
+		for event, clbk in pairs(events) do
+			table.insert(self._listener_clbks, { name = id, source = "timer", event = { event }, clbk = clbk, keys = { key }, data_only = true })
+		end
+	end
+
+	function HUDList.SecurityTimerItem:_update_bar_text()
+		local text = managers.localization:text("wolfhud_hudlist_device_security_bar", { CURRENT = self._bars.current or 1, TOTAL = self._bars.total or 3})
+		self._distance_text:set_text(text)
+	end
+
+	function HUDList.SecurityTimerItem:_set_current_bar(data)
+		if data.current_bar then
+			self._bars.current = data.current_bar
+			self:_update_bar_text()
+		end
+	end
+
+	function HUDList.SecurityTimerItem:_set_total_bars(data)
+		if data.total_bars then
+			self._bars.total = data.total_bars
+			self:_update_bar_text()
+		end
 	end
 
 	HUDList.TemperatureGaugeItem = HUDList.TemperatureGaugeItem or class(HUDList.TimerItem)
@@ -3832,11 +3879,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.BagEquipmentItem:amount()
-		return (self._amount or 1) + (self._amount_offset or 0)
+		return (self._amount or 0) + (self._amount_offset or 0)
 	end
 
 	function HUDList.BagEquipmentItem:max_amount()
-		return (self._max_amount or 1) + (self._amount_offset or 0)
+		return (self._max_amount or 0) + (self._amount_offset or 0)
 	end
 
 	function HUDList.BagEquipmentItem:amount_ratio()
@@ -3866,7 +3913,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.BagEquipmentItem:_update_info_text()
-		if self._amount then
+		if self._amount or self._amount_offset then
 			self._info_text:set_text(string.format("%.0f", self:amount()))
 			self._progress_bar:set_ratio(self:amount_ratio())
 			local new_color = get_color_from_table(self:amount(), self:max_amount())
@@ -4250,7 +4297,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.MinionItem:_set_damage_multiplier(data)
-		local min_mult = tweak_data.upgrades.values.player.convert_enemies_damage_multiplier[1] 	-- 0.65, damage multiplier if palyer has joker skill
+		local min_mult = tweak_data.upgrades.values.player.convert_enemies_damage_multiplier[1] 	-- 0.65, damage multiplier if player has joker skill
 		local max_mult = tweak_data.upgrades.values.player.convert_enemies_damage_multiplier[2] 	-- 1.00, damage multiplier if player has 35% damage increase skill
 		local alpha = math.clamp((data.damage_multiplier - min_mult) / (max_mult - min_mult), 0, 1) * 0.7 + 0.3
 		self._damage_upgrade_text:set_alpha(alpha)

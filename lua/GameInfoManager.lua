@@ -75,9 +75,23 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 					managers.gameinfo:_listener_callback("timer", "set_powered", key, timers[key])
 				end
 			end,
-			set_upgradable = function(timers, key, status)
-				if timers[key] and timers[key].upgradable ~= status then
-					timers[key].upgradable = status
+			-- Only securitylocks
+			set_current_bar = function(timers, key, current_bar)
+				if timers[key] and timers[key].current_bar ~= current_bar then
+					timers[key].current_bar = current_bar
+					managers.gameinfo:_listener_callback("timer", "set_current_bar", key, timers[key])
+				end
+			end,
+			set_total_bars = function(timers, key, total_bars)
+				if timers[key] and timers[key].total_bars ~= total_bars then
+					timers[key].total_bars = total_bars
+					managers.gameinfo:_listener_callback("timer", "set_total_bars", key, timers[key])
+				end
+			end,
+			-- Only upgradable drills/saws
+			set_upgradable = function(timers, key, upgradable)
+				if timers[key] and timers[key].upgradable ~= upgradable then
+					timers[key].upgradable = upgradable
 					managers.gameinfo:_listener_callback("timer", "set_upgradable", key, timers[key])
 				end
 			end,
@@ -88,7 +102,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 				end
 			end,
 			set_autorepair = function(timers, key, auto_repair)
-				if timers[key] then
+				if timers[key] and timers[key].auto_repair ~= auto_repair then
 					timers[key].auto_repair = auto_repair
 					managers.gameinfo:_listener_callback("timer", "set_autorepair", key, timers[key])
 				end
@@ -210,9 +224,7 @@ if string.lower(RequiredScript) == "lib/setups/setup" then
 			first_aid_kit = 					"_deployable_interaction_handler",
 			bodybags_bag =						"_deployable_interaction_handler",
 			grenade_crate =						"_deployable_interaction_handler",
-
-			pku_scubagear_vest = 				"_special_equipment_interaction_handler",	--TMP: Where is this used...?
-			pku_scubagear_tank = 				"_special_equipment_interaction_handler",	--TMP: Where is this used...?
+			--grenade_briefcase =					"_deployable_interaction_handler",		-- Thermal Paste uses this interaction as well... :(
 		},
 		INTERACTION_TO_CARRY = {
 			weapon_case =					"weapon",
@@ -447,10 +459,15 @@ lounge		100421		100448			102049
 			first_aid_kit = 					"first_aid_kit",
 			bodybags_bag =						"body_bag",
 			grenade_crate =						"grenade_crate",
+			--grenade_briefcase =					"grenade_crate",
+		},
+		INTERACTON_ID_ALLOW_CREATE = {
+			--grenade_briefcase =	true,
 		},
 		AMOUNT_OFFSETS = {
 			--interaction_id or editor_id
 			firstaid_box = -1,	--GGC drill asset, HB infirmary
+			--grenade_briefcase = 3,
 		},
 		AGGREAGATE_ITEMS = {	-- [type] or [level_id + editor_id]
 			["first_aid_kit"] = "first_aid_kits",	-- Aggregate all FAKs
@@ -503,16 +520,16 @@ lounge		100421		100448			102049
 
 	GameInfoManager._UNITS = {
 		TWEAK_ID_BY_NAME = {
-			[tostring(Idstring("units/pd2_dlc_born/characters/npc_male_mechanic/npc_male_mechanic"))] = "mechanic",
-			[tostring(Idstring("units/pd2_dlc_born/characters/npc_male_mechanic/npc_male_mechanic_husk"))] = "mechanic",
-			[tostring(Idstring("units/pd2_skirmish/characters/civ_male_bank_manager_hostage/civ_male_bank_manager_hostage"))] = "civ_hostage",
-			[tostring(Idstring("units/pd2_skirmish/characters/civ_male_bank_manager_hostage/civ_male_bank_manager_hostage_husk"))] = "civ_hostage",
-			[tostring(Idstring("units/pd2_skirmish/characters/civ_female_museum_curator_hostage/civ_female_museum_curator_hostage"))] = "civ_hostage",
-			[tostring(Idstring("units/pd2_skirmish/characters/civ_female_museum_curator_hostage/civ_female_museum_curator_hostage_husk"))] = "civ_hostage",
-			[tostring(Idstring("units/pd2_skirmish/characters/civ_female_drug_lord_hostage/civ_female_drug_lord_hostage"))] = "civ_hostage",
-			[tostring(Idstring("units/pd2_skirmish/characters/civ_female_drug_lord_hostage/civ_female_drug_lord_hostage_husk"))] = "civ_hostage",
-			[tostring(Idstring("units/pd2_skirmish/characters/civ_male_prisoner_hostage/civ_male_prisoner_hostage"))] = "civ_hostage",
-			[tostring(Idstring("units/pd2_skirmish/characters/civ_male_prisoner_hostage/civ_male_prisoner_hostage_husk"))] = "civ_hostage"
+			[tostring(Idstring("units/pd2_dlc_born/characters/npc_male_mechanic/npc_male_mechanic"))] 										= "mechanic",
+			[tostring(Idstring("units/pd2_dlc_born/characters/npc_male_mechanic/npc_male_mechanic_husk"))] 									= "mechanic",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_male_bank_manager_hostage/civ_male_bank_manager_hostage"))] 				= "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_male_bank_manager_hostage/civ_male_bank_manager_hostage_husk"))] 			= "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_female_museum_curator_hostage/civ_female_museum_curator_hostage"))] 		= "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_female_museum_curator_hostage/civ_female_museum_curator_hostage_husk"))] 	= "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_female_drug_lord_hostage/civ_female_drug_lord_hostage"))] 				= "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_female_drug_lord_hostage/civ_female_drug_lord_hostage_husk"))] 			= "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_male_prisoner_hostage/civ_male_prisoner_hostage"))] 						= "civ_hostage",
+			[tostring(Idstring("units/pd2_skirmish/characters/civ_male_prisoner_hostage/civ_male_prisoner_hostage_husk"))] 					= "civ_hostage",
 		}
 	}
 
@@ -1050,9 +1067,17 @@ lounge		100421		100448			102049
 
 	function GameInfoManager:_deployable_interaction_handler(event, key, data)
 		local type = GameInfoManager._EQUIPMENT.INTERACTION_ID_TO_TYPE[data.interact_id]
+		local active = event == "add" or event == "interact"
+
+		if not self._deployables[type][key] and GameInfoManager._EQUIPMENT.INTERACTON_ID_ALLOW_CREATE[data.interact_id] then
+			if active then
+				self:_bag_deployable_event("create", key, { unit = data.unit }, type)
+			else
+				self:_bag_deployable_event("destroy", key, {}, type)
+			end
+		end
 
 		if self._deployables[type][key] then
-			local active = event == "add" or event == "interact"
 			local offset = GameInfoManager._EQUIPMENT.AMOUNT_OFFSETS[data.unit:editor_id()] or GameInfoManager._EQUIPMENT.AMOUNT_OFFSETS[data.interact_id]
 
 			self:_bag_deployable_event("set_active", key, { active = active }, type)
@@ -1853,6 +1878,7 @@ if string.lower(RequiredScript) == "lib/units/props/securitylockgui" then
 	function SecurityLockGui:init(unit, ...)
 		self._info_key = tostring(unit:key())
 		managers.gameinfo:event("timer", "create", self._info_key, unit, self, "securitylock")
+		managers.gameinfo:event("timer", "set_total_bars", self._info_key, self._bars)
 		init_original(self, unit, ...)
 	end
 
@@ -1861,9 +1887,11 @@ if string.lower(RequiredScript) == "lib/units/props/securitylockgui" then
 		managers.gameinfo:event("timer", "update", self._info_key, t, self._current_timer, self._current_timer / self._timer)
 	end
 
-	function SecurityLockGui:_start(...)
+	function SecurityLockGui:_start(bar, ...)
+		managers.gameinfo:event("timer", "set_current_bar", self._info_key, bar)
 		managers.gameinfo:event("timer", "set_active", self._info_key, true)
-		return _start_original(self, ...)
+
+		return _start_original(self, bar, ...)
 	end
 
 	function SecurityLockGui:_set_done(...)
