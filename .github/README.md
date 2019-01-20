@@ -1,5 +1,7 @@
 # WolfHUD
+
 ## Description
+
 This is a Mod collection of several useful HUD altering mods.
 I've modified them and added features which I felt that were either needed or useful, or both.
 It was originally a recreated and updated version of GageHUD, since it was really painful to maintain with all the mixed up files.
@@ -13,33 +15,39 @@ I got the permission from **Seven, ViciousWalrus, Undeadsewer, FishTaco, friendI
 Keep in mind, that this is a development version. For a more stable release, get your version [here](http://paydaymods.com/mods/298/wolfhud).
 
 ## Preview
+
 <p align="center">
   <img src="https://steamuserimages-a.akamaihd.net/ugc/854969953755539277/B5C2A25B31A0E79F7B63AF8255B28BA43C871AC9/" width="420"/>
   <img src="https://steamuserimages-a.akamaihd.net/ugc/854969953755539435/C7940C6D6D2CA7DAB415805B325C3D6DB3D67114/" width="420"/><br>
   <i>(Click to view bigger version)</i>
 </p>
 
-## Requirements:
+## Requirements
+
 To make this mod work you will need to install either [Better Lua injecTor](http://paydaymods.com/download/) aka BLT. Linux/ SteamOS users need to use [BLT4L](https://github.com/blt4linux/blt4l/releases) instead.
 
-## Installation (Direct Download):
+## Installation (Direct Download)
+
 1. Click on the **Clone or Download** Button at the top of this site
 2. Click on the **Download .ZIP** Button
-2. Open the downloaded archive, using WinRAR or 7Zip
-3. Extract the **WolfHUD-master** folder into your 'PAYDAY 2/mods' folder
-4. Rename the folder **WolfHUD-master** to **WolfHUD** (if you want to)
-5. Start the game once. It will prompt you to update Federal Inventory and WolfHUD_Textures. Update both.
+3. Open the downloaded archive, using WinRAR or 7Zip
+4. Extract the **WolfHUD-master** folder into your 'PAYDAY 2/mods' folder
+5. Rename the folder **WolfHUD-master** to **WolfHUD** (if you want to)
+6. Start the game once. It will prompt you to update Federal Inventory and WolfHUD_Textures. Update both.
 
 ## If you don't want/like Inventory Icons
+
 To remove "Federal Inventory" go to your **PAYDAY 2/assets/mod_overrides/Federal Inventory** folder and delete the **guis** folder. Then open **revision.txt** and change the number to a higher one, to prevent future updates.
 
 ## Bug reports
+
 If you encounter any bugs, feel free to post about it on the issues tab!
 Please try to provide information from your crashlog and the actions you and your teammates were doing, when you crashed. ;)
 The Crashlog can be found at **%localappdata%/PAYDAY 2/crashlog.txt**.
 The BLT log can be found at **PAYDAY 2/mods/logs/**.
 
 ## Included Mods
+
 * [CustomHUD](https://bitbucket.org/pjal3urb/customhud/src) made by **Seven** modified by **me**
 * [HudPanelList](https://bitbucket.org/pjal3urb/hudlist/src/) made by **Seven**, modified by **me**
 * [KillCounter](https://bitbucket.org/pjal3urb/customhud/src) made by **Seven**, modified by **me**
@@ -77,6 +85,7 @@ The BLT log can be found at **PAYDAY 2/mods/logs/**.
     * [Throwables, Equipment, Armor and Heister Portraits](http://modworkshop.net/mydownloads.php?action=view_down&did=13916) made by **Luffy**
 
 ## Localizations
+
 * English made by **me**
 * German made by **me**
 * Russian made by **chrom[K]a**, **Magic3000** & **MEXAHOTABOP**
