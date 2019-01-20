@@ -22,14 +22,10 @@ if RequiredScript == "lib/managers/platformmanager" then
 					game_state = "private"
 				else
 					-- Handle Steam RP Grouping
-					group_key = tostring(Steam:userid())
+					group_key = managers.network.matchmake.lobby_handler:id()
 					group_count = "1"
 					if not Global.game_settings.single_player then
 						local session = managers.network:session()
-						if not Network:is_server() then
-							local peer = session and session:server_peer()
-							group_key = tostring(peer and peer:user_id() or group_key)
-						end
 						group_count = tostring(session and #session:all_peers() or 1)
 					end
 
@@ -46,11 +42,11 @@ if RequiredScript == "lib/managers/platformmanager" then
 					if managers.crime_spree and managers.crime_spree:is_active() then		-- Crime Spree
 						game_mode = "crime_spree"
 						game_heist = self:get_current_level_id()
-						game_difficulty = managers.experience:cash_string(managers.crime_spree:server_spree_level())
+						game_difficulty = managers.money:add_decimal_marks_to_string(managers.crime_spree:server_spree_level())
 					elseif managers.skirmish and managers.skirmish:is_skirmish() then		-- Holdout
 						game_mode = "skirmish"
 						game_heist = self:get_current_level_id()
-						game_difficulty = string.format("%i/%i", managers.skirmish:current_wave_number(), tweak_data and #tweak_data.skirmish.ransom_amounts or 9)
+						game_difficulty = string.format("%i/%i", managers.skirmish:current_wave_number() or 1, tweak_data and #tweak_data.skirmish.ransom_amounts or 9)
 					elseif managers.job:has_active_job() then								-- Heists
 						game_heist = self:get_current_job_id()
 
