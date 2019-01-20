@@ -343,12 +343,13 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 			for i, component in ipairs(self._all_components) do
 				component:set_is_ai(not self._human_layout)
+				component:set_is_waiting(self._is_waiting)
 			end
-
+--[[
 			for i, component in ipairs(self._all_components) do
 				component:set_is_waiting(self._is_waiting)
 			end
-
+]]
 			self:_rebuild_layout()
 		end
 	end
@@ -791,9 +792,9 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		end
 	end
 
-	function HUDTeammateCustom:teammate_progress(enabled, tweak_data, timer, success)
+	function HUDTeammateCustom:teammate_progress(enabled, tweak_id, timer, success)
 		if enabled then
-			self:call_listeners("interaction_start", tweak_data, timer)
+			self:call_listeners("interaction_start", tweak_id, timer)
 		else
 			self:call_listeners("interaction_stop", success)
 		end
@@ -1993,12 +1994,18 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 		local tweak = tweak_data.upgrades
 		self._max_absorb = tweak.cocaine_stacks_dmg_absorption_value * tweak.values.player.cocaine_stack_absorption_multiplier[1] * tweak.max_total_cocaine_stacks  / tweak.cocaine_stacks_convert_levels[2]
+
 		self._stored_health = 0
 		self._stored_health_max = 0
-		self._downs = 0
-		self._max_downs = managers.modifiers:modify_value("PlayerDamage:GetMaximumLives", (Global.game_settings.one_down and 2 or tweak_data.player.damage.LIVES_INIT)) - 1
-		self._reviver_count = 0
+
 		self._risk = 0
+		self._downs = 0
+		self._max_downs = (Global.game_settings.one_down and 2 or tweak_data.player.damage.LIVES_INIT) - 1
+		if managers.modifiers and managers.modifiers.modify_value then
+			self._max_downs = managers.modifiers:modify_value("PlayerDamage:GetMaximumLives", self._max_downs)
+		end
+
+		self._reviver_count = 0
 
 		self._owner:register_listener("PlayerStatus", { "health" }, callback(self, self, "set_health"), false)
 		self._owner:register_listener("PlayerStatus", { "stored_health" }, callback(self, self, "set_stored_health"), false)
@@ -2076,7 +2083,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	function PlayerInfoComponent.PlayerStatus:set_is_local_player(state)
 		if PlayerInfoComponent.PlayerStatus.super.set_is_local_player(self, state) then
 			self._stamina_radial:set_visible(self._is_local_player and self._settings.STAMINA)
-			self._max_downs = managers.modifiers:modify_value("PlayerDamage:GetMaximumLives", (Global.game_settings.one_down and 2 or tweak_data.player.damage.LIVES_INIT)) - 1
+			--self._max_downs = managers.modifiers:modify_value("PlayerDamage:GetMaximumLives", (Global.game_settings.one_down and 2 or tweak_data.player.damage.LIVES_INIT)) - 1
 			if self._is_local_player then
 				self._max_downs = self._max_downs + managers.player:upgrade_value("player", "additional_lives", 0)
 				self:set_revives(self._max_downs)
@@ -3856,7 +3863,7 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 			local text_id, macros = "hud_action_generic", {}
 			if tweak_entry and (tweak_entry.action_text_id or tweak_entry.quantity) then
 				text_id = tweak_entry.action_text_id or "hud_deploying_equipment"
-				macros = { EQUIPMENT = (tweak_entry.text_id and managers.localization:text(tweak_entry.text_id) or ""), BTN_INTERACT = managers.localization:get_default_macro("BTN_INTERACT") }
+				macros = { EQUIPMENT = (tweak_entry.text_id and managers.localization:text(tweak_entry.text_id) or "N/A"), BTN_INTERACT = managers.localization:get_default_macro("BTN_INTERACT") }
 			end
 			local text = managers.localization:to_upper_text(text_id, macros) or ""
 
