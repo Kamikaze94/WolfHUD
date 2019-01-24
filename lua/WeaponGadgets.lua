@@ -375,7 +375,7 @@ if string.lower(RequiredScript) == "lib/units/weapons/newraycastweaponbase" then
 	function NewRaycastWeaponBase:on_enabled(...)
 		on_enabled_original(self, ...)
 
-		if WolfHUD:getSetting({"GADGETS", "LASER_AUTO_ON"}, true) and not self._init_laser_state and self._assembly_complete and managers.player:current_state() == "standard" then
+		if not self._init_laser_state and not self:is_npc() and self._assembly_complete and managers.player:current_state() == "standard" and WolfHUD:getSetting({"GADGETS", "LASER_AUTO_ON"}, true) then
 			self:_setup_laser()
 			self._init_laser_state = true
 		end
