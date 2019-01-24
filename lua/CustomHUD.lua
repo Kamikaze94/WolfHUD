@@ -3448,15 +3448,16 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 
 	function PlayerInfoComponent.Equipment:set_throwable_amount(amount)
 		self._throwable_data.amount = amount
-		if amount > 0 then
-			self:stop_throwable_cooldown(true)
-		else
+
+		if amount <= 0 then
 			local t = managers.player:player_timer():time()
 			if self._throwable_data.cooldown > t then
 				local time_left = self._throwable_data.cooldown - t
 				self:set_throwable_cooldown(time_left, time_left)
 				return
 			end
+		else
+			self:stop_throwable_cooldown(true)
 		end
 
 		local panel = self._panel:child("throwables")
@@ -3473,7 +3474,10 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 		self._throwable_data.cooldown = managers.player:player_timer():time() + time_left
 		if self._throwable_data.amount <= 0 then
 			local panel = self._panel:child("throwables")
-			panel:stop()
+			if self._animating_throwable_cooldown then
+				panel:stop()
+				self._animating_throwable_cooldown = nil
+			end
 			panel:animate(callback(self, self, "_animate_throwable_cooldown"), time_left)
 		end
 	end
