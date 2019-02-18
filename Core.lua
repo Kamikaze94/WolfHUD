@@ -769,7 +769,7 @@ if not _G.WolfHUD then
 				end
 			end,
 			["GADGETS"] = function(setting, value)
-				if managers.hud and managers.hud.change_hud_setting and #setting >= 4 then
+				if WeaponGadgetBase and WeaponGadgetBase.update_theme_setting and #setting >= 4 then
 					WeaponGadgetBase.update_theme_setting(setting[1], setting[2], setting[3], setting[4], WolfHUD:getColor(value) or value)
 				end
 			end,
