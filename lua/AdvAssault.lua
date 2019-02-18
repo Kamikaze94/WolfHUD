@@ -176,7 +176,6 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
-	local _change_vanillahud_setting_original = HUDManager._change_vanillahud_setting or function(...) end
 	local _create_downed_hud_original = HUDManager._create_downed_hud
 	local _create_custody_hud_original = HUDManager._create_custody_hud
 
@@ -192,12 +191,10 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		return self._assault_locked
 	end
 
-	function HUDManager:_change_vanillahud_setting(setting)
+	function HUDManager:change_assaultbanner_setting(setting, value)
 		if self._hud_assault_corner then
-			if setting == "assault_banner_position" then
+			if setting == "POSITION" then
 				self._hud_assault_corner:update_banner_pos()
-			else
-				_change_vanillahud_setting_original(self, setting)
 			end
 		end
 	end
