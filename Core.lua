@@ -101,6 +101,7 @@ if not _G.WolfHUD then
 					},
 				},
 				USE_REAL_AMMO 						= true,
+				ENABLE_JOKER_FLOATING_INFO			= true
 			},
 			HUDChat = {
 				CHAT_WAIT_TIME							= 10,		--Time before chat fades out, 0 = never

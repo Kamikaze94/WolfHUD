@@ -1156,6 +1156,13 @@ if WolfHUD then
 						value = {"CustomHUD", "USE_REAL_AMMO"},
 					},
 					{
+						type = "toggle",
+						name_id = "enable_joker_floating_title",
+						desc_id = "enable_joker_floating_desc",
+						visible_reqs = {}, enabled_reqs = {},
+						value = {"CustomHUD", "ENABLE_JOKER_FLOATING_INFO"},
+					},
+					{
 						type = "divider",
 						size = 16,
 					},

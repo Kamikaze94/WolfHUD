@@ -286,6 +286,10 @@
 	"wolfhud_pacified_civs_desc" : "Change the waypoint of untied civilians, while they are pacified.",
 	"wolfhud_use_realammo_title" : "Use Real Ammo",
 	"wolfhud_use_realammo_desc" : "Shows ammo left, not taking the rounds in your current magazine into account.",
+
+	"enable_joker_floating_title" : "Enable Joker Nameplates",
+	"enable_joker_floating_desc" : "Shows joker name and health above them.",
+
 	"wolfhud_enable_burstmode_title" : "Enable Burst mode",
 	"wolfhud_enable_burstmode_desc" : "Enable a burst fire mode for your weapons.",
 

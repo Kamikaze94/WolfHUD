@@ -511,6 +511,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 
 		if event == "add" then
 			local unit_tweak = data.unit:base() and data.unit:base()._tweak_table
+			local enable_joker_floating_info = WolfHUD:getSetting({"CustomHUD", "ENABLE_JOKER_FLOATING_INFO"}, true)
+
 			local params = {
 				unit = data.unit,
 				offset = Vector3(0, 0, 30),
@@ -518,7 +520,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				scale = 1.25,
 				health_bar = {
 					type = "icon",
-					show = true,
+					show = enable_joker_floating_info,
 					scale = 1.65,
 					texture = "guis/textures/pd2/hud_health",
 					--texture_rect = {0, 0, 64, 64},
@@ -527,7 +529,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				},
 				health_shield = {
 					type = "icon",
-					show = true,
+					show = enable_joker_floating_info,
 					scale = 1.65,
 					texture = "guis/textures/pd2/hud_shield",
 					--texture_rect = {0, 0, 64, 64},
@@ -536,14 +538,14 @@ if RequiredScript == "lib/managers/hudmanager" then
 				},
 				health_bg = {
 					type = "icon",
-					show = true,
+					show = enable_joker_floating_info,
 					scale = 1.65,
 					texture = "guis/textures/pd2/hud_radialbg",
 					--texture_rect = {0, 0, 64, 64},
 				},
 				health_dmg = {
 					type = "icon",
-					show = true,
+					show = enable_joker_floating_info,
 					scale = 1.65,
 					texture = "guis/textures/pd2/hud_radial_rim",
 					--texture_rect = {0, 0, 64, 64},
@@ -552,12 +554,12 @@ if RequiredScript == "lib/managers/hudmanager" then
 				},
 				name = {
 					type = "label",
-					show = true,
+					show = enable_joker_floating_info,
 					text = WolfHUD:getCharacterName(unit_tweak, true)
 				},
 				kills = {
 					type = "label",
-					show = true,
+					show = enable_joker_floating_info,
 					text = string.format("%s %d", utf8.char(57364), data.kills or 0),
 					color = Color.white,
 					alpha = 0.8,
