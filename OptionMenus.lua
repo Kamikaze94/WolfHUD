@@ -1157,8 +1157,8 @@ if WolfHUD then
 					},
 					{
 						type = "toggle",
-						name_id = "enable_joker_floating_title",
-						desc_id = "enable_joker_floating_desc",
+						name_id = "wolfhud_enable_joker_floating_title",
+						desc_id = "wolfhud_enable_joker_floating_desc",
 						visible_reqs = {}, enabled_reqs = {},
 						value = {"CustomHUD", "ENABLE_JOKER_FLOATING_INFO"},
 					},
