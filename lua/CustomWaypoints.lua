@@ -523,7 +523,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				health_bar = {
 					type = "icon",
 					show = (joker_nameplate_style < 3),
-					scale = 0.9,
+					scale = 1.65,
 					texture = "guis/textures/pd2/hud_health",
 					--texture_rect = {0, 0, 64, 64},
 					radial_image = true,
@@ -532,7 +532,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				health_shield = {
 					type = "icon",
 					show = (joker_nameplate_style < 3),
-					scale = 0.9,
+					scale = 1.65,
 					texture = "guis/textures/pd2/hud_shield",
 					--texture_rect = {0, 0, 64, 64},
 					color = Color.white,
@@ -541,14 +541,14 @@ if RequiredScript == "lib/managers/hudmanager" then
 				health_bg = {
 					type = "icon",
 					show = (joker_nameplate_style < 3),
-					scale = 0.9,
+					scale = 1.65,
 					texture = "guis/textures/pd2/hud_radialbg",
 					--texture_rect = {0, 0, 64, 64},
 				},
 				health_dmg = {
 					type = "icon",
 					show = (joker_nameplate_style < 3),
-					scale = 0.9,
+					scale = 1.65,
 					texture = "guis/textures/pd2/hud_radial_rim",
 					--texture_rect = {0, 0, 64, 64},
 					color = Color.red,
