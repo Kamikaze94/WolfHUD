@@ -511,7 +511,9 @@ if RequiredScript == "lib/managers/hudmanager" then
 
 		if event == "add" then
 			local unit_tweak = data.unit:base() and data.unit:base()._tweak_table
-			local enable_joker_floating_info = WolfHUD:getSetting({"CustomHUD", "ENABLE_JOKER_FLOATING_INFO"}, true)
+			local joker_nameplate_kills = WolfHUD:getSetting({"CustomHUD", "JOKER_NAMEPLATE_KILLS"}, true)
+			local joker_nameplate_style = WolfHUD:getSetting({"CustomHUD", "JOKER_NAMEPLATE_DISPLAY_STYLE"}, "HP and Name")
+			-- (1=all, 2=hp, 3=name, 4=none)
 
 			local params = {
 				unit = data.unit,
@@ -520,8 +522,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 				scale = 1.25,
 				health_bar = {
 					type = "icon",
-					show = enable_joker_floating_info,
-					scale = 1.65,
+					show = (joker_nameplate_style < 3),
+					scale = 0.9,
 					texture = "guis/textures/pd2/hud_health",
 					--texture_rect = {0, 0, 64, 64},
 					radial_image = true,
@@ -529,8 +531,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 				},
 				health_shield = {
 					type = "icon",
-					show = enable_joker_floating_info,
-					scale = 1.65,
+					show = (joker_nameplate_style < 3),
+					scale = 0.9,
 					texture = "guis/textures/pd2/hud_shield",
 					--texture_rect = {0, 0, 64, 64},
 					color = Color.white,
@@ -538,15 +540,15 @@ if RequiredScript == "lib/managers/hudmanager" then
 				},
 				health_bg = {
 					type = "icon",
-					show = enable_joker_floating_info,
-					scale = 1.65,
+					show = (joker_nameplate_style < 3),
+					scale = 0.9,
 					texture = "guis/textures/pd2/hud_radialbg",
 					--texture_rect = {0, 0, 64, 64},
 				},
 				health_dmg = {
 					type = "icon",
-					show = enable_joker_floating_info,
-					scale = 1.65,
+					show = (joker_nameplate_style < 3),
+					scale = 0.9,
 					texture = "guis/textures/pd2/hud_radial_rim",
 					--texture_rect = {0, 0, 64, 64},
 					color = Color.red,
@@ -554,12 +556,12 @@ if RequiredScript == "lib/managers/hudmanager" then
 				},
 				name = {
 					type = "label",
-					show = enable_joker_floating_info,
+					show = (joker_nameplate_style == 1 or joker_nameplate_style == 3),
 					text = WolfHUD:getCharacterName(unit_tweak, true)
 				},
 				kills = {
 					type = "label",
-					show = enable_joker_floating_info,
+					show = (joker_nameplate_kills),
 					text = string.format("%s %d", utf8.char(57364), data.kills or 0),
 					color = Color.white,
 					alpha = 0.8,

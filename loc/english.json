@@ -287,8 +287,14 @@
 	"wolfhud_use_realammo_title" : "Use Real Ammo",
 	"wolfhud_use_realammo_desc" : "Shows ammo left, not taking the rounds in your current magazine into account.",
 
-	"wolfhud_enable_joker_floating_title" : "Enable Joker Nameplates",
-	"wolfhud_enable_joker_floating_desc" : "Shows joker name and health above them.",
+	"wolfhud_enable_joker_floating_title" : "Joker Nameplate",
+	"wolfhud_enable_joker_floating_desc" : "Allows Wolfhud to take control of joker floating nameplates.",
+	"wolfhud_enable_joker_floating_all" : "HP and Name",
+	"wolfhud_enable_joker_floating_hp" : "HP",
+	"wolfhud_enable_joker_floating_name" : "Name",
+	"wolfhud_enable_joker_floating_none" : "Disabled",
+	"wolfhud_enable_joker_nameplate_kills_title" : "Joker Nameplate Kill Counter",
+	"wolfhud_enable_joker_nameplate_kills_desc" : "Attaches a kill counter to the joker's nameplate.",
 
 	"wolfhud_enable_burstmode_title" : "Enable Burst mode",
 	"wolfhud_enable_burstmode_desc" : "Enable a burst fire mode for your weapons.",

@@ -1156,11 +1156,28 @@ if WolfHUD then
 						value = {"CustomHUD", "USE_REAL_AMMO"},
 					},
 					{
-						type = "toggle",
+						type = "divider",
+						size = 16,
+					},
+					{
+						type = "multi_choice",
 						name_id = "wolfhud_enable_joker_floating_title",
 						desc_id = "wolfhud_enable_joker_floating_desc",
+						value = {"CustomHUD", "JOKER_NAMEPLATE_DISPLAY_STYLE"},
 						visible_reqs = {}, enabled_reqs = {},
-						value = {"CustomHUD", "ENABLE_JOKER_FLOATING_INFO"},
+						options = {
+							"wolfhud_enable_joker_floating_all",
+							"wolfhud_enable_joker_floating_hp",
+							"wolfhud_enable_joker_floating_name",
+							"wolfhud_enable_joker_floating_none",
+						},
+					},
+					{
+						type = "toggle",
+						name_id = "wolfhud_enable_joker_nameplate_kills_title",
+						desc_id = "wolfhud_enable_joker_nameplate_kills_desc",
+						visible_reqs = {}, enabled_reqs = {},
+						value = {"CustomHUD", "JOKER_NAMEPLATE_KILLS"},
 					},
 					{
 						type = "divider",
