@@ -101,8 +101,11 @@ if not _G.WolfHUD then
 					},
 				},
 				USE_REAL_AMMO 						= true,
+				JOKER_ENABLE_NAMEPLATE				= true,
 				JOKER_NAMEPLATE_DISPLAY_STYLE		= 1,			-- (1=all, 2=hp, 3=name, 4=none)
-				JOKER_NAMEPLATE_KILLS				= true
+				JOKER_ENABLE_MINI_HP				= false,
+				JOKER_NAMEPLATE_KILLS				= true,
+				JOKER_USE_MINI_HP					= true
 			},
 			HUDChat = {
 				CHAT_WAIT_TIME							= 10,		--Time before chat fades out, 0 = never

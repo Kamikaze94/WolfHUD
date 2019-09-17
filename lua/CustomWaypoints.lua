@@ -511,6 +511,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 
 		if event == "add" then
 			local unit_tweak = data.unit:base() and data.unit:base()._tweak_table
+			local joker_enable_nameplate = WolfHUD:getSetting({"CustomHUD", "JOKER_ENABLE_NAMEPLATE"}, true)
+			local joker_mini_hp = WolfHUD:getSetting({"CustomHUD", "JOKER_ENABLE_MINI_HP"}, true)
 			local joker_nameplate_kills = WolfHUD:getSetting({"CustomHUD", "JOKER_NAMEPLATE_KILLS"}, true)
 			local joker_nameplate_style = WolfHUD:getSetting({"CustomHUD", "JOKER_NAMEPLATE_DISPLAY_STYLE"}, "HP and Name")
 			-- (1=all, 2=hp, 3=name, 4=none)
@@ -522,8 +524,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 				scale = 1.25,
 				health_bar = {
 					type = "icon",
-					show = (joker_nameplate_style < 3),
-					scale = 1.65,
+					show = (joker_enable_nameplate and joker_nameplate_style < 3),
+					scale = joker_mini_hp and 0.9 or 1.65,
 					texture = "guis/textures/pd2/hud_health",
 					--texture_rect = {0, 0, 64, 64},
 					radial_image = true,
@@ -531,7 +533,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				},
 				health_shield = {
 					type = "icon",
-					show = (joker_nameplate_style < 3),
+					show = (joker_enable_nameplate and joker_nameplate_style < 3 and not joker_mini_hp),
 					scale = 1.65,
 					texture = "guis/textures/pd2/hud_shield",
 					--texture_rect = {0, 0, 64, 64},
@@ -540,14 +542,14 @@ if RequiredScript == "lib/managers/hudmanager" then
 				},
 				health_bg = {
 					type = "icon",
-					show = (joker_nameplate_style < 3),
+					show = (joker_enable_nameplate and joker_nameplate_style < 3 and not joker_mini_hp),
 					scale = 1.65,
 					texture = "guis/textures/pd2/hud_radialbg",
 					--texture_rect = {0, 0, 64, 64},
 				},
 				health_dmg = {
 					type = "icon",
-					show = (joker_nameplate_style < 3),
+					show = (joker_enable_nameplate and joker_nameplate_style < 3 and not joker_mini_hp),
 					scale = 1.65,
 					texture = "guis/textures/pd2/hud_radial_rim",
 					--texture_rect = {0, 0, 64, 64},
@@ -556,12 +558,12 @@ if RequiredScript == "lib/managers/hudmanager" then
 				},
 				name = {
 					type = "label",
-					show = (joker_nameplate_style == 1 or joker_nameplate_style == 3),
+					show = (joker_enable_nameplate and joker_nameplate_style == 1 or joker_nameplate_style == 3),
 					text = WolfHUD:getCharacterName(unit_tweak, true)
 				},
 				kills = {
 					type = "label",
-					show = (joker_nameplate_kills),
+					show = (joker_enable_nameplate and joker_nameplate_kills),
 					text = string.format("%s %d", utf8.char(57364), data.kills or 0),
 					color = Color.white,
 					alpha = 0.8,

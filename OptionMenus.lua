@@ -1159,25 +1159,82 @@ if WolfHUD then
 						type = "divider",
 						size = 16,
 					},
-					{
-						type = "multi_choice",
-						name_id = "wolfhud_enable_joker_floating_title",
-						desc_id = "wolfhud_enable_joker_floating_desc",
-						value = {"CustomHUD", "JOKER_NAMEPLATE_DISPLAY_STYLE"},
-						visible_reqs = {}, enabled_reqs = {},
+					{	--Joker Options
+						type = "menu",
+						menu_id = "wolfhud_joker_nameplate_options_menu",
+						name_id = "wolfhud_joker_nameplate_options_name",
+						desc_id = "wolfhud_joker_nameplate_options_help",
 						options = {
-							"wolfhud_enable_joker_floating_all",
-							"wolfhud_enable_joker_floating_hp",
-							"wolfhud_enable_joker_floating_name",
-							"wolfhud_enable_joker_floating_none",
+							{
+								type = "toggle",
+								name_id = "wolfhud_enable_joker_nameplate_title",
+								desc_id = "wolfhud_enable_joker_nameplate_desc",
+								visible_reqs = {}, enabled_reqs = {},
+								value = {"CustomHUD", "JOKER_ENABLE_NAMEPLATE"},
+							},
+							{
+								type = "multi_choice",
+								name_id = "wolfhud_enable_joker_floating_title",
+								desc_id = "wolfhud_enable_joker_floating_desc",
+								value = {"CustomHUD", "JOKER_NAMEPLATE_DISPLAY_STYLE"},
+								visible_reqs = {},
+								enabled_reqs = {
+									{ setting = { "CustomHUD", "JOKER_ENABLE_NAMEPLATE" }, invert = false },
+								},
+								options = {
+									"wolfhud_enable_joker_floating_all",
+									"wolfhud_enable_joker_floating_hp",
+									"wolfhud_enable_joker_floating_name",
+									"wolfhud_enable_joker_floating_none",
+								},
+								default_value = 4,
+							},
+							{
+								type = "toggle",
+								name_id = "wolfhud_enable_joker_mini_hp_title",
+								desc_id = "wolfhud_enable_joker_mini_hp_desc",
+								visible_reqs = {},
+								enabled_reqs = {
+									{ setting = { "CustomHUD", "JOKER_ENABLE_NAMEPLATE" }, invert = false },
+								},
+								value = {"CustomHUD", "JOKER_ENABLE_MINI_HP"},
+							},
+							{
+								type = "toggle",
+								name_id = "wolfhud_enable_joker_nameplate_kills_title",
+								desc_id = "wolfhud_enable_joker_nameplate_kills_desc",
+								visible_reqs = {},
+								enabled_reqs = {
+									{ setting = { "CustomHUD", "JOKER_ENABLE_NAMEPLATE" }, invert = false },
+								},
+								value = {"CustomHUD", "JOKER_NAMEPLATE_KILLS"},
+							},
+							{
+								type = "divider",
+								size = 16,
+							},
+							{
+								type = "toggle",
+								name_id = "wolfhud_hudlist_show_minions_title",
+								desc_id = "wolfhud_hudlist_show_minions_desc",
+								value = {"HUDList", "LEFT_LIST", "show_minions"},
+								visible_reqs = {},
+								enabled_reqs = {
+									{ setting = { "HUDList", "ENABLED" }, invert = false },
+								},
+							},
+							{
+								type = "toggle",
+								name_id = "wolfhud_hudlist_show_own_minions_only_title",
+								desc_id = "wolfhud_hudlist_show_own_minions_only_desc",
+								value = {"HUDList", "LEFT_LIST", "show_own_minions_only"},
+								visible_reqs = {},
+								enabled_reqs = {
+									{ setting = { "HUDList", "ENABLED" }, invert = false },
+									{ setting = { "HUDList", "LEFT_LIST", "show_minions" }, invert = false },
+								},
+							},
 						},
-					},
-					{
-						type = "toggle",
-						name_id = "wolfhud_enable_joker_nameplate_kills_title",
-						desc_id = "wolfhud_enable_joker_nameplate_kills_desc",
-						visible_reqs = {}, enabled_reqs = {},
-						value = {"CustomHUD", "JOKER_NAMEPLATE_KILLS"},
 					},
 					{
 						type = "divider",
@@ -2077,31 +2134,6 @@ if WolfHUD then
 								visible_reqs = {},
 								enabled_reqs = {
 									{ setting = { "HUDList", "ENABLED" }, invert = false },
-								},
-							},
-							{
-								type = "divider",
-								size = 8,
-							},
-							{
-								type = "toggle",
-								name_id = "wolfhud_hudlist_show_minions_title",
-								desc_id = "wolfhud_hudlist_show_minions_desc",
-								value = {"HUDList", "LEFT_LIST", "show_minions"},
-								visible_reqs = {},
-								enabled_reqs = {
-									{ setting = { "HUDList", "ENABLED" }, invert = false },
-								},
-							},
-							{
-								type = "toggle",
-								name_id = "wolfhud_hudlist_show_own_minions_only_title",
-								desc_id = "wolfhud_hudlist_show_own_minions_only_desc",
-								value = {"HUDList", "LEFT_LIST", "show_own_minions_only"},
-								visible_reqs = {},
-								enabled_reqs = {
-									{ setting = { "HUDList", "ENABLED" }, invert = false },
-									{ setting = { "HUDList", "LEFT_LIST", "show_minions" }, invert = false },
 								},
 							},
 							{
