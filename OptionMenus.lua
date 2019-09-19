@@ -776,7 +776,7 @@ if WolfHUD then
 								desc_id = "wolfhud_panels_show_ping_desc",
 								visible_reqs = {},
 								enabled_reqs = {
-									{ setting = {"CustomHUD", "ENABLED"}, invert = false }
+									--{ setting = {"CustomHUD", "ENABLED"}, invert = false }
 								},
 								value = {"CustomHUD", "TEAMMATE", "LATENCY"},
 							},
