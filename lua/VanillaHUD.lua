@@ -143,6 +143,7 @@ elseif RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function HUDTeammate:_create_ping_info()
+		local name_panel = self._panel:child("name")
 		local ping_info = self._panel:text({
 			name = "latency",
 			vertical = "left",
@@ -153,8 +154,8 @@ elseif RequiredScript == "lib/managers/hud/hudteammate" then
 			layer = 1,
 			visible = true,
 			color = Color.white,
-			x = 0,
-			y = 18,
+			x = name_panel:x() + 2,
+			y = name_panel:y() - 12,
 			w = 50,
 			h = 50
 		})
