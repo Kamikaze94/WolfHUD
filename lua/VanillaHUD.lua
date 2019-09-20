@@ -147,19 +147,18 @@ elseif RequiredScript == "lib/managers/hud/hudteammate" then
 		local ping_info = self._panel:text({
 			name = "latency",
 			vertical = "right",
-			font_size = 11,
+			font_size = tweak_data.hud.small_font_size,
 			align = "right",
 			halign = "right",
-			text = "PING TEXT",
-			font = "fonts/font_medium_mf",
+			text = "",
+			font = "fonts/font_small_mf",
 			layer = 1,
 			visible = true,
 			color = Color.white,
-			x = name_panel:w(),
-			y = name_panel:y() - 11,
+			x = -12,
+			y = name_panel:y() - tweak_data.hud.small_font_size,
 			h = 50
 		})
-		ping_info:set_right(name_panel:w() + name_panel:x())
 	end
 
 	function HUDTeammate:_create_stamina_circle()
