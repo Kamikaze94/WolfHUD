@@ -36,16 +36,15 @@ function ContractBrokerHeistItem:make_fine_text(text)
 end
 
 function ContractBrokerHeistItem:get_job_heat_text(job_id)
-	local heat_text = ""
-	local heat_color = Color(1,0,1)
-	local multiplier = managers.job:get_job_heat(job_id)
-	local exp_multi  = managers.job:heat_to_experience_multiplier(multiplier)
-	local icon_multi = exp_multi*20-20
+	local heat_text       = ""
+	local heat_color      = Color(1,0,1)
+	local exp_multiplier  = managers.job:heat_to_experience_multiplier(managers.job:get_job_heat(job_id))
+	local exp_percent     = ((1 - exp_multiplier)*-1)*100
 
-    if icon_multi ~= 0 then
-		heat_sequence = (icon_multi>0 and ("+"):rep(math.ceil(icon_multi)) or ("-"):rep(-math.floor(icon_multi)))
-		heat_text = heat_sequence.." ("..math.abs(((1 - exp_multi)*-1)*100).."%)"
-        heat_color = (icon_multi > 0 and Color.yellow) or Color('E55858')
+	if exp_percent ~= 0 then
+		local prefix  = exp_percent > 0 and "+" or ""
+		heat_text = "("..prefix..exp_percent.."%)"
+        heat_color = exp_percent > 0 and Color.yellow or Color('E55858')
     end
 
 	return heat_text, heat_color
