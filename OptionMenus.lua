@@ -3841,6 +3841,17 @@ if WolfHUD then
 					},
 					{
 						type = "toggle",
+						name_id = "wolfhud_show_contractor_job_heat_title",
+						desc_id = "wolfhud_show_contractor_job_heat_desc",
+						value = {"INVENTORY", "SHOW_CONTRACTOR_JOB_HEAT"},
+						visible_reqs = {}, enabled_reqs = {},
+					},
+					{
+						type = "divider",
+						size = 24,
+					},
+					{
+						type = "toggle",
 						name_id = "wolfhud_enable_burstmode_title",
 						desc_id = "wolfhud_enable_burstmode_desc",
 						value = {"EQUIPMENT", "ENABLE_BURSTMODE"},
