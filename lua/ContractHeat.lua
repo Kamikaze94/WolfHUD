@@ -39,11 +39,13 @@ function ContractBrokerHeistItem:get_job_heat_text(job_id)
 	local heat_text = ""
 	local heat_color = Color(1,0,1)
 	local multiplier = managers.job:get_job_heat(job_id)
-	local exp_multi  = managers.job:heat_to_experience_multiplier(multiplier)*20-20
+	local exp_multi  = managers.job:heat_to_experience_multiplier(multiplier)
+	local icon_multi = exp_multi*20-20
 
-    if exp_multi ~= 0 then
-        heat_text = (exp_multi>0 and ("+"):rep(math.ceil(exp_multi)) or ("-"):rep(-math.floor(exp_multi)))
-        heat_color = (exp_multi > 0 and Color.yellow) or Color('E55858')
+    if icon_multi ~= 0 then
+		heat_sequence = (icon_multi>0 and ("+"):rep(math.ceil(icon_multi)) or ("-"):rep(-math.floor(icon_multi)))
+		heat_text = heat_sequence.." ("..math.abs(((1 - exp_multi)*-1)*100).."%)"
+        heat_color = (icon_multi > 0 and Color.yellow) or Color('E55858')
     end
 
 	return heat_text, heat_color
