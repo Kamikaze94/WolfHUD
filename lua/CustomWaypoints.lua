@@ -558,7 +558,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				},
 				name = {
 					type = "label",
-					show = (joker_enable_nameplate and joker_nameplate_style == 1 or joker_nameplate_style == 3),
+					show = (joker_enable_nameplate and joker_nameplate_style == 1) or (joker_enable_nameplate and joker_nameplate_style == 3),
 					text = WolfHUD:getCharacterName(unit_tweak, true)
 				},
 				kills = {
