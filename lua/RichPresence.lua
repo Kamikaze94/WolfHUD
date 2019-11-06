@@ -22,7 +22,7 @@ if RequiredScript == "lib/managers/platformmanager" then
 					game_state = "private"
 				else
 					-- Handle Steam RP Grouping
-					if not Global.game_settings.single_player then
+					if not Global.game_settings.single_player and managers.network.matchmake.lobby_handler ~= nil then
 						group_key = managers.network.matchmake.lobby_handler:id()
 
 						local session = managers.network:session()
