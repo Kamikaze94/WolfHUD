@@ -38,6 +38,7 @@ elseif RequiredScript == "lib/managers/hud/hudteammate" then
 	local set_name_original = HUDTeammate.set_name
 	local set_condition_original = HUDTeammate.set_condition
 	local teammate_progress_original = HUDTeammate.teammate_progress
+	local update_original = HUDManager.update
 
 	function HUDTeammate:init(...)
 		init_original(self, ...)
@@ -48,10 +49,16 @@ elseif RequiredScript == "lib/managers/hud/hudteammate" then
 		self._condition_icon = self._panel:child("condition_icon")
 		self._condition_icon:set_color(WolfHUD:getColorSetting({"CustomHUD", self._setting_prefix, "CONDITION_ICON_COLOR"}, "white"))
 
+		self._next_latency_update_t = 0
+
 		if self._main_player and not HUDManager.CUSTOM_TEAMMATE_PANELS then
 			self:_create_stamina_circle()
 		else
 			self:_init_interact_info()
+		end
+
+		if WolfHUD:getSetting({"CustomHUD","TEAMMATE","LATENCY"}, true) then
+			self:_create_ping_info()
 		end
 	end
 
@@ -100,6 +107,58 @@ elseif RequiredScript == "lib/managers/hud/hudteammate" then
 		name_bg_panel:set_w(w + 4)
 		name_bg_panel:set_h(h + 2)
 		name_bg_panel:set_y(name_panel:y() + name_panel:h() / 2 - h / 2 - 1)
+	end
+
+	function HUDTeammate:update(t,dt)
+		self:update_latency(t,dt)
+	end
+
+	function HUDTeammate:update_latency(t,dt)
+		local ping_panel = self._panel:child("latency")
+		if ping_panel and self:peer_id() and t > self._next_latency_update_t then
+			local net_session = managers.network:session()
+			local peer = net_session and net_session:peer(self:peer_id())
+			local latency = peer and Network:qos(peer:rpc()).ping or "n/a"
+
+			if type(latency) == "number" then
+				ping_panel:set_text(string.format("%.0fms", latency))
+				ping_panel:set_color(latency < 75 and Color('C2FC97') or latency < 150 and Color('CEA168') or Color('E24E4E'))
+			else
+				ping_panel:set_text(latency)
+				ping_panel:set_color(Color('E24E4E'))
+			end
+
+			self._next_latency_update_t = t + 1
+		elseif not self:peer_id() and ping_panel then
+			ping_panel:set_text("")
+		end
+	end
+
+	function HUDManager:update(...)
+		for i, panel in ipairs(self._teammate_panels) do
+			panel:update(...)
+		end
+
+		return update_original(self, ...)
+	end
+
+	function HUDTeammate:_create_ping_info()
+		local name_panel = self._panel:child("name")
+		local ping_info = self._panel:text({
+			name = "latency",
+			vertical = "right",
+			font_size = tweak_data.hud.small_font_size,
+			align = "right",
+			halign = "right",
+			text = "",
+			font = "fonts/font_small_mf",
+			layer = 1,
+			visible = true,
+			color = Color.white,
+			x = -12,
+			y = name_panel:y() - tweak_data.hud.small_font_size,
+			h = 50
+		})
 	end
 
 	function HUDTeammate:_create_stamina_circle()
