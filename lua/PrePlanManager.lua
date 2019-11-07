@@ -670,4 +670,21 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 			QuickMenu:new(managers.localization:text("wolfhud_preplanning_manager_title"), message, { text = managers.localization:text("dialog_ok"), is_cancel_button = true }, true)
 		end
 	end
+elseif requiredScript == "lib/managers/menu/preplanningmapgui" then
+	
+	function PrePlanningMapGui:set_map_position_to_item(item)
+		if not self._enabled or not item then
+			return
+		end
+
+		for i, location in pairs(self._locations) do
+			local x, y, group = location:get_point_map_position(item:name())
+
+			if x and y and group then
+				self:set_map_position(x, y, group, true)
+
+				break
+			end
+		end
+	end
 end

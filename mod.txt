@@ -64,6 +64,7 @@
 
 		{ "hook_id" : "lib/managers/menumanager", 								"script_path" : "lua/PrePlanManager.lua" },
 		{ "hook_id" : "lib/managers/preplanningmanager", 						"script_path" : "lua/PrePlanManager.lua" },
+		{ "hook_id" : "lib/managers/menu/preplanningmapgui", 					"script_path" : "lua/PrePlanManager.lua" },
 
 		{ "hook_id" : "lib/managers/missionassetsmanager", 						"script_path" : "lua/BuyAllAsset.lua" },
 		{ "hook_id" : "lib/managers/menu/missionbriefinggui", 					"script_path" : "lua/BuyAllAsset.lua" },
