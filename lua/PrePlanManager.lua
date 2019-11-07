@@ -671,20 +671,11 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 		end
 	end
 elseif requiredScript == "lib/managers/menu/preplanningmapgui" then
-	
-	function PrePlanningMapGui:set_map_position_to_item(item)
+	local set_map_position_to_item_original = PrePlanningMapGui.set_map_position_to_item
+	function PrePlanningMapGui:set_map_position_to_item(...)
 		if not self._enabled or not item then
 			return
 		end
-
-		for i, location in pairs(self._locations) do
-			local x, y, group = location:get_point_map_position(item:name())
-
-			if x and y and group then
-				self:set_map_position(x, y, group, true)
-
-				break
-			end
-		end
+		return set_map_position_to_item_original(self, ...)
 	end
 end
