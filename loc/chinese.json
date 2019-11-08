@@ -1,6 +1,6 @@
 {
 	"menu_jowi" : "威克",
-	"hud_int_hold_grab_the_bag" : "按住 $BTN_INTERACT 捡起 $BAG",
+	"hud_int_hold_grab_the_bag" : "按住 $INTERACT 捡起 $BAG",
 
 	"wolfhud_dialog_force_start_title" : "强制开始游戏？",
 	"wolfhud_dialog_force_start_desc" : "你确定要强制游戏开始吗？\n\n请只在测试时使用这个，可能玩家只是暂时不在电脑前\n请确保每个人都有足够的时间选择他的装备\n\n谢谢 :)",
@@ -134,6 +134,7 @@
 	"wolfhud_enemy_civilian" : "平民",
 	"wolfhud_enemy_gangster" : "黑帮",
 	"wolfhud_enemy_biker" : "飞车党",
+	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
 	"wolfhud_enemy_bolivian_security" : "索萨保安",
 	"wolfhud_enemy_bolivian_thug" : "索萨暴徒",
 	"wolfhud_enemy_mobster" : "俄罗斯黑帮",

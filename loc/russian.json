@@ -1,6 +1,6 @@
 {
 	"menu_jowi" : "Уик",
-	"hud_int_hold_grab_the_bag" : "Удерживайте $BTN_INTERACT, чтобы взять $BAG",
+	"hud_int_hold_grab_the_bag" : "Удерживайте $INTERACT, чтобы взять $BAG",
 
 	"wolfhud_dialog_force_start_title" : "Принудительно запустить игру?",
 	"wolfhud_dialog_force_start_desc" : "Вы уверены, что хотите принудительно начать игру?\n\nИспользуйте эту функцию только если лобби заглючило или игрок отошел.\nУбедитесь, что у всех было достаточно времени для выбора снаряжения.\n\nСпасибо :)",
@@ -134,6 +134,7 @@
 	"wolfhud_enemy_civilian" : "Гражданский",
 	"wolfhud_enemy_gangster" : "Бандит",
 	"wolfhud_enemy_biker" : "Байкер",
+	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
 	"wolfhud_enemy_bolivian_security" : "Охрана Сосы",
 	"wolfhud_enemy_bolivian_thug" : "Головорез Сосы",
 	"wolfhud_enemy_mobster" : "Русский бандит",

@@ -2,7 +2,7 @@
 	"menu_jowi" : "Wick",
 	"menu_risk_elite" : "Todeswunsch. Ungeheuer viel ERF und Bargeld.",
 	"menu_difficulty_apocalypse" : "Todeswunsch",
-	"hud_int_hold_grab_the_bag" : "Halte $BTN_INTERACT um $BAG zu nehmen",
+	"hud_int_hold_grab_the_bag" : "Halte $INTERACT um $BAG zu nehmen",
 
 	"wolfhud_dialog_force_start_title" : "Erzwinge Spielstart?",
 	"wolfhud_dialog_force_start_desc" : "Bist du sicher, das du den Spielstart erzwingen möchtest?\n\nBitte nutze diese Funktion nur für verbuggte Lobbies oder wenn Spieler afk sind.\nLasse deinen Mitspielern genügend Zeit, ihr Loadout zu wählen.\n\nDankeschön :)",
@@ -136,6 +136,7 @@
 	"wolfhud_enemy_civilian" : "Zivilist",
 	"wolfhud_enemy_gangster" : "Gangster",
 	"wolfhud_enemy_biker" : "Biker",
+	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
 	"wolfhud_enemy_bolivian_security" : "Sosa Security",
 	"wolfhud_enemy_bolivian_thug" : "Sosa Schläger",
 	"wolfhud_enemy_mobster" : "Russian Mobster",

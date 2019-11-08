@@ -1,6 +1,6 @@
 {
 	"menu_jowi" : "Wick",
-	"hud_int_hold_grab_the_bag" : "Hold $BTN_INTERACT to grab the $BAG",
+	"hud_int_hold_grab_the_bag" : "Hold $INTERACT to grab the $BAG",
 
 	"wolfhud_dialog_force_start_title" : "Force start game?",
 	"wolfhud_dialog_force_start_desc" : "Are you sure you want to force the game to start?\n\nPlease only use this for bugged lobbies, or if a player is afk.\nMake sure everyone had enough time to choose his loadout.\n\nThanks :)",
@@ -134,6 +134,7 @@
 	"wolfhud_enemy_civilian" : "Civilian",
 	"wolfhud_enemy_gangster" : "Gangster",
 	"wolfhud_enemy_biker" : "Biker",
+	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
 	"wolfhud_enemy_bolivian_security" : "Sosa Security",
 	"wolfhud_enemy_bolivian_thug" : "Sosa Thug",
 	"wolfhud_enemy_mobster" : "Russian Mobster",

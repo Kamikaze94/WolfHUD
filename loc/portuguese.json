@@ -1,6 +1,6 @@
 {
 	"menu_jowi" : "Wick",
-	"hud_int_hold_grab_the_bag" : "Segure $BTN_INTERACT para pegar a bag de $BAG",
+	"hud_int_hold_grab_the_bag" : "Segure $INTERACT para pegar a bag de $BAG",
 
 	"wolfhud_dialog_force_start_title" : "Forçar início de jogo?",
 	"wolfhud_dialog_force_start_desc" : "Você tem certeza que quer forçar o início do jogo?\n\nFavor use apenas para salas bugadas, ou se um player estiver afk.\nCertifique-se que todos tiveram tempo de escolher o loadout.\n\nObrigado :)",
@@ -134,6 +134,7 @@
 	"wolfhud_enemy_civilian" : "Civil",
 	"wolfhud_enemy_gangster" : "Gangster",
 	"wolfhud_enemy_biker" : "Motoqueiro",
+	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
 	"wolfhud_enemy_bolivian_security" : "Segurança do Sosa",
 	"wolfhud_enemy_bolivian_thug" : "Matador do Sosa",
 	"wolfhud_enemy_mobster" : "Mafioso Russo",

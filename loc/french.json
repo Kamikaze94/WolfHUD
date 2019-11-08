@@ -1,6 +1,6 @@
 {
 	"menu_jowi" : "Wick",
-	"hud_int_hold_grab_the_bag" : "MAINTENEZ $BTN_INTERACT POUR PRENDRE $BAG",
+	"hud_int_hold_grab_the_bag" : "MAINTENEZ $INTERACT POUR PRENDRE $BAG",
 
 	"wolfhud_dialog_force_start_title" : "Forcer le début de la partie?",
 	"wolfhud_dialog_force_start_desc" : "Êtes-vous sûr de vouloir forcer le début de la partie??\n\nN'utilisez cette option que pour les lobby buggés, ou si un autre joueur est absent.\nAssurez-vous que tout le monde ait eu le temps de choisir son équipement s'il vous plaît.\n\nMerci! :)",
@@ -134,6 +134,7 @@
 	"wolfhud_enemy_civilian" : "Civil",
 	"wolfhud_enemy_gangster" : "Gangster",
 	"wolfhud_enemy_biker" : "Motard",
+	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
 	"wolfhud_enemy_bolivian_security" : "Garde de Sosa",
 	"wolfhud_enemy_bolivian_thug" : "Malfra de Sosa",
 	"wolfhud_enemy_mobster" : "Gangster russe",

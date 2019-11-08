@@ -128,6 +128,7 @@ function WolfHUDTweakData:init()
 		[ "biker" ] 							= { default = "wolfhud_enemy_biker" },
 		[ "biker_escape" ] 						= { default = "wolfhud_enemy_biker" },
 		[ "bolivian_indoors" ]					= { default = "wolfhud_enemy_bolivian_security" },
+		[ "bolivian_indoors_mex" ]				= { default = "wolfhud_enemy_bolivian_security_mex" },
 		[ "bolivian" ]							= { default = "wolfhud_enemy_bolivian_thug" },
 		[ "mobster" ] 							= { default = "wolfhud_enemy_mobster" },
 		[ "security" ] 							= { default = "wolfhud_enemy_security" },

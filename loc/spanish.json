@@ -1,6 +1,6 @@
 {
 	"menu_jowi" : "Wick",
-	"hud_int_hold_grab_the_bag" : "Oprime $BTN_INTERACT para agarrar $BAG",
+	"hud_int_hold_grab_the_bag" : "Oprime $INTERACT para agarrar $BAG",
 
 	"wolfhud_dialog_force_start_title" : "¿Forzar inicio de partida?",
 	"wolfhud_dialog_force_start_desc" : "¿Deseas forzar el inicio de la partida?Seg?\n\nPor favor solo usa esto en lobbies bugeados, o si un jugador esta afk.\nAsegurate de que todos tienen el tiempo suficiente para elegir su equipo.\n\nGracias :)",
@@ -134,6 +134,7 @@
 	"wolfhud_enemy_civilian" : "CIVIL",
 	"wolfhud_enemy_gangster" : "GANGSTER",
 	"wolfhud_enemy_biker" : "MOTOCILISTA",
+	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
 	"wolfhud_enemy_bolivian_security" : "Seguridad de Sosa",
 	"wolfhud_enemy_bolivian_thug" : "Gangster de Sosa",
 	"wolfhud_enemy_mobster" : "GANGSTER RUSO",
