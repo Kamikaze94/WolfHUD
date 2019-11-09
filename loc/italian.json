@@ -1,6 +1,6 @@
 {
     "menu_jowi" : "Wick",
-    "hud_int_hold_grab_the_bag" : "Tieni premuto $BTN_INTERACT per prendere $BAG"
+    "hud_int_hold_grab_the_bag" : "Tieni premuto $BTN_INTERACT per prendere $BAG",
  
     "wolfhud_dialog_force_start_title" : "Forzare l'avvio del gioco?",
     "wolfhud_dialog_force_start_desc" : "Sei sicuro di voler forzare il riavvio del gioco?\n\nPer favore, usalo solo in caso di lobby buggate, o se un giocatore è afk.\nAssicuratevi che ognuno dei vostri compagni abbia avuto il tempo di scegliere il proprio equipaggiamento.\n\nGrazie :)",
@@ -11,6 +11,9 @@
     "wolfhud_dialog_rename_inv_tab" : "Rinomina pagina dell'inventario",
     "wolfhud_dialog_rename_inv_tab_desc" : "Inserisci il nuovo nome per la pagina dell'inventario.",
     "wolfhud_dialog_save" : "Salva",
+	"wolfhud_dialog_requires_superblt_title" : "[WolfHUD] No SuperBLT detected!",
+	"wolfhud_dialog_requires_superblt_desc_long" : "WolfHUD requires SuperBLT in order to work.\nSuperBLT is a fork of the BLT mod-loading hook for PAYDAY 2, with a number of major improvements. \nIt is fully backwards-compatable with regular BLT mods.\n\nYou can find further information and installation instructions here: \n$URL",
+	"wolfhud_dialog_requires_superblt_desc_short" : "WolfHUD is no longer compatable with regular BLT.\nPlease update to SuperBLT to continue using it.\nYou can find SuperBLT at '$URL'.",
     "woldhud_notification_disabled_override_title" : "WolfHUD: $NAME è attualmente disabilitato.",
     "woldhud_notification_disabled_override_desc" : "Se hai cambiato idea, clicca qui per fartelo chiedere di nuovo.",
     "woldhud_notification_restart_override_title" : "WolfHUD: $NAME è pronto per l'installazione.",
@@ -561,14 +564,14 @@
     "wolfhud_hudlist_show_buffs_title" : "Mostra Buffs",
     "wolfhud_hudlist_show_buffs_desc" : "Mostra i buff attivi al centro in basso sullo schermo.",
     "wolfhud_hudlist_damage_increase_compbuff_title" : "Buff Aumento Danni",
-    "wolfhud_hudlist_damage_increase_compbuff_desc" : "Oggetto buff composito, mostra il valore aggiuntivo delle abilità che aumentano i danni."
-    "wolfhud_hudlist_damage_reduction_compbuff_title" : "Buff Riduzione Danni"
+    "wolfhud_hudlist_damage_increase_compbuff_desc" : "Oggetto buff composito, mostra il valore aggiuntivo delle abilità che aumentano i danni.",
+    "wolfhud_hudlist_damage_reduction_compbuff_title" : "Buff Riduzione Danni",
     "wolfhud_hudlist_damage_reduction_compbuff_desc" : "Oggetto buff composito, mostra il valore aggiuntivo delle abilità che riducono i danni.",
     "wolfhud_hudlist_melee_damage_increase_compbuff_title" : "Buff Aumento Danni Corpo a Corpo",
     "wolfhud_hudlist_melee_damage_increase_compbuff_desc" : "Oggetto buff composito, mostra il valore aggiuntivo delle abilità che aumentano i danni corpo a corpo.",
     "wolfhud_hudlist_passive_health_regen_compbuff_title" : "Rigenerazione Passiva Salute",
     "wolfhud_hudlist_passive_health_regen_compbuff_desc" : "Oggetto composito buff, mostra il valore aggiuntivo delle abilità di cura passiva.",
-    "wolfhud_hudlist_total_dodge_chance_compbuff_title" : Probabilità di Dodge Totale",
+    "wolfhud_hudlist_total_dodge_chance_compbuff_title" : "Probabilità di Dodge Totale",
     "wolfhud_hudlist_total_dodge_chance_compbuff_desc" : "Oggetto composito buff, mostra il valore aggiuntivo delle abilità di dodge.",
     "wolfhud_hudlist_aggressive_reload_aced_buff_title" : "Ricarica Aggressiva",
     "wolfhud_hudlist_aggressive_reload_aced_buff_desc" : "",
@@ -887,6 +890,8 @@
     "wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "Se selezionato, devi premere due volte per piazzare delle cariche cave in furtiva. \nServe solo per prevenire incidenti.",
     "wolfhud_equipment_keycard_doors_disabled_title" : "Sicura per le Schede d'accesso",
     "wolfhud_equipment_keycard_doors_disabled_desc" : "Quando selezionato, devi cliccare due volte per chiudere le porte ne 'L'evasione di Hoxton - Giorno 2'. \nServe solo per prevenire incidenti.",
+	"wolfhud_override_fedinv" : "Enable Federal Inventory",
+	"wolfhud_override_fedinv_desc" : "Enable colorized Inventory icons.\nRequires game restart to fully take effect.",
  
     "wolfhud_gadget_options_name" : "Opzioni accessori Arma",
     "wolfhud_gadget_options_help" : "Specifica il colore personalizzato del tuo laser.",

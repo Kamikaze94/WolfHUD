@@ -56,6 +56,7 @@ function WolfHUDTweakData:init()
 		melee_weapon			-> The equipped melee weapon
 		grenade 				-> The eqipped throwable
 		mask					-> The mask worn
+		player_style			-> The suit worn
 		armor 					-> The armor worn
 		deployable 				-> The equipped deployable
 		secondary_deployable 	-> The eqipped secondary deployable (in case of Jack of all trades)

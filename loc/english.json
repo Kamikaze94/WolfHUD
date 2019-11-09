@@ -11,6 +11,9 @@
 	"wolfhud_dialog_rename_inv_tab" : "Rename Inventory Page",
 	"wolfhud_dialog_rename_inv_tab_desc" : "Please enter the new name for this Inventory page.",
 	"wolfhud_dialog_save" : "Save",
+	"wolfhud_dialog_requires_superblt_title" : "[WolfHUD] No SuperBLT detected!",
+	"wolfhud_dialog_requires_superblt_desc_long" : "WolfHUD requires SuperBLT in order to work.\nSuperBLT is a fork of the BLT mod-loading hook for PAYDAY 2, with a number of major improvements. \nIt is fully backwards-compatable with regular BLT mods.\n\nYou can find further information and installation instructions here: \n$URL",
+	"wolfhud_dialog_requires_superblt_desc_short" : "WolfHUD is no longer compatable with regular BLT.\nPlease update to SuperBLT to continue using it.\nYou can find SuperBLT at '$URL'.",
 	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME is currently disabled.",
 	"woldhud_notification_disabled_override_desc" : "If you changed your mind, click here to get asked again.",
 	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME is ready to install.",
@@ -893,6 +896,8 @@
 	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "When checked, you need to doubletap to deploy shaped charges in stealth. \nOnly to prevent accidents.",
 	"wolfhud_equipment_keycard_doors_disabled_title" : "Key-card Door Suppression",
 	"wolfhud_equipment_keycard_doors_disabled_desc" : "When checked, you need to doubletap to close doors in hoxton breakout day 2. \nOnly to prevent accidents.",
+	"wolfhud_override_fedinv" : "Enable Federal Inventory",
+	"wolfhud_override_fedinv_desc" : "Enable colorized Inventory icons.\nRequires game restart to fully take effect.",
 
 	"wolfhud_gadget_options_name" : "Weapon Gadget Options",
 	"wolfhud_gadget_options_help" : "Specify your custom laser colors.",

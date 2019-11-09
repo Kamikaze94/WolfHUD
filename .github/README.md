@@ -24,7 +24,9 @@ Keep in mind, that this is a development version. For a more stable release, get
 
 ## Requirements
 
-To make this mod work you will need to install either [Better Lua injecTor](http://paydaymods.com/download/) aka BLT. Linux/ SteamOS users need to use [BLT4L](https://github.com/blt4linux/blt4l/releases) instead.
+To make this mod work you will need to install __[SuperBLT](https://superblt.znix.xyz)__.
+
+*Note: Regular BLT is, with Version 3.00 forward, no longer supported.*
 
 ## Installation (Direct Download)
 
@@ -32,12 +34,12 @@ To make this mod work you will need to install either [Better Lua injecTor](http
 2. Click on the **Download .ZIP** Button
 3. Open the downloaded archive, using WinRAR or 7Zip
 4. Extract the **WolfHUD-master** folder into your 'PAYDAY 2/mods' folder
-5. Rename the folder **WolfHUD-master** to **WolfHUD** (if you want to)
-6. Start the game once. It will prompt you to update Federal Inventory and WolfHUD_Textures. Update both.
+5. Rename the folder **WolfHUD-master** to **WolfHUD** *(Optional)*
+6. Start the game once. It will prompt you to update Federal Inventory.
 
 ## If you don't want/like Inventory Icons
 
-To remove "Federal Inventory" go to your **PAYDAY 2/assets/mod_overrides/Federal Inventory** folder and delete the **guis** folder. Then open **revision.txt** and change the number to a higher one, to prevent future updates.
+To remove "Federal Inventory" go to your **PAYDAY 2/assets/mod_overrides/Federal Inventory** folder and delete it.
 
 ## Bug reports
 

@@ -176,19 +176,28 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudassaultcorner" then
 		end
 	end
 elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
+	local sync_start_assault_original = HUDManager.sync_start_assault
+	local sync_end_assault_original = HUDManager.sync_end_assault
 	local _create_downed_hud_original = HUDManager._create_downed_hud
 	local _create_custody_hud_original = HUDManager._create_custody_hud
 
 	function HUDManager:_locked_assault(status)
-		status = Network:is_server() and (managers.groupai:state():get_hunt_mode() or false) or status
-		self._assault_locked = self._assault_locked or false
+		if Network:is_server() then
+			status = managers.groupai:state():get_hunt_mode() or false
+		end
 		if self._assault_locked ~= status then
 			if self._hud_assault_corner then
 				self._hud_assault_corner:locked_assault(status)
 			end
 			self._assault_locked = status
+			if Network:is_server() and WolfHUD.Sync then
+				WolfHUD.Sync:endless_assault_status(self._assault_locked)
+			end
 		end
-		return self._assault_locked
+	end
+
+	function HUDManager:is_assault_locked()
+		return self._assault_locked or false
 	end
 
 	function HUDManager:change_assaultbanner_setting(setting, value)
@@ -196,6 +205,22 @@ elseif string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			if setting == "POSITION" then
 				self._hud_assault_corner:update_banner_pos()
 			end
+		end
+	end
+
+	function HUDManager:sync_start_assault(...)
+		sync_start_assault_original(self, ...)
+
+		if Network:is_server() then
+			self:_locked_assault()
+		end
+	end
+
+	function HUDManager:sync_end_assault(...)
+		sync_end_assault_original(self, ...)
+
+		if Network:is_server() then
+			self:_locked_assault()
 		end
 	end
 
@@ -239,7 +264,7 @@ elseif string.lower(RequiredScript) == "lib/managers/localizationmanager" then
 
 	function LocalizationManager:hud_adv_assault()
 		if WolfHUD:getSetting({"AssaultBanner", "USE_ADV_ASSAULT"}, true) then
-			if managers.hud and managers.hud:_locked_assault() then
+			if managers.hud and managers.hud:is_assault_locked() then
 				return self:text("wolfhud_locked_assault")
 			else
 				local tweak = tweak_data.group_ai.besiege.assault

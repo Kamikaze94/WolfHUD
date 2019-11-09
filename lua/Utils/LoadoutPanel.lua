@@ -165,6 +165,7 @@ LoadoutPanel.NAME_TO_CLASS = {
 	melee_weapon			= { class = "LoadoutImageItem", 	 	params = { margin = 5 } },
 	grenade 				= { class = "LoadoutImageItem", 	 	params = { margin = 5 } },
 	mask					= { class = "LoadoutMaskItem", 		 	params = { margin = 5 } },
+	player_style			= { class = "LoadoutImageItem", 		params = { margin = 5 } },
 	armor 					= { class = "LoadoutImageItem", 	 	params = { margin = 5 } },
 	deployable 				= { class = "LoadoutDeployableItem", 	params = { margin = 5 } },
 	secondary_deployable 	= { class = "LoadoutDeployableItem", 	params = { margin = 5 } },
@@ -613,6 +614,7 @@ function LoadoutImageItem:get_outfit_data(type, id)
 		weapon = tweak_data.weapon,
 		melee_weapon = tweak_data.blackmarket.melee_weapons,
 		mask = tweak_data.blackmarket.masks,
+		player_style = tweak_data.blackmarket.player_styles,
 		armor = tweak_data.blackmarket.armors,
 		grenade = tweak_data.blackmarket.projectiles,
 		deployables = tweak_data.blackmarket.deployables,
@@ -622,6 +624,7 @@ function LoadoutImageItem:get_outfit_data(type, id)
 		weapon = "textures/pd2/blackmarket/icons/weapons/",
 		melee_weapon = "textures/pd2/blackmarket/icons/melee_weapons/",
 		mask = "textures/pd2/blackmarket/icons/masks/",
+		player_style = "textures/pd2/blackmarket/icons/player_styles/",
 		armor = "textures/pd2/blackmarket/icons/armors/",
 		grenade = "textures/pd2/blackmarket/icons/grenades/",
 		deployables = "textures/pd2/blackmarket/icons/deployables/",
@@ -1023,7 +1026,7 @@ function LoadoutWeaponItem:arrange()
 		self._rarity:set_center_y(self._panel:h() / 2 + ((self._text:visible() and self._text:h() or 0) * 0.5))
 	end
 
-		for i, perk in ipairs(self._perks or {}) do
+	for i, perk in ipairs(self._perks or {}) do
 		if alive(perk) and perk:visible() then
 			local size = math.min(self._panel:h() / 4, self._panel:w() / #self._perks, 16)
 			perk:set_w(size)
@@ -1068,7 +1071,7 @@ function LoadoutWeaponItem:update_weapon(outfit)
 			self:set_image(texture)
 			self:set_rarity(rarity)
 
-				return true
+			return true
 		end
 	else
 		self:set_enabled("outfit", false)
@@ -1087,7 +1090,7 @@ function LoadoutWeaponItem:update_perks(outfit)
 			stats = factory[part_id] and factory[part_id].stats or false
 			custom_stats = factory[part_id] and factory[part_id].custom_stats or false
 			has_stat_boost = stats and 1 < table.size(stats) and true or false
-			has_team_boost = custom_stats and (custom_stats.exp_multiplier or custom_stats.money_multiplier and true) or false
+			has_team_boost = custom_stats and (custom_stats.exp_multiplier or custom_stats.money_multiplier) and true or false
 			if has_stat_boost then
 				perks.bonus_stats = stats
 			end

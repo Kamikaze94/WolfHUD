@@ -1,0 +1,307 @@
+<?xml version="1.0"?>
+<mod>
+	<hooks script_path="lua/">
+		<pre hook_id="lib/entry" script_path="Core.lua"/>
+
+		<group hook_id="lib/">
+			<group :hook_id="entry" :script_path="Utils/">
+				<post :script_path="QuickInputMenu.lua"/>
+				<post :script_path="LoadoutPanel.lua"/>
+				<post :script_path="OutlinedText.lua"/>
+			</group>
+
+			<group :hook_id="setups/setup">
+				<post :script_path="GameInfoManager.lua"/>
+				<post :script_path="WaypointsManager.lua"/>
+			</group>
+
+			<post :hook_id="utils/temporarypropertymanager" :script_path="GameInfoManager.lua"/>
+
+			<group :hook_id="managers/">
+				<post :hook_id="menumanagerdialogs" :script_path="MenuTweaks.lua"/>
+				<post :hook_id="chatmanager" :script_path="MenuTweaks.lua"/>
+				<post :hook_id="crimenetmanager" :script_path="MenuTweaks.lua"/>
+				<post :hook_id="localizationmanager" :script_path="AdvAssault.lua"/>
+				<post :hook_id="experiencemanager" :script_path="Scripts.lua"/>
+				<post :hook_id="moneymanager" :script_path="Scripts.lua"/>
+				<post :hook_id="multiprofilemanager" :script_path="ProfileMenu.lua"/>
+				<post :hook_id="crimespreemanager" :script_path="TabStats.lua"/>
+				<post :hook_id="missionassetsmanager" :script_path="BuyAllAsset.lua"/>
+				<post :hook_id="preplanningmanager" :script_path="PrePlanManager.lua"/>
+				<post :hook_id="platformmanager" :script_path="RichPresence.lua"/>
+				<post :hook_id="skirmishmanager" :script_path="RichPresence.lua"/>
+				<post :hook_id="enemymanager" :script_path="GameInfoManager.lua"/>
+				<post :hook_id="systemmenumanager" :script_path="Utils/InputDialog.lua"/>
+				<post :hook_id="dialogs/specializationdialog" :script_path="Utils/InputDialog.lua"/>
+				<post :hook_id="player/smokescreeneffect" :script_path="GameInfoManager.lua"/>
+
+				<group :hook_id="menumanager">
+					<post :script_path="PrePlanManager.lua"/>
+					<post :script_path="MenuTweaks.lua"/>
+					<post :script_path="ProfileMenu.lua"/>
+				</group>
+
+				<group :hook_id="hudmanager">
+					<post :script_path="EnemyHealthbar.lua"/>
+					<post :script_path="CustomWaypoints.lua"/>
+				</group>
+
+				<group :hook_id="hudmanagerpd2">
+					<post :script_path="CustomHUD.lua"/>
+					<post :script_path="VanillaHUD.lua"/>
+					<post :script_path="HUDChat.lua"/>
+					<post :script_path="HUDList.lua"/>
+					<post :script_path="KillCounter.lua"/>
+					<post :script_path="DownCounter.lua"/>
+					<post :script_path="DrivingHUD.lua"/>
+					<post :script_path="TabStats.lua"/>
+					<post :script_path="DamageIndicator.lua"/>
+					<post :script_path="WaypointsManager.lua"/>
+					<post :script_path="Interaction.lua"/>
+					<post :script_path="Scripts.lua"/>
+					<post :script_path="BurstFire.lua"/>
+					<post :script_path="AdvAssault.lua"/>
+				</group>
+
+				<group :hook_id="objectinteractionmanager">
+					<post :script_path="GameInfoManager.lua"/>
+					<post :script_path="HUDList.lua"/>
+					<post :script_path="Interaction.lua"/>
+				</group>
+
+				<group :hook_id="statisticsmanager">
+					<post :script_path="KillCounter.lua"/>
+					<post :script_path="TabStats.lua"/>
+				</group>
+
+				<group :hook_id="playermanager">
+					<post :script_path="GameInfoManager.lua"/>
+					<post :script_path="BurstFire.lua"/>
+				</group>
+
+				<group :hook_id="group_ai_states/groupaistatebase">
+					<post :script_path="GameInfoManager.lua"/>
+					<post :script_path="PacifiedCivs.lua"/>
+				</group>
+
+				<group :hook_id="hud/">
+					<post :hook_id="huddriving" :script_path="DrivingHUD.lua"/>
+					<post :hook_id="hudtemp" :script_path="CustomHUD.lua"/>
+					<post :hook_id="hudobjectives" :script_path="EnhancedObjective.lua"/>
+					<post :hook_id="hudheisttimer" :script_path="EnhancedObjective.lua"/>
+					<post :hook_id="hudchat" :script_path="HUDChat.lua"/>
+					<post :hook_id="hudinteraction" :script_path="Interaction.lua"/>
+					<post :hook_id="hudsuspicion" :script_path="NumbericSuspicion.lua"/>
+					<post :hook_id="hudhitdirection" :script_path="DamageIndicator.lua"/>
+					<post :hook_id="hudwaitinglegend" :script_path="CustomHUD.lua"/>
+
+					<group :hook_id="hudteammate">
+						<post :script_path="CustomHUD.lua"/>
+						<post :script_path="VanillaHUD.lua"/>
+						<post :script_path="KillCounter.lua"/>
+						<post :script_path="DownCounter.lua"/>
+						<post :script_path="BurstFire.lua"/>
+					</group>
+
+					<group :hook_id="hudassaultcorner">
+						<post :script_path="HUDList.lua"/>
+						<post :script_path="AdvAssault.lua"/>
+					</group>
+
+					<group :hook_id="newhudstatsscreen">
+						<post :script_path="TabStats.lua"/>
+						<post :script_path="EnhancedCrewLoadout.lua"/>
+					</group>
+				</group>
+
+				<group :hook_id="menu/">
+					<post :hook_id="blackmarketgui" :script_path="MenuTweaks.lua"/>
+					<post :hook_id="crimespreecontractboxgui" :script_path="EnhancedCrewLoadout.lua"/>
+					<post :hook_id="crimespreedetailsmenucomponent" :script_path="EnhancedCrewLoadout.lua"/>
+					<post :hook_id="menunodegui" :script_path="Scripts.lua"/>
+					<post :hook_id="multiprofileitemgui" :script_path="ProfileMenu.lua"/>
+					<post :hook_id="lootdropscreengui" :script_path="MenuTweaks.lua"/>
+					<post :hook_id="skilltreeguinew" :script_path="MenuTweaks.lua"/>
+					<post :hook_id="playerinventorygui" :script_path="ProfileMenu.lua"/>
+					<post :hook_id="preplanningmapgui" :script_path="PrePlanManager.lua"/>
+					<post :hook_id="specializationboxgui" :script_path="Utils/InputDialog.lua"/>
+					<post :hook_id="items/menuitemmultichoice" :script_path="Scripts.lua"/>
+
+					<group :hook_id="contractboxgui">
+						<post :script_path="MenuTweaks.lua"/>
+						<post :script_path="EnhancedCrewLoadout.lua"/>
+					</group>
+
+					<group :hook_id="missionbriefinggui">
+						<post :script_path="BuyAllAsset.lua"/>
+						<post :script_path="EnhancedCrewLoadout.lua"/>
+						<post :script_path="ProfileMenu.lua"/>
+					</group>
+
+					<group :hook_id="stageendscreengui">
+						<post :script_path="MenuTweaks.lua"/>
+						<post :script_path="TabStats.lua"/>
+					</group>
+
+					<group :hook_id="renderers/menunodeskillswitchgui">
+						<post :script_path="MenuTweaks.lua"/>
+						<post :script_path="ProfileMenu.lua"/>
+					</group>
+				</group>
+			</group>
+
+			<group :hook_id="modifiers/boosts/">
+				<post :hook_id="gagemodifiermeleeinvincibility" :script_path="GameInfoManager.lua"/>
+				<post :hook_id="gagemodifierlifesteal" :script_path="GameInfoManager.lua"/>
+			</group>
+
+			<group :hook_id="network/handlers/unitnetworkhandler">
+				<post :script_path="GameInfoManager.lua"/>
+				<!-- TODO: Untested changes!!! -->
+				<!-- <post :script_path="NetworkHandler.lua"/> -->
+				<post :script_path="DownCounter.lua"/>
+			</group>
+
+			<group :hook_id="units/">
+				<post :hook_id="cameras/fpcameraplayerbase" :script_path="WeaponGadgets.lua"/>
+
+				<group :hook_id="civilians/civiliandamage">
+					<post :script_path="DamagePopup.lua"/>
+					<post :script_path="TabStats.lua"/>
+				</group>
+
+				<group :hook_id="enemies/cop/copdamage">
+					<post :script_path="GameInfoManager.lua"/>
+					<post :script_path="KillCounter.lua"/>
+					<post :script_path="DamagePopup.lua"/>
+					<post :script_path="TabStats.lua"/>
+				</group>
+
+				<group :hook_id="interactions/interactionext">
+					<post :script_path="GameInfoManager.lua"/>
+					<post :script_path="Interaction.lua"/>
+					<post :script_path="EquipmentTweaks.lua"/>
+				</group>
+
+				<group :hook_id="beings/player/">
+					<post :hook_id="playermovement" :script_path="GameInfoManager.lua"/>
+					<post :hook_id="playerinventory" :script_path="GameInfoManager.lua"/>
+					<post :hook_id="huskplayermovement" :script_path="DownCounter.lua"/>
+
+					<group :hook_id="playerdamage">
+						<post :script_path="GameInfoManager.lua"/>
+						<post :script_path="DamageIndicator.lua"/>
+					</group>
+
+					<group :hook_id="states/">
+						<post :hook_id="playercivilian" :script_path="Interaction.lua"/>
+						<post :hook_id="playerdriving" :script_path="Interaction.lua"/>
+						<post :hook_id="playermaskoff" :script_path="GameInfoManager.lua"/>
+						<post :hook_id="playerbleedout" :script_path="DownCounter.lua"/>
+
+						<group :hook_id="playerstandard">
+							<post :script_path="GameInfoManager.lua"/>
+							<post :script_path="EnemyHealthbar.lua"/>
+							<post :script_path="Interaction.lua"/>
+							<post :script_path="BurstFire.lua"/>
+							<post :script_path="WeaponGadgets.lua"/>
+						</group>
+					</group>
+				</group>
+
+				<group :hook_id="props/" :script_path="GameInfoManager.lua">
+					<post :hook_id="timergui"/>
+					<post :hook_id="digitalgui"/>
+					<post :hook_id="drill"/>
+					<post :hook_id="securitylockgui"/>
+					<post :hook_id="securitycamera"/>
+				</group>
+
+				<group :hook_id="equipment/">
+					<post :hook_id="ammo_bag/ammobagbase" :script_path="GameInfoManager.lua"/>
+					<post :hook_id="bodybags_bag/bodybagsbagbase" :script_path="GameInfoManager.lua"/>
+					<post :hook_id="first_aid_kit/firstaidkitbase" :script_path="GameInfoManager.lua"/>
+					<post :hook_id="grenade_crate/grenadecratebase" :script_path="GameInfoManager.lua"/>
+					<post :hook_id="sentry_gun/sentrygundamage" :script_path="GameInfoManager.lua"/>
+
+					<group :hook_id="doctor_bag/doctorbagbase">
+						<post :script_path="DownCounter.lua"/>
+						<post :script_path="GameInfoManager.lua"/>
+					</group>
+
+					<group :hook_id="ecm_jammer/ecmjammerbase">
+						<post :script_path="GameInfoManager.lua"/>
+						<post :script_path="EquipmentTweaks.lua"/>
+					</group>
+
+					<group :hook_id="sentry_gun/sentrygunbase">
+						<post :script_path="GameInfoManager.lua"/>
+						<post :script_path="KillCounter.lua"/>
+					</group>
+				</group>
+
+				<group :hook_id="weapons/">
+					<post :hook_id="akimboweaponbase" :script_path="BurstFire.lua"/>
+					<post :hook_id="akimboshotgunbase" :script_path="BurstFire.lua"/>
+					<post :hook_id="weapongadgetbase" :script_path="WeaponGadgets.lua"/>
+					<post :hook_id="weaponlaser" :script_path="WeaponGadgets.lua"/>
+					<post :hook_id="weaponflashlight" :script_path="WeaponGadgets.lua"/>
+					<post :hook_id="npcraycastweaponbase" :script_path="WeaponGadgets.lua"/>
+					<post :hook_id="newnpcraycastweaponbase" :script_path="WeaponGadgets.lua"/>
+
+					<group :hook_id="sentrygunweapon">
+						<post :script_path="GameInfoManager.lua"/>
+						<post :script_path="EquipmentTweaks.lua"/>
+						<post :script_path="WeaponGadgets.lua"/>
+					</group>
+
+					<group :hook_id="raycastweaponbase">
+						<post :script_path="Scripts.lua"/>
+						<post :script_path="WeaponGadgets.lua"/>
+					</group>
+
+					<group :hook_id="newraycastweaponbase">
+						<post :script_path="WeaponGadgets.lua"/>
+						<post :script_path="BurstFire.lua"/>
+					</group>
+				</group>
+
+				<group :hook_id="vehicles/">
+					<post :hook_id="vehicledamage" :script_path="DamageIndicator.lua"/>
+					<post :hook_id="vehicledrivingext" :script_path="CustomWaypoints.lua"/>
+				</group>
+			</group>
+
+			<group :hook_id="player_actions/skills/" :script_path="GameInfoManager.lua">
+				<post :hook_id="playeractionbloodthirstbase"/>
+				<post :hook_id="playeractionexperthandling"/>
+				<post :hook_id="playeractionshockandawe"/>
+				<post :hook_id="playeractiondireneed"/>
+				<post :hook_id="playeractionunseenstrike"/>
+				<post :hook_id="playeractiontriggerhappy"/>
+				<post :hook_id="playeractiontagteam"/>
+			</group>
+
+			<group :hook_id="states/">
+				<post :hook_id="ingamedriving" :script_path="DrivingHUD.lua"/>
+				<post :hook_id="ingamearrested" :script_path="EnemyHealthbar.lua"/>
+				<post :hook_id="ingamewaitingforplayers" :script_path="MenuTweaks.lua"/>
+			</group>
+
+			<group :hook_id="tweak_data/">
+				<post :hook_id="tweakdata" :script_path="MenuTweaks.lua"/>
+				<post :hook_id="guitweakdata" :script_path="MenuTweaks.lua"/>
+				<post :hook_id="timespeedeffecttweakdata" :script_path="Scripts.lua"/>
+				<post :hook_id="economytweakdata" :script_path="Scripts.lua"/>
+			</group>
+		</group>
+
+		<group hook_id="core/lib/managers/">
+			<post :hook_id="menu/items/coremenuitemslider" :script_path="MenuTweaks.lua"/>
+			<post :hook_id="subtitle/coresubtitlepresenter" :script_path="EnhancedObjective.lua"/>
+		</group>
+	</hooks>
+
+	<!-- Include WolfHUD textures -->
+	<:include src="assets/assets.xml"/>
+</mod>
