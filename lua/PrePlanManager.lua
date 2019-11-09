@@ -672,8 +672,8 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 	end
 elseif requiredScript == "lib/managers/menu/preplanningmapgui" then
 	local set_map_position_to_item_original = PrePlanningMapGui.set_map_position_to_item
-	function PrePlanningMapGui:set_map_position_to_item(...)
+	function PrePlanningMapGui:set_map_position_to_item(item, ...)
 	if item then
-		return set_map_position_to_item_original(self, ...)
+		return set_map_position_to_item_original(self, item, ...)
 	end
 end
