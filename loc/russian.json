@@ -986,5 +986,12 @@
 	"wolfhud_skipit_options_name" : "Настройки пропуска",
 	"wolfhud_skipit_options_help" : "Настройки автоматического пропуска ненужных меню, для экономии времени.",
 	"wolfhud_assaultbanner_options_name" : "Настройки баннера штурма",
-	"wolfhud_assaultbanner_options_help" : "Настройки для изменений баннера штурма."
+	"wolfhud_assaultbanner_options_help" : "Настройки для изменений баннера штурма.",
+
+	"wolfhud_use_enhanced_objective_title" : "Enable Enhanced Objectives Panel",
+	"wolfhud_use_enhanced_objective_desc" : "Replaces the default objectives panel with a customized version",
+	"wolfhud_chat_enabled_title" : "Enable Custom Chat",
+	"wolfhud_chat_enabled_desc" : "Replaces the default chat with an enhanced and customized version",
+	"wolfhud_heist_timer_title" : "Show Heist Timer In Chat",
+	"wolfhud_heist_timer_desc" : "This shows the heist timer from the chat box"
 }

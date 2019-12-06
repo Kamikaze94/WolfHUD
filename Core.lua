@@ -101,8 +101,10 @@ if not _G.WolfHUD then
 					},
 				},
 				USE_REAL_AMMO 						= true,
+				ENABLED_ENHANCED_OBJECTIVE			= true,
 			},
 			HUDChat = {
+				ENABLED									= true,
 				CHAT_WAIT_TIME							= 10,		--Time before chat fades out, 0 = never
 				LINE_HEIGHT								= 15,		--Chat font Size
 				WIDTH									= 380,		--Width of the chat window
@@ -111,6 +113,7 @@ if not _G.WolfHUD then
 				COLORED_BG								= true,		--Colorize the line bg based on the message source
 				SCROLLBAR_ALIGN							= 2,		--Alignment of the scroll bar (1 = left, 2 = right)
 				SPAM_FILTER								= true,		--Filter PocoHud and NGBTO Chat Spam messages.
+				HEISTTIMER								= true,
 			},
 			EnemyHealthbar = {
 				ENABLED 								= true,		--Show healthbars

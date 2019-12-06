@@ -986,5 +986,12 @@
 	"wolfhud_skipit_options_name" : "Opciones para Saltar",
 	"wolfhud_skipit_options_help" : "Opciones para saltar los menús innecesarios automáticamente para guardar tiempo.",
 	"wolfhud_assaultbanner_options_name" : "Opciones del Banner de Asalto",
-	"wolfhud_assaultbanner_options_help" : "Opciones para cambiar el banner que muestra el estado del asalto."
+	"wolfhud_assaultbanner_options_help" : "Opciones para cambiar el banner que muestra el estado del asalto.",
+
+	"wolfhud_use_enhanced_objective_title" : "Enable Enhanced Objectives Panel",
+	"wolfhud_use_enhanced_objective_desc" : "Replaces the default objectives panel with a customized version",
+	"wolfhud_chat_enabled_title" : "Enable Custom Chat",
+	"wolfhud_chat_enabled_desc" : "Replaces the default chat with an enhanced and customized version",
+	"wolfhud_heist_timer_title" : "Show Heist Timer In Chat",
+	"wolfhud_heist_timer_desc" : "This shows the heist timer from the chat box"
 }

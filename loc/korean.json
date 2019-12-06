@@ -986,5 +986,12 @@
 	"wolfhud_skipit_options_name" : "Skip-It 설정",
 	"wolfhud_skipit_options_help" : "자동으로 스킵될지 설정합니다.\n(시작할때 Enter 꾹 누르기, 카드 자동 고르기 등등..)",
 	"wolfhud_assaultbanner_options_name" : "어설트 배너 설정",
-	"wolfhud_assaultbanner_options_help" : "어설트 배너를 설정합니다."
+	"wolfhud_assaultbanner_options_help" : "어설트 배너를 설정합니다.",
+
+	"wolfhud_use_enhanced_objective_title" : "Enable Enhanced Objectives Panel",
+	"wolfhud_use_enhanced_objective_desc" : "Replaces the default objectives panel with a customized version",
+	"wolfhud_chat_enabled_title" : "Enable Custom Chat",
+	"wolfhud_chat_enabled_desc" : "Replaces the default chat with an enhanced and customized version",
+	"wolfhud_heist_timer_title" : "Show Heist Timer In Chat",
+	"wolfhud_heist_timer_desc" : "This shows the heist timer from the chat box"
 }

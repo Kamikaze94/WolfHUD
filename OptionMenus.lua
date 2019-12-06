@@ -1153,6 +1153,13 @@ if WolfHUD then
 						value = {"CustomHUD", "USE_REAL_AMMO"},
 					},
 					{
+						type = "toggle",
+						name_id = "wolfhud_use_enhanced_objective_title",
+						desc_id = "wolfhud_use_enhanced_objective_desc",
+						visible_reqs = {}, enabled_reqs = {},
+						value = {"CustomHUD", "ENABLED_ENHANCED_OBJECTIVE"},
+					},
+					{
 						type = "divider",
 						size = 16,
 					},
@@ -1162,6 +1169,13 @@ if WolfHUD then
 						name_id = "wolfhud_chat_options_name",
 						desc_id = "wolfhud_chat_options_help",
 						options = {
+							{
+								type = "toggle",
+								name_id = "wolfhud_chat_enabled_title",
+								desc_id = "wolfhud_chat_enabled_desc",
+								visible_reqs = {}, enabled_reqs = {},
+								value = {"HUDChat", "ENABLED"},
+							},
 							{
 								type = "slider",
 								name_id = "wolfhud_chat_fontsize_title",
@@ -1229,6 +1243,13 @@ if WolfHUD then
 									"wolfhud_multiselect_left",
 									"wolfhud_multiselect_right",
 								},
+							},
+							{
+								type = "toggle",
+								name_id = "wolfhud_heist_timer_title",
+								desc_id = "wolfhud_heist_timer_desc",
+								visible_reqs = {}, enabled_reqs = {},
+								value = {"HUDChat", "HEISTTIMER"},
 							},
 							{
 								type = "divider",

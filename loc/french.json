@@ -984,5 +984,12 @@
 	"wolfhud_skipit_options_name" : "Paramètres : Skip-It",
 	"wolfhud_skipit_options_help" : "Paramètres qui permet de sauter automatiquement des menus inutiles afin de gagner du temps.",
 	"wolfhud_assaultbanner_options_name" : "Paramètres de la bannière d'assaut",
-	"wolfhud_assaultbanner_options_help" : "Paramètres pour changer l'apparence de la bannière d'assaut."
+	"wolfhud_assaultbanner_options_help" : "Paramètres pour changer l'apparence de la bannière d'assaut.",
+
+	"wolfhud_use_enhanced_objective_title" : "Enable Enhanced Objectives Panel",
+	"wolfhud_use_enhanced_objective_desc" : "Replaces the default objectives panel with a customized version",
+	"wolfhud_chat_enabled_title" : "Enable Custom Chat",
+	"wolfhud_chat_enabled_desc" : "Replaces the default chat with an enhanced and customized version",
+	"wolfhud_heist_timer_title" : "Show Heist Timer In Chat",
+	"wolfhud_heist_timer_desc" : "This shows the heist timer from the chat box"
 }

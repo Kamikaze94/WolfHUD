@@ -5,7 +5,31 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 	HUDObjectives._FONT_SIZE = tweak_data.hud.active_objective_title_font_size
 	HUDObjectives._BOUNCE = 12
 
+	local init_original = HUDObjectives.init
+	local activate_objective_original = HUDObjectives.activate_objective
+	local update_amount_objective_original = HUDObjectives.update_amount_objective
+	local remind_objective_original = HUDObjectives.remind_objective
+	local complete_objective_original = HUDObjectives.complete_objective
+
 	function HUDObjectives:init(hud)
+		if not WolfHUD:getSetting({"CustomHUD", "ENABLED_ENHANCED_OBJECTIVE"}, true) then
+			self._panel = hud.panel:panel({
+				visible = false,
+				name = "obj_panel",
+				h = 130,
+				w = 400,
+				x = 80,
+				valign = "top"
+			})
+
+			self._bg_box = HUDBGBox_create(self._panel, {
+				w = 400,
+				h = 38,
+			})
+			self:apply_offset(0)
+			return init_original(self, hud)
+		end
+
 		if alive(self._panel) then
 			hud.panel:remove(self._panel)
 		end
@@ -61,6 +85,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 	end
 
 	function HUDObjectives:activate_objective(data)
+		if not WolfHUD:getSetting({"CustomHUD", "ENABLED_ENHANCED_OBJECTIVE"}, true) then
+			return activate_objective_original(self, data)
+		end
+		
 		self._active_objective_id = data.id
 		self._panel:set_visible(true)
 		self._objective_text:set_visible(true)
@@ -88,6 +116,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 	end
 
 	function HUDObjectives:update_amount_objective(data, hide_animation)
+		if not WolfHUD:getSetting({"CustomHUD", "ENABLED_ENHANCED_OBJECTIVE"}, true) then
+			return update_amount_objective_original(self, data, hide_animation)
+		end
+
 		if data.id ~= self._active_objective_id then
 			return
 		end
@@ -106,6 +138,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 	end
 
 	function HUDObjectives:remind_objective(id)
+		if not WolfHUD:getSetting({"CustomHUD", "ENABLED_ENHANCED_OBJECTIVE"}, true) then
+			return remind_objective_original(self, id)
+		end
+
 		if id ~= self._active_objective_id then
 			return
 		end
@@ -116,6 +152,10 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 	end
 
 	function HUDObjectives:complete_objective(data)
+		if not WolfHUD:getSetting({"CustomHUD", "ENABLED_ENHANCED_OBJECTIVE"}, true) then
+			return complete_objective_original(self, data)
+		end
+
 		if data.id ~= self._active_objective_id then
 			return
 		end
@@ -244,8 +284,12 @@ if string.lower(RequiredScript) == "lib/managers/hud/hudobjectives" then
 	end
 
 elseif string.lower(RequiredScript) == "lib/managers/hud/hudheisttimer" then
-
+	local init_original = HUDHeistTimer.init
 	function HUDHeistTimer:init(hud, tweak_hud)
+		if not WolfHUD:getSetting({"CustomHUD", "ENABLED_ENHANCED_OBJECTIVE"}, true) then
+			return init_original(self, hud, tweak_hud)
+		end
+		
 		self._hud_panel = hud.panel
 		self._enabled = (WolfHUD:getSetting({"TabStats", "CLOCK_MODE"}, 3) ~= 4) and not (tweak_hud and tweak_hud.no_timer)
 		if self._hud_panel:child("heist_timer_panel") then

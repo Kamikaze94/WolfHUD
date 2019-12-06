@@ -1,3 +1,5 @@
+if not WolfHUD:getSetting({"HUDChat", "ENABLED"}, true) then return end
+
 if RequiredScript == "lib/managers/hudmanagerpd2" then
 
 	local setup_endscreen_hud_original = HUDManager.setup_endscreen_hud
@@ -297,6 +299,7 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 
 		local time_text = msg_panel:text({
 			name = "time",
+			visible = WolfHUD:getSetting({"HUDChat", "HEISTTIMER"}, true),
 			text = time_format_text,
 			font = tweak_data.menu.pd2_small_font,
 			font_size = HUDChat.LINE_HEIGHT * 0.95,
@@ -314,7 +317,12 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 			layer = 1
 		})
 		local _, _, w, _ = time_text:text_rect()
-		x_offset = x_offset + w + 2
+		
+		if WolfHUD:getSetting({"HUDChat", "HEISTTIMER"}, true) then
+		    x_offset = x_offset + w + 2
+		else 
+		    x_offset = x_offset
+		end
 
 		if icon then
 			local icon_texture, icon_texture_rect = tweak_data.hud_icons:get_icon_data(icon)
