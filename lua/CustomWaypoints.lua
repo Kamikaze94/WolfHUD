@@ -366,7 +366,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 					self:custom_waypoint_ecm_clbk("set_upgrade_level", key, data)
 				end
 			else
-				managers.waypoints:remove_waypoint(id, "jammer_time", "show", false)
+				managers.waypoints:remove_waypoint(id)
 			end
 		elseif managers.waypoints:get_waypoint(id) then
 			if event == "set_jammer_battery" then

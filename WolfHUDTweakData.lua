@@ -56,6 +56,7 @@ function WolfHUDTweakData:init()
 		melee_weapon			-> The equipped melee weapon
 		grenade 				-> The eqipped throwable
 		mask					-> The mask worn
+		player_style			-> The suit worn
 		armor 					-> The armor worn
 		deployable 				-> The equipped deployable
 		secondary_deployable 	-> The eqipped secondary deployable (in case of Jack of all trades)
@@ -128,6 +129,7 @@ function WolfHUDTweakData:init()
 		[ "biker" ] 							= { default = "wolfhud_enemy_biker" },
 		[ "biker_escape" ] 						= { default = "wolfhud_enemy_biker" },
 		[ "bolivian_indoors" ]					= { default = "wolfhud_enemy_bolivian_security" },
+		[ "bolivian_indoors_mex" ]				= { default = "wolfhud_enemy_bolivian_security_mex" },
 		[ "bolivian" ]							= { default = "wolfhud_enemy_bolivian_thug" },
 		[ "mobster" ] 							= { default = "wolfhud_enemy_mobster" },
 		[ "security" ] 							= { default = "wolfhud_enemy_security" },

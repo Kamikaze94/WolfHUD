@@ -1,6 +1,6 @@
 {
 	"menu_jowi" : "윅",
-	"hud_int_hold_grab_the_bag" : "$BTN_INTERACT 키 를 눌러서 $BAG 를(을) 들기",
+	"hud_int_hold_grab_the_bag" : "$INTERACT 키 를 눌러서 $BAG 를(을) 들기",
 
 	"wolfhud_dialog_force_start_title" : "강제로 게임을 시작할까요?",
 	"wolfhud_dialog_force_start_desc" : "정말로 강제로 게임을 시작하시겠습니까?\n이 기능을 잠수 플레이어, 버그걸린 로비일때만 사용해주세요.\n그리고 모든 플레이어가 무기를 바꿀 시간도 주시구요.\n\n감사합니다 :)",
@@ -11,6 +11,9 @@
 	"wolfhud_dialog_rename_inv_tab" : "인벤토리 이름 바꾸기",
 	"wolfhud_dialog_rename_inv_tab_desc" : "이 페이지의 인벤토리 이름을 정해주세요.",
 	"wolfhud_dialog_save" : "저장",
+	"wolfhud_dialog_requires_superblt_title" : "[WolfHUD] No SuperBLT detected!",
+	"wolfhud_dialog_requires_superblt_desc_long" : "WolfHUD requires SuperBLT in order to work.\nSuperBLT is a fork of the BLT mod-loading hook for PAYDAY 2, with a number of major improvements. \nIt is fully backwards-compatable with regular BLT mods.\n\nYou can find further information and installation instructions here: \n$URL",
+	"wolfhud_dialog_requires_superblt_desc_short" : "WolfHUD is no longer compatable with regular BLT.\nPlease update to SuperBLT to continue using it.\nYou can find SuperBLT at '$URL'.",
 	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME 는(은) 현재 비활성화 되있습니다.",
 	"woldhud_notification_disabled_override_desc" : "설정을 원하신다면 여기를 눌러주세요.",
 	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME 는(은) 설치가 가능합니다.",
@@ -134,6 +137,7 @@
 	"wolfhud_enemy_civilian" : "시민",
 	"wolfhud_enemy_gangster" : "갱스터",
 	"wolfhud_enemy_biker" : "바이커",
+	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
 	"wolfhud_enemy_bolivian_security" : "소사 경비원",
 	"wolfhud_enemy_bolivian_thug" : "소사 암살자",
 	"wolfhud_enemy_mobster" : "러시안 몹스터",
@@ -892,6 +896,8 @@
 	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "When checked, you need to doubletap to deploy shaped charges in stealth. \nOnly to prevent accidents.",
 	"wolfhud_equipment_keycard_doors_disabled_title" : "Key-card Door Suppression",
 	"wolfhud_equipment_keycard_doors_disabled_desc" : "When checked, you need to doubletap to close doors in hoxton breakout day 2. \nOnly to prevent accidents.",
+	"wolfhud_override_fedinv" : "Enable Federal Inventory",
+	"wolfhud_override_fedinv_desc" : "Enable colorized Inventory icons.\nRequires game restart to fully take effect.",
 
 	"wolfhud_gadget_options_name" : "무기 가젯 옵션",
 	"wolfhud_gadget_options_help" : "무기 가젯을 사용자에 맞게 설정합니다.",

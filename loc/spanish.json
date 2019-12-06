@@ -1,6 +1,6 @@
 {
 	"menu_jowi" : "Wick",
-	"hud_int_hold_grab_the_bag" : "Oprime $BTN_INTERACT para agarrar $BAG",
+	"hud_int_hold_grab_the_bag" : "Oprime $INTERACT para agarrar $BAG",
 
 	"wolfhud_dialog_force_start_title" : "¿Forzar inicio de partida?",
 	"wolfhud_dialog_force_start_desc" : "¿Deseas forzar el inicio de la partida?Seg?\n\nPor favor solo usa esto en lobbies bugeados, o si un jugador esta afk.\nAsegurate de que todos tienen el tiempo suficiente para elegir su equipo.\n\nGracias :)",
@@ -11,6 +11,9 @@
 	"wolfhud_dialog_rename_inv_tab" : "Renombrar la pagina del inventario",
 	"wolfhud_dialog_rename_inv_tab_desc" : "Por favor ingresa el nuevo nombre para la esta pagina del inventario.",
 	"wolfhud_dialog_save" : "Guardar",
+	"wolfhud_dialog_requires_superblt_title" : "[WolfHUD] No SuperBLT detected!",
+	"wolfhud_dialog_requires_superblt_desc_long" : "WolfHUD requires SuperBLT in order to work.\nSuperBLT is a fork of the BLT mod-loading hook for PAYDAY 2, with a number of major improvements. \nIt is fully backwards-compatable with regular BLT mods.\n\nYou can find further information and installation instructions here: \n$URL",
+	"wolfhud_dialog_requires_superblt_desc_short" : "WolfHUD is no longer compatable with regular BLT.\nPlease update to SuperBLT to continue using it.\nYou can find SuperBLT at '$URL'.",
 	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME esta actualmente desactivado.",
 	"woldhud_notification_disabled_override_desc" : "Si cambiaste de opinion, da click para que te pregunten nuevamente.",
 	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME esta listo para ser instalado.",
@@ -134,6 +137,7 @@
 	"wolfhud_enemy_civilian" : "CIVIL",
 	"wolfhud_enemy_gangster" : "GANGSTER",
 	"wolfhud_enemy_biker" : "MOTOCILISTA",
+	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
 	"wolfhud_enemy_bolivian_security" : "Seguridad de Sosa",
 	"wolfhud_enemy_bolivian_thug" : "Gangster de Sosa",
 	"wolfhud_enemy_mobster" : "GANGSTER RUSO",
@@ -892,6 +896,8 @@
 	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "Cuando está activo necesitas oprimir 2 veces para usar C4 en sigilo. \nSólo prara prevenir accidentes.",
 	"wolfhud_equipment_keycard_doors_disabled_title" : "Cancelación de puertas con Keycards",
 	"wolfhud_equipment_keycard_doors_disabled_desc" : "Cuando está activado necesitas oprimir 2 veces para cerrar las puertas en el día 2 de la fuga de Hoxton. \nSólo prara prevenir accidentes.",
+	"wolfhud_override_fedinv" : "Enable Federal Inventory",
+	"wolfhud_override_fedinv_desc" : "Enable colorized Inventory icons.\nRequires game restart to fully take effect.",
 
 	"wolfhud_gadget_options_name" : "Opciones de los dispositivos de armas",
 	"wolfhud_gadget_options_help" : "Especifica tu color de laser favorito.",

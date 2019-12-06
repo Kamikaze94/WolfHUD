@@ -1,6 +1,6 @@
 {
 	"menu_jowi" : "Wick",
-	"hud_int_hold_grab_the_bag" : "Segure $BTN_INTERACT para pegar a bag de $BAG",
+	"hud_int_hold_grab_the_bag" : "Segure $INTERACT para pegar a bag de $BAG",
 
 	"wolfhud_dialog_force_start_title" : "Forçar início de jogo?",
 	"wolfhud_dialog_force_start_desc" : "Você tem certeza que quer forçar o início do jogo?\n\nFavor use apenas para salas bugadas, ou se um player estiver afk.\nCertifique-se que todos tiveram tempo de escolher o loadout.\n\nObrigado :)",
@@ -11,6 +11,9 @@
 	"wolfhud_dialog_rename_inv_tab" : "Renomear a página do inventário",
 	"wolfhud_dialog_rename_inv_tab_desc" : "Tecle um novo nome para esta página de inventário.",
 	"wolfhud_dialog_save" : "Gravar",
+	"wolfhud_dialog_requires_superblt_title" : "[WolfHUD] No SuperBLT detected!",
+	"wolfhud_dialog_requires_superblt_desc_long" : "WolfHUD requires SuperBLT in order to work.\nSuperBLT is a fork of the BLT mod-loading hook for PAYDAY 2, with a number of major improvements. \nIt is fully backwards-compatable with regular BLT mods.\n\nYou can find further information and installation instructions here: \n$URL",
+	"wolfhud_dialog_requires_superblt_desc_short" : "WolfHUD is no longer compatable with regular BLT.\nPlease update to SuperBLT to continue using it.\nYou can find SuperBLT at '$URL'.",
 	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME está atualmente desativado.",
 	"woldhud_notification_disabled_override_desc" : "Se você mudou de idéia, clique aqui novamente.",
 	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME está pronto para instalar.",
@@ -134,6 +137,7 @@
 	"wolfhud_enemy_civilian" : "Civil",
 	"wolfhud_enemy_gangster" : "Gangster",
 	"wolfhud_enemy_biker" : "Motoqueiro",
+	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
 	"wolfhud_enemy_bolivian_security" : "Segurança do Sosa",
 	"wolfhud_enemy_bolivian_thug" : "Matador do Sosa",
 	"wolfhud_enemy_mobster" : "Mafioso Russo",
@@ -892,6 +896,8 @@
 	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "Quando marcado, você precisa apertar a tecla 2x para dar deploy em shaped charges no stealth. \nApenas para prevenir acidentes.",
 	"wolfhud_equipment_keycard_doors_disabled_title" : "Supressão de Keycard para portas",
 	"wolfhud_equipment_keycard_doors_disabled_desc" : "Quando marcado, você precisa apertar a tecla 2x para fechar portas na hoxton breakout dia 2. \nApenas para prevenir acidentes.",
+	"wolfhud_override_fedinv" : "Enable Federal Inventory",
+	"wolfhud_override_fedinv_desc" : "Enable colorized Inventory icons.\nRequires game restart to fully take effect.",
 
 	"wolfhud_gadget_options_name" : "Opções para os gadgets das armas",
 	"wolfhud_gadget_options_help" : "Especifica a cor dos lasers.",

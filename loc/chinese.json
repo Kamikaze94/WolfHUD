@@ -1,6 +1,6 @@
 {
 	"menu_jowi" : "威克",
-	"hud_int_hold_grab_the_bag" : "按住 $BTN_INTERACT 捡起 $BAG",
+	"hud_int_hold_grab_the_bag" : "按住 $INTERACT 捡起 $BAG",
 
 	"wolfhud_dialog_force_start_title" : "强制开始游戏？",
 	"wolfhud_dialog_force_start_desc" : "你确定要强制游戏开始吗？\n\n请只在测试时使用这个，可能玩家只是暂时不在电脑前\n请确保每个人都有足够的时间选择他的装备\n\n谢谢 :)",
@@ -11,6 +11,9 @@
 	"wolfhud_dialog_rename_inv_tab" : "重命名库存页面",
 	"wolfhud_dialog_rename_inv_tab_desc" : "请输入库存页面的新名称",
 	"wolfhud_dialog_save" : "保存",
+	"wolfhud_dialog_requires_superblt_title" : "[WolfHUD] No SuperBLT detected!",
+	"wolfhud_dialog_requires_superblt_desc_long" : "WolfHUD requires SuperBLT in order to work.\nSuperBLT is a fork of the BLT mod-loading hook for PAYDAY 2, with a number of major improvements. \nIt is fully backwards-compatable with regular BLT mods.\n\nYou can find further information and installation instructions here: \n$URL",
+	"wolfhud_dialog_requires_superblt_desc_short" : "WolfHUD is no longer compatable with regular BLT.\nPlease update to SuperBLT to continue using it.\nYou can find SuperBLT at '$URL'.",
 	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME 当前已禁用",
 	"woldhud_notification_disabled_override_desc" : "如果你改变了主意，点击这里再次询问",
 	"woldhud_notification_restart_override_title" : "WolfHUD:准备安装 $NAME",
@@ -134,6 +137,7 @@
 	"wolfhud_enemy_civilian" : "平民",
 	"wolfhud_enemy_gangster" : "黑帮",
 	"wolfhud_enemy_biker" : "飞车党",
+	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
 	"wolfhud_enemy_bolivian_security" : "索萨保安",
 	"wolfhud_enemy_bolivian_thug" : "索萨暴徒",
 	"wolfhud_enemy_mobster" : "俄罗斯黑帮",
@@ -892,6 +896,8 @@
 	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "勾选后，您需要双击才能在潜行中部署\n以防止事故",
 	"wolfhud_equipment_keycard_doors_disabled_title" : "钥匙卡禁用",
 	"wolfhud_equipment_keycard_doors_disabled_desc" : "越狱第二天需要双击才能关闭门\n以防止事故",
+	"wolfhud_override_fedinv" : "Enable Federal Inventory",
+	"wolfhud_override_fedinv_desc" : "Enable colorized Inventory icons.\nRequires game restart to fully take effect.",
 
 	"wolfhud_gadget_options_name" : "武器配件设置",
 	"wolfhud_gadget_options_help" : "自定义激光颜色",

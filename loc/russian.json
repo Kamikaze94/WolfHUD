@@ -1,6 +1,6 @@
 {
 	"menu_jowi" : "Уик",
-	"hud_int_hold_grab_the_bag" : "Удерживайте $BTN_INTERACT, чтобы взять $BAG",
+	"hud_int_hold_grab_the_bag" : "Удерживайте $INTERACT, чтобы взять $BAG",
 
 	"wolfhud_dialog_force_start_title" : "Принудительно запустить игру?",
 	"wolfhud_dialog_force_start_desc" : "Вы уверены, что хотите принудительно начать игру?\n\nИспользуйте эту функцию только если лобби заглючило или игрок отошел.\nУбедитесь, что у всех было достаточно времени для выбора снаряжения.\n\nСпасибо :)",
@@ -11,6 +11,9 @@
 	"wolfhud_dialog_rename_inv_tab" : "Переименовать страницу инвентаря",
 	"wolfhud_dialog_rename_inv_tab_desc" : "Введите новое имя для страницы инвентаря.",
 	"wolfhud_dialog_save" : "Сохранить",
+	"wolfhud_dialog_requires_superblt_title" : "[WolfHUD] Не обнаружен SuperBLT!",
+	"wolfhud_dialog_requires_superblt_desc_long" : "Для работы WoldHUD требуется SupeBLT.\nSuperBLT - модернизированная версия ИДЕ с рядом существенных улучшений. \nОн полностью совместим с обычными BLT модами.\n\nВы можете найти дополнительную информацию и инструкцию по установке здесь: \n$URL",
+	"wolfhud_dialog_requires_superblt_desc_short" : "WolfHUD больше не совместим с обычным BLT.\nДля дальнейшего использования мода, пожалуйста, обновитесь до SuperBLT.\nВы можете найти SuperBLT здесь: '$URL'.",
 	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME в настоящее время отключен.",
 	"woldhud_notification_disabled_override_desc" : "Если вы передумали, нажмите сюда, чтобы спросить потом.",
 	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME готов к установке.",
@@ -134,6 +137,7 @@
 	"wolfhud_enemy_civilian" : "Гражданский",
 	"wolfhud_enemy_gangster" : "Бандит",
 	"wolfhud_enemy_biker" : "Байкер",
+	"wolfhud_enemy_bolivian_security_mex" : "Охранник Койопа",
 	"wolfhud_enemy_bolivian_security" : "Охрана Сосы",
 	"wolfhud_enemy_bolivian_thug" : "Головорез Сосы",
 	"wolfhud_enemy_mobster" : "Русский бандит",
@@ -892,6 +896,8 @@
 	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "Если выбрано, вам нужно дважды нажать, чтобы установить кумулятивный заряд во время стелса. \n Для предотвращения случайных нажатий",
 	"wolfhud_equipment_keycard_doors_disabled_title" : "Подавление ключ-карт",
 	"wolfhud_equipment_keycard_doors_disabled_desc" : "Когда выбрано, вам необходимо 2 раза нажать, чтобы закрыть двери на втором дне Спасения Хокстона. \nДля предотвращения случайных нажатий.",
+	"wolfhud_override_fedinv" : "Включить Federal Inventory",
+	"wolfhud_override_fedinv_desc" : "Включить цветные иконки инвентаря.\nДля полной работоспособности требуется перезагрузить игру.",
 
 	"wolfhud_gadget_options_name" : "Настройки гаджетов оружия",
 	"wolfhud_gadget_options_help" : "Настройте пользовательские цвета лазеров.",

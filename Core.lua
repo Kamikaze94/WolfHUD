@@ -777,18 +777,7 @@ if not _G.WolfHUD then
 				if WeaponGadgetBase and WeaponGadgetBase.update_theme_setting and #setting >= 4 then
 					WeaponGadgetBase.update_theme_setting(setting[1], setting[2], setting[3], setting[4], WolfHUD:getColor(value) or value)
 				end
-			end,
-			["MOD_OVERRIDES"] = function(setting, value)
-				local update_id = setting[#setting]
-				local mod = BLT and BLT.Mods:GetMod(WolfHUD.identifier or "")
-				if mod and update_id then
-					local update = mod:GetUpdate(update_id)
-					if update then
-						update:SetEnabled(value)
-						BLT.Mods:Save()
-					end
-				end
-			end,
+			end
 		}
 	end
 
@@ -799,514 +788,531 @@ if not _G.WolfHUD then
 	WolfHUD:Reset()	-- Populate settings table
 	WolfHUD:Load()	-- Load user settings
 
+	do	-- Romove Disabled Updates, so they don't show up in the download manager.
+		local mod = BLT and BLT.Mods:GetMod(WolfHUD.identifier or "")
+		for i, update in pairs(mod:GetUpdates()) do
+			if update:GetInstallFolder() ~= WolfHUD.identifier then
+				local directory = Application:nice_path( update:GetInstallDirectory() .. "/" .. update:GetInstallFolder(), true )
+				if WolfHUD:getSetting({"MOD_OVERRIDES", update:GetId()}) then
+					WolfHUD:createDirectory(directory)
+				else
+					table.remove(mod:GetUpdates(), i)
+					io.remove_directory_and_files(directory)
+				end
+			end
+		end
+	end
+
 
 	-- Create Ingame Menus
-	dofile(WolfHUD.mod_path .. "OptionMenus.lua")	-- Menu structure table in seperate file, in order to not bloat the Core file too much.
-	local menu_options = WolfHUD.options_menu_data
+	do
+		dofile(WolfHUD.mod_path .. "OptionMenus.lua")	-- Menu structure table in seperate file, in order to not bloat the Core file too much.
+		local menu_options = WolfHUD.options_menu_data
 
-	-- Setup and register option menus
-	Hooks:Add("MenuManagerSetupCustomMenus", "MenuManagerSetupCustomMenus_WolfHUD", function( menu_manager, nodes )
-		local function create_menu(menu_table, parent_id)
-			for i, data in ipairs(menu_table) do
-				if data.type == "menu" then
-					MenuHelper:NewMenu( data.menu_id )
-					create_menu(data.options, data.menu_id)
-				end
-			end
-		end
-
-		create_menu({menu_options}, BLT and BLT.Mods.Constants:LuaModOptionsMenuID() or "blt_options")
-	end)
-
-	--Populate options menus
-	Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenus_WolfHUD", function(menu_manager, nodes)
-		-- Called on setting change
-		local function change_setting(setting, value)
-			if WolfHUD:getSetting(setting, nil) ~= value and WolfHUD:setSetting(setting, value) then
-				WolfHUD:print_log(string.format("Change setting: %s = %s", WolfHUD:SafeTableConcat(setting, "->"), tostring(value)), "info")	-- Change type back!
-				WolfHUD.settings_changed = true
-
-				local script = table.remove(setting, 1)
-				if WolfHUD.apply_settings_clbk[script] then
-					WolfHUD.apply_settings_clbk[script](setting, value)
-				end
-			end
-		end
-
-		local function add_visible_reqs(menu_id, id, data)
-			local visual_clbk_id = id .. "_visible_clbk"
-			local enabled_clbk_id = id .. "_enabled_clbk"
-
-			--Add visual callback
-			MenuCallbackHandler[visual_clbk_id] = function(self, item)
-				for _, req in ipairs(data.visible_reqs or {}) do
-					if type(req) == "table" then
-						local a = WolfHUD:getSetting(req.setting, nil)
-						if req.equal then
-							if a ~= req.equal then
-								return false
-							end
-						elseif type(a) == "boolean" then
-							local b = req.invert and true or false
-							if a == b then
-								return false
-							end
-						elseif type(a) == "number" then
-							local min_value = req.min or a
-							local max_value = req.max or a
-							if a < min_value or a > max_value then
-								return false
-							end
-						end
-					elseif type(req) == "boolean" then
-						return req
-					end
-				end
-				return true
-			end
-
-			--Add enable callback
-			MenuCallbackHandler[enabled_clbk_id] = function(self, item)
-				for _, req in ipairs(data.enabled_reqs or {}) do
-					if type(req) == "table" then
-						local a = WolfHUD:getSetting(req.setting, nil)
-						if req.equal then
-							if a ~= req.equal then
-								return false
-							end
-						elseif type(a) == "boolean" then
-							local b = req.invert and true or false
-							if a == b then
-								return false
-							end
-						elseif type(a) == "number" then
-							local min_value = req.min or a
-							local max_value = req.max or a
-							if a < min_value or a > max_value then
-								return false
-							end
-						end
-					elseif type(req) == "boolean" then
-						return req
-					end
-				end
-				return true
-			end
-
-			--Associate visual callback with item
-			local menu = MenuHelper:GetMenu(menu_id)
-			for i, item in pairs(menu._items_list) do
-				if item:parameters().name == id then
-					item._visible_callback_name_list = { visual_clbk_id }
-					item._enabled_callback_name_list = { enabled_clbk_id }
-					item._create_data = data
-					break
-				end
-			end
-		end
-
-		-- Reapply enabled state on all items in the same menu
-		local update_visible_clbks = "wolfhud_update_visibility"
-		MenuCallbackHandler[update_visible_clbks] = function(self, item)
-			local gui_node = item:parameters().gui_node
-			if gui_node then
-				if item._type ~= "slider" then
-					gui_node:refresh_gui(gui_node.node)
-					gui_node:highlight_item(item, true)
-				end
-
-				for _, row_item in pairs(gui_node.row_items) do
-					local option_item = row_item.item
-					if option_item._type ~= "divider" and option_item:parameters().name ~= item:parameters().name then
-						local enabled = true
-
-						for _, clbk in ipairs(option_item._enabled_callback_name_list or {}) do
-							enabled = enabled and self[clbk](self, option_item)
-						end
-
-						option_item:set_enabled(enabled)
-
-						gui_node:reload_item(option_item)
+		-- Setup and register option menus
+		Hooks:Add("MenuManagerSetupCustomMenus", "MenuManagerSetupCustomMenus_WolfHUD", function( menu_manager, nodes )
+			local function create_menu(menu_table, parent_id)
+				for i, data in ipairs(menu_table) do
+					if data.type == "menu" then
+						MenuHelper:NewMenu( data.menu_id )
+						create_menu(data.options, data.menu_id)
 					end
 				end
 			end
-		end
 
-		-- item create functions by type
-		local create_item_handlers = {
-			menu = function(parent_id, offset, data)
-				if not table.contains(WolfHUD.menu_ids, data.menu_id) then
-					table.insert(WolfHUD.menu_ids, data.menu_id)
+			create_menu({menu_options}, BLT and BLT.Mods.Constants:LuaModOptionsMenuID() or "blt_options")
+		end)
+
+		--Populate options menus
+		Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenus_WolfHUD", function(menu_manager, nodes)
+			-- Called on setting change
+			local function change_setting(setting, value)
+				if WolfHUD:getSetting(setting, nil) ~= value and WolfHUD:setSetting(setting, value) then
+					WolfHUD:print_log(string.format("Change setting: %s = %s", WolfHUD:SafeTableConcat(setting, "->"), tostring(value)), "info")	-- Change type back!
+					WolfHUD.settings_changed = true
+
+					local script = table.remove(setting, 1)
+					if WolfHUD.apply_settings_clbk[script] then
+						WolfHUD.apply_settings_clbk[script](setting, value)
+					end
 				end
-			end,
-			slider = function(menu_id, offset, data, value)
-				local id = string.format("%s_%s_slider", menu_id, data.name_id)
-				local clbk_id = id .. "_clbk"
+			end
 
-				MenuHelper:AddSlider({
-					id = id,
-					title = data.name_id,
-					desc = data.desc_id,
-					callback = string.format("%s %s", clbk_id, update_visible_clbks),
-					value = value or 0,
-					min = data.min_value,
-					max = data.max_value,
-					step = data.step_size,
-					show_value = true,
-					menu_id = menu_id,
-					priority = offset,
-					disabled_color = Color(0.6, 0.6, 0.6),
-				})
-
-				--Value changed callback
-				MenuCallbackHandler[clbk_id] = function(self, item)
-					change_setting(clone(data.value), item:value())
-				end
-
-				if data.visible_reqs or data.enabled_reqs then
-					add_visible_reqs(menu_id, id, data)
-				end
-			end,
-			toggle = function(menu_id, offset, data, value)
-				local id = string.format("%s_%s_toggle", menu_id, data.name_id)
-				local clbk_id = id .. "_clbk"
-
-				if data.invert_value then
-					value = not value
-				end
-
-				MenuHelper:AddToggle({
-					id = id,
-					title = data.name_id,
-					desc = data.desc_id,
-					callback = string.format("%s %s", clbk_id, update_visible_clbks),
-					value = value or false,
-					menu_id = menu_id,
-					priority = offset,
-					disabled_color = Color(0.6, 0.6, 0.6),
-				})
+			local function add_visible_reqs(menu_id, id, data)
+				local visual_clbk_id = id .. "_visible_clbk"
+				local enabled_clbk_id = id .. "_enabled_clbk"
 
 				--Add visual callback
-				MenuCallbackHandler[clbk_id] = function(self, item)
-					local value = (item:value() == "on") and true or false
+				MenuCallbackHandler[visual_clbk_id] = function(self, item)
+					for _, req in ipairs(data.visible_reqs or {}) do
+						if type(req) == "table" then
+							local a = WolfHUD:getSetting(req.setting, nil)
+							if req.equal then
+								if a ~= req.equal then
+									return false
+								end
+							elseif type(a) == "boolean" then
+								local b = req.invert and true or false
+								if a == b then
+									return false
+								end
+							elseif type(a) == "number" then
+								local min_value = req.min or a
+								local max_value = req.max or a
+								if a < min_value or a > max_value then
+									return false
+								end
+							end
+						elseif type(req) == "boolean" then
+							return req
+						end
+					end
+					return true
+				end
+
+				--Add enable callback
+				MenuCallbackHandler[enabled_clbk_id] = function(self, item)
+					for _, req in ipairs(data.enabled_reqs or {}) do
+						if type(req) == "table" then
+							local a = WolfHUD:getSetting(req.setting, nil)
+							if req.equal then
+								if a ~= req.equal then
+									return false
+								end
+							elseif type(a) == "boolean" then
+								local b = req.invert and true or false
+								if a == b then
+									return false
+								end
+							elseif type(a) == "number" then
+								local min_value = req.min or a
+								local max_value = req.max or a
+								if a < min_value or a > max_value then
+									return false
+								end
+							end
+						elseif type(req) == "boolean" then
+							return req
+						end
+					end
+					return true
+				end
+
+				--Associate visual callback with item
+				local menu = MenuHelper:GetMenu(menu_id)
+				for i, item in pairs(menu._items_list) do
+					if item:parameters().name == id then
+						item._visible_callback_name_list = { visual_clbk_id }
+						item._enabled_callback_name_list = { enabled_clbk_id }
+						item._create_data = data
+						break
+					end
+				end
+			end
+
+			-- Reapply enabled state on all items in the same menu
+			local update_visible_clbks = "wolfhud_update_visibility"
+			MenuCallbackHandler[update_visible_clbks] = function(self, item)
+				local gui_node = item:parameters().gui_node
+				if gui_node then
+					if item._type ~= "slider" then
+						gui_node:refresh_gui(gui_node.node)
+						gui_node:highlight_item(item, true)
+					end
+
+					for _, row_item in pairs(gui_node.row_items) do
+						local option_item = row_item.item
+						if option_item._type ~= "divider" and option_item:parameters().name ~= item:parameters().name then
+							local enabled = true
+
+							for _, clbk in ipairs(option_item._enabled_callback_name_list or {}) do
+								enabled = enabled and self[clbk](self, option_item)
+							end
+
+							option_item:set_enabled(enabled)
+
+							gui_node:reload_item(option_item)
+						end
+					end
+				end
+			end
+
+			-- item create functions by type
+			local create_item_handlers = {
+				menu = function(parent_id, offset, data)
+					if not table.contains(WolfHUD.menu_ids, data.menu_id) then
+						table.insert(WolfHUD.menu_ids, data.menu_id)
+					end
+				end,
+				slider = function(menu_id, offset, data, value)
+					local id = string.format("%s_%s_slider", menu_id, data.name_id)
+					local clbk_id = id .. "_clbk"
+
+					MenuHelper:AddSlider({
+						id = id,
+						title = data.name_id,
+						desc = data.desc_id,
+						callback = string.format("%s %s", clbk_id, update_visible_clbks),
+						value = value or 0,
+						min = data.min_value,
+						max = data.max_value,
+						step = data.step_size,
+						show_value = true,
+						menu_id = menu_id,
+						priority = offset,
+						disabled_color = Color(0.6, 0.6, 0.6),
+					})
+
+					--Value changed callback
+					MenuCallbackHandler[clbk_id] = function(self, item)
+						change_setting(clone(data.value), item:value())
+					end
+
+					if data.visible_reqs or data.enabled_reqs then
+						add_visible_reqs(menu_id, id, data)
+					end
+				end,
+				toggle = function(menu_id, offset, data, value)
+					local id = string.format("%s_%s_toggle", menu_id, data.name_id)
+					local clbk_id = id .. "_clbk"
 
 					if data.invert_value then
 						value = not value
 					end
 
-					change_setting(clone(data.value), value)
-				end
+					MenuHelper:AddToggle({
+						id = id,
+						title = data.name_id,
+						desc = data.desc_id,
+						callback = string.format("%s %s", clbk_id, update_visible_clbks),
+						value = value or false,
+						menu_id = menu_id,
+						priority = offset,
+						disabled_color = Color(0.6, 0.6, 0.6),
+					})
 
-				if data.visible_reqs or data.enabled_reqs then
-					add_visible_reqs(menu_id, id, data)
-				end
-			end,
-			multi_choice = function(menu_id, offset, data, value)
-				local id = string.format("%s_%s_multi", menu_id, data.name_id)
-				local clbk_id = id .. "_clbk"
+					--Add visual callback
+					MenuCallbackHandler[clbk_id] = function(self, item)
+						local value = (item:value() == "on") and true or false
 
-				local multi_data = {
-					id = id,
-					title = data.name_id,
-					desc = data.desc_id,
-					callback = string.format("%s %s", clbk_id, update_visible_clbks),
-					items = data.options,
-					value = value,
-					menu_id = menu_id,
-					priority = offset,
-					disabled_color = Color(0.6, 0.6, 0.6),
-				}
+						if data.invert_value then
+							value = not value
+						end
 
-				do	-- Copy of MenuHelper:AddMultipleChoice (Without ipairs for options)
-					local data = {
-						type = "MenuItemMultiChoice"
-					}
-					for k, v in pairs( multi_data.items or {} ) do
-						table.insert( data, { _meta = "option", text_id = v, value = k } )
+						change_setting(clone(data.value), value)
 					end
 
+					if data.visible_reqs or data.enabled_reqs then
+						add_visible_reqs(menu_id, id, data)
+					end
+				end,
+				multi_choice = function(menu_id, offset, data, value)
+					local id = string.format("%s_%s_multi", menu_id, data.name_id)
+					local clbk_id = id .. "_clbk"
+
+					local multi_data = {
+						id = id,
+						title = data.name_id,
+						desc = data.desc_id,
+						callback = string.format("%s %s", clbk_id, update_visible_clbks),
+						items = data.options,
+						value = value,
+						menu_id = menu_id,
+						priority = offset,
+						disabled_color = Color(0.6, 0.6, 0.6),
+					}
+
+					do	-- Copy of MenuHelper:AddMultipleChoice (Without ipairs for options)
+						local data = {
+							type = "MenuItemMultiChoice"
+						}
+						for k, v in pairs( multi_data.items or {} ) do
+							table.insert( data, { _meta = "option", text_id = v, value = k } )
+						end
+
+						local params = {
+							name = multi_data.id,
+							text_id = multi_data.title,
+							help_id = multi_data.desc,
+							callback = multi_data.callback,
+							filter = true,
+							localize = multi_data.localized,
+						}
+
+						local menu = MenuHelper:GetMenu( multi_data.menu_id )
+						local item = menu:create_item(data, params)
+						item._priority = multi_data.priority
+						item:set_value( multi_data.value or 1 )
+
+						if multi_data.disabled then
+							item:set_enabled( not multi_data.disabled )
+						end
+
+						menu._items_list = menu._items_list or {}
+						table.insert( menu._items_list, item )
+					end
+
+					MenuCallbackHandler[clbk_id] = function(self, item)
+						change_setting(clone(data.value), item:value())
+					end
+
+					if data.add_color_options then
+						local menu = MenuHelper:GetMenu(menu_id)
+						for i, item in pairs(menu._items_list) do
+							if item:parameters().name == id then
+								item:clear_options()
+								for k, v in ipairs(WolfHUD:getTweakEntry("color_table", "table") or {}) do
+									if data.add_rainbow or v.name ~= "rainbow" then
+										local color_name = managers.localization:text("wolfhud_colors_" .. v.name)
+										color_name = not color_name:lower():find("error") and color_name or string.upper(v.name)
+										local params = {
+											_meta = "option",
+											text_id = color_name,
+											value = v.name,
+											localize = false,
+											color = Color(v.color),
+										}
+										if v.name == "rainbow" then
+											local rainbow_colors = { Color('FE0E31'), Color('FB9413'), Color('F7F90F'), Color('3BC529'), Color('00FFFF'), Color('475DE7'), Color('B444E4'), Color('F46FE6') }
+											params.color = rainbow_colors[1]
+											for i = 0, color_name:len() do
+												params["color" .. i] = rainbow_colors[(i % #rainbow_colors) + 1]
+												params["color_start" .. i] = i
+												params["color_stop" .. i] = i + 1
+											end
+										end
+
+										item:add_option(CoreMenuItemOption.ItemOption:new(params))
+									end
+								end
+								item:_show_options(nil)
+								item:set_value(value)
+								for __, clbk in pairs( item:parameters().callback ) do
+									clbk(item)
+								end
+								break
+							end
+						end
+					end
+
+					if data.visible_reqs or data.enabled_reqs then
+						add_visible_reqs(menu_id, id, data)
+					end
+				end,
+				input = function(menu_id, offset, data)
+					local id = string.format("%s_%s_input", menu_id, data.name_id)
+					local clbk_id = id .. "_clbk"
+
+					MenuHelper:AddInput({
+						id = id,
+						title = data.name_id,
+						desc = data.desc_id,
+						value = tostring(data.value),
+						callback = clbk_id,
+						menu_id = menu_id,
+						priority = offset,
+						disabled_color = Color(0.6, 0.6, 0.6),
+					})
+
+					MenuCallbackHandler[clbk_id] = function(self, item)
+						change_setting(clone(data.value), item:value())
+					end
+
+					if data.visible_reqs or data.enabled_reqs then
+						add_visible_reqs(menu_id, id, data)
+					end
+				end,
+				button = function(menu_id, offset, data)
+					local id = string.format("%s_%s_button", menu_id, data.name_id)
+					local clbk_id = data.clbk or (id .. "_clbk")
+
+					MenuHelper:AddButton({
+						id = id,
+						title = data.name_id,
+						desc = data.desc_id,
+						callback = clbk_id,
+						menu_id = menu_id,
+						priority = offset,
+						disabled_color = Color(0.6, 0.6, 0.6),
+					})
+
+					MenuCallbackHandler[clbk_id] = MenuCallbackHandler[clbk_id] or function(self, item)
+
+					end
+
+					if data.visible_reqs or data.enabled_reqs then
+						add_visible_reqs(menu_id, id, data)
+					end
+				end,
+				keybind = function(menu_id, offset, data)
+					local id = string.format("%s_%s_keybind", menu_id, data.name_id)
+					local clbk_id = data.clbk or (id .. "_clbk")
+
+					MenuHelper:AddKeybinding({
+						id = id,
+						title = data.name_id,
+						desc = data.desc_id,
+						connection_name = "",
+						binding = "",
+						button = "",
+						callback = clbk_id,
+						menu_id = menu_id,
+						priority = offset,
+						--disabled_color = Color(0.6, 0.6, 0.6),
+					})
+
+					MenuCallbackHandler[clbk_id] = MenuCallbackHandler[clbk_id] or function(self, item)
+
+					end
+
+					if data.visible_reqs or data.enabled_reqs then
+						add_visible_reqs(menu_id, id, data)
+					end
+				end,
+				divider = function(menu_id, offset, data)
+					local id = string.format("%s_divider_%d", menu_id, offset)
+
+					local item_data = {
+						type = "MenuItemDivider"
+					}
 					local params = {
-						name = multi_data.id,
-						text_id = multi_data.title,
-						help_id = multi_data.desc,
-						callback = multi_data.callback,
-						filter = true,
-						localize = multi_data.localized,
+						name = id,
+						no_text = not data.text_id,
+						text_id = data.text_id,
+						localize = "true",
+						size = data.size or 8,
+						color = tweak_data.screen_colors.text
 					}
 
-					local menu = MenuHelper:GetMenu( multi_data.menu_id )
-					local item = menu:create_item(data, params)
-					item._priority = multi_data.priority
-					item:set_value( multi_data.value or 1 )
-
-					if multi_data.disabled then
-						item:set_enabled( not multi_data.disabled )
-					end
-
+					local menu = MenuHelper:GetMenu( menu_id )
+					local item = menu:create_item( item_data, params )
+					item._priority = offset or 0
 					menu._items_list = menu._items_list or {}
 					table.insert( menu._items_list, item )
-				end
-
-				MenuCallbackHandler[clbk_id] = function(self, item)
-					change_setting(clone(data.value), item:value())
-				end
-
-				if data.add_color_options then
-					local menu = MenuHelper:GetMenu(menu_id)
-					for i, item in pairs(menu._items_list) do
-						if item:parameters().name == id then
-							item:clear_options()
-							for k, v in ipairs(WolfHUD:getTweakEntry("color_table", "table") or {}) do
-								if data.add_rainbow or v.name ~= "rainbow" then
-									local color_name = managers.localization:text("wolfhud_colors_" .. v.name)
-									color_name = not color_name:lower():find("error") and color_name or string.upper(v.name)
-									local params = {
-										_meta = "option",
-										text_id = color_name,
-										value = v.name,
-										localize = false,
-										color = Color(v.color),
-									}
-									if v.name == "rainbow" then
-										local rainbow_colors = { Color('FE0E31'), Color('FB9413'), Color('F7F90F'), Color('3BC529'), Color('00FFFF'), Color('475DE7'), Color('B444E4'), Color('F46FE6') }
-										params.color = rainbow_colors[1]
-										for i = 0, color_name:len() do
-											params["color" .. i] = rainbow_colors[(i % #rainbow_colors) + 1]
-											params["color_start" .. i] = i
-											params["color_stop" .. i] = i + 1
-										end
-									end
-
-									item:add_option(CoreMenuItemOption.ItemOption:new(params))
-								end
-							end
-							item:_show_options(nil)
-							item:set_value(value)
-							for __, clbk in pairs( item:parameters().callback ) do
-								clbk(item)
-							end
-							break
-						end
-					end
-				end
-
-				if data.visible_reqs or data.enabled_reqs then
-					add_visible_reqs(menu_id, id, data)
-				end
-			end,
-			input = function(menu_id, offset, data)
-				local id = string.format("%s_%s_input", menu_id, data.name_id)
-				local clbk_id = id .. "_clbk"
-
-				MenuHelper:AddInput({
-					id = id,
-					title = data.name_id,
-					desc = data.desc_id,
-					value = tostring(data.value),
-					callback = clbk_id,
-					menu_id = menu_id,
-					priority = offset,
-					disabled_color = Color(0.6, 0.6, 0.6),
-				})
-
-				MenuCallbackHandler[clbk_id] = function(self, item)
-					change_setting(clone(data.value), item:value())
-				end
-
-				if data.visible_reqs or data.enabled_reqs then
-					add_visible_reqs(menu_id, id, data)
-				end
-			end,
-			button = function(menu_id, offset, data)
-				local id = string.format("%s_%s_button", menu_id, data.name_id)
-				local clbk_id = data.clbk or (id .. "_clbk")
-
-				MenuHelper:AddButton({
-					id = id,
-					title = data.name_id,
-					desc = data.desc_id,
-					callback = clbk_id,
-					menu_id = menu_id,
-					priority = offset,
-					disabled_color = Color(0.6, 0.6, 0.6),
-				})
-
-				MenuCallbackHandler[clbk_id] = MenuCallbackHandler[clbk_id] or function(self, item)
-
-				end
-
-				if data.visible_reqs or data.enabled_reqs then
-					add_visible_reqs(menu_id, id, data)
-				end
-			end,
-			keybind = function(menu_id, offset, data)
-				local id = string.format("%s_%s_keybind", menu_id, data.name_id)
-				local clbk_id = data.clbk or (id .. "_clbk")
-
-				MenuHelper:AddKeybinding({
-					id = id,
-					title = data.name_id,
-					desc = data.desc_id,
-					connection_name = "",
-					binding = "",
-					button = "",
-					callback = clbk_id,
-					menu_id = menu_id,
-					priority = offset,
-					--disabled_color = Color(0.6, 0.6, 0.6),
-				})
-
-				MenuCallbackHandler[clbk_id] = MenuCallbackHandler[clbk_id] or function(self, item)
-
-				end
-
-				if data.visible_reqs or data.enabled_reqs then
-					add_visible_reqs(menu_id, id, data)
-				end
-			end,
-			divider = function(menu_id, offset, data)
-				local id = string.format("%s_divider_%d", menu_id, offset)
-
-				local item_data = {
-					type = "MenuItemDivider"
-				}
-				local params = {
-					name = id,
-					no_text = not data.text_id,
-					text_id = data.text_id,
-					localize = "true",
-					size = data.size or 8,
-					color = tweak_data.screen_colors.text
-				}
-
-				local menu = MenuHelper:GetMenu( menu_id )
-				local item = menu:create_item( item_data, params )
-				item._priority = offset or 0
-				menu._items_list = menu._items_list or {}
-				table.insert( menu._items_list, item )
-			end,
-		}
-
-		-- Populate Menus with their menu items
-		local function populate_menu(menu_table, parent_id)
-			local item_amount = #menu_table
-			for i, data in ipairs(menu_table) do
-				local value = data.value and WolfHUD:getSetting(data.value, nil)
-				create_item_handlers[data.type](data.parent_id or parent_id, item_amount - i, data, value)
-
-				if data.type == "menu" then
-					populate_menu(data.options, data.menu_id)
-				end
-			end
-		end
-
-		populate_menu({menu_options}, BLT and BLT.Mods.Constants:LuaModOptionsMenuID() or "blt_options")
-	end)
-
-	-- Create callbacks and finalize menus
-	Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_WolfHUD", function(menu_manager, nodes)
-		local back_clbk = "wolfhud_back_clbk"
-		local focus_clbk = "wolfhud_focus_clbk"
-		local reset_clbk = "wolfhud_reset_clbk"
-
-		-- Add menu back callback
-		MenuCallbackHandler[back_clbk] = function(node)
-			if WolfHUD.settings_changed then
-				WolfHUD.settings_changed = nil
-				WolfHUD:Save()
-				WolfHUD:print_log("Settings saved!", "info")
-			end
-		end
-
-		-- Add focus callback
-		MenuCallbackHandler[focus_clbk] = function(node, focus)
-			if focus then
-				for _, option_item in pairs(node._items) do
-					if option_item._type ~= "divider" then
-						local enabled = true
-
-						for _, clbk in ipairs(option_item._enabled_callback_name_list or {}) do
-							enabled = enabled and MenuCallbackHandler[clbk](node.callback_handler, option_item)
-						end
-
-						option_item:set_enabled(enabled)
-					end
-				end
-			end
-		end
-
-		-- Add reset menu items callback
-		MenuCallbackHandler[reset_clbk] = function(self, item)
-			local menu_title = managers.localization:text("wolfhud_reset_options_title")
-			local menu_message = managers.localization:text("wolfhud_reset_options_confirm")
-			local menu_buttons = {
-				[1] = {
-					text = managers.localization:text("dialog_yes"),
-					callback = function(self, item)
-						WolfHUD:Reset()
-
-						for i, menu_id in ipairs(WolfHUD.menu_ids) do
-							local menu = MenuHelper:GetMenu(menu_id)
-							if menu then
-								for __, menu_item in ipairs(menu._items_list) do
-									local setting = menu_item._create_data and clone(menu_item._create_data.value)
-									if menu_item.set_value and setting then
-										local value = WolfHUD:getSetting(setting, nil)
-										if value ~= nil then
-											local script = table.remove(setting, 1)
-											if WolfHUD.apply_settings_clbk[script] then
-												WolfHUD.apply_settings_clbk[script](setting, value)
-											end
-
-											if menu_item._type == "toggle" then
-												if menu_item._create_data.invert_value then
-													value = not value
-												end
-												value = (value and "on" or "off")
-											end
-
-											menu_item:set_value(value)
-										end
-									end
-								end
-							end
-						end
-						managers.viewport:resolution_changed()
-
-						WolfHUD.settings_changed = true
-						WolfHUD:print_log("Settings resetted!", "info")
-					end,
-				},
-				[2] = {
-					text = managers.localization:text("dialog_no"),
-					is_cancel_button = true,
-				},
+				end,
 			}
-			QuickMenu:new( menu_title, menu_message, menu_buttons, true )
-		end
 
-		-- Build Menus and add a button to parent menu
-		local function finalize_menu(menu_table, parent_id)
-			for i, data in ipairs(menu_table) do
-				if data.type == "menu" then
-					nodes[data.menu_id] = MenuHelper:BuildMenu(data.menu_id, { back_callback = back_clbk, focus_changed_callback = focus_clbk })
-					MenuHelper:AddMenuItem(
-						nodes[data.parent_id or parent_id],
-						data.menu_id,
-						data.name_id,
-						data.desc_id,
-						data.position or i
-					)
+			-- Populate Menus with their menu items
+			local function populate_menu(menu_table, parent_id)
+				local item_amount = #menu_table
+				for i, data in ipairs(menu_table) do
+					local value = data.value and WolfHUD:getSetting(data.value, nil)
+					create_item_handlers[data.type](data.parent_id or parent_id, item_amount - i, data, value)
 
-					finalize_menu(data.options, data.menu_id)
+					if data.type == "menu" then
+						populate_menu(data.options, data.menu_id)
+					end
 				end
 			end
-		end
 
-		finalize_menu({menu_options}, BLT and BLT.Mods.Constants:LuaModOptionsMenuID() or "blt_options")
-	end)
+			populate_menu({menu_options}, BLT and BLT.Mods.Constants:LuaModOptionsMenuID() or "blt_options")
+		end)
 
-	--Add localiszation strings
+		-- Create callbacks and finalize menus
+		Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_WolfHUD", function(menu_manager, nodes)
+			local back_clbk = "wolfhud_back_clbk"
+			local focus_clbk = "wolfhud_focus_clbk"
+			local reset_clbk = "wolfhud_reset_clbk"
+
+			-- Add menu back callback
+			MenuCallbackHandler[back_clbk] = function(node)
+				if WolfHUD.settings_changed then
+					WolfHUD.settings_changed = nil
+					WolfHUD:Save()
+					WolfHUD:print_log("Settings saved!", "info")
+				end
+			end
+
+			-- Add focus callback
+			MenuCallbackHandler[focus_clbk] = function(node, focus)
+				if focus then
+					for _, option_item in pairs(node._items) do
+						if option_item._type ~= "divider" then
+							local enabled = true
+
+							for _, clbk in ipairs(option_item._enabled_callback_name_list or {}) do
+								enabled = enabled and MenuCallbackHandler[clbk](node.callback_handler, option_item)
+							end
+
+							option_item:set_enabled(enabled)
+						end
+					end
+				end
+			end
+
+			-- Add reset menu items callback
+			MenuCallbackHandler[reset_clbk] = function(self, item)
+				local menu_title = managers.localization:text("wolfhud_reset_options_title")
+				local menu_message = managers.localization:text("wolfhud_reset_options_confirm")
+				local menu_buttons = {
+					[1] = {
+						text = managers.localization:text("dialog_yes"),
+						callback = function(self, item)
+							WolfHUD:Reset()
+
+							for i, menu_id in ipairs(WolfHUD.menu_ids) do
+								local menu = MenuHelper:GetMenu(menu_id)
+								if menu then
+									for __, menu_item in ipairs(menu._items_list) do
+										local setting = menu_item._create_data and clone(menu_item._create_data.value)
+										if menu_item.set_value and setting then
+											local value = WolfHUD:getSetting(setting, nil)
+											if value ~= nil then
+												local script = table.remove(setting, 1)
+												if WolfHUD.apply_settings_clbk[script] then
+													WolfHUD.apply_settings_clbk[script](setting, value)
+												end
+
+												if menu_item._type == "toggle" then
+													if menu_item._create_data.invert_value then
+														value = not value
+													end
+													value = (value and "on" or "off")
+												end
+
+												menu_item:set_value(value)
+											end
+										end
+									end
+								end
+							end
+							managers.viewport:resolution_changed()
+
+							WolfHUD.settings_changed = true
+							WolfHUD:print_log("Settings resetted!", "info")
+						end,
+					},
+					[2] = {
+						text = managers.localization:text("dialog_no"),
+						is_cancel_button = true,
+					},
+				}
+				QuickMenu:new( menu_title, menu_message, menu_buttons, true )
+			end
+
+			-- Build Menus and add a button to parent menu
+			local function finalize_menu(menu_table, parent_id)
+				for i, data in ipairs(menu_table) do
+					if data.type == "menu" then
+						nodes[data.menu_id] = MenuHelper:BuildMenu(data.menu_id, { back_callback = back_clbk, focus_changed_callback = focus_clbk })
+						MenuHelper:AddMenuItem(
+							nodes[data.parent_id or parent_id],
+							data.menu_id,
+							data.name_id,
+							data.desc_id,
+							data.position or i
+						)
+
+						finalize_menu(data.options, data.menu_id)
+					end
+				end
+			end
+
+			finalize_menu({menu_options}, BLT and BLT.Mods.Constants:LuaModOptionsMenuID() or "blt_options")
+		end)
+	end
+
+	--Add localization strings
 	Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInit_WolfHUD", function(loc)
         local loc_path = WolfHUD.mod_path .. "loc/"
 		if file.DirectoryExists( loc_path ) then
@@ -1335,5 +1341,32 @@ if not _G.WolfHUD then
 			end
 		end
 		loc:add_localized_strings(localized_strings)
+	end)
+	
+	Hooks:Add("MenuManagerOnOpenMenu", "MenuManagerOnOpenMenu_WolfHUDCore", function(menu_manager, menu_name, position)
+		if menu_name == "menu_main" then
+			local mod = BLT and BLT.Mods:GetMod(WolfHUD.identifier or "")
+
+			if mod and not mod.supermod then
+				QuickMenu:new( 
+					managers.localization:text("wolfhud_dialog_requires_superblt_title"), 
+					managers.localization:text("wolfhud_dialog_requires_superblt_desc_long", {URL = "https://superblt.znix.xyz"}), 
+					{
+						{ text = managers.localization:text("dialog_ok"), is_cancel_button = true }
+					}, true 
+				)
+				if BLT.Notifications then
+					local params = {
+						title = managers.localization:text("wolfhud_dialog_requires_superblt_title"),
+						text = managers.localization:text("wolfhud_dialog_requires_superblt_desc_short", {URL = "superblt.znix.xyz"}),
+						icon = mod:GetModImage(),
+						--icon_texture_rect = {0, 0, 1 , 1},
+						color = Color(1, 0.2, 0),
+						priority = 99
+					}
+					local notif_id = BLT.Notifications:add_notification(params)
+				end
+			end
+		end
 	end)
 end

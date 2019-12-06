@@ -1,6 +1,6 @@
 {
 	"menu_jowi" : "Wick",
-	"hud_int_hold_grab_the_bag" : "MAINTENEZ $BTN_INTERACT POUR PRENDRE $BAG",
+	"hud_int_hold_grab_the_bag" : "MAINTENEZ $INTERACT POUR PRENDRE $BAG",
 
 	"wolfhud_dialog_force_start_title" : "Forcer le début de la partie?",
 	"wolfhud_dialog_force_start_desc" : "Êtes-vous sûr de vouloir forcer le début de la partie??\n\nN'utilisez cette option que pour les lobby buggés, ou si un autre joueur est absent.\nAssurez-vous que tout le monde ait eu le temps de choisir son équipement s'il vous plaît.\n\nMerci! :)",
@@ -11,6 +11,9 @@
 	"wolfhud_dialog_rename_inv_tab" : "Renommer cette page d'inventaire",
 	"wolfhud_dialog_rename_inv_tab_desc" : "Entrez un nom pour cette page de votre inventaire.",
 	"wolfhud_dialog_save" : "Sauvegarder",
+	"wolfhud_dialog_requires_superblt_title" : "[WolfHUD] No SuperBLT detected!",
+	"wolfhud_dialog_requires_superblt_desc_long" : "WolfHUD requires SuperBLT in order to work.\nSuperBLT is a fork of the BLT mod-loading hook for PAYDAY 2, with a number of major improvements. \nIt is fully backwards-compatable with regular BLT mods.\n\nYou can find further information and installation instructions here: \n$URL",
+	"wolfhud_dialog_requires_superblt_desc_short" : "WolfHUD is no longer compatable with regular BLT.\nPlease update to SuperBLT to continue using it.\nYou can find SuperBLT at '$URL'.",
 	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME est désactivé.",
 	"woldhud_notification_disabled_override_desc" : "Si vous changez d'avis, cliquez ici.",
 	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME est prêt à être installé.",
@@ -134,6 +137,7 @@
 	"wolfhud_enemy_civilian" : "Civil",
 	"wolfhud_enemy_gangster" : "Gangster",
 	"wolfhud_enemy_biker" : "Motard",
+	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
 	"wolfhud_enemy_bolivian_security" : "Garde de Sosa",
 	"wolfhud_enemy_bolivian_thug" : "Malfra de Sosa",
 	"wolfhud_enemy_mobster" : "Gangster russe",
@@ -890,6 +894,8 @@
 	"wolfhud_equipment_shaped_charge_disabled_stealth_desc" : "Si cochée, vous aurez à appuyer deux fois sur votre touche d'action pour placer des charges creuses lors d'un braquage discret. \nCela a pour but d'éviter les accidents.",
 	"wolfhud_equipment_keycard_doors_disabled_title" : "Suppression portes à cartes d'accès",
 	"wolfhud_equipment_keycard_doors_disabled_desc" : "Si cochée, vous aurez à appuyer deux fois sur votre touche d'action pour fermer une porte à carte d'accès, dans le jour 2 de l'Évasion d'Hoxton. \nCela a pour but d'éviter les accidents.",
+	"wolfhud_override_fedinv" : "Enable Federal Inventory",
+	"wolfhud_override_fedinv_desc" : "Enable colorized Inventory icons.\nRequires game restart to fully take effect.",
 
 	"wolfhud_gadget_options_name" : "Paramètres des gadgets d'armes",
 	"wolfhud_gadget_options_help" : "Définit la couleur des lasers.",
