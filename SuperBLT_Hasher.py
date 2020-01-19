@@ -27,9 +27,10 @@ def SuperBLT_Hash_File(file_path):
 #Hash files, join hashes (ordered by unicode value of directories), hash joined hashes
 def SuperBLT_Hash_Dir(input_directory):
     hashes = dict()
-    for r, d, f in os.walk(input_directory):
-        for file in f:
-            file_path = os.path.join(r, file)
+    for root, dirs, files in os.walk(input_directory, topdown=True):
+        dirs[:] = [d for d in dirs if d != ".git"]
+        for file in files:
+            file_path = os.path.join(root, file)
             hashes[file_path.lower().encode('utf-8')] = SuperBLT_Hash(file_path, True)
     sorted_keys = sorted(hashes.keys())
     joined_hash = ""
