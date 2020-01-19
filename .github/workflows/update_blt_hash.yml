@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - release/*
+      - autoupdate
         
 jobs:
   update-hash:
