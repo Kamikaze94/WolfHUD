@@ -35,11 +35,11 @@ jobs:
     - name: Calculate Hash
       id: hash
       run: |
-        hash = $(python ./autopdate/SuperBLT_Hasher.py ./master/)
+        hash = $(python /home/runner/work/WolfHUD/WolfHUD/autoupdate/SuperBLT_Hasher.py /home/runner/work/WolfHUD/WolfHUD/master/)
         echo ::set-env name=HASH::${hash}
     - name: Create local changes
       run: |
-        cat <<EOM >./autopdate/meta.json
+        cat <<EOM >/home/runner/work/WolfHUD/WolfHUD/autoupdate/meta.json
         [
             {
                 "ident": "wolfhud",
@@ -51,7 +51,7 @@ jobs:
         EOM
     - name: Commit files
       run: |
-        cd ./autopdate/
+        cd /home/runner/work/WolfHUD/WolfHUD/autoupdate/
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -m "Change Hash for new Version." -a
