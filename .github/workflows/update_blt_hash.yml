@@ -19,14 +19,14 @@ jobs:
     - name: Checkout Mod Branch
       uses: actions/checkout@v2
       with:
-        ref: ${ DL-BRANCH }
-        path: "./${ DL-BRANCH }/"
+        ref: ${{ DL-BRANCH }}
+        path: "./${{ DL-BRANCH }}/"
     - name: Checkout Updater Branch
       uses: actions/checkout@v2
       with:
-        ref: ${ UPD-BRANCH }
+        ref: ${{ UPD-BRANCH }}
         token: ${{ secrets.GITHUB_TOKEN }}
-        path: "./${ UPD-BRANCH }/"
+        path: "./${{ UPD-BRANCH }}/"
     - name: Setup Python
       uses: actions/setup-python@v1.1.1
       with:
@@ -58,5 +58,5 @@ jobs:
       uses: ad-m/github-push-action@v0.5.0
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${ UPD-BRANCH }
-        directory: ${ GITHUB_WORKSPACE }/${ UPD-BRANCH }/
+        branch: ${{ UPD-BRANCH }}
+        directory: ${{ GITHUB_WORKSPACE }}/${{ UPD-BRANCH }}/
