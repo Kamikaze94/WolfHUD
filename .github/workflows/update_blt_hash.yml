@@ -5,7 +5,6 @@ on:
     branches:
       - master
       - release/*
-      - autoupdate
       
 env:
   IDENT: wolfhud                        #Identifier for the mod.
