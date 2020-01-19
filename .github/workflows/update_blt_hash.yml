@@ -35,7 +35,7 @@ jobs:
     - name: Calculate Hash
       id: hash
       run: |
-        hash = $(python ${GITHUB_WORKSPACE}/${BRANCH.UPD}/SuperBLT_Hasher.py ${GITHUB_WORKSPACE}/${BRANCH.DL }/)
+        hash = $(python ${{ GITHUB_WORKSPACE }}/${{ BRANCH.UPD }}/SuperBLT_Hasher.py ${ {GITHUB_WORKSPACE }}/${{ BRANCH.DL }}/)
         echo ::set-env name=HASH::${hash}
     - name: Create local changes
       run: |
