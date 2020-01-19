@@ -6,28 +6,30 @@ on:
       - master
       - release/*
       - autoupdate
+      
+env:
+  IDENT: wolfhud                        #Identifier for the mod.
+  BRANCH_DL: master                     #Branch hosting the stable release version.
+  BRANCH_UPD: autoupdate                #Branch hosting the meta.json and SuperBLT_Hasher.py files.
+  CHANGELOG: autoupdate/Changelog.md    #Branch + Filename for the Changelog-File.
         
 jobs:
   update-hash:
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    env:
-      IDENT: wolfhud                        #Identifier for the mod.
-      BRANCH_DL: master                     #Branch hosting the stable release version.
-      BRANCH_UPD: autoupdate                #Branch hosting the meta.json and SuperBLT_Hasher.py files.
-      CHANGELOG: autoupdate/Changelog.md    #Branch + Filename for the Changelog-File.
+    
     steps:
     - name: Checkout Mod Branch
       uses: actions/checkout@v2
       with:
-        ref: $BRANCH_DL
-        path: "./master/"
+        ref: ${{ env.BRANCH_DL }}
+        path: "./${{ env.BRANCH_DL }}/"
     - name: Checkout Updater Branch
       uses: actions/checkout@v2
       with:
-        ref: $BRANCH_UPD
+        ref: ${{ env.BRANCH_UPD }}
         token: ${{ github.token }}
-        path: "./autoupdate/"
+        path: "./${{ env.BRANCH_UPD }}/"
     - name: Setup Python
       uses: actions/setup-python@v1.1.1
       with:
@@ -59,5 +61,5 @@ jobs:
       uses: ad-m/github-push-action@v0.5.0
       with:
         github_token: ${{ github.token }}
-        branch: $BRANCH_UPD
-        directory: ${{ github.workspace }}/$BRANCH_UPD/
+        branch: ${{ env.BRANCH_UPD }}
+        directory: ${{ github.workspace }}/${{ env.BRANCH_UPD }}/
