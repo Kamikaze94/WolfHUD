@@ -26,8 +26,12 @@ jobs:
         ref: ${ UPD-BRANCH }
         token: ${{ secrets.GITHUB_TOKEN }}
         path: "./${ UPD-BRANCH }/"
-    - name: Calculate Hash
+    - name: Setup Python
       uses: actions/setup-python@v1.1.1
+      with:
+        python-version: '3.x'
+        architecture: 'x64'
+    - name: Calculate Hash
       run: |
         hash = python $GITHUB_WORKSPACE/$UPD-BRANCH/SuperBLT_Hasher.py $GITHUB_WORKSPACE/$DL-BRANCH/
         echo ::set-env name=HASH::$hash
