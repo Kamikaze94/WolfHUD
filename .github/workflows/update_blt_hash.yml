@@ -12,21 +12,21 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IDENT: wolfhud                        #Identifier for the mod.
-      BRANCH.DL: master                     #Branch hosting the stable release version.
-      BRANCH.UPD: autoupdate                #Branch hosting the meta.json and SuperBLT_Hasher.py files.
+      BRANCH_DL: master                     #Branch hosting the stable release version.
+      BRANCH_UPD: autoupdate                #Branch hosting the meta.json and SuperBLT_Hasher.py files.
       CHANGELOG: autoupdate/Changelog.md    #Branch + Filename for the Changelog-File.
     steps:
     - name: Checkout Mod Branch
       uses: actions/checkout@v2
       with:
-        ref: ${{ env.BRANCH.DL }}
-        path: "./${{ env.BRANCH.DL }}/"
+        ref: master
+        path: "./master/"
     - name: Checkout Updater Branch
       uses: actions/checkout@v2
       with:
-        ref: ${{ env.BRANCH.UPD }}
-        token: ${{ secrets.GITHUB_TOKEN }}
-        path: "./${{ env.BRANCH.UPD }}/"
+        ref: autoupdate
+        token: ${{ github.token }}
+        path: "./autoupdate/"
     - name: Setup Python
       uses: actions/setup-python@v1.1.1
       with:
@@ -35,29 +35,29 @@ jobs:
     - name: Calculate Hash
       id: hash
       run: |
-        hash = $(python ${GITHUB_WORKSPACE}/${BRANCH.UPD}/SuperBLT_Hasher.py ${GITHUB_WORKSPACE}/${BRANCH.DL}/)
+        hash = $(python ./autopdate/SuperBLT_Hasher.py ./master/)
         echo ::set-env name=HASH::${hash}
     - name: Create local changes
       run: |
-        cat <<EOM >${GITHUB_WORKSPACE}/${BRANCH.UPD}/meta.json
+        cat <<EOM >./autopdate/meta.json
         [
             {
-                "ident": "${IDENT}",
-                "hash": "${HASH}",
-                "download": "https://github.com/${GITHUB_REPOSITORY}/archive/${BRANCH.DL}.zip",
-                "patchnotes": "https://github.com/${GITHUB_REPOSITORY}/blob/${CHANGELOG}"
+                "ident": "wolfhud",
+                "hash": "$HASH",
+                "download": "https://github.com/$GITHUB_REPOSITORY/archive/master.zip",
+                "patchnotes": "https://github.com/$GITHUB_REPOSITORY/blob/autoupdate/Changelog.md"
             }
         ]
         EOM
     - name: Commit files
       run: |
-        cd ${GITHUB_WORKSPACE}/${BRANCH.UPD}/
+        cd ./autopdate/
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -m "Change Hash for new Version." -a
     - name: Push changes
       uses: ad-m/github-push-action@v0.5.0
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ env.BRANCH.UPD }}
-        directory: ${{ env.GITHUB_WORKSPACE }}/${{ env.BRANCH.UPD }}/
+        github_token: ${{ github.token }}
+        branch: autoupdate
+        directory: ${{ github.workspace }}/autoupdate/
