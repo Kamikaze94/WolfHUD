@@ -34,23 +34,23 @@ jobs:
         architecture: 'x64'
     - name: Calculate Hash
       run: |
-        hash = python $GITHUB_WORKSPACE/$env.BRANCH.UPD/SuperBLT_Hasher.py $GITHUB_WORKSPACE/$BRANCH.DL/
+        hash = python $env.GITHUB_WORKSPACE/$env.BRANCH.UPD/SuperBLT_Hasher.py $env.GITHUB_WORKSPACE/$BRANCH.DL/
         echo ::set-env name=HASH::$hash
     - name: Create local changes
       run: |
         cat <<EOM >$GITHUB_WORKSPACE/$env.BRANCH.UPD/meta.json
         [
             {
-                "ident": "$IDENT",
-                "hash": "$HASH",
-                "download": "https://github.com/$GITHUB_REPOSITORY/archive/$env.BRANCH.DL.zip",
-                "patchnotes": "https://github.com/$GITHUB_REPOSITORY/blob/$env.CHANGELOG"
+                "ident": "$env.IDENT",
+                "hash": "$env.HASH",
+                "download": "https://github.com/$env.GITHUB_REPOSITORY/archive/$env.BRANCH.DL.zip",
+                "patchnotes": "https://github.com/$env.GITHUB_REPOSITORY/blob/$env.CHANGELOG"
             }
         ]
         EOM
     - name: Commit files
       run: |
-        cd $GITHUB_WORKSPACE/$env.BRANCH.UPD/
+        cd $env.GITHUB_WORKSPACE/$env.BRANCH.UPD/
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -m "Change Hash for new Version." -a
@@ -59,4 +59,4 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ env.BRANCH.UPD }}
-        directory: ${{ GITHUB_WORKSPACE }}/${{ env.BRANCH.UPD }}/
+        directory: ${{ env.GITHUB_WORKSPACE }}/${{ env.BRANCH.UPD }}/
