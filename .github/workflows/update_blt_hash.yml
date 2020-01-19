@@ -35,8 +35,7 @@ jobs:
     - name: Calculate Hash
       id: hash
       run: |
-        hash = $(python /home/runner/work/WolfHUD/WolfHUD/autoupdate/SuperBLT_Hasher.py /home/runner/work/WolfHUD/WolfHUD/master/)
-        echo ::set-env name=HASH::${hash}
+        echo ::set-env name=HASH::$(python /home/runner/work/WolfHUD/WolfHUD/autoupdate/SuperBLT_Hasher.py /home/runner/work/WolfHUD/WolfHUD/master/)
     - name: Create local changes
       run: |
         cat <<EOM >/home/runner/work/WolfHUD/WolfHUD/autoupdate/meta.json
