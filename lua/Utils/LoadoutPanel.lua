@@ -1059,13 +1059,14 @@ function LoadoutWeaponItem:set_rarity(texture)
 end
 
 function LoadoutWeaponItem:update_weapon(outfit)
-	local weapon_id = outfit[self._name].cosmetics and outfit[self._name].cosmetics.id or managers.weapon_factory:get_weapon_id_by_factory_id(outfit[self._name].factory_id)
+	local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(outfit[self._name].factory_id)
 	if weapon_id then
 		self:set_enabled("outfit", true)
 		if self._loadout ~= weapon_id then
 			self._loadout = weapon_id
-			local skinned = tweak_data.blackmarket.weapon_skins[self._loadout] and true
-			local texture, name, rarity = self:get_outfit_data(skinned and "weapon_skin" or "weapon", self._loadout)
+			local cosmetic_id = outfit[self._name].cosmetics and outfit[self._name].cosmetics.id
+			local weapon_skin = tweak_data.blackmarket.weapon_skins[weapon_id] and not tweak_data.blackmarket.weapon_skins[weapon_id].is_a_color_skin or false
+			local texture, name, rarity = self:get_outfit_data(weapon_skin and "weapon_skin" or "weapon", weapon_skin and cosmetic_id or weapon_id)
 
 			self:set_text(name)
 			self:set_image(texture)

@@ -281,6 +281,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		city_swat = 				{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_city_swat" 				},
 		security = 					{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" 				},
 		security_undominatable = 	{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" 				},
+		security_mex = 				{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" 				},
 		gensec = 					{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_gensec" 					},
 		bolivian_indoors =			{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_bolivian_security" 		},
 		bolivian_indoors_mex =		{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_bolivian_security_mex" 	},
@@ -310,6 +311,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		phalanx_minion = 			{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_phalanx_minion" 			},
 		civilian = 					{ type_id = "civ",			category = "civilians",	long_name = "wolfhud_enemy_civilian" 				},
 		civilian_female = 			{ type_id = "civ",			category = "civilians",	long_name = "wolfhud_enemy_civilian" 				},
+		civilian_mariachi = 		{ type_id = "civ",			category = "civilians",	long_name = "wolfhud_enemy_civilian" 				},
 		bank_manager = 				{ type_id = "civ",			category = "civilians",	long_name = "wolfhud_enemy_bank_manager" 			},
 		--drunk_pilot = 			{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_drunk_pilot" 			},	--White x-Mas
 		--escort = 					{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_escort" 					},	--?
@@ -406,6 +408,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		drone_control_helmet =		"drone_ctrl",
 		evidence_bag =				"evidence",
 		expensive_vine = 			"wine",
+		faberge_egg = 				"egg",
 		goat = 						"goat",
 		gold =						"gold",
 		hope_diamond =				"diamond",
@@ -437,6 +440,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		sandwich =					"toast",
 		special_person =			"body",
 		toothbrush = 				"toothbrush",
+		treasure = 					"treasure",
 		turret =					"turret",
 		unknown =					"dentist",
 		box_unknown = 				"dentist",
@@ -3128,6 +3132,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		diamond = 		{ text = "wolfhud_hudlist_loot_diamond", 	priority = 1 },	-- The Diamond/Diamond Heist Red Diamond
 		diamonds =		{ text = "hud_carry_diamonds_dah", 			priority = 1 },	-- The Diamond Heist
 		drone_ctrl = 	{ text = "hud_carry_helmet", 				priority = 1 },	-- Biker Heist
+		egg = 			{ text = "hud_carry_faberge_egg", 			priority = 1 },	-- San Martin Bank
 		evidence =		{ text = "wolfhud_hudlist_loot_evidence", 	priority = 1 },	-- Hoxton revenge
 		goat =			{ text = "hud_carry_goat", 					priority = 1 },	-- Goat Simulator
 		gold =			{ text = "hud_carry_gold", 					priority = 1 },
@@ -3145,6 +3150,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		toast =			{ text = "wolfhud_hudlist_loot_toast", 		priority = 1 },	-- White Xmas
 		toothbrush = 	{ text = "wolfhud_hudlist_loot_toothbrush", priority = 1 },	-- Panic Room
 		toy = 			{ text = "wolfhud_hudlist_loot_toy", 		priority = 1 },	-- Stealing Xmas
+		treasure = 		{ text = "hud_carry_treasure", 				priority = 1 },	-- San Martin Bank
 		turret =		{ text = "hud_carry_turret", 				priority = 1 },	-- Transport: Train
 		vr = 			{ text = "wolfhud_hudlist_loot_vr", 		priority = 1 },	-- Stealing Xmas
 		warhead =		{ text = "hud_carry_warhead", 				priority = 1 },	-- Meltdown

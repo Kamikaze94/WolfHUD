@@ -431,10 +431,10 @@ lounge		100421		100448			102049
 				[132065] = true,
 				[100426] = true,
 				[132537] = true,
-				[100058] = true
+				[100058] = true,
 			},
-			mex_cooking = {
-				roman_armor = true
+			mex_cooking = { -- Border Crystals (4x Roman Armor)
+				roman_armor = true,
 			}
 		},
 	}

@@ -3263,8 +3263,8 @@ if RequiredScript == "lib/managers/hud/hudteammate" then
 	end
 
 	function PlayerInfoComponent.Weapon:set_weapon(id, silencer)
-		local skinned = tweak_data.blackmarket.weapon_skins[id] and true
-		local bitmap_texture, text = PlayerInfoComponent.Base.get_item_icon_data(skinned and "weapon_skin" or "weapon", id)
+		local weapon_skin = tweak_data.blackmarket.weapon_skins[id] or false
+		local bitmap_texture, text = PlayerInfoComponent.Base.get_item_icon_data(weapon_skin and "weapon_skin" or "weapon", id)
 
 		self._icon_panel:child("icon"):set_image(bitmap_texture)
 		self._icon_panel:child("silencer_icon"):set_visible(silencer)
@@ -4168,7 +4168,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		local name_id = wbase.name_id
 		if wbase._cosmetics_data and wbase._cosmetics_data.name_id then
 			local skin_id = wbase._cosmetics_data.name_id:gsub("bm_wskn_", "")
-			if tweak_data.blackmarket.weapon_skins[skin_id] then
+			if tweak_data.blackmarket.weapon_skins[skin_id] and not tweak_data.blackmarket.weapon_skins[skin_id].is_a_color_skin then
 				name_id = skin_id
 			end
 		end
@@ -4403,10 +4403,11 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 			if outfit then
 				--Weapon
 				for selection, data in ipairs({ outfit.secondary, outfit.primary }) do
-					local cosmetics_id = data.cosmetics and data.cosmetics.id
 					local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(data.factory_id)
+					local cosmetic_id = data.cosmetics and data.cosmetics.id
+					local weapon_skin = tweak_data.blackmarket.weapon_skins[weapon_id] and not tweak_data.blackmarket.weapon_skins[weapon_id].is_a_color_skin or false
 					local silencer = managers.weapon_factory:has_perk("silencer", data.factory_id, data.blueprint)
-					self:set_teammate_weapon(panel_id, selection, cosmetics_id or weapon_id, silencer)
+					self:set_teammate_weapon(panel_id, selection, weapon_skin and cosmetic_id or weapon_id, silencer)
 
 					local tweak = tweak_data.weapon[weapon_id]
 					if tweak then
