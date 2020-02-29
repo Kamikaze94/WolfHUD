@@ -1,3 +1,22 @@
+# WolfHUD v3.1.1
+
+__Note:__
+  
+    - __WolfHUDTweakData.lua__ got updated this release.
+	- If you use a customized one, please make sure, you update it.
+
+### Changelog:
+
+- General:
+	- Updated README.md with new details on autoupdate feature
+- EnemyHealthbar:
+	- Added 2 new NPC types
+- HUDList:
+	- Created custom name for egg + treasure loot trackers
+- RichPresence:
+	- Added name of new heist
+
+
 # WolfHUD v3.1.0
 
 ### Changelog:
