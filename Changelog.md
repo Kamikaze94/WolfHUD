@@ -1,4 +1,18 @@
-# WolfHUD v3.0
+# WolfHUD v3.1.0
+
+### Changelog:
+
+- General:
+	- Enabled automatic updates via GitHUB
+- HUDList:
+	- Added Farbergee egg + Treasure loot types
+	- Added security_mex + civilian_marachi units
+- CustomHUD:
+	- Fixed display of skins with new weapon_color system
+- LoadoutPanel:
+	- Fixed display of skins with new weapon_color system
+
+# WolfHUD v3.0.0
 
 __Note:__
   
@@ -144,3 +158,8 @@ __Note:__
     - Custody and Down timer moved a little, to fix overlap with centered assault banner (_Thanks to BangL_)
     - Fixed Skill tier text overlapping for the first not unlocked tier that gets highlighted
     - Added saving of lobby settings. (_Made by BangL and me_)
+
+---
+  
+  
+### Changelogs of the previous Versions are available [here](http://paydaymods.com/mods/patchnotes/298/).
