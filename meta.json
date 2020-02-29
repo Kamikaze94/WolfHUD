@@ -2,7 +2,7 @@
     {
         "ident": "wolfhud",
         "hash": "54a85f608d98b7673fc3c80aba0d909040c565363cbe9a3aaaa77d85e93eb624",
-        "download": "https://github.com/Kamikaze94/WolfHUD/archive/master.zip",
-        "patchnotes": "https://github.com/Kamikaze94/WolfHUD/blob/autoupdate/Changelog.md"
+        "download_url": "https://github.com/Kamikaze94/WolfHUD/archive/master.zip",
+        "patchnotes_url": "https://github.com/Kamikaze94/WolfHUD/blob/autoupdate/Changelog.md"
     }
 ]
