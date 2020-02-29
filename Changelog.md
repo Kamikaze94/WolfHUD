@@ -1,14 +1,15 @@
-# WolfHUD v3.1.1
+# WolfHUD v3.1.1 & v3.1.2
 
 __Note:__
   
-    - __WolfHUDTweakData.lua__ got updated this release.
+    - 'WolfHUDTweakData.lua' got updated this release.
 	- If you use a customized one, please make sure, you update it.
 
 ### Changelog:
 
 - General:
 	- Updated README.md with new details on autoupdate feature
+	- Got rid of all files and fodlers starting with a dot, to fix autoupdates
 - EnemyHealthbar:
 	- Added 2 new NPC types
 - HUDList:
