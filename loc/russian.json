@@ -107,6 +107,8 @@
 	"wolfhud_hudlist_loot_shoes" : "Обувь",
 	"wolfhud_hudlist_loot_toy" : "Игрушка",
 	"wolfhud_hudlist_loot_vr" : "Шлем",
+	"wolfhud_hudlist_loot_egg" : "Egg",
+	"wolfhud_hudlist_loot_treasure" : "Treasure",
 	"wolfhud_hudlist_showcase" : "Витрина",
 
 	"wolfhud_hudlist_buff_basic" : "Базовый",
@@ -135,6 +137,7 @@
 	"wolfhud_tabstats_alltime_stat" : "За все время:",
 
 	"wolfhud_enemy_civilian" : "Гражданский",
+	"wolfhud_enemy_mariachi" : "Mariachi Band Member",
 	"wolfhud_enemy_gangster" : "Бандит",
 	"wolfhud_enemy_biker" : "Байкер",
 	"wolfhud_enemy_bolivian_security_mex" : "Охранник Койопа",

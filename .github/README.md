@@ -12,8 +12,6 @@ I got the permission from **Seven, ViciousWalrus, Undeadsewer, FishTaco, friendI
 
 **Huge thanks to [Kampfhörnchen](http://modworkshop.net/member.php?action=profile&uid=19364) for creating a better logo and a banner.**
 
-Keep in mind, that this is a development version. For a more stable release, get your version [here](http://paydaymods.com/mods/298/wolfhud).
-
 ## Preview
 
 <p align="center">
@@ -37,16 +35,22 @@ To make this mod work you will need to install __[SuperBLT](https://superblt.zni
 5. Rename the folder **WolfHUD-master** to **WolfHUD** *(Optional)*
 6. Start the game once. It will prompt you to update Federal Inventory.
 
+## AutoUpdates
+
+This mod uses SuperBLTs custom update URL support.  
+When an update is available, you'll be notified about it in the game.  
+The update can be downloaded and installed through SuperBLTs download manager. 
+
 ## If you don't want/like Inventory Icons
 
 To remove "Federal Inventory" go to your **PAYDAY 2/assets/mod_overrides/Federal Inventory** folder and delete it.
-
+ 
 ## Bug reports
 
-If you encounter any bugs, feel free to post about it on the issues tab!
-Please try to provide information from your crashlog and the actions you and your teammates were doing, when you crashed. ;)
-The Crashlog can be found at **%localappdata%/PAYDAY 2/crashlog.txt**.
-The BLT log can be found at **PAYDAY 2/mods/logs/**.
+If you encounter any bugs, feel free to post about it on the issues tab!  
+Please try to provide information from your crashlog and the actions you and your teammates were doing, when you crashed. ;)  
+The Crashlog can be found at **%localappdata%/PAYDAY 2/crashlog.txt**.  
+The BLT log can be found at **PAYDAY 2/mods/logs/**.  
 
 ## Included Mods
 
@@ -97,7 +101,7 @@ The BLT log can be found at **PAYDAY 2/mods/logs/**.
 * French made by **Elise MRX (La Mule)**
 * Portuguese made by **Kazenin (Aldo Raine)**
 
-Big credit goes to all of you!
-Without your awesome mods, I would have quitted this game a long time ago!
-**If I forgot to mention you, I'm really sorry.
-Please feel free to contact me, so I can credit you, for the awesome stuff you have made :)**
+Big credit goes to all of you!  
+Without your awesome mods, I would have quitted this game a long time ago!  
+**If I forgot to mention you, I'm really sorry.  
+Please feel free to contact me, so I can credit you, for the awesome stuff you have made :)**  

@@ -107,6 +107,8 @@
 	"wolfhud_hudlist_loot_shoes" : "鞋",
 	"wolfhud_hudlist_loot_toy" : "玩具",
 	"wolfhud_hudlist_loot_vr" : "VR",
+	"wolfhud_hudlist_loot_egg" : "Egg",
+	"wolfhud_hudlist_loot_treasure" : "Treasure",
 	"wolfhud_hudlist_showcase" : "展示柜",
 
 	"wolfhud_hudlist_buff_basic" : "基础",
@@ -135,6 +137,7 @@
 	"wolfhud_tabstats_alltime_stat" : "全部时间:",
 
 	"wolfhud_enemy_civilian" : "平民",
+	"wolfhud_enemy_mariachi" : "Mariachi Band Member",
 	"wolfhud_enemy_gangster" : "黑帮",
 	"wolfhud_enemy_biker" : "飞车党",
 	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",

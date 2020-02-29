@@ -124,6 +124,7 @@ function WolfHUDTweakData:init()
 	self.CHARACTER_NAMES = {
 		[ "civilian" ] 							= { default = "wolfhud_enemy_civilian" },
 		[ "civilian_female" ] 					= { default = "wolfhud_enemy_civilian" },
+		[ "civilian_mariachi" ] 				= { default = "wolfhud_enemy_civilian" },
 		[ "captain" ] 							= { default = "wolfhud_enemy_civilian" },
 		[ "gangster" ] 							= { default = "wolfhud_enemy_gangster" },
 		[ "biker" ] 							= { default = "wolfhud_enemy_biker" },
@@ -133,6 +134,7 @@ function WolfHUDTweakData:init()
 		[ "bolivian" ]							= { default = "wolfhud_enemy_bolivian_thug" },
 		[ "mobster" ] 							= { default = "wolfhud_enemy_mobster" },
 		[ "security" ] 							= { default = "wolfhud_enemy_security" },
+		[ "security_mex" ] 						= { default = "wolfhud_enemy_security" },
 		[ "security_undominatable" ] 			= { default = "wolfhud_enemy_security" },
 		[ "mute_security_undominatable" ]		= { default = "wolfhud_enemy_security" },
 		[ "gensec" ] 							= { default = "wolfhud_enemy_gensec" },

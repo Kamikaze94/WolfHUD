@@ -107,6 +107,8 @@
 	"wolfhud_hudlist_loot_shoes" : "Chaussures",
 	"wolfhud_hudlist_loot_toy" : "Jouet",
 	"wolfhud_hudlist_loot_vr" : "Casque VR",
+	"wolfhud_hudlist_loot_egg" : "Egg",
+	"wolfhud_hudlist_loot_treasure" : "Treasure",
 	"wolfhud_hudlist_showcase" : "Vitrine",
 
 	"wolfhud_hudlist_buff_basic" : "Basique",
@@ -135,6 +137,7 @@
 	"wolfhud_tabstats_alltime_stat" : "Stats générales:",
 
 	"wolfhud_enemy_civilian" : "Civil",
+	"wolfhud_enemy_mariachi" : "Mariachi Band Member",
 	"wolfhud_enemy_gangster" : "Gangster",
 	"wolfhud_enemy_biker" : "Motard",
 	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",

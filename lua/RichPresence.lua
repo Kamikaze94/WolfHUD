@@ -322,6 +322,8 @@ if RequiredScript == "lib/managers/platformmanager" then
 			["#Level_mex_cooking"] = 		"Border Crystals",
 			["#Job_mex"] = 					"Border Crossing",
 			["#Level_mex"] = 				"Border Crossing",
+			["#Job_bex"] = 					"San Martín Bank",
+			["#Level_bex"] = 				"San Martín Bank",
 		}
 
 		local data = {
