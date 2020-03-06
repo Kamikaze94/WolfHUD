@@ -1065,7 +1065,7 @@ function LoadoutWeaponItem:update_weapon(outfit)
 		if self._loadout ~= weapon_id then
 			self._loadout = weapon_id
 			local cosmetic_id = outfit[self._name].cosmetics and outfit[self._name].cosmetics.id
-			local weapon_skin = tweak_data.blackmarket.weapon_skins[weapon_id] and not tweak_data.blackmarket.weapon_skins[weapon_id].is_a_color_skin or false
+			local weapon_skin = tweak_data.blackmarket.weapon_skins[cosmetic_id] and not tweak_data.blackmarket.weapon_skins[cosmetic_id].is_a_color_skin or false
 			local texture, name, rarity = self:get_outfit_data(weapon_skin and "weapon_skin" or "weapon", weapon_skin and cosmetic_id or weapon_id)
 
 			self:set_text(name)

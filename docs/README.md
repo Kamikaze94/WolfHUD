@@ -28,18 +28,17 @@ To make this mod work you will need to install __[SuperBLT](https://superblt.zni
 
 ## Installation (Direct Download)
 
-1. Click on the **Clone or Download** Button at the top of this site
-2. Click on the **Download .ZIP** Button
-3. Open the downloaded archive, using WinRAR or 7Zip
-4. Extract the **WolfHUD-master** folder into your 'PAYDAY 2/mods' folder
-5. Rename the folder **WolfHUD-master** to **WolfHUD** *(Optional)*
-6. Start the game once. It will prompt you to update Federal Inventory.
+1. [Download WolfHUD from here](https://github.com/Kamikaze94/WolfHUD/archive/master.zip) or clone the master branch.  
+2. Open the downloaded archive, using WinRAR or 7Zip
+3. Extract the **WolfHUD-master** folder into your 'PAYDAY 2/mods' folder
+4. Start the game once. It will prompt you to update Federal Inventory.
 
 ## AutoUpdates
 
 This mod uses SuperBLTs custom update URL support.  
 When an update is available, you'll be notified about it in the game.  
-The update can be downloaded and installed through SuperBLTs download manager. 
+The update can be downloaded and installed through SuperBLTs download manager.   
+*(The installation-folder needs to be named **WolfHUD-master** for autoupdates to work!)*
 
 ## If you don't want/like Inventory Icons
 
@@ -100,6 +99,7 @@ The BLT log can be found at **PAYDAY 2/mods/logs/**.
 * Chinese made by **zhongfly** & **CoolLKK**
 * French made by **Elise MRX (La Mule)**
 * Portuguese made by **Kazenin (Aldo Raine)**
+* Italian made by **LeecanIt**
 
 Big credit goes to all of you!  
 Without your awesome mods, I would have quitted this game a long time ago!  
