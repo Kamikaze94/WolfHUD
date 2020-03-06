@@ -1,8 +1,8 @@
 [
     {
         "ident": "wolfhud",
-        "hash": "98f18a9d731613ac659e2e073ac45c7ee5c7bbe8f7dafb83e20d5d20442b51df",
+        "hash": "054624fa924d4c9adcc1b386ed1afa861e1d54420354fd30b188f2ccf8ca311a",
         "download_url": "https://github.com/Kamikaze94/WolfHUD/archive/master.zip",
-        "patchnotes_url": "https://github.com/Kamikaze94/WolfHUD/blob/autoupdate/Changelog.md"
+        "patchnotes_url": "https://github.com/Kamikaze94/WolfHUD/releases/latest"
     }
 ]
