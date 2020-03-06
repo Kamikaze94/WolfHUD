@@ -4,6 +4,7 @@
 ### Changelog Bugfix 3:
 - General:
 	- Updated README with new info on autoupdates
+	- Fixed encoding of file mod.txt
 - LoadoutPanel: 
 	- Fixed wrong weapon skin icons
 
