@@ -45,7 +45,7 @@ jobs:
                 "ident": "$IDENT",
                 "hash": "$HASH",
                 "download_url": "https://github.com/$GITHUB_REPOSITORY/archive/$BRANCH_DL.zip",
-                "patchnotes_url": "https://github.com/$GITHUB_REPOSITORY/blob/$CHANGELOG"
+                "patchnotes_url": "https://github.com/$GITHUB_REPOSITORY/releases/latest"
             }
         ]
         EOM

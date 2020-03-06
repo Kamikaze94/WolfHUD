@@ -1,24 +1,37 @@
-# WolfHUD v3.1.1 & v3.1.2
+# WolfHUD v3.1
+
+
+### Changelog Bugfix 3:
+- General:
+	- Updated README with new info on autoupdates
+- LoadoutPanel: 
+	- Fixed wrong weapon skin icons
+
+### Changelog Bugfix 2:
+__Note:__
+  
+    For updates via the Downloadmanager: 
+	- The WolfHUD insatll folder must be named 'WolfHUD-master'
+	- The WolfHUD install folder cannot contain any files or folder names starting with a dot.
+
+- General:
+	- Got rid of all files and folders starting with a dot, to fix autoupdates
+
+### Changelog Bugfix 1:
 
 __Note:__
   
     - 'WolfHUDTweakData.lua' got updated this release.
 	- If you use a customized one, please make sure, you update it.
 
-### Changelog:
-
 - General:
 	- Updated README.md with new details on autoupdate feature
-	- Got rid of all files and fodlers starting with a dot, to fix autoupdates
 - EnemyHealthbar:
 	- Added 2 new NPC types
 - HUDList:
 	- Created custom name for egg + treasure loot trackers
 - RichPresence:
 	- Added name of new heist
-
-
-# WolfHUD v3.1.0
 
 ### Changelog:
 
@@ -32,7 +45,7 @@ __Note:__
 - LoadoutPanel:
 	- Fixed display of skins with new weapon_color system
 
-# WolfHUD v3.0.0
+# WolfHUD v3.0
 
 __Note:__
   
