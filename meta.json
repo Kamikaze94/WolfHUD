@@ -4,5 +4,11 @@
         "hash": "60274a366222d25d41ad3ac26eb9d015b9e6548d8f4927c3335b12082f1c81af",
         "download_url": "https://github.com/Kamikaze94/WolfHUD/archive/master.zip",
         "patchnotes_url": "https://github.com/Kamikaze94/WolfHUD/releases/latest"
+    },
+    {
+        "ident": "fed_inv",
+        "hash": "6d4d3621818333a94df36e2492b9a730481d4125916ef3c8f7bde337f08a6ff2",
+        "download_url": "https://github.com/Kamikaze94/WolfHUD/raw/autoupdate/fed_inv/fed_inv.zip",
+        "patchnotes_url": "https://github.com/Kamikaze94/WolfHUD/releases/latest"
     }
 ]

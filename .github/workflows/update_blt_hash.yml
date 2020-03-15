@@ -4,39 +4,48 @@ on:
   push:
     branches:
       - autoupdate
-      
+
 env:
   IDENT: wolfhud                        #Identifier for the mod.
+  TEX_IDENT: fed_inv                    #Identifier for the texture override
   BRANCH_DL: master                     #Branch hosting the stable release version.
   BRANCH_UPD: autoupdate                #Branch hosting the meta.json and SuperBLT_Hasher.py files.
   CHANGELOG: autoupdate/Changelog.md    #Branch + Filename for the Changelog-File.
-        
+
 jobs:
   update-hash:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     
     steps:
-    - name: Checkout Mod Branch
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ env.BRANCH_DL }}
-        path: "./${{ env.BRANCH_DL }}/"
-    - name: Checkout Updater Branch
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ env.BRANCH_UPD }}
-        token: ${{ github.token }}
-        path: "./${{ env.BRANCH_UPD }}/"
     - name: Setup Python
       uses: actions/setup-python@v1.1.1
       with:
         python-version: '3.x'
         architecture: 'x64'
+    - name: Checkout Mod Branch
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.BRANCH_DL }}
+        path: "${{ github.workspace }}/${{ env.BRANCH_DL }}/"
+    - name: Checkout Updater Branch
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.BRANCH_UPD }}
+        token: ${{ github.token }}
+        path: "${{ github.workspace }}/${{ env.BRANCH_UPD }}/"
+    - name: Extract Override Mod
+      uses: montudor/action-zip@v0.1.0
+      with:
+        args: unzip -qq ${{ github.workspace }}/${{ env.BRANCH_UPD }}/${{ env.TEX_IDENT }}.zip -d ${{ github.workspace }}/${{ env.TEX_IDENT }}/
     - name: Calculate Hash
       id: hash
       run: |
         echo ::set-env name=HASH::$(python $GITHUB_WORKSPACE/$BRANCH_UPD/SuperBLT_Hasher.py $GITHUB_WORKSPACE/$BRANCH_DL/)
+    - name: Read Override Hash
+      id: hash
+      run: |
+        echo ::set-env name=TEX_HASH::$(python $GITHUB_WORKSPACE/$BRANCH_UPD/SuperBLT_Hasher.py "$GITHUB_WORKSPACE/$TEX_IDENT/Federal Inventory/")
     - name: Create local changes
       run: |
         cat <<EOM >$GITHUB_WORKSPACE/$BRANCH_UPD/meta.json
@@ -45,6 +54,12 @@ jobs:
                 "ident": "$IDENT",
                 "hash": "$HASH",
                 "download_url": "https://github.com/$GITHUB_REPOSITORY/archive/$BRANCH_DL.zip",
+                "patchnotes_url": "https://github.com/$GITHUB_REPOSITORY/releases/latest"
+            },
+            {
+                "ident": "$TEX_IDENT",
+                "hash": "$TEX_HASH",
+                "download_url": "https://github.com/$GITHUB_REPOSITORY/raw/$BRANCH_UPD/$TEX_IDENT.zip",
                 "patchnotes_url": "https://github.com/$GITHUB_REPOSITORY/releases/latest"
             }
         ]
