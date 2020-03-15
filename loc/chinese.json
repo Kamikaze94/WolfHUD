@@ -272,6 +272,8 @@
 	"wolfhud_inventory_names_desc" : "在其清单内显示你的武器、护甲、装备等的名称",
 	"wolfhud_skill_names_title" : "显示技能名称",
 	"wolfhud_skill_names_desc" : "总是在技能树里面显示技能名字",
+	"wolfhud_show_contractor_job_heat_title":"Show Contractor Heat",
+	"wolfhud_show_contractor_job_heat_desc":"Shows job heat in the contract broker list.",
 	"wolfhud_show_mini_icons_title" : "始终显示小图标",
 	"wolfhud_show_mini_icons_desc" : "总是显示所有武器的MOD图标，可选多个",
 	"wolfhud_no_slowmotion_title" : "关闭慢动作",

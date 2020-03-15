@@ -275,6 +275,8 @@
 	"wolfhud_inventory_names_desc" : "인벤토리 아이템 박스 안에 무기이름, 아이템이름 등을 표시합니다.",
 	"wolfhud_skill_names_title" : "스킬 이름 표시",
 	"wolfhud_skill_names_desc" : "항상 스킬창에서 스킬 이름이 표시됩니다.\n(기본적으로 마우스 커서를 올려야 스킬 이름이 표시됩니다)",
+	"wolfhud_show_contractor_job_heat_title":"Show Contractor Heat",
+	"wolfhud_show_contractor_job_heat_desc":"Shows job heat in the contract broker list.",
 	"wolfhud_show_mini_icons_title" : "작은 아이콘 표시",
 	"wolfhud_show_mini_icons_desc" : "개조된 무기 모드를 항상 박스 안에 표시합니다.\n(기본적으로 선택해야 모드가 표시됩니다)",
 	"wolfhud_no_slowmotion_title" : "슬로우 모션 비활성화",

@@ -266,6 +266,8 @@
     "wolfhud_inventory_names_desc" : "Mostra il nome dell'arma, armatura, equipaggiabile, ecc. all'interno del proprio riquadro nell'inventario.",
     "wolfhud_skill_names_title" : "Mostra nomi abilità",
     "wolfhud_skill_names_desc" : "Mostra sempre il nome delle abilità nella schermata delle abilità.",
+	"wolfhud_show_contractor_job_heat_title":"Show Contractor Heat",
+	"wolfhud_show_contractor_job_heat_desc":"Shows job heat in the contract broker list.",
     "wolfhud_show_mini_icons_title" : "Mostra sempre le mini-icone",
     "wolfhud_show_mini_icons_desc" : "Mostra sempre le mini-icone degli accessori delle tue armi, non solo quella equipaggiata.",
     "wolfhud_no_slowmotion_title" : "No Slow motion",

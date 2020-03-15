@@ -126,6 +126,7 @@
 					<post :hook_id="preplanningmapgui" :script_path="PrePlanManager.lua"/>
 					<post :hook_id="specializationboxgui" :script_path="Utils/InputDialog.lua"/>
 					<post :hook_id="items/menuitemmultichoice" :script_path="Scripts.lua"/>
+					<post :hook_id="items/contractbrokerheistitem" :script_path="ContractHeat.lua"/>
 
 					<group :hook_id="contractboxgui">
 						<post :script_path="MenuTweaks.lua"/>

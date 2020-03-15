@@ -277,6 +277,8 @@
 	"wolfhud_inventory_names_desc" : "Zeige die Namen von Waffen, Panzerung, Equipment, etc. in der Box im Inventar.",
 	"wolfhud_skill_names_title" : "Zeige Fähigkeiten Namen",
 	"wolfhud_skill_names_desc" : "Zeige die Namen der Fähigkeiten im Fähigkeitenmenü immer an.",
+	"wolfhud_show_contractor_job_heat_title":"Show Contractor Heat",
+	"wolfhud_show_contractor_job_heat_desc":"Shows job heat in the contract broker list.",
 	"wolfhud_show_mini_icons_title" : "Zeige permanente Mini-Icons",
 	"wolfhud_show_mini_icons_desc" : "Zeige die Modifikations Mini-Icons aller Waffen, nicht nur die der ausgewählten Waffe.",
 	"wolfhud_no_slowmotion_title" : "Keine Zeitlupe",

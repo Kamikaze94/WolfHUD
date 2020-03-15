@@ -450,6 +450,7 @@ if not _G.WolfHUD then
 				SHOW_WEAPON_MINI_ICONS 					= true,
 				USE_REAL_WEAPON_NAMES 					= true,
 				SHOW_SKILL_NAMES 						= true,
+				SHOW_CONTRACTOR_JOB_HEAT				= true,
 				CUSTOM_TAB_NAMES = {
 					primaries 							= { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
 					secondaries 						= { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
