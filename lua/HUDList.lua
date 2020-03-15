@@ -331,8 +331,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		civ_hostage =				{ type_id = "civ_hostage",	category = "hostages",	force_update = { "civ", "civilians" } 				},
 		cop_minion =				{ type_id = "minion",		category = "minions",	force_update = { "cop", "enemies" } 				},
 		sec_minion =				{ type_id = "minion",		category = "minions",	force_update = { "security", "enemies" }			},
-
-		boom = 						{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_boom" 					},
+		
+		--Restoration Overhaul Enemies
+		boom = 						{ type_id = "grenadier",	category = "enemies",	long_name = "wolfhud_enemy_boom" 					},
 		omnia_lpf = 				{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_omnia_lpf" 				},
 		summers = 					{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_summers" 				},
 		boom_summers = 				{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_boom_summers" 			},
@@ -340,6 +341,23 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		medic_summers = 			{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_medic_summers" 			},
 		spring = 					{ type_id = "phalanx",		category = "enemies",	long_name = "wolfhud_enemy_spring" 					},
 		fbi_vet = 					{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_fbi_vet" 				},
+
+		--Crackdown Enemies
+		deathvox_lightar = 			{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_deathvox_light" },
+		deathvox_heavyar = 			{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_deathvox_heavy" },
+		deathvox_lightshot = 		{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_deathvox_light" },
+		deathvox_heavyshot = 		{ type_id = "cop",			category = "enemies",	long_name = "wolfhud_enemy_deathvox_heavy" },
+		deathvox_greendozer = 		{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank" },
+		deathvox_blackdozer = 		{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank" },
+		deathvox_lmgdozer = 		{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank" },
+		deathvox_medicdozer =		{ type_id = "tank_med",		category = "enemies",	long_name = "wolfhud_enemy_tank_medic" },
+		deathvox_cloaker =			{ type_id = "spooc",		category = "enemies",	long_name = "wolfhud_enemy_spooc" },
+		deathvox_taser =			{ type_id = "taser",		category = "enemies",	long_name = "wolfhud_enemy_taser" },
+		deathvox_shield =			{ type_id = "shield",		category = "enemies",	long_name = "wolfhud_enemy_shield" },
+		deathvox_sniper =			{ type_id = "sniper",		category = "enemies",	long_name = "wolfhud_enemy_sniper" },
+		deathvox_medic =			{ type_id = "medic",		category = "enemies",	long_name = "wolfhud_enemy_medic" },
+		deathvox_grenadier =		{ type_id = "grenadier",	category = "enemies",	long_name = "wolfhud_enemy_boom" },
+		deathvox_guard =			{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" },
 	}
 
 	HUDListManager.SPECIAL_PICKUP_TYPES = {
@@ -2738,6 +2756,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			shield =		{ class = "ShieldCountItem", texture = buff_shield, color_id = "special_color", 	priority = 6 },
 			sniper =		{ class = "UnitCountItem",	 skills = 	{6, 5}, 	color_id = "special_color", 	priority = 6 },
 			medic = 		{ class = "UnitCountItem",	 skills = 	{5, 8}, 	color_id = "special_color", 	priority = 6 },
+			grenadier = 	{ class = "UnitCountItem",	 skills = 	{9, 9}, 	color_id = "special_color", 	priority = 6 },
 			thug_boss =		{ class = "UnitCountItem",	 skills = 	{1, 1}, 	color_id = "thug_color", 		priority = 4 },
 			phalanx =		{ class = "UnitCountItem",	 texture = buff_shield, color_id = "special_color", 	priority = 7 },
 
