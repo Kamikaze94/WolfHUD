@@ -43,7 +43,7 @@ jobs:
       run: |
         echo ::set-env name=HASH::$(python $GITHUB_WORKSPACE/$BRANCH_UPD/SuperBLT_Hasher.py $GITHUB_WORKSPACE/$BRANCH_DL/)
     - name: Read Override Hash
-      id: hash
+      id: texture_hash
       run: |
         echo ::set-env name=TEX_HASH::$(python $GITHUB_WORKSPACE/$BRANCH_UPD/SuperBLT_Hasher.py "$GITHUB_WORKSPACE/$TEX_IDENT/Federal Inventory/")
     - name: Create local changes
