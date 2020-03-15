@@ -207,6 +207,9 @@
 	"wolfhud_enemy_spring" : "캡틴 스프링",
 	"wolfhud_enemy_fbi_vet" : "베테랑 경찰",
 
+	"wolfhud_enemy_deathvox_light" : "ZEAL Unit",
+	"wolfhud_enemy_deathvox_heavy" : "Heavy ZEAL",
+
 	"wolfhud_multiselect_all" : "모두",
 	"wolfhud_multiselect_none" : "없음",
 	"wolfhud_multiselect_disabled" : "비활성화",

@@ -212,6 +212,33 @@ function WolfHUDTweakData:init()
 		[ "ecp_male" ] 							= { default = "menu_ecp_male" },
 		[ "ecp_female" ] 						= { default = "menu_ecp_female" },
 		[ "joy" ] 								= { default = "menu_joy" },
+		
+		--Restoration Overhaul Enemies
+		["boom"] 								= { default = "wolfhud_enemy_boom" },
+		["omnia_lpf"] 							= { default = "wolfhud_enemy_omnia_lpf" },
+		["summers"] 							= { default = "wolfhud_enemy_summers" },
+		["boom_summers"] 						= { default = "wolfhud_enemy_boom_summers" },
+		["taser_summers"] 						= { default = "wolfhud_enemy_taser_summers" },
+		["medic_summers"] 						= { default = "wolfhud_enemy_medic_summers" },
+		["spring"] 								= { default = "wolfhud_enemy_spring" },
+		["fbi_vet"] 							= { default = "wolfhud_enemy_fbi_vet" },
+
+		--Crackdown Enemies
+		["deathvox_lightar"] 					= { default = "wolfhud_enemy_deathvox_light" },
+		["deathvox_heavyar"] 					= { default = "wolfhud_enemy_deathvox_heavy" },
+		["deathvox_lightshot"] 					= { default = "wolfhud_enemy_deathvox_light" },
+		["deathvox_heavyshot"] 					= { default = "wolfhud_enemy_deathvox_heavy" },
+		["deathvox_greendozer"] 				= { default = "wolfhud_enemy_tank" },
+		["deathvox_blackdozer"] 				= { default = "wolfhud_enemy_tank" },
+		["deathvox_lmgdozer"] 					= { default = "wolfhud_enemy_tank" },
+		["deathvox_medicdozer"] 				= { default = "wolfhud_enemy_tank_medic" },
+		["deathvox_cloaker"] 					= { default = "wolfhud_enemy_spooc" },
+		["deathvox_taser"] 						= { default = "wolfhud_enemy_taser" },
+		["deathvox_shield"] 					= { default = "wolfhud_enemy_shield" },
+		["deathvox_sniper"] 					= { default = "wolfhud_enemy_sniper" },
+		["deathvox_medic"] 						= { default = "wolfhud_enemy_medic" },
+		["deathvox_grenadier"] 					= { default = "wolfhud_enemy_boom" },
+		["deathvox_guard"] 						= { default = "wolfhud_enemy_security" },
 	}
 
 	self:post_init()

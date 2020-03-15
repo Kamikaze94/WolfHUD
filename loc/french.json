@@ -206,6 +206,9 @@
 	"wolfhud_enemy_spring" : "Capitaine Spring",
 	"wolfhud_enemy_fbi_vet" : "Vétéran",
 
+	"wolfhud_enemy_deathvox_light" : "ZEAL Unit",
+	"wolfhud_enemy_deathvox_heavy" : "Heavy ZEAL",
+
 	"wolfhud_multiselect_all" : "Tout",
 	"wolfhud_multiselect_none" : "Aucun",
 	"wolfhud_multiselect_disabled" : "Désactivé",

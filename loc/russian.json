@@ -207,6 +207,9 @@
 	"wolfhud_enemy_spring" : "Капитан Спринг",
 	"wolfhud_enemy_fbi_vet" : "Ветеран Коп",
 
+	"wolfhud_enemy_deathvox_light" : "ZEAL Unit",
+	"wolfhud_enemy_deathvox_heavy" : "Heavy ZEAL",
+
 	"wolfhud_multiselect_all" : "Все",
 	"wolfhud_multiselect_none" : "Нет",
 	"wolfhud_multiselect_disabled" : "Отключен",

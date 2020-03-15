@@ -197,6 +197,9 @@
     "wolfhud_enemy_medic_summers" : "Sergente Doc",
     "wolfhud_enemy_spring" : "Capitano Spring",
     "wolfhud_enemy_fbi_vet" : "Poliziotto Veterano",
+
+	"wolfhud_enemy_deathvox_light" : "ZEAL Unit",
+	"wolfhud_enemy_deathvox_heavy" : "Heavy ZEAL",
  
     "wolfhud_multiselect_all" : "Tutto",
     "wolfhud_multiselect_none" : "Nessuno",
