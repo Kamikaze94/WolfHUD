@@ -480,6 +480,8 @@
 	"wolfhud_hudlist_progress_alpha_right_desc" : "Alpha value for the progress bars on right list items.",
 	"wolfhud_hudlist_progress_alpha_buff_title" : "Buff Progress Alpha",
 	"wolfhud_hudlist_progress_alpha_buff_desc" : "Alpha value for the progress bars on buff list items.",
+	"wolfhud_hudlist_timers_in_seconds_title" : "Timers in seconds",
+	"wolfhud_hudlist_timers_in_seconds_desc" : "Always display timers in seconds.",
 
 	"wolfhud_infopanels_left_options_name" : "Left List Options",
 	"wolfhud_infopanels_left_options_help" : "Options for the left info list.",

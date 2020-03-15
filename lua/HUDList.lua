@@ -5,7 +5,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local format_time_string = function(value)
 		local time_str
 
-		if math.floor(value) > 60 then
+		if math.floor(value) > 60 and not (HUDList and HUDList.ListOptions.timers_in_seconds) then
 			time_str = string.format("%d:%02d", math.floor(value / 60), math.floor(value % 60))
 		elseif math.floor(value) > 9.9 then
 			time_str = string.format("%d", math.floor(value))
@@ -183,6 +183,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		right_list_progress_alpha 		= WolfHUD:getSetting({"HUDList", "right_list_progress_alpha"}, 0.4),
 		left_list_progress_alpha 		= WolfHUD:getSetting({"HUDList", "left_list_progress_alpha"}, 0.4),
 		buff_list_progress_alpha 		= WolfHUD:getSetting({"HUDList", "buff_list_progress_alpha"}, 1.0),
+		
+		timers_in_seconds 				= WolfHUD:getSetting({"HUDList", "timers_in_seconds"}, false),
 
 		--Left side list
 		show_timers 					= WolfHUD:getSetting({"HUDList", "LEFT_LIST", "show_timers"}, true),     				--Drills, time locks, hacking etc.

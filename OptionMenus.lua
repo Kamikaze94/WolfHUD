@@ -1169,7 +1169,7 @@ if WolfHUD then
 								visible_reqs = {}, enabled_reqs = {},
 								value = {"HUDChat", "LINE_HEIGHT"},
 								min_value = 10,
-								max_value = 20,
+								max_value = 40,
 								step_size = 1,
 							},
 							{
@@ -1779,6 +1779,17 @@ if WolfHUD then
 					{
 						type ="divider",
 						size = 16,
+					},
+					{
+						type = "toggle",
+						name_id = "wolfhud_hudlist_timers_in_seconds_title",
+						desc_id = "wolfhud_hudlist_timers_in_second_desc",
+						value = {"HUDList", "timers_in_seconds"},
+						visible_reqs = {}, enabled_reqs = {},
+					},
+					{
+						type ="divider",
+						size = 8,
 					},
 					{
 						type = "slider",

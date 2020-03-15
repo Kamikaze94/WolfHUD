@@ -194,6 +194,7 @@ if not _G.WolfHUD then
 				thug_color 								= "white",		--EnemyCounter Thug and Mobster icon color
 				enemy_color 							= "white",		--EnemyCounter Cop and Specials icon color
 				special_color 							= "white",
+				timers_in_seconds 						= false,
 				LEFT_LIST = {
 					show_timers 							= true,     --Drills, time locks, hacking etc.
 					show_ammo_bags							= true,  	--Deployables (ammo)
@@ -776,6 +777,11 @@ if not _G.WolfHUD then
 			["GADGETS"] = function(setting, value)
 				if WeaponGadgetBase and WeaponGadgetBase.update_theme_setting and #setting >= 4 then
 					WeaponGadgetBase.update_theme_setting(setting[1], setting[2], setting[3], setting[4], WolfHUD:getColor(value) or value)
+				end
+			end,
+			["MOD_OVERRIDES"] = function(setting, value)
+				if FedInv then
+					FedInv.loadAssetsCallback()
 				end
 			end
 		}

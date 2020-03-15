@@ -43,6 +43,7 @@ The update can be downloaded and installed through SuperBLTs download manager.
 ## If you don't want/like Inventory Icons
 
 To remove "Federal Inventory" go to your **PAYDAY 2/assets/mod_overrides/Federal Inventory** folder and delete it.
+Don't download the "update" for it, obviously.
  
 ## Bug reports
 

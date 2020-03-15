@@ -487,6 +487,8 @@
 	"wolfhud_hudlist_progress_alpha_right_desc" : "Alphawert der Fortschrittsanzeigen der rechten Liste.",
 	"wolfhud_hudlist_progress_alpha_buff_title" : "Buff Fortschritts-Alpha",
 	"wolfhud_hudlist_progress_alpha_buff_desc" : "Alphawert der Fortschrittsanzeigen der Buff Liste.",
+	"wolfhud_hudlist_timers_in_seconds_title" : "Timers in seconds",
+	"wolfhud_hudlist_timers_in_seconds_desc" : "Always display timers in seconds.",
 
 	"wolfhud_infopanels_left_options_name" : "Linke Info Liste",
 	"wolfhud_infopanels_left_options_help" : "Optionen der linken Liste.",
