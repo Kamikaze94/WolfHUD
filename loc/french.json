@@ -274,6 +274,8 @@
 	"wolfhud_inventory_names_desc" : "Affiche le nom des armes, de l'armure, de l'équipement ... équipés dans l'emplacement d'inventaire.",
 	"wolfhud_skill_names_title" : "Afficher le nom des compétences",
 	"wolfhud_skill_names_desc" : "Toujours afficher le nom des compétences dans l'arborescence des compétences.",
+	"wolfhud_show_contractor_job_heat_title":"Show Contractor Heat",
+	"wolfhud_show_contractor_job_heat_desc":"Shows job heat in the contract broker list.",
 	"wolfhud_show_mini_icons_title" : "Toujours afficher les petites icônes",
 	"wolfhud_show_mini_icons_desc" : "Affiche les petites icônes de modifications d'armes sur toutes les armes, et non uniquement sur celles sélectionnées.",
 	"wolfhud_no_slowmotion_title" : "Désactiver le Slow Motion",

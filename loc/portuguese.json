@@ -275,6 +275,8 @@
 	"wolfhud_inventory_names_desc" : "Mostra os nomes das suas armas, colete, deployables, etc. dentro da caixa no inventário.",
 	"wolfhud_skill_names_title" : "Mostrar o nome das Skills",
 	"wolfhud_skill_names_desc" : "Sempre mostrar os nomes das skills na árvore de habilidades.",
+	"wolfhud_show_contractor_job_heat_title":"Show Contractor Heat",
+	"wolfhud_show_contractor_job_heat_desc":"Shows job heat in the contract broker list.",
 	"wolfhud_show_mini_icons_title" : "Sempre mostrar Mini-Icons",
 	"wolfhud_show_mini_icons_desc" : "Sempre mostrar os mod icons de todas as armas, não apenas as selecionadas.",
 	"wolfhud_no_slowmotion_title" : "Sem Slow Motion",

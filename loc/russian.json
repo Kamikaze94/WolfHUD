@@ -275,6 +275,8 @@
 	"wolfhud_inventory_names_desc" : "Показать названия вашего оружия, брони, снаряжения и т.д. внутри ячейки в инвентаре.",
 	"wolfhud_skill_names_title" : "Показать названия навыков",
 	"wolfhud_skill_names_desc" : "Всегда показывает названия навыков в дереве навыков.",
+	"wolfhud_show_contractor_job_heat_title":"Show Contractor Heat",
+	"wolfhud_show_contractor_job_heat_desc":"Shows job heat in the contract broker list.",
 	"wolfhud_show_mini_icons_title" : "Всегда показывать мини-иконки",
 	"wolfhud_show_mini_icons_desc" : "Всегда показывать иконки модификаций всех оружий, а не только выбранного.",
 	"wolfhud_no_slowmotion_title" : "Без замедления",
