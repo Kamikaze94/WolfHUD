@@ -5,7 +5,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	local format_time_string = function(value)
 		local time_str
 
-		if math.floor(value) > 60 and not (HUDList and HUDList.ListOptions.timers_in_seconds) then
+		if math.floor(value) > 60 and not (HUDListManager and HUDListManager.ListOptions.timers_in_seconds) then
 			time_str = string.format("%d:%02d", math.floor(value / 60), math.floor(value % 60))
 		elseif math.floor(value) > 9.9 then
 			time_str = string.format("%d", math.floor(value))

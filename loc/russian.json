@@ -14,6 +14,8 @@
 	"wolfhud_dialog_requires_superblt_title" : "[WolfHUD] Не обнаружен SuperBLT!",
 	"wolfhud_dialog_requires_superblt_desc_long" : "Для работы WoldHUD требуется SupeBLT.\nSuperBLT - модернизированная версия ИДЕ с рядом существенных улучшений. \nОн полностью совместим с обычными BLT модами.\n\nВы можете найти дополнительную информацию и инструкцию по установке здесь: \n$URL",
 	"wolfhud_dialog_requires_superblt_desc_short" : "WolfHUD больше не совместим с обычным BLT.\nДля дальнейшего использования мода, пожалуйста, обновитесь до SuperBLT.\nВы можете найти SuperBLT здесь: '$URL'.",
+	"wolfhud_dialog_update_install_folder_title" : "[WolfHUD] Auto-Updates compromised!",
+	"wolfhud_dialog_update_install_folder_desc" : "For automatic updates, WolfHUD's install folder \nneeds to be named 'mods/WolfHUD-master/'. \n(Currently its 'mods/$FOLDER/')",
 	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME в настоящее время отключен.",
 	"woldhud_notification_disabled_override_desc" : "Если вы передумали, нажмите сюда, чтобы спросить потом.",
 	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME готов к установке.",

@@ -14,6 +14,8 @@
     "wolfhud_dialog_requires_superblt_title" : "[WolfHUD] SuperBLT non rilevato!",
     "wolfhud_dialog_requires_superblt_desc_long" : "WolfHUD ha bisogno di SuperBLT per funzionare.\nSuperBLT è un fork del Hook caricatore di mod conosciuto come BLT per PAYDAY 2, con vari miglioramenti. \nÈ completamente retro compatibile con le mod per BLT regolare.\n\nPuoi trovare informazioni aggiuntive e le istruzioni per l'installazione qui: \n$URL",
     "wolfhud_dialog_requires_superblt_desc_short" : "WolfHUD non è più compatibile con il BLT regolare.\nAggiorna la tua versione al SuperBLT per continuare ad usarlo.\nPuoi trovare il SuperBLT su '$URL'.",
+	"wolfhud_dialog_update_install_folder_title" : "[WolfHUD] Auto-Updates compromised!",
+	"wolfhud_dialog_update_install_folder_desc" : "For automatic updates, WolfHUD's install folder \nneeds to be named 'mods/WolfHUD-master/'. \n(Currently its 'mods/$FOLDER/')",
     "woldhud_notification_disabled_override_title" : "WolfHUD: $NAME è attualmente disabilitato.",
     "woldhud_notification_disabled_override_desc" : "Se hai cambiato idea, clicca qui per fartelo chiedere di nuovo.",
     "woldhud_notification_restart_override_title" : "WolfHUD: $NAME è pronto per l'installazione.",

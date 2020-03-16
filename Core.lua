@@ -5,8 +5,9 @@ if not _G.WolfHUD then
 	WolfHUD.assets_path = "./assets/mod_overrides/"
 	WolfHUD.settings_path = WolfHUD.save_path .. "WolfHUD_v2.json"
 	WolfHUD.tweak_file = "WolfHUDTweakData.lua"
-	WolfHUD.identifier = string.match(WolfHUD.mod_path, "[\\/]([%w_-]+)[\\/]$") or "WolfHUD"
+	WolfHUD.identifier = string.match(WolfHUD.mod_path, "[\\/]([%w_-%.]+)[\\/]$") or "WolfHUD"
 
+	WolfHUD.notifications = {}
 	WolfHUD.settings = {}
 	WolfHUD.tweak_data = {}
 
@@ -1372,6 +1373,20 @@ if not _G.WolfHUD then
 						priority = 99
 					}
 					local notif_id = BLT.Notifications:add_notification(params)
+					WolfHUD.notifications["no_superblt"] = notif_id
+				end
+			elseif mod:AreUpdatesEnabled() and WolfHUD.identifier ~= "WolfHUD-master" then
+				if BLT.Notifications then
+					local params = {
+						title = managers.localization:text("wolfhud_dialog_update_install_folder_title"),
+						text = managers.localization:text("wolfhud_dialog_update_install_folder_desc", {FOLDER = WolfHUD.identifier}),
+						icon = mod:GetModImage(),
+						--icon_texture_rect = {0, 0, 1 , 1},
+						color = Color(1, 0.2, 0),
+						priority = 10
+					}
+					local notif_id = BLT.Notifications:add_notification(params)
+					WolfHUD.notifications["no_autoupdates"] = notif_id
 				end
 			end
 		end
