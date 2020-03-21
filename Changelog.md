@@ -1,3 +1,21 @@
+# WolfHUD v3.2
+
+
+### Changelog:
+- General:
+	- Added Federal Inventory to new autoupdate system
+	- Added notification if autoupdates will not work
+- HUDList: 
+	- Added option for all times in secods (Thanks to FraudBatman, PR #420)
+- EnemyHealthbar & HUDList
+	- Added crackdown unit definitions (Thanks to VxWolf, PR #676)
+- CustomHUD & LoadoutPanel: (Thanks to fragtane)
+	- Fixed CustomHUD teammate weapon skins
+	- Compatability with [Super Skin Swapper](TODO) _ToDo: Link_
+- MenuTweaks:
+	- Added heat percentage in contract broker (Thanks to Frosthaven, PR #782)
+
+
 # WolfHUD v3.1
 
 
