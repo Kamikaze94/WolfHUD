@@ -4169,7 +4169,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 		if wbase._cosmetics_data and wbase._cosmetics_data.name_id then
 			local skin_id = wbase._cosmetics_data.name_id:gsub("bm_wskn_", "")
 			local skin_tweak = tweak_data.blackmarket.weapon_skins[skin_id]
-			if skin_tweak and not skin_tweak.is_a_color_skin and (table.contains(skin_tweak.weapon_ids, weapon_id) or (skin_tweak.weapon_id and skin_tweak.weapon_id == weapon_id) != (skin_tweak.use_blacklist or false)) then
+			if skin_tweak and not skin_tweak.is_a_color_skin and (table.contains(skin_tweak.weapon_ids or {}, weapon_id) or (skin_tweak.weapon_id and skin_tweak.weapon_id == weapon_id) ~= (skin_tweak.use_blacklist or false)) then
 				name_id = skin_id
 			end
 		end
@@ -4407,7 +4407,7 @@ if RequiredScript == "lib/managers/hudmanagerpd2" then
 					local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(data.factory_id)
 					local skin_id = data.cosmetics and data.cosmetics.id
 					local skin_tweak = tweak_data.blackmarket.weapon_skins[skin_id]
-					local weapon_skin = skin_tweak and not skin_tweak.is_a_color_skin and (table.contains(skin_tweak.weapon_ids, weapon_id) or (skin_tweak.weapon_id and skin_tweak.weapon_id == weapon_id) != (skin_tweak.use_blacklist or false)) or false
+					local weapon_skin = skin_tweak and not skin_tweak.is_a_color_skin and (table.contains(skin_tweak.weapon_ids or {}, weapon_id) or (skin_tweak.weapon_id and skin_tweak.weapon_id == weapon_id) ~= (skin_tweak.use_blacklist or false)) or false
 					local silencer = managers.weapon_factory:has_perk("silencer", data.factory_id, data.blueprint)
 					self:set_teammate_weapon(panel_id, selection, weapon_skin and skin_id or weapon_id, silencer)
 

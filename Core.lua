@@ -5,7 +5,7 @@ if not _G.WolfHUD then
 	WolfHUD.assets_path = "./assets/mod_overrides/"
 	WolfHUD.settings_path = WolfHUD.save_path .. "WolfHUD_v2.json"
 	WolfHUD.tweak_file = "WolfHUDTweakData.lua"
-	WolfHUD.identifier = string.match(WolfHUD.mod_path, "[\\/]([%w_-%.]+)[\\/]$") or "WolfHUD"
+	WolfHUD.identifier = string.match(WolfHUD.mod_path, "[\\/]([%w_%-%.]+)[\\/]$") or "WolfHUD"
 
 	WolfHUD.notifications = {}
 	WolfHUD.settings = {}
