@@ -109,8 +109,8 @@
 	"wolfhud_hudlist_loot_shoes" : "Zapato",
 	"wolfhud_hudlist_loot_toy" : "Juguete",
 	"wolfhud_hudlist_loot_vr" : "Casco",
-	"wolfhud_hudlist_loot_egg" : "Egg",
-	"wolfhud_hudlist_loot_treasure" : "Treasure",
+	"wolfhud_hudlist_loot_egg" : "Huevo",
+	"wolfhud_hudlist_loot_treasure" : "Tesoro",
 	"wolfhud_hudlist_showcase" : "Vitrina",
 
 	"wolfhud_hudlist_buff_basic" : "Básico",
@@ -139,10 +139,10 @@
 	"wolfhud_tabstats_alltime_stat" : "Todo el Tiempo:",
 
 	"wolfhud_enemy_civilian" : "CIVIL",
-	"wolfhud_enemy_mariachi" : "Mariachi Band Member",
+	"wolfhud_enemy_mariachi" : "MARIACHI",
 	"wolfhud_enemy_gangster" : "GANGSTER",
 	"wolfhud_enemy_biker" : "MOTOCILISTA",
-	"wolfhud_enemy_bolivian_security_mex" : "Coyopa Security",
+	"wolfhud_enemy_bolivian_security_mex" : "Guarda Coyopa",
 	"wolfhud_enemy_bolivian_security" : "Seguridad de Sosa",
 	"wolfhud_enemy_bolivian_thug" : "Gangster de Sosa",
 	"wolfhud_enemy_mobster" : "GANGSTER RUSO",
