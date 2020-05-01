@@ -5,8 +5,10 @@ local init_original = ContractBrokerHeistItem.init
 function ContractBrokerHeistItem:init(...) -- parent_panel, job_data, idx
 
 	init_original(self, ...)
+	
+	local job_tweak = tweak_data.narrative:job_data(self._job_data.job_id)
 
-	if WolfHUD:getSetting({"INVENTORY", "SHOW_CONTRACTOR_JOB_HEAT"}, true) then
+	if WolfHUD:getSetting({"INVENTORY", "SHOW_CONTRACTOR_JOB_HEAT"}, true) and job_tweak and job_tweak.contact ~= "skirmish" then
 		local heat_text, heat_color = self:get_job_heat_text(self._job_data.job_id)
 		
 		local heat = self._panel:text({
