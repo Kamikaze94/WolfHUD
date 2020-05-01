@@ -1,6 +1,18 @@
 # WolfHUD v3.2
 
 
+### Changelog Bugfix 1:
+- General:
+	- Added Dutch translation (_by Azoraqua_)
+	- Updated Russian translation (_by chromKa_)
+	- Updated Spanish translation (_by ElReyZero1201 _)
+- MenuTweaks: 
+	- Fixed crash on right click
+- RichPresence: 
+	- Added new Holdout maps
+- ContractHeat: 
+	- Hide heat percent in holdout mode
+
 ### Changelog:
 - General:
 	- Added Federal Inventory to new autoupdate system
@@ -11,7 +23,7 @@
 	- Added crackdown unit definitions (Thanks to VxWolf, PR #676)
 - CustomHUD & LoadoutPanel: (Thanks to fragtane)
 	- Fixed CustomHUD teammate weapon skins
-	- Compatability with [Super Skin Swapper](TODO) _ToDo: Link_
+	- Compatability with [Super Skin Swapper](https://modworkshop.net/mod/26919)
 - MenuTweaks:
 	- Added heat percentage in contract broker (Thanks to Frosthaven, PR #782)
 
