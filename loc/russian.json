@@ -14,8 +14,8 @@
 	"wolfhud_dialog_requires_superblt_title" : "[WolfHUD] Не обнаружен SuperBLT!",
 	"wolfhud_dialog_requires_superblt_desc_long" : "Для работы WoldHUD требуется SupeBLT.\nSuperBLT - модернизированная версия ИДЕ с рядом существенных улучшений. \nОн полностью совместим с обычными BLT модами.\n\nВы можете найти дополнительную информацию и инструкцию по установке здесь: \n$URL",
 	"wolfhud_dialog_requires_superblt_desc_short" : "WolfHUD больше не совместим с обычным BLT.\nДля дальнейшего использования мода, пожалуйста, обновитесь до SuperBLT.\nВы можете найти SuperBLT здесь: '$URL'.",
-	"wolfhud_dialog_update_install_folder_title" : "[WolfHUD] Auto-Updates compromised!",
-	"wolfhud_dialog_update_install_folder_desc" : "For automatic updates, WolfHUD's install folder \nneeds to be named 'mods/WolfHUD-master/'. \n(Currently its 'mods/$FOLDER/')",
+	"wolfhud_dialog_update_install_folder_title" : "[WolfHUD] Автообновления скомпроментированы!",
+	"wolfhud_dialog_update_install_folder_desc" : "Для автоматических обновлений установочная папка WolfHUD \nдолжна называться 'mods/WolfHUD-master/'. \n(В настоящее время это 'mods/$FOLDER/')",
 	"woldhud_notification_disabled_override_title" : "WolfHUD: $NAME в настоящее время отключен.",
 	"woldhud_notification_disabled_override_desc" : "Если вы передумали, нажмите сюда, чтобы спросить потом.",
 	"woldhud_notification_restart_override_title" : "WolfHUD: $NAME готов к установке.",
@@ -109,8 +109,8 @@
 	"wolfhud_hudlist_loot_shoes" : "Обувь",
 	"wolfhud_hudlist_loot_toy" : "Игрушка",
 	"wolfhud_hudlist_loot_vr" : "Шлем",
-	"wolfhud_hudlist_loot_egg" : "Egg",
-	"wolfhud_hudlist_loot_treasure" : "Treasure",
+	"wolfhud_hudlist_loot_egg" : "Яйцо",
+	"wolfhud_hudlist_loot_treasure" : "Сокровище",
 	"wolfhud_hudlist_showcase" : "Витрина",
 
 	"wolfhud_hudlist_buff_basic" : "Базовый",
@@ -209,8 +209,8 @@
 	"wolfhud_enemy_spring" : "Капитан Спринг",
 	"wolfhud_enemy_fbi_vet" : "Ветеран Коп",
 
-	"wolfhud_enemy_deathvox_light" : "ZEAL Unit",
-	"wolfhud_enemy_deathvox_heavy" : "Heavy ZEAL",
+	"wolfhud_enemy_deathvox_light" : "ZEAL",
+	"wolfhud_enemy_deathvox_heavy" : "Тяжёлый ZEAL",
 
 	"wolfhud_multiselect_all" : "Все",
 	"wolfhud_multiselect_none" : "Нет",
@@ -484,8 +484,8 @@
 	"wolfhud_hudlist_progress_alpha_right_desc" : "Уровень прозрачности индикаторов правого списка.",
 	"wolfhud_hudlist_progress_alpha_buff_title" : "Прозрачность списка баффов",
 	"wolfhud_hudlist_progress_alpha_buff_desc" : "Уровень прозрачности индикаторов списка баффов.",
-	"wolfhud_hudlist_timers_in_seconds_title" : "Timers in seconds",
-	"wolfhud_hudlist_timers_in_seconds_desc" : "Always display timers in seconds.",
+	"wolfhud_hudlist_timers_in_seconds_title" : "Таймеры в секундах",
+	"wolfhud_hudlist_timers_in_seconds_desc" : "Всегда показывать таймеры в секундах.",
 
 	"wolfhud_infopanels_left_options_name" : "Настройки списка слева",
 	"wolfhud_infopanels_left_options_help" : "Настройки для списка информации слева.",
