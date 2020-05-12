@@ -29,6 +29,7 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 	function HUDChat:init(ws, hud)
 		local fullscreen = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
 
+		self._hud_panel = fullscreen.panel
 		self._x_offset = (fullscreen.panel:w() - hud.panel:w()) / 2
 		self._y_offset = (fullscreen.panel:h() - hud.panel:h()) / 2
 		self._esc_callback = callback(self, self, "esc_key_callback")
