@@ -26,7 +26,6 @@
 				<post :hook_id="moneymanager" :script_path="Scripts.lua"/>
 				<post :hook_id="multiprofilemanager" :script_path="ProfileMenu.lua"/>
 				<post :hook_id="crimespreemanager" :script_path="TabStats.lua"/>
-				<post :hook_id="missionassetsmanager" :script_path="BuyAllAsset.lua"/>
 				<post :hook_id="preplanningmanager" :script_path="PrePlanManager.lua"/>
 				<post :hook_id="platformmanager" :script_path="RichPresence.lua"/>
 				<post :hook_id="skirmishmanager" :script_path="RichPresence.lua"/>
@@ -134,7 +133,6 @@
 					</group>
 
 					<group :hook_id="missionbriefinggui">
-						<post :script_path="BuyAllAsset.lua"/>
 						<post :script_path="EnhancedCrewLoadout.lua"/>
 						<post :script_path="ProfileMenu.lua"/>
 					</group>
