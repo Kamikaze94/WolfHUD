@@ -639,7 +639,7 @@ elseif requiredScript == "lib/managers/preplanningmanager" then
 			end
 
 			for id, mission_element in pairs(saved_assets) do
-				money_costs = money_costs + self:_get_type_cost(mission_element.type)
+				money_costs = money_costs + self:get_type_cost(mission_element.type)
 				favours = favours + self:get_type_budget_cost(mission_element.type, 0)
 			end
 		end
