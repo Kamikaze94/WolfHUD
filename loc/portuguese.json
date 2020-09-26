@@ -1,4 +1,5 @@
 {
+	"wolfhud_tabstats_total_kills" : "Total Kills:",
 	"menu_jowi" : "Wick",
 	"hud_int_hold_grab_the_bag" : "Segure $INTERACT para pegar a bag de $BAG",
 
@@ -135,6 +136,7 @@
 	"wolfhud_tabstats_melee_kills" : "Mortes com melee:",
 	"wolfhud_tabstats_explosion_kills" : "Mortes com explõses:",
 	"wolfhud_tabstats_nonspecial_kills" : "Mortes de cops não-especiais:",
+	"wolfhud_tabstats_total_kills" : "stub",
 	"wolfhud_tabstats_total_revives" : "Total de vezes que reviveu (P/AI):",
 	"wolfhud_tabstats_alltime_stat" : "Tempo total:",
 

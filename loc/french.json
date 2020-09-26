@@ -1,4 +1,5 @@
 {
+	"wolfhud_tabstats_total_kills" : "Total Kills:",
 	"menu_jowi" : "Wick",
 	"hud_int_hold_grab_the_bag" : "MAINTENEZ $INTERACT POUR PRENDRE $BAG",
 
@@ -135,6 +136,7 @@
 	"wolfhud_tabstats_melee_kills" : "Victimes à la mêlée:",
 	"wolfhud_tabstats_explosion_kills" : "Victimes par explosion:",
 	"wolfhud_tabstats_nonspecial_kills" : "Ennemis lambda tués:",
+	"wolfhud_tabstats_total_kills" : "stub",
 	"wolfhud_tabstats_total_revives" : "Total des réanimations (Joueur/IA):",
 	"wolfhud_tabstats_alltime_stat" : "Stats générales:",
 
