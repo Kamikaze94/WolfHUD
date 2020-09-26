@@ -160,7 +160,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			local stats_panel = ExtendedPanel:new(self._right, { w = self._right:w(), h = self._right:h() })
 			self:_create_stat_list(stats_panel)
 			self:_update_stats_list(stats_panel)
-		
+
 			if self._create_player_info then -- Enhanced Crew Loadout compatability
 				self:_create_player_info()
 			end
@@ -550,7 +550,8 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 		{ name = "gensec_killed", 		text_id = "wolfhud_tabstats_gensec_killed", 	color = Color(1, 0.75, 1, 0.24),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"gensec", "count"}		}, 	},
 		{ name = "melee_killed", 		text_id = "wolfhud_tabstats_melee_kills", 		color = Color(1, 0.54, 0.02, 0.02),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"total", "melee"}			}, 	},
 		{ name = "explosion_killed", 	text_id = "wolfhud_tabstats_explosion_kills", 	color = Color(1, 1, 0.5, 0),		update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"total", "explosion"}		}, 	},
-		{ name = "total_killed", 		text_id = "wolfhud_tabstats_nonspecial_kills", 	color = Color(1, 0.78, 0.15, 0.21),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"non_special", "count"}	}, 	},
+		{ name = "nonspecials_killed", 		text_id = "wolfhud_tabstats_nonspecial_kills", 	color = Color(1, 0.78, 0.15, 0.21),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"non_special", "count"}	}, 	},
+		{ name = "total_killed", 		text_id = "wolfhud_tabstats_total_kills", 	color = Color(1, 0.5, 0.5, 0.21),	update = {func = "session_enemy_killed_by_type", 	func_alltime = "enemy_killed_by_type", 	params = {"allbois", "count"}	}, 	},
 		{ name = "total_downs", 		text_id = "victory_total_downed", 				color = Color(1, 0.5, 0.5, 0.5),	update = {func = "total_downed", 					func_alltime = "total_downed_alltime", 	params = {}							}, 	},
 		{ name = "total_revives", 		text_id = "wolfhud_tabstats_total_revives", 	color = Color(1, 1, 0, 0.4),		update = {func = "session_total_revives", 			func_alltime = "total_revives",			params = {}							}, 	},
 	}
@@ -612,7 +613,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 				font = tweak_data.hud_stats.objectives_font,
 				font_size = tweak_data.hud_stats.loot_size,
 				text = managers.localization:to_upper_text(managers.skirmish:is_weekly_skirmish() and "hud_weekly_skirmish" or "hud_skirmish"),
-				color = tweak_data.screen_colors.skirmish_color 
+				color = tweak_data.screen_colors.skirmish_color
 			}))
 
 			placer:new_row(8)
@@ -628,7 +629,7 @@ if string.lower(RequiredScript) == "lib/managers/hud/newhudstatsscreen" then
 			end
 
 			difficulty_text = managers.localization:to_upper_text("hud_assault_waves", {current = managers.skirmish:current_wave_number(), max = #tweak_data.skirmish.ransom_amounts})
-			difficulty_color = tweak_data.screen_colors.skirmish_color 
+			difficulty_color = tweak_data.screen_colors.skirmish_color
 		else
 			local job_chain = managers.job:current_job_chain_data()
 			local is_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id())
@@ -1068,6 +1069,9 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 	end
 
 	function StatisticsManager:session_enemy_killed_by_type(enemy, type)
+		if(enemy == "allbois") then
+			return self:session_enemy_killed_by_type("total", type)
+		end
 		if enemy == "non_special" then	--added new "enemy"
 			return self:session_enemy_killed_by_type("total", type)
 					- self:session_total_specials_kills()
@@ -1077,6 +1081,9 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 
 	--New Functions
 	function StatisticsManager:enemy_killed_by_type(enemy, type)
+		if(enemy == "allbois") then
+			return self:enemy_killed_by_type("total", type)
+		end
 		if enemy == "non_special" then	--added new "enemy"
 			return self:enemy_killed_by_type("total", type)
 					- self:total_specials_kills()
