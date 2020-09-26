@@ -135,6 +135,7 @@
 	"wolfhud_tabstats_melee_kills" : "Bajas Cuerpo a Cuerpo:",
 	"wolfhud_tabstats_explosion_kills" : "Bajas Explosivas:",
 	"wolfhud_tabstats_nonspecial_kills" : "Bajas no Especiales:",
+	"wolfhud_tabstats_total_kills" : "stub",
 	"wolfhud_tabstats_total_revives" : "Revividos Totales (P/AI):",
 	"wolfhud_tabstats_alltime_stat" : "Todo el Tiempo:",
 

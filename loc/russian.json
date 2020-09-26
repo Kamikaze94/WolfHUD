@@ -1,4 +1,5 @@
 {
+	"wolfhud_tabstats_total_kills" : "Total Kills:",
 	"menu_jowi" : "Уик",
 	"hud_int_hold_grab_the_bag" : "Удерживайте $INTERACT, чтобы взять $BAG",
 
@@ -135,6 +136,7 @@
 	"wolfhud_tabstats_melee_kills" : "Убито в ближнем бою:",
 	"wolfhud_tabstats_explosion_kills" : "Убито взрывом:",
 	"wolfhud_tabstats_nonspecial_kills" : "Убито обычных:",
+	"wolfhud_tabstats_total_kills" : "stub",
 	"wolfhud_tabstats_total_revives" : "Всего помощи (Игр/ИИ):",
 	"wolfhud_tabstats_alltime_stat" : "За все время:",
 

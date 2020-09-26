@@ -135,6 +135,7 @@
 	"wolfhud_tabstats_melee_kills" : "Melee Kills:",
 	"wolfhud_tabstats_explosion_kills" : "Explosion Kills:",
 	"wolfhud_tabstats_nonspecial_kills" : "Non Special Kills:",
+	"wolfhud_tabstats_total_kills" : "Total Kills:",
 	"wolfhud_tabstats_total_revives" : "Total Revives (P/AI):",
 	"wolfhud_tabstats_alltime_stat" : "All Time:",
 
