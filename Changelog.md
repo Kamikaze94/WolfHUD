@@ -1,5 +1,16 @@
 # WolfHUD v3.3
 
+
+### Changelog Bugfix 1:
+- General:
+	- Updated Italian translation (_by LeecanIt_)
+	- Updated Chinese translation (_by SummonHIM_)
+	- Fixed description of timers in seconds menu item
+- HUDList:
+	- Fix crash (issue #882)
+- TabStats:
+	- Added Alltime kills (_by LivacoNew_)
+
 ### Changelog:
 - PrePlanManager: 
 	- Fixed PrePlanManager crash (issue #XXX & PR #XXX)
