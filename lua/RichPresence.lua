@@ -142,7 +142,7 @@ if RequiredScript == "lib/managers/platformmanager" then
 			["#Difficulty_hard"] =			"HARD",
 			["#Difficulty_overkill"] =		"VERY HARD",
 			["#Difficulty_overkill_145"] =	"OVERKILL",
-			["#Difficulty_easy_wish"] =		"MAYHAM",
+			["#Difficulty_easy_wish"] =		"MAYHEM",
 			["#Difficulty_overkill_290"] =	"DEATHWISH",
 			["#Difficulty_sm_wish"] =		"DEATH SENTENCE",
 
@@ -326,6 +326,10 @@ if RequiredScript == "lib/managers/platformmanager" then
 			["#Level_mex"] = 				"Border Crossing",
 			["#Job_bex"] = 					"San Martín Bank",
 			["#Level_bex"] = 				"San Martín Bank",
+			["#Job_pex"] = 					"Breakfast in Tijuana",
+			["#Level_pex"] = 				"Breakfast in Tijuana",
+			["#Job_fex"] = 					"Buluc's Mansion",
+			["#Level_fex"] = 				"Buluc's Mansion",
 		}
 
 		local data = {

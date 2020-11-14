@@ -1,3 +1,5 @@
+--do return end
+
 if string.lower(RequiredScript) == "lib/managers/missionassetsmanager" then
 	function MissionAssetsManager:unlock_all_buyable_assets()
 		for _, asset in ipairs(self._global.assets) do
@@ -60,6 +62,10 @@ elseif string.lower(RequiredScript) == "lib/managers/menu/missionbriefinggui" th
 
 	function AssetsItem:create_assets(...)
 		create_assets_original(self, ...)
+		
+		if self.buy_all_button then
+			self.buy_all_button:hide()
+		end
 
 		self._buy_all_btn = self._panel:text({
 			name = "buy_all_btn",
