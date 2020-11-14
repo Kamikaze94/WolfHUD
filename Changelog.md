@@ -1,3 +1,21 @@
+# WolfHUD v3.3
+
+### Changelog:
+- PrePlanManager: 
+	- Fixed PrePlanManager crash (issue #XXX & PR #XXX)
+- EnemyHealthbar & HUDList
+	- Added new unit definitions
+- HUDList
+	- a lot of animations handled in update(t, dt) now, in hope for less stuck UI elements...
+- RichPresence
+	- Added missing level ids
+	- MAYHEM is now vegan
+- BuyAllAssets
+	- Hide default Button to fix overlap
+- RealWeaponNames
+	- Added weapons of last DLCs
+
+
 # WolfHUD v3.2
 
 

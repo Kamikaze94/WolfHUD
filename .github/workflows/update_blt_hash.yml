@@ -8,7 +8,7 @@ on:
 env:
   IDENT: wolfhud                        #Identifier for the mod.
   TEX_IDENT: fed_inv                    #Identifier for the texture override
-  TEX_HASH : 6d4d3621818333a94df36e2492b9a730481d4125916ef3c8f7bde337f08a6ff2
+  TEX_HASH : 8add0cb6b55083e288fccea48d6478428880b4eb929a4dbf276dfd02c58baf79
   BRANCH_DL: master                     #Branch hosting the stable release version.
   BRANCH_UPD: autoupdate                #Branch hosting the meta.json and SuperBLT_Hasher.py files.
   CHANGELOG: autoupdate/Changelog.md    #Branch + Filename for the Changelog-File.
