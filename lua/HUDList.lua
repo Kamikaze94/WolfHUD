@@ -284,6 +284,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		security = 					{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" 				},
 		security_undominatable = 	{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" 				},
 		security_mex = 				{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" 				},
+		security_mex_no_pager = 	{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_security" 				},
 		gensec = 					{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_gensec" 					},
 		bolivian_indoors =			{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_bolivian_security" 		},
 		bolivian_indoors_mex =		{ type_id = "security",		category = "enemies",	long_name = "wolfhud_enemy_bolivian_security_mex" 	},
@@ -324,6 +325,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		--escort_chinese_prisoner = { type_id = "unique", 		category = "civilians", long_name = "wolfhud_enemy_escort_chinese_prisoner" },	--Kazo, Green Bridge
 		--spa_vip = 				{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_spa_vip" 				},	--Charon, Wick Heist
 		--spa_vip_hurt = 			{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_spa_vip_hurt" 			},	--Charon, Wick Heist
+		--escort_criminal = 		{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_escort_criminal" 		},	--???, Breakfast
 
 		--Custom unit definitions
 		--mechanic = 				{ type_id = "unique",		category = "civilians",	long_name = "wolfhud_enemy_biker_mechanic" 			},	-- Mechanic, Biker Heist
@@ -587,6 +589,10 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		for _, list in pairs(self._lists) do
 			if list:is_active() then
 				list:update(t, dt)
+			end
+			if list:animation_active() then
+				list:_animate_fade(t, dt)
+				list:_animate_move(t, dt)
 			end
 		end
 	end
@@ -1912,97 +1918,80 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.ItemBase:_fade(target_alpha, instant, time_override)
-		self._panel:stop()
-		--if self._panel:alpha() ~= target_alpha then
-		--self._active_fade = { instant = instant, alpha = target_alpha }
-		self._active_fade = { instant = instant or self._panel:alpha() == target_alpha, alpha = target_alpha, time_override = time_override }
-		--end
-		self:_animate_item()
+		local init_alpha = self._panel:alpha()
+		instant = instant or init_alpha == target_alpha
+		local fade_time = time_override and math.abs(alpha - init_alpha) / time_override or self._fade_time
+		self._active_fade = { 
+			duration = instant and 0 or time_override or math.abs(target_alpha - init_alpha) * fade_time, 
+			current = 0, 
+			fade_time = fade_time,
+			init_alpha = init_alpha,
+			target_alpha = target_alpha, 
+			change = target_alpha > init_alpha and 1 or -1
+		}
 	end
 
 	function HUDList.ItemBase:move(x, y, instant, time_override)
-		if alive(self._panel) then
-			self._panel:stop()
-			--if self._panel:x() ~= x or self._panel:y() ~= y then
-			--self._active_move = { instant = instant, x = x, y = y }
-			self._active_move = { instant = instant or (self._panel:x() == x and self._panel:y() == y), x = x, y = y, time_override = time_override }
-			--end
-			self:_animate_item()
-		end
+		local init_x, init_y = self._panel:x(), self._panel:y()
+		instant = instant or (init_x == x and init_y == y)
+		local move_speed = time_override and math.abs(x - init_x) / time_override or self._move_speed
+		self._active_move = { 
+			duration = instant and 0 or time_override or math.max(math.abs(x - init_x) / move_speed, math.abs(y - init_y) / move_speed), 
+			current = 0, 
+			move_speed = move_speed, 
+			init_x = init_x, 
+			init_y = init_y,
+			target_x = x, 
+			target_y = y, 
+			change_x = x > init_x and 1 or x < init_x and -1 or nil,
+			change_y = y > init_y and 1 or y < init_y and -1 or nil
+		}
 	end
 
 	function HUDList.ItemBase:cancel_move()
-		self._panel:stop()
+		--self._panel:stop()
 		self._active_move = nil
-		self:_animate_item()
 	end
-
-	function HUDList.ItemBase:_animate_item()
+	
+	function HUDList.ItemBase:update(t, dt)
+		-- Dummy.
+	end
+	
+	function HUDList.ItemBase:_animate_fade(t, dt)
 		if alive(self._panel) and self._active_fade then
-			self._panel:animate(callback(self, self, "_animate_fade"), self._active_fade.alpha, self._active_fade.instant, self._active_fade.time_override)
+			if self._active_fade.current < self._active_fade.duration then
+				self._panel:set_alpha(math.clamp(self._active_fade.init_alpha + self._active_fade.current * self._active_fade.change * 1 / self._active_fade.fade_time, 0, 1))
+				self._active_fade.current = self._active_fade.current + dt
+			else
+				self._panel:set_alpha(self._active_fade.target_alpha)
+				self:_set_item_visible(self._active_fade.target_alpha > 0)
+				self._active_fade = nil
+				
+				if self._scheduled_for_deletion then
+					self:_delete()
+				end
+			end
 		end
-
+	end
+	
+	function HUDList.ItemBase:_animate_move(t, dt)
 		if alive(self._panel) and self._active_move then
-			self._panel:animate(callback(self, self, "_animate_move"), self._active_move.x, self._active_move.y, self._active_move.instant, self._active_move.time_override)
-		end
-	end
-
-	function HUDList.ItemBase:_animate_fade(panel, alpha, instant, time_override)
-		if not instant and self._fade_time > 0 then
-			local init_alpha = panel:alpha()
-			local fade_time = time_override and math.abs(alpha - init_alpha) / time_override or self._fade_time
-			local change = alpha > init_alpha and 1 or -1
-			local T = time_override or math.abs(alpha - init_alpha) * fade_time
-			local t = 0
-
-			while alive(panel) and t < T do
-				panel:set_alpha(math.clamp(init_alpha + t * change * 1 / fade_time, 0, 1))
-				t = t + coroutine.yield()
+			if self._active_move.current < self._active_move.duration then
+				if self._active_move.change_x then
+					self._panel:set_x(self._active_move.init_x  + self._active_move.current * self._active_move.change_x * self._active_move.move_speed)
+				end
+				if self._active_move.change_y then
+					self._panel:set_y(self._active_move.init_y  + self._active_move.current * self._active_move.change_y * self._active_move.move_speed)
+				end
+				self._active_move.current = self._active_move.current + dt
+			else
+				self._panel:set_x(self._active_move.target_x)
+				self._panel:set_y(self._active_move.target_y)
+				self._active_move = nil
 			end
 		end
-
-		self._active_fade = nil
-		if alive(panel) then
-			panel:set_alpha(alpha)
-			--panel:set_visible(alpha > 0)
-			self:_set_item_visible(alpha > 0)
-		end
-		--if self._parent_list and alpha == 0 then
-		--	self._parent_list:set_item_visible(self, false)
-		--end
-		if self._scheduled_for_deletion then
-			self:_delete()
-		end
 	end
-
-	function HUDList.ItemBase:_animate_move(panel, x, y, instant, time_override)
-		if not instant and self._move_speed > 0 then
-			local init_x = panel:x()
-			local init_y = panel:y()
-			local move_speed = time_override and math.abs(x - init_x) / time_override or self._move_speed
-			local x_change = x > init_x and 1 or x < init_x and -1
-			local y_change = y > init_y and 1 or y < init_y and -1
-			local T = time_override or math.max(math.abs(x - init_x) / move_speed, math.abs(y - init_y) / move_speed)
-			local t = 0
-
-			while alive(panel) and t < T do
-				if x_change then
-					panel:set_x(init_x  + t * x_change * move_speed)
-				end
-				if y_change then
-					panel:set_y(init_y  + t * y_change * move_speed)
-				end
-				t = t + coroutine.yield()
-			end
-		end
-
-		self._active_move = nil
-		if alive(panel) then
-			panel:set_x(x)
-			panel:set_y(y)
-		end
-	end
-
+	
 	function HUDList.ItemBase:name() return self._name end
 	function HUDList.ItemBase:panel() return self._panel end
 	function HUDList.ItemBase:alpha() return self._panel:alpha() end
@@ -2037,6 +2026,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	function HUDList.ItemBase:parent_list() return self._parent_list end
 	function HUDList.ItemBase:align() return self._align end
 	function HUDList.ItemBase:is_active() return self._active end
+	function HUDList.ItemBase:animation_active() return self._active_fade or self._active_move end
 	function HUDList.ItemBase:priority() return self._priority end
 	function HUDList.ItemBase:scale() return self._scale end
 	function HUDList.ItemBase:fade_time() return self._fade_time end
@@ -2099,9 +2089,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.ListBase:update(t, dt)
+		HUDList.ListBase.super.update(self, t, dt)
+		
 		for name, item in pairs(self._items) do
 			if item.update and item:is_active() then
 				item:update(t, dt)
+			end
+			if item:animation_active() then
+				item:_animate_fade(t, dt)
+				item:_animate_move(t, dt)
 			end
 		end
 	end
@@ -2338,6 +2334,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.HorizontalList:update(t, dt)
+		HUDList.HorizontalList.super.update(self, t, dt)
+		
 		if self._recheck_interval ~= nil then
 			self._next_recheck = self._next_recheck - dt
 
@@ -2346,8 +2344,6 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				self._next_recheck = self._recheck_interval
 			end
 		end
-
-		HUDList.HorizontalList.super.update(self, t, dt)
 	end
 
 	function HUDList.HorizontalList:_update_item_positions(insert_item, instant_move, move_timer)
@@ -2398,9 +2394,9 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			end
 
 			if self._expansion_indicator then
+				self._expansion_indicator:cancel_move()
 				self._expansion_indicator:set_active(show_expansion)
 				self._expansion_indicator:panel():set_x(left)
-				self._expansion_indicator:cancel_move()
 			end
 		else
 			local prev_width = self._static_item and (self._static_item:panel():w() + self._item_margin) or 0
@@ -2417,8 +2413,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 					local width = item:panel():w()
 					local new_x = (self._left_to_right and prev_width) or (self._panel:w() - (width+prev_width))
 					if insert_item and item == insert_item or was_disabled then
-						item:panel():set_x(new_x)
 						item:cancel_move()
+						item:panel():set_x(new_x)
 					else
 						item:move(new_x, item:panel():y(), instant_move, move_timer)
 					end
@@ -2432,8 +2428,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 				self._expansion_indicator:set_active(show_expansion)
 				local width = self._expansion_indicator:panel():w()
 				local new_x = (self._left_to_right and math.min(prev_width, self._panel:w() - width)) or math.max(self._panel:w() - (width+prev_width), 0)
-				self._expansion_indicator:panel():set_x(new_x)
 				self._expansion_indicator:cancel_move()
+				self._expansion_indicator:panel():set_x(new_x)
 			end
 
 			self:set_disabled("no_visible_items", total_shown_items <= 0)
@@ -2538,8 +2534,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 					local height = item:panel():h()
 					local new_y = (self._top_to_bottom and prev_height) or (self._panel:h() - (height+prev_height))
 					if insert_item and item == insert_item then
-						item:panel():set_y(new_y)
 						item:cancel_move()
+						item:panel():set_y(new_y)
 					else
 						item:move(item:panel():x(), new_y, instant_move, move_timer)
 					end
@@ -2680,7 +2676,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.RightListItem:set_color(color)
-		self._default_text_color = HUDListManager.ListOptions.list_color or Color.white
+		self._default_text_color = color or HUDListManager.ListOptions.list_color or Color.white
 		self._icon:set_color(self._default_icon_color or self._default_text_color)
 		self._progress_bar:set_color(self._default_text_color)
 		self._text:set_color(self._default_text_color)
@@ -2701,45 +2697,50 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 	function HUDList.RightListItem:change_count(diff)
 		self:set_count(self._count + diff)
-
-		if diff ~= 0 then
-			self._text:stop()
-			self._text:animate(callback(self, self, "_animate_change"), diff, self._progress_bar)
-		end
 	end
 
 	function HUDList.RightListItem:set_count(num)
-		self._count = num
-		self._text:set_text(tostring(self._count))
-		self:set_active(self._count > 0)
+		if self._count ~= num then
+			local increase = num > self._count
+			self._count = num
+			self._text:set_text(tostring(self._count))
+			self:set_active(self._count > 0)
+			
+			if self:is_active() then
+				self._active_count_change = {
+					duration = 0.5,
+					current = 0,
+					color = increase and self._change_increase_color or self._change_decrease_color,
+					invert_progress = not increase
+				}
+			end
+		end
 	end
 
 	function HUDList.RightListItem:get_count()
 		return self._count or 0
 	end
 
-	function HUDList.RightListItem:_animate_change(item, diff, progress_bar)
-		if self:is_active() and alive(item) and diff ~= 0 then
-			local duration = 0.5
-			local t = duration
-			local color = diff > 0 and self._change_increase_color or self._change_decrease_color
+	function HUDList.RightListItem:update(t, dt)
+		HUDList.RightListItem.super.update(self, t, dt)
+		
+		self:_animate_count_change(t, dt)
+	end
 
-			item:set_color(color)
-			while t > 0 do
-				t = t - coroutine.yield()
-				local ratio = math.clamp(t / duration, 0, 1)
-				local new_color = math.lerp(self._default_text_color, color, ratio)
-				item:set_color(new_color)
-				if progress_bar then
-					progress_bar:set_color(new_color)
-					progress_bar:set_ratio((diff > 0 and (1-ratio) or ratio))
-				end
-			end
-
-			item:set_color(self._default_text_color)
-			if progress_bar then
-				progress_bar:set_color(self._default_text_color)
-				progress_bar:set_ratio(1)
+	function HUDList.RightListItem:_animate_count_change(t, dt)
+		if self._active_count_change ~= nil then
+			if self._active_count_change.current <= self._active_count_change.duration then
+				local ratio = math.clamp(self._active_count_change.current / self._active_count_change.duration, 0, 1)
+				local new_color = math.lerp(self._default_text_color, self._active_count_change.color, ratio)
+				self._text:set_color(new_color)
+				self._progress_bar:set_color(new_color)
+				self._progress_bar:set_ratio((self._active_count_change.invert_progress and (1-ratio) or ratio))
+				self._active_count_change.current = self._active_count_change.current + dt
+			else
+				self._text:set_color(self._default_text_color)
+				self._progress_bar:set_color(self._default_text_color)
+				self._progress_bar:set_ratio(1)
+				self._active_count_change = nil
 			end
 		end
 	end
@@ -3044,8 +3045,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		self:set_count(unbagged_count, bagged_count)
 
 		if value ~= 0 then
-			self._text:stop()
-			self._text:animate(callback(self, self, "_animate_change"), value, self._progress_bar)
+--			self._text:stop()
+--			self._text:animate(callback(self, self, "_animate_change"), value, self._progress_bar)
+			
+			self._active_count_change = {
+				duration = 0.5,
+				current = 0,
+				color = value > 0 and self._change_increase_color or self._change_decrease_color,
+				invert_progress = value > 0
+			}
 		end
 	end
 
@@ -3061,8 +3069,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		self:set_count(unbagged_count, bagged_count)
 
-		self._text:stop()
-		self._text:animate(callback(self, self, "_animate_change"), value, self._progress_bar)
+--		self._text:stop()
+--		self._text:animate(callback(self, self, "_animate_change"), value, self._progress_bar)
+		self._active_count_change = {
+			duration = 0.5,
+			current = 0,
+			color = value > 0 and self._change_increase_color or self._change_decrease_color,
+			invert_progress = value > 0
+		}
 	end
 
 	function HUDList.CorpseCountItem:_whisper_mode_change(status)
@@ -3311,8 +3325,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 			self:set_count(unbagged_count, bagged_count)
 
 			if value ~= 0 then
-				self._text:stop()
-				self._text:animate(callback(self, self, "_animate_change"), value, self._progress_bar)
+--				self._text:stop()
+--				self._text:animate(callback(self, self, "_animate_change"), value, self._progress_bar)
+
+				self._active_count_change = {
+					duration = 0.5,
+					current = 0,
+					color = value > 0 and self._change_increase_color or self._change_decrease_color,
+					invert_progress = value > 0
+				}
 			end
 		end
 	end
@@ -3540,6 +3561,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.TimerItem:update(t, dt)
+		HUDList.TimerItem.super.update(self, t, dt)
+		
 		if not alive(self._unit) then
 			self:delete()
 			return
@@ -3554,7 +3577,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDList.TimerItem:_update_distance()
-		if self._show_distance then
+		if self._show_distance and alive(self._unit) then
 			self._distance_text:set_text(get_distance_to_player(self._unit))
 		end
 	end
@@ -3749,6 +3772,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.TemperatureGaugeItem:update(t, dt)
+		HUDList.TemperatureGaugeItem.super.update(self, t, dt)
+		
 		local estimate = "N/A"
 		if self._remaining and self._last_update_t then
 			local time_left = self._remaining - math.max(t - self._last_update_t, 0)
@@ -4440,6 +4465,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.PagerItem:update(t, dt)
+		HUDList.PagerItem.super.update(self, t, dt)
+		
 		if not self._answered then
 			self._remaining = math.max(self._remaining - dt, 0)
 			self._timer_text:set_text(format_time_string(self._remaining))
@@ -4667,7 +4694,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.ECMRetriggerItem:priority()
-		return self._remaining and Utl.round(self._remaining, 1)
+		return self._remaining and Utl.round(self._remaining + 100, 1)
 	end
 
 	function HUDList.ECMRetriggerItem:_set_retrigger_delay(data)
@@ -4800,6 +4827,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.ECMFeedbackItem:update(t, dt)
+		HUDList.ECMFeedbackItem.super.update(self, t, dt)
+	
 		if self._expire_t >= t then
 			self._remaining = math.max(0, self._expire_t - t)
 			self._text:set_text(format_time_string(self._remaining))
@@ -4886,6 +4915,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.TapeLoopItem:update(t, dt)
+		HUDList.TapeLoopItem.super.update(self, t, dt)
+		
 		self._remaining = math.max(0, (self._expire_t or t) - t)
 		self._text:set_text(format_time_string(self._remaining))
 		self._progress_bar:set_ratio(self._remaining / self._max_duration)
@@ -5981,6 +6012,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.TimedBuffItem:update(t, dt)
+		HUDList.TimedBuffItem.super.update(self, t, dt)
+		
 		local time_str = {}
 		if self._debuff_active and self._debuff_expire_t then
 			self:_update_debuff(t, dt)
@@ -6043,6 +6076,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.TimedStacksBuffItem:update(t, dt)
+		HUDList.TimedStacksBuffItem.super.update(self, t, dt)
+		
 		local time_str = {}
 		if self._debuff_active and self._debuff_expire_t then
 			self:_update_debuff(t, dt)
@@ -6184,6 +6219,8 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.CompositeBuff:update(t, dt)
+		HUDList.CompositeBuff.super.update(self, t, dt)
+
 		if self._min_expire_buff then
 			self:_set_progress_inner((t - self._member_buffs[self._min_expire_buff].start_t) / (self._member_buffs[self._min_expire_buff].expire_t - self._member_buffs[self._min_expire_buff].start_t))
 		end
