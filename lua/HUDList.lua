@@ -1949,8 +1949,11 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.ItemBase:cancel_move()
-		--self._panel:stop()
+		local new_x, new_y = self._active_move.target_x, self._active_move.target_y
 		self._active_move = nil
+		
+		self._panel:set_x(new_x)
+		self._panel:set_y(new_y)
 	end
 	
 	function HUDList.ItemBase:update(t, dt)
@@ -3044,15 +3047,14 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		self:set_count(unbagged_count, bagged_count)
 
-		if value ~= 0 then
---			self._text:stop()
---			self._text:animate(callback(self, self, "_animate_change"), value, self._progress_bar)
-			
+		
+		if self:is_active() and value ~= 0 then
+			local increase = value > 0
 			self._active_count_change = {
 				duration = 0.5,
 				current = 0,
-				color = value > 0 and self._change_increase_color or self._change_decrease_color,
-				invert_progress = value > 0
+				color = increase and self._change_increase_color or self._change_decrease_color,
+				invert_progress = not increase
 			}
 		end
 	end
@@ -3069,14 +3071,15 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 		self:set_count(unbagged_count, bagged_count)
 
---		self._text:stop()
---		self._text:animate(callback(self, self, "_animate_change"), value, self._progress_bar)
-		self._active_count_change = {
-			duration = 0.5,
-			current = 0,
-			color = value > 0 and self._change_increase_color or self._change_decrease_color,
-			invert_progress = value > 0
-		}
+		if self:is_active() then
+			local increase = (event == "add")
+			self._active_count_change = {
+				duration = 0.5,
+				current = 0,
+				color = increase and self._change_increase_color or self._change_decrease_color,
+				invert_progress = not increase
+			}
+		end
 	end
 
 	function HUDList.CorpseCountItem:_whisper_mode_change(status)
@@ -3324,15 +3327,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 
 			self:set_count(unbagged_count, bagged_count)
 
-			if value ~= 0 then
---				self._text:stop()
---				self._text:animate(callback(self, self, "_animate_change"), value, self._progress_bar)
-
+			if self:is_active() and value ~= 0 then
+				local increase = value > 0
 				self._active_count_change = {
 					duration = 0.5,
 					current = 0,
-					color = value > 0 and self._change_increase_color or self._change_decrease_color,
-					invert_progress = value > 0
+					color = increase and self._change_increase_color or self._change_decrease_color,
+					invert_progress = not increase
 				}
 			end
 		end
