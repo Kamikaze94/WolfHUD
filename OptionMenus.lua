@@ -1783,7 +1783,7 @@ if WolfHUD then
 					{
 						type = "toggle",
 						name_id = "wolfhud_hudlist_timers_in_seconds_title",
-						desc_id = "wolfhud_hudlist_timers_in_second_desc",
+						desc_id = "wolfhud_hudlist_timers_in_seconds_desc",
 						value = {"HUDList", "timers_in_seconds"},
 						visible_reqs = {}, enabled_reqs = {},
 					},

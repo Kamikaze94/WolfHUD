@@ -1,5 +1,4 @@
 {
-	"wolfhud_tabstats_total_kills" : "Total Kills:",
 	"menu_jowi" : "Wick",
 	"menu_risk_elite" : "Todeswunsch. Ungeheuer viel ERF und Bargeld.",
 	"menu_difficulty_apocalypse" : "Todeswunsch",
@@ -138,7 +137,7 @@
 	"wolfhud_tabstats_melee_kills" : "Nahkampf Kills:",
 	"wolfhud_tabstats_explosion_kills" : "Explosions Kills:",
 	"wolfhud_tabstats_nonspecial_kills" : "Normale Kills:",
-	"wolfhud_tabstats_total_kills" : "stub",
+	"wolfhud_tabstats_total_kills" : "Gesamt Kills:",
 	"wolfhud_tabstats_total_revives" : "Wiederbelebung (P/AI):",
 	"wolfhud_tabstats_alltime_stat" : "Insgesamt:",
 
