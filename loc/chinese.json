@@ -135,6 +135,7 @@
 	"wolfhud_tabstats_melee_kills" : "近战击杀数:",
 	"wolfhud_tabstats_explosion_kills" : "爆破击杀数:",
 	"wolfhud_tabstats_nonspecial_kills" : "普通击杀数:",
+	"wolfhud_tabstats_total_kills" : "Total Kills:",
 	"wolfhud_tabstats_total_revives" : "所有复活（玩家/电脑）:",
 	"wolfhud_tabstats_alltime_stat" : "全部时间:",
 

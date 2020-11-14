@@ -1,4 +1,5 @@
 {
+	"wolfhud_tabstats_total_kills" : "Total Kills:",
 	"menu_jowi" : "윅",
 	"hud_int_hold_grab_the_bag" : "$INTERACT 키 를 눌러서 $BAG 를(을) 들기",
 
@@ -135,6 +136,7 @@
 	"wolfhud_tabstats_melee_kills" : "근접 사살 수:",
 	"wolfhud_tabstats_explosion_kills" : "폭팔 사살 수:",
 	"wolfhud_tabstats_nonspecial_kills" : "일반경찰 사살 수:",
+	"wolfhud_tabstats_total_kills" : "stub",
 	"wolfhud_tabstats_total_revives" : "총 살려낸 팀원 (플레이어/봇):",
 	"wolfhud_tabstats_alltime_stat" : "합계:",
 
