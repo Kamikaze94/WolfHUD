@@ -1949,11 +1949,13 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 	end
 
 	function HUDList.ItemBase:cancel_move()
-		local new_x, new_y = self._active_move.target_x, self._active_move.target_y
-		self._active_move = nil
-		
-		self._panel:set_x(new_x)
-		self._panel:set_y(new_y)
+		if self._active_move then
+			local new_x, new_y = self._active_move.target_x, self._active_move.target_y
+			self._active_move = nil
+			
+			self._panel:set_x(new_x or self._panel:x())
+			self._panel:set_y(new_y or self._panel:y())
+		end 
 	end
 	
 	function HUDList.ItemBase:update(t, dt)

@@ -3,7 +3,7 @@
 	"description" : "This is a Mod Collection of HUD altering scripts, as well as quality of life changes to the game and its menus.                 \n\nSome of the included scripts are: \n- CustomHUD, HUDList, KillCounter, Press2Hold & WeaponGadgets,\n   made by Seven\n- TabStats + NumericSuspicion, by friendlyfire\n- Enemy Healthbar, by Undeadsewer\n- DrivingHUD, by ViciousWalrus + Great Big Bushy Beard, rewritten by me\n- PrePlanManager, ProfileMenu & Equipment Tweaks, made by me\n- many many more...\n\nFor a full list of included mods, go to the GitHUB repository, linked as contact.\n\nLocalizations: \n- English made by me\n- German made by me\n- Russian made by chrom[K]a, Magic3000 & MEXAHOTABOP\n- Korean made by Я!zu\n- Spanish made by papydeath95\n- Chinese made by zhongfly\n- French made by EliseMRX (La Mule).",
 	"author" : "Kamikaze94",
 	"contact" : "https://github.com/Kamikaze94/WolfHUD",
-	"version" : "3.3.1",
+	"version" : "3.3.2",
 	"priority" : 1,
 	"blt_version" : 2,
 	"supermod_definition" : "supermod.xml",
