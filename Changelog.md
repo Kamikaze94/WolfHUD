@@ -1,6 +1,10 @@
 # WolfHUD v3.3
 
 
+### Changelog Bugfix 2:
+- HUDList:
+	- Fix crash (issue #884/#885)
+
 ### Changelog Bugfix 1:
 - General:
 	- Updated Italian translation (_by LeecanIt_)

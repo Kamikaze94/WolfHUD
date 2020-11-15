@@ -19,19 +19,27 @@ jobs:
     timeout-minutes: 2
     
     steps:
+    - run: |
+          # Hack to get setup-python to work on act
+          if [ ! -f "/etc/lsb-release" ] ; then
+            echo "DISTRIB_RELEASE=18.04" > /etc/lsb-release
+          fi
     - name: Setup Python
-      uses: actions/setup-python@v1.1.1
+      uses: actions/setup-python@v2
       with:
         python-version: '3.x'
         architecture: 'x64'
     - name: Checkout Mod Branch
       uses: actions/checkout@v2
       with:
+        repository: ${{ github.repository }}
         ref: ${{ env.BRANCH_DL }}
+        token: ${{ github.token }}
         path: "${{ github.workspace }}/${{ env.BRANCH_DL }}/"
     - name: Checkout Updater Branch
       uses: actions/checkout@v2
       with:
+        repository: ${{ github.repository }}
         ref: ${{ env.BRANCH_UPD }}
         token: ${{ github.token }}
         path: "${{ github.workspace }}/${{ env.BRANCH_UPD }}/"
@@ -42,10 +50,12 @@ jobs:
     - name: Calculate Hash
       id: hash
       run: |
-        echo ::set-env name=HASH::$(python $GITHUB_WORKSPACE/$BRANCH_UPD/SuperBLT_Hasher.py $GITHUB_WORKSPACE/$BRANCH_DL/)
+        echo "HASH=$(python $GITHUB_WORKSPACE/$BRANCH_UPD/SuperBLT_Hasher.py $GITHUB_WORKSPACE/$BRANCH_DL/)" >> $GITHUB_ENV
+#        echo ::set-env name=HASH::$(python $GITHUB_WORKSPACE/$BRANCH_UPD/SuperBLT_Hasher.py $GITHUB_WORKSPACE/$BRANCH_DL/)
 #    - name: Calculate Override Hash
 #      id: texture_hash
 #      run: |
+#        echo 'TEX_HASH=$(python $GITHUB_WORKSPACE/$BRANCH_UPD/SuperBLT_Hasher.py "$GITHUB_WORKSPACE/$TEX_IDENT/Federal Inventory/")' >> $GITHUB_ENV
 #        echo ::set-env name=TEX_HASH::$(python $GITHUB_WORKSPACE/$BRANCH_UPD/SuperBLT_Hasher.py "$GITHUB_WORKSPACE/$TEX_IDENT/Federal Inventory/")
     - name: Create local changes
       run: |
@@ -72,7 +82,7 @@ jobs:
         git config --local user.name "GitHub Action"
         git commit -m "Change Hash for new Version." -a
     - name: Push changes
-      uses: ad-m/github-push-action@v0.5.0
+      uses: ad-m/github-push-action@v0.6.0
       with:
         github_token: ${{ github.token }}
         branch: ${{ env.BRANCH_UPD }}

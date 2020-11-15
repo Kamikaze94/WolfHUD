@@ -8,11 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
-    - uses: actions/stale@v1
+    - uses: actions/stale@v3
       with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        repo-token: ${{ github.token }}
         stale-issue-message: 'This issue has been automatically marked as stale because it has not had recent activity. It will be closed if no further activity occurs. Thank you for your contributions.'
         days-before-stale: 60
         days-before-close: 7
         stale-issue-label: stale
-        exempt-issue-label: suggestion
+        exempt-issue-labels: 'suggestion,enhancement'
+        operations-per-run: 30
+        remove-stale-when-updated: true
