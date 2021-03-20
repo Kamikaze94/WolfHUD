@@ -127,6 +127,7 @@ function WolfHUDTweakData:init()
 		[ "civilian_mariachi" ] 				= { default = "wolfhud_enemy_civilian" },
 		[ "captain" ] 							= { default = "wolfhud_enemy_civilian" },
 		[ "gangster" ] 							= { default = "wolfhud_enemy_gangster" },
+		[ "triad" ] 							= { default = "wolfhud_enemy_triad" },
 		[ "biker" ] 							= { default = "wolfhud_enemy_biker" },
 		[ "biker_escape" ] 						= { default = "wolfhud_enemy_biker" },
 		[ "bolivian_indoors" ]					= { default = "wolfhud_enemy_bolivian_security" },
