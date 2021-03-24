@@ -293,6 +293,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		mobster = 					{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_mobster" 				},
 		biker = 					{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_biker" 					},
 		biker_escape = 				{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_biker" 					},
+		triad =						{ type_id = "thug",			category = "enemies",	long_name = "wolfhud_enemy_triad" 					},
 		tank = 						{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank" 					},
 		tank_hw = 					{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank_hw" 				},
 		tank_medic = 				{ type_id = "tank",			category = "enemies",	long_name = "wolfhud_enemy_tank_medic" 				},
