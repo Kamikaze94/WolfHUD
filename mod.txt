@@ -16,13 +16,13 @@
 		{
 			"identifier" : "wolfhud",
 			"host" : {
-				"meta" : "https://github.com/Kamikaze94/WolfHUD/raw/autoupdate/meta.json"
+				"meta" : "https://github.com/jaondayko/WolfHUD/raw/autoupdate/meta.json"
 			}
 		},
 		{
 			"identifier" : "fed_inv",
 			"host" : {
-				"meta" : "https://github.com/Kamikaze94/WolfHUD/raw/autoupdate/meta.json"
+				"meta" : "https://github.com/jaondayko/WolfHUD/raw/autoupdate/meta.json"
 			},
 			"install_dir" : "assets/mod_overrides/",
 			"install_folder" : "Federal Inventory",
