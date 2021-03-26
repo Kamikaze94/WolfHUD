@@ -28,7 +28,7 @@ To make this mod work you will need to install __[SuperBLT](https://superblt.zni
 
 ## Installation (Direct Download)
 
-1. [Download WolfHUD from here](https://github.com/Kamikaze94/WolfHUD/archive/master.zip) or clone the master branch.  
+1. [Download WolfHUD from here](https://github.com/jaondayko/WolfHUD/archive/master.zip) or clone the master branch.  
 2. Open the downloaded archive, using WinRAR or 7Zip
 3. Extract the **WolfHUD-master** folder into your 'PAYDAY 2/mods' folder
 4. Start the game once. It will prompt you to update Federal Inventory.
