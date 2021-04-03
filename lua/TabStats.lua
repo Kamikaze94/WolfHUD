@@ -1162,7 +1162,9 @@ elseif string.lower(RequiredScript) == "lib/managers/statisticsmanager" then
 		local peer_name = user_id and Steam:username(user_id) or managers.localization:text("debug_undecided")
 		return string.format("%s (%s)", peer_name, managers.money:add_decimal_marks_to_string(tostring(max_damage)))
 	end
-elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
+elseif string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" and not CopDamage._tab_stats_loaded then
+    CopDamage._tab_stats_loaded = true
+
 	local _on_damage_received_original = CopDamage._on_damage_received
 
 	function CopDamage:_on_damage_received(damage_info, ...)
