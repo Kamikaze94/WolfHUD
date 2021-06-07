@@ -2142,8 +2142,7 @@ if string.lower(RequiredScript) == "lib/network/handlers/unitnetworkhandler" the
 
 end
 
-if string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" and not CopDamage._game_info_manager_loaded then
-    CopDamage._game_info_manager_loaded = true
+if string.lower(RequiredScript) == "lib/units/enemies/cop/copdamage" then
 
 	local convert_to_criminal_original = CopDamage.convert_to_criminal
 	local _on_damage_received_original = CopDamage._on_damage_received
