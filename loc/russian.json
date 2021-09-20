@@ -135,7 +135,7 @@
 	"wolfhud_tabstats_melee_kills" : "Убито в ближнем бою:",
 	"wolfhud_tabstats_explosion_kills" : "Убито взрывом:",
 	"wolfhud_tabstats_nonspecial_kills" : "Убито обычных:",
-	"wolfhud_tabstats_total_kills" : "Всего убийств:",
+	"wolfhud_tabstats_total_kills" : "Общих убийств:",
 	"wolfhud_tabstats_total_revives" : "Всего помощи (Игр/ИИ):",
 	"wolfhud_tabstats_alltime_stat" : "За все время:",
 
@@ -201,7 +201,7 @@
 	"wolfhud_enemy_butler" : "Альдстоун",
 	"wolfhud_enemy_vlad" : "Влад",
 	"wolfhud_enemy_kento" : "Кенто",
-	"wolfhud_enemy_triad" : "Triad",
+	"wolfhud_enemy_triad" : "Триада",
 
 	"wolfhud_enemy_boom" : "Гренадер",
 	"wolfhud_enemy_omnia_lpf" : "OMNIA L.P.F.",
@@ -280,8 +280,8 @@
 	"wolfhud_inventory_names_desc" : "Показать названия вашего оружия, брони, снаряжения и т.д. внутри ячейки в инвентаре.",
 	"wolfhud_skill_names_title" : "Показать названия навыков",
 	"wolfhud_skill_names_desc" : "Всегда показывает названия навыков в дереве навыков.",
-	"wolfhud_show_contractor_job_heat_title":"Show Contractor Heat",
-	"wolfhud_show_contractor_job_heat_desc":"Shows job heat in the contract broker list.",
+	"wolfhud_show_contractor_job_heat_title":"Показать контракторов",
+	"wolfhud_show_contractor_job_heat_desc":"Показать кол-во заданий в списке брокеров.",
 	"wolfhud_show_mini_icons_title" : "Всегда показывать мини-иконки",
 	"wolfhud_show_mini_icons_desc" : "Всегда показывать иконки модификаций всех оружий, а не только выбранного.",
 	"wolfhud_no_slowmotion_title" : "Без замедления",
