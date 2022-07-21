@@ -1,4 +1,5 @@
-if RequiredScript == "lib/units/enemies/cop/copdamage" then
+if RequiredScript == "lib/units/enemies/cop/copdamage"  and not CopDamage._damage_popup_loaded then
+    CopDamage._damage_popup_loaded = true
 	local _on_damage_received_original = CopDamage._on_damage_received
 	--Workaround for Teammate Headshots, since col_ray doesn't get forwarded...  (self._sync_ibody_popup)
 	local sync_damage_bullet_original = CopDamage.sync_damage_bullet

@@ -1,4 +1,5 @@
-if RequiredScript == "lib/units/enemies/cop/copdamage" then
+if RequiredScript == "lib/units/enemies/cop/copdamage" and not CopDamage._kill_counter_loaded then
+    CopDamage._kill_counter_loaded = true
 
 	--This needs fixing for DoT kills (then again, so does the games own kill counter) as client somehow and a lot of testing
 
