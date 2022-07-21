@@ -183,7 +183,7 @@ function WolfHUDTweakData:init()
 		[ "boris" ]								= { default = "wolfhud_enemy_boris" },
 		[ "spa_vip" ]							= { default = "wolfhud_enemy_spa_vip" },
 		[ "spa_vip_hurt" ]						= { default = "wolfhud_enemy_spa_vip_hurt" },
-		[ "escort_criminal" ] 					= { default = "Please edit later..." },
+		[ "escort_criminal" ] 					= { default = "wolfhud_enemy_escort_hajrudin" },
 		[ "old_hoxton_mission" ] 				= { default = "wolfhud_enemy_locke_mission", hox_1 = "wolfhud_enemy_old_hoxton_mission", hox_2 = "wolfhud_enemy_old_hoxton_mission", rvd1 = "wolfhud_enemy_reservoirdogs", rvd2 = "wolfhud_enemy_reservoirdogs" },
 		[ "hector_boss" ] 						= { default = "wolfhud_enemy_hector_boss" },
 		[ "hector_boss_no_armor" ] 				= { default = "wolfhud_enemy_hector_boss_no_armor" },
