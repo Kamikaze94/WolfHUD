@@ -474,6 +474,7 @@ if string.lower(RequiredScript) == "lib/managers/hudmanagerpd2" then
 		weapon =					"weapon",
 		weapon_glock =				"weapon",
 		weapon_scar =				"weapon",
+		ranc_weapon =				"weapon",
 		women_shoes = 				"shoes",
 		yayo = 						"coke",
 	}
