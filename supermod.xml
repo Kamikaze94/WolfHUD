@@ -16,6 +16,7 @@
 			</group>
 
 			<post :hook_id="utils/temporarypropertymanager" :script_path="GameInfoManager.lua"/>
+			<post :hook_id="mutators/mutatorpiggybank" :script_path="GameInfoManager.lua"/>
 
 			<group :hook_id="managers/">
 				<post :hook_id="menumanagerdialogs" :script_path="MenuTweaks.lua"/>

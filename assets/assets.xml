@@ -16,6 +16,7 @@
 			<file :name="forklift.texture" :path="forklift.texture"/>
 			<file :name="longfellow.texture" :path="longfellow.texture"/>
 			<file :name="truck.texture" :path="truck.texture"/>
+			<file :name="golfcart.texture" :path="golfcart.texture"/>
 		</group>
 	</group>
 </assets>
