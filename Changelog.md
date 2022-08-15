@@ -1,3 +1,28 @@
+# WolfHUD v3.4
+
+
+### Changelog:
+- EnemyHealthbar: 
+	- New Enem Names
+	- Fixed crash on unavailable character_damage()-Extension
+- DrivingHUD: 
+	- Fixed Images and Names
+	- Added Golfcart
+- BuyAllAssets: 
+	- Vanilla PopUp-Dialog disabled
+- CustomHUD: 
+	- Added synced Teammate DownCounter
+	-  Fixed weapon-Skin Display
+- DamageIndicator: 
+	- Fixed crash on MountainMaster
+- GameInfoManager: 
+	- added new Heists Loot, Pickups, etc
+	- Added Piggy Counters
+- HudList: 
+	- Added new Loot-Types, Enemies, Piggy-Event
+
+
+
 # WolfHUD v3.3
 
 
