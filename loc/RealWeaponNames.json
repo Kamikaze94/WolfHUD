@@ -59,6 +59,7 @@
     "bm_w_flamethrower_mk2"     : "Flamethrower",
     "bm_w_plainsrider"          : "Plainsrider Bow",
     "bm_w_elastic"              : "Compound Bow",
+    "bm_w_hailstorm"            : "Metal Storm Mk.5",
 
     "bm_w_msr"                  : "Remington MSR",
     "bm_w_r93"                  : "Blaser R93 LRS2",
@@ -114,6 +115,7 @@
     "bm_w_type54"               : "Tokarev TT-33",
     "bm_w_rsh12"                : "KBP RSh-12",
     "bm_w_maxim9"               : "Maxim 9",
+    "bm_w_x_korth"              : "Korth NXA",
 
 
     "bm_w_m1928"                : "Thompson M1928A1",
@@ -153,6 +155,7 @@
     "bm_w_m1897"                : "Winchester Model 1897",
     "bm_w_m590"                 : "Mossberg 590 Compact Cruiser",
     "bm_w_ultima"               : "Kalashnikov MP-155 Ultima",
+    "bm_w_sko12"                : "Standard Manufacturing SKO-12",
 
     "bm_w_rpg7"                 : "RPG-7",
     "bm_w_hunter"               : "Avalanche Pistol Crossbow",
@@ -200,5 +203,7 @@
     "bm_w_x_vityaz"             : "Akimbo PP-19 Vityaz-SN",
     "bm_w_x_pm9"                : "Akimbo Minebea PM-9",
     "bm_w_x_type54"             : "Akimbo Tokarev TT-33",
-    "bm_w_x_maxim9"             : "Akimbo Maxim 9"
+    "bm_w_x_maxim9"             : "Akimbo Maxim 9",
+    "bm_w_x_korth"              : "Akimbo Korth NXA",
+    "bm_w_x_sko12"              : "Akimbo Standard Manufacturing SKO-12"
 }
