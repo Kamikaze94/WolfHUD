@@ -40,7 +40,10 @@ end
 function ContractBrokerHeistItem:get_job_heat_text(job_id)
 	local heat_text       = ""
 	local heat_color      = Color(1,0,1)
-	local exp_multiplier  = managers.job:heat_to_experience_multiplier(managers.job:get_job_heat(job_id))
+	-- This fixes an 'attempt to compare nil with number'
+	local job_heat		  = managers.job:get_job_heat(job_id)
+	if job_heat == nil then job_heat = 0 end 
+	local exp_multiplier  = managers.job:heat_to_experience_multiplier(job_heat)
 	local exp_percent     = ((1 - exp_multiplier)*-1)*100
 
 	if exp_percent ~= 0 then
