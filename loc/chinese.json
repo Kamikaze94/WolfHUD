@@ -78,10 +78,10 @@
     "victory_most_damage" : "最高伤害：",
     "victory_session_damage" : "总伤害：",
 
-    "wolfhud_advassault_phase_title" : "突击状态： ",
-    "wolfhud_advassault_spawns_title" : "警察数量： ",
+    "wolfhud_advassault_phase_title" : "突击状态：",
+    "wolfhud_advassault_spawns_title" : "警察数量：",
     "wolfhud_advassault_time_title" : "剩余时间： ",
-    "wolfhud_advassault_phase_anticipation" : "即将",
+    "wolfhud_advassault_phase_anticipation" : "预期",
     "wolfhud_advassault_phase_build" : "构建",
     "wolfhud_advassault_phase_sustain" : "持续",
     "wolfhud_advassault_phase_fade" : "撤退",
