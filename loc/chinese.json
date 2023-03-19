@@ -1010,5 +1010,5 @@
 	"wolfhud_dialog_requires_superblt_desc_long" : "需要SuperBLT才能工作\nSuperBLT是PAYDAY 2 BLT模组加载器的分支版本，并且有许多重大改进\n它完全向后兼容原版的BLT Mods\n\n你可在此链接中查看更多信息与安装介绍: \n$URL",
 	"wolfhud_dialog_requires_superblt_desc_short" : "已不再支持基础版本的BLT\n若要继续使用，请更新到SuperBLT\n你可在此处下载SuperBLT: $URL",
 	"wolfhud_dialog_update_install_folder_title" : "[WolfHUD] 无法启用自动更新!",
-	"wolfhud_dialog_update_install_folder_desc" : "若要启用自动更新，请将MOD安装目录重命名为'WolfHUD-master'\n(当前文件夹名为 'mods/$FOLDER/')",
+	"wolfhud_dialog_update_install_folder_desc" : "若要启用自动更新，请将MOD安装目录重命名为'WolfHUD-master'\n(当前文件夹名为 'mods/$FOLDER/')"
 }
