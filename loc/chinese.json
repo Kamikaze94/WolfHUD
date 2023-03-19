@@ -280,7 +280,7 @@
     "wolfhud_inventory_tab_names_title" : "使用库存标签名称",
     "wolfhud_inventory_tab_names_desc" : "自定义你的库存标签名称\n(通过编辑 '/mods/saves/WolfHUD_InventoryNames.txt' 自定义你的标签名称)",
     "wolfhud_inventory_names_title" : "显示库存框名称",
-    "wolfhud_inventory_names_desc" : "在在其清单内显示你的武器、护甲、装备等的名称",
+    "wolfhud_inventory_names_desc" : "在其清单内显示你的武器、护甲、装备等的名称",
     "wolfhud_skill_names_title" : "显示技能名称",
     "wolfhud_skill_names_desc" : "总是在技能树视图中显示所有技能名称",
     "wolfhud_show_contractor_job_heat_title":"显示合约热度",
