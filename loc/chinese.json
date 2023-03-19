@@ -294,7 +294,7 @@
     "wolfhud_reset_options_confirm" : "你确定要将所有设置重置为默认值吗?",
 
     "wolfhud_panels_options_name" : "常规HUD面板选项",
-    "wolfhud_panels_options_help" : "所有常规HUD面板的选项，如CustomHUD、警戒度、伤害指示器、驾驶HUD以及更多",
+    "wolfhud_panels_options_help" : "所有常规HUD面板的选项，如CustomHUD、警戒度、受击指示器、驾驶HUD以及更多",
 
     "wolfhud_use_customhud_title" : "使用CustomHUD",
     "wolfhud_use_customhud_desc" : "用高级CustomHUD替换默认HUD，由Se7en制作\n(需要重新载入地图以生效)",
@@ -799,17 +799,17 @@
     "wolfhud_profilemenu_replace_title" : "替换配装选择菜单",
     "wolfhud_profilemenu_replace_desc" : "将默认的配装选择菜单替换成WolfHUD强化的菜单",
 
-    "wolfhud_dmgindicator_options_name" : "伤害指示器",
-    "wolfhud_dmgindicator_options_help" : "为你的伤害指示器设置淡化时间、大小和颜色",
+    "wolfhud_dmgindicator_options_name" : "受击指示器",
+    "wolfhud_dmgindicator_options_help" : "为你的受击指示器设置淡化时间、大小和颜色",
 
-    "wolfhud_show_dmg_indicator_title" : "动态伤害指示器",
-    "wolfhud_show_dmg_indicator_desc" : "将4个静态伤害指示器，分成若干个动态的，根据你的位置和受到伤害的方向进行移动\n(旧版说明)",
+    "wolfhud_show_dmg_indicator_title" : "动态受击指示器",
+    "wolfhud_show_dmg_indicator_desc" : "将4个静态受击指示器，分成若干个动态的，根据你的位置和受到伤害的方向进行移动\n(旧版说明)",
     "wolfhud_dmg_ind_time_title" : "指示器持续时间",
     "wolfhud_dmg_ind_time_desc" : "决定指示器显示的持续时间",
     "wolfhud_dmg_ind_size_title" : "指示器大小",
     "wolfhud_dmg_ind_size_desc" : "决定指示器的范围大小，指示器会暗中模拟一个圆弧并将指示器放在其周围",
     "wolfhud_dmg_indicator_max_count_title" : "指示器最大数量",
-    "wolfhud_dmg_indicator_max_count_desc" : "指定屏幕上最多出现伤害指示器的数量",
+    "wolfhud_dmg_indicator_max_count_desc" : "指定屏幕上最多出现受击指示器的数量",
     "wolfhud_dmg_shield_color_title" : "护甲颜色",
     "wolfhud_dmg_shield_color_desc" : "当你只损失护甲时指示器的颜色",
     "wolfhud_dmg_health_color_title" : "血量颜色",
