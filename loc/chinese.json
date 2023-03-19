@@ -454,7 +454,7 @@
     "wolfhud_drivinghud_show_passengers_desc" : "显示载具的乘客数量和座位总数",
     "wolfhud_drivinghud_show_gear_title" : "显示档位",
     "wolfhud_drivinghud_show_gear_desc" : "显示你正使用的档位",
-    "wolfhud_drivinghud_show_speed_title" : "显示速度",
+    "wolfhud_drivinghud_show_speed_title" : "显示车速",
     "wolfhud_drivinghud_show_speed_desc" : "显示载具当前的行驶速度",
     "wolfhud_drivinghud_speed_in_mph_title" : "以英里为单位",
     "wolfhud_drivinghud_speed_in_mph_desc" : "以英里为单位显示车速\n(否则以公里为单位表示)",
