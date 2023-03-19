@@ -1001,8 +1001,8 @@
 
     "wolfhud_skipit_options_name" : "跳过选项",
     "wolfhud_skipit_options_help" : "这个选项会自动跳过不必要的菜单，以节省你的时间",
-    "wolfhud_assaultbanner_options_name" : "横幅选项",
-    "wolfhud_assaultbanner_options_help" : "更改横幅的选项",
+    "wolfhud_assaultbanner_options_name" : "突击横幅居中",
+    "wolfhud_assaultbanner_options_help" : "这个选项用于调整突击横幅",
 
 	"wolfhud_override_fedinv" : "启用全彩装备库",
 	"wolfhud_override_fedinv_desc" : "启用全彩装备库图标\n需要重启游戏才能完全生效",
