@@ -81,7 +81,7 @@
     "wolfhud_advassault_phase_sustain" : "持续",
     "wolfhud_advassault_phase_fade" : "撤退",
     "wolfhud_advassault_time_overdue" : "延期",
-    "wolfhud_locked_assault" : "无尽警方突击进行中        ///        尽快撤离",
+    "wolfhud_locked_assault" : "无尽警方突击进行中",
 
     "wolfhud_customhud_interaction_done" : "完成",
     "wolfhud_customhud_interaction_aborted" : "终止",
