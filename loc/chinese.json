@@ -1002,8 +1002,8 @@
     "wolfhud_skipit_options_help" : "这个选项会自动跳过不必要的菜单，以节省你的时间",
     "wolfhud_assaultbanner_options_name" : "突击横幅选项",
     "wolfhud_assaultbanner_options_help" : "更改突击横幅的选项",
-    
-    "wolfhud_dialog_install_fed_inv_desc" : "全彩装备库是一个用彩色图标显示你的武器的面具和随身装备的MOD，\n当与CustomHUD一起使用时看起来会很棒，并且它将使用BLT更新",
+
+	"wolfhud_dialog_install_fed_inv_desc" : "全彩装备库是一个用彩色图标显示你的武器的面具和随身装备的MOD，\n当与CustomHUD一起使用时看起来会很棒，并且它将使用BLT更新",
 	"wolfhud_override_fedinv" : "启用全彩装备库",
 	"wolfhud_override_fedinv_desc" : "启用全彩装备库图标\n需要重启游戏才能完全生效",
 	"wolfhud_dialog_requires_superblt_title" : "[WolfHUD] 未检测到SuperBLT!",
