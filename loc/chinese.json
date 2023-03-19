@@ -280,7 +280,7 @@
     "wolfhud_inventory_tab_names_title" : "使用库存标签名称",
     "wolfhud_inventory_tab_names_desc" : "自定义你的库存标签名称\n(通过编辑 '/mods/saves/WolfHUD_InventoryNames.txt' 自定义你的标签名称)",
     "wolfhud_inventory_names_title" : "显示库存框名称",
-    "wolfhud_inventory_names_desc" : "在其清单内显示你的武器、护甲、装备等的名称",
+    "wolfhud_inventory_names_desc" : "在装备库的各个框内显示你的武器、护甲、随身装备等的名称",
     "wolfhud_skill_names_title" : "显示技能名称",
     "wolfhud_skill_names_desc" : "总是在技能树视图中显示所有技能名称",
     "wolfhud_show_contractor_job_heat_title":"显示合约热度",
@@ -498,7 +498,7 @@
 
     "wolfhud_hudlist_show_timers_title" : "显示计时器",
     "wolfhud_hudlist_show_timers_desc" : "显示钻机、电脑入侵等的时间",
-    "wolfhud_hudlist_show_equipment_desc" : "是否在你的屏幕左边显示装备",
+    "wolfhud_hudlist_show_equipment_desc" : "是否在你的屏幕左边显示随身装备",
     "wolfhud_hudlist_show_ammo_bags_title" : "显示弹药包",
     "wolfhud_hudlist_show_doc_bags_title" : "显示医疗箱",
     "wolfhud_hudlist_show_first_aid_kits_title" : "显示急救包",
