@@ -871,7 +871,7 @@
     "wolfhud_press2hold_min_timer_duration_title" : "最低锁定时间",
     "wolfhud_press2hold_min_timer_duration_desc" : "互动锁定所需最低持续时间",
     "wolfhud_press2hold_show_lockindicator_title" : "显示锁定指示器",
-    "wolfhud_press2hold_show_lockindicator_desc" : "显示透明的红色/绿色圆圈覆盖，以指示互动已锁定/未锁定",
+    "wolfhud_press2hold_show_lockindicator_desc" : "显示透明的红色/绿色圆圈覆盖，以表示互动是否锁定",
     "wolfhud_press2hold_equipment_cancel_title" : "部署键中断",
     "wolfhud_press2hold_equipment_cancel_desc" : "用部署键来中断已锁定的互动\n(不然，就需要再次按下互动键)",
     "wolfhud_press2hold_interrupt_hint_title" : "显示中断提示",
