@@ -593,7 +593,7 @@
     "wolfhud_hudlist_damage_reduction_compbuff_desc" : "根据可组合BUFF项目，显示所有伤害减免技能的叠加值",
     "wolfhud_hudlist_melee_damage_increase_compbuff_title" : "近战伤害提升BUFF",
     "wolfhud_hudlist_melee_damage_increase_compbuff_desc" : "根据可组合BUFF项目，显示所有增强近战伤害技能的叠加值",
-    "wolfhud_hudlist_passive_health_regen_compbuff_title" : "被动生命恢复",
+    "wolfhud_hudlist_passive_health_regen_compbuff_title" : "被动生命回复",
     "wolfhud_hudlist_passive_health_regen_compbuff_desc" : "根据可组合BUFF项目，显示所有被动生命再生效果的叠加值",
     "wolfhud_hudlist_total_dodge_chance_compbuff_title" : "总闪避概率",
     "wolfhud_hudlist_total_dodge_chance_compbuff_desc" : "根据可组合BUFF项目，显示所有增强闪避概率技能的叠加值",
