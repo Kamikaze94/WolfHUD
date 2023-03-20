@@ -857,7 +857,7 @@
     "wolfhud_show_carhealthbar_title" : "显示载具生命栏",
     "wolfhud_show_carhealthbar_desc" : "为可驾驶载具显示生命栏\n贡献者标注: VanillaHUD Plus的翻译则不同",
     "wolfhud_show_healthbar_pointer_title" : "显示箭头",
-    "wolfhud_show_healthbar_pointer_desc" : "在生命栏下方显示箭头，箭头指向生命栏拥有者",
+    "wolfhud_show_healthbar_pointer_desc" : "在生命栏下方显示箭头，箭头指向拥有者生命栏",
 
     "wolfhud_interaction_options_name" : "互动选项",
     "wolfhud_interaction_options_help" : "选择你的个人喜好的互动方式",
