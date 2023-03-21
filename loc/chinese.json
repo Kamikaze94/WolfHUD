@@ -78,11 +78,11 @@
     "wolfhud_advassault_time_title" : "剩余时间: ",
     "wolfhud_advassault_phase_stealth" : "潜入模式",
     "wolfhud_advassault_phase_control" : "控场",
-    "wolfhud_advassault_phase_anticipation" : "预备",
+    "wolfhud_advassault_phase_anticipation" : "侦查",
     "wolfhud_advassault_phase_build" : "构建",
     "wolfhud_advassault_phase_sustain" : "持续",
     "wolfhud_advassault_phase_fade" : "撤退",
-    "wolfhud_advassault_time_overdue" : "延期",
+    "wolfhud_advassault_time_overdue" : "已延迟",
     "wolfhud_locked_assault" : "无尽警方突击进行中",
 
     "wolfhud_customhud_interaction_done" : "完成",
