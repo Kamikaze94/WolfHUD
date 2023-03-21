@@ -261,6 +261,8 @@
     "wolfhud_languages_chinese" : "简体中文",
     "wolfhud_languages_trchinese" : "繁体中文",
     "wolfhud_languages_korean" : "韩文",
+    "wolfhud_languages_japanese" : "日文",
+    "wolfhud_languages_polish" : "波兰文",
 
     "wolfhud_skip_blackscreen_title" : "跳过开场黑屏",
     "wolfhud_skip_blackscreen_desc" : "任务开始时自动跳过开场黑屏\n(仅主机)",
