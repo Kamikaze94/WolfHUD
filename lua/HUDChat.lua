@@ -13,13 +13,15 @@ end
 
 if RequiredScript == "lib/managers/hud/hudchat" then
 
-	HUDChat.LINE_HEIGHT = WolfHUD:getSetting({"HUDChat", "LINE_HEIGHT"}, 15)			--Size of each line in chat (and hence the text size)
-	HUDChat.WIDTH = WolfHUD:getSetting({"HUDChat", "WIDTH"}, 380)						--Width of the chat window
-	HUDChat.MAX_OUTPUT_LINES = WolfHUD:getSetting({"HUDChat", "MAX_OUTPUT_LINES"}, 8)	--Number of chat lines to show
-	HUDChat.MAX_INPUT_LINES = WolfHUD:getSetting({"HUDChat", "MAX_INPUT_LINES"}, 5)		--Number of lines of text you can type
-	HUDChat.MOUSE_SUPPORT = false														--For scolling and stuff. Experimental, you have been warned
-	HUDChat.COLORED_BG = WolfHUD:getSetting({"HUDChat", "COLORED_BG"}, true)			--Colorize the line bg based on the message source
-	HUDChat.SCROLLBAR_ALIGN = WolfHUD:getSetting({"HUDChat", "SCROLLBAR_ALIGN"}, 2)		--Alignment of the scroll bar (1 = left, 2 = right)
+	HUDChat.LINE_HEIGHT = 15			--Size of each line in chat (and hence the text size)
+	HUDChat.WIDTH = 380				--Width of the chat window
+	HUDChat.MAX_OUTPUT_LINES = 8	--Number of chat lines to show
+	HUDChat.MAX_INPUT_LINES = 5	--Number of lines of text you can type
+	HUDChat.MOUSE_SUPPORT = true														--For scolling and stuff. Experimental, you have been warned
+	HUDChat.COLORED_BG = true		--Colorize the line bg based on the message source
+	HUDChat.SCROLLBAR_ALIGN = 2		--Alignment of the scroll bar (1 = left, 2 = right)
+	HUDChat.SHOW_HEIST_TIME = true
+	HUDChat.CHAT_WAIT_TIME = 10
 
 	local enter_key_callback_original = HUDChat.enter_key_callback
 	local esc_key_callback_original = HUDChat.esc_key_callback
@@ -28,7 +30,6 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 
 	function HUDChat:init(ws, hud)
 		local fullscreen = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
-
 		self._hud_panel = fullscreen.panel
 		self._x_offset = (fullscreen.panel:w() - hud.panel:w()) / 2
 		self._y_offset = (fullscreen.panel:h() - hud.panel:h()) / 2
@@ -59,6 +60,12 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 			if HUDManager.HAS_MINIMAP then
 				self._panel:move(0, -HUDMiniMap.SIZE[2])
 			end
+		-- elseif restoration and restoration:all_enabled("HUD/MainHUD", "HUD/Teammate") then
+		-- 	self._panel:set_left(0)
+		-- 	self._panel:set_bottom(self._parent:h() - 200)			
+		-- elseif PDTHHud and PDTHHud.Options:GetValue("HUD/MainHud") then
+		-- 	self._panel:set_left(0)
+		-- 	self._panel:set_bottom(self._parent:h() - 132)		
 		else
 			--Default chat box position
 			self._panel:set_left(0)
@@ -155,6 +162,10 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 			h = 0,
 			w = self._panel:w(),
 			layer = 1,
+		})
+
+		local scroll_panel = output_panel:panel({
+			name = "scroll_panel"
 		})
 
 		local scroll_bar_bg = output_panel:rect({
@@ -298,6 +309,7 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 
 		local time_text = msg_panel:text({
 			name = "time",
+			visible = HUDChat.SHOW_HEIST_TIME,
 			text = time_format_text,
 			font = tweak_data.menu.pd2_small_font,
 			font_size = HUDChat.LINE_HEIGHT * 0.95,
@@ -315,7 +327,12 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 			layer = 1
 		})
 		local _, _, w, _ = time_text:text_rect()
-		x_offset = x_offset + w + 2
+		
+		if HUDChat.SHOW_HEIST_TIME then
+		    x_offset = x_offset + w + 2
+		else 
+		    x_offset = x_offset
+		end
 
 		if icon then
 			local icon_texture, icon_texture_rect = tweak_data.hud_icons:get_icon_data(icon)
@@ -375,7 +392,7 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 	end
 
 	function HUDChat:_animate_fade_output()
-		local wait_t = WolfHUD:getSetting({"HUDChat", "CHAT_WAIT_TIME"}, 10)
+		local wait_t = HUDChat.CHAT_WAIT_TIME
 		if wait_t <= 0 then return end
 		local fade_t = 1
 		local t = 0
@@ -476,6 +493,18 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 				self:_set_input_lines(#(text:line_breaks()))
 				if not (utf8.len(text:text()) < 1) or type(self._esc_callback) ~= "number" then
 				end
+			elseif self._key_pressed == Idstring("insert") then
+			    local clipboard = Application:get_clipboard() or ""
+			    text:replace_text(clipboard)
+			    local lbs = text:line_breaks()
+			    if #lbs <= HUDChat.MAX_INPUT_LINES then
+			        self:_set_input_lines(#lbs)
+			    else					
+			        local s = lbs[HUDChat.MAX_INPUT_LINES + 1]
+			        local e = utf8.len(text:text())
+			        text:set_selection(s, e)
+			        text:replace_text("")
+			    end					
 			elseif self._key_pressed == Idstring("left") then
 				if s < e then
 					text:set_selection(s, s)
@@ -655,6 +684,16 @@ if RequiredScript == "lib/managers/hud/hudchat" then
 		local positon_height_area = scroll_bar_bg:h() - scroll_bar_up:h() - scroll_bar_down:h() - 4
 		local new_line_offset = math.round((1 - ((y - scroll_bar_up:h() - 2) / positon_height_area)) * self._total_message_lines)
 		self:_change_line_offset(new_line_offset - self._current_line_offset)
+	end
+
+	function HUDChat:set_scroll_indicators(force_update_scroll_indicators)
+	end
+	function HUDChat:scroll_up()
+	end
+	function HUDChat:scroll_down()
+	end
+	function HUDChat:set_output_alpha(alpha)
+		self._panel:child("output_panel"):set_alpha(alpha)
 	end
 
 end
